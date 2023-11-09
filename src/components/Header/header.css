@@ -1,0 +1,4 @@
+.header-width {
+  width: calc(100% - 32px);
+  top: 16px;
+}

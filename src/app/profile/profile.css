@@ -1,0 +1,23 @@
+.content {
+  width: calc(100% - 600px);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 1 0 0;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.footer {
+  bottom: 8px;
+  position: fixed;
+  justify-content: flex-end;
+}
