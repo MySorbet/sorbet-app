@@ -1,13 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
-
-import './profile.css';
-
-// import Sidebar from '@/components/Sidebar/index';
 import Header from '@/components/Header/index';
 import AddSocialLink from '@/components/links/AddSocialLink';
 import ProfileEditModal from '@/components/modal/ProfileEditModal';
+
+import './profile.css';
 
 const Profile = () => {
   const [editModal, setEditModal] = useState(false);
@@ -32,12 +31,7 @@ const Profile = () => {
           <Header />
           <div className='h-screen w-[500px] pl-[100px] pr-10'>
             <div className='self-strech flex h-screen flex-col items-start gap-[26px] px-8 py-32'>
-              <img
-                src='/images/avatar.png'
-                alt='avatar'
-                width={80}
-                height={80}
-              />
+              <Image src='/avatar.svg' alt='avatar' width={80} height={80} />
               <div className='text-[32px] font-semibold leading-tight'>
                 Alexa Smith
               </div>
@@ -46,10 +40,15 @@ const Profile = () => {
                 clients..
               </div>
               <button
-                className='flex items-center justify-center gap-2 px-3 py-1.5 text-[#6230EC]'
+                className='text-primary-default flex items-center justify-center gap-2 px-3 py-1.5'
                 onClick={popModal}
               >
-                <img src='/images/edit-03.png' width={18} height={18} />
+                <Image
+                  src='/images/edit-03.png'
+                  alt='edit'
+                  width={18}
+                  height={18}
+                />
                 Edit Profile
               </button>
             </div>
@@ -57,7 +56,7 @@ const Profile = () => {
           <div className='content flex h-screen flex-col items-start gap-10 bg-[#D7D7D7] opacity-40'></div>
           <div className='h-screen w-[100px]'></div>
           <div className='footer relative flex w-full cursor-pointer gap-[10px] px-8 py-4'>
-            <img
+            <Image
               src='/images/add.png'
               alt='add'
               width={64}

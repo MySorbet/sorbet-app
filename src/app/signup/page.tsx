@@ -36,7 +36,7 @@ const Signup = () => {
 
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-      <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black'>
+      <div className='w-[500px] max-sm:w-[300px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black'>
         <div className='mb-3 flex justify-end'>
           <Image src='/images/cancel.png' alt='cancel' width={40} height={40} />
         </div>
@@ -86,7 +86,7 @@ const Signup = () => {
           </div>
           <div className='item w-full'>
             <button
-              className='h-11 gap-1 self-stretch rounded-lg bg-[#6D46F7] px-2 py-1 text-sm text-white'
+              className='h-11 gap-1 self-stretch rounded-lg bg-primary-default px-2 py-1 text-sm text-white'
               onClick={registerUser}
             >
               continue
@@ -95,7 +95,7 @@ const Signup = () => {
           <div className='inline-block w-full text-base'>
             Already have an account?
             <span
-              className='cursor-pointer pl-1 text-[#6230EC]'
+              className='cursor-pointer pl-1 text-primary-default'
               onClick={() => router.push('/signin')}
             >
               Sign in

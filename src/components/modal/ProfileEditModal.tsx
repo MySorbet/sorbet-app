@@ -9,7 +9,7 @@ const Profile = ({ editModal, popModal }: Props) => {
   return (
     <>
       <div
-        className={`z-20 w-[500px] items-center justify-center rounded-2xl bg-[#F7F7F7] p-6 pt-4 text-black ${
+        className={`z-20 w-[500px] items-center justify-center rounded-2xl bg-[#F7F7F7] p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] max-sm:overflow-y-scroll ${
           editModal ? 'fixed' : 'hidden'
         }`}
       >
@@ -22,7 +22,7 @@ const Profile = ({ editModal, popModal }: Props) => {
         <div className='flex flex-col items-start gap-6 px-6 pb-6'>
           <h1 className='test-[32px]'>Edit Profile</h1>
           <div className='flex items-center gap-2'>
-            <img src='/images/avatar.png' width={80} height={80} />
+            <Image src='/avatar.svg' alt='avatar' width={80} height={80} />
             <button className='flex h-8 items-center justify-center rounded-lg bg-[#3B3E46] px-3 py-1.5 text-white'>
               Upload
             </button>
@@ -71,7 +71,7 @@ const Profile = ({ editModal, popModal }: Props) => {
             />
           </div>
           <div className='item w-full'>
-            <button className='h-11 gap-1 self-stretch rounded-lg bg-[#6D46F7] px-2 py-1 text-sm text-white'>
+            <button className='h-11 gap-1 self-stretch rounded-lg bg-primary-default px-2 py-1 text-sm text-white'>
               Save Changes
             </button>
           </div>

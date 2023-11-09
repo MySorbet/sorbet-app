@@ -1,3 +1,4 @@
+import Image from 'next/image';
 interface Props {
   showAddLink: boolean;
   toggleAddLink: any;
@@ -21,10 +22,10 @@ const AddSocialLink = ({ showAddLink }: Props) => {
             socialLinks.map((socialItem) => (
               <>
                 <div
-                  key={socialItem.id}
+                  key={"social"+socialItem.id}
                   className='self-strech bg-primary flex h-11 w-full items-center justify-end gap-2 rounded-lg border-2 border-solid border-gray-100 bg-[#FAFAFA] py-2.5 pl-4 pr-2'
                 >
-                  <img
+                  <Image
                     src={`/images/social/${socialItem.name}`}
                     alt={socialItem.name}
                     width={24}

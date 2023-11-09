@@ -1,37 +1,50 @@
 'use client';
 
-// import Sidebar from '@/components/Sidebar/index';
+import Image from 'next/image';
 import Header from '@/components/Header/index';
-
-// import './profile.css';
 
 const Gigs = () => {
   return (
     <>
-      <div className='relative z-10 h-full w-full bg-[#FAFAFA]'>
-        <div className='flex w-full items-center justify-center'>
-          <Header />
-          <div className='w-full '></div>
-          <div className='flex w-full flex-col items-center gap-6 p-2.5'>
-            <div className='self-strech width-[300px] flex items-start gap-4 px-4 pb-4 pt-2'>
-              <div className='flex items-center justify-between'>
-                <div className='text-sm font-normal'>Sent</div>
-                <div className='h-6 w-6 rounded-full p-2.5'>1</div>
+      <div className='h-screen w-full items-center justify-center bg-[#F2F2F2]'>
+        <Header />
+        <div className='container m-auto flex h-1/2 h-[calc(100vh-68px)] items-start  justify-center gap-6 p-2.5 pl-6 pr-10 pt-[127px]'>
+          <div className='self-strech flex h-full w-1/3 flex-col items-start gap-4 rounded-lg bg-[white] px-4 pb-4 pt-2'>
+            <div className='flex w-full items-center justify-between'>
+              <div className='text-sm font-normal'>Offers</div>
+              <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-200'>
+                1
               </div>
-              <div className='flex flex-col flex-col gap-2 rounded-lg p-4'>
-                <div className='flex items-center gap-2'>
-                  <img src='/images/avatar.png' width={32} height={32} />
-                </div>
+            </div>
+            <div className='flex w-full flex-col gap-2 rounded-lg rounded-lg bg-[#FAFAFA] p-4'>
+              <div className='flex w-full items-center justify-start gap-2'>
+                <Image src='/avatar.svg' alt='avatar' width={32} height={32} />
                 <p className='text-xs'>Request User</p>
               </div>
-              <div className='gap-0.75 flex'>
-                <div className='text-semibold text-sm font-normal'>
+              <div className='gap-0.75 flex w-full flex-col'>
+                <div className='text-sm font-normal font-semibold'>
                   Branding reDesign
                 </div>
                 <div className='text-xs font-normal'>
                   I need a rebrand for my startup, new logo, typography, brand
                   style guide, and asset libra...
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className='self-strech flex h-full w-1/3 flex-col items-start gap-4 rounded-lg bg-[white] px-4 pb-4 pt-2 max-sm:w-full'>
+            <div className='flex w-full items-center justify-between'>
+              <div className='text-sm font-normal'>In-progress</div>
+              <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-200'>
+                0
+              </div>
+            </div>
+          </div>
+          <div className='self-strech flex h-full w-1/3 flex-col items-start gap-4 rounded-lg bg-[white] px-4 pb-4 pt-2 max-sm:w-full'>
+            <div className='flex w-full items-center justify-between'>
+              <div className='text-sm font-normal'>Completed</div>
+              <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-200'>
+                0
               </div>
             </div>
           </div>
