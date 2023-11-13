@@ -10,6 +10,7 @@ export default {
       },
       colors: {
         'primary-default': '#6D46F7',
+        'gray-default': '#D7D7D7',
         'white': '#ffffff',
         'dark': '#222222',
       },

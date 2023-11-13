@@ -5,12 +5,12 @@ interface Props {
 }
 
 const socialLinks = [
-  { id: 1, name: 'social_1.png' },
-  { id: 2, name: 'social_2.png' },
-  { id: 3, name: 'social_3.png' },
-  { id: 4, name: 'social_4.png' },
-  { id: 5, name: 'social_5.png' },
-  { id: 6, name: 'social_6.png' },
+  { id: 1, name: 'dribble.png' },
+  { id: 2, name: 'github.png' },
+  { id: 3, name: 'soundCloud.png' },
+  { id: 4, name: 'spotify.png' },
+  { id: 5, name: 'instgram.png' },
+  { id: 6, name: 'youtube.png' },
 ];
 
 const AddSocialLink = ({ showAddLink }: Props) => {
@@ -25,7 +25,7 @@ const AddSocialLink = ({ showAddLink }: Props) => {
                   key={"social"+socialItem.id}
                   className='self-strech bg-primary flex h-11 w-full items-center justify-end gap-2 rounded-lg border-2 border-solid border-gray-100 bg-[#FAFAFA] py-2.5 pl-4 pr-2'
                 >
-                  <Image
+                  <img
                     src={`/images/social/${socialItem.name}`}
                     alt={socialItem.name}
                     width={24}

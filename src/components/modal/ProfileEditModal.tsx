@@ -5,11 +5,11 @@ interface Props {
   popModal: any;
 }
 
-const Profile = ({ editModal, popModal }: Props) => {
+const ProfileEditModal = ({ editModal, popModal }: Props) => {
   return (
     <>
       <div
-        className={`z-20 w-[500px] items-center justify-center rounded-2xl bg-[#F7F7F7] p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] max-sm:overflow-y-scroll ${
+        className={`z-20 w-[500px] items-center justify-center rounded-2xl bg-[#F7F7F7] p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] overflow-y-auto ${
           editModal ? 'fixed' : 'hidden'
         }`}
       >
@@ -17,12 +17,12 @@ const Profile = ({ editModal, popModal }: Props) => {
           className='mb-3 flex cursor-pointer justify-end'
           onClick={popModal}
         >
-          <Image src='/images/cancel.png' alt='cancel' width={40} height={40} />
+          <img src='/images/cancel.png' alt='cancel' width={40} height={40} />
         </div>
         <div className='flex flex-col items-start gap-6 px-6 pb-6'>
           <h1 className='test-[32px]'>Edit Profile</h1>
           <div className='flex items-center gap-2'>
-            <Image src='/avatar.svg' alt='avatar' width={80} height={80} />
+            <img src='/avatar.svg' alt='avatar' width={80} height={80} />
             <button className='flex h-8 items-center justify-center rounded-lg bg-[#3B3E46] px-3 py-1.5 text-white'>
               Upload
             </button>
@@ -81,4 +81,4 @@ const Profile = ({ editModal, popModal }: Props) => {
   );
 };
 
-export default Profile;
+export default ProfileEditModal;

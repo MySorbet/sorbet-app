@@ -38,7 +38,7 @@ const Signup = () => {
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
       <div className='w-[500px] max-sm:w-[300px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black'>
         <div className='mb-3 flex justify-end'>
-          <Image src='/images/cancel.png' alt='cancel' width={40} height={40} />
+          <img src='/images/cancel.png' alt='cancel' className='w-10 h-10' />
         </div>
         <div className='flex flex-col items-start gap-6 px-6 pb-6'>
           <h1 className='test-[32px]'>Sign up</h1>
@@ -95,7 +95,7 @@ const Signup = () => {
           <div className='inline-block w-full text-base'>
             Already have an account?
             <span
-              className='cursor-pointer pl-1 text-primary-default'
+              className='cursor-pointer pl-1 font-semibold text-primary-default'
               onClick={() => router.push('/signin')}
             >
               Sign in

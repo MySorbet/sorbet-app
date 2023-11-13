@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import React from 'react';
 
 import Header from '@/components/Header';
@@ -14,7 +13,7 @@ export default function Notification() {
       <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
         <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black'>
           <div className='mb-3 flex justify-end'>
-            <Image
+            <img
               src='/svg/signup/cancel.svg'
               alt='cancel'
               width={40}

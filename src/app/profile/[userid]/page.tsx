@@ -1,35 +1,34 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
-import Header from '@/components/Header/index';
-import AddSocialLink from '@/components/links/addSocialLink';
-import ProfileEditModal from '@/components/modal/profileEditModal';
 
-import './profile.css';
+import '../profile.css';
+
+import ProfileEditModal from '@/components/modal/profileEditModal';
+import Dribble from '@/components/profile/dribble';
+import Spotify from '@/components/profile/spotify';
+import Instgram from '@/components/profile/instgram';
+import Github from '@/components/profile/github';
+import SoundCloud from '@/components/profile/soundCloud';
+import Youtube from '@/components/profile/youtube';
 
 const Profile = () => {
   const [editModal, setEditModal] = useState(false);
-  const [showAddLink, setShowAddLink] = useState(false);
 
   const popModal = () => {
     setEditModal(!editModal);
   };
 
-  const toggleAddLink = () => {
-    setShowAddLink(!showAddLink);
-  };
-
   return (
     <>
-      <div className='relative z-10'>
+      <div className='relative z-10 bg-[#FAFAFA]'>
         <div
-          className={`flex w-full items-center justify-center ${
+          className={`inline-flex w-full items-start justify-start gap-10 px-10 ${
             editModal && 'fixed bg-[#F7F7F7] opacity-20'
           }`}
         >
-          <Header />
-          <div className='h-screen w-[500px] pl-[100px] pr-10'>
+          {/* <Header /> */}
+          <div className='h-screen w-[360px]'>
             <div className='self-strech flex h-screen flex-col items-start gap-[26px] px-8 py-32'>
               <img src='/avatar.svg' alt='avatar' width={80} height={80} />
               <div className='text-[32px] font-semibold leading-tight'>
@@ -53,20 +52,18 @@ const Profile = () => {
               </button>
             </div>
           </div>
-          <div className='content flex h-screen flex-col items-start gap-10 bg-[#D7D7D7] opacity-40'></div>
-          <div className='h-screen w-[100px]'></div>
-          <div className='footer relative flex w-full cursor-pointer gap-[10px] px-8 py-4'>
-            <img
-              src='/images/add.png'
-              alt='add'
-              width={64}
-              height={64}
-              onClick={toggleAddLink}
-            />
-            <AddSocialLink
-              showAddLink={showAddLink}
-              toggleAddLink={toggleAddLink}
-            />
+          {/* <div className='grid w-[calc(100%_-_360px)] grid-cols-3 gap-y-6 flex-col items-start justify-self-strech'> */}
+          <div className='flex w-[calc(100%_-_360px)] flex-col items-start gap-y-6'>
+            <div className='self-strech w-full flex flex-row items-start justify-between'>
+              <Dribble />
+              <Spotify />
+              <Instgram />
+            </div>
+            <div className='self-strech w-full flex flex-row items-start justify-between'>
+              <Github />
+              <SoundCloud />
+              <Youtube />
+            </div>
           </div>
         </div>
         <div
