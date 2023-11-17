@@ -87,7 +87,7 @@ const Signup = () => {
               className='bg-primary-default h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
               onClick={registerUser}
             >
-              continue
+              Continue
             </button>
           </div>
           <div className='inline-block w-full text-base'>
