@@ -1,9 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import './header.css';
 
-const Header = () => {
+const UserHeader = () => {
   const router = useRouter();
   const [selected, setSelected] = useState('profile');
 
@@ -74,4 +75,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default UserHeader;

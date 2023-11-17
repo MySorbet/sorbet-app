@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable @next/next/no-img-element */
 
 const Instgram = () => {
   return (
@@ -27,17 +27,17 @@ const Instgram = () => {
           height={24}
         />
       </div>
-        <div className='grid grid-cols-3 gap-1 rounded-lg'>
-          <img src='/images/profile/instgram/bg-1.png' alt='bg-1' />
-          <img src='/images/profile/instgram/bg-2.png' alt='bg-2' />
-          <img src='/images/profile/instgram/bg-3.png' alt='bg-3' />
-          <img src='/images/profile/instgram/bg-4.png' alt='bg-4' />
-          <img src='/images/profile/instgram/bg-5.png' alt='bg-5' />
-          <img src='/images/profile/instgram/bg-6.png' alt='bg-6' />
-          <img src='/images/profile/instgram/bg-7.png' alt='bg-7' />
-          <img src='/images/profile/instgram/bg-8.png' alt='bg-8' />
-          <img src='/images/profile/instgram/bg-9.png' alt='bg-9' />
-        </div>
+      <div className='grid grid-cols-3 gap-1 rounded-lg'>
+        <img src='/images/profile/instgram/bg-1.png' alt='bg-1' />
+        <img src='/images/profile/instgram/bg-2.png' alt='bg-2' />
+        <img src='/images/profile/instgram/bg-3.png' alt='bg-3' />
+        <img src='/images/profile/instgram/bg-4.png' alt='bg-4' />
+        <img src='/images/profile/instgram/bg-5.png' alt='bg-5' />
+        <img src='/images/profile/instgram/bg-6.png' alt='bg-6' />
+        <img src='/images/profile/instgram/bg-7.png' alt='bg-7' />
+        <img src='/images/profile/instgram/bg-8.png' alt='bg-8' />
+        <img src='/images/profile/instgram/bg-9.png' alt='bg-9' />
+      </div>
     </div>
   );
 };

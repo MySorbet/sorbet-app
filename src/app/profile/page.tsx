@@ -1,14 +1,18 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
-import Header from '@/components/Header/index';
-import AddSocialLink from '@/components/links/addSocialLink';
-import ProfileEditModal from '@/components/modal/profileEditModal';
 
 import './profile.css';
 
+import Header from '@/components/Header/userHeader';
+import AddSocialLink from '@/components/links/addSocialLink';
+import ProfileEditModal from '@/components/modal/profileEditModal';
+
+import { useAppSelector } from '@/redux/hook';
+
 const Profile = () => {
+  const userInfo = useAppSelector((state) => state.userReducer.user);
   const [editModal, setEditModal] = useState(false);
   const [showAddLink, setShowAddLink] = useState(false);
 
@@ -33,11 +37,10 @@ const Profile = () => {
             <div className='self-strech flex h-screen flex-col items-start gap-[26px] px-8 py-32'>
               <img src='/avatar.svg' alt='avatar' width={80} height={80} />
               <div className='text-[32px] font-semibold leading-tight'>
-                Alexa Smith
+                {userInfo?.firstName + ' ' + userInfo?.lastName}
               </div>
               <div className='text-base font-normal text-[#18161C66]'>
-                Bio description. Write a short paragraph to impress potential
-                clients..
+                {userInfo?.bio}
               </div>
               <button
                 className='text-primary-default flex items-center justify-center gap-2 px-3 py-1.5'

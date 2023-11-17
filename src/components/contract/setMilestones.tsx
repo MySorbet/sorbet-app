@@ -1,15 +1,15 @@
-import Image from 'next/image';
+/* eslint-disable @next/next/no-img-element */
 
 interface props {
   contract: number;
   onChangeContract: any;
 }
 
-const SetMilestones = ({ contract, onChangeContract }: props) => {
+const SetMilestones = ({ onChangeContract }: props) => {
   return (
-    <div className='flex h-full w-full flex-col items-start justify-between rounded-lg px-4 pt-4 shadow-[2px_2px_20px_0px_rgba(0,0,0,0.84)]'>
+    <div className='flex h-full w-full flex-col items-start justify-between rounded-lg px-4 pt-4'>
       <div className='flex w-full flex-col justify-start'>
-        <div className='self-strech flex flex-col gap-0.5 mb-4'>
+        <div className='self-strech mb-4 flex flex-col gap-0.5'>
           <div className='self-strech flex items-center gap-1'>
             <div className='text-[20px] font-semibold leading-tight'>
               Create contract
@@ -54,18 +54,13 @@ const SetMilestones = ({ contract, onChangeContract }: props) => {
                 />
               </div>
               <div className='flex w-full justify-end p-2'>
-                <img
-                  src='/svg/trash.svg'
-                  alt='trash'
-                  width={24}
-                  height={24}
-                />
+                <img src='/svg/trash.svg' alt='trash' width={24} height={24} />
               </div>
             </div>
           </div>
         </div>
-        <div className='flex w-full justify-end mt-2'>
-          <div className='text-[#6230EC] flex gap-2 px-3 py-1.5 font-semibold text-base'>
+        <div className='mt-2 flex w-full justify-end'>
+          <div className='flex gap-2 px-3 py-1.5 text-base font-semibold text-[#6230EC]'>
             Add milestones
             <img src='/svg/plus.svg' alt='plus' width={24} height={24} />
           </div>
@@ -73,7 +68,7 @@ const SetMilestones = ({ contract, onChangeContract }: props) => {
       </div>
       <div className='w-full py-4'>
         <button
-          className='flex w-full items-center justify-center gap-2 rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
+          className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
           onClick={onChangeContract}
         >
           Create Continue

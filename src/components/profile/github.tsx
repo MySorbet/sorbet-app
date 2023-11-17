@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable @next/next/no-img-element */
 
 const skills = [
   { id: 1, language: 'JavaScript', color: '#6230EC', percent: '30%' },
@@ -39,27 +39,25 @@ const Github = () => {
       <div className='flex w-full justify-center text-[10px] font-normal leading-6 text-black'>
         <div className='grid grid-cols-2 gap-x-4'>
           {skills &&
+            skills.length > 0 &&
             skills.map((skill) => (
-              <>
-                <div className='flex items-center gap-1'>
-                  <div
-                    className={`h-2 w-2 rounded-full bg-[${skill.color}]`}
-                  ></div>
-                  <div>{skill.language}</div>
-                </div>
-              </>
+              <div className='flex items-center gap-1' key={skill.id}>
+                <div
+                  className={`h-2 w-2 rounded-full bg-[${skill.color}]`}
+                ></div>
+                <div>{skill.language}</div>
+              </div>
             ))}
         </div>
       </div>
       <div className='inline-flex h-10 w-full items-start justify-start rounded-lg'>
         {skills &&
+          skills.length > 0 &&
           skills.map((skill) => (
-            <>
-              <div
-                key={skill.id}
-                className={`w-[${skill.percent}] h-10 bg-[${skill.color}]`}
-              ></div>
-            </>
+            <div
+              key={skill.id}
+              className={`w-[${skill.percent}] h-10 bg-[${skill.color}]`}
+            ></div>
           ))}
       </div>
     </div>

@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from 'react';
 
-import Header from '@/components/Header/index';
+import Header from '@/components/Header/userHeader';
 import ChatModal from '@/components/modal/chatModal';
 
 const Gigs = () => {

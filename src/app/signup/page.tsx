@@ -1,12 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import './signup.css';
 
-import { signUpAsync } from '@/app/api/auth';
+import { signUpAsync } from '@/api/auth';
 
 const Signup = () => {
   const [registerData, setRegisterData] = useState({
@@ -24,9 +24,7 @@ const Signup = () => {
   };
 
   const registerUser = async () => {
-    // console.log(registerData, 'ss');
     const res = await signUpAsync(registerData);
-    // console.log(res);
     if (res.data.id) {
       router.push('/signin');
     }
@@ -36,12 +34,12 @@ const Signup = () => {
 
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-      <div className='w-[500px] max-sm:w-[300px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black'>
+      <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black max-sm:w-[300px]'>
         <div className='mb-3 flex justify-end'>
-          <img src='/images/cancel.png' alt='cancel' className='w-10 h-10' />
+          <img src='/images/cancel.png' alt='cancel' className='h-10 w-10' />
         </div>
         <div className='flex flex-col items-start gap-6 px-6 pb-6'>
-          <h1 className='test-[32px]'>Sign up</h1>
+          <h1 className='text-[32px]'>Sign up</h1>
           <div className='row'>
             <div className='item'>
               <label className='text-[#595B5A]'>First name</label>
@@ -86,7 +84,7 @@ const Signup = () => {
           </div>
           <div className='item w-full'>
             <button
-              className='h-11 gap-1 self-stretch rounded-lg bg-primary-default px-2 py-1 text-sm text-white'
+              className='bg-primary-default h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
               onClick={registerUser}
             >
               continue
@@ -95,7 +93,7 @@ const Signup = () => {
           <div className='inline-block w-full text-base'>
             Already have an account?
             <span
-              className='cursor-pointer pl-1 font-semibold text-primary-default'
+              className='text-primary-default cursor-pointer pl-1 font-semibold'
               onClick={() => router.push('/signin')}
             >
               Sign in

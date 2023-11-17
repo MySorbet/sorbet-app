@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import {useState, useEffect} from 'react';
+/* eslint-disable @next/next/no-img-element */
+import { useState } from 'react';
 
+import CompleteContract from '@/components/contract/completeContract';
 import Milestones from '@/components/contract/milestones';
 import SelectType from '@/components/contract/selectType';
 import SetMilestones from '@/components/contract/setMilestones';
-import CompleteContract from '@/components/contract/completeContract';
 
 interface Props {
   showChatModal: boolean;
@@ -12,11 +12,10 @@ interface Props {
 }
 
 const ChatModal = ({ showChatModal, toggleChatModal }: Props) => {
-
   const [contract, setContract] = useState(0);
 
   const changeContract = () => {
-    if(contract == 3) {
+    if (contract == 3) {
       toggleChatModal();
       setContract(0);
     } else {
@@ -40,7 +39,7 @@ const ChatModal = ({ showChatModal, toggleChatModal }: Props) => {
               Pending
             </div>
           </div>
-          <div className='relative flex h-full w-full flex-col gap-6 rounded-lg bg-yellow-100 py-3 pl-3 pr-4'>
+          <div className='relative flex h-full w-full flex-col gap-6 rounded-lg bg-[#F2F2F2] py-3 pl-3 pr-4'>
             <div className='self-strech flex items-start gap-2.5'>
               <img src='/avatar.svg' alt='avatar' width={32} height={32} />
               <div className='flex flex-col items-start gap-2 pt-1'>
@@ -66,40 +65,94 @@ const ChatModal = ({ showChatModal, toggleChatModal }: Props) => {
                   <div className='text-xs font-semibold'>First Name</div>
                   <div className='text-xs font-normal text-[#666]'>9:55AM</div>
                 </div>
-                <div className='items-start gap-2.5 rounded-lg bg-primary-default text-white px-3 py-2 leading-6'>
+                <div className='bg-primary-default items-start gap-2.5 rounded-lg px-3 py-2 leading-6 text-white'>
                   Hello!
                 </div>
-                <p className='gap-2.5 rounded-lg bg-primary-default text-white px-3 py-2 leading-6'>
-                  Hello! My name is Chris Kally.
-                  I am web full stack develoepr.
-                  I want to work with you.
-                  I am looking hearing from you.
+                <p className='bg-primary-default gap-2.5 rounded-lg px-3 py-2 leading-6 text-white'>
+                  Hello! My name is Chris Kally. I am web full stack develoepr.
+                  I want to work with you. I am looking hearing from you.
                 </p>
-                <div className='items-start gap-2.5 rounded-lg bg-primary-default text-white px-3 py-2 leading-6'>
+                <div className='bg-primary-default items-start gap-2.5 rounded-lg px-3 py-2 leading-6 text-white'>
                   Hello!
                 </div>
               </div>
             </div>
-            <div className='absolute w-[calc(100%-24px)] bottom-3 pt-4 pb-2 px-5 gap-6 items-center rounded-lg justify-end self-strech bg-white'>
-              <input placeholder='Type your message' className='w-full border-none'/>
-              <div className='flex h-8 pl-4 pr-2 justify-between items-center'>
+            <div className='self-strech absolute bottom-3 w-[calc(100%-24px)] items-center justify-end gap-6 rounded-lg bg-white px-5 pb-2 pt-4'>
+              <input
+                placeholder='Type your message'
+                className='w-full border-none'
+              />
+              <div className='flex h-8 items-center justify-between pl-4 pr-2'>
                 <div className='flex items-center gap-3'>
                   <div className='flex items-center gap-2'>
-                    <img src='/svg/chat/pluscircle.svg' alt='pluscircle' className='cursor-pointer' width={20} height={20} />
-                    <img src='/svg/chat/record.svg' alt='record' className='cursor-pointer' width={20} height={20} />
-                    <img src='/svg/chat/emoji.svg' alt='emoji' className='cursor-pointer' width={20} height={20} />
+                    <img
+                      src='/svg/chat/pluscircle.svg'
+                      alt='pluscircle'
+                      className='cursor-pointer'
+                      width={20}
+                      height={20}
+                    />
+                    <img
+                      src='/svg/chat/record.svg'
+                      alt='record'
+                      className='cursor-pointer'
+                      width={20}
+                      height={20}
+                    />
+                    <img
+                      src='/svg/chat/emoji.svg'
+                      alt='emoji'
+                      className='cursor-pointer'
+                      width={20}
+                      height={20}
+                    />
                   </div>
-                  <div className='w-4 h-[1px] bg-[#F2F2F2] rotate-90'></div>
+                  <div className='h-[1px] w-4 rotate-90 bg-[#F2F2F2]'></div>
                   <div className='flex items-center gap-2'>
-                    <img src='/svg/chat/link.svg' className='cursor-pointer' alt='link' width={20} height={20} />
-                    <img src='/svg/chat/textBold.svg' className='cursor-pointer' alt='textBold' width={20} height={20} />
-                    <img src='/svg/chat/textItalic.svg' className='cursor-pointer' alt='textItalic' width={20} height={20} />
-                    <img src='/svg/chat/listBullets.svg' className='cursor-pointer' alt='listBullets' width={20} height={20} />
-                    <img src='/svg/chat/listNumbers.svg' className='cursor-pointer' alt='listNumbers' width={20} height={20} />
+                    <img
+                      src='/svg/chat/link.svg'
+                      className='cursor-pointer'
+                      alt='link'
+                      width={20}
+                      height={20}
+                    />
+                    <img
+                      src='/svg/chat/textBold.svg'
+                      className='cursor-pointer'
+                      alt='textBold'
+                      width={20}
+                      height={20}
+                    />
+                    <img
+                      src='/svg/chat/textItalic.svg'
+                      className='cursor-pointer'
+                      alt='textItalic'
+                      width={20}
+                      height={20}
+                    />
+                    <img
+                      src='/svg/chat/listBullets.svg'
+                      className='cursor-pointer'
+                      alt='listBullets'
+                      width={20}
+                      height={20}
+                    />
+                    <img
+                      src='/svg/chat/listNumbers.svg'
+                      className='cursor-pointer'
+                      alt='listNumbers'
+                      width={20}
+                      height={20}
+                    />
                   </div>
                 </div>
-                <div className='flex p-2 items-start cursor-pointer gap-[10px] bg-dark opacity-20 rounded-xl'>
-                  <img src='/svg/Arrow.svg' alt='Arrow' width={16} height={16} />
+                <div className='bg-dark flex cursor-pointer items-start gap-[10px] rounded-xl p-2 opacity-20'>
+                  <img
+                    src='/svg/Arrow.svg'
+                    alt='Arrow'
+                    width={16}
+                    height={16}
+                  />
                 </div>
               </div>
             </div>
@@ -116,10 +169,24 @@ const ChatModal = ({ showChatModal, toggleChatModal }: Props) => {
               onClick={toggleChatModal}
             />
           </div>
-          {contract == 0 && <Milestones contract={contract} onChangeContract={changeContract}/> }
-          {contract == 1 && <SelectType contract={contract} onChangeContract={changeContract}/> }
-          {contract == 2 && <SetMilestones contract={contract} onChangeContract={changeContract}/> }
-          {contract == 3 && <CompleteContract contract={contract} onChangeContract={changeContract}/> }
+          {contract == 0 && (
+            <Milestones contract={contract} onChangeContract={changeContract} />
+          )}
+          {contract == 1 && (
+            <SelectType contract={contract} onChangeContract={changeContract} />
+          )}
+          {contract == 2 && (
+            <SetMilestones
+              contract={contract}
+              onChangeContract={changeContract}
+            />
+          )}
+          {contract == 3 && (
+            <CompleteContract
+              contract={contract}
+              onChangeContract={changeContract}
+            />
+          )}
         </div>
       </div>
     </>

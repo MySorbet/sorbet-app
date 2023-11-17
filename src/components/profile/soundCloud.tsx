@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 const SoundCloud = () => {
   return (
     <div className='border-gray-default flex h-[300px] w-[225px] flex-col items-start gap-[51px] rounded-2xl border-[0.75px] p-3'>

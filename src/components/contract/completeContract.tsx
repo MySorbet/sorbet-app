@@ -1,4 +1,4 @@
-import Image from 'next/image';
+/* eslint-disable @next/next/no-img-element */
 
 interface props {
   contract: number;
@@ -26,16 +26,11 @@ const CompleteContract = ({ onChangeContract }: props) => {
           </div>
         </div>
         <div className='self-strech flex flex-col gap-0.5 py-4'>
-          <div className='flex gap-4 p-2 items-center justify-center'>
-            <div className='h-5 w-5 p-[3px] rounded-full flex items-center justify-center bg-[#6230EC]'>
-              <img
-                src='/svg/check.svg'
-                alt='check'
-                width={14}
-                height={14}
-              />
+          <div className='flex items-center justify-center gap-4 p-2'>
+            <div className='flex h-5 w-5 items-center justify-center rounded-full bg-[#6230EC] p-[3px]'>
+              <img src='/svg/check.svg' alt='check' width={14} height={14} />
             </div>
-            <div className='flex w-full justify-between items-center text-xs font-normal leading-5 text-[#101010]'>
+            <div className='flex w-full items-center justify-between text-xs font-normal leading-5 text-[#101010]'>
               <p>Style guide design</p>
               <div className='text-[#6230EC]'>$500</div>
             </div>
@@ -43,16 +38,11 @@ const CompleteContract = ({ onChangeContract }: props) => {
           <div className='flex pl-4'>
             <div className='h-4 w-0.5 bg-[#D9D9D9]'></div>
           </div>
-          <div className='flex gap-4 p-2 items-center justify-center'>
-            <div className='h-5 w-5 p-[3px] rounded-full flex items-center justify-center bg-[#6230EC]'>
-              <img
-                src='/svg/check.svg'
-                alt='check'
-                width={14}
-                height={14}
-              />
+          <div className='flex items-center justify-center gap-4 p-2'>
+            <div className='flex h-5 w-5 items-center justify-center rounded-full bg-[#6230EC] p-[3px]'>
+              <img src='/svg/check.svg' alt='check' width={14} height={14} />
             </div>
-            <div className='flex w-full justify-between items-center text-xs font-normal leading-5 text-[#101010]'>
+            <div className='flex w-full items-center justify-between text-xs font-normal leading-5 text-[#101010]'>
               <p>Brand book design</p>
               <div className='text-[#6230EC]'>$500</div>
             </div>
@@ -60,16 +50,11 @@ const CompleteContract = ({ onChangeContract }: props) => {
           <div className='flex pl-4'>
             <div className='h-4 w-0.5 bg-[#D9D9D9]'></div>
           </div>
-          <div className='flex gap-4 p-2 items-center justify-center'>
-            <div className='h-5 w-5 p-[3px] rounded-full flex items-center justify-center bg-[#6230EC]'>
-              <img
-                src='/svg/check.svg'
-                alt='check'
-                width={14}
-                height={14}
-              />
+          <div className='flex items-center justify-center gap-4 p-2'>
+            <div className='flex h-5 w-5 items-center justify-center rounded-full bg-[#6230EC] p-[3px]'>
+              <img src='/svg/check.svg' alt='check' width={14} height={14} />
             </div>
-            <div className='flex w-full justify-between items-center text-xs font-normal leading-5 text-[#101010]'>
+            <div className='flex w-full items-center justify-between text-xs font-normal leading-5 text-[#101010]'>
               <p>Landing page design</p>
               <div className='text-[#6230EC]'>$1000</div>
             </div>
@@ -78,7 +63,7 @@ const CompleteContract = ({ onChangeContract }: props) => {
       </div>
       <div className='w-full py-4'>
         <button
-          className='w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
+          className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
           onClick={onChangeContract}
         >
           Complete

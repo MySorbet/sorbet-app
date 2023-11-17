@@ -1,11 +1,10 @@
-import Image from 'next/image';
-
+/* eslint-disable @next/next/no-img-element */
 interface props {
-  contract: number,
-  onChangeContract: any
+  contract: number;
+  onChangeContract: any;
 }
 
-const Milestones = ({ contract, onChangeContract }: props) => {
+const Milestones = ({ onChangeContract }: props) => {
   return (
     <div className='flex h-full flex-col items-start justify-between gap-4 px-4 pt-4'>
       <div className='flex flex-col justify-start'>
@@ -54,7 +53,10 @@ const Milestones = ({ contract, onChangeContract }: props) => {
         </div>
       </div>
       <div className='w-full py-4'>
-        <button className='w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white' onClick={onChangeContract}>
+        <button
+          className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
+          onClick={onChangeContract}
+        >
           Create contract
         </button>
       </div>

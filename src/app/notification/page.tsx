@@ -1,8 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import React from 'react';
 
-import Header from '@/components/Header';
+import Header from '@/components/Header/userHeader';
 
 export default function Notification() {
   return (

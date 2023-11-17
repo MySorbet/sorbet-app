@@ -1,16 +1,14 @@
 'use client';
 
-import Header from '@/components/Header/index';
+import Header from '@/components/Header/userHeader';
 
 const Gigs = () => {
   return (
     <>
-      <div className='w-full items-center h-screen justify-center bg-secondary'>
+      <div className='bg-secondary h-screen w-full items-center justify-center'>
         <Header />
-        <div className='container pt-[127px] pr-10 pl-6 m-auto h-1/2 flex items-start justify-center gap-6 p-2.5'>
-          <div className='grid grid-cols-4 gap-6 '>
-            d
-          </div>
+        <div className='container m-auto flex h-1/2 items-start justify-center gap-6 p-2.5 pl-6 pr-10 pt-[127px]'>
+          <div className='grid grid-cols-4 gap-6'>explore</div>
         </div>
       </div>
     </>

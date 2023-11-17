@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
+// eslint-disable-next-line simple-import-sort/imports
 import { useState } from 'react';
 
 import '../profile.css';
@@ -52,17 +54,16 @@ const Profile = () => {
               </button>
             </div>
           </div>
-          {/* <div className='grid w-[calc(100%_-_360px)] grid-cols-3 gap-y-6 flex-col items-start justify-self-strech'> */}
           <div className='flex w-[calc(100%_-_360px)] flex-col items-start gap-y-6'>
-            <div className='self-strech w-full flex flex-row items-start justify-between'>
-              <Dribble />
-              <Spotify />
-              <Instgram />
+            <div className='self-strech flex w-full flex-row items-start justify-between'>
+              <Dribble key='dribble' />
+              <Spotify key='spotify' />
+              <Instgram key='instgram' />
             </div>
-            <div className='self-strech w-full flex flex-row items-start justify-between'>
-              <Github />
-              <SoundCloud />
-              <Youtube />
+            <div className='self-strech flex w-full flex-row items-start justify-between'>
+              <Github key='github' />
+              <SoundCloud key='soundCloud' />
+              <Youtube key='youtube' />
             </div>
           </div>
         </div>

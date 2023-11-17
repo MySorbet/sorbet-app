@@ -1,11 +1,11 @@
-import Image from 'next/image';
+/* eslint-disable @next/next/no-img-element */
 
 interface props {
   contract: number;
   onChangeContract: any;
 }
 
-const SelectType = ({ contract, onChangeContract }: props) => {
+const SelectType = ({ onChangeContract }: props) => {
   return (
     <div className='flex h-full w-full flex-col items-start justify-between gap-4 px-4 pt-4'>
       <div className='flex w-full flex-col justify-start gap-4'>
@@ -62,11 +62,16 @@ const SelectType = ({ contract, onChangeContract }: props) => {
       </div>
       <div className='w-full py-4'>
         <button
-          className='w-full flex items-center justify-center rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white gap-2'
+          className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
           onClick={onChangeContract}
         >
           Continue
-          <img src='/images/arrow-narrow-right.svg' alt='arrow' width={24} height={24} />
+          <img
+            src='/images/arrow-narrow-right.svg'
+            alt='arrow'
+            width={24}
+            height={24}
+          />
         </button>
       </div>
     </div>

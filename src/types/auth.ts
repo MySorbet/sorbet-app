@@ -1,11 +1,10 @@
-export interface SignupTypes {
+export interface SignUpWithEmailTypes {
   firstName: string;
   lastName: string;
   email: string;
   accountId: string;
 }
 
-export interface SigninTypes {
+export interface SignInWithEmailTypes {
   email: string;
-  accountId: string;
 }
