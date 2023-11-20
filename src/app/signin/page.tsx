@@ -44,7 +44,7 @@ const Signin = () => {
     };
     check();
   }, [accountId]);
-  
+
   const onChange = (e: any) => {
     setLoginData({
       ...loginData,

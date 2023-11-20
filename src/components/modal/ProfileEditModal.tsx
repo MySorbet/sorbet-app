@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 import { uploadProfileImageAsync } from '@/api/images';
+import { deleteProfileImageAsync } from '@/api/user';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import { API_URL } from '@/utils';
@@ -16,23 +17,14 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   const userInfo = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
 
-  const [userData, setUserData] = useState({
-    id: '',
-    firstName: '',
-    lastName: '',
-    accountId: '',
-    email: '',
-    bio: '',
-    title: '',
-    profileImage: '',
-    tempLocation: '',
-  });
+  const [userData, setUserData] = useState(userInfo);
   const [image, setImage] = useState(userInfo?.profileImage);
   const [file, setFile] = useState(null);
 
   useEffect(() => {
     setUserData(userInfo);
-  }, [userInfo]);
+    setImage(userInfo.profileImage);
+  }, [userInfo, popModal]);
 
   const onChange = (e: any) => {
     setUserData({
@@ -42,24 +34,23 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   };
 
   const updateProfile = async (e: any) => {
-    const userToPost = userData;
+    let userToPost = userData;
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('userId', userData.id + Date.now().toString());
       formData.append(
         'bucketName',
-        process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_post_bucket'
+        process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_profile'
       );
       const imgResponse = await uploadProfileImageAsync(formData);
-      // userToPost = {
-      //   ...userData,
-      //   profileImage: imgResponse.data.fileUrl
-      //     ? imgResponse.data.fileUrl
-      //     : userData.profileImage,
-      // };
-      // setUserData({ ...userData, profileImage: imgResponse.data.fileUrl });
-      // console.log(imgResponse.data.fileUrl);
+
+      userToPost = {
+        ...userData,
+        profileImage: imgResponse.data.fileUrl
+          ? imgResponse.data.fileUrl
+          : userData.profileImage,
+      };
     }
 
     const apiUrl = `${API_URL}/user/${userData.id}`;
@@ -85,20 +76,24 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   };
 
   const onClose = () => {
-    setImage(userInfo?.profileImage);
     setUserData(userInfo);
     popModal();
   };
 
-  const deleteImage = (e: any) => {
+  const deleteImage = async (e: any) => {
+    const res = await deleteProfileImageAsync(userData.id);
+    setImage(res.data.profileImage);
+    setUserData({
+      ...userData,
+      profileImage: res.data.profileImage,
+    });
     setFile(null);
-    setImage('');
   };
 
   return (
     <>
       <div
-        className={`z-20 w-[500px] items-center justify-center overflow-y-auto rounded-2xl bg-[#F7F7F7] p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] ${
+        className={`z-20 w-[500px] items-center justify-center overflow-y-auto rounded-2xl bg-white p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] ${
           editModal ? 'fixed' : 'hidden'
         }`}
       >

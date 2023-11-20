@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react';
 
 import './header.css';
 
+import { useAppSelector } from '@/redux/hook';
+
 const UserHeader = () => {
   const router = useRouter();
+  const userData = useAppSelector((state) => state.userReducer.user);
   const [selected, setSelected] = useState('profile');
 
   useEffect(() => {
@@ -62,13 +65,19 @@ const UserHeader = () => {
           </div>
         </div>
         <div className='flex'>
-          <img
-            src='/avatar.svg'
-            alt='avatar'
-            className='cursor-pointer'
-            width={40}
-            height={40}
-          />
+          {userData.profileImage ? (
+            <img
+              src={userData.profileImage}
+              alt='avatar'
+              className='border-primary-default h-10 w-10 cursor-pointer rounded-full border-2'
+            />
+          ) : (
+            <img
+              src='/avatar.svg'
+              alt='avatar'
+              className='h-10 w-10 cursor-pointer'
+            />
+          )}
         </div>
       </div>
     </div>

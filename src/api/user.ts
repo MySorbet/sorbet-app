@@ -10,3 +10,16 @@ export const getUserFromUserId = async (userId: string) => {
 
   return res;
 };
+
+export const deleteProfileImageAsync = async (userId: string) => {
+  const res = await runApi(
+    'DELETE',
+    `${API_URL}/user/deleteUserAvatar/${userId}`
+  );
+  return res;
+};
+
+export const getWidgetsFromUserId = async (userId: string) => {
+  const res = await runApi('GET', `${API_URL}/widgets/findByUserId/${userId}`);
+  return res;
+};
