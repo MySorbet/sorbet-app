@@ -12,7 +12,6 @@ import Container from '@/app/container';
 import { store } from '@/redux/store';
 
 import Head from './head';
-// import Verify from './verify';
 
 export default function RootLayout({
   children,

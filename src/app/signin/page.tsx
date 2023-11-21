@@ -17,14 +17,14 @@ const Signin = () => {
   const dispatch = useAppDispatch();
 
   const router = useRouter();
-  const { modal: nearModal, accountId } = useWalletSelector();
+  const { modal: nearModal, accountId, } = useWalletSelector();
 
   const [loginData, setLoginData] = useState({
     email: '',
   });
 
   useEffect(() => {
-    const onSuccess = (user: any) => {
+    const onSuccess = async (user: any) => {
       localStorage.setItem(LOCAL_KEY, JSON.stringify(user));
       dispatch(updateUserData(user));
       router.push('/profile');

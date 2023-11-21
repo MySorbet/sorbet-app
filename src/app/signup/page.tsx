@@ -75,7 +75,7 @@ const Signup = () => {
           <div className='item w-full'>
             <label className='text-[#595B5A]'>Account ID</label>
             <input
-              className='w-full rounded-lg '
+              className='w-full rounded-lg'
               placeholder='Jon_S'
               name='accountId'
               value={registerData.accountId}

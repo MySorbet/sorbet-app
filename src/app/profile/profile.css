@@ -2,6 +2,10 @@
   width: calc(100% - 600px);
 }
 
+.content_1 {
+  width: calc(100% - 480px);
+}
+
 .item {
   display: flex;
   flex-direction: column;

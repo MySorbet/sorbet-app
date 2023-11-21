@@ -1,21 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import './profile.css';
 
-import Header from '@/components/Header/userHeader';
+import UserHeader from '@/components/Header/userHeader';
 import ProfileEditModal from '@/components/modal/profileEditModal';
 import AddWidget from '@/components/profile/addWidget/addWidget';
 import UserWidgetContainer from '@/components/profile/addWidget/UserWidgetContainer';
 
-import { useAppSelector } from '@/redux/hook';
+import { getWidgetsFromUserId } from '@/api/user';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { initwidgets } from '@/redux/profileSlice';
 
 const Profile = () => {
+  const dispatch = useAppDispatch();
   const userInfo = useAppSelector((state) => state.userReducer.user);
   const widgetData = useAppSelector((state) => state.profileReducer.widgets);
   const [editModal, setEditModal] = useState(false);
   const [showAddLink, setShowAddLink] = useState(false);
+
+  useEffect(() => {
+    const getWidgets = async () => {
+      if(userInfo.id) {
+        const res = await getWidgetsFromUserId(userInfo.id);
+        dispatch(initwidgets(res.data)); 
+      }
+    }
+    getWidgets();
+  })
 
   const popModal = () => {
     setEditModal(!editModal);
@@ -33,7 +46,7 @@ const Profile = () => {
             editModal && 'fixed bg-[#F7F7F7] opacity-20'
           }`}
         >
-          <Header />
+          <UserHeader />
           <div className='h-screen w-[500px] pl-[100px] pr-10'>
             <div className='self-strech flex h-screen flex-col items-start gap-[26px] px-8 py-32'>
               {userInfo.profileImage ? (

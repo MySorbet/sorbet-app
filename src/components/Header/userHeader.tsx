@@ -4,19 +4,49 @@ import { useEffect, useState } from 'react';
 
 import './header.css';
 
-import { useAppSelector } from '@/redux/hook';
+import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
 
-const UserHeader = () => {
+import { LOCAL_KEY } from '@/constant/constant';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { reset } from '@/redux/userSlice';
+
+const UserHeader = ({ popModal }: any) => {
   const router = useRouter();
+  const { modal: nearModal, selector } = useWalletSelector();
+  const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.userReducer.user);
   const [selected, setSelected] = useState('profile');
+  const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
     setSelected(window.location.href.slice(22));
   }, [router]);
 
+  const logout = async () => {
+    dispatch(reset());
+    if (userData.email) {
+      localStorage.removeItem(LOCAL_KEY);
+      router.push('/signin');
+    } else {
+      const wallet = await selector.wallet();
+      wallet
+        .signOut()
+        .then(() => {
+          router.push('/signin');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+    showLogoutPage();
+  };
+
+  const showLogoutPage = () => {
+    setShowLogout(!showLogout);
+  };
+
   return (
-    <div className='header-width fixed z-10 flex flex-col justify-center rounded-lg bg-white p-4'>
+    <div className='header-width fixed z-50 flex flex-col justify-center rounded-lg bg-white p-4'>
       <div className='self-strech flex h-10 items-center justify-between'>
         <div
           className='flex cursor-pointer items-center gap-2'
@@ -64,8 +94,8 @@ const UserHeader = () => {
             Explore
           </div>
         </div>
-        <div className='flex'>
-          {userData.profileImage ? (
+        <div className='relative flex' onClick={showLogoutPage}>
+          {userData?.profileImage ? (
             <img
               src={userData.profileImage}
               alt='avatar'
@@ -77,6 +107,14 @@ const UserHeader = () => {
               alt='avatar'
               className='h-10 w-10 cursor-pointer'
             />
+          )}
+          {showLogout && (
+            <div
+              className='bg-primary-default absolute right-0 top-[50px] cursor-pointer rounded-lg px-4 py-2 text-white hover:opacity-70'
+              onClick={logout}
+            >
+              Logout
+            </div>
           )}
         </div>
       </div>

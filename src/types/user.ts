@@ -8,4 +8,5 @@ export default interface UserType {
   title: string;
   profileImage: string;
   tempLocation: string;
+  role: string;
 }

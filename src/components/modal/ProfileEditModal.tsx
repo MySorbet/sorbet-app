@@ -13,18 +13,30 @@ interface Props {
   popModal: any;
 }
 
+const initUser = {
+  id: '',
+  firstName: '',
+  lastName: '',
+  accountId: '',
+  email: '',
+  bio: '',
+  title: '',
+  profileImage: '',
+  tempLocation: ''
+}
+
 const ProfileEditModal = ({ editModal, popModal }: Props) => {
   const userInfo = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
 
-  const [userData, setUserData] = useState(userInfo);
+  const [userData, setUserData] = useState(initUser);
   const [image, setImage] = useState(userInfo?.profileImage);
   const [file, setFile] = useState(null);
 
   useEffect(() => {
     setUserData(userInfo);
     setImage(userInfo.profileImage);
-  }, [userInfo, popModal]);
+  }, [userInfo]);
 
   const onChange = (e: any) => {
     setUserData({
@@ -93,7 +105,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   return (
     <>
       <div
-        className={`z-20 w-[500px] items-center justify-center overflow-y-auto rounded-2xl bg-white p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] ${
+        className={`z-50 w-[500px] items-center justify-center overflow-y-auto rounded-2xl bg-white p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] ${
           editModal ? 'fixed' : 'hidden'
         }`}
       >
