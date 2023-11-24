@@ -22,8 +22,8 @@ const initUser = {
   bio: '',
   title: '',
   profileImage: '',
-  tempLocation: ''
-}
+  tempLocation: '',
+};
 
 const ProfileEditModal = ({ editModal, popModal }: Props) => {
   const userInfo = useAppSelector((state) => state.userReducer.user);

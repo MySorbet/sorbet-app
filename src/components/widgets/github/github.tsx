@@ -122,7 +122,7 @@ const GithubWidget = (props: Props) => {
         });
       return repos;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -209,7 +209,9 @@ const GithubWidget = (props: Props) => {
         ];
         const languageArrMap = languagesArr.map((language: any, i: number) => {
           const [[key, value]] = Object.entries(language);
-          const widthPercent = (value as any).toLocaleString('en', { style: 'percent' });
+          const widthPercent = (value as any).toLocaleString('en', {
+            style: 'percent',
+          });
           const arrLength = colors.length;
           const randomIndex = Math.floor(Math.random() * arrLength);
           const colorCode = colors[randomIndex];

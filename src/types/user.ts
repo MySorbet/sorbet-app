@@ -9,4 +9,5 @@ export default interface UserType {
   profileImage: string;
   tempLocation: string;
   role: string;
+  nearWallet: string;
 }

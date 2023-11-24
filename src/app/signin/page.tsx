@@ -17,8 +17,7 @@ const Signin = () => {
   const dispatch = useAppDispatch();
 
   const router = useRouter();
-  const { modal: nearModal, accountId, } = useWalletSelector();
-
+  const { modal: nearModal, accountId } = useWalletSelector();
   const [loginData, setLoginData] = useState({
     email: '',
   });

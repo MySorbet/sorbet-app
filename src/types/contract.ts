@@ -1,4 +1,4 @@
-import UserType from "@/types/user";
+import UserType from '@/types/user';
 
 export interface ContractType {
   id: string;
@@ -10,6 +10,12 @@ export interface ContractType {
   clientId: string;
   client?: UserType;
   freelancer?: UserType;
+  projectId?: string;
+}
+
+export interface MileStoneType {
+  name: string;
+  amount: number;
 }
 
 export const defaultContract: ContractType = {
@@ -20,4 +26,9 @@ export const defaultContract: ContractType = {
   budget: '$500-$1000',
   freelancerId: '',
   clientId: '',
+};
+
+export const defaultMileStone: MileStoneType = {
+  name: '',
+  amount: 0,
 };

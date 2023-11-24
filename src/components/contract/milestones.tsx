@@ -1,12 +1,63 @@
+import { useEffect } from 'react';
+
+import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
+
+import { CONTRACT } from '@/constant/constant';
+import { useAppSelector } from '@/redux/hook';
+import { callMethod, viewMethod } from '@/utils/wallet';
+
 /* eslint-disable @next/next/no-img-element */
 interface props {
-  contract: number;
-  onChangeContract: any;
+  onChangeStatus: any;
+  myContract: any;
 }
 
-const Milestones = ({ onChangeContract }: props) => {
+const Milestones = ({ onChangeStatus, myContract }: props) => {
+  const { selector, accountId } = useWalletSelector();
+
+  const currentUser = useAppSelector((state) => state.userReducer.user);
+  const mywallet = myContract?.freelancer?.nearWallet;
+  const otherwallet = myContract?.client?.nearWallet;
+
+  useEffect(() => {
+    if (mywallet && otherwallet) {
+      const getProject = async () => {
+        const res = await viewMethod({
+          selector: selector,
+          contractId: CONTRACT,
+          method: 'get_projects_by_freelancer',
+          args: { freelancer: mywallet },
+        });
+        if (res[0]) {
+          onChangeStatus(1);
+        }
+      };
+      getProject();
+    }
+  }, [mywallet, otherwallet]);
+
+  const onEnterContract = async () => {
+    if (mywallet && otherwallet && accountId) {
+      try {
+        const res = await callMethod({
+          selector: selector,
+          accountId: accountId,
+          contractId: CONTRACT,
+          method: 'create_project',
+          gas: '30000000000000',
+          args: {
+            project_id: myContract?.projectId,
+            client_id: otherwallet,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
-    <div className='flex h-full flex-col items-start justify-between gap-4 px-4 pt-4'>
+    <div className='relative flex h-full w-full flex-col items-start gap-4 overflow-auto px-4 pt-4'>
       <div className='flex flex-col justify-start'>
         <div className='self-strech flex flex-col gap-0.5'>
           <div className='self-strech flex items-center gap-1'>
@@ -52,13 +103,19 @@ const Milestones = ({ onChangeContract }: props) => {
           </div>
         </div>
       </div>
-      <div className='w-full py-4'>
-        <button
-          className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
-          onClick={onChangeContract}
-        >
-          Create contract
-        </button>
+      <div className='absolute bottom-0 left-0 w-full py-4'>
+        {currentUser.role == 'user' ? (
+          <button
+            className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
+            onClick={onEnterContract}
+          >
+            Create contract
+          </button>
+        ) : (
+          <button className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'>
+            Approve contract
+          </button>
+        )}
       </div>
     </div>
   );

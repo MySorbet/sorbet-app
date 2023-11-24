@@ -7,12 +7,16 @@ import { useEffect, useState } from 'react';
 import UserHeader from '@/components/Header/userHeader';
 
 import { getUsersAll } from '@/api/user';
-import { useAppSelector } from '@/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { getUsers } from '@/redux/userSlice';
+
+import UserType from '@/types/user';
 
 const Explore = () => {
   const router = useRouter();
-  const [users, setUsers] = useState([]);
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReducer.user);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     getAll();
@@ -21,6 +25,7 @@ const Explore = () => {
   const getAll = async () => {
     const res = await getUsersAll();
     setUsers(res.data);
+    dispatch(getUsers(res.data));
   };
 
   return (
@@ -29,7 +34,7 @@ const Explore = () => {
         <UserHeader />
         <div className='container m-auto grid h-full w-full grid-cols-4 gap-4'>
           {users &&
-            users.map((user: any) => (
+            users.map((user: UserType) => (
               <div
                 key={user.id}
                 className='flex w-full w-full cursor-pointer flex-col gap-1 rounded-lg bg-white'
@@ -40,8 +45,23 @@ const Explore = () => {
                   alt='bg'
                   className='w-full'
                 />
-                <div className='flex gap-2 p-2'>
-                  <img src='/avatar.svg' alt='avatar' width={18} height={18} />
+                <div className='flex items-center justify-start gap-2 p-2'>
+                  {user?.profileImage ? (
+                    <img
+                      src={user?.profileImage}
+                      alt='avatar'
+                      className='rounded-full'
+                      width={18}
+                      height={18}
+                    />
+                  ) : (
+                    <img
+                      src='/avatar.svg'
+                      alt='avatar'
+                      width={18}
+                      height={18}
+                    />
+                  )}
                   <div>{user?.firstName + ' ' + user?.lastName}</div>
                 </div>
               </div>

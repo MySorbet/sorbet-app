@@ -323,7 +323,10 @@ const DribbleDesignWidget = (props: any) => {
                           : 'cursor-pointer text-[#ea4c89] hover:text-[#d73c7d]'
                       }`}
                       onClick={handleScrollRight}
-                      disabled={designsData != undefined && scrollPage == designsData?.length - 1}
+                      disabled={
+                        designsData != undefined &&
+                        scrollPage == designsData?.length - 1
+                      }
                     >
                       <BsFillArrowRightCircleFill size={'1.1rem'} />
                     </button>

@@ -1,33 +1,55 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import CompleteContract from '@/components/contract/completeContract';
 import Milestones from '@/components/contract/milestones';
-import SelectType from '@/components/contract/selectType';
-import SetMilestones from '@/components/contract/setMilestones';
+import SetMilestonesWithClient from '@/components/contract/setMilestonesWithClient';
+import SetMilestonesWithUser from '@/components/contract/setMilestonesWithUser';
 
-interface Props {
-  showChatModal: boolean;
-  toggleChatModal: any;
-}
+import { setModalStatus } from '@/redux/contractSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 
-const ChatModal = ({ showChatModal, toggleChatModal }: Props) => {
-  const [contract, setContract] = useState(0);
+import { ContractType } from '@/types';
 
-  const changeContract = () => {
-    if (contract == 3) {
-      toggleChatModal();
-      setContract(0);
+const ChatModal = () => {
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.userReducer.user);
+  const modalStatus = useAppSelector(
+    (state) => state.contractReducer.modalStatus
+  );
+  const currentContractId = useAppSelector(
+    (state) => state.contractReducer.currentContractId
+  );
+  const myContracts = useAppSelector(
+    (state) => state.contractReducer.contracts
+  );
+  const myContract = myContracts?.find(
+    (contract) => contract.id == currentContractId
+  );
+  const [status, setStatus] = useState(0);
+
+  const changeStatus = (st: number) => {
+    if (status == 2) {
+      dispatch(setModalStatus(false));
+      setStatus(0);
     } else {
-      setContract(contract + 1);
+      setStatus(st);
     }
+  };
+
+  const toggleChatModal = () => {
+    router.push('/gigs');
+    dispatch(setModalStatus(false));
   };
 
   return (
     <>
       <div
-        className={`z-20 inline-flex min-h-[800px] w-2/3 gap-4 overflow-y-auto rounded-[20px] bg-[#F7F7F7] p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] ${
-          showChatModal ? 'fixed' : 'hidden'
+        className={`z-20 inline-flex h-[800px] w-2/3 gap-4 rounded-[20px] bg-[#F7F7F7] p-6 pt-4 text-black max-sm:h-5/6 max-sm:w-[300px] ${
+          modalStatus ? 'fixed' : 'hidden'
         }`}
       >
         <div className='self-strech flex w-7/12 flex-col items-start gap-4'>
@@ -169,22 +191,25 @@ const ChatModal = ({ showChatModal, toggleChatModal }: Props) => {
               onClick={toggleChatModal}
             />
           </div>
-          {contract == 0 && (
-            <Milestones contract={contract} onChangeContract={changeContract} />
+          {status == 0 && (
+            <Milestones onChangeStatus={changeStatus} myContract={myContract} />
           )}
-          {contract == 1 && (
-            <SelectType contract={contract} onChangeContract={changeContract} />
-          )}
-          {contract == 2 && (
-            <SetMilestones
-              contract={contract}
-              onChangeContract={changeContract}
-            />
-          )}
-          {contract == 3 && (
+          {status == 1 &&
+            (currentUser.role == 'user' ? (
+              <SetMilestonesWithUser
+                onChangeContract={changeStatus}
+                myContract={myContract}
+              />
+            ) : (
+              <SetMilestonesWithClient
+                onChangeContract={changeStatus}
+                myContract={myContract}
+              />
+            ))}
+          {status == 2 && (
             <CompleteContract
-              contract={contract}
-              onChangeContract={changeContract}
+              contract={status}
+              onChangeContract={changeStatus}
             />
           )}
         </div>

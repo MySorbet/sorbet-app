@@ -7,10 +7,10 @@ type userState = {
   users: UserType[];
 };
 
-const initialState = {
-  user: {},
-  users: []
-} as userState;
+const initialState: userState = {
+  user: {} as UserType,
+  users: [] as UserType[],
+};
 
 export const user = createSlice({
   name: 'user',
@@ -21,11 +21,11 @@ export const user = createSlice({
     updateUserData: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
-    getUers: (state, action: PayloadAction<UserType[]>) => {
-      state.users = action.payload
-    }
+    getUsers: (state, action: PayloadAction<UserType[]>) => {
+      state.users = action.payload;
+    },
   },
 });
 
-export const { updateUserData, getUers, reset } = user.actions;
+export const { updateUserData, getUsers, reset } = user.actions;
 export default user.reducer;

@@ -22,13 +22,13 @@ const Profile = () => {
 
   useEffect(() => {
     const getWidgets = async () => {
-      if(userInfo.id) {
+      if (userInfo.id) {
         const res = await getWidgetsFromUserId(userInfo.id);
-        dispatch(initwidgets(res.data)); 
+        dispatch(initwidgets(res.data));
       }
-    }
+    };
     getWidgets();
-  })
+  }, [userInfo]);
 
   const popModal = () => {
     setEditModal(!editModal);

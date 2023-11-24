@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { initContract } from '@/api/contract';
+import { createContract } from '@/api/contract';
 import { useAppSelector } from '@/redux/hook';
 
 import { ContractType, defaultContract } from '@/types';
@@ -14,16 +14,16 @@ interface Props {
 }
 
 const SendMessage = ({ editModal, popModal, freelancerId }: Props) => {
-
   const router = useRouter();
   const client = useAppSelector((state) => state.userReducer.user);
+  const socket = useAppSelector((state) => state.contractReducer.socket);
   const [content, setContent] = useState(defaultContract);
 
-  const onChange = (e: any) => {  
-      setContent({
-        ...content,
-        [e.target.name]: e.target.value,
-      });
+  const onChange = (e: any) => {
+    setContent({
+      ...content,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const onClose = () => {
@@ -39,14 +39,19 @@ const SendMessage = ({ editModal, popModal, freelancerId }: Props) => {
       startTime: content.startTime,
       budget: content.budget,
       clientId: client.id,
-      freelancerId: freelancerId
-    }
-    
-    const res = await initContract(data);
-    if(res.status == 'success') {
+      freelancerId: freelancerId,
+    };
+
+    const res = await createContract(data);
+    if (res.status == 'success') {
       router.push('/gigs');
+      socket.emit('milestoneChanged', {
+        senderId: client.id,
+        receiverId: freelancerId,
+        type: 'Event',
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -71,7 +76,9 @@ const SendMessage = ({ editModal, popModal, freelancerId }: Props) => {
             />
           </div>
           <div className='flex w-full flex-col items-start gap-[6px]'>
-            <label className='text-[#595B5A]'>Describe your project or tasks</label>
+            <label className='text-[#595B5A]'>
+              Describe your project or tasks
+            </label>
             <textarea
               className='w-full rounded-lg'
               placeholder='Write here'
@@ -82,21 +89,29 @@ const SendMessage = ({ editModal, popModal, freelancerId }: Props) => {
             />
           </div>
           <div className='flex w-full flex-col items-start gap-[6px]'>
-            <label className='text-[#595B5A]'>When are you looking to start</label>
+            <label className='text-[#595B5A]'>
+              When are you looking to start
+            </label>
             <select
               className='w-full rounded-lg'
               name='startTime'
               defaultValue={content?.startTime}
               onChange={onChange}
             >
-              <option value='With in the next week'>With in the next week</option>
-              <option value='With in the one month'>With in the one month</option>
+              <option value='With in the next week'>
+                With in the next week
+              </option>
+              <option value='With in the one month'>
+                With in the one month
+              </option>
               <option value='With in three months'>With in three months</option>
               <option value='More than six months'>More than six months</option>
             </select>
           </div>
           <div className='flex w-full flex-col items-start gap-[6px]'>
-            <label className='text-[#595B5A]'>Do you have a budget in mind</label>
+            <label className='text-[#595B5A]'>
+              Do you have a budget in mind
+            </label>
             <select
               className='w-full rounded-lg '
               name='budget'

@@ -58,7 +58,7 @@ const Profile = ({ params }: any) => {
             editModal && 'fixed bg-[#F7F7F7] opacity-20'
           }`}
         >
-          <ExploreHeader popModal={popModal} />
+          <ExploreHeader popModal={popModal} freelancerId={params.userId} />
           <div className='h-screen w-[360px]'>
             <div className='self-strech flex h-screen flex-col items-start gap-[26px] px-8 py-32'>
               {user?.profileImage ? (
