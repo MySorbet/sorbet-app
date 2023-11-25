@@ -9,32 +9,43 @@ import { callMethod, viewMethod } from '@/utils/wallet';
 /* eslint-disable @next/next/no-img-element */
 interface props {
   onChangeStatus: any;
-  myContract: any;
 }
 
-const Milestones = ({ onChangeStatus, myContract }: props) => {
+const Milestones = ({ onChangeStatus }: props) => {
   const { selector, accountId } = useWalletSelector();
-
+  const role = useAppSelector((state) => state.userReducer.role);
   const currentUser = useAppSelector((state) => state.userReducer.user);
+
+  const currentContractId = useAppSelector(
+    (state) => state.contractReducer.currentContractId
+  );
+  const myContracts = useAppSelector(
+    (state) => state.contractReducer.contracts
+  );
+  const myContract = myContracts?.find(
+    (contract) => contract.id == currentContractId
+  );
   const mywallet = myContract?.freelancer?.nearWallet;
   const otherwallet = myContract?.client?.nearWallet;
 
   useEffect(() => {
-    if (mywallet && otherwallet) {
+    if (mywallet && otherwallet && myContract) {
       const getProject = async () => {
         const res = await viewMethod({
           selector: selector,
           contractId: CONTRACT,
-          method: 'get_projects_by_freelancer',
-          args: { freelancer: mywallet },
+          method: 'get_project',
+          args: { project_id: myContract?.projectId },
         });
-        if (res[0]) {
+        if (res) {
           onChangeStatus(1);
+        } else {
+          onChangeStatus(0);
         }
       };
       getProject();
     }
-  }, [mywallet, otherwallet]);
+  }, [mywallet, otherwallet, myContract]);
 
   const onEnterContract = async () => {
     if (mywallet && otherwallet && accountId) {
@@ -104,16 +115,16 @@ const Milestones = ({ onChangeStatus, myContract }: props) => {
         </div>
       </div>
       <div className='absolute bottom-0 left-0 w-full py-4'>
-        {currentUser.role == 'user' ? (
+        {role == 'client' ? (
+          <button className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'>
+            Approve contract
+          </button>
+        ) : (
           <button
             className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'
             onClick={onEnterContract}
           >
             Create contract
-          </button>
-        ) : (
-          <button className='h-11 w-full items-center justify-end rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'>
-            Approve contract
           </button>
         )}
       </div>

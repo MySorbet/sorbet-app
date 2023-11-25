@@ -16,6 +16,7 @@ const ChatModal = () => {
   const router = useRouter();
 
   const dispatch = useAppDispatch();
+  const role = useAppSelector((state) => state.userReducer.role);
   const currentUser = useAppSelector((state) => state.userReducer.user);
   const modalStatus = useAppSelector(
     (state) => state.contractReducer.modalStatus
@@ -191,17 +192,15 @@ const ChatModal = () => {
               onClick={toggleChatModal}
             />
           </div>
-          {status == 0 && (
-            <Milestones onChangeStatus={changeStatus} myContract={myContract} />
-          )}
+          {status == 0 && <Milestones onChangeStatus={changeStatus} />}
           {status == 1 &&
-            (currentUser.role == 'user' ? (
-              <SetMilestonesWithUser
+            (role == 'client' ? (
+              <SetMilestonesWithClient
                 onChangeContract={changeStatus}
                 myContract={myContract}
               />
             ) : (
-              <SetMilestonesWithClient
+              <SetMilestonesWithUser
                 onChangeContract={changeStatus}
                 myContract={myContract}
               />

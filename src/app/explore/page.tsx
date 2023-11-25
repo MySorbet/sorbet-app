@@ -4,11 +4,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import UserOverView from '@/components/explore/userOverview';
 import UserHeader from '@/components/Header/userHeader';
 
 import { getUsersAll } from '@/api/user';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { getUsers } from '@/redux/userSlice';
+import { setUsers } from '@/redux/userSlice';
 
 import UserType from '@/types/user';
 
@@ -16,24 +17,25 @@ const Explore = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userReducer.user);
-  const [users, setUsers] = useState([]);
+  const users = useAppSelector((state) => state.userReducer.users);
 
   useEffect(() => {
+    const getAll = async () => {
+      const res = await getUsersAll();
+      const result = (res.data as UserType[]).filter(
+        (old) => old.id != user.id
+      );
+      dispatch(setUsers(result));
+    };
     getAll();
-  }, []);
-
-  const getAll = async () => {
-    const res = await getUsersAll();
-    setUsers(res.data);
-    dispatch(getUsers(res.data));
-  };
+  }, [user]);
 
   return (
     <>
-      <div className='flex min-h-screen w-full items-start justify-start bg-[#F2F2F2]'>
+      <div className='flex min-h-screen w-full items-start justify-center bg-[#F2F2F2]'>
         <UserHeader />
-        <div className='container m-auto grid h-full w-full grid-cols-4 gap-4'>
-          {users &&
+        <div className=' grid h-full w-[80%] grid-cols-4 gap-4 pt-[150px] max-lg:grid-cols-3 max-md:grid-cols-2  max-sm:grid-cols-1'>
+          {/* {users &&
             users.map((user: UserType) => (
               <div
                 key={user.id}
@@ -65,6 +67,10 @@ const Explore = () => {
                   <div>{user?.firstName + ' ' + user?.lastName}</div>
                 </div>
               </div>
+            ))} */}
+          {users &&
+            users.map((user: UserType) => (
+              <UserOverView key={user?.id} user={user} />
             ))}
         </div>
       </div>

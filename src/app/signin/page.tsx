@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 
 import './signin.css';
 
@@ -17,16 +17,28 @@ const Signin = () => {
   const dispatch = useAppDispatch();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { modal: nearModal, accountId } = useWalletSelector();
   const [loginData, setLoginData] = useState({
     email: '',
   });
 
+  const createQueryString = useCallback(
+    (name?: string, value?: string) => {
+      const params = new URLSearchParams(searchParams);
+      if (name && value) params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   useEffect(() => {
     const onSuccess = async (user: any) => {
       localStorage.setItem(LOCAL_KEY, JSON.stringify(user));
       dispatch(updateUserData(user));
-      router.push('/profile');
+      router.push('/profile?' + createQueryString());
     };
     const check = async () => {
       if (accountId) {
@@ -51,11 +63,19 @@ const Signin = () => {
     });
   };
 
+  const changeCheckClient = (e: any) => {
+    router.push(
+      '/signin' +
+        '?' +
+        createQueryString('role', e.target.checked ? 'client' : 'freelancer')
+    );
+  };
+
   const loginUser = async () => {
     const res = await signInAsync(loginData);
     if (res.data.user) {
       localStorage.setItem(LOCAL_KEY, JSON.stringify(res.data.user));
-      router?.push(`/profile`);
+      router?.push(`/profile?` + createQueryString());
       dispatch(updateUserData(res.data.user));
     }
   };
@@ -94,6 +114,10 @@ const Signin = () => {
             >
               Connect Wallet
             </button>
+          </div>
+          <div className='flex w-full items-center justify-start gap-3'>
+            <input type='checkbox' id='checkbox' onChange={changeCheckClient} />
+            <label htmlFor='checkbox'>As signin with Client </label>
           </div>
           <div className='inline-block w-full text-base'>
             Already have an account?

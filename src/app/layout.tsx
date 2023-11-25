@@ -1,5 +1,4 @@
 'use client';
-// import { Metadata } from 'next';
 import { Provider } from 'react-redux';
 
 import '@/styles/colors.css';
@@ -12,6 +11,7 @@ import Container from '@/app/container';
 import { store } from '@/redux/store';
 
 import Head from './head';
+import { ToastContainer } from 'react-toastify';
 
 export default function RootLayout({
   children,
@@ -23,9 +23,22 @@ export default function RootLayout({
       <Head />
       <body>
         <Provider store={store}>
+          <ToastContainer
+            position='top-right'
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme='light'
+          />
           <WalletSelectorContextProvider>
             <Container>{children}</Container>
           </WalletSelectorContextProvider>
+          <ToastContainer />
         </Provider>
       </body>
     </html>

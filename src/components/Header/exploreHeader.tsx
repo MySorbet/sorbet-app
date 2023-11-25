@@ -11,6 +11,7 @@ interface Props {
 }
 
 const ExploreHeader = ({ popModal }: Props) => {
+  const role = useAppSelector((state) => state.userReducer.role);
   const router = useRouter();
   const user = useAppSelector((state) => state.userReducer.user);
   const [selected, setSelected] = useState('/signin');
@@ -64,14 +65,14 @@ const ExploreHeader = ({ popModal }: Props) => {
             Explore
           </div>
         </div>
-        {user.role == 'user' ? (
-          <img src='/avatar.svg' alt='avatar' width={40} height={40} />
-        ) : (
+        {role == 'client' ? (
           <div className='flex opacity-100' onClick={popModal}>
             <button className='flex rounded-lg bg-[#6230EC] px-4 py-[10px] text-sm font-semibold leading-5 text-[#F2F2F4]'>
               Hire
             </button>
           </div>
+        ) : (
+          <img src='/avatar.svg' alt='avatar' width={40} height={40} />
         )}
       </div>
     </div>

@@ -1,16 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
 
 import { CONTRACT } from '@/constant/constant';
-import { useAppSelector } from '@/redux/hook';
 import { neartoyocto, yoctotonear } from '@/utils/display';
 import { callMethod, viewMethod } from '@/utils/wallet';
 
 import { defaultMileStone, MileStoneType } from '@/types';
-
 interface props {
   onChangeContract: any;
   myContract: any;
@@ -52,6 +53,10 @@ const SetMilestonesWithUser = ({ myContract, onChangeContract }: props) => {
   };
 
   const addSchedule = async () => {
+    if (mileStone.amount <= 0 || mileStone.name == '') {
+      toast.warning('Input Corret Value', { autoClose: 10000 });
+      return;
+    }
     if (accountId) {
       const res = await callMethod({
         selector: selector,
@@ -122,6 +127,8 @@ const SetMilestonesWithUser = ({ myContract, onChangeContract }: props) => {
                   className='w-full rounded-lg border-[#D7D7D7] px-4 py-2.5 text-base font-normal leading-6'
                   placeholder='0.0'
                   name='amount'
+                  type='number'
+                  min='0'
                   value={mileStone.amount}
                   onChange={(e) => onChange(e)}
                 />

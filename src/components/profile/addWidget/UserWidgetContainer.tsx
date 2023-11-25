@@ -6,28 +6,76 @@ import InstagramAccountWidget from '@/components/widgets/instagram/profile';
 import SoundCloudWidget from '@/components/widgets/soundcloud/soundcloud';
 import SpotifyWidget from '@/components/widgets/spotify/spotify';
 import YoutubeVideoWidget from '@/components/widgets/youtube/video';
+import GithubWidgetOverview from '@/components/widgets/github/githubOverview';
+import DribbleDesignWidgetOverview from '@/components/widgets/dribbble/dribbbleOverview';
+import InstagramAccountWidgetOverview from '@/components/widgets/instagram/profileOverview';
+import SoundCloudWidgetOverview from '@/components/widgets/soundcloud/soundcloudOverview';
+import YoutubeVideoWidgetOverview from '@/components/widgets/youtube/videoOverview';
+import SpotifyWidgetOverview from '@/components/widgets/spotify/spotifyOverview';
 
 interface Props {
   // id: string,
   link: string;
   type: string;
+  size: string;
 }
 
-const UserWidgetContainer = ({ link, type }: Props) => {
+const UserWidgetContainer = ({ link, type, size }: Props) => {
   const [widgetType, setWidgetType] = useState<any>(null);
   useEffect(() => {
     if (type === 'github') {
-      setWidgetType(<GithubWidget link={link} />);
+      // if(size == 'small') {
+      //   setWidgetType(<GithubWidgetOverview link={link} />);
+      // } else {
+      //   setWidgetType(<GithubWidget link={link}/>);
+      // }
+      setWidgetType(
+        size ? (
+          <GithubWidgetOverview link={link} />
+        ) : (
+          <GithubWidget link={link} />
+        )
+      );
     } else if (type === 'dribbble') {
-      setWidgetType(<DribbleDesignWidget link={link} />);
+      setWidgetType(
+        size ? (
+          <DribbleDesignWidgetOverview link={link} />
+        ) : (
+          <DribbleDesignWidget link={link} />
+        )
+      );
     } else if (type === 'spotify') {
-      setWidgetType(<SpotifyWidget link={link} />);
+      setWidgetType(
+        size ? (
+          <SpotifyWidgetOverview link={link} />
+        ) : (
+          <SpotifyWidget link={link} />
+        )
+      );
     } else if (type === 'youtube') {
-      setWidgetType(<YoutubeVideoWidget link={link} />);
+      setWidgetType(
+        size ? (
+          <YoutubeVideoWidgetOverview link={link} />
+        ) : (
+          <YoutubeVideoWidget link={link} />
+        )
+      );
     } else if (type === 'soundCloud') {
-      setWidgetType(<SoundCloudWidget link={link} />);
+      setWidgetType(
+        size ? (
+          <SoundCloudWidgetOverview link={link} />
+        ) : (
+          <SoundCloudWidget link={link} />
+        )
+      );
     } else if (type === 'instgram') {
-      setWidgetType(<InstagramAccountWidget link={link} />);
+      setWidgetType(
+        size ? (
+          <InstagramAccountWidgetOverview link='link' />
+        ) : (
+          <InstagramAccountWidget link={link} />
+        )
+      );
     }
   }, [type, link]);
 

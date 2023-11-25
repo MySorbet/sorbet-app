@@ -5,11 +5,13 @@ import UserType from '@/types/user';
 type userState = {
   user: UserType;
   users: UserType[];
+  role: string;
 };
 
 const initialState: userState = {
   user: {} as UserType,
-  users: [] as UserType[],
+  users: [],
+  role: 'freelancer',
 };
 
 export const user = createSlice({
@@ -21,11 +23,14 @@ export const user = createSlice({
     updateUserData: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
-    getUsers: (state, action: PayloadAction<UserType[]>) => {
+    setUsers: (state, action: PayloadAction<UserType[]>) => {
       state.users = action.payload;
+    },
+    setRole: (state, action: PayloadAction<string>) => {
+      state.role = action.payload;
     },
   },
 });
 
-export const { updateUserData, getUsers, reset } = user.actions;
+export const { updateUserData, setUsers, setRole, reset } = user.actions;
 export default user.reducer;
