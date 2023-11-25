@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import './header.css';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import { LOCAL_KEY } from '@/constant/constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
@@ -12,19 +12,17 @@ import { reset } from '@/redux/userSlice';
 
 const UserHeader = ({ popModal }: any) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname= usePathname();
+
   const { modal: nearModal, selector } = useWalletSelector();
   const dispatch = useAppDispatch();
   const userData = useAppSelector((state) => state.userReducer.user);
-  const [selected, setSelected] = useState('profile');
   const [showLogout, setShowLogout] = useState(false);
-
-  useEffect(() => {
-    setSelected(window.location.href.slice(22));
-  }, [router]);
 
   const logout = async () => {
     dispatch(reset());
-    if (userData.email) {
+    if (userData?.email) {
       localStorage.removeItem(LOCAL_KEY);
       router.push('/signin');
     } else {
@@ -59,10 +57,7 @@ const UserHeader = ({ popModal }: any) => {
         </div>
         <div className='flex items-center gap-12 font-semibold max-sm:gap-4'>
           <div
-            className={`hover:text-primary-default flex cursor-pointer flex-col items-start gap-1 ${
-              selected == 'profile' &&
-              'border-b-2 border-[#6230Ec] text-[#6230EC]'
-            }`}
+            className={`hover:text-primary-default flex cursor-pointer flex-col items-start gap-1`}
             key={1}
             onClick={() => {
               router.push('/profile');
@@ -71,9 +66,7 @@ const UserHeader = ({ popModal }: any) => {
             Profile
           </div>
           <div
-            className={`hover:text-primary-default flex cursor-pointer flex-col items-start gap-1 ${
-              selected == 'gigs' && 'border-b-2 border-[#6230Ec] text-[#6230EC]'
-            }`}
+            className={`hover:text-primary-default flex cursor-pointer flex-col items-start gap-1`}
             key={2}
             onClick={() => {
               router.push('/gigs');
@@ -82,10 +75,7 @@ const UserHeader = ({ popModal }: any) => {
             Gigs
           </div>
           <div
-            className={`hover:text-primary-default flex cursor-pointer flex-col items-start gap-1 ${
-              selected == 'explore' &&
-              'border-b-2 border-[#6230Ec] text-[#6230EC]'
-            }`}
+            className={`hover:text-primary-default flex cursor-pointer flex-col items-start gap-1`}
             key={3}
             onClick={() => {
               router.push('/explore');

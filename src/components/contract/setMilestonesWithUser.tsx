@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import { CONTRACT } from '@/constant/constant';
 import { neartoyocto, yoctotonear } from '@/utils/display';

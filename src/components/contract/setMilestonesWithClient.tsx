@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import { CONTRACT } from '@/constant/constant';
 import { yoctotonear } from '@/utils/display';
@@ -58,7 +58,6 @@ const SetMilestonesWithClient = ({ myContract, onChangeContract }: props) => {
           schedule_id: `${id}`,
         },
       });
-      console.log('startSchedulebyFreelancer', res);
     }
   };
 

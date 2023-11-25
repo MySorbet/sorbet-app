@@ -28,7 +28,6 @@ const Gigs = () => {
   const modalStatus = useAppSelector(
     (state) => state.contractReducer.modalStatus
   );
-
   const socket = useAppSelector((state) => state.contractReducer.socket);
   const [enableSending, setEnalbeSending] = useState(true);
 
@@ -40,7 +39,7 @@ const Gigs = () => {
       }
     };
     getMyContract();
-  }, [currentUser]);
+  }, [currentUser, role]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {

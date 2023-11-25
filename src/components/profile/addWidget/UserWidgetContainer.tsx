@@ -17,7 +17,7 @@ interface Props {
   // id: string,
   link: string;
   type: string;
-  size: string;
+  size?: string;
 }
 
 const UserWidgetContainer = ({ link, type, size }: Props) => {

@@ -1,17 +1,17 @@
 'use client';
 import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 
 import '@/styles/colors.css';
 import '@/styles/globals.css';
 import '@near-wallet-selector/modal-ui/styles.css';
 
-import { WalletSelectorContextProvider } from '@/components/commons/near-wallet/WalletSelectorContext';
+import { WalletSelectorContextProvider } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import Container from '@/app/container';
 import { store } from '@/redux/store';
 
 import Head from './head';
-import { ToastContainer } from 'react-toastify';
 
 export default function RootLayout({
   children,

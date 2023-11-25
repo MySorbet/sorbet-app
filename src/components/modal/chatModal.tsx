@@ -10,8 +10,6 @@ import SetMilestonesWithUser from '@/components/contract/setMilestonesWithUser';
 import { setModalStatus } from '@/redux/contractSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 
-import { ContractType } from '@/types';
-
 const ChatModal = () => {
   const router = useRouter();
 

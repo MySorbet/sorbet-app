@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/WalletSelectorContext';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import { CONTRACT } from '@/constant/constant';
 import { useAppSelector } from '@/redux/hook';
@@ -30,20 +30,25 @@ const Milestones = ({ onChangeStatus }: props) => {
 
   useEffect(() => {
     if (mywallet && otherwallet && myContract) {
-      const getProject = async () => {
-        const res = await viewMethod({
-          selector: selector,
-          contractId: CONTRACT,
-          method: 'get_project',
-          args: { project_id: myContract?.projectId },
-        });
-        if (res) {
-          onChangeStatus(1);
-        } else {
-          onChangeStatus(0);
-        }
-      };
-      getProject();
+      try {
+        const getProject = async () => {
+          const res = await viewMethod({
+            selector: selector,
+            contractId: CONTRACT,
+            method: 'get_project',
+            args: { project_id: myContract?.projectId },
+          });
+          if (res) {
+            console.log(res, 'ddd');
+            onChangeStatus(1);
+          } else {
+            onChangeStatus(0);
+          }
+        };
+        getProject();
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, [mywallet, otherwallet, myContract]);
 

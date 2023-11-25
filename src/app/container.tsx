@@ -19,14 +19,13 @@ const Container: React.FC<Props> = ({ children }) => {
   const socket = useAppSelector((state) => state.contractReducer.socket);
   const user = useAppSelector((state) => state.userReducer.user);
   const router = useRouter();
-  const params = useSearchParams();
+  const searchParams = useSearchParams();
   const role = useAppSelector((state) => state.userReducer.role);
 
   useEffect(() => {
     const loadUser = async () => {
       const value = localStorage.getItem(LOCAL_KEY);
-      const role = params.get(ROLE_KEY) === 'client' ? 'client' : 'freelancer';
-      localStorage.setItem(ROLE_KEY, role);
+      const role = localStorage.getItem(ROLE_KEY) ?? 'freelancer';
 
       if (value) {
         const res = await getUserFromUserId(JSON.parse(value).id);
@@ -49,7 +48,7 @@ const Container: React.FC<Props> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (socket && user.id) {
+    if (socket && user?.id) {
       socket.on('milestoneChanged', async (data: any) => {
         if ((user?.id, role)) {
           const res = await getMyContactsAsync(user?.id, role);
@@ -57,7 +56,7 @@ const Container: React.FC<Props> = ({ children }) => {
         }
       });
 
-      socket.emit('newUser', user.id);
+      socket.emit('newUser', user?.id);
     }
   }, [socket, user, role]);
 
