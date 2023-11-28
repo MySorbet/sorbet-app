@@ -1,9 +1,11 @@
+import { utils } from "near-api-js";
+
 export const neartoyocto = (near: number) => {
-  const _tmp = `${near}000000000000000000000000`;
+  const _tmp = utils.format.parseNearAmount(near.toString());
   return _tmp;
 };
 
 export const yoctotonear = (yocto: string) => {
-  const _near = (parseInt(yocto) * 10) / 1e25;
+  const _near = utils.format.formatNearAmount(yocto);
   return _near;
 };

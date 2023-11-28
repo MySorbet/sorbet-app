@@ -88,7 +88,7 @@ const Gigs = () => {
     <>
       <div className='relative z-10'>
         <div
-          className={`h-screen w-full items-center justify-center bg-[#F2F2F2] ${
+          className={`h-screen w-full items-center justify-center bg-[#FAFAFA] ${
             modalStatus && 'bg-[#F2F2F2E5] opacity-40'
           }`}
         >

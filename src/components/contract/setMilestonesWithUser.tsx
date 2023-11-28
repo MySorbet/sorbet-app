@@ -57,6 +57,7 @@ const SetMilestonesWithUser = ({ myContract, onChangeContract }: props) => {
       toast.warning('Input Corret Value', { autoClose: 10000 });
       return;
     }
+
     if (accountId) {
       const res = await callMethod({
         selector: selector,

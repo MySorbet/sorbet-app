@@ -32,7 +32,7 @@ const Explore = () => {
 
   return (
     <>
-      <div className='flex min-h-screen w-full items-start justify-center bg-[#F2F2F2]'>
+      <div className='flex min-h-screen w-full items-start justify-center bg-[#FAFAFA]'>
         <UserHeader />
         <div className=' grid h-full w-[80%] grid-cols-4 gap-4 pt-[150px] max-lg:grid-cols-3 max-md:grid-cols-2  max-sm:grid-cols-1'>
           {/* {users &&

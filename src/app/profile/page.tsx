@@ -40,7 +40,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className='relative z-10'>
+      <div className='relative bg-[#FAFAFA] z-10'>
         <div
           className={`flex h-full w-full items-start justify-center ${
             editModal && 'fixed bg-[#F7F7F7] opacity-20'
@@ -78,7 +78,7 @@ const Profile = () => {
               </button>
             </div>
           </div>
-          <div className='content grid min-h-screen grid-cols-3 items-start gap-x-10 gap-y-6 bg-[#D7D7D7] px-10 pt-[128px] max-md:grid-cols-2 max-sm:grid-cols-1'>
+          <div className='content grid min-h-screen grid-cols-3 items-start gap-x-10 gap-y-6 bg-[#FAFAFA] px-10 pt-[128px] max-md:grid-cols-2 max-sm:grid-cols-1'>
             {widgetData?.map((widget: any) => {
               return (
                 <UserWidgetContainer
