@@ -22,21 +22,21 @@ const Container: React.FC<Props> = ({ children }) => {
   const searchParams = useSearchParams();
   const role = useAppSelector((state) => state.userReducer.role);
 
+  const localUser = localStorage.getItem(LOCAL_KEY);
+  const localRole = localStorage.getItem(ROLE_KEY) ?? 'freelancer';
+
   useEffect(() => {
     const loadUser = async () => {
-      const value = localStorage.getItem(LOCAL_KEY);
-      const role = localStorage.getItem(ROLE_KEY) ?? 'freelancer';
-
-      if (value) {
-        const res = await getUserFromUserId(JSON.parse(value).id);
+      if (localUser && localRole) {
+        const res = await getUserFromUserId(JSON.parse(localUser).id);
         dispatch(updateUserData(res.data));
-        dispatch(setRole(role));
+        dispatch(setRole(localRole));
       } else {
         router.push('/signin');
       }
     };
     loadUser();
-  }, []);
+  }, [localUser, localRole]);
 
   useEffect(() => {
     const sk = io(API_URL);

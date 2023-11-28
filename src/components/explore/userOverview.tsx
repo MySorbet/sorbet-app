@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 
-import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer';
+import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer1';
 
 interface Props {
   user: any;

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext1';
 
 import { CONTRACT } from '@/constant/constant';
 import { useAppSelector } from '@/redux/hook';

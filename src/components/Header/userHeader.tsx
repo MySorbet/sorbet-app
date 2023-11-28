@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import './header.css';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext1';
 
 import { LOCAL_KEY } from '@/constant/constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
@@ -13,7 +13,7 @@ import { reset } from '@/redux/userSlice';
 const UserHeader = ({ popModal }: any) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname= usePathname();
+  const pathname = usePathname();
 
   const { modal: nearModal, selector } = useWalletSelector();
   const dispatch = useAppDispatch();
