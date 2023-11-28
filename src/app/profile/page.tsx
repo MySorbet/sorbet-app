@@ -7,7 +7,7 @@ import './profile.css';
 import UserHeader from '@/components/Header/userHeader';
 import ProfileEditModal from '@/components/modal/profileEditModal';
 import AddWidget from '@/components/profile/addWidget/addWidget';
-import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer1';
+import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer';
 
 import { getWidgetsFromUserId } from '@/api/user';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';

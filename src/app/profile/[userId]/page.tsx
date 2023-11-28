@@ -7,7 +7,7 @@ import '../profile.css';
 
 import ExploreHeader from '@/components/Header/exploreHeader';
 import SendMessage from '@/components/modal/sendMessage';
-import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer1';
+import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer';
 
 import { useAppSelector } from '@/redux/hook';
 import { API_URL } from '@/utils';

@@ -6,7 +6,7 @@ import '@/styles/colors.css';
 import '@/styles/globals.css';
 import '@near-wallet-selector/modal-ui/styles.css';
 
-import { WalletSelectorContextProvider } from '@/components/commons/near-wallet/walletSelectorContext1';
+import { WalletSelectorContextProvider } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import Container from '@/app/container';
 import { store } from '@/redux/store';

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import './header.css';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext1';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import { LOCAL_KEY } from '@/constant/constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';

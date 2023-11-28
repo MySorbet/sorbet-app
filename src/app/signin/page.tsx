@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import './signin.css';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext1';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 import { signInAsync, signInWithWallet, signUpWithWallet } from '@/api/auth';
 import { LOCAL_KEY, ROLE_KEY } from '@/constant/constant';
