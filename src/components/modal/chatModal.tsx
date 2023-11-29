@@ -75,40 +75,72 @@ const ChatModal = () => {
           </div>
           <div className='relative flex h-full w-full flex-col gap-6 rounded-lg bg-[#F2F2F2] py-3 pl-3 pr-4'>
             <div className='self-strech flex items-start gap-2.5'>
-              <img src='/avatar.svg' alt='avatar' width={32} height={32} />
-              <div className='flex flex-col items-start gap-2 pt-1'>
-                <div className='flex items-center gap-2 leading-3'>
-                  <div className='text-xs font-semibold'>First Name</div>
+              {myContract?.client?.profileImage ? (
+                <img
+                  src={myContract?.client?.profileImage}
+                  alt='avatar'
+                  className='h-8 w-8 rounded-full border-primary-default border-2'
+                />
+              ) : (
+                <img
+                  src='/avatar.svg'
+                  alt='avatar'
+                  className='h-8 w-8 rounded-full'
+                />
+              )}
+              <div className='flex flex-col items-start gap-2 pt-1 text-left'>
+                <div className='flex h-6 h-6 items-center gap-2 leading-3'>
+                  <div className='text-xs font-semibold'>
+                    {myContract?.client?.firstName +
+                      ' ' +
+                      myContract?.client?.lastName}
+                  </div>
                   <div className='text-xs font-normal text-[#666]'>9:55AM</div>
                 </div>
-                <div className='items-start gap-2.5 rounded-lg bg-[#D7D7D7] px-3 py-2 leading-6'>
+                <div className='items-start gap-2.5 rounded-2xl bg-[#D7D7D7] px-3 py-2 leading-6'>
                   Hello!
                 </div>
-                <div className='items-start gap-2.5 rounded-lg bg-[#D7D7D7] px-3 py-2 leading-6'>
-                  Hello!
+                <div className='items-start gap-2.5 rounded-2xl bg-[#D7D7D7] px-3 py-2 leading-6'>
+                  I need a rebrand for my startup, new logo, typography, brand
+                  style guide, and asset library
                 </div>
-                <div className='items-start gap-2.5 rounded-lg bg-[#D7D7D7] px-3 py-2 leading-6'>
-                  Hello!
+                <div className='items-start gap-2.5 rounded-2xl bg-[#D7D7D7] px-3 py-2 leading-6'>
+                  Budget $500-1,000
+                </div>
+                <div className='items-start gap-2.5 rounded-2xl bg-[#D7D7D7] px-3 py-2 leading-6'>
+                  Starting immediately
                 </div>
               </div>
             </div>
             <div className='self-strech flex items-start gap-2.5'>
-              <img src='/avatar.svg' alt='avatar' width={32} height={32} />
-              <div className='flex flex-col items-start gap-2 pt-1'>
+              {myContract?.freelancer?.profileImage ? (
+                <img
+                  src={myContract?.freelancer?.profileImage}
+                  alt='avatar'
+                  className='h-8 w-8 rounded-full border-primary-default border-2'
+                />
+              ) : (
+                <img
+                  src='/avatar.svg'
+                  alt='avatar'
+                  className='h-8 w-8 rounded-full'
+                />
+              )}
+              <div className='flex flex-col items-start gap-2 pt-1 text-left'>
                 <div className='flex items-center gap-2 leading-3'>
-                  <div className='text-xs font-semibold'>First Name</div>
+                  <div className='text-xs font-semibold'>
+                    {myContract?.freelancer?.firstName +
+                      ' ' +
+                      myContract?.freelancer?.lastName}
+                  </div>
                   <div className='text-xs font-normal text-[#666]'>9:55AM</div>
                 </div>
-                <div className='bg-primary-default items-start gap-2.5 rounded-lg px-3 py-2 leading-6 text-white'>
+                <div className='bg-primary-default items-start gap-2.5 rounded-2xl px-3 py-2 leading-6 text-white'>
                   Hello!
                 </div>
-                <p className='bg-primary-default gap-2.5 rounded-lg px-3 py-2 leading-6 text-white'>
-                  Hello! My name is Chris Kally. I am web full stack develoepr.
-                  I want to work with you. I am looking hearing from you.
+                <p className='bg-primary-default gap-2.5 rounded-2xl px-3 py-2 leading-6 text-white'>
+                  Sure, I can help out!
                 </p>
-                <div className='bg-primary-default items-start gap-2.5 rounded-lg px-3 py-2 leading-6 text-white'>
-                  Hello!
-                </div>
               </div>
             </div>
             <div className='self-strech absolute bottom-3 w-[calc(100%-24px)] items-center justify-end gap-6 rounded-lg bg-white px-5 pb-2 pt-4'>
