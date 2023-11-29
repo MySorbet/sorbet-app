@@ -1,14 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import {
-  AccountState,
-  Network,
-  NetworkId,
-  setupWalletSelector,
-  WalletSelector,
-} from '@near-wallet-selector/core';
+import { Action, WalletSelector } from '@near-wallet-selector/core';
 import { connect, keyStores, providers, WalletConnection } from 'near-api-js';
-import { Provider } from 'near-api-js/lib/providers';
-import { QueryResponseKind } from 'near-api-js/lib/providers/provider';
 
 export const GetConfig = (environment = 'testnet') => {
   switch (environment) {
@@ -104,13 +96,8 @@ export const callMethod = async ({
   gas,
   deposit,
 }: CallMethodParams) => {
-  // Sign a transaction with the "FunctionCall" action
   const wallet = await selector?.wallet();
-  // const accounts = await wallet.signIn({ contractId: `${CONTRACT}` });
-  // const accountId = accounts[0].accountId;
-
   const { network } = selector.options;
-  const provider = new providers.JsonRpcProvider({ url: network.nodeUrl });
 
   const outcome: any = await wallet.signAndSendTransaction({
     signerId: accountId,
@@ -126,6 +113,42 @@ export const callMethod = async ({
         },
       },
     ],
+  });
+
+  return providers.getTransactionLastResult(outcome);
+};
+
+// Call a method that changes the contract's state array.
+export const callMethodBatch = async ({
+  selector,
+  accountId,
+  contractId,
+  method,
+  args = [],
+  gas,
+  deposit,
+}: CallMethodParams) => {
+  const wallet = await selector?.wallet();
+
+  const { network } = selector.options;
+
+  const arrayActions: Action[] = [];
+  for (let i = 0; i < args.length; i++) {
+    arrayActions.push({
+      type: 'FunctionCall',
+      params: {
+        methodName: method,
+        args: args[i],
+        gas,
+        deposit,
+      },
+    });
+  }
+
+  const outcome: any = await wallet.signAndSendTransaction({
+    signerId: accountId,
+    receiverId: contractId,
+    actions: arrayActions,
   });
 
   return providers.getTransactionLastResult(outcome);

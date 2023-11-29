@@ -3,16 +3,18 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 import UserHeader from '@/components/Header/userHeader';
 import ChatModal from '@/components/modal/chatModal';
-
-import { getMyContactsAsync } from '@/api/contract';
 import {
   setCurrentContractID,
   setModalStatus,
   setMyContracts,
 } from '@/redux/contractSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
+
+import { ContractType, ProjectStatus } from '@/types';
+import { getProducts } from '@/customFunctions/getProducts';
 
 const Gigs = () => {
   const router = useRouter();
@@ -31,14 +33,16 @@ const Gigs = () => {
   const socket = useAppSelector((state) => state.contractReducer.socket);
   const [enableSending, setEnalbeSending] = useState(true);
 
+  const { selector } = useWalletSelector();
+  let result: any[] = [];
   useEffect(() => {
-    const getMyContract = async () => {
-      if (currentUser?.id) {
-        const res = await getMyContactsAsync(currentUser?.id, role);
-        dispatch(setMyContracts(res.data));
-      }
-    };
-    getMyContract();
+    if (currentUser?.id) {
+      const getMyContract = async () => {
+        result = await getProducts(currentUser, role, selector);
+        dispatch(setMyContracts(result));
+      };
+      getMyContract();
+    }
   }, [currentUser, role]);
 
   const createQueryString = useCallback(
@@ -51,7 +55,7 @@ const Gigs = () => {
     [searchParams]
   );
 
-  const toggleChat = (id: string) => {
+  const toggleChat = (id: any) => {
     const contractId = searchParams.get('contractId');
     if (!contractId) {
       router.push(pathname + '?' + createQueryString('contractId', id));
@@ -84,6 +88,20 @@ const Gigs = () => {
     }
   }, [myContracts, searchParams]);
 
+  let pendingProjects: ContractType[] = [];
+  let inprogressProjects: ContractType[] = [];
+  let completedProjects: ContractType[] = [];
+  if (myContracts) {
+    pendingProjects = myContracts?.filter(
+      (contract) => contract.status == ProjectStatus.Pending
+    );
+    inprogressProjects = myContracts?.filter(
+      (contract) => contract.status == ProjectStatus.InProgress
+    );
+    completedProjects = myContracts?.filter(
+      (contract) => contract.status == ProjectStatus.Completed
+    );
+  }
   return (
     <>
       <div className='relative z-10'>
@@ -100,14 +118,14 @@ const Gigs = () => {
                   {role == 'client' ? 'Sent' : 'Offer'}
                 </div>
                 <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-200'>
-                  {myContracts?.length ?? 0}
+                  {pendingProjects.length ?? 0}
                 </div>
               </div>
-              {myContracts &&
-                myContracts?.map((contract, index) => (
+              {pendingProjects != undefined &&
+                pendingProjects.map((contract, index) => (
                   <div
                     className='flex w-full cursor-pointer flex-col gap-2 rounded-lg rounded-lg bg-[#FAFAFA] p-4 hover:opacity-40'
-                    onClick={() => toggleChat(contract.id)}
+                    onClick={() => toggleChat(contract?.id)}
                     key={index}
                   >
                     <div className='flex w-full items-center justify-start gap-2'>
@@ -158,22 +176,129 @@ const Gigs = () => {
                   </div>
                 ))}
             </div>
-
             <div className='self-strech flex h-full w-full flex-col items-start gap-4 rounded-lg bg-[white] px-4 pb-4 pt-2'>
               <div className='flex w-full items-center justify-between'>
                 <div className='text-sm font-normal'>In-progress</div>
                 <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-200'>
-                  0
+                  {inprogressProjects.length ?? 0}
                 </div>
               </div>
+              {inprogressProjects != undefined &&
+                inprogressProjects.map((contract, index) => (
+                  <div
+                    className='flex w-full cursor-pointer flex-col gap-2 rounded-lg rounded-lg bg-[#FAFAFA] p-4 hover:opacity-40'
+                    onClick={() => toggleChat(contract.id)}
+                    key={index}
+                  >
+                    <div className='flex w-full items-center justify-start gap-2'>
+                      {role == 'freelancer' ? (
+                        contract.client?.profileImage ? (
+                          <img
+                            src={contract.client?.profileImage}
+                            alt='avatar'
+                            className='h-8 w-8 rounded-full'
+                          />
+                        ) : (
+                          <img
+                            src='/avatar.svg'
+                            alt='avatar'
+                            className='h-8 w-8 rounded-full'
+                          />
+                        )
+                      ) : contract.freelancer?.profileImage ? (
+                        <img
+                          src={contract.freelancer?.profileImage}
+                          alt='avatar'
+                          className='h-8 w-8 rounded-full'
+                        />
+                      ) : (
+                        <img
+                          src='/avatar.svg'
+                          alt='avatar'
+                          className='h-8 w-8 rounded-full'
+                        />
+                      )}
+                      <p className='text-xs'>
+                        {role == 'client'
+                          ? contract?.freelancer?.firstName
+                          : contract?.client?.firstName}
+                      </p>
+                    </div>
+                    <div className='gap-0.75 flex w-full flex-col'>
+                      <div className='text-sm font-normal font-semibold'>
+                        {contract?.jobTitle}
+                      </div>
+                      <div className='text-xs font-normal'>
+                        {contract?.jobDescription}
+                      </div>
+                    </div>
+                    <div className='flex w-fit items-center justify-center rounded-full bg-[#9DFBA1] px-3 py-1.5 text-[10px] font-semibold leading-tight text-yellow-800'>
+                      InProgress
+                    </div>
+                  </div>
+                ))}
             </div>
             <div className='self-strech flex h-full w-full flex-col items-start gap-4 rounded-lg bg-[white] px-4 pb-4 pt-2'>
               <div className='flex w-full items-center justify-between'>
                 <div className='text-sm font-normal'>Completed</div>
                 <div className='flex h-6 w-6 items-center justify-center rounded-full bg-gray-200'>
-                  0
+                  {completedProjects.length ?? 0}
                 </div>
               </div>
+              {completedProjects != undefined &&
+                completedProjects.map((contract, index) => (
+                  <div
+                    className='flex w-full cursor-pointer flex-col gap-2 rounded-lg rounded-lg bg-[#FAFAFA] p-4 hover:opacity-40'
+                    onClick={() => toggleChat(contract.id)}
+                    key={index}
+                  >
+                    <div className='flex w-full items-center justify-start gap-2'>
+                      {role == 'freelancer' ? (
+                        contract.client?.profileImage ? (
+                          <img
+                            src={contract.client?.profileImage}
+                            alt='avatar'
+                            className='h-8 w-8 rounded-full'
+                          />
+                        ) : (
+                          <img
+                            src='/avatar.svg'
+                            alt='avatar'
+                            className='h-8 w-8 rounded-full'
+                          />
+                        )
+                      ) : contract.freelancer?.profileImage ? (
+                        <img
+                          src={contract.freelancer?.profileImage}
+                          alt='avatar'
+                          className='h-8 w-8 rounded-full'
+                        />
+                      ) : (
+                        <img
+                          src='/avatar.svg'
+                          alt='avatar'
+                          className='h-8 w-8 rounded-full'
+                        />
+                      )}
+                      <p className='text-xs'>
+                        {role == 'client'
+                          ? contract?.freelancer?.firstName
+                          : contract?.client?.firstName}
+                      </p>
+                    </div>
+                    <div className='gap-0.75 flex w-full flex-col'>
+                      <div className='text-sm font-normal font-semibold'>
+                        {contract?.jobTitle}
+                      </div>
+                      <div className='text-xs font-normal'>
+                        {contract?.jobDescription}
+                      </div>
+                    </div>
+                    <div className='flex w-fit items-center justify-center rounded-full bg-[#B4E8FF] px-3 py-1.5 text-[10px] font-semibold leading-tight text-yellow-800'>
+                      Completed
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
@@ -183,9 +308,7 @@ const Gigs = () => {
           }`}
         >
           <div className='flex min-h-full items-center justify-center p-4 text-center'>
-            <ChatModal
-            // myContract={myContract}
-            />
+            <ChatModal />
           </div>
         </div>
       </div>

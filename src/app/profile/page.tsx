@@ -40,7 +40,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className='relative bg-[#FAFAFA] z-10'>
+      <div className='relative z-10 bg-[#FAFAFA]'>
         <div
           className={`flex h-full w-full items-start justify-center ${
             editModal && 'fixed bg-[#F7F7F7] opacity-20'

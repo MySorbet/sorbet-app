@@ -29,7 +29,6 @@ const SetMilestonesWithClient = ({ myContract, onChangeContract }: props) => {
           },
         });
         setMilestones(res);
-        console.log(res, 'schedules');
       } catch (error) {
         console.log(error);
       }
@@ -82,6 +81,14 @@ const SetMilestonesWithClient = ({ myContract, onChangeContract }: props) => {
     }
   };
 
+  let isApproved = true;
+  for (let i = 0; i < mileStones.length; i++) {
+    if (mileStones[i][1].schedule_state != 'Approved') {
+      isApproved = false;
+      break;
+    }
+  }
+
   return (
     <>
       <div className='relative flex h-full w-full flex-col items-start overflow-y-auto rounded-lg px-4 pt-4'>
@@ -103,23 +110,25 @@ const SetMilestonesWithClient = ({ myContract, onChangeContract }: props) => {
               contract
             </div>
           </div>
-          {/* <div className='flex w-full flex-col'>
-            {mileStones &&
-              mileStones.map((mileStone, index) => (
-                <div className='flex w-full' key={index}>
-                  {mileStone[1]?.shortcode +
-                    ' ' +
-                    yoctotonear(mileStone[1].value)}
-                </div>
-              ))}
-          </div> */}
           <div className='self-strech flex flex-col py-4'>
             {mileStones &&
               mileStones.map((milestone, index) => (
                 <div key={index}>
                   <div className='flex justify-between gap-4 p-2'>
-                    <div className='flex gap-2'>
-                      <div className='h-5 w-5 rounded-full bg-[#D7D7D7]'></div>
+                    <div className='flex items-center gap-2'>
+                      {['Funded', 'Planned'].includes(
+                        milestone[1]?.schedule_state
+                      ) && (
+                        <div className='h-5 w-5 rounded-full bg-[#D7D7D7]'></div>
+                      )}
+                      {milestone[1]?.schedule_state == 'Started' && (
+                        <img src='/svg/approve.svg' width={20} height={20} />
+                      )}
+                      {milestone[1]?.schedule_state == 'Approved' && (
+                        <div className='bg-primary-default h-5 w-5 items-center justify-center rounded-full p-1'>
+                          <img src='/svg/check.svg' width={16} height={16} />
+                        </div>
+                      )}
                       <div className='text-xs font-normal leading-5 text-[#595B5A]'>
                         {milestone[1]?.shortcode}
                       </div>
@@ -165,11 +174,13 @@ const SetMilestonesWithClient = ({ myContract, onChangeContract }: props) => {
           </div>
         </div>
       </div>
-      {/* <div className='bottom-0 flex w-full py-4'>
-        <button className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'>
-          Submit Contract
-        </button>
-      </div> */}
+      {mileStones && (
+        <div className='bottom-0 flex w-full py-4'>
+          <button className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#6230FC] px-4 py-[10px] text-sm font-semibold leading-5 text-white'>
+            {isApproved ? 'Complete Approved' : 'In progress'}
+          </button>
+        </div>
+      )}
     </>
   );
 };

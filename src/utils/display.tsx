@@ -1,4 +1,4 @@
-import { utils } from "near-api-js";
+import { utils } from 'near-api-js';
 
 export const neartoyocto = (near: number) => {
   const _tmp = utils.format.parseNearAmount(near.toString());

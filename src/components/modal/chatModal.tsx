@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import CompleteContract from '@/components/contract/completeContract';
 import Milestones from '@/components/contract/milestones';
@@ -10,12 +10,13 @@ import SetMilestonesWithUser from '@/components/contract/setMilestonesWithUser';
 import { setModalStatus } from '@/redux/contractSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 
+import { ProjectStatus } from '@/types';
+
 const ChatModal = () => {
   const router = useRouter();
 
   const dispatch = useAppDispatch();
   const role = useAppSelector((state) => state.userReducer.role);
-  const currentUser = useAppSelector((state) => state.userReducer.user);
   const modalStatus = useAppSelector(
     (state) => state.contractReducer.modalStatus
   );
@@ -56,9 +57,21 @@ const ChatModal = () => {
             <div className='text-xl font-semibold leading-tight'>
               Branding redesign
             </div>
-            <div className='flex w-fit items-center justify-center rounded-full bg-yellow-400 px-3 py-1.5 text-[10px] font-semibold leading-tight text-yellow-800'>
-              Pending
-            </div>
+            {myContract?.status == ProjectStatus.Pending && (
+              <div className='flex w-fit items-center justify-center rounded-full bg-yellow-400 px-3 py-1.5 text-[10px] font-semibold leading-tight text-yellow-800'>
+                Pending
+              </div>
+            )}
+            {myContract?.status == ProjectStatus.InProgress && (
+              <div className='flex w-fit items-center justify-center rounded-full bg-[#9DFBA1] px-3 py-1.5 text-[10px] font-semibold leading-tight text-yellow-800'>
+                InProgress
+              </div>
+            )}
+            {myContract?.status == ProjectStatus.Completed && (
+              <div className='flex w-fit items-center justify-center rounded-full bg-[#B4E8FF] px-3 py-1.5 text-[10px] font-semibold leading-tight text-yellow-800'>
+                Completed
+              </div>
+            )}
           </div>
           <div className='relative flex h-full w-full flex-col gap-6 rounded-lg bg-[#F2F2F2] py-3 pl-3 pr-4'>
             <div className='self-strech flex items-start gap-2.5'>

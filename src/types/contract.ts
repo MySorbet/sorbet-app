@@ -1,16 +1,22 @@
 import UserType from '@/types/user';
 
+export enum ProjectStatus {
+  Pending,
+  InProgress,
+  Completed,
+}
 export interface ContractType {
-  id: string;
-  jobTitle: string;
-  jobDescription: string;
-  startTime: string;
-  budget: string;
-  freelancerId: string;
-  clientId: string;
+  id?: string;
+  jobTitle?: string;
+  jobDescription?: string;
+  startTime?: string;
+  budget?: string;
+  freelancerId?: string;
+  clientId?: string;
   client?: UserType;
   freelancer?: UserType;
   projectId?: string;
+  status?: ProjectStatus;
 }
 
 export interface MileStoneType {
@@ -26,6 +32,7 @@ export const defaultContract: ContractType = {
   budget: '$500-$1000',
   freelancerId: '',
   clientId: '',
+  status: ProjectStatus.Pending,
 };
 
 export const defaultMileStone: MileStoneType = {

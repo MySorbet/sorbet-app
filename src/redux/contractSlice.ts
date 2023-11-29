@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { act } from 'react-dom/test-utils';
 
 import { ContractType } from '@/types';
 
@@ -22,7 +21,7 @@ export const contract = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    setMyContracts: (state, action: PayloadAction<ContractType[]>) => {
+    setMyContracts: (state, action: PayloadAction<any[]>) => {
       state.contracts = action.payload;
     },
     setModalStatus: (state, action: PayloadAction<boolean>) => {
