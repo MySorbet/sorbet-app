@@ -152,8 +152,8 @@ const ChatModal = () => {
                 <div className='flex items-center gap-3'>
                   <div className='flex items-center gap-2'>
                     <img
-                      src='/svg/chat/pluscircle.svg'
-                      alt='pluscircle'
+                      src='/svg/chat/plusCircle.svg'
+                      alt='plusCircle'
                       className='cursor-pointer'
                       width={20}
                       height={20}
@@ -214,8 +214,8 @@ const ChatModal = () => {
                 </div>
                 <div className='bg-dark flex cursor-pointer items-start gap-[10px] rounded-xl p-2 opacity-20'>
                   <img
-                    src='/svg/Arrow.svg'
-                    alt='Arrow'
+                    src='/svg/arrow.svg'
+                    alt='arrow'
                     width={16}
                     height={16}
                   />
