@@ -39,7 +39,6 @@ const Milestones = ({ onChangeStatus }: props) => {
             args: { project_id: myContract?.projectId },
           });
           if (res) {
-            console.log(res, 'ddd');
             onChangeStatus(1);
           } else {
             onChangeStatus(0);

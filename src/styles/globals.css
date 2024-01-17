@@ -33,3 +33,148 @@
   left: 56px;
   animation: lds-ellipsis3 0.6s infinite;
 }
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;700;800;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonBlack.otf") format("opentype");
+  font-weight: 900;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonBold.otf") format("opentype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonExtraBold.otf") format("opentype");
+  font-weight: 800;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonExtraLight.otf") format("opentype");
+  font-weight: 200;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonLight.otf") format("opentype");
+  font-weight: 300;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonMedium.otf") format("opentype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonSemiBold.otf") format("opentype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: Campton;
+  src: url("/fonts/CamptonSemiThin.otf") format("opentype");
+  font-weight: 100;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  /* -webkit-text-fill-color: #fff !important; */
+}
+
+.loading {
+  width: 475px;
+  height: 17px;
+  border-radius: 20px;
+  background: linear-gradient(#ff41a9 0 0) 0/0% no-repeat #ffeef7;
+  animation: loading 3s infinite steps(100);
+}
+@keyframes loading {
+  100% {
+    background-size: 110%;
+  }
+}
+
+/* For Webkit-based browsers (Chrome, Safari and Opera) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  width: 3px;
+}
+
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Campton", sans-serif !important;
+  overflow-x: hidden;
+}
+
+[data-nextjs-scroll-focus-boundary] {
+  width: 100%;
+}
+
+/*
+Scroll Bar Customize
+*/
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #6E6E6E80; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #6E6E6EA0;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 1 0 0;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}

@@ -25,3 +25,7 @@
   position: fixed;
   justify-content: flex-end;
 }
+
+.profileBanner {
+  background-image: url(https://storage.googleapis.com/sorbet_profile/banner65967ccea5b2ae53bc4ccfa61705131804225.png);
+}

@@ -7,6 +7,8 @@ export default interface UserType {
   bio: string;
   title: string;
   profileImage: string;
+  profileBannerImage: string;
+  tags: string[];
   tempLocation: string;
   role: string;
   nearWallet: string;

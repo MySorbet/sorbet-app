@@ -32,9 +32,28 @@ const Explore = () => {
 
   return (
     <>
-      <div className='flex min-h-screen w-full items-start justify-center bg-[#FAFAFA]'>
-        <UserHeader />
-        <div className=' grid h-full w-[80%] grid-cols-4 gap-4 pt-[150px] max-lg:grid-cols-3 max-md:grid-cols-2  max-sm:grid-cols-1'>
+      <div className='flex flex-col min-h-screen w-full items-center justify-start bg-[#F9FAFB] gap-[45px]'>
+        {/* <UserHeader /> */}
+        <div className='flex w-full justify-between px-8 py-4'>
+          <div className='flex gap-6'>
+            <img src='/svg/logo.svg' alt='logo' width={44} height={44} />
+          </div>
+          <div className='flex items-center justify-end gap-4'>
+            <img
+              src='/images/menu.svg'
+              alt='menu'
+              className=' cursor-pointer p-[10px]'
+            />
+          </div>
+        </div>
+        <div className='flex flex-col w-[1280px] items-start gap-6'>
+          <div className='flex flex-row items-center gap-4 self-stretch'>
+            <div className='flex '>
+
+            </div>
+          </div>
+        </div>
+        <div className=' grid h-full w-[80%] grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2  max-sm:grid-cols-1'>
           {users &&
             users.map((user: UserType) => (
               <UserOverView key={user?.id} user={user} />
