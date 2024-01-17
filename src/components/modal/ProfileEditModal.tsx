@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 
 import  Autocomplete  from '@/components/profile/editProfile/autocomplete';
 import Location from '@/components/profile/editProfile/location';
-import Skills from '@/components/profile/editProfile/skills';
 
 import { uploadProfileImageAsync } from '@/api/images';
 import { deleteProfileImageAsync } from '@/api/user';
-import {totalSkills} from '@/constant/skills';
+import { TOTAL_SKILLS } from '@/constant/skills';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import { API_URL } from '@/utils';
+
 import UserType from '@/types/user';
 
 interface Props {
@@ -334,7 +334,6 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
             userData={userData}
             setUserData={setUserData}
             onInputChange={onChange}
-            name='tempLocation'
             defaultValue={userData?.tempLocation}
           />
         </div>
@@ -356,42 +355,13 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
         </div>
         <div className='item w-full'>
         <Autocomplete
-                options={totalSkills}
+                options={TOTAL_SKILLS}
                 placeholder="Skill (ex: Developer)"
                 onSelect={addSkillToTags}
                 userEdit={userData}
                 setUserEdit={setUserData}
               />
         </div>
-        {/* <Skills /> */}
-        {/* <div className='item w-full'>
-          <label className='text-sm font-medium text-[#344054]'>
-            Add your skills
-          </label>
-          <div className='relative flex w-full'>
-            <img
-              src='/images/search-lg.svg'
-              className='absolute left-[14px] top-[10px]'
-              alt='search'
-              width={20}
-              height={20}
-            />
-            <input
-              className='w-full rounded-lg pl-[42px] text-base font-normal text-[#667085]'
-              name='tags'
-            />
-          </div> */}
-          {/* <TagsInput
-            value={skillList}
-            onChange={setSkillList}
-            name='tags'
-            placeHolder='tags'
-            className='w-full rounded-lg text-base font-normal text-[#667085]'
-          /> */}
-          {/* <label className='text-sm font-normal text-[#475467]'>
-            Max 5 skills
-          </label>
-        </div> */}
         <div className='item w-full'>
           <button
             className='bg-primary-default h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'

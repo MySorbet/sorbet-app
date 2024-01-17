@@ -1,12 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { Dispatch, SetStateAction,useEffect, useRef, useState } from 'react';
+
+import UserType from '@/types/user';
 
 type AutocompleteProps = {
   options: string[];
   placeholder?: string;
   onSelect: (value: string) => void;
-  userEdit: any;
-  setUserEdit: any;
+  userEdit: UserType;
+  setUserEdit: Dispatch<SetStateAction<UserType>>;
 };
 
 const Autocomplete: React.FC<AutocompleteProps> = ({

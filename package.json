@@ -65,7 +65,8 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
     "socket.io-client": "^4.7.2",
-    "tailwind-merge": "^1.14.0"
+    "tailwind-merge": "^1.14.0",
+    "vercel": "^33.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",

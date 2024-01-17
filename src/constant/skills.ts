@@ -1,4 +1,4 @@
-export const totalSkills: string[] = [
+export const TOTAL_SKILLS: string[] = [
   'Graphic Design',
   'Illustration',
   'Animation',
