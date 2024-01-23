@@ -41,7 +41,7 @@ const Signin = () => {
       localStorage.setItem(ROLE_KEY, role);
       localStorage.setItem(LOCAL_KEY, JSON.stringify(user));
       dispatch(updateUserData(user));
-      router.push('/profile?' + createQueryString());
+      router.push('/auth/profile?' + createQueryString());
     };
     const check = async () => {
       if (accountId) {

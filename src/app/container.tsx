@@ -1,8 +1,9 @@
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
 import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
+import Sidebar from '@/components/sidebar';
 
 import { getUserFromUserId } from '@/api/user';
 import { LOCAL_KEY, ROLE_KEY } from '@/constant/constant';
@@ -11,6 +12,7 @@ import { setMyContracts, setSocket } from '@/redux/contractSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setRole, updateUserData } from '@/redux/userSlice';
 import { API_URL } from '@/utils';
+
 import { ContractType } from '@/types';
 
 interface Props {
@@ -24,6 +26,9 @@ const Container: React.FC<Props> = ({ children }) => {
   const user = useAppSelector((state) => state.userReducer.user);
   const router = useRouter();
   const role = useAppSelector((state) => state.userReducer.role);
+
+  // const [openSideBar, setOpenSideBar] = useState(false);
+
 
   const localUser = localStorage.getItem(LOCAL_KEY);
   const localRole = localStorage.getItem(ROLE_KEY) ?? 'freelancer';
@@ -57,7 +62,11 @@ const Container: React.FC<Props> = ({ children }) => {
     }
   }, [socket, user, role]);
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+    </>
+  );
 };
 
 export default Container;

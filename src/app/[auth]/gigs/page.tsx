@@ -110,7 +110,7 @@ const Gigs = () => {
             modalStatus && 'bg-[#F2F2F2E5] opacity-40'
           }`}
         >
-          <UserHeader />
+          {/* <UserHeader /> */}
           <div className='container m-auto flex grid h-1/2 h-[calc(100vh-68px)] columns-2 grid-cols-3 items-start justify-center gap-6 p-2.5 pl-6 pr-10 pt-[127px] max-md:grid-cols-2 max-sm:grid-cols-1'>
             <div className='self-strech flex h-full w-full flex-col items-start gap-4 rounded-lg bg-[white] px-4 pb-4 pt-2'>
               <div className='flex w-full items-center justify-between'>

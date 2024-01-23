@@ -27,3 +27,10 @@ export const getUsersAll = async () => {
   const res = await runApi('GET', `${API_URL}/user/getAll`);
   return res;
 };
+
+export const getUsersBySearch = async (skills: string[], location: string) => {
+  const reqBody = { skills, location };
+  console.log(reqBody, 'reqbody');
+  const res = await runApi('POST', `${API_URL}/user/searchUsers`, reqBody);
+  return res;
+};

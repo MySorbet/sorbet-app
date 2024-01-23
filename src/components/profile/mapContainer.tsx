@@ -28,7 +28,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ locationName }) => {
   }, [locationName]);
 
   const mapStyles = {
-    height: '30vh',
+    height: '200px',
     width: '100%',
   };
 
@@ -40,7 +40,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ locationName }) => {
   const imageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=10&size=800x400&key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY}`;
   return (
     <div
-      className='h-[300px] w-full rounded-[32px]'
+      className='h-[200px] w-full rounded-[32px]'
       style={{
         backgroundImage: `url(${imageUrl})`,
         backgroundSize: 'cover',

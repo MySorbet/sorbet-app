@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import  Autocomplete  from '@/components/profile/editProfile/autocomplete';
+import Autocomplete from '@/components/profile/editProfile/autocomplete';
 import Location from '@/components/profile/editProfile/location';
 
 import { uploadProfileImageAsync } from '@/api/images';
@@ -32,7 +32,7 @@ const initUser = {
   tempLocation: '',
   tags: [''],
   role: '',
-  nearWallet: ''
+  nearWallet: '',
 };
 
 const ProfileEditModal = ({ editModal, popModal }: Props) => {
@@ -52,7 +52,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   useEffect(() => {
     setUserData(userInfo);
     setImage(userInfo.profileImage);
-    if(userInfo.profileBannerImage) {
+    if (userInfo.profileBannerImage) {
       setBannerImage('uploaded');
     }
   }, [userInfo]);
@@ -87,7 +87,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
     if (bannerFile) {
       const formData = new FormData();
       formData.append('file', bannerFile);
-      formData.append('userId', 'banner'+ userData.id + Date.now().toString());
+      formData.append('userId', 'banner' + userData.id + Date.now().toString());
       formData.append(
         'bucketName',
         process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_profile'
@@ -126,9 +126,9 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   };
 
   const bannerImageChange = (e: any) => {
-    if(e.target.files[0]?.size > 5*1024*1024) {
+    if (e.target.files[0]?.size > 5 * 1024 * 1024) {
       return;
-    };
+    }
 
     setBannerFile(
       e.target.files && e.target.files.length > 0
@@ -138,13 +138,13 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
     const i = e.target.files[0];
     setBannerImage(i.name);
     let size: string;
-     if(i.size / 1024 >= 1024) {
-      size = Math.round(i.size/(1024*1024)) + ' MB';
-     } else if (i.size/1024 >= 1 ) {
-      size = Math.round(i.size/1024) + ' KB';
-     } else {
+    if (i.size / 1024 >= 1024) {
+      size = Math.round(i.size / (1024 * 1024)) + ' MB';
+    } else if (i.size / 1024 >= 1) {
+      size = Math.round(i.size / 1024) + ' KB';
+    } else {
       size = Math.round(i.size) + ' B';
-     }
+    }
     setBannerImageSize(size);
   };
 
@@ -152,7 +152,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
     setUserData(userInfo);
     if (userInfo.profileBannerImage) {
       setBannerImage('uploaded');
-    };
+    }
     setImage(userInfo.profileImage);
     popModal();
   };
@@ -168,7 +168,6 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   };
 
   const addSkillToTags = (selectedSkill: string) => {
-
     if (!userData.tags.includes(selectedSkill) && userData.tags.length < 5) {
       setUserData({ ...userData, tags: [...userData.tags, selectedSkill] });
     }
@@ -235,24 +234,24 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
           <div className='text-sm font-medium'>Add cover image</div>
           <div className='flex w-full flex-col items-start gap-4 rounded-2xl bg-[#F9FAFB] p-4'>
             <div className='flex w-full flex-col items-center gap-3 rounded-xl border-[1px] border-[#EAECF0] bg-white px-6 py-4'>
-            <label
-            htmlFor='profileBannerImage'
-            className='flex cursor-pointer items-center justify-center'
-            >
-              <img
-                src='/images/profile/upload-cloud.svg'
-                alt='upload-cloud'
-                className='h-10 w-10 cursor-pointer rounded-lg border-[1px] border-[#EAECF0] p-[10px]'
-              />
-              <input
-                id='profileBannerImage'
-                name='profileBannerImage'
-                onChange={(e) => bannerImageChange(e)}
-                type='file'
-                className='hidden'
-                accept='image/*'
-              />
-            </label>
+              <label
+                htmlFor='profileBannerImage'
+                className='flex cursor-pointer items-center justify-center'
+              >
+                <img
+                  src='/images/profile/upload-cloud.svg'
+                  alt='upload-cloud'
+                  className='h-10 w-10 cursor-pointer rounded-lg border-[1px] border-[#EAECF0] p-[10px]'
+                />
+                <input
+                  id='profileBannerImage'
+                  name='profileBannerImage'
+                  onChange={(e) => bannerImageChange(e)}
+                  type='file'
+                  className='hidden'
+                  accept='image/*'
+                />
+              </label>
               <div className='flex flex-col items-center gap-1'>
                 <div className='flex items-center justify-center gap-[6px] text-xs font-normal'>
                   <span className='font-semibold text-[#6941C6]'>
@@ -279,7 +278,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
                       {bannerImage}
                     </div>
                     <div className='font-normal text-[#475467]'>
-                      {bannerImageSize+' – 100% uploaded'}
+                      {bannerImageSize + ' – 100% uploaded'}
                     </div>
                   </div>
                 </div>
@@ -293,7 +292,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
               First name
             </label>
             <input
-              className='w-full rounded-lg text-base font-normal text-[#667085] border-[#D0D5DD]'
+              className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085]'
               placeholder='Jon'
               name='firstName'
               defaultValue={userData?.firstName}
@@ -306,7 +305,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
             </label>
 
             <input
-              className='w-full rounded-lg text-base font-normal text-[#667085] border-[#D0D5DD]'
+              className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085]'
               placeholder='Smith'
               name='lastName'
               defaultValue={userData?.lastName}
@@ -319,7 +318,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
             What’s your profession?
           </label>
           <input
-            className='w-full rounded-lg text-base font-normal text-[#667085] border-[#D0D5DD]'
+            className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085]'
             placeholder='Product Designer'
             name='title'
             defaultValue={userData?.title}
@@ -342,7 +341,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
             Create a short Bio
           </label>
           <textarea
-            className='w-full rounded-lg text-base font-normal text-[#667085] border-[#D0D5DD]'
+            className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085]'
             placeholder='Describe yourself and your skills'
             name='bio'
             rows={4}
@@ -354,13 +353,13 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
           </label>
         </div>
         <div className='item w-full'>
-        <Autocomplete
-                options={TOTAL_SKILLS}
-                placeholder="Skill (ex: Developer)"
-                onSelect={addSkillToTags}
-                userEdit={userData}
-                setUserEdit={setUserData}
-              />
+          <Autocomplete
+            options={TOTAL_SKILLS}
+            placeholder='Skill (ex: Developer)'
+            onSelect={addSkillToTags}
+            userEdit={userData}
+            setUserEdit={setUserData}
+          />
         </div>
         <div className='item w-full'>
           <button

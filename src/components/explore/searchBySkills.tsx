@@ -1,22 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { Dispatch, SetStateAction,useEffect, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import UserType from '@/types/user';
 
-type AutocompleteProps = {
+type Props = {
   options: string[];
   placeholder?: string;
   onSelect: (value: string) => void;
-  userEdit: UserType;
-  setUserEdit: Dispatch<SetStateAction<UserType>>;
+  searchSkills: string[];
+  setSearchSkills: Dispatch<SetStateAction<string[]>>;
 };
 
-const Autocomplete: React.FC<AutocompleteProps> = ({
+const SearchBySkills: React.FC<Props> = ({
   options,
   placeholder,
   onSelect,
-  userEdit,
-  setUserEdit,
+  searchSkills,
+  setSearchSkills,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -45,35 +51,31 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
     onSelect(option);
   };
 
-  const removeSkillFromTags = (selectedSkill: string) => {
-    setUserEdit({
-      ...userEdit,
-      tags: userEdit.tags.filter((skill: string) => skill !== selectedSkill),
-    });
-  };
-
   const handleOutsideClick = (event: MouseEvent) => {
     if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
       setShowDropdown(false);
     }
   };
 
+  const removeSkillFromTags = (selectedSkill: string) => {
+    setSearchSkills(
+      searchSkills.filter((skill: string) => skill !== selectedSkill)
+    );
+  };
+
   useEffect(() => {
-    document.addEventListener("click", handleOutsideClick);
+    document.addEventListener('click', handleOutsideClick);
     return () => {
-      document.removeEventListener("click", handleOutsideClick);
+      document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
 
   return (
-    <div className='w-full flex flex-col gap-2 items-start'>
-      <label className='text-sm font-medium text-[#344054]'>
-        Add your skills
-      </label>
-      <div className='w-full flex flex-wrap justify-start gap-2 rounded-lg border border-[#D0D5DD] px-[14px] py-[10px]'>
+    <div className='relative w-full flex-col items-start gap-2'>
+      <div className='flex w-full flex-wrap justify-start gap-2 rounded-lg border bg-white border-[#D0D5DD] px-[14px] py-[10px]'>
         <img src='/images/search-lg.svg' alt='search' width={20} height={20} />
-        {userEdit.tags &&
-          userEdit?.tags?.slice(0, 5).map((skill: string, i: number) => {
+        {searchSkills &&
+          searchSkills?.slice(0, 5).map((skill: string, i: number) => {
             return (
               <div
                 key={i}
@@ -100,7 +102,7 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
             );
           })}
         <input
-          className='w-[200px] border-none p-0 text-base font-normal text-[#667085] border border-[#D0D5DD]'
+          className='w-[200px] border border-none border-[#D0D5DD] p-0 text-base font-normal text-[#667085]'
           ref={inputRef}
           type='text'
           value={inputValue}
@@ -108,15 +110,14 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
           placeholder={placeholder}
         />
       </div>
-      <label className='text-sm font-normal text-[#475467]'>Max 5 skills</label>
       {showDropdown && (
-        <div className='mt-[-5px] max-h-24 w-full overflow-y-scroll rounded-md border border-gray-200 bg-white shadow-lg'>
+        <div className='absolute mt-[-5px] max-h-24 w-full overflow-y-scroll rounded-md border border-gray-200 bg-white shadow-lg'>
           <ul className='justify-start'>
             {filteredOptions.map((option, index) => (
               <li
                 key={index}
                 onClick={() => handleOptionClick(option)}
-                className='cursor-pointer p-2 hover:bg-gray-100 items-start justify-start'
+                className='cursor-pointer items-start justify-start p-2 hover:bg-gray-100'
               >
                 {option}
               </li>
@@ -128,4 +129,4 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   );
 };
 
-export default Autocomplete;
+export default SearchBySkills;
