@@ -45,9 +45,6 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   const [bannerImage, setBannerImage] = useState(userInfo?.profileBannerImage);
   const [bannerImageSize, setBannerImageSize] = useState('');
   const [bannerFile, setBannerFile] = useState(null);
-  const [currentSKills, setCurrentSkills] = useState(userInfo.tags);
-
-  console.log(userInfo, 'userInfo');
 
   useEffect(() => {
     setUserData(userInfo);
@@ -66,6 +63,9 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
 
   const updateProfile = async (e: any) => {
     let userToPost = userData;
+    let profileImgRes = '';
+    let profileBannerImgRes = '';
+
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
@@ -74,14 +74,8 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
         'bucketName',
         process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_profile'
       );
-      const imgResponse = await uploadProfileImageAsync(formData);
-
-      userToPost = {
-        ...userData,
-        profileImage: imgResponse.data.fileUrl
-          ? imgResponse.data.fileUrl
-          : userData.profileImage,
-      };
+      const res = await uploadProfileImageAsync(formData);
+      profileImgRes = res.data.fileUrl;
     }
 
     if (bannerFile) {
@@ -92,16 +86,18 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
         'bucketName',
         process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_profile'
       );
-      const bannerImgResponse = await uploadProfileImageAsync(formData);
-      userToPost = {
-        ...userData,
-        profileBannerImage: bannerImgResponse.data.fileUrl
-          ? bannerImgResponse.data.fileUrl
-          : userData.profileBannerImage,
-      };
+      const res = await uploadProfileImageAsync(formData);
+      profileBannerImgRes = res.data.fileUrl;
     }
-    // console.log(userToPost, 'userToPost');
-    // return;
+    userToPost = {
+      ...userData,
+      profileBannerImage: profileBannerImgRes
+        ? profileBannerImgRes
+        : userData.profileBannerImage,
+        profileImage: profileImgRes
+        ? profileImgRes
+        : userData.profileImage    
+      };
 
     const apiUrl = `${API_URL}/user/${userData.id}`;
     try {
@@ -171,7 +167,6 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
     if (!userData.tags.includes(selectedSkill) && userData.tags.length < 5) {
       setUserData({ ...userData, tags: [...userData.tags, selectedSkill] });
     }
-    console.log(userData.tags);
   };
 
   return (

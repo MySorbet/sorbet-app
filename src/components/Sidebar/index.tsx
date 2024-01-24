@@ -1,7 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction } from 'react';
 
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
+
+import { LOCAL_KEY } from '@/constant/constant';
+import { reset } from '@/redux/contractSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 
@@ -15,6 +18,25 @@ interface props {
 const Sidebar = ({ openSideBar, userInfo }: props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { modal: nearModal, selector } = useWalletSelector();
+
+  const logout = async () => {
+    dispatch(reset());
+    if (userInfo?.email) {
+      localStorage.removeItem(LOCAL_KEY);
+      router.push('/signin');
+    } else {
+      const wallet = await selector.wallet();
+      wallet
+        .signOut()
+        .then(() => {
+          router.push('/signin');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  };
 
   return (
     <div
@@ -62,7 +84,7 @@ const Sidebar = ({ openSideBar, userInfo }: props) => {
                 alt='logout'
                 width={20}
                 height={20}
-                onClick={() => console.log('ss')}
+                onClick={() => logout()}
               />
             </div>
             <div className='flex flex-col items-start text-2xl font-bold'>
