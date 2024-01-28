@@ -57,13 +57,11 @@ const Sidebar = ({ openSideBar, userInfo }: props) => {
           <div className='flex w-full flex-col gap-10'>
             <div className='flex w-full flex-row items-center justify-between'>
               <div className='flex flex-row items-center justify-between gap-2'>
-                {userInfo.profileImage ? (
+                {userInfo?.profileImage ? (
                   <img
-                    src={userInfo.profileImage}
+                    src={userInfo?.profileImage}
                     alt='logo'
-                    width={40}
-                    height={40}
-                    className='rounded-full'
+                    className='rounded-full w-10 h-10'
                   />
                 ) : (
                   <img
@@ -75,7 +73,7 @@ const Sidebar = ({ openSideBar, userInfo }: props) => {
                   />
                 )}
                 <div className='text-base font-bold '>
-                  {userInfo.firstName + ' ' + userInfo.lastName}
+                  {userInfo?.firstName + ' ' + userInfo?.lastName}
                 </div>
               </div>
               <img

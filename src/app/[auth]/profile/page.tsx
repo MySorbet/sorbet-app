@@ -85,17 +85,15 @@ const Profile = () => {
                   }}
                 >
                   <div className='flex items-center justify-start gap-4'>
-                    {userInfo.profileImage ? (
+                    {userInfo?.profileImage ? (
                       <img
-                        src={userInfo.profileImage}
+                        src={userInfo?.profileImage}
                         alt='avatar'
-                        width={56}
-                        height={56}
-                        className='border-primary-default rounded-full border-2'
+                        className='border-primary-default w-14 h-14 rounded-full border-2'
                       />
                     ) : (
                       <img
-                        src='./avatar.svg'
+                        src='/avatar.svg'
                         alt='avatar'
                         width={56}
                         height={56}
@@ -103,18 +101,18 @@ const Profile = () => {
                     )}
                     <div className='flex flex-col'>
                       <div className='text-2xl font-bold'>
-                        {userInfo.firstName + ' ' + userInfo.lastName}
+                        {userInfo?.firstName + ' ' + userInfo?.lastName}
                       </div>
-                      {userInfo.tempLocation && (
+                      {userInfo?.nearWallet && (
                         <div className='flex items-center gap-1'>
-                          <img
+                          {/* <img
                             src='/svg/location.svg'
                             alt='location'
                             width={16}
                             height={16}
-                          />
+                          /> */}
                           <div className='text-sm font-medium'>
-                            {userInfo.tempLocation}
+                            {userInfo?.nearWallet}
                           </div>
                         </div>
                       )}
@@ -124,10 +122,10 @@ const Profile = () => {
                 <div className='flex w-1/2 flex-col gap-6'>
                   <div className='flex min-h-[300px] w-full flex-col gap-6 rounded-[32px] bg-[#0C111D] p-8 text-white'>
                     <div className='flex flex-col items-start gap-4'>
-                      <div className='text-2xl font-bold'>{userInfo.title}</div>
+                      <div className='text-2xl font-bold'>{userInfo?.title}</div>
                       <div className='self-strach flex w-full flex-wrap gap-[6px] text-[#E9D7FE]'>
-                        {userInfo.tags &&
-                          userInfo.tags.map((skill, index) => (
+                        {userInfo?.tags &&
+                          userInfo?.tags.map((skill, index) => (
                             <div
                               key={index}
                               className='rounded-full border-[1.5px] border-[#475467] px-[10px] text-sm font-medium'
@@ -137,7 +135,7 @@ const Profile = () => {
                           ))}
                       </div>
                     </div>
-                    <div className='text-lg font-medium'>{userInfo.bio}</div>
+                    <div className='text-lg font-medium'>{userInfo?.bio}</div>
                   </div>
                   <div className='flex w-full flex-row gap-6'>
                     <div className='flex w-1/2 flex-col items-center justify-center rounded-[32px] bg-white'>

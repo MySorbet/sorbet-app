@@ -45,34 +45,6 @@ const Explore = () => {
     getAll();
   }, [user, searchSkills, searchLocation]);
 
-  // useEffect(() => {
-  //   const filteredUsers = users.filter((user) => {
-  //     // Use double equals (==) for loose equality check
-  //     const locationMatch = user.tempLocation == searchLocation;
-
-  //     // Check if any of the user's skills match the searchSkills
-  //     const skillsMatch = searchSkills.every((skill) => user.tags.includes(skill));
-
-  //     return locationMatch && skillsMatch;
-  //   });
-  //   console.log(filteredUsers, 'filterdUsers');
-  //   // Update the Redux store with the filtered users
-  //   // dispatch(setUsers(filteredUsers));
-
-  //   // This useEffect depends on 'searchLocation', 'searchSkills', and 'users' states
-  // }, [searchLocation, searchSkills, users, dispatch]);
-
-  // useEffect(() => {
-  //   const getAlls = async () => {
-  //     const res = await getUsersBySearch(searchSkills, searchLocation);
-  //     // const result = (res.data as UserType[]).filter(
-  //     //   (old) => old.id != user.id
-  //     // );
-  //     // dispatch(setUsers(result));
-  //   };
-  //   getAlls();
-  // }, [searchLocation, searchSkills]);
-
   const addSkills = (selectedSkill: string) => {
     if (!searchSkills.includes(selectedSkill) && searchSkills.length < 5) {
       setSearchSkills([...searchSkills, selectedSkill]);

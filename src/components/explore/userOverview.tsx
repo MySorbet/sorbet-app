@@ -16,9 +16,7 @@ const UserOverView = ({ user }: Props) => {
             {user?.profileImage ? (
               <img
                 src={user?.profileImage}
-                className='rounded-full'
-                width={32}
-                height={32}
+                className='rounded-full w-8 h-8'
               />
             ) : (
               <img src='/avatar.svg' width={32} height={32} />

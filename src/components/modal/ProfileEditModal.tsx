@@ -45,6 +45,9 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   const [bannerImage, setBannerImage] = useState(userInfo?.profileBannerImage);
   const [bannerImageSize, setBannerImageSize] = useState('');
   const [bannerFile, setBannerFile] = useState(null);
+  
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+
 
   useEffect(() => {
     setUserData(userInfo);
@@ -192,7 +195,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
             <img
               src={image}
               alt='avatar'
-              className='border-primary-default w-20 rounded-full border-2'
+              className='border-primary-default w-20 h-20 rounded-full border-2'
             />
           ) : (
             <img src='/avatar.svg' alt='avatar' width={80} height={80} />
