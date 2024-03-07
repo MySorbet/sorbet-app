@@ -1,18 +1,17 @@
-/* eslint-disable @next/next/no-img-element */
-import axios from 'axios';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { useEffect, useState } from 'react';
 
+import { API_URL } from '@/utils';
 import Autocomplete from '@/components/profile/editProfile/autocomplete';
 import Location from '@/components/profile/editProfile/location';
-
-import { uploadProfileImageAsync } from '@/api/images';
-import { deleteProfileImageAsync } from '@/api/user';
 import { TOTAL_SKILLS } from '@/constant/skills';
-import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { updateUserData } from '@/redux/userSlice';
-import { API_URL } from '@/utils';
-
 import UserType from '@/types/user';
+/* eslint-disable @next/next/no-img-element */
+import axios from 'axios';
+import { config } from '@/lib/config';
+import { deleteProfileImageAsync } from '@/api/user';
+import { updateUserData } from '@/redux/userSlice';
+import { uploadProfileImageAsync } from '@/api/images';
 
 interface Props {
   editModal: boolean;
@@ -45,9 +44,11 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
   const [bannerImage, setBannerImage] = useState(userInfo?.profileBannerImage);
   const [bannerImageSize, setBannerImageSize] = useState('');
   const [bannerFile, setBannerFile] = useState(null);
-  
-  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
 
+  const [imageDimensions, setImageDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
   useEffect(() => {
     setUserData(userInfo);
@@ -68,15 +69,13 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
     let userToPost = userData;
     let profileImgRes = '';
     let profileBannerImgRes = '';
+    const bucketName = config.gcpProfileBucketName ?? 'sorbet_profile';
 
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('userId', userData.id + Date.now().toString());
-      formData.append(
-        'bucketName',
-        process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_profile'
-      );
+      formData.append('bucketName', bucketName);
       const res = await uploadProfileImageAsync(formData);
       profileImgRes = res.data.fileUrl;
     }
@@ -85,10 +84,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
       const formData = new FormData();
       formData.append('file', bannerFile);
       formData.append('userId', 'banner' + userData.id + Date.now().toString());
-      formData.append(
-        'bucketName',
-        process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME ?? 'sorbet_profile'
-      );
+      formData.append('bucketName', bucketName);
       const res = await uploadProfileImageAsync(formData);
       profileBannerImgRes = res.data.fileUrl;
     }
@@ -97,10 +93,8 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
       profileBannerImage: profileBannerImgRes
         ? profileBannerImgRes
         : userData.profileBannerImage,
-        profileImage: profileImgRes
-        ? profileImgRes
-        : userData.profileImage    
-      };
+      profileImage: profileImgRes ? profileImgRes : userData.profileImage,
+    };
 
     const apiUrl = `${API_URL}/user/${userData.id}`;
     try {
@@ -195,7 +189,7 @@ const ProfileEditModal = ({ editModal, popModal }: Props) => {
             <img
               src={image}
               alt='avatar'
-              className='border-primary-default w-20 h-20 rounded-full border-2'
+              className='border-primary-default h-20 w-20 rounded-full border-2'
             />
           ) : (
             <img src='/avatar.svg' alt='avatar' width={80} height={80} />

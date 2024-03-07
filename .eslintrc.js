@@ -13,6 +13,12 @@ module.exports = {
     'prettier',
   ],
   rules: {
+    "import/order": ["error", {
+      "alphabetize": {
+        "order": "asc",
+        "caseInsensitive": true
+      }
+    }],
     'no-unused-vars': 'off',
     'no-console': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',

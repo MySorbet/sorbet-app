@@ -1,17 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-
 import './signin.css';
 
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-
-import { signInAsync, signInWithWallet, signUpWithWallet } from '@/api/auth';
 import { LOCAL_KEY, ROLE_KEY } from '@/constant/constant';
-import { useAppDispatch } from '@/redux/hook';
+import { signInAsync, signInWithWallet, signUpWithWallet } from '@/api/auth';
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { updateUserData } from '@/redux/userSlice';
+import { useAppDispatch } from '@/redux/hook';
+import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 
 const Signin = () => {
   const dispatch = useAppDispatch();

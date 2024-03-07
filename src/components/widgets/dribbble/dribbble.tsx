@@ -1,13 +1,17 @@
 'use client';
-import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-import { AiOutlineDribbble } from 'react-icons/ai';
+
 import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill,
 } from 'react-icons/bs';
-import { FcDribbble } from 'react-icons/fc';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { AiOutlineDribbble } from 'react-icons/ai';
 import { ColorRing } from 'react-loader-spinner';
+import { FcDribbble } from 'react-icons/fc';
+import axios from 'axios';
+import { config } from '@/lib/config';
+
 // import { createDribbleAccessToken } from '@/api/widgets'
 
 interface UserData {
@@ -33,9 +37,6 @@ interface DesignData {
   description: string;
   tags: string[];
 }
-
-const DRIBBLE_CLIENT_ID = process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_ID;
-const DRIBBLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET;
 
 const DribbleDesignWidget = (props: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -84,7 +85,7 @@ const DribbleDesignWidget = (props: any) => {
 
   const getAccessToken = async (dribbbleCode: string) => {
     // const apiUrl = `http://localhost:3002/widgets/createDribbbleAccessToken`;
-    const apiUrl = `${process.env.NEXT_PUBLIC_DEV_API_URL}/widgets/createDribbbleAccessToken`;
+    const apiUrl = `${config.devApiUrl}/widgets/createDribbbleAccessToken`;
     console.log('dribbbleCode', dribbbleCode);
     return axios
       .post(apiUrl, { dribbbleCode: dribbbleCode })
@@ -151,7 +152,7 @@ const DribbleDesignWidget = (props: any) => {
   };
 
   const handleSubmit = async (shot: any) => {
-    const apiUrl = `${process.env.NEXT_PUBLIC_DEV_API_URL}/widgets/create`;
+    const apiUrl = `${config.devApiUrl}/widgets/create`;
     const data = {
       name: shot?.title,
       description: shot?.description,
@@ -241,13 +242,13 @@ const DribbleDesignWidget = (props: any) => {
               className='h-full w-full rounded-[10px] bg-cover object-cover'
             >
               <div className='absolute right-2 top-2 float-right m-2 flex'>
-                <AiOutlineDribbble style={{ color: 'black' }} size={'2rem'} />
+                <AiOutlineDribbble style={{ color: 'black' }} size='2rem' />
               </div>
 
               <div className='absolute left-2 top-2'>
                 <img
                   className='mb-1 ml-6 mt-3 rounded-full'
-                  width={'60rem'}
+                  width='60rem'
                   src={userData?.avatar_url}
                   alt={`${userData?.login}'s avatar`}
                 />
@@ -306,10 +307,10 @@ const DribbleDesignWidget = (props: any) => {
                       onClick={handleScrollLeft}
                       disabled={scrollPosition === 0}
                     >
-                      <BsFillArrowLeftCircleFill size={'1.1rem'} />
+                      <BsFillArrowLeftCircleFill size='1.1rem' />
                     </button>
                     <div className='flex justify-center'>
-                      <FcDribbble size={'1.5rem'} />
+                      <FcDribbble size='1.5rem' />
                       <p className='mt-1 text-xs font-semibold'>ribble</p>
                     </div>
                     <button
@@ -328,7 +329,7 @@ const DribbleDesignWidget = (props: any) => {
                         scrollPage == designsData?.length - 1
                       }
                     >
-                      <BsFillArrowRightCircleFill size={'1.1rem'} />
+                      <BsFillArrowRightCircleFill size='1.1rem' />
                     </button>
                   </div>
                   <div className='flex justify-center space-x-1'>

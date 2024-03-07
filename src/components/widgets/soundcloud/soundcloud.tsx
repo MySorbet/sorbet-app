@@ -1,5 +1,8 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
+
+import { config } from '@/lib/config';
 
 interface Props {
   link?: any;
@@ -62,7 +65,7 @@ const SoundCloudWidget = (props: Props) => {
   useEffect(() => {
     const fetchTrackId = async () => {
       const trackUrl = encodeURIComponent(song_url_var);
-      const apiUrl = `${process.env.NEXT_PUBLIC_DEV_API_URL}/widgets/getSoundcloudTrackId/${trackUrl}`;
+      const apiUrl = `${config.devApiUrl}/widgets/getSoundcloudTrackId/${trackUrl}`;
       fetch(apiUrl, {
         method: 'GET',
         headers: {

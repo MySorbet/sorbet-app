@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "PORT=6100 next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -26,6 +26,7 @@
     "@near-wallet-selector/math-wallet": "^8.7.2",
     "@near-wallet-selector/meteor-wallet": "^8.7.2",
     "@near-wallet-selector/modal-ui": "^8.7.2",
+    "@near-wallet-selector/my-near-wallet": "^8.9.5",
     "@near-wallet-selector/narwallets": "^8.7.2",
     "@near-wallet-selector/near-mobile-wallet": "^8.7.2",
     "@near-wallet-selector/near-snap": "^8.7.2",
@@ -43,6 +44,8 @@
     "axios": "^1.6.0",
     "clsx": "^1.2.1",
     "cookies-next": "^4.1.0",
+    "dotenv": "^16.4.5",
+    "encoding": "^0.1.13",
     "fontfaceobserver": "^2.3.0",
     "lucide-react": "^0.260.0",
     "near-api-js": "0.44.2",
@@ -66,7 +69,8 @@
     "redux-thunk": "^2.4.2",
     "socket.io-client": "^4.7.2",
     "tailwind-merge": "^1.14.0",
-    "vercel": "^33.1.0"
+    "vercel": "^33.1.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",
