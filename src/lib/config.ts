@@ -4,7 +4,7 @@ import type { Network, NetworkId } from '@/types/network';
 
 const envSchema = z.object({
   NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  NEXT_PUBLIC_DEV_API_URL: z.string().url().optional(),
+  NEXT_PUBLIC_DEV_API_URL: z.string().url().optional().default('http://localhost:6200'),
   NEXT_PUBLIC_SHOW_LOGGER: z.string().optional(),
   NEXT_PUBLIC_NETWORK_ID: z.string().optional().default('testnet'),
   NEXT_PUBLIC_CONTRACT_ID: z.string().optional().default('sorbet.testnet'),
