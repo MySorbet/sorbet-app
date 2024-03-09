@@ -1,19 +1,16 @@
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
-
+import { getUserFromUserId } from '@/api/user';
 import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
 import Sidebar from '@/components/sidebar';
-
-import { getUserFromUserId } from '@/api/user';
 import { LOCAL_KEY, ROLE_KEY } from '@/constant/constant';
 import { getProducts } from '@/customFunctions/getProducts';
 import { setMyContracts, setSocket } from '@/redux/contractSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setRole, updateUserData } from '@/redux/userSlice';
-import { API_URL } from '@/utils';
-
 import { ContractType } from '@/types';
+import { API_URL } from '@/utils';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
 
 interface Props {
   children: any;
@@ -29,7 +26,6 @@ const Container: React.FC<Props> = ({ children }) => {
 
   // const [openSideBar, setOpenSideBar] = useState(false);
 
-
   const localUser = localStorage.getItem(LOCAL_KEY);
   const localRole = localStorage.getItem(ROLE_KEY) ?? 'freelancer';
   let result: ContractType[] = [];
@@ -39,7 +35,7 @@ const Container: React.FC<Props> = ({ children }) => {
         const res = await getUserFromUserId(JSON.parse(localUser).id);
         dispatch(updateUserData(res.data));
         dispatch(setRole(localRole));
-      } else {
+      } else if (!window.location.pathname.includes('/signup')) {
         router.push('/signin');
       }
     };
@@ -47,8 +43,8 @@ const Container: React.FC<Props> = ({ children }) => {
   }, [localUser, localRole]);
 
   useEffect(() => {
-    const sk = io(API_URL);
-    dispatch(setSocket(sk));
+    // const sk = io(API_URL);
+    // dispatch(setSocket(sk));
   }, []);
 
   useEffect(() => {
@@ -62,11 +58,7 @@ const Container: React.FC<Props> = ({ children }) => {
     }
   }, [socket, user, role]);
 
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default Container;

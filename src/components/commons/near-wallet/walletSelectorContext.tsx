@@ -1,3 +1,7 @@
+import { Loading } from '@/components/Loading';
+import { CONTRACT_ID } from '@/constant/constant';
+import { config } from '@/lib/config';
+import { NetworkId } from '@/types/network';
 import { setupCoin98Wallet } from '@near-wallet-selector/coin98-wallet';
 import type { AccountState, WalletSelector } from '@near-wallet-selector/core';
 import { setupWalletSelector } from '@near-wallet-selector/core';
@@ -19,10 +23,6 @@ import React, {
   useState,
 } from 'react';
 import { distinctUntilChanged, map } from 'rxjs';
-
-import { Loading } from '@/components/Loading';
-
-import { CONTRACT_ID } from '@/constant/constant';
 
 declare global {
   interface Window {
@@ -51,7 +51,7 @@ export const WalletSelectorContextProvider: React.FC<{
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
-      network: 'testnet',
+      network: config.networkId as NetworkId,
       debug: true,
       modules: [
         setupMyNearWallet(),
