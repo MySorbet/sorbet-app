@@ -2,52 +2,78 @@ import dotenv from 'dotenv';
 import { z } from 'zod';
 import type { Network, NetworkId } from '@/types/network';
 
-const envSchema = z.object({
-  NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  NEXT_PUBLIC_DEV_API_URL: z.string().url().optional().default('http://localhost:6200'),
-  NEXT_PUBLIC_SHOW_LOGGER: z.string().optional(),
-  NEXT_PUBLIC_NETWORK_ID: z.string().optional().default('testnet'),
-  NEXT_PUBLIC_CONTRACT_ID: z.string().optional().default('sorbet.testnet'),
-  NEXT_PUBLIC_GOOGLE_MAP_KEY: z.string().optional(),
-  NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME: z.string().optional(),
-  NEXT_PUBLIC_DRIBBLE_CLIENT_ID: z.string().optional(),
-  NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET: z.string().optional(),
-  NEXT_PUBLIC_GITHUB_CLIENT_ID: z.string().optional(),
-  NEXT_PUBLIC_GITHUB_CLIENT_SECRET: z.string().optional(),
-  NEXT_PUBLIC_INSTAGRAM_APP_SECRET: z.string().optional(),
-  NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN: z.string().optional(),
-  NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID: z.string().optional(),
-  NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET: z.string().optional(),
-  NEXT_PUBLIC_SPOTIFY_CLIENT_ID: z.string().optional(),
-  NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET: z.string().optional(),
-  NEXT_PUBLIC_YOUTUBE_CLIENT_ID: z.string().optional(),
-  NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET: z.string().optional(),
+interface AppConfig {
+  nodeEnv: 'development' | 'production' | 'test';
+  devApiUrl: string;
+  showLogger: boolean;
+  networkId: string;
+  contractId: string;
+  relayerUrl: string;
+  authDomain: string;
+  googleMapKey?: string;
+  gcpProfileBucketName?: string;
+  dribbleClientId?: string;
+  dribbleClientSecret?: string;
+  githubClientId?: string;
+  githubClientSecret?: string;
+  instagramAppSecret?: string;
+  instagramClientToken?: string;
+  instagramBasicDisplayAppId?: string;
+  instagramBasicDisplayAppSecret?: string;
+  spotifyClientId?: string;
+  spotifyClientSecret?: string;
+  youtubeClientId?: string;
+  youtubeClientSecret?: string;
+}
+
+const appConfigSchema = z.object({
+  nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
+  devApiUrl: z.string().url().optional().default('http://localhost:6200'),
+  showLogger: z.preprocess((val) => (val === 'true'), z.boolean()).default(false),
+  networkId: z.string().optional().default('testnet'),
+  contractId: z.string().optional().default('sorbet.testnet'),
+  relayerUrl: z.string().url(),
+  authDomain: z.string().url(),
+  googleMapKey: z.string().optional(),
+  gcpProfileBucketName: z.string().optional(),
+  dribbleClientId: z.string().optional(),
+  dribbleClientSecret: z.string().optional(),
+  githubClientId: z.string().optional(),
+  githubClientSecret: z.string().optional(),
+  instagramAppSecret: z.string().optional(),
+  instagramClientToken: z.string().optional(),
+  instagramBasicDisplayAppId: z.string().optional(),
+  instagramBasicDisplayAppSecret: z.string().optional(),
+  spotifyClientId: z.string().optional(),
+  spotifyClientSecret: z.string().optional(),
+  youtubeClientId: z.string().optional(),
+  youtubeClientSecret: z.string().optional(),
 });
 
 dotenv.config({ path: ['.env', '.env.local'] });
-const parsedEnv = envSchema.parse(process.env);
-
-export const config = {
-  nodeEnv: parsedEnv.NEXT_PUBLIC_NODE_ENV,
-  devApiUrl: parsedEnv.NEXT_PUBLIC_DEV_API_URL,
-  showLogger: parsedEnv.NEXT_PUBLIC_SHOW_LOGGER === 'true',
-  networkId: parsedEnv.NEXT_PUBLIC_NETWORK_ID,
-  contractId: parsedEnv.NEXT_PUBLIC_CONTRACT_ID,
-  googleMapKey: parsedEnv.NEXT_PUBLIC_GOOGLE_MAP_KEY,
-  gcpProfileBucketName: parsedEnv.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
-  dribbleClientId: parsedEnv.NEXT_PUBLIC_DRIBBLE_CLIENT_ID,
-  dribbleClientSecret: parsedEnv.NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET,
-  githubClientId: parsedEnv.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-  githubClientSecret: parsedEnv.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
-  instagramAppSecret: parsedEnv.NEXT_PUBLIC_INSTAGRAM_APP_SECRET,
-  instagramClientToken: parsedEnv.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN,
-  instagramBasicDisplayAppId: parsedEnv.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
-  instagramBasicDisplayAppSecret: parsedEnv.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
-  spotifyClientId: parsedEnv.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
-  spotifyClientSecret: parsedEnv.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
-  youtubeClientId: parsedEnv.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
-  youtubeClientSecret: parsedEnv.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET
-};
+export const config: AppConfig = appConfigSchema.parse({
+  nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV,
+  devApiUrl: process.env.NEXT_PUBLIC_DEV_API_URL,
+  showLogger: process.env.NEXT_PUBLIC_SHOW_LOGGER === 'true',
+  networkId: process.env.NEXT_PUBLIC_NETWORK_ID,
+  contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
+  relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
+  gcpProfileBucketName: process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
+  dribbleClientId: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_ID,
+  dribbleClientSecret: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET,
+  githubClientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
+  githubClientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
+  instagramAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_APP_SECRET,
+  instagramClientToken: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN,
+  instagramBasicDisplayAppId: process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
+  instagramBasicDisplayAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
+  spotifyClientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
+  spotifyClientSecret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
+  youtubeClientId: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
+  youtubeClientSecret: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET,
+});
 
 export const networks: Record<NetworkId, Network> = {
   mainnet: {

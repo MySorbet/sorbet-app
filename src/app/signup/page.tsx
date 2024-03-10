@@ -79,7 +79,7 @@ const Signup = () => {
       email: data.email,
       accountId: data.username,
     });
-    if (res.data.id) {
+    if (res.data) {
       selector
         .wallet('fast-auth-wallet')
         .then((fastAuthWallet: any) => {
@@ -232,6 +232,12 @@ const Signup = () => {
       <h1 className='text-[32px] mb-4 text-center'>Check your inbox</h1>
       <p>
         You will receive an email shortly with a link to activate your account.
+      </p>
+      <p
+        className='text-primary-default cursor-pointer font-semibold mt-4'
+        onClick={() => router.push('/signin')}
+      >
+        Back to sign in
       </p>
     </div>
   );

@@ -2314,6 +2314,13 @@
     borsh "^0.7.0"
     tweetnacl "^1.0.1"
 
+"@near-js/iframe-rpc@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.npmjs.org/@near-js/iframe-rpc/-/iframe-rpc-0.0.2.tgz"
+  integrity sha512-Uhm+0se9OJyoxON3dF9GBKH0vA1iucbgn62t1GV6WDjmdVTKFs24tq9zn3vQeaDQCJUXEaAdqvQl+sm+izUSsw==
+  dependencies:
+    events "^3.3.0"
+
 "@near-js/keystores-browser@0.0.5":
   version "0.0.5"
   resolved "https://registry.npmjs.org/@near-js/keystores-browser/-/keystores-browser-0.0.5.tgz"

@@ -14,6 +14,7 @@ import { setupModal } from '@near-wallet-selector/modal-ui';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { setupNarwallets } from '@near-wallet-selector/narwallets';
 import { setupNearWallet } from '@near-wallet-selector/near-wallet';
+import { setupFastAuthWallet } from 'near-fastauth-wallet';
 import type { ReactNode } from 'react';
 import React, {
   useCallback,
@@ -62,6 +63,10 @@ export const WalletSelectorContextProvider: React.FC<{
         setupHereWallet(),
         setupCoin98Wallet(),
         setupFinerWallet(),
+        setupFastAuthWallet({
+          relayerUrl: config.relayerUrl,
+          walletUrl: config.authDomain,
+        }),
       ],
     });
     const _modal = setupModal(_selector, {

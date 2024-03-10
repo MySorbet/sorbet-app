@@ -18,6 +18,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@near-js/iframe-rpc": "^0.0.2",
     "@near-wallet-selector/coin98-wallet": "^8.7.2",
     "@near-wallet-selector/core": "^8.7.2",
     "@near-wallet-selector/finer-wallet": "^8.7.2",
