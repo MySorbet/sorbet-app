@@ -1,18 +1,15 @@
 /* eslint-disable jsx-a11y/alt-text */
+
 /* eslint-disable @next/next/no-img-element */
-
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-
-import 'react-toastify/dist/ReactToastify.css';
-
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { CONTRACT } from '@/constant/constant';
+import { defaultMileStone, MileStoneType } from '@/types';
 import { neartoyocto, yoctotonear } from '@/utils/display';
 import { callMethod, callMethodBatch, viewMethod } from '@/utils/wallet';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { defaultMileStone, MileStoneType } from '@/types';
 interface props {
   onChangeContract: any;
   myContract: any;

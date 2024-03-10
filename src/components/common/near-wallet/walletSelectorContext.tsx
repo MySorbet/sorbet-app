@@ -1,4 +1,4 @@
-import { Loading } from '@/components/Loading';
+import { Loading } from '@/components/common';
 import { CONTRACT_ID } from '@/constant/constant';
 import { config } from '@/lib/config';
 import { NetworkId } from '@/types/network';

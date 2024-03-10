@@ -1,14 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { useRouter } from 'next/navigation';
-
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { LOCAL_KEY } from '@/constant/constant';
 import { reset } from '@/redux/contractSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
-
 import UserType from '@/types/user';
+import { useRouter } from 'next/navigation';
 
 interface props {
   openSideBar: boolean;
@@ -52,7 +49,7 @@ const Sidebar = ({ openSideBar, userInfo }: props) => {
         onClick={(e) => {
           e.stopPropagation();
         }}
-      > 
+      >
         <div className='flex h-full w-full flex-col justify-between gap-10 text-[#101828]'>
           <div className='flex w-full flex-col gap-10'>
             <div className='flex w-full flex-row items-center justify-between'>

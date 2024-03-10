@@ -2,7 +2,8 @@
 
 import Head from './head';
 import Container from '@/app/container';
-import { WalletSelectorContextProvider } from '@/components/commons/near-wallet/walletSelectorContext';
+import { WalletSelectorContextProvider } from '@/components/common/near-wallet/walletSelectorContext';
+import { AuthProvider } from '@/hooks/useAuth';
 import { store } from '@/redux/store';
 import '@/styles/colors.css';
 import '@/styles/globals.css';
@@ -33,7 +34,9 @@ export default function RootLayout({
             theme='light'
           />
           <WalletSelectorContextProvider>
-            <Container>{children}</Container>
+            <AuthProvider>
+              <Container>{children}</Container>
+            </AuthProvider>
           </WalletSelectorContextProvider>
           <ToastContainer />
         </Provider>

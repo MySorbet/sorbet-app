@@ -3,11 +3,13 @@
 
 import './signup.css';
 import { signUpAsync } from '@/api/auth';
-import { useWalletSelector } from '@/components/commons';
+import { useWalletSelector } from '@/components/common';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+
+/* eslint-disable @next/next/no-img-element */
 
 /* eslint-disable @next/next/no-img-element */
 

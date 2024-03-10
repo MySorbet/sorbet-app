@@ -1,14 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
 import './header.css';
-
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { LOCAL_KEY } from '@/constant/constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset } from '@/redux/userSlice';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const UserHeader = ({ popModal }: any) => {
   const router = useRouter();

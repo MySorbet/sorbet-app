@@ -1,17 +1,12 @@
 'use client';
 
-// import { signInAsync, signInWithWallet, signUpWithWallet } from '@/api/auth';
 import './signin.css';
-import { signInAsync } from '@/api/auth';
-import { Loading } from '@/components/commons';
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-import { config } from '@/lib/config';
-// import { LOCAL_KEY, ROLE_KEY } from '@/constant/constant';
-// import { useAppDispatch } from '@/redux/hook';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Loading } from '@/components/common';
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 
 const Signin = () => {
   const {
@@ -21,10 +16,9 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const searchParams = useSearchParams();
-
-  const { modal: nearModal, accountId, selector } = useWalletSelector();
+  const { modal: nearModal } = useWalletSelector();
   const router = useRouter();
+  const { loginWithEmail } = useAuth();
 
   const onSubmit = handleSubmit(async (data) => {
     if (!data.email) {
@@ -33,27 +27,13 @@ const Signin = () => {
 
     setLoading(true);
 
-    const email = data.email;
-    const existingUser = await signInAsync({ email });
-    if (!existingUser.data) {
-      alert(
-        'User account not found, please try again or sign up for an account'
-      );
+    const loginMessage = await loginWithEmail(data.email);
+    if (loginMessage !== 'Login successful') {
+      alert(loginMessage);
       setLoading(false);
     } else {
-      selector
-        .wallet('fast-auth-wallet')
-        .then((fastAuthWallet: any) => {
-          fastAuthWallet.signIn({
-            contractId: config.contractId,
-            email: data.email,
-            accountId: data.username,
-            isRecovery: false,
-          });
-        })
-        .then(() => {
-          setLoading(false);
-        });
+      setLoading(false);
+      router?.push('/');
     }
   });
 
