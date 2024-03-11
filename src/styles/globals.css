@@ -1,180 +1,76 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-.lds-ellipsis {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: auto;
-}
-.lds-ellipsis div {
-  position: absolute;
-  top: 33px;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--fg);
-  animation-timing-function: cubic-bezier(0, 1, 1, 0);
-}
-.lds-ellipsis div:nth-child(1) {
-  left: 8px;
-  animation: lds-ellipsis1 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(2) {
-  left: 8px;
-  animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(3) {
-  left: 32px;
-  animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(4) {
-  left: 56px;
-  animation: lds-ellipsis3 0.6s infinite;
-}
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap");
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;700;800;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonBlack.otf") format("opentype");
-  font-weight: 900;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonBold.otf") format("opentype");
-  font-weight: 700;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonExtraBold.otf") format("opentype");
-  font-weight: 800;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonExtraLight.otf") format("opentype");
-  font-weight: 200;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonLight.otf") format("opentype");
-  font-weight: 300;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonMedium.otf") format("opentype");
-  font-weight: 500;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonSemiBold.otf") format("opentype");
-  font-weight: 600;
-}
-@font-face {
-  font-family: Campton;
-  src: url("/fonts/CamptonSemiThin.otf") format("opentype");
-  font-weight: 100;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  transition: background-color 5000s ease-in-out 0s;
-  /* -webkit-text-fill-color: #fff !important; */
-}
-
-.loading {
-  width: 475px;
-  height: 17px;
-  border-radius: 20px;
-  background: linear-gradient(#ff41a9 0 0) 0/0% no-repeat #ffeef7;
-  animation: loading 3s infinite steps(100);
-}
-@keyframes loading {
-  100% {
-    background-size: 110%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
-
-/* For Webkit-based browsers (Chrome, Safari and Opera) */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* For IE, Edge and Firefox */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-body::-webkit-scrollbar {
-  width: 3px;
-}
-
-body::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-}
-
-body::-webkit-scrollbar-thumb {
-  background-color: darkgrey;
-  outline: 1px solid slategrey;
-}
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: "Campton", sans-serif !important;
-  overflow-x: hidden;
-}
-
-[data-nextjs-scroll-focus-boundary] {
-  width: 100%;
-}
-
-/*
-Scroll Bar Customize
-*/
-
-::-webkit-scrollbar {
-  width: 7px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
-  border-radius: 10px;
-}
  
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #6E6E6E80; 
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #6E6E6EA0;
-}
-
-.item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  flex: 1 0 0;
-}
-
-.row {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
