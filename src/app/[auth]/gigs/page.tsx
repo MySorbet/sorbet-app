@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import UserHeader from '@/components/Header/userHeader';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
+import { UserHeader } from '@/components/header';
 import ChatModal from '@/components/modal/chatModal';
 import { getProducts } from '@/customFunctions/getProducts';
 import {
@@ -14,8 +13,6 @@ import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { ContractType, ProjectStatus } from '@/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-
-/* eslint-disable @next/next/no-img-element */
 
 const Gigs = () => {
   const router = useRouter();

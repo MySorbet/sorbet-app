@@ -7,7 +7,7 @@ import { reset } from '@/redux/userSlice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const UserHeader = ({ popModal }: any) => {
+export const UserHeader = ({ popModal }: any) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -108,5 +108,3 @@ const UserHeader = ({ popModal }: any) => {
     </div>
   );
 };
-
-export default UserHeader;

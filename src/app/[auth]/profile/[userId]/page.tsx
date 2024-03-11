@@ -1,16 +1,13 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 
 import '../profile.css';
-
-import ExploreHeader from '@/components/Header/exploreHeader';
+import { ExploreHeader } from '@/components/header';
 import SendMessage from '@/components/modal/sendMessage';
 import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer';
-
 import { useAppSelector } from '@/redux/hook';
 import { API_URL } from '@/utils';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const initUser = {
   id: '',

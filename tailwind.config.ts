@@ -1,8 +1,12 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
+import { wedgesTW } from "@lemonsqueezy/wedges";
 
 export default {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    'node_modules/@lemonsqueezy/wedges/dist/**/*.{js,ts,jsx,tsx}'
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -40,6 +44,8 @@ export default {
         shimmer: 'shimmer 1.3s linear infinite',
       },
     },
+    darkMode: "class",
+    plugins: [wedgesTW()],
   },
   plugins: [require('@tailwindcss/forms')],
 } satisfies Config;

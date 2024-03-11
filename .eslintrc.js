@@ -33,6 +33,7 @@ module.exports = {
     //#region  //*=========== Unused Import ===========
     '@typescript-eslint/no-unused-vars': 'off',
     'unused-imports/no-unused-imports': 'warn',
+    "@next/next/no-img-element": "off",
     'unused-imports/no-unused-vars': [
       'warn',
       {
