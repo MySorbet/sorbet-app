@@ -1,16 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
+import './header.css';
+import { useAppSelector } from '@/redux/hook';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import './header.css';
-
-import { useAppSelector } from '@/redux/hook';
 interface Props {
   freelancerId: string;
   popModal: any;
 }
 
-const ExploreHeader = ({ popModal }: Props) => {
+export const ExploreHeader = ({ popModal }: Props) => {
   const role = useAppSelector((state) => state.userReducer.role);
   const router = useRouter();
   const user = useAppSelector((state) => state.userReducer.user);
@@ -78,5 +77,3 @@ const ExploreHeader = ({ popModal }: Props) => {
     </div>
   );
 };
-
-export default ExploreHeader;

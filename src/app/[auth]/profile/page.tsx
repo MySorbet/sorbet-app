@@ -1,20 +1,17 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
-import { useEffect, useState } from 'react';
 
 import './profile.css';
-
-import UserHeader from '@/components/Header/userHeader';
+import { getWidgetsFromUserId } from '@/api/user';
+import { UserHeader } from '@/components/header';
 import ProfileEditModal from '@/components/modal/profileEditModal';
 import AddWidget from '@/components/profile/addWidget/addWidget';
 import UserWidgetContainer from '@/components/profile/addWidget/userWidgetContainer';
 import MapContainer from '@/components/profile/mapContainer';
 import Sidebar from '@/components/sidebar';
-
-import { getWidgetsFromUserId } from '@/api/user';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { initwidgets } from '@/redux/profileSlice';
 import { setOpenSidebar, setProfileEdit } from '@/redux/userSlice';
+import { useEffect, useState } from 'react';
 
 const Profile = () => {
   const dispatch = useAppDispatch();
@@ -122,7 +119,9 @@ const Profile = () => {
                 <div className='flex w-1/2 flex-col gap-6'>
                   <div className='flex min-h-[300px] w-full flex-col gap-6 rounded-[32px] bg-[#0C111D] p-8 text-white'>
                     <div className='flex flex-col items-start gap-4'>
-                      <div className='text-2xl font-bold'>{userInfo?.title}</div>
+                      <div className='text-2xl font-bold'>
+                        {userInfo?.title}
+                      </div>
                       <div className='self-strach flex w-full flex-wrap gap-[6px] text-[#E9D7FE]'>
                         {userInfo?.tags &&
                           userInfo?.tags.map((skill, index) => (

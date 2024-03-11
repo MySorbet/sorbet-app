@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Autocomplete from "react-google-autocomplete";
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import UserType from "@/types/user";
+import Autocomplete from 'react-google-autocomplete';
+import { config } from '@/lib/config';
 
 interface LocationProps {
   searchLocation: string;
@@ -10,30 +10,28 @@ interface LocationProps {
 }
 const SearchByLocation: React.FC<LocationProps> = ({
   searchLocation,
-  setSearchLocation
+  setSearchLocation,
 }) => {
   const [place, setPlace] = useState<any>();
 
   useEffect(() => {
     if (!place || !place.address_components) return;
-    setSearchLocation(
-      place.formatted_address,
-    );
+    setSearchLocation(place.formatted_address);
   }, [place]);
 
   return (
-    <div className="h-full w-full">
-      <div className="relative h-full w-full rounded-md outline-none justify-center items-center">
+    <div className='h-full w-full'>
+      <div className='relative h-full w-full items-center justify-center rounded-md outline-none'>
         <Autocomplete
-          apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY}
+          apiKey={config.googleMapKey}
           onPlaceSelected={(place) => setPlace(place)}
           defaultValue={searchLocation}
           className={`h-full w-full rounded-md
-          p-[10px] text-base font-normal text-[#667085] border-[#D0D5DD]`}
+          border-[#D0D5DD] p-[10px] text-base font-normal text-[#667085]`}
           options={{
-            types: ["(cities)"],
+            types: ['(cities)'],
           }}
-          placeholder="Search location"
+          placeholder='Search location'
         />
       </div>
     </div>
@@ -41,4 +39,3 @@ const SearchByLocation: React.FC<LocationProps> = ({
 };
 
 export default SearchByLocation;
-

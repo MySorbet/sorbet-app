@@ -1,12 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-
-import { useEffect, useState } from 'react';
-
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { CONTRACT } from '@/constant/constant';
 import { yoctotonear } from '@/utils/display';
 import { callMethod, viewMethod } from '@/utils/wallet';
+import { useEffect, useState } from 'react';
 
 interface props {
   onChangeContract: any;

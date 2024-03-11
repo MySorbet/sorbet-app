@@ -1,9 +1,11 @@
 'use client';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 
-const YOUTUBE_CLIENT_ID = process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID;
-const YOUTUBE_CLIENT_SECRET = process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET;
+import Link from 'next/link';
+import React from 'react';
+import { config } from '@/lib/config';
+
+const YOUTUBE_CLIENT_ID = config.youtubeClientId;
+// const YOUTUBE_CLIENT_SECRET = config.youtubeClientSecret;
 const YOUTUBE_REDIRECT_URL =
   'http://localhost:3000/youtube-oauth'; /* change redirect uri */
 

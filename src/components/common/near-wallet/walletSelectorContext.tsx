@@ -1,3 +1,7 @@
+import { Loading } from '@/components/common';
+import { CONTRACT_ID } from '@/constant/constant';
+import { config } from '@/lib/config';
+import { NetworkId } from '@/types/network';
 import { setupCoin98Wallet } from '@near-wallet-selector/coin98-wallet';
 import type { AccountState, WalletSelector } from '@near-wallet-selector/core';
 import { setupWalletSelector } from '@near-wallet-selector/core';
@@ -10,6 +14,7 @@ import { setupModal } from '@near-wallet-selector/modal-ui';
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
 import { setupNarwallets } from '@near-wallet-selector/narwallets';
 import { setupNearWallet } from '@near-wallet-selector/near-wallet';
+import { setupFastAuthWallet } from 'near-fastauth-wallet';
 import type { ReactNode } from 'react';
 import React, {
   useCallback,
@@ -19,10 +24,6 @@ import React, {
   useState,
 } from 'react';
 import { distinctUntilChanged, map } from 'rxjs';
-
-import { Loading } from '@/components/Loading';
-
-import { CONTRACT_ID } from '@/constant/constant';
 
 declare global {
   interface Window {
@@ -51,7 +52,7 @@ export const WalletSelectorContextProvider: React.FC<{
 
   const init = useCallback(async () => {
     const _selector = await setupWalletSelector({
-      network: 'testnet',
+      network: config.networkId as NetworkId,
       debug: true,
       modules: [
         setupMyNearWallet(),
@@ -62,6 +63,10 @@ export const WalletSelectorContextProvider: React.FC<{
         setupHereWallet(),
         setupCoin98Wallet(),
         setupFinerWallet(),
+        setupFastAuthWallet({
+          relayerUrl: config.relayerUrl,
+          walletUrl: config.authDomain,
+        }),
       ],
     });
     const _modal = setupModal(_selector, {

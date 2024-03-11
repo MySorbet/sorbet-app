@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
-
-import { useWalletSelector } from '@/components/commons/near-wallet/walletSelectorContext';
-
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { CONTRACT } from '@/constant/constant';
 import { useAppSelector } from '@/redux/hook';
 import { callMethod, viewMethod } from '@/utils/wallet';
+import { useEffect } from 'react';
 
 /* eslint-disable @next/next/no-img-element */
 interface props {

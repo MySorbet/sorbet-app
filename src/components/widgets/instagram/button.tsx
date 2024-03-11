@@ -1,16 +1,17 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+
 import Link from 'next/link';
+import React from 'react';
+import { config } from '@/lib/config';
 
 // Instagram Oauth
-const INSTAGRAM_APP_ID = process.env.NEXT_PUBLIC_INSTAGRAM_APP_ID;
-const INSTAGRAM_APP_SECRET = process.env.NEXT_PUBLIC_INSTAGRAM_APP_SECRET;
-const INSTAGRAM_CLIENT_TOKEN = process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN;
+// const INSTAGRAM_APP_ID = config.instagramBasicDisplayAppId;
+// const INSTAGRAM_APP_SECRET = config.instagramAppSecret;
+// const INSTAGRAM_CLIENT_TOKEN = config.instagramClientToken;
 // Basic Display
-const INSTAGRAM_BASIC_DISPLAY_APP_ID =
-  process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID;
-const INSTAGRAM_BASIC_DISPLAY_APP_SECRET =
-  process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET;
+const INSTAGRAM_BASIC_DISPLAY_APP_ID = config.instagramBasicDisplayAppId;
+// const INSTAGRAM_BASIC_DISPLAY_APP_SECRET =
+//   config.instagramBasicDisplayAppSecret;
 const INSTAGRAM_REDIRECT_URL = 'https://www-five-lac.vercel.app/';
 // const INSTAGRAM_REDIRECT_URL = 'https://www-five-lac.vercel.app/profile'
 // const INSTAGRAM_REDIRECT_URL = 'http://localhost:3000/instagram-oauth'

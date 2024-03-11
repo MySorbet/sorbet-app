@@ -1,10 +1,10 @@
 'use client';
 
-import axios from 'axios';
-
 import { FormattedResponse } from '../types';
+import axios from 'axios';
+import { config } from '@/lib/config';
 
-export const _API_URL = process.env.NEXT_PUBLIC_DEV_API_URL;
+export const _API_URL = config.devApiUrl;
 // export const API_URL = `${_API_URL}/api`;
 export const API_URL = `${_API_URL}`;
 

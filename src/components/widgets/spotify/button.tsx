@@ -1,10 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 
-const SPOTFIY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_WIDGET_CLIENT_ID;
-const SPOFIFY_CLIENT_SECRET =
-  process.env.NEXT_PUBLIC_SPOTIFY_WIDGET_CLIENT_SECRET;
+import Link from 'next/link';
+import React from 'react';
+import { config } from '@/lib/config';
+
+const SPOTFIY_CLIENT_ID = config.spotifyClientId;
+// const SPOFIFY_CLIENT_SECRET = config.spotifyClientSecret;
 const SPOTIFY_REDIRECT_URL =
   'http://localhost:3000/spotify-oauth'; /* change redirect_uri */
 

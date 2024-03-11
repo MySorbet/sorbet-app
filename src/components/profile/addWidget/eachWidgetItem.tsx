@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 
-import axios from 'axios';
-import { useState } from 'react';
-
-import { useAppDispatch } from '@/redux/hook';
 import { addWidget } from '@/redux/profileSlice';
-
+import axios from 'axios';
+import { config } from '@/lib/config';
+import { useAppDispatch } from '@/redux/hook';
+import { useState } from 'react';
 import { validateUrl } from '../urlUtils';
 
 interface Props {
@@ -42,7 +41,7 @@ const EachWidgetItem = ({ widgetName, userId }: Props) => {
       return;
     }
 
-    const apiUrl = `${process.env.NEXT_PUBLIC_DEV_API_URL}/widgets/create`;
+    const apiUrl = `${config.devApiUrl}/widgets/create`;
     try {
       setIsSubmitting(true); // Start submitting
 

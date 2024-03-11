@@ -1,10 +1,17 @@
 'use client';
 
-// import CommonLoading from "./components/common/loading";
-import Signin from './signin/page';
+import { Header } from '@/components/header';
+import { Profile } from '@/components/profile';
 
 const RedirectScreen = () => {
-  return <Signin />;
+  return (
+    <>
+      <Header />
+      <div className='container mx-auto py-4'>
+        <Profile />
+      </div>
+    </>
+  );
 };
 
 export default RedirectScreen;

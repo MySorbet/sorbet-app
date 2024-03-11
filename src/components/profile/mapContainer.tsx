@@ -1,6 +1,6 @@
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
 
+import { config } from '@/lib/config';
 import { getCoordinatesFromFormattedAddress } from '@/utils/geocode';
 
 interface MapContainerProps {
@@ -32,19 +32,16 @@ const MapContainer: React.FC<MapContainerProps> = ({ locationName }) => {
     width: '100%',
   };
 
-  const mapOptions = {
+  const mapOptions = {};
 
-  }
-
-  console.log(location, 'location');
-  const imageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=10&size=800x400&key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY}`;
+  const imageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=10&size=800x400&key=${config.googleMapKey}`;
   return (
     <div
       className='h-[200px] w-full rounded-[32px]'
       style={{
         backgroundImage: `url(${imageUrl})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
       }}
     ></div>
   );
