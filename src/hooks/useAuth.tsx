@@ -27,6 +27,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!response.data || response.data.user === undefined) {
       return 'User account not found, please try again or sign up for an account';
     } else {
+      // const walletResponse: any = await selector.wallet('fast-auth-wallet');
+      // await walletResponse.signIn({
+      //   contractId: config.contractId,
+      //   email: email,
+      //   isRecovery: false,
+      // });
       const user = response.data.user;
       setUser(user);
       dispatch(updateUserData(user));

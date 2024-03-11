@@ -1,10 +1,7 @@
 'use client';
 
-// import CommonLoading from "./components/common/loading";
-import Signin from './signin/page';
-
 const RedirectScreen = () => {
-  return <Signin />;
+  return <div>Welcome to home page!</div>;
 };
 
 export default RedirectScreen;

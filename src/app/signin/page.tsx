@@ -18,7 +18,11 @@ const Signin = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const { modal: nearModal } = useWalletSelector();
   const router = useRouter();
-  const { loginWithEmail } = useAuth();
+  const { user, loginWithEmail } = useAuth();
+
+  if (user) {
+    router.push('/');
+  }
 
   const onSubmit = handleSubmit(async (data) => {
     if (!data.email) {

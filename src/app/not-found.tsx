@@ -10,13 +10,14 @@ export default function NotFound() {
   return (
     <main>
       <section className='bg-white'>
-        <div className='layout flex min-h-screen flex-col items-center justify-center text-center text-black'>
-          <RiAlarmWarningFill
-            size={60}
-            className='drop-shadow-glow animate-flicker text-red-500'
-          />
-          <h1 className='mt-8 text-4xl md:text-6xl'>Page Not Found</h1>
-          <a href='/'>Back to home</a>
+        <div className='flex flex-col gap-4 items-center justify-center h-screen'>
+          <RiAlarmWarningFill size='50' className='text-red-500 mb-4' />
+          <div className='text-center'>
+            <h1 className='text-4xl font-bold mb-4'>Page does not exist.</h1>
+            <a href='/' className='text-blue-600 hover:underline'>
+              Back to home
+            </a>
+          </div>
         </div>
       </section>
     </main>

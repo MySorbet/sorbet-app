@@ -4,12 +4,11 @@
 import './signup.css';
 import { signUpAsync } from '@/api/auth';
 import { useWalletSelector } from '@/components/common';
+import { useAuth } from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-
-/* eslint-disable @next/next/no-img-element */
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -21,7 +20,7 @@ const Signup = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
   const { selector } = useWalletSelector();
-
+  const { user } = useAuth();
   const router = useRouter();
   const {
     register,
@@ -33,6 +32,10 @@ const Signup = () => {
   } = useForm();
 
   const formValues = watch();
+
+  if (user) {
+    router.push('/');
+  }
 
   const checkIsAccountAvailable = useCallback(
     async (desiredUsername: string) => {
