@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html>
       <Head />
-      <body>
+      <body className='bg-[#F9FAFB]'>
         <Provider store={store}>
           <ToastContainer
             position='top-right'

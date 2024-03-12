@@ -7,7 +7,7 @@ const RedirectScreen = () => {
   return (
     <>
       <Header />
-      <div className='container mx-auto py-4'>
+      <div>
         <Profile />
       </div>
     </>
