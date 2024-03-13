@@ -108,11 +108,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [generateLayout]);
 
   return (
-    <div className='pattern-diagonal-lines pattern-gray-200 pattern-bg-gray-100 pattern-size-4 pattern-opacity-100 bg-gray-200 mb-28'>
+    <div className='rounded-2xl pattern-diagonal-lines pattern-gray-200 pattern-bg-gray-100 pattern-size-4 pattern-opacity-100 bg-gray-200 mb-28 overflow-hidden transition-height duration-500 ease-in-out'>
       <ReactGridLayout
         layout={layout}
         onLayoutChange={handleLayoutChange}
-        className={className}
+        className={`${className} react-grid-layout`}
         rowHeight={rowHeight}
         margin={[20, 20]}
         cols={cols}
