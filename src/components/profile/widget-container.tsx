@@ -51,6 +51,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     });
   };
 
+  const handleWidgetRemove = (key: string) => {
+    setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
+  };
+
   const generateDOM = () => {
     return layout.map((item) => (
       <div key={item.i} data-grid={item}>
@@ -60,6 +64,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           h={item.h}
           type='Dribbble'
           handleResize={handleWidgetResize}
+          handleRemove={handleWidgetRemove}
         />
       </div>
     ));

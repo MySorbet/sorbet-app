@@ -1,4 +1,5 @@
 import { ResizeWidget } from '@/components/profile';
+import { Button } from '@/components/ui/button';
 import { getSocialIconForWidget } from '@/utils/icons';
 import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
@@ -10,12 +11,14 @@ interface WidgetProps {
   w: number;
   h: number;
   handleResize: (key: string, w: number, h: number) => void;
+  handleRemove: (key: string) => void;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
   identifier,
   type,
   handleResize,
+  handleRemove,
 }) => {
   const [showResizeWidget, setShowResizeWidget] = React.useState(false);
 
@@ -45,7 +48,17 @@ export const Widget: React.FC<WidgetProps> = ({
           className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4'
           onClick={() => setShowResizeWidget(true)}
         >
-          <ResizeWidget onResize={onWidgetResize} />
+          <div className='flex flex-row gap-2'>
+            <ResizeWidget onResize={onWidgetResize} />
+            <Button
+              variant='outline'
+              size='icon'
+              className='rounded-full p-1 bg-gray-800 text-white border-gray-800 hover:bg-gray-800 hover:text-white'
+              onClick={() => handleRemove(identifier)}
+            >
+              <Trash2 size={22} />
+            </Button>
+          </div>
         </div>
       )}
     </div>
