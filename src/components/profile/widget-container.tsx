@@ -108,7 +108,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [generateLayout]);
 
   return (
-    <>
+    <div className='pattern-diagonal-lines pattern-gray-200 pattern-bg-gray-100 pattern-size-4 pattern-opacity-100 bg-gray-200 mb-28'>
       <ReactGridLayout
         layout={layout}
         onLayoutChange={handleLayoutChange}
@@ -119,9 +119,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       >
         {generateDOM()}
       </ReactGridLayout>
+
       <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6'>
         <AddWidgets addUrl={handleWidgetAdd} />
       </div>
-    </>
+    </div>
   );
 };
