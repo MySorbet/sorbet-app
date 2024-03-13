@@ -11,6 +11,7 @@ interface WidgetProps {
   h: number;
   handleResize: (key: string, w: number, h: number) => void;
   handleRemove: (key: string) => void;
+  editMode: boolean;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -18,8 +19,9 @@ export const Widget: React.FC<WidgetProps> = ({
   type,
   handleResize,
   handleRemove,
+  editMode,
 }) => {
-  const [showResizeWidget, setShowResizeWidget] = React.useState(true);
+  const [showResizeWidget, setShowResizeWidget] = React.useState(false);
 
   const onWidgetResize = (w: number, h: number) => {
     handleResize(identifier, w, h);
@@ -30,8 +32,8 @@ export const Widget: React.FC<WidgetProps> = ({
     <div
       className='bg-white p-3 flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out'
       key={identifier}
-      onMouseEnter={() => setShowResizeWidget(true)}
-      onMouseLeave={() => setShowResizeWidget(false)}
+      onMouseEnter={() => editMode && setShowResizeWidget(true)}
+      onMouseLeave={() => editMode && setShowResizeWidget(false)}
     >
       <div className='mb-4'>
         <img

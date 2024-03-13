@@ -13,6 +13,7 @@ interface WidgetContainerProps {
   rowHeight?: number;
   onLayoutChange?: (layout: any) => void;
   cols?: number;
+  editMode: boolean;
 }
 
 interface ExtendedWidgetLayout extends WidgetLayout {
@@ -26,6 +27,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   rowHeight = 60,
   onLayoutChange = () => {},
   cols = 12,
+  editMode,
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
 
@@ -39,7 +41,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         h: 4,
         type: 'dribbble',
         url: 'https://dribbble.com/shots/23768759-Girl-s-portrait',
-        static: false,
+        static: !editMode,
         isResizable: false,
       };
     });
@@ -70,7 +72,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       h: 4,
       type: type,
       url: url,
-      static: false,
+      static: !editMode,
       isResizable: false,
     };
 
@@ -87,14 +89,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           type={item.type}
           handleResize={handleWidgetResize}
           handleRemove={handleWidgetRemove}
+          editMode={editMode}
         />
       </div>
     ));
   };
 
   const handleLayoutChange = (newLayout: ExtendedWidgetLayout[]) => {
-    console.log('layout changed', newLayout);
-    // Preserve additional properties like type and url by merging new layout with existing layout
     const updatedLayout = newLayout.map((layoutItem) => {
       const existingItem = layout.find((item) => item.i === layoutItem.i);
       return existingItem ? { ...existingItem, ...layoutItem } : layoutItem;
@@ -107,8 +108,20 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setLayout(generateLayout());
   }, [generateLayout]);
 
+  useEffect(() => {
+    setLayout((prevLayout) =>
+      prevLayout.map((item) => ({ ...item, static: !editMode }))
+    );
+  }, [editMode]);
+
   return (
-    <div className='rounded-2xl pattern-diagonal-lines pattern-gray-200 pattern-bg-gray-100 pattern-size-4 pattern-opacity-100 bg-gray-200 mb-28 overflow-hidden transition-height duration-500 ease-in-out'>
+    <div
+      className={
+        editMode
+          ? 'rounded-2xl pattern-diagonal-lines pattern-gray-200 pattern-bg-gray-100 pattern-size-4 pattern-opacity-100 bg-gray-200 mb-28 overflow-hidden transition-height duration-500 ease-in-out'
+          : ''
+      }
+    >
       <ReactGridLayout
         layout={layout}
         onLayoutChange={handleLayoutChange}
@@ -120,9 +133,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         {generateDOM()}
       </ReactGridLayout>
 
-      <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6'>
-        <AddWidgets addUrl={handleWidgetAdd} />
-      </div>
+      {editMode && (
+        <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6'>
+          <AddWidgets addUrl={handleWidgetAdd} />
+        </div>
+      )}
     </div>
   );
 };
