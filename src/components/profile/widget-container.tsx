@@ -31,6 +31,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         w: 3,
         h: 4,
         static: false,
+        isResizable: false,
       };
     });
   }, [items]);
@@ -40,7 +41,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [generateLayout]);
 
   const handleWidgetResize = (key: string, w: number, h: number) => {
-    console.log(`Key: ${key}, width: ${w}, height: ${h}`);
     setLayout((prevLayout) => {
       return prevLayout.map((item) => {
         if (item.i === key) {

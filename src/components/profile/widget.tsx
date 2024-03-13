@@ -1,5 +1,6 @@
 import { ResizeWidget } from '@/components/profile';
 import { getSocialIconForWidget } from '@/utils/icons';
+import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -24,7 +25,7 @@ export const Widget: React.FC<WidgetProps> = ({
 
   return (
     <div
-      className='bg-white p-3 flex flex-col rounded-xl w-full h-full relative cursor-pointer'
+      className='bg-white p-3 flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10'
       key={identifier}
       onMouseEnter={() => setShowResizeWidget(true)}
       onMouseLeave={() => setShowResizeWidget(false)}
@@ -38,8 +39,12 @@ export const Widget: React.FC<WidgetProps> = ({
         />
       </div>
       <div className='bg-gray-200 p-3 relative h-full rounded-xl'></div>
+
       {showResizeWidget && (
-        <div className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4'>
+        <div
+          className='absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4'
+          onClick={() => setShowResizeWidget(true)}
+        >
           <ResizeWidget onResize={onWidgetResize} />
         </div>
       )}

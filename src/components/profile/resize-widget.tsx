@@ -1,3 +1,4 @@
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { WidgetSize, WidgetDimensions } from '@/types';
 import { Square, RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import React from 'react';
@@ -8,8 +9,9 @@ interface ResizeWidgetProps {
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
   return (
-    <div className='cursor-pointer bg-[#573DF5] flex flex-row gap-2 text-white rounded-full justify-center align-center items-center py-1 px-2 max-w-[130px]'>
+    <div className='cursor-pointer bg-[#573DF5] flex flex-row text-white rounded-full justify-center align-center items-center min-w-[160px] z-20'>
       <div
+        className='h-8 w-8 flex items-center justify-center'
         onClick={() =>
           onResize(
             WidgetDimensions[WidgetSize.A].w,
@@ -20,6 +22,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
         <Square size={16} />
       </div>
       <div
+        className='h-8 w-8 flex items-center justify-center'
         onClick={() =>
           onResize(
             WidgetDimensions[WidgetSize.B].w,
@@ -30,6 +33,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
         <Square size={22} />
       </div>
       <div
+        className='h-8 w-8 flex items-center justify-center'
         onClick={() =>
           onResize(
             WidgetDimensions[WidgetSize.C].w,
@@ -40,6 +44,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
         <RectangleHorizontal size={16} />
       </div>
       <div
+        className='h-8 w-8 flex items-center justify-center'
         onClick={() =>
           onResize(
             WidgetDimensions[WidgetSize.D].w,
