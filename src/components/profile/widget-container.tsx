@@ -23,13 +23,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   const generateLayout = useCallback(() => {
     return Array.from({ length: items }, (_, i) => {
-      const y = Math.ceil(Math.random() * 4) + 1;
       return {
         i: i.toString(),
         x: i * 2,
         y: 0,
         w: 2,
-        h: 2,
+        h: 4,
       };
     });
   }, [items]);
