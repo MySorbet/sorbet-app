@@ -16,7 +16,7 @@ export function validateUrl(url: string, selectedTag: string) {
     case 'dribbble':
       regex = /^https?:\/\/dribbble\.com\/shots\/\d+-[^\/]+$/;
       break;
-    case 'soundCloud':
+    case 'soundcloud':
       regex = /^https?:\/\/(www\.)?soundcloud\.com\/[^\/]+\/[^\/]+$/;
       break;
     case 'instgram':
