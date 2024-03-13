@@ -14,6 +14,20 @@ export interface Widget {
   updatedAt: string;
 }
 
+export enum WidgetSize {
+  A,
+  B,
+  C,
+  D
+}
+
+export const WidgetDimensions: { [key in WidgetSize]: { w: number, h: number } } = {
+  [WidgetSize.A]: { w: 4, h: 4 },
+  [WidgetSize.B]: { w: 6, h: 8 },
+  [WidgetSize.C]: { w: 6, h: 4 },
+  [WidgetSize.D]: { w: 3, h: 8 },
+};
+
 export interface WidgetType {
   id: string;
   url: string;
