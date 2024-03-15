@@ -22,7 +22,7 @@ export const Widget: React.FC<WidgetProps> = ({
   handleRemove,
   editMode,
 }) => {
-  const [showResizeWidget, setShowResizeWidget] = React.useState(true);
+  const [showResizeWidget, setShowResizeWidget] = React.useState(false);
 
   const onWidgetResize = (w: number, h: number) => {
     handleResize(identifier, w, h);
