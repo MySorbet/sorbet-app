@@ -1,17 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { Dispatch, SetStateAction,useEffect, useRef, useState } from 'react';
+import type { User } from '@/types';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-import UserType from '@/types/user';
-
-type AutocompleteProps = {
+interface InputSkillsProps {
   options: string[];
   placeholder?: string;
   onSelect: (value: string) => void;
-  userEdit: UserType;
-  setUserEdit: Dispatch<SetStateAction<UserType>>;
-};
+  userEdit: User;
+  setUserEdit: Dispatch<SetStateAction<User>>;
+}
 
-const Autocomplete: React.FC<AutocompleteProps> = ({
+export const InputSkills: React.FC<InputSkillsProps> = ({
   options,
   placeholder,
   onSelect,
@@ -59,9 +64,9 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleOutsideClick);
+    document.addEventListener('click', handleOutsideClick);
     return () => {
-      document.removeEventListener("click", handleOutsideClick);
+      document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
 
@@ -127,5 +132,3 @@ const Autocomplete: React.FC<AutocompleteProps> = ({
     </div>
   );
 };
-
-export default Autocomplete;

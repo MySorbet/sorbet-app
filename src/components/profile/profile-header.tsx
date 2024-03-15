@@ -9,8 +9,8 @@ interface ProfileHeaderProps {
   fullName: string;
   bio: string;
   tags: string[];
-  onEditClick: () => void;
   editMode: boolean;
+  onEditClick: () => void;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -19,8 +19,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   fullName,
   bio,
   tags,
-  onEditClick,
   editMode,
+  onEditClick,
 }) => {
   return (
     <>

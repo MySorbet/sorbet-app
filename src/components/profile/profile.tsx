@@ -1,12 +1,21 @@
-import { ProfileHeader, Widget, WidgetContainer } from '@/components/profile';
+import {
+  ProfileHeader,
+  ProfileEditModal,
+  WidgetContainer,
+} from '@/components/profile';
 import { cn } from '@/lib/utils';
 import React, { useEffect, useState } from 'react';
 
 export const Profile: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(true);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const handleProfileEdit = () => {
-    setEditMode((prev) => !prev);
+    setShowEditModal((prev) => !prev);
+  };
+
+  const handleProfileModalVisible = (open: boolean) => {
+    setShowEditModal(open);
   };
 
   return (
@@ -20,6 +29,10 @@ export const Profile: React.FC = () => {
           tags={['Full Stack Development', 'Product Engineering', 'DevOps']}
           onEditClick={handleProfileEdit}
           editMode={editMode}
+        />
+        <ProfileEditModal
+          editModalVisible={showEditModal}
+          handleModalVisisble={handleProfileModalVisible}
         />
         <div className={cn('mt-24', editMode ? 'mb-24' : '')}>
           <WidgetContainer editMode={editMode} />
