@@ -9,7 +9,7 @@ export const InvalidAlert: React.FC<InvalidAlertProps> = ({
   handleAlertVisible,
 }) => {
   return (
-    <div className='flex flex-row gap-3 bg-white p-4 rounded-xl border border-gray-200 cursor-pointer'>
+    <div className='flex flex-row gap-3 bg-white p-4 rounded-xl border border-gray-300 cursor-pointer'>
       <div>
         <div className='p-1 border border-red-100 rounded-full border-2'>
           <div className='p-1 border border-red-300 rounded-full border-2'>
