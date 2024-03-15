@@ -1,8 +1,9 @@
 import { ResizeWidget } from '@/components/profile';
 import { Button } from '@/components/ui/button';
+import { WidgetSize } from '@/types';
 import { getSocialIconForWidget } from '@/utils/icons';
 import { Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface WidgetProps {
   identifier: string;
@@ -60,7 +61,7 @@ export const Widget: React.FC<WidgetProps> = ({
               handleRemove(identifier);
             }}
           >
-            <Trash2 size={22} />
+            <Trash2 size={20} />
           </Button>
         </div>
       </div>
