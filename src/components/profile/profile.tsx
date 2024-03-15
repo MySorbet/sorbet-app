@@ -2,7 +2,7 @@ import { ProfileHeader, Widget, WidgetContainer } from '@/components/profile';
 import React, { useEffect, useState } from 'react';
 
 export const Profile: React.FC = () => {
-  const [editMode, setEditMode] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState<boolean>(true);
 
   const handleProfileEdit = () => {
     setEditMode((prev) => !prev);

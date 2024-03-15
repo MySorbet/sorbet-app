@@ -115,13 +115,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [editMode]);
 
   return (
-    <div
-      className={
-        editMode
-          ? 'rounded-2xl pattern-diagonal-lines pattern-gray-200 pattern-bg-gray-100 pattern-size-4 pattern-opacity-100 bg-gray-200 mb-28 overflow-hidden transition-height duration-500 ease-in-out'
-          : ''
-      }
-    >
+    <div>
       <ReactGridLayout
         layout={layout}
         onLayoutChange={handleLayoutChange}
