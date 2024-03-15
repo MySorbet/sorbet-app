@@ -22,10 +22,10 @@ export enum WidgetSize {
 }
 
 export const WidgetDimensions: { [key in WidgetSize]: { w: number, h: number } } = {
-  [WidgetSize.A]: { w: 3, h: 4 },
-  [WidgetSize.B]: { w: 6, h: 8 },
-  [WidgetSize.C]: { w: 6, h: 4 },
-  [WidgetSize.D]: { w: 3, h: 8 },
+  [WidgetSize.A]: { w: 2, h: 2 },
+  [WidgetSize.B]: { w: 4, h: 4 },
+  [WidgetSize.C]: { w: 4, h: 2 },
+  [WidgetSize.D]: { w: 2, h: 4 },
 };
 
 export interface WidgetType {

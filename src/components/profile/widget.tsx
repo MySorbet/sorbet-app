@@ -46,7 +46,7 @@ export const Widget: React.FC<WidgetProps> = ({
       <div className='bg-gray-200 p-3 relative h-full rounded-xl'></div>
 
       <div
-        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-8 transition-opacity duration-300 ${
+        className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-6 transition-opacity duration-300 ${
           showResizeWidget ? 'opacity-100' : 'opacity-0'
         }`}
       >

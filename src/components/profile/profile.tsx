@@ -1,4 +1,5 @@
 import { ProfileHeader, Widget, WidgetContainer } from '@/components/profile';
+import { cn } from '@/lib/utils';
 import React, { useEffect, useState } from 'react';
 
 export const Profile: React.FC = () => {
@@ -20,7 +21,7 @@ export const Profile: React.FC = () => {
           onEditClick={handleProfileEdit}
           editMode={editMode}
         />
-        <div className='mt-24'>
+        <div className={cn('mt-24', editMode ? 'mb-24' : '')}>
           <WidgetContainer editMode={editMode} />
         </div>
       </div>

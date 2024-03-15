@@ -1,5 +1,6 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
+import { WidgetDimensions, WidgetSize } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -25,9 +26,9 @@ interface ExtendedWidgetLayout extends WidgetLayout {
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
   items = 1,
-  rowHeight = 60,
+  rowHeight = 120,
   onLayoutChange = () => {},
-  cols = 12,
+  cols = 10,
   editMode,
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
@@ -40,8 +41,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         i: i.toString(),
         x: i * 2,
         y: 0,
-        w: 3,
-        h: 4,
+        w: WidgetDimensions[WidgetSize.A].w,
+        h: WidgetDimensions[WidgetSize.A].h,
         type: 'dribbble',
         url: 'https://dribbble.com/shots/23768759-Girl-s-portrait',
         static: !editMode,
@@ -70,10 +71,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     const type = parseWidgetTypeFromUrl(url).toLowerCase();
     const widgetToAdd: ExtendedWidgetLayout = {
       i: (layout.length + 1).toString(),
-      x: (layout.length * 3) % cols,
+      x: (layout.length * 2) % cols,
       y: Infinity,
-      w: 3,
-      h: 4,
+      w: WidgetDimensions[WidgetSize.A].w,
+      h: WidgetDimensions[WidgetSize.A].h,
       type: type,
       url: url,
       static: !editMode,
@@ -142,7 +143,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         onLayoutChange={handleLayoutChange}
         className={`${className} react-grid-layout`}
         rowHeight={rowHeight}
-        margin={[20, 20]}
+        margin={[25, 25]}
         cols={cols}
         isDraggable={editMode}
         isResizable={editMode}
@@ -151,7 +152,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       </ReactGridLayout>
 
       {editMode && (
-        <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6'>
+        <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
           <AddWidgets addUrl={handleWidgetAdd} />
         </div>
       )}
