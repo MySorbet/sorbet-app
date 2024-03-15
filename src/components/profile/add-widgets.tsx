@@ -3,8 +3,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { validateUrl } from '@/utils/url';
-import { Link, CircleHelp, Upload } from 'lucide-react';
+import { Link, CircleHelp, Upload, ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface AddWidgetsProps {
@@ -51,13 +57,35 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
         </div>
       </div>
 
-      <button
-        type='submit'
-        className='cursor-pointer flex-none'
-        onClick={handleUrlSubmit}
-      >
-        <Upload size={24} />
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type='submit'
+              className='cursor-pointer flex-none'
+              onClick={handleUrlSubmit}
+            >
+              <Upload size={24} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Create Widget</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type='submit'
+              className='cursor-pointer flex-none'
+              onClick={handleUrlSubmit}
+            >
+              <ImagePlus size={24} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Upload custom image as widget</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 };
