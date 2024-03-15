@@ -32,7 +32,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
   };
 
   return (
-    <div className='flex flex-row gap-4 bg-white p-4 shadow-lg shadow-gray-200 rounded-2xl min-w-[450px] w-full'>
+    <div className='flex flex-row gap-4 bg-white p-4 shadow-lg shadow-gray-200 rounded-2xl min-w-[500px] w-full'>
       <div className='flex items-center border-2 py-2 px-3 rounded-2xl border-gray-300 flex-grow'>
         <div>
           <Link className='mr-2' size={22} />
@@ -44,6 +44,15 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
           onChange={(event) => setUrl(event.target.value)}
           value={url}
         />
+        <div>
+          <button
+            type='submit'
+            className='cursor-pointer flex-none bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'
+            onClick={handleUrlSubmit}
+          >
+            Add
+          </button>
+        </div>
         <div className='ml-2 text-gray-500 cursor-pointer'>
           <Popover>
             <PopoverTrigger asChild>
@@ -56,21 +65,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
           </Popover>
         </div>
       </div>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type='submit'
-              className='cursor-pointer flex-none'
-              onClick={handleUrlSubmit}
-            >
-              <Upload size={24} />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Create Widget</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
 
       <TooltipProvider>
         <Tooltip>
