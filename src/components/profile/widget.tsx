@@ -22,7 +22,7 @@ export const Widget: React.FC<WidgetProps> = ({
   handleRemove,
   editMode,
 }) => {
-  const [showResizeWidget, setShowResizeWidget] = React.useState(false);
+  const [showResizeWidget, setShowResizeWidget] = React.useState(true);
 
   const onWidgetResize = (w: number, h: number) => {
     handleResize(identifier, w, h);
@@ -50,18 +50,18 @@ export const Widget: React.FC<WidgetProps> = ({
           showResizeWidget ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='flex flex-row gap-2'>
+        <div className='flex flex-row gap-1'>
           <ResizeWidget onResize={onWidgetResize} />
           <Button
             variant='outline'
             size='icon'
-            className='rounded-full p-1 bg-gray-800 text-white border-gray-800 hover:bg-gray-800 hover:text-white'
+            className='rounded-full bg-gray-800 text-white border-gray-800 hover:bg-gray-800 hover:text-white'
             onClick={(e) => {
-              e.stopPropagation(); // Prevent the click from propagating to the parent div
+              e.stopPropagation();
               handleRemove(identifier);
             }}
           >
-            <Trash2 size={20} />
+            <Trash2 size={18} />
           </Button>
         </div>
       </div>

@@ -10,6 +10,7 @@ interface ResizeWidgetProps {
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(WidgetSize.A);
+  const btnClass = 'h-4 w-7 flex items-center justify-center';
 
   const onResizeClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -21,41 +22,36 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
   };
 
   return (
-    <div className='cursor-pointer bg-[#573DF5] flex flex-row text-white rounded-full justify-center align-center items-center min-w-[160px] z-20'>
+    <div className='cursor-pointer bg-[#573DF5] flex flex-row text-white rounded-full justify-center align-center items-center min-w-[140px] z-20'>
       <button
-        className='h-8 w-8 flex items-center justify-center'
+        className={btnClass}
         onClick={(e) => onResizeClick(e, WidgetSize.A)}
       >
         <Square
           size={16}
           fill={currentSize === WidgetSize.A ? '#fff' : 'transparent'}
+          strokeWidth={2.5}
         />
       </button>
-      <div
-        className='h-8 w-8 flex items-center justify-center'
-        onClick={(e) => onResizeClick(e, WidgetSize.B)}
-      >
+      <div className={btnClass} onClick={(e) => onResizeClick(e, WidgetSize.B)}>
         <Square
           size={22}
           fill={currentSize === WidgetSize.B ? '#fff' : 'transparent'}
+          strokeWidth={2.5}
         />
       </div>
-      <div
-        className='h-8 w-8 flex items-center justify-center'
-        onClick={(e) => onResizeClick(e, WidgetSize.C)}
-      >
+      <div className={btnClass} onClick={(e) => onResizeClick(e, WidgetSize.C)}>
         <RectangleHorizontal
           size={16}
           fill={currentSize === WidgetSize.C ? '#fff' : 'transparent'}
+          strokeWidth={2.5}
         />
       </div>
-      <div
-        className='h-8 w-8 flex items-center justify-center'
-        onClick={(e) => onResizeClick(e, WidgetSize.D)}
-      >
+      <div className={btnClass} onClick={(e) => onResizeClick(e, WidgetSize.D)}>
         <RectangleVertical
           size={16}
           fill={currentSize === WidgetSize.D ? '#fff' : 'transparent'}
+          strokeWidth={2.5}
         />
       </div>
     </div>
