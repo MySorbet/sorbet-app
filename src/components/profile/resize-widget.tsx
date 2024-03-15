@@ -23,13 +23,13 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
         className='h-8 w-8 flex items-center justify-center'
         onClick={(e) => onResizeClick(e, WidgetSize.A)}
       >
-        <Square size={16} style={{ pointerEvents: 'none' }} />
+        <Square size={16} />
       </button>
       <div
         className='h-8 w-8 flex items-center justify-center'
         onClick={(e) => onResizeClick(e, WidgetSize.B)}
       >
-        <Square size={22} style={{ pointerEvents: 'none' }} />
+        <Square size={22} />
       </div>
       <div
         className='h-8 w-8 flex items-center justify-center'

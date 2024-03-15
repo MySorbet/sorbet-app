@@ -1,9 +1,10 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
-import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
-import type { ItemCallback, Layout as WidgetLayout } from 'react-grid-layout';
+import type { Layout as WidgetLayout } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -30,6 +31,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   editMode,
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const generateLayout = useCallback((): ExtendedWidgetLayout[] => {
     return Array.from({ length: items }, (_, i): ExtendedWidgetLayout => {
@@ -43,6 +46,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         url: 'https://dribbble.com/shots/23768759-Girl-s-portrait',
         static: !editMode,
         isResizable: false,
+        isDraggable: editMode,
       };
     });
   }, [items]);
@@ -74,6 +78,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       url: url,
       static: !editMode,
       isResizable: false,
+      isDraggable: editMode,
     };
 
     setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
@@ -82,15 +87,25 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const generateDOM = () => {
     return layout.map((item) => (
       <div key={item.i} data-grid={item}>
-        <Widget
-          identifier={item.i}
-          w={item.w}
-          h={item.h}
-          type={item.type}
-          handleResize={handleWidgetResize}
-          handleRemove={handleWidgetRemove}
-          editMode={editMode}
-        />
+        <motion.div
+          className='widget-motion-wrapper'
+          initial={false}
+          animate={{
+            height: item.h * rowHeight + 20 * (item.h - 1),
+            width: item.w * (containerWidth / cols) - 25,
+          }}
+          style={{ width: '100%', height: '100%' }}
+        >
+          <Widget
+            identifier={item.i}
+            w={item.w}
+            h={item.h}
+            type={item.type}
+            handleResize={handleWidgetResize}
+            handleRemove={handleWidgetRemove}
+            editMode={editMode}
+          />
+        </motion.div>
       </div>
     ));
   };
@@ -114,8 +129,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     );
   }, [editMode]);
 
+  useEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  }, []);
+
   return (
-    <div>
+    <div ref={containerRef}>
       <ReactGridLayout
         layout={layout}
         onLayoutChange={handleLayoutChange}
@@ -123,6 +144,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         rowHeight={rowHeight}
         margin={[20, 20]}
         cols={cols}
+        isDraggable={editMode}
+        isResizable={editMode}
       >
         {generateDOM()}
       </ReactGridLayout>
