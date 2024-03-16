@@ -1,6 +1,7 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
-import { WidgetDimensions, WidgetSize } from '@/types';
+import { getWidgetContent } from '@/lib/service';
+import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -13,23 +14,24 @@ interface WidgetContainerProps {
   className?: string;
   items?: number;
   rowHeight?: number;
-  onLayoutChange?: (layout: any) => void;
   cols?: number;
   editMode: boolean;
+  onLayoutChange?: (layout: any) => void;
 }
 
 interface ExtendedWidgetLayout extends WidgetLayout {
-  type: string;
-  url?: string;
+  type: WidgetType;
+  loading?: boolean;
+  content?: any;
 }
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
   items = 1,
   rowHeight = 120,
-  onLayoutChange = () => {},
   cols = 10,
   editMode,
+  onLayoutChange = () => {},
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -43,8 +45,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         y: 0,
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
-        type: 'dribbble',
-        url: 'https://dribbble.com/shots/23768759-Girl-s-portrait',
+        type: WidgetType.Default,
+        content: {},
         static: !editMode,
         isResizable: false,
         isDraggable: editMode,
@@ -67,8 +69,10 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
   };
 
-  const handleWidgetAdd = (url: string) => {
-    const type = parseWidgetTypeFromUrl(url).toLowerCase();
+  const handleWidgetAdd = async (url: string) => {
+    const type: WidgetType = parseWidgetTypeFromUrl(url);
+    const content = await getWidgetContent({ url, type });
+
     const widgetToAdd: ExtendedWidgetLayout = {
       i: (layout.length + 1).toString(),
       x: (layout.length * 2) % cols,
@@ -76,10 +80,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       w: WidgetDimensions[WidgetSize.A].w,
       h: WidgetDimensions[WidgetSize.A].h,
       type: type,
-      url: url,
+      content: content?.data,
       static: !editMode,
       isResizable: false,
       isDraggable: editMode,
+      loading: true,
     };
 
     setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
@@ -93,7 +98,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           initial={false}
           animate={{
             height: item.h * rowHeight + 20 * (item.h - 1),
-            width: item.w * (containerWidth / cols) - 25,
+            width: item.w * (containerWidth / cols) - 29,
           }}
           style={{ width: '100%', height: '100%' }}
         >
@@ -105,6 +110,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
             handleResize={handleWidgetResize}
             handleRemove={handleWidgetRemove}
             editMode={editMode}
+            content={item.content}
           />
         </motion.div>
       </div>

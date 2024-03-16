@@ -8,5 +8,20 @@ import { InvalidAlert } from "./invalid-alert";
 import { ProfileEditModal } from "./profile-edit-modal";
 import { InputLocation } from "./input-location"; 
 import { InputSkills } from "./input-skills"; 
+import { DefaultWidget } from "./widget-default"; 
+import { DribbbleWidget } from "./widget-dribbble"; 
 
-export { Profile, ProfileHeader, Widget, WidgetContainer, ResizeWidget, AddWidgets, InvalidAlert, ProfileEditModal, InputLocation, InputSkills };
+export { 
+  Profile, 
+  ProfileHeader, 
+  Widget, 
+  WidgetContainer, 
+  ResizeWidget, 
+  AddWidgets, 
+  InvalidAlert, 
+  ProfileEditModal, 
+  InputLocation, 
+  InputSkills, 
+  DefaultWidget,
+  DribbbleWidget
+};
