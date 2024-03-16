@@ -6,7 +6,7 @@ import {
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { DribbbleWidgetContentType, WidgetType } from '@/types';
+import { DribbbleWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import { getSocialIconForWidget } from '@/utils/icons';
 import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -33,18 +33,23 @@ export const Widget: React.FC<WidgetProps> = ({
   handleRemove,
 }) => {
   const [showResizeWidget, setShowResizeWidget] = useState(false);
+  const [widgetSize, setWidgetSize] = useState<WidgetSize>(WidgetSize.A);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
 
-  const onWidgetResize = (w: number, h: number) => {
+  const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h);
+    setWidgetSize(widgetSize);
   };
 
   useEffect(() => {
     if (type === WidgetType.Dribbble) {
       setWidgetContent(
-        <DribbbleWidget content={content as DribbbleWidgetContentType} />
+        <DribbbleWidget
+          content={content as DribbbleWidgetContentType}
+          size={widgetSize}
+        />
       );
     }
 

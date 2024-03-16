@@ -5,7 +5,7 @@ import { Square, RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface ResizeWidgetProps {
-  onResize: (w: number, h: number) => void;
+  onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
 }
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
@@ -17,7 +17,11 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
     widgetSize: WidgetSize
   ) => {
     event.stopPropagation();
-    onResize(WidgetDimensions[widgetSize].w, WidgetDimensions[widgetSize].h);
+    onResize(
+      WidgetDimensions[widgetSize].w,
+      WidgetDimensions[widgetSize].h,
+      widgetSize
+    );
     setCurrentSize(widgetSize);
   };
 
