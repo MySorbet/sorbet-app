@@ -1,51 +1,40 @@
-export const getSocialIconForWidget = (widgetType: string) => {
-  const iconMap: { [key: string]: string } = {
-    nfts: 'nft.png',
-    photo: 'photo.png',
-    photogallery: 'gallery.png',
-    youtubevideo: 'youtube.png',
-    youtubeplaylist: 'youtube.png',
-    spotifysong: 'spotify.png',
-    spotifyalbum: 'spotify.png',
-    soundcloudsong: 'spotify.png',
-    github: 'github.png',
-    instagrampost: 'instagram.png',
-    instagramprofile: 'instagram.png',
-    twitterprofile: 'twitter.png',
-    dribbble: 'dribbble.png',
-    behance: 'behance.png',
-    text: 'text.png',
+import { WidgetType } from '@/types';
+
+export const getSocialIconForWidget = (widgetType: WidgetType): string => {
+  const iconMap: { [key in WidgetType]?: string } = {
+    [WidgetType.Nfts]: 'nft.png',
+    [WidgetType.Photo]: 'photo.png',
+    [WidgetType.PhotoGallery]: 'gallery.png',
+    [WidgetType.YoutubeVideo]: 'youtube.png',
+    [WidgetType.YoutubePlaylist]: 'youtube.png',
+    [WidgetType.SpotifySong]: 'spotify.png',
+    [WidgetType.SpotifyAlbum]: 'spotify.png',
+    [WidgetType.SoundcloudSong]: 'soundcloud.png',
+    [WidgetType.Github]: 'github.png',
+    [WidgetType.InstagramPost]: 'instagram.png',
+    [WidgetType.InstagramProfile]: 'instagram.png',
+    [WidgetType.TwitterProfile]: 'twitter.png',
+    [WidgetType.Dribbble]: 'dribbble.png',
+    [WidgetType.Behance]: 'behance.png',
+    [WidgetType.Text]: 'text.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
 };
 
-export const parseHostnameAndRetrieveIcon = (url: string): string => {
-  try {
-    const hostname = new URL(url).hostname;
-    const domainParts = hostname.split('.');
-    const platform =
-      domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
-    console.log(platform.charAt(0).toUpperCase() + platform.slice(1));
-    return getSocialIconForWidget(
-      platform.charAt(0).toUpperCase() + platform.slice(1)
-    );
-  } catch (error) {
-    console.error('Error parsing URL:', error);
-    return getSocialIconForWidget('default');
-  }
-};
-
-export const parseWidgetTypeFromUrl = (url: string): string => {
+export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
   try {
     const hostname = new URL(url).hostname;
     const domainParts = hostname.split('.');
     const platform =
       domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
 
-    return platform.charAt(0).toUpperCase() + platform.slice(1);
+    return WidgetType[
+      (platform.charAt(0).toUpperCase() +
+        platform.slice(1)) as keyof typeof WidgetType
+    ];
   } catch (error) {
     console.error('Error parsing URL:', error);
-    return 'default';
+    return WidgetType.Default;
   }
 };
