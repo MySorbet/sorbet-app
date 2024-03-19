@@ -1,5 +1,5 @@
 import { runApi } from '@/utils';
-import { GetBehanceItemType, GetDribbleShotType, WidgetType } from '@/types';
+import { GetBehanceItemType, GetDribbleShotType, GetMediumArticleType, WidgetType } from '@/types';
 import { config } from '@/lib/config';
 
 export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
@@ -9,6 +9,9 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
     case WidgetType.Behance:
       return getBehanceItem({ url });
+
+    case WidgetType.Medium:
+      return getMediumArticleMetadata({ url });
   }
 };
 
@@ -21,5 +24,11 @@ export const getDribbleShot = async({ url }: GetDribbleShotType) => {
 export const getBehanceItem = async({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
   const response = await runApi('POST', `${config.devApiUrl}/widgets/behance`, body);
+  return response;
+};
+
+export const getMediumArticleMetadata = async({ url }: GetMediumArticleType) => {
+  const body: GetMediumArticleType = { url };
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/medium`, body);
   return response;
 };

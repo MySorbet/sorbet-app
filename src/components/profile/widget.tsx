@@ -3,6 +3,7 @@ import {
   BehanceWidget,
   DefaultWidget,
   DribbbleWidget,
+  MediumWidget,
   ResizeWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { cn } from '@/lib/utils';
 import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
+  MediumArticleContentType,
   WidgetSize,
   WidgetType,
 } from '@/types';
@@ -50,28 +52,39 @@ export const Widget: React.FC<WidgetProps> = ({
   };
 
   useEffect(() => {
-    if (type === WidgetType.Dribbble) {
-      setWidgetContent(
-        <DribbbleWidget
-          content={content as DribbbleWidgetContentType}
-          size={widgetSize}
-        />
-      );
+    switch (type) {
+      case WidgetType.Dribbble:
+        setWidgetContent(
+          <DribbbleWidget
+            content={content as DribbbleWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+      case WidgetType.Behance:
+        setWidgetContent(
+          <BehanceWidget
+            content={content as BehanceWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+      case WidgetType.Medium:
+        setWidgetContent(
+          <MediumWidget
+            content={content as MediumArticleContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+      case WidgetType.Default:
+        setWidgetContent(<DefaultWidget />);
+        break;
+      default:
+        setWidgetContent(<>Unsupported widget type</>);
+        break;
     }
-
-    if (type === WidgetType.Behance) {
-      setWidgetContent(
-        <BehanceWidget
-          content={content as BehanceWidgetContentType}
-          size={widgetSize}
-        />
-      );
-    }
-
-    if (type === WidgetType.Default) {
-      setWidgetContent(<DefaultWidget />);
-    }
-  }, [type]);
+  }, [type, widgetSize, content]);
 
   return (
     <>

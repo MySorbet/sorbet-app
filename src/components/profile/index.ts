@@ -11,6 +11,7 @@ import { InputSkills } from "./input-skills";
 import { DefaultWidget } from "./widget-default"; 
 import { DribbbleWidget } from "./widget-dribbble"; 
 import { BehanceWidget } from "./widget-behance"; 
+import { MediumWidget } from "./widget-medium"; 
 
 export { 
   Profile, 
@@ -25,5 +26,6 @@ export {
   InputSkills, 
   DefaultWidget,
   DribbbleWidget,
-  BehanceWidget
+  BehanceWidget,
+  MediumWidget
 };

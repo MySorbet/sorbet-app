@@ -6,6 +6,10 @@ export interface GetBehanceItemType {
   url: string;
 }
 
+export interface GetMediumArticleType {
+  url: string;
+}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -25,6 +29,12 @@ export interface BehanceWidgetContentType {
   image: string;
 }
 
+export interface MediumArticleContentType {
+  title: string;
+  image: string;
+  host: string;
+}
+
 export enum WidgetType {
   Default = 'Default',
   Nfts = 'Nfts',
@@ -42,6 +52,7 @@ export enum WidgetType {
   Dribbble = 'Dribbble',
   Behance = 'Behance',
   Text = 'Text',
+  Medium = 'Medium',
 }
 
 export enum WidgetSize {
