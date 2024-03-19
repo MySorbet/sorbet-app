@@ -2,12 +2,7 @@ import { uploadProfileImageAsync } from '@/api/images';
 import { deleteProfileImageAsync } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { TOTAL_SKILLS } from '@/constant/skills';
 import { config } from '@/lib/config';
@@ -125,34 +120,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setImage(URL.createObjectURL(i));
   };
 
-  const bannerImageChange = (e: any) => {
-    if (e.target.files[0]?.size > 5 * 1024 * 1024) {
-      return;
-    }
-
-    setBannerFile(
-      e.target.files && e.target.files.length > 0
-        ? e.target.files[0]
-        : undefined
-    );
-    const i = e.target.files[0];
-    setBannerImage(i.name);
-    let size: string;
-    if (i.size / 1024 >= 1024) {
-      size = Math.round(i.size / (1024 * 1024)) + ' MB';
-    } else if (i.size / 1024 >= 1) {
-      size = Math.round(i.size / 1024) + ' KB';
-    } else {
-      size = Math.round(i.size) + ' B';
-    }
-    setBannerImageSize(size);
-  };
-
   const onClose = () => {
     setUserData(userInfo);
-    if (userInfo.profileBannerImage) {
-      setBannerImage('uploaded');
-    }
     setImage(userInfo.profileImage);
   };
 
@@ -218,25 +187,25 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             )}
           </div>
           <div className='flex w-full flex-row gap-6'>
-            <div className='item'>
+            <div className='w-full'>
               <label className='text-sm font-medium text-[#344054]'>
                 First name
               </label>
               <Input
-                className='w-full rounded-lg border-[#D0D5DD] focus:ring-sorbet text-base font-normal text-[#667085] mt-1'
+                className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] mt-1 focus:ring-0 focus:outline-none'
                 placeholder='Your first name'
                 name='firstName'
                 defaultValue={userData?.firstName}
                 onChange={onChange}
               />
             </div>
-            <div className='item'>
+            <div className='w-full'>
               <label className='text-sm font-medium text-[#344054]'>
                 Last name
               </label>
 
               <Input
-                className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] mt-1'
+                className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] mt-1 focus:ring-0 focus:outline-none'
                 placeholder='Your last name'
                 name='lastName'
                 defaultValue={userData?.lastName}
@@ -260,7 +229,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               Create a short Bio
             </label>
             <textarea
-              className='w-full rounded-lg border border-1 p-3 border-[#D0D5DD] text-base font-normal text-[#667085] mt-1'
+              className='w-full rounded-lg border border-1 p-3 border-[#D0D5DD] text-base font-normal text-[#667085] mt-1 focus:outline-none'
               placeholder='A few words about yourself'
               name='bio'
               rows={4}
