@@ -10,6 +10,7 @@ import { InputLocation } from "./input-location";
 import { InputSkills } from "./input-skills"; 
 import { DefaultWidget } from "./widget-default"; 
 import { DribbbleWidget } from "./widget-dribbble"; 
+import { BehanceWidget } from "./widget-behance"; 
 
 export { 
   Profile, 
@@ -23,5 +24,6 @@ export {
   InputLocation, 
   InputSkills, 
   DefaultWidget,
-  DribbbleWidget
+  DribbbleWidget,
+  BehanceWidget
 };

@@ -2,6 +2,10 @@ export interface GetDribbleShotType {
   url: string;
 }
 
+export interface GetBehanceItemType {
+  url: string;
+}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -14,6 +18,10 @@ export interface Widget {
 }
 
 export interface DribbbleWidgetContentType {
+  image: string;
+}
+
+export interface BehanceWidgetContentType {
   image: string;
 }
 

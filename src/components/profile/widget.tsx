@@ -1,12 +1,18 @@
 import { Spinner } from '@/components/common';
 import {
+  BehanceWidget,
   DefaultWidget,
   DribbbleWidget,
   ResizeWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { DribbbleWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import {
+  BehanceWidgetContentType,
+  DribbbleWidgetContentType,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 import { getSocialIconForWidget } from '@/utils/icons';
 import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -48,6 +54,15 @@ export const Widget: React.FC<WidgetProps> = ({
       setWidgetContent(
         <DribbbleWidget
           content={content as DribbbleWidgetContentType}
+          size={widgetSize}
+        />
+      );
+    }
+
+    if (type === WidgetType.Behance) {
+      setWidgetContent(
+        <BehanceWidget
+          content={content as BehanceWidgetContentType}
           size={widgetSize}
         />
       );
