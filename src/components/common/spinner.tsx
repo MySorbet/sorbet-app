@@ -1,11 +1,17 @@
 import React from 'react';
 
-export const Spinner: React.FC = () => {
+interface SpinnerProps {
+  size?: 'regular' | 'small';
+}
+
+export const Spinner: React.FC<SpinnerProps> = ({ size = 'regular' }) => {
+  const svgClass = size === 'small' ? 'w-4 h-4' : 'w-8 h-8';
+
   return (
     <div role='status'>
       <svg
         aria-hidden='true'
-        className='w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-sorbet'
+        className={`${svgClass} text-gray-200 animate-spin dark:text-gray-600 fill-sorbet`}
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'

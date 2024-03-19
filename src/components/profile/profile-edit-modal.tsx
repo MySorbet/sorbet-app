@@ -223,7 +223,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 First name
               </label>
               <Input
-                className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] mt-1'
+                className='w-full rounded-lg border-[#D0D5DD] focus:ring-sorbet text-base font-normal text-[#667085] mt-1'
                 placeholder='Your first name'
                 name='firstName'
                 defaultValue={userData?.firstName}

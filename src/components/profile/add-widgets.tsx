@@ -1,5 +1,5 @@
+import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Popover,
   PopoverContent,
@@ -13,46 +13,58 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { validateUrl } from '@/utils/url';
-import { Link, CircleHelp, CircleAlert, ImagePlus, X } from 'lucide-react';
+import { Link, CircleHelp, ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface AddWidgetsProps {
   addUrl: (url: string) => void;
+  loading?: boolean;
 }
 
-export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
+export const AddWidgets: React.FC<AddWidgetsProps> = ({
+  addUrl,
+  loading = false,
+}) => {
   const [url, setUrl] = useState<string>('');
   const [error, showError] = useState<boolean>(false);
 
   const handleUrlSubmit = () => {
-    try {
-      const isValid: boolean = validateUrl(url);
-      if (!isValid) {
-        showError(true);
-        return;
-      }
+    if (!loading) {
+      try {
+        const isValid: boolean = validateUrl(url);
+        if (!isValid) {
+          showError(true);
+          return;
+        }
 
-      addUrl(url);
-    } catch (error) {
-      showError(true);
+        addUrl(url);
+      } catch (error) {
+        showError(true);
+      }
     }
   };
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const currentUrl = event.target.value;
-    setUrl(currentUrl);
+    if (!loading) {
+      const currentUrl = event.target.value;
+      setUrl(currentUrl);
 
-    if (error && currentUrl === '') {
-      showError(false);
+      if (error && currentUrl === '') {
+        showError(false);
+      }
     }
   };
 
   const handleShowErrorAlert = (status: boolean) => {
-    showError(status);
+    if (!loading) {
+      showError(status);
+    }
   };
 
+  const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
+
   return (
-    <div className='lg:w-[480px]'>
+    <div className={`lg:w-[480px] ${panelClass}`}>
       {error && (
         <div
           className={`transition-transform duration-500 ${
@@ -64,7 +76,9 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
           </div>
         </div>
       )}
-      <div className='flex flex-row gap-4 bg-white p-4 shadow-lg shadow-gray-200 rounded-2xl w-full'>
+      <div
+        className={`flex flex-row gap-4 bg-white p-4 shadow-lg shadow-gray-200 rounded-2xl w-full ${panelClass}`}
+      >
         <div
           className={cn(
             'flex items-center border-2 py-2 px-3 rounded-2xl flex-grow',
@@ -80,14 +94,16 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
             placeholder='Add a url...'
             onChange={handleUrlChange}
             value={url}
+            disabled={loading}
           />
           <div>
             <button
               type='submit'
               className='cursor-pointer flex-none bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'
               onClick={handleUrlSubmit}
+              disabled={loading}
             >
-              Add
+              {loading ? <Spinner size='small' /> : <span>Add</span>}
             </button>
           </div>
           <div className='ml-2 text-gray-500 cursor-pointer'>
@@ -114,8 +130,9 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({ addUrl }) => {
             <TooltipTrigger asChild>
               <button
                 type='submit'
-                className='cursor-pointer flex-none hover:text-sorbet'
+                className={`cursor-pointer flex-none hover:text-sorbet ${panelClass}`}
                 onClick={handleUrlSubmit}
+                disabled={loading}
               >
                 <ImagePlus size={24} />
               </button>

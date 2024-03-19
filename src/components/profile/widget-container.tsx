@@ -35,6 +35,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [addingWidget, setAddingWidget] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const generateLayout = useCallback((): ExtendedWidgetLayout[] => {
@@ -70,24 +72,32 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   const handleWidgetAdd = async (url: string) => {
-    const type: WidgetType = parseWidgetTypeFromUrl(url);
-    const content = await getWidgetContent({ url, type });
+    setAddingWidget(true);
+    setError(null);
+    try {
+      const type: WidgetType = parseWidgetTypeFromUrl(url);
+      const content = await getWidgetContent({ url, type });
 
-    const widgetToAdd: ExtendedWidgetLayout = {
-      i: (layout.length + 1).toString(),
-      x: (layout.length * 2) % cols,
-      y: Infinity,
-      w: WidgetDimensions[WidgetSize.A].w,
-      h: WidgetDimensions[WidgetSize.A].h,
-      type: type,
-      content: content?.data,
-      static: !editMode,
-      isResizable: false,
-      isDraggable: editMode,
-      loading: true,
-    };
+      const widgetToAdd: ExtendedWidgetLayout = {
+        i: (layout.length + 1).toString(),
+        x: (layout.length * 2) % cols,
+        y: Infinity,
+        w: WidgetDimensions[WidgetSize.A].w,
+        h: WidgetDimensions[WidgetSize.A].h,
+        type: type,
+        content: content?.data,
+        static: !editMode,
+        isResizable: false,
+        isDraggable: editMode,
+        loading: false,
+      };
 
-    setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
+      setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
+    } catch (e) {
+      setError('Failed to add widget. Please try again.');
+    } finally {
+      setAddingWidget(false);
+    }
   };
 
   const generateDOM = () => {
@@ -142,6 +152,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     }
   }, []);
 
+  // Display error toast if there is an error
+  useEffect(() => {
+    if (error) {
+      // Replace this with your toast notification library or custom toast component
+      alert(error);
+    }
+  }, [error]);
+
   return (
     <div ref={containerRef}>
       <ReactGridLayout
@@ -159,7 +177,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
       {editMode && (
         <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
-          <AddWidgets addUrl={handleWidgetAdd} />
+          <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
         </div>
       )}
     </div>
