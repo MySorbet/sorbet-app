@@ -7,27 +7,15 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Autocomplete from 'react-google-autocomplete';
 
 interface LocationProps {
-  userData: User;
-  setUserData: Dispatch<SetStateAction<User>>;
   onInputChange: (e: any) => void;
   defaultValue: string | undefined;
 }
 
 export const InputLocation: React.FC<LocationProps> = ({
-  userData,
-  setUserData,
   onInputChange,
   defaultValue,
 }) => {
   const [place, setPlace] = useState<any>();
-
-  useEffect(() => {
-    if (!place || !place.address_components) return;
-    setUserData({
-      ...userData,
-      tempLocation: place.formatted_address,
-    });
-  }, [place]);
 
   return (
     <div className='flex flex-row gap-4 bg-white w-full mt-1'>
