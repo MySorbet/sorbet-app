@@ -101,17 +101,7 @@ export const Widget: React.FC<WidgetProps> = ({
         onMouseEnter={() => editMode && setShowResizeWidget(true)}
         onMouseLeave={() => editMode && setShowResizeWidget(false)}
       >
-        <div className='mb-4'>
-          <img
-            src={getSocialIconForWidget(type)}
-            alt={type}
-            width={30}
-            height={30}
-          />
-        </div>
-
         {widgetContent}
-
         <div
           className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-6 transition-opacity duration-300 ${
             showResizeWidget ? 'opacity-100' : 'opacity-0'

@@ -1,4 +1,5 @@
-import { BehanceWidgetContentType, WidgetSize } from '@/types';
+import { WidgetHeader } from '@/components/profile/widget-header';
+import { BehanceWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
 
 interface BehanceWidgetType {
@@ -11,14 +12,19 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
   size,
 }) => {
   return (
-    <div className='relative h-full rounded-xl overflow-hidden'>
-      <img
-        src={content && content.image ? content.image : '#'}
-        alt='Behance content'
-        className={`w-full h-full object-cover ${
-          size === WidgetSize.C || size === WidgetSize.D ? '' : 'object-contain'
-        }`}
-      />
-    </div>
+    <>
+      <WidgetHeader type={WidgetType.Behance} />
+      <div className='relative h-full rounded-xl overflow-hidden'>
+        <img
+          src={content && content.image ? content.image : '#'}
+          alt='Behance content'
+          className={`w-full h-full object-cover ${
+            size === WidgetSize.C || size === WidgetSize.D
+              ? ''
+              : 'object-contain'
+          }`}
+        />
+      </div>
+    </>
   );
 };
