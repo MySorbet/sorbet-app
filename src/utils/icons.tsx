@@ -5,7 +5,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Nfts]: 'nft.png',
     [WidgetType.Photo]: 'photo.png',
     [WidgetType.PhotoGallery]: 'gallery.png',
-    [WidgetType.YoutubeVideo]: 'youtube.png',
+    [WidgetType.Youtube]: 'youtube.png',
     [WidgetType.YoutubePlaylist]: 'youtube.png',
     [WidgetType.SpotifySong]: 'spotify.png',
     [WidgetType.SpotifyAlbum]: 'spotify.png',

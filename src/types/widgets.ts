@@ -10,6 +10,10 @@ export interface GetMediumArticleType {
   url: string;
 }
 
+export interface GetYouTubeVideoType {
+  url: string;
+}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -35,12 +39,18 @@ export interface MediumArticleContentType {
   host: string;
 }
 
+export interface YoutubeWidgetContentType {
+  title: string;
+  thumbnail: string;
+  url: string;
+}
+
 export enum WidgetType {
   Default = 'Default',
   Nfts = 'Nfts',
   Photo = 'Photo',
   PhotoGallery = 'PhotoGallery',
-  YoutubeVideo = 'YoutubeVideo',
+  Youtube = 'Youtube',
   YoutubePlaylist = 'YoutubePlaylist',
   SpotifySong = 'SpotifySong',
   SpotifyAlbum = 'SpotifyAlbum',

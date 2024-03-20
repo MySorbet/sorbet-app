@@ -8,11 +8,13 @@ import { InvalidAlert } from "./invalid-alert";
 import { ProfileEditModal } from "./profile-edit-modal";
 import { InputLocation } from "./input-location"; 
 import { InputSkills } from "./input-skills"; 
+import { YouTubeIframe } from "./youtube-iframe"; 
 import { WidgetHeader } from "./widget-header"; 
 import { DefaultWidget } from "./widget-default"; 
 import { DribbbleWidget } from "./widget-dribbble"; 
 import { BehanceWidget } from "./widget-behance"; 
 import { MediumWidget } from "./widget-medium"; 
+import { YouTubeWidget } from "./widget-youtube"; 
 
 export { 
   Profile, 
@@ -29,5 +31,6 @@ export {
   DribbbleWidget,
   BehanceWidget,
   MediumWidget,
-  WidgetHeader
+  WidgetHeader,
+  YouTubeWidget
 };

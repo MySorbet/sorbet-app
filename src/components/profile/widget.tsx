@@ -5,6 +5,7 @@ import {
   DribbbleWidget,
   MediumWidget,
   ResizeWidget,
+  YouTubeWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -14,6 +15,7 @@ import {
   MediumArticleContentType,
   WidgetSize,
   WidgetType,
+  YoutubeWidgetContentType,
 } from '@/types';
 import { getSocialIconForWidget } from '@/utils/icons';
 import { Trash2 } from 'lucide-react';
@@ -73,6 +75,14 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <MediumWidget
             content={content as MediumArticleContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+      case WidgetType.Youtube:
+        setWidgetContent(
+          <YouTubeWidget
+            content={content as YoutubeWidgetContentType}
             size={widgetSize}
           />
         );

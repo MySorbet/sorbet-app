@@ -1,5 +1,5 @@
 import { runApi } from '@/utils';
-import { GetBehanceItemType, GetDribbleShotType, GetMediumArticleType, WidgetType } from '@/types';
+import { GetBehanceItemType, GetDribbleShotType, GetMediumArticleType, GetYouTubeVideoType, WidgetType } from '@/types';
 import { config } from '@/lib/config';
 
 export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
@@ -12,6 +12,9 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
     case WidgetType.Medium:
       return getMediumArticleMetadata({ url });
+
+    case WidgetType.Youtube:
+      return getYouTubeVideoMetadata({ url });
   }
 };
 
@@ -30,5 +33,11 @@ export const getBehanceItem = async({ url }: GetBehanceItemType) => {
 export const getMediumArticleMetadata = async({ url }: GetMediumArticleType) => {
   const body: GetMediumArticleType = { url };
   const response = await runApi('POST', `${config.devApiUrl}/widgets/medium`, body);
+  return response;
+};
+
+export const getYouTubeVideoMetadata = async({ url }: GetYouTubeVideoType) => {
+  const body: GetYouTubeVideoType = { url };
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/youtube`, body);
   return response;
 };
