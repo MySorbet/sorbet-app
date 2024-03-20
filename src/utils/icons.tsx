@@ -18,6 +18,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Behance]: 'behance.png',
     [WidgetType.Text]: 'text.png',
     [WidgetType.Medium]: 'medium.png',
+    [WidgetType.Substack]: 'substack.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
@@ -25,10 +26,17 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
 
 export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
   try {
-    const hostname = new URL(url).hostname;
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname;
+    const pathname = urlObj.pathname;
     const domainParts = hostname.split('.');
-    const platform =
+    let platform =
       domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
+
+    // Check if the URL is a Substack URL
+    if (platform.toLowerCase() === 'substack' && pathname.includes('/p/')) {
+      return WidgetType.Substack;
+    }
 
     return WidgetType[
       (platform.charAt(0).toUpperCase() +

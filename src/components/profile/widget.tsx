@@ -5,6 +5,7 @@ import {
   DribbbleWidget,
   MediumWidget,
   ResizeWidget,
+  SubstackWidget,
   YouTubeWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   MediumArticleContentType,
+  SubstackWidgetContentType,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -83,6 +85,15 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <YouTubeWidget
             content={content as YoutubeWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.Substack:
+        setWidgetContent(
+          <SubstackWidget
+            content={content as SubstackWidgetContentType}
             size={widgetSize}
           />
         );

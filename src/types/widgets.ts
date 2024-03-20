@@ -14,6 +14,10 @@ export interface GetYouTubeVideoType {
   url: string;
 }
 
+export interface GetSubstackArticleType {
+  url: string;
+}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -45,6 +49,12 @@ export interface YoutubeWidgetContentType {
   url: string;
 }
 
+export interface SubstackWidgetContentType {
+  title: string;
+  image: string;
+  host: string;
+}
+
 export enum WidgetType {
   Default = 'Default',
   Nfts = 'Nfts',
@@ -63,6 +73,7 @@ export enum WidgetType {
   Behance = 'Behance',
   Text = 'Text',
   Medium = 'Medium',
+  Substack = 'Substack',
 }
 
 export enum WidgetSize {
