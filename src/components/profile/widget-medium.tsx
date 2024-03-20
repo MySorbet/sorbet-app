@@ -1,4 +1,5 @@
-import { MediumArticleContentType, WidgetSize } from '@/types';
+import { WidgetHeader } from '@/components/profile/widget-header';
+import { MediumArticleContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
 
 interface MediumWidgetType {
@@ -15,17 +16,21 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
   switch (size) {
     case WidgetSize.A:
       widgetLayout = (
-        <div className='h-full flex flex-col gap-1'>
-          <div>
-            <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>{content.host}</div>
+        <div className='h-full flex flex-col gap-2'>
+          <div className='flex flex-row gap-2'>
+            <div className='w-1/4'>
+              <WidgetHeader type={WidgetType.Medium} />
+            </div>
+            <div>
+              <div className='text-sm font-semibold'>{content.title}</div>
+              <div className='text-xs text-gray-500'>{content.host}</div>
+            </div>
           </div>
-          <div className={`relative rounded-xl overflow-hidden`}>
+          <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
               alt='Medium content'
-              className='w-full h-full object-cover'
-              style={{ objectFit: 'cover' }}
+              className='absolute inset-0 w-full h-full object-cover'
             />
           </div>
         </div>
@@ -33,14 +38,15 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
       break;
     case WidgetSize.B:
       widgetLayout = (
-        <div className='h-full flex flex-col gap-1'>
+        <div className='h-full flex flex-col gap-2'>
+          <div>
+            <WidgetHeader type={WidgetType.Medium} noMargin />
+          </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
-          <div
-            className={`relative rounded-xl overflow-hidden absolute bottom-0`}
-          >
+          <div className='h-full w-full relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
               alt='Medium content'
@@ -54,6 +60,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
+            <WidgetHeader type={WidgetType.Medium} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
@@ -70,12 +77,13 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
       break;
     case WidgetSize.D:
       widgetLayout = (
-        <div className='h-full flex flex-col gap-1'>
+        <div className='h-full flex flex-col gap-2'>
+          <WidgetHeader type={WidgetType.Medium} noMargin />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
-          <div className={`relative rounded-xl overflow-hidden`}>
+          <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img
               src={content.image}
               alt='Medium content'

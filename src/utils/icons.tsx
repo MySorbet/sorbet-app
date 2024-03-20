@@ -17,6 +17,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Dribbble]: 'dribbble.png',
     [WidgetType.Behance]: 'behance.png',
     [WidgetType.Text]: 'text.png',
+    [WidgetType.Medium]: 'medium.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
