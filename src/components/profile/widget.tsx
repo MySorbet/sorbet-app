@@ -6,6 +6,7 @@ import {
   MediumWidget,
   ResizeWidget,
   SpotifyAlbumWidget,
+  SpotifySongWidget,
   SubstackWidget,
   YouTubeWidget,
 } from '@/components/profile';
@@ -21,7 +22,6 @@ import {
   WidgetType,
   YoutubeWidgetContentType,
 } from '@/types';
-import { getSocialIconForWidget } from '@/utils/icons';
 import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -104,6 +104,15 @@ export const Widget: React.FC<WidgetProps> = ({
       case WidgetType.SpotifyAlbum:
         setWidgetContent(
           <SpotifyAlbumWidget
+            content={content as SpotifyWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.SpotifySong:
+        setWidgetContent(
+          <SpotifySongWidget
             content={content as SpotifyWidgetContentType}
             size={widgetSize}
           />

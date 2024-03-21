@@ -18,7 +18,7 @@ export interface GetSubstackArticleType {
   url: string;
 }
 
-export interface GetSpotifyAlbumType {
+export interface GetSpotifyType {
   url: string;
 }
 
@@ -61,10 +61,10 @@ export interface SubstackWidgetContentType {
 
 export interface SpotifyWidgetContentType {
   title: string;
+  album?: string;
   cover: string;
   artist: string;
-  albumUrl: string;
-  songs: {name: string, length: number}[];
+  url: string;
 }
 
 export enum WidgetType {

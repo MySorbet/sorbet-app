@@ -1,5 +1,5 @@
 import { runApi } from '@/utils';
-import { GetBehanceItemType, GetDribbleShotType, GetMediumArticleType, GetSpotifyAlbumType, GetSubstackArticleType, GetYouTubeVideoType, WidgetType } from '@/types';
+import { GetBehanceItemType, GetDribbleShotType, GetMediumArticleType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, WidgetType } from '@/types';
 import { config } from '@/lib/config';
 
 export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
@@ -21,6 +21,9 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
     case WidgetType.SpotifyAlbum:
       return getSpotifyAlbumDetails({ url });
+
+    case WidgetType.SpotifySong:
+      return getSpotifySongDetails({ url });
   }
 };
 
@@ -54,8 +57,14 @@ export const getSubstackMetadata = async({ url }: GetSubstackArticleType) => {
   return response;
 };
 
-export const getSpotifyAlbumDetails = async({ url }: GetSpotifyAlbumType) => {
-  const body: GetSpotifyAlbumType = { url };
+export const getSpotifyAlbumDetails = async({ url }: GetSpotifyType) => {
+  const body: GetSpotifyType = { url };
   const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/album`, body);
+  return response;
+};
+
+export const getSpotifySongDetails = async({ url }: GetSpotifyType) => {
+  const body: GetSpotifyType = { url };
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/song`, body);
   return response;
 };

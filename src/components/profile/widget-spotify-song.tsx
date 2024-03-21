@@ -8,7 +8,7 @@ interface SpotifyWidgetType {
   size: WidgetSize;
 }
 
-export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
+export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
   content,
   size,
 }) => {
@@ -17,7 +17,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   }, [size]);
 
   let widgetLayout;
-  const currentType = WidgetType.SpotifyAlbum;
+  const currentType = WidgetType.SpotifySong;
 
   const localHeader = (
     <>
@@ -53,16 +53,17 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
             <WidgetHeader type={currentType} noMargin />
+            <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
+              <Play size={16} />
+              Play
+            </button>
           </div>
           <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden mt-6 bg-white text-black'>
-            <iframe
-              title='Spotify'
-              className='SpotifyPlayer absolute w-full h-full'
-              src={`https://embed.spotify.com/?uri=${content.url}&view=list&theme=light`}
-              width='100%'
-              height='450px'
-              style={{ border: 'none', background: 'white' }}
+            <img
+              src={content.cover}
+              alt='Spotify content'
+              className='absolute inset-0 w-full h-full object-cover'
             />
           </div>
         </div>
