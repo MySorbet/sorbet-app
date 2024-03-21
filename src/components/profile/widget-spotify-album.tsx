@@ -8,7 +8,7 @@ interface SpotifyWidgetType {
   size: WidgetSize;
 }
 
-export const SpotifyWidget: React.FC<SpotifyWidgetType> = ({
+export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   content,
   size,
 }) => {

@@ -5,7 +5,7 @@ import {
   DribbbleWidget,
   MediumWidget,
   ResizeWidget,
-  SpotifyWidget,
+  SpotifyAlbumWidget,
   SubstackWidget,
   YouTubeWidget,
 } from '@/components/profile';
@@ -103,7 +103,7 @@ export const Widget: React.FC<WidgetProps> = ({
 
       case WidgetType.SpotifyAlbum:
         setWidgetContent(
-          <SpotifyWidget
+          <SpotifyAlbumWidget
             content={content as SpotifyWidgetContentType}
             size={widgetSize}
           />

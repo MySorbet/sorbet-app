@@ -56,6 +56,6 @@ export const getSubstackMetadata = async({ url }: GetSubstackArticleType) => {
 
 export const getSpotifyAlbumDetails = async({ url }: GetSpotifyAlbumType) => {
   const body: GetSpotifyAlbumType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify`, body);
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/album`, body);
   return response;
 };
