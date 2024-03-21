@@ -18,6 +18,10 @@ export interface GetSubstackArticleType {
   url: string;
 }
 
+export interface GetSpotifyAlbumType {
+  url: string;
+}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -53,6 +57,14 @@ export interface SubstackWidgetContentType {
   title: string;
   image: string;
   host: string;
+}
+
+export interface SpotifyWidgetContentType {
+  title: string;
+  cover: string;
+  artist: string;
+  albumUrl: string;
+  songs: {name: string, length: number}[];
 }
 
 export enum WidgetType {

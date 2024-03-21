@@ -16,6 +16,7 @@ import { BehanceWidget } from "./widget-behance";
 import { MediumWidget } from "./widget-medium"; 
 import { YouTubeWidget } from "./widget-youtube"; 
 import { SubstackWidget } from "./widget-substack"; 
+import { SpotifyWidget } from "./widget-spotify"; 
 
 export { 
   Profile, 
@@ -34,5 +35,6 @@ export {
   MediumWidget,
   WidgetHeader,
   YouTubeWidget,
-  SubstackWidget
+  SubstackWidget,
+  SpotifyWidget
 };

@@ -5,6 +5,7 @@ import {
   DribbbleWidget,
   MediumWidget,
   ResizeWidget,
+  SpotifyWidget,
   SubstackWidget,
   YouTubeWidget,
 } from '@/components/profile';
@@ -14,6 +15,7 @@ import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   MediumArticleContentType,
+  SpotifyWidgetContentType,
   SubstackWidgetContentType,
   WidgetSize,
   WidgetType,
@@ -98,9 +100,20 @@ export const Widget: React.FC<WidgetProps> = ({
           />
         );
         break;
+
+      case WidgetType.SpotifyAlbum:
+        setWidgetContent(
+          <SpotifyWidget
+            content={content as SpotifyWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
       case WidgetType.Default:
         setWidgetContent(<DefaultWidget />);
         break;
+
       default:
         setWidgetContent(<>Unsupported widget type</>);
         break;

@@ -33,9 +33,16 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     let platform =
       domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
 
-    // Check if the URL is a Substack URL
     if (platform.toLowerCase() === 'substack' && pathname.includes('/p/')) {
       return WidgetType.Substack;
+    }
+
+    if (platform.toLowerCase() === 'spotify') {
+      if (pathname.includes('/album/')) {
+        return WidgetType.SpotifyAlbum;
+      } else if (pathname.includes('/track/')) {
+        return WidgetType.SpotifySong;
+      }
     }
 
     return WidgetType[
