@@ -49,6 +49,14 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
       return WidgetType.SoundcloudSong;
     }
 
+    if (platform.toLowerCase() === 'instagram') {
+      if (pathname.includes('/p/')) {
+        return WidgetType.InstagramPost;
+      } else {
+        return WidgetType.InstagramProfile;
+      }
+    }
+
     return WidgetType[
       (platform.charAt(0).toUpperCase() +
         platform.slice(1)) as keyof typeof WidgetType

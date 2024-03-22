@@ -14,7 +14,7 @@ export function validateUrl(url: string) {
   } else if (hostname.includes('soundcloud.com')) {
     regex = /^https?:\/\/(www\.)?soundcloud\.com\/[^\/]+\/[^\/]+$/;
   } else if (hostname.includes('instagram.com')) {
-    regex = /^https?:\/\/(www\.)?instagram\.com\/[^\/]+\/[^\/]+$/;
+    regex = /^(https?:\/\/)?(www\.)?instagram\.com\/(p\/[a-zA-Z0-9-_]+\/?|[^\/]+\/?)$/;
   } else if (hostname.includes('substack.com')) {
     regex = /^https?:\/\/([a-zA-Z0-9]+\.substack\.com\/).*$/;
   } else if (hostname.includes('behance.net')) {

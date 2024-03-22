@@ -16,6 +16,8 @@ export interface GetSpotifyType extends GetItemTypeBase {}
 
 export interface GetSoundcloudType extends GetItemTypeBase {}
 
+export interface GetInstagramType extends GetItemTypeBase {}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -59,6 +61,11 @@ export interface SpotifyWidgetContentType {
   cover: string;
   artist: string;
   url: string;
+}
+
+export interface InstagramWidgetContentType {
+  handle: string;
+  images: string[];
 }
 
 export interface SoundcloudTrackContentType {

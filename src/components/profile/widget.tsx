@@ -3,6 +3,7 @@ import {
   BehanceWidget,
   DefaultWidget,
   DribbbleWidget,
+  InstagramWidget,
   MediumWidget,
   ResizeWidget,
   SoundcloudWidget,
@@ -16,6 +17,7 @@ import { cn } from '@/lib/utils';
 import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
+  InstagramWidgetContentType,
   MediumArticleContentType,
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
@@ -125,6 +127,15 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <SoundcloudWidget
             content={content as SoundcloudTrackContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.InstagramProfile:
+        setWidgetContent(
+          <InstagramWidget
+            content={content as InstagramWidgetContentType}
             size={widgetSize}
           />
         );

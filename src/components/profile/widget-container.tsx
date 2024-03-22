@@ -47,7 +47,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         y: 0,
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
-        type: WidgetType.Default,
+        type: WidgetType.InstagramProfile,
         content: {},
         static: !editMode,
         isResizable: false,

@@ -1,5 +1,5 @@
 import { runApi } from '@/utils';
-import { GetBehanceItemType, GetDribbleShotType, GetMediumArticleType, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, WidgetType } from '@/types';
+import { GetBehanceItemType, GetDribbleShotType, GetInstagramType, GetMediumArticleType, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, WidgetType } from '@/types';
 import { config } from '@/lib/config';
 
 export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
@@ -27,6 +27,9 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
     case WidgetType.SoundcloudSong:
       return getSoundcloudTrackDetails({ url });
+
+    case WidgetType.InstagramProfile:
+      return getInstagramProfileMetadata({ url });
   }
 };
 
@@ -75,5 +78,11 @@ export const getSpotifySongDetails = async({ url }: GetSpotifyType) => {
 export const getSoundcloudTrackDetails = async({ url }: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
   const response = await runApi('POST', `${config.devApiUrl}/widgets/soundcloud`, body);
+  return response;
+};
+
+export const getInstagramProfileMetadata = async({ url }: GetInstagramType) => {
+  const body: GetInstagramType = { url };
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/instagram`, body);
   return response;
 };

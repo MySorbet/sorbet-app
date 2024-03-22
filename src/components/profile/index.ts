@@ -19,6 +19,7 @@ import { SubstackWidget } from "./widget-substack";
 import { SpotifyAlbumWidget } from "./widget-spotify-album"; 
 import { SpotifySongWidget } from "./widget-spotify-song"; 
 import { SoundcloudWidget } from "./widget-soundcloud"; 
+import { InstagramWidget } from "./widget-instagram"; 
 
 export { 
   Profile, 
@@ -40,5 +41,7 @@ export {
   SubstackWidget,
   SpotifyAlbumWidget,
   SpotifySongWidget,
-  SoundcloudWidget
+  SoundcloudWidget,
+  InstagramWidget,
+  YouTubeIframe
 };

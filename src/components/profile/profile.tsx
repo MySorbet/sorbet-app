@@ -4,7 +4,7 @@ import {
   WidgetContainer,
 } from '@/components/profile';
 import { cn } from '@/lib/utils';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export const Profile: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(true);
