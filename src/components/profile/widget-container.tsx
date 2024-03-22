@@ -102,28 +102,28 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   const generateDOM = () => {
     return layout.map((item) => (
-      <div key={item.i} data-grid={item}>
-        <motion.div
-          className='widget-motion-wrapper'
-          initial={false}
-          animate={{
-            height: item.h * rowHeight + 20 * (item.h - 1),
-            width: item.w * (containerWidth / cols) - 29,
-          }}
-          style={{ width: '100%', height: '100%' }}
-        >
-          <Widget
-            identifier={item.i}
-            w={item.w}
-            h={item.h}
-            type={item.type}
-            handleResize={handleWidgetResize}
-            handleRemove={handleWidgetRemove}
-            editMode={editMode}
-            content={item.content}
-          />
-        </motion.div>
-      </div>
+      <motion.div
+        className='widget-motion-wrapper'
+        initial={false}
+        animate={{
+          height: item.h * rowHeight + 20 * (item.h - 1),
+          width: item.w * (containerWidth / cols) - 29,
+        }}
+        style={{ width: '100%', height: '100%' }}
+        key={item.i}
+        data-grid={item}
+      >
+        <Widget
+          identifier={item.i}
+          w={item.w}
+          h={item.h}
+          type={item.type}
+          handleResize={handleWidgetResize}
+          handleRemove={handleWidgetRemove}
+          editMode={editMode}
+          content={item.content}
+        />
+      </motion.div>
     ));
   };
 
