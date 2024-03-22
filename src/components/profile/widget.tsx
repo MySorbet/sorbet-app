@@ -5,6 +5,7 @@ import {
   DribbbleWidget,
   MediumWidget,
   ResizeWidget,
+  SoundcloudWidget,
   SpotifyAlbumWidget,
   SpotifySongWidget,
   SubstackWidget,
@@ -16,6 +17,7 @@ import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   MediumArticleContentType,
+  SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
   WidgetSize,
@@ -114,6 +116,15 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <SpotifySongWidget
             content={content as SpotifyWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.SoundcloudSong:
+        setWidgetContent(
+          <SoundcloudWidget
+            content={content as SoundcloudTrackContentType}
             size={widgetSize}
           />
         );

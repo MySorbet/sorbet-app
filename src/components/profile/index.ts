@@ -18,6 +18,7 @@ import { YouTubeWidget } from "./widget-youtube";
 import { SubstackWidget } from "./widget-substack"; 
 import { SpotifyAlbumWidget } from "./widget-spotify-album"; 
 import { SpotifySongWidget } from "./widget-spotify-song"; 
+import { SoundcloudWidget } from "./widget-soundcloud"; 
 
 export { 
   Profile, 
@@ -38,5 +39,6 @@ export {
   YouTubeWidget,
   SubstackWidget,
   SpotifyAlbumWidget,
-  SpotifySongWidget
+  SpotifySongWidget,
+  SoundcloudWidget
 };

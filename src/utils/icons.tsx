@@ -45,6 +45,10 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
       }
     }
 
+    if (platform.toLowerCase() === 'soundcloud') {
+      return WidgetType.SoundcloudSong;
+    }
+
     return WidgetType[
       (platform.charAt(0).toUpperCase() +
         platform.slice(1)) as keyof typeof WidgetType

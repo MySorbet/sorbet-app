@@ -1,26 +1,20 @@
-export interface GetDribbleShotType {
+export interface GetItemTypeBase {
   url: string;
 }
 
-export interface GetBehanceItemType {
-  url: string;
-}
+export interface GetDribbleShotType extends GetItemTypeBase {}
 
-export interface GetMediumArticleType {
-  url: string;
-}
+export interface GetBehanceItemType extends GetItemTypeBase {}
 
-export interface GetYouTubeVideoType {
-  url: string;
-}
+export interface GetMediumArticleType extends GetItemTypeBase {}
 
-export interface GetSubstackArticleType {
-  url: string;
-}
+export interface GetYouTubeVideoType extends GetItemTypeBase {}
 
-export interface GetSpotifyType {
-  url: string;
-}
+export interface GetSubstackArticleType extends GetItemTypeBase {}
+
+export interface GetSpotifyType extends GetItemTypeBase {}
+
+export interface GetSoundcloudType extends GetItemTypeBase {}
 
 export interface Widget {
   id: string;
@@ -65,6 +59,13 @@ export interface SpotifyWidgetContentType {
   cover: string;
   artist: string;
   url: string;
+}
+
+export interface SoundcloudTrackContentType {
+  title: string;
+  artwork: string;
+  trackUrl: string;
+  artist: string;
 }
 
 export enum WidgetType {
