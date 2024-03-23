@@ -1,18 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 import { config } from '@/lib/config';
 import { cn } from '@/lib/utils';
-import type { User } from '@/types';
 import { MapPin } from 'lucide-react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useState } from 'react';
 import Autocomplete from 'react-google-autocomplete';
 
 interface LocationProps {
   onInputChange: (e: any) => void;
+  onPlaceSelected: (place: any) => void;
   defaultValue: string | undefined;
 }
 
 export const InputLocation: React.FC<LocationProps> = ({
   onInputChange,
+  onPlaceSelected,
   defaultValue,
 }) => {
   const [place, setPlace] = useState<any>();
@@ -29,7 +30,7 @@ export const InputLocation: React.FC<LocationProps> = ({
         </div>
         <Autocomplete
           apiKey={config.googleMapKey}
-          onPlaceSelected={(place) => setPlace(place)}
+          onPlaceSelected={(place) => onPlaceSelected(place)}
           onChange={(e) => onInputChange(e)}
           defaultValue={defaultValue}
           className={`h-full w-full rounded-md border-[#D0D5DD] p-[10px] text-base font-normal text-[#667085] outline-none`}

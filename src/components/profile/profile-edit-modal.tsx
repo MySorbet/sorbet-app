@@ -248,6 +248,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         field.onChange(e);
                         onChange(e);
                       }}
+                      onPlaceSelected={(place) =>
+                        console.log(JSON.stringify(place))
+                      }
                       defaultValue={field.value}
                     />
                   )}
