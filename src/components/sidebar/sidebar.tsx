@@ -5,12 +5,34 @@ import { reset } from '@/redux/contractSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import type { User } from '@/types';
+import {
+  ArrowLeftRight,
+  CircleArrowRight,
+  LayoutGrid,
+  LogOut,
+  WalletMinimal,
+} from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   show: boolean;
   userInfo: User;
 }
+
+const SidebarHeaderOption: React.FC<{
+  label: string;
+  icon: React.ReactNode;
+}> = ({ label, icon }) => {
+  return (
+    <div className='bg-[#FEFEFE] rounded-xl border border-1 border-gray-200 p-3'>
+      <div className='flex flex-col gap-1 justify-center items-center text-sorbet font-semibold'>
+        <div>{icon}</div>
+        <div className='text-sm'>{label}</div>
+      </div>
+    </div>
+  );
+};
 
 export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const router = useRouter();
@@ -26,13 +48,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
 
   return (
     <div
-      className={`fixed left-0 z-10 h-[100v] w-screen overflow-y-auto ${
+      className={`fixed left-0 z-50 h-[100v] w-screen overflow-y-auto ${
         show && 'inset-0 bg-[#0C111D70]'
       }`}
       onClick={() => dispatch(setOpenSidebar(false))}
     >
       <div
-        className={`right-0 z-50 m-6 flex h-[calc(100%-48px)] w-[360px] flex-col items-start justify-between gap-6 overflow-y-auto rounded-[32px] bg-white p-8 text-black ${
+        className={`right-0 z-50 m-6 flex h-[calc(100%-48px)] lg:w-[420px] sm:w-100 flex-col items-start justify-between gap-6 overflow-y-auto rounded-[32px] bg-[#F9FAFB] p-8 text-black ${
           show ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
@@ -43,23 +65,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
           <div className='flex w-full flex-col gap-10'>
             <div className='flex w-full flex-row items-center justify-between'>
               <div className='flex flex-row items-center justify-between gap-2'>
-                {userInfo?.profileImage ? (
-                  <img
-                    src={userInfo?.profileImage}
-                    alt='logo'
-                    className='rounded-full w-10 h-10'
-                  />
-                ) : (
-                  <img
-                    src='/avatar.svg'
-                    className='rounded-full'
-                    alt='logo'
-                    width={40}
-                    height={40}
-                  />
-                )}
-                <div className='text-base font-bold '>
-                  {userInfo?.firstName + ' ' + userInfo?.lastName}
+                <div>
+                  {userInfo?.profileImage ? (
+                    <img
+                      src={userInfo?.profileImage}
+                      alt='logo'
+                      className='rounded-full w-14 h-14'
+                    />
+                  ) : (
+                    <img
+                      src='/avatar.svg'
+                      className='rounded-full w-14 h-14'
+                      alt='logo'
+                    />
+                  )}
+                </div>
+                <div className='flex flex-col'>
+                  <div className='text-base font-bold '>
+                    {`${userInfo.firstName} ${userInfo.lastName}`}
+                  </div>
+                  <div className='text-base'>{userInfo?.accountId}</div>
                 </div>
               </div>
               <img
@@ -68,43 +93,76 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                 alt='logout'
                 width={20}
                 height={20}
-                onClick={() => logout()}
+                onClick={() => handleLogout()}
               />
             </div>
-            <div className='flex flex-col items-start text-2xl font-bold'>
-              <div
-                className='flex cursor-pointer items-center px-3 py-2'
-                onClick={() => {
-                  router.push('/auth/profile');
-                  dispatch(setOpenSidebar(false));
-                }}
-              >
-                Profile
+            <div>
+              <div className='grid grid-cols-3 gap-2'>
+                <div className='col-span-1'>
+                  <SidebarHeaderOption
+                    label='Wallet'
+                    icon={<WalletMinimal />}
+                  />
+                </div>
+                <div className='col-span-1'>
+                  <SidebarHeaderOption label='My Gigs' icon={<LayoutGrid />} />
+                </div>
+                <div className='col-span-1'>
+                  <SidebarHeaderOption
+                    label='My Profile'
+                    icon={<CircleArrowRight />}
+                  />
+                </div>
               </div>
-              <div
-                className='flex cursor-pointer items-center px-3 py-2'
-                onClick={() => {
-                  router.push('/auth/explore');
-                  dispatch(setOpenSidebar(false));
-                }}
-              >
-                Explore
-              </div>
-              <div
-                className='flex cursor-pointer items-center px-3 py-2'
-                onClick={() => {
-                  router.push('/auth/gigs');
-                  dispatch(setOpenSidebar(false));
-                }}
-              >
-                Gigs
-              </div>
-              <div className='flex cursor-pointer items-center px-3 py-2'>
-                Settings
+              <div className='bg-white p-5 flex flex-col rounded-xl mt-3'>
+                <div className='text-gray-600 font-light'>Balances</div>
+                <div className='flex flex-col gap-3 mt-6'>
+                  <div className='flex justify-between'>
+                    <div className='flex flex-row gap-2'>
+                      <Image
+                        src='/svg/usdc.svg'
+                        alt='USDC'
+                        width={20}
+                        height={20}
+                      />
+                      <div>2,000 USDC</div>
+                    </div>
+                    <div className='text-gray-600'>$2,000</div>
+                  </div>
+                  <div className='flex justify-between'>
+                    <div className='flex flex-row gap-2'>
+                      <Image
+                        src='/svg/near-protocol.svg'
+                        alt='USDC'
+                        width={17}
+                        height={17}
+                      />
+                      <div>15,346 NEAR</div>
+                    </div>
+                    <div className='text-gray-600'>$5,240</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className='h-[280px] w-full rounded-2xl bg-[#D9D9D9]'></div>
+
+          <div className='flex flex-col gap-4 font-medium cursor-pointer text-xl'>
+            <div className='flex flex-row gap-2 items-center'>
+              <div>
+                <ArrowLeftRight />
+              </div>
+              <div>Switch Wallet</div>
+            </div>
+            <div
+              className='flex flex-row gap-2 items-center'
+              onClick={() => handleLogout()}
+            >
+              <div>
+                <LogOut />
+              </div>
+              <div>Logout</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
