@@ -3,6 +3,8 @@
 import './signin.css';
 import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -53,7 +55,7 @@ const Signin = () => {
             <h1 className='text-[32px]'>Sign in</h1>
             <div className='item w-full'>
               <label className='text-[#595B5A]'>Email</label>
-              <input
+              <Input
                 className='w-full rounded-lg'
                 placeholder='your@email.com'
                 {...register('email', {
@@ -72,23 +74,23 @@ const Signin = () => {
               )}
             </div>
             <div className='item w-full'>
-              <button
+              <Button
                 type='submit'
-                className='bg-primary-default h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
+                className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm'
               >
-                Continue
-              </button>
-              <button
+                Login with Email
+              </Button>
+              {/* <Button
                 className='h-11 gap-1 self-stretch rounded-lg bg-[#22252a] px-2 py-1 text-sm text-white'
                 onClick={() => nearModal.show()}
               >
                 Connect Wallet
-              </button>
+              </Button> */}
             </div>
             <div className='inline-block w-full text-base text-center'>
               Already have an account?
               <span
-                className='text-primary-default cursor-pointer pl-1 font-semibold'
+                className='text-sorbet cursor-pointer pl-1 font-semibold'
                 onClick={() => router.push('/signup')}
               >
                 Sign up

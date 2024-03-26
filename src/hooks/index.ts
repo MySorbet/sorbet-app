@@ -1,4 +1,5 @@
 import { useAuth } from "./useAuth";
 import { useLocalStorage } from "./useLocalStorage";
+import { useTagInput } from "./useTagInput";
 
-export { useAuth, useLocalStorage };
+export { useAuth, useLocalStorage, useTagInput };

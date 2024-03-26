@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
 interface ProfileHeaderProps {
@@ -8,6 +9,8 @@ interface ProfileHeaderProps {
   fullName: string;
   bio: string;
   tags: string[];
+  editMode: boolean;
+  onEditClick: () => void;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -16,6 +19,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   fullName,
   bio,
   tags,
+  editMode,
+  onEditClick,
 }) => {
   return (
     <>
@@ -40,11 +45,27 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </span>
         ))}
       </div>
-      <div className='flex flex-row gap-3 justify-center mt-4'>
-        <Button className='bg-[#573DF5] px-5'>Hire Me</Button>
-        <Button variant='outline' className='px-5'>
-          Edit Profile
-        </Button>
+      <div className='flex flex-row gap-6 justify-center mt-4 items-center'>
+        {editMode ? (
+          <Button
+            variant='outline'
+            className='px-5'
+            onClick={() => onEditClick()}
+          >
+            <span>Edit Profile</span>
+          </Button>
+        ) : (
+          <Button className='bg-[#573DF5] px-5'>Hire Me</Button>
+        )}
+        {editMode && (
+          <a
+            href='#'
+            className='text-[#573DF5] flex flex-row align-center gap-1 items-center'
+          >
+            <SquareArrowOutUpRight size={16} />
+            <span>Share</span>
+          </a>
+        )}
       </div>
     </>
   );
