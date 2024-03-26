@@ -1,12 +1,17 @@
 'use client';
 
+import { Sidebar } from '@/components';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
+import { useAuth } from '@/hooks';
 
-const RedirectScreen = () => {
+const Home = () => {
+  const { user } = useAuth();
+
   return (
     <>
       <Header />
+      {user && <Sidebar show={true} userInfo={user} />}
       <div>
         <Profile />
       </div>
@@ -14,4 +19,4 @@ const RedirectScreen = () => {
   );
 };
 
-export default RedirectScreen;
+export default Home;

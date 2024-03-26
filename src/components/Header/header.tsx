@@ -2,16 +2,11 @@
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export const Header = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  // let isProfile = false;
-
-  useEffect(() => {
-    console.log(router, 'router');
-  }, [router]);
 
   return (
     <div className='bg-[#F9FAFB]'>

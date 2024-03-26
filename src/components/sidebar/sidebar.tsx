@@ -1,50 +1,39 @@
-/* eslint-disable @next/next/no-img-element */
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { LOCAL_KEY } from '@/constant/constant';
+import { useAuth } from '@/hooks';
 import { reset } from '@/redux/contractSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
-import UserType from '@/types/user';
+import type { User } from '@/types';
 import { useRouter } from 'next/navigation';
 
-interface props {
-  openSideBar: boolean;
-  userInfo: UserType;
+interface SidebarProps {
+  show: boolean;
+  userInfo: User;
 }
 
-const Sidebar = ({ openSideBar, userInfo }: props) => {
+export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { logout } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
 
-  const logout = async () => {
+  const handleLogout = async () => {
     dispatch(reset());
-    if (userInfo?.email) {
-      localStorage.removeItem(LOCAL_KEY);
-      router.push('/signin');
-    } else {
-      const wallet = await selector.wallet();
-      wallet
-        .signOut()
-        .then(() => {
-          router.push('/signin');
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+    logout();
+    router.push('/signin');
   };
 
   return (
     <div
       className={`fixed left-0 z-10 h-[100v] w-screen overflow-y-auto ${
-        openSideBar && 'inset-0 bg-[#0C111D70]'
+        show && 'inset-0 bg-[#0C111D70]'
       }`}
       onClick={() => dispatch(setOpenSidebar(false))}
     >
       <div
         className={`right-0 z-50 m-6 flex h-[calc(100%-48px)] w-[360px] flex-col items-start justify-between gap-6 overflow-y-auto rounded-[32px] bg-white p-8 text-black ${
-          openSideBar ? 'fixed' : 'hidden'
+          show ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
           e.stopPropagation();
@@ -121,5 +110,3 @@ const Sidebar = ({ openSideBar, userInfo }: props) => {
     </div>
   );
 };
-
-export default Sidebar;

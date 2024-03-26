@@ -9,7 +9,7 @@ const Container: React.FC<Props> = ({ children }) => {
   const { user } = useAuth();
   const router = useRouter();
 
-  if (!user && window.location.pathname.includes('signup')) {
+  if (!user) {
     router.push('/signin');
   }
 

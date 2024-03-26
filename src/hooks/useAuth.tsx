@@ -4,10 +4,11 @@ import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
+import { User } from '@/types';
 import { ReactNode, createContext, useContext, useMemo } from 'react';
 
 const AuthContext = createContext({
-  user: null,
+  user: null as User | null,
   loginWithEmail: async (email: string): Promise<string> => {
     return '';
   },
@@ -18,7 +19,7 @@ const AuthContext = createContext({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useLocalStorage('user', null);
+  const [user, setUser] = useLocalStorage<User | null>('user', null);
   const dispatch = useAppDispatch();
   const { modal: nearModal, selector } = useWalletSelector();
 
