@@ -9,6 +9,7 @@ import { ReactNode, createContext, useContext, useMemo } from 'react';
 
 const AuthContext = createContext({
   user: null as User | null,
+  accessToken: null as string | null,
   loginWithEmail: async (email: string): Promise<string> => {
     return '';
   },
@@ -20,6 +21,10 @@ const AuthContext = createContext({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null);
+  const [accessToken, setAccessToken] = useLocalStorage<string | null>(
+    'access_token',
+    null
+  );
   const dispatch = useAppDispatch();
   const { modal: nearModal, selector } = useWalletSelector();
 
@@ -35,7 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       //   isRecovery: false,
       // });
       const user = response.data.user;
+      const token = response.data.access_token;
       setUser(user);
+      setAccessToken(token);
       dispatch(updateUserData(user));
       return 'Login successful';
     }
@@ -54,7 +61,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           isRecovery: false,
         });
         const user = response.data.user;
+        const token = response.data.access_token;
         setUser(user);
+        setAccessToken(token);
         dispatch(updateUserData(user));
         return 'Wallet connected and user logged in';
       }
@@ -65,16 +74,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setUser(null);
+    setAccessToken(null);
   };
 
   const value = useMemo(
     () => ({
       user,
+      accessToken,
       loginWithEmail,
       loginWithWallet,
       logout,
     }),
-    [user]
+    [user, accessToken]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
