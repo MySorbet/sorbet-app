@@ -9,20 +9,20 @@ export const signUpAsync = async ({
   accountId,
 }: SignUpWithEmailTypes) => {
   const reqBody = { firstName, lastName, email, accountId };
-  const res = await runApi('POST', `${API_URL}/auth/signUpWithEmail`, reqBody);
+  const res = await runApi('POST', `${API_URL}/auth/signup/email`, reqBody);
   return res;
 };
 
 export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
   const reqBody = { email };
-  const res = await runApi('POST', `${API_URL}/auth/signinWithEmail`, reqBody);
+  const res = await runApi('POST', `${API_URL}/auth/signin/email`, reqBody);
   return res;
 };
 
 // [POST] /api/auth/signin
 export const signInWithWallet = async (address: string) => {
   const reqBody = { address };
-  const res = await runApi('POST', `${API_URL}/auth/signInWithWallet`, reqBody);
+  const res = await runApi('POST', `${API_URL}/auth/signin/wallet`, reqBody);
   return res;
 };
 
@@ -33,6 +33,6 @@ export const signUpWithWallet = async (
   phone: string | null
 ) => {
   const reqBody = { address, email, phone };
-  const res = await runApi('POST', `${API_URL}/auth/signUpWithWallet`, reqBody);
+  const res = await runApi('POST', `${API_URL}/auth/signup/wallet`, reqBody);
   return res;
 };

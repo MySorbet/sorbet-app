@@ -5,7 +5,7 @@ import ToggleAvailable from '@/components/common/near-wallet/toggleAvailable';
 import SearchByLocation from '@/components/explore/searchByLocation';
 import SearchBySkills from '@/components/explore/searchBySkills';
 import UserOverView from '@/components/explore/userOverview';
-import { UserHeader } from '@/components/header/';
+import { UserHeader } from '@/components/header';
 import { TOTAL_SKILLS } from '@/constant/skills';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setUsers } from '@/redux/userSlice';
