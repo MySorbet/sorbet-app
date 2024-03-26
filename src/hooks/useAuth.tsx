@@ -3,7 +3,7 @@ import { signInAsync, signInWithWallet } from '@/api/auth';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
 import { useAppDispatch } from '@/redux/hook';
-import { updateUserData } from '@/redux/userSlice';
+import { setOpenSidebar, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 import { ReactNode, createContext, useContext, useMemo } from 'react';
 
@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setAccessToken(token);
       dispatch(updateUserData(user));
+      dispatch(setOpenSidebar(false));
       return 'Login successful';
     }
   };

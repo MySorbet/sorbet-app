@@ -46,10 +46,7 @@ const Signin = () => {
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
       {isLoading && <Loading />}
-      <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 pt-4 text-black max-sm:w-[300px]'>
-        <div className='mb-3 flex justify-end'>
-          <img src='/images/cancel.png' alt='cancel' className='h-10 w-10' />
-        </div>
+      <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 px-6 text-black max-sm:w-[300px]'>
         <form onSubmit={onSubmit}>
           <div className='flex flex-col items-start gap-6 px-6 pb-6'>
             <h1 className='text-[32px]'>Sign in</h1>

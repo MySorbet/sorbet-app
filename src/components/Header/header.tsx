@@ -18,7 +18,7 @@ export const Header = () => {
           <img
             src='/images/menu.svg'
             alt='menu'
-            className=' cursor-pointer p-[10px]'
+            className='cursor-pointer p-[10px]'
             onClick={() => dispatch(setOpenSidebar(true))}
           />
         </div>

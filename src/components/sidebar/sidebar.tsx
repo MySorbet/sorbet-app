@@ -25,7 +25,7 @@ const SidebarHeaderOption: React.FC<{
   icon: React.ReactNode;
 }> = ({ label, icon }) => {
   return (
-    <div className='bg-[#FEFEFE] rounded-xl border border-1 border-gray-200 p-3'>
+    <div className='bg-[#FEFEFE] rounded-xl border border-1 border-gray-200 p-3 cursor-pointer hover:bg-gray-100'>
       <div className='flex flex-col gap-1 justify-center items-center text-sorbet font-semibold'>
         <div>{icon}</div>
         <div className='text-sm'>{label}</div>
@@ -48,8 +48,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
 
   return (
     <div
-      className={`fixed left-0 z-50 h-[100v] w-screen overflow-y-auto ${
-        show && 'inset-0 bg-[#0C111D70]'
+      className={`fixed left-0 z-50 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
+        show ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
       }`}
       onClick={() => dispatch(setOpenSidebar(false))}
     >
@@ -87,14 +87,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   <div className='text-base'>{userInfo?.accountId}</div>
                 </div>
               </div>
-              <img
-                src='/images/log-out.svg'
-                className='cursor-pointer'
-                alt='logout'
-                width={20}
-                height={20}
-                onClick={() => handleLogout()}
-              />
             </div>
             <div>
               <div className='grid grid-cols-3 gap-2'>
@@ -146,7 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
             </div>
           </div>
 
-          <div className='flex flex-col gap-4 font-medium cursor-pointer text-xl'>
+          <div className='flex flex-col gap-6 font-medium cursor-pointer text-xl'>
             <div className='flex flex-row gap-2 items-center'>
               <div>
                 <ArrowLeftRight />
