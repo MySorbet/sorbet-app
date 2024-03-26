@@ -27,7 +27,7 @@ interface ExtendedWidgetLayout extends WidgetLayout {
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
-  items = 1,
+  items = 0,
   rowHeight = 120,
   cols = 10,
   editMode,

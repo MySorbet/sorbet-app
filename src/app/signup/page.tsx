@@ -1,16 +1,15 @@
-/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import './signup.css';
 import { signUpAsync } from '@/api/auth';
 import { useWalletSelector } from '@/components/common';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-
-/* eslint-disable @next/next/no-img-element */
 
 const Signup = () => {
   const [isAccountAvailable, setIsAccountAvailable] = useState<boolean | null>(
@@ -145,7 +144,7 @@ const Signup = () => {
       <div className='row mb-4'>
         <div className='item'>
           <label className='text-[#595B5A]'>First name</label>
-          <input
+          <Input
             {...register('firstName', {
               required: 'Please enter your first name',
             })}
@@ -159,7 +158,7 @@ const Signup = () => {
         </div>
         <div className='item'>
           <label className='text-[#595B5A]'>Last name</label>
-          <input
+          <Input
             {...register('lastName', {
               required: 'Please enter your last name',
             })}
@@ -174,7 +173,7 @@ const Signup = () => {
       </div>
       <div className='item w-full mb-4'>
         <label className='text-[#595B5A]'>Email</label>
-        <input
+        <Input
           {...register('email', {
             required: 'Please enter your email address',
             pattern: {
@@ -192,7 +191,7 @@ const Signup = () => {
       </div>
       <div className='item w-full mb-2'>
         <label className='text-[#595B5A]'>Account ID</label>
-        <input
+        <Input
           {...register('username', {
             required: 'Please enter a valid account ID',
             pattern: {
@@ -212,18 +211,18 @@ const Signup = () => {
         <span className={accountStatusState || ''}>{accountStatusMessage}</span>
       </p>
       <div className='item w-full'>
-        <button
-          className='bg-primary-default h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
+        <Button
+          className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'
           disabled={isLoading}
         >
           {isLoading ? 'Processing...' : 'Continue'}
-        </button>
+        </Button>
       </div>
       <div className='inline-block w-full text-base mt-4 text-center'>
         Already have an account?
         <span
-          className='text-primary-default cursor-pointer pl-1 font-semibold'
+          className='text-sorbet cursor-pointer pl-1 font-semibold'
           onClick={() => router.push('/signin')}
         >
           Sign in
