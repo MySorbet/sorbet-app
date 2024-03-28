@@ -1,5 +1,4 @@
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
-import { LOCAL_KEY } from '@/constant/constant';
 import { useAuth } from '@/hooks';
 import { reset } from '@/redux/contractSlice';
 import { useAppDispatch } from '@/redux/hook';
@@ -11,6 +10,7 @@ import {
   LayoutGrid,
   LogOut,
   WalletMinimal,
+  X,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -62,15 +62,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
     router.push('/profile');
   };
 
+  const handleSidebarClose = () => {
+    dispatch(setOpenSidebar(false));
+  };
+
   return (
     <div
-      className={`fixed left-0 z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
+      className={`fixed lg:left-0 z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
         show ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
       }`}
       onClick={() => dispatch(setOpenSidebar(false))}
     >
       <div
-        className={`right-0 z-40 m-6 flex h-[calc(100%-48px)] lg:w-[420px] sm:w-100 flex-col items-start justify-between gap-6 overflow-y-auto rounded-[32px] bg-[#F9FAFB] p-8 text-black ${
+        className={`right-0 z-40 lg:m-6 flex lg:h-[calc(100%-48px)] w-full h-full lg:w-[420px] flex-col items-start justify-between gap-6 overflow-y-auto lg:rounded-[32px] bg-[#F9FAFB] p-8 text-black ${
           show ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
@@ -102,6 +106,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   </div>
                   <div className='text-base'>{userInfo?.accountId}</div>
                 </div>
+              </div>
+              <div className='cursor-pointer' onClick={handleSidebarClose}>
+                <X />
               </div>
             </div>
             <div>
