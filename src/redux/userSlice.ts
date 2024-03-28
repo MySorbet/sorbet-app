@@ -1,17 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import UserType from '@/types/user';
+import type { User } from '@/types';
 
 type userState = {
-  user: UserType;
-  users: UserType[];
+  user: User;
+  users: User[];
   role: string;
   toggleOpenSidebar: boolean;
   toggleProfileEdit: boolean;
 };
 
 const initialState: userState = {
-  user: {} as UserType,
+  user: {} as User,
   users: [],
   role: 'freelancer',
   toggleOpenSidebar: false,
@@ -24,10 +24,10 @@ export const user = createSlice({
   reducers: {
     reset: () => initialState,
 
-    updateUserData: (state, action: PayloadAction<UserType>) => {
+    updateUserData: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
-    setUsers: (state, action: PayloadAction<UserType[]>) => {
+    setUsers: (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
     },
     setRole: (state, action: PayloadAction<string>) => {
