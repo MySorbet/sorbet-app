@@ -11,6 +11,7 @@ import type { User } from '@/types';
 import { API_URL } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import { Loader } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -23,8 +24,8 @@ const schema = z.object({
     .string()
     .max(60, 'Bio must be at most 60 characters')
     .min(5, 'Bio must be at least 5 characters'),
-  location: z.string().min(1, 'Location is required'),
-  skills: z.array(z.string()).min(1, 'At least one skill is required'),
+  city: z.string().min(1, 'Location is required'),
+  tags: z.array(z.string()).min(1, 'At least one skill is required'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -48,6 +49,7 @@ const initUser = {
   tags: [''],
   role: '',
   nearWallet: '',
+  city: '',
 };
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
@@ -60,13 +62,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [userData, setUserData] = useState<User>(initUser);
   const [image, setImage] = useState(userInfo?.profileImage);
   const [file, setFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
-    setValue,
+    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -83,38 +86,32 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     });
   };
 
-  const onSubmit = async (e: any) => {
-    let userToPost = userData;
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    let userToUpdate = userData;
     let profileImgRes = '';
-    let profileBannerImgRes = '';
-    const bucketName = config.gcpProfileBucketName ?? 'sorbet_profile';
 
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('userId', userData.id + Date.now().toString());
-      formData.append('bucketName', bucketName);
-
-      const res = await uploadProfileImageAsync(formData);
-      profileImgRes = res.data.fileUrl;
-    }
-
-    userToPost = {
+    userToUpdate = {
       ...userData,
-      profileBannerImage: profileBannerImgRes
-        ? profileBannerImgRes
-        : userData.profileBannerImage,
       profileImage: profileImgRes ? profileImgRes : userData.profileImage,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      city: data.city,
+      tags: data.tags,
+      bio: data.bio,
     };
 
     const apiUrl = `${API_URL}/user/${userData.id}`;
     try {
-      const res = await axios.patch(apiUrl, userToPost);
+      const res = await axios.patch(apiUrl, userToUpdate);
       dispatch(updateUserData(res.data));
+      handleModalVisisble(false);
     } catch (err) {
-      // console.log(err);
+      alert(
+        'Unable to save changes to your profile due to an issue at our end, please try again soon.'
+      );
     } finally {
-      // setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -149,7 +146,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
-      <DialogContent>
+      <DialogContent className={isSubmitting ? 'opacity-50' : ''}>
+        {' '}
         <DialogHeader className='text-2xl font-semibold'>
           Edit Profile
         </DialogHeader>
@@ -240,7 +238,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   Where are you located?
                 </label>
                 <Controller
-                  name='location'
+                  name='city'
                   control={control}
                   render={({ field }) => (
                     <InputLocation
@@ -251,13 +249,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onPlaceSelected={(place) =>
                         console.log(JSON.stringify(place))
                       }
-                      defaultValue={field.value}
+                      defaultValue={userInfo.city}
                     />
                   )}
                 />
-                {errors.location && (
+                {errors.city && (
                   <p className='text-xs text-red-500 mt-1'>
-                    {errors.location.message}
+                    {errors.city.message}
                   </p>
                 )}
               </div>
@@ -284,7 +282,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </div>
               <div className='item w-full'>
                 <Controller
-                  name='skills'
+                  name='tags'
                   control={control}
                   render={({ field }) => (
                     <InputSkills
@@ -296,14 +294,16 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     />
                   )}
                 />
-                {errors.skills && (
+                {errors.tags && (
                   <p className='text-xs text-red-500 mt-1'>
-                    {errors.skills.message}
+                    {errors.tags.message}
                   </p>
                 )}
               </div>
               <div className='w-full'>
-                <Button className='w-full bg-sorbet'>Save Changes</Button>
+                <Button className='w-full bg-sorbet' disabled={isSubmitting}>
+                  {isSubmitting ? <Loader /> : 'Save Changes'}
+                </Button>
               </div>
             </div>
           </form>
