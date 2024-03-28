@@ -23,9 +23,19 @@ interface SidebarProps {
 const SidebarHeaderOption: React.FC<{
   label: string;
   icon: React.ReactNode;
-}> = ({ label, icon }) => {
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  comingSoon?: boolean;
+}> = ({ label, icon, comingSoon, onClick }) => {
   return (
-    <div className='bg-[#FEFEFE] rounded-xl border border-1 border-gray-200 p-3 cursor-pointer hover:bg-gray-100'>
+    <div
+      className='bg-[#FEFEFE] rounded-xl border border-1 border-gray-200 p-3 cursor-pointer hover:bg-gray-100 relative'
+      onClick={onClick}
+    >
+      {comingSoon && (
+        <div className='absolute top-0 right-0 transform rotate-45 translate-x-1/4 -translate-y-1/4 bg-sorbet px-1 py-1 text-xs text-white rounded-xl font-semibold'>
+          Soon
+        </div>
+      )}
       <div className='flex flex-col gap-1 justify-center items-center text-sorbet font-semibold'>
         <div>{icon}</div>
         <div className='text-sm'>{label}</div>
@@ -46,15 +56,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
     router.push('/signin');
   };
 
+  const handleProfileClicked = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    dispatch(setOpenSidebar(false));
+    router.push('/profile');
+  };
+
   return (
     <div
-      className={`fixed left-0 z-50 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
+      className={`fixed left-0 z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
         show ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
       }`}
       onClick={() => dispatch(setOpenSidebar(false))}
     >
       <div
-        className={`right-0 z-50 m-6 flex h-[calc(100%-48px)] lg:w-[420px] sm:w-100 flex-col items-start justify-between gap-6 overflow-y-auto rounded-[32px] bg-[#F9FAFB] p-8 text-black ${
+        className={`right-0 z-40 m-6 flex h-[calc(100%-48px)] lg:w-[420px] sm:w-100 flex-col items-start justify-between gap-6 overflow-y-auto rounded-[32px] bg-[#F9FAFB] p-8 text-black ${
           show ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
@@ -94,15 +110,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   <SidebarHeaderOption
                     label='Wallet'
                     icon={<WalletMinimal />}
+                    comingSoon
                   />
                 </div>
                 <div className='col-span-1'>
-                  <SidebarHeaderOption label='My Gigs' icon={<LayoutGrid />} />
+                  <SidebarHeaderOption
+                    label='My Gigs'
+                    icon={<LayoutGrid />}
+                    comingSoon
+                  />
                 </div>
                 <div className='col-span-1'>
                   <SidebarHeaderOption
                     label='My Profile'
                     icon={<CircleArrowRight />}
+                    onClick={handleProfileClicked}
                   />
                 </div>
               </div>
