@@ -22,7 +22,7 @@ const schema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   bio: z
     .string()
-    .max(60, 'Bio must be at most 60 characters')
+    .max(100, 'Bio must be at most 100 characters')
     .min(5, 'Bio must be at least 5 characters'),
   city: z.string().min(1, 'Location is required'),
   tags: z.array(z.string()).min(1, 'At least one skill is required'),
