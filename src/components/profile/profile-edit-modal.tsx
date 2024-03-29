@@ -33,6 +33,7 @@ type FormData = z.infer<typeof schema>;
 interface ProfileEditModalProps {
   editModalVisible: boolean;
   handleModalVisisble: (open: boolean) => void;
+  user?: User;
 }
 
 const initUser = {
@@ -55,12 +56,14 @@ const initUser = {
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
   handleModalVisisble,
+  user,
 }) => {
   const userInfo = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
 
   const [userData, setUserData] = useState<User>(initUser);
   const [image, setImage] = useState(userInfo?.profileImage);
+  const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -97,7 +100,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       firstName: data.firstName,
       lastName: data.lastName,
       city: data.city,
-      tags: data.tags,
+      tags: skills,
       bio: data.bio,
     };
 
@@ -140,8 +143,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setFile(null);
   };
 
-  const handleTagsChange = (tags: string[]) => {
-    console.log(tags);
+  const handleSkillChange = (skills: string[]) => {
+    setSkills(skills);
   };
 
   return (
@@ -288,9 +291,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     <InputSkills
                       placeholder='Skill (ex: Developer)'
                       handleTagsChange={(tags) => {
-                        field.onChange(tags);
-                        handleTagsChange(tags);
+                        handleSkillChange(tags);
                       }}
+                      initialTags={user?.tags}
                     />
                   )}
                 />
