@@ -4,9 +4,7 @@ import { FormattedResponse } from '../types';
 import axios from 'axios';
 import { config } from '@/lib/config';
 
-export const _API_URL = config.devApiUrl;
-// export const API_URL = `${_API_URL}/api`;
-export const API_URL = `${_API_URL}`;
+export const API_URL = config.devApiUrl;
 
 export const getFormatedResponse = (res: any): FormattedResponse => {
   let response: FormattedResponse;
@@ -30,24 +28,9 @@ export const getFormatedResponse = (res: any): FormattedResponse => {
   return response;
 };
 
-const user = {
-  accessToken:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRldmFyaWYubWVAZ21haWwuY29tIiwiaWQiOiI2Mzk0MmVmZmRjZTAwNTkyOGUyZDNhZTEiLCJpYXQiOjE2NzA3NTE2ODIsImV4cCI6MTY3MDgzODA4Mn0.mRveNOT1swTpfpkliWVf628nFvweEzPywyV6WQXv71A',
-  bio: 'Developer',
-  email: 'devarif.me@gmail.com',
-  firstName: 'Md Arif',
-  lastName: 'Hossain',
-  profileImage: null,
-};
 
-export const apiReqHeader = {
-  headers: {
-    Authorization: `Bearer ${user.accessToken}`,
-  },
-};
-
-export const runApi = async (type: string, url: string, reqBody?: any) => {
-  // console.log(type, url, reqBody)
+export const runApi = async (type: string, url: string, reqBody?: any, headers?: any) => {
+  const apiReqHeader = { headers };
   try {
     let res: any;
     if (type === 'GET') {
@@ -59,7 +42,6 @@ export const runApi = async (type: string, url: string, reqBody?: any) => {
     } else if (type === 'DELETE') {
       res = await axios.delete(url, apiReqHeader);
     }
-    // console.log(res)
     return getFormatedResponse(res);
   } catch (error: any) {
     console.log(error);

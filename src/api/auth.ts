@@ -36,3 +36,10 @@ export const signUpWithWallet = async (
   const res = await runApi('POST', `${API_URL}/auth/signup/wallet`, reqBody);
   return res;
 };
+
+export const fetchUserDetails = async (token: string) => {
+  const headers = { Authorization: `Bearer ${token}` };
+  const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
+  return res;
+};
+

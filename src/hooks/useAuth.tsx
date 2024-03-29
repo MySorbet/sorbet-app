@@ -1,15 +1,16 @@
 import { useLocalStorage } from './useLocalStorage';
-import { signInAsync, signInWithWallet } from '@/api/auth';
+import { fetchUserDetails, signInAsync, signInWithWallet } from '@/api/auth';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
-import { ReactNode, createContext, useContext, useMemo } from 'react';
+import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
 
 const AuthContext = createContext({
   user: null as User | null,
   accessToken: null as string | null,
+  loading: false as boolean,
   loginWithEmail: async (email: string): Promise<string> => {
     return '';
   },
@@ -17,10 +18,14 @@ const AuthContext = createContext({
     return '';
   },
   logout: () => {},
+  checkAuth: async (): Promise<User | null> => {
+    return null;
+  },
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null);
+  const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useLocalStorage<string | null>(
     'access_token',
     null
@@ -70,12 +75,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       return 'Failed to connect wallet or log in';
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkAuth = async () => {
+    if (!accessToken) {
+      return null;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetchUserDetails(accessToken as string);
+      if (!response.data || response.data.user === undefined) {
+        throw new Error('No user found for access token');
+      }
+
+      const authenticatedUser = response.data.user as User;
+
+      setUser(authenticatedUser);
+      return authenticatedUser;
+    } catch (error) {
+      return null;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => {
     setUser(null);
     setAccessToken(null);
+    setLoading(false);
   };
 
   const value = useMemo(
@@ -85,8 +117,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loginWithEmail,
       loginWithWallet,
       logout,
+      loading,
+      checkAuth,
     }),
-    [user, accessToken]
+    [user, accessToken, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
