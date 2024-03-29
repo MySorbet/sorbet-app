@@ -72,9 +72,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     handleSubmit,
     formState: { errors },
     control,
-    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      bio: user?.bio,
+      city: user?.city,
+      tags: user?.tags,
+    },
   });
 
   useEffect(() => {
