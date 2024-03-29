@@ -30,11 +30,19 @@ export const InputTags = ({
 
       if (
         userInput.trim() !== '' &&
-        userInput.length <= 12 &&
+        userInput.length <= 50 &&
         tags.length < maxTags
       ) {
         addTag(userInput);
         setUserInput('');
+      } else {
+        if (userInput.length > 50) {
+          alert('Skill must be less than 50 characters');
+        }
+
+        if (tags.length >= 5) {
+          alert('You can only add a max of 5 skills');
+        }
       }
     }
   };
@@ -49,7 +57,7 @@ export const InputTags = ({
           placeholder={
             tags.length < maxTags
               ? placeholder
-              : `You can only enter max. of ${maxTags} tags`
+              : `You can only enter max. of ${maxTags} skills`
           }
           className='w-full border-0 focus:outline-none'
           onKeyDown={handleKeyPress}
@@ -64,7 +72,7 @@ export const InputTags = ({
         {tags.map((tag: string, index: number) => (
           <span
             key={`${index}-${tag}`}
-            className='inline-flex items-start justify-start px-3 py-1 rounded-[32px] text-sm shadow-sm font-medium bg-sorbet text-white mr-1'
+            className='mt-1 inline-flex items-start justify-start px-3 py-1 rounded-[32px] text-sm shadow-sm font-medium bg-sorbet text-white mr-1'
           >
             {tag}
             <button
