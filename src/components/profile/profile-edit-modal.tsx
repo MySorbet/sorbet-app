@@ -1,16 +1,15 @@
 import { uploadProfileImageAsync } from '@/api/images';
 import { deleteProfileImageAsync } from '@/api/user';
+import { updateUser } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { config } from '@/lib/config';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import type { User } from '@/types';
-import { API_URL } from '@/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -67,6 +66,23 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const updateProfileMutation = useMutation({
+    mutationFn: (userToUpdate: User) =>
+      updateUser(userToUpdate, userToUpdate.id),
+    onSuccess: (user: User) => {
+      dispatch(updateUserData(user));
+      handleModalVisisble(false);
+    },
+    onError: (error: any) => {
+      alert(
+        'Unable to save changes to your profile due to an issue at our end, please try again soon.'
+      );
+    },
+    onSettled: () => {
+      setIsSubmitting(false);
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -83,11 +99,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     },
   });
 
-  useEffect(() => {
-    setUserData(userInfo);
-    setImage(userInfo.profileImage);
-  }, [userInfo]);
-
   const onChange = (e: any) => {
     setUserData({
       ...userData,
@@ -97,30 +108,22 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    let userToUpdate = userData;
     let profileImgRes = '';
 
-    userToUpdate = {
-      ...userData,
-      profileImage: profileImgRes ? profileImgRes : userData.profileImage,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      city: data.city,
-      tags: skills,
-      bio: data.bio,
-    };
+    if (user) {
+      const userToUpdate = {
+        ...user,
+        profileImage: profileImgRes ? profileImgRes : userData.profileImage,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        city: data.city,
+        tags: skills,
+        bio: data.bio,
+      };
 
-    const apiUrl = `${API_URL}/user/${userData.id}`;
-    try {
-      const res = await axios.patch(apiUrl, userToUpdate);
-      dispatch(updateUserData(res.data));
-      handleModalVisisble(false);
-    } catch (err) {
-      alert(
-        'Unable to save changes to your profile due to an issue at our end, please try again soon.'
-      );
-    } finally {
-      setIsSubmitting(false);
+      updateProfileMutation.mutate(userToUpdate);
+    } else {
+      alert('Unable to update profile details right now.');
     }
   };
 
@@ -258,7 +261,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onPlaceSelected={(place) =>
                         console.log(JSON.stringify(place))
                       }
-                      defaultValue={userInfo.city}
+                      defaultValue={
+                        userInfo && userInfo.city ? userInfo.city : ''
+                      }
                     />
                   )}
                 />

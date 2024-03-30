@@ -1,6 +1,7 @@
 import { API_URL, runApi } from '@/utils';
 
 import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
+import { User } from '@/types';
 
 export const signUpAsync = async ({
   firstName,
@@ -42,4 +43,3 @@ export const fetchUserDetails = async (token: string) => {
   const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
   return res;
 };
-

@@ -29,8 +29,22 @@ export const getFormatedResponse = (res: any): FormattedResponse => {
 };
 
 
-export const runApi = async (type: string, url: string, reqBody?: any, headers?: any) => {
-  const apiReqHeader = { headers };
+export const runApi = async (type: string, url: string, reqBody?: any, headers?: any, includeAuth: boolean = false) => {
+  let apiReqHeader = { headers };
+
+  if (includeAuth) {
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
+      apiReqHeader = {
+        ...apiReqHeader,
+        headers: {
+          ...apiReqHeader.headers,
+          Authorization: `Bearer ${accessToken.replace(/['"]+/g, '')}`,
+        },
+      };
+    }
+  }
+
   try {
     let res: any;
     if (type === 'GET') {

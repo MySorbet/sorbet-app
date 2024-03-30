@@ -8,8 +8,11 @@ import { store } from '@/redux/store';
 import '@/styles/colors.css';
 import '@/styles/globals.css';
 import '@/styles/near-modal-ui.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -35,7 +38,9 @@ export default function RootLayout({
           />
           <WalletSelectorContextProvider>
             <AuthProvider>
-              <Container>{children}</Container>
+              <QueryClientProvider client={queryClient}>
+                <Container>{children}</Container>
+              </QueryClientProvider>
             </AuthProvider>
           </WalletSelectorContextProvider>
           <ToastContainer />
