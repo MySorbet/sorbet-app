@@ -5,19 +5,24 @@ import React, { useEffect } from 'react';
 
 interface InputSkillsProps {
   placeholder?: string;
+  initialTags?: string[];
   handleTagsChange: (values: string[]) => void;
 }
 
 export const InputSkills: React.FC<InputSkillsProps> = ({
   placeholder,
+  initialTags,
   handleTagsChange,
 }) => {
   const MAX_TAGS = 5;
-  const { tags, handleAddTag, handleRemoveTag } = useTagInput(MAX_TAGS);
+  const { tags, handleAddTag, handleRemoveTag } = useTagInput(
+    MAX_TAGS,
+    initialTags
+  );
 
   useEffect(() => {
     handleTagsChange(tags);
-  }, [tags]);
+  }, [tags, handleTagsChange]);
 
   return (
     <div className='w-full flex flex-col gap-2 items-start'>

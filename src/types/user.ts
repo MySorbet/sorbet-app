@@ -12,4 +12,5 @@ export interface User {
   tempLocation: string;
   role: string;
   nearWallet: string;
+  city: string;
 }

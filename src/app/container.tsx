@@ -13,6 +13,7 @@ const Container: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     if (!user && !window.location.pathname.includes('signup')) {
       router.push('/signin');
+    } else {
     }
   }, [user, router]);
 

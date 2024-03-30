@@ -1,3 +1,4 @@
+import { User } from '@/types';
 import { API_URL, runApi } from '@/utils';
 // [POST] /api/auth/signup
 
@@ -34,3 +35,9 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
   const res = await runApi('POST', `${API_URL}/user/searchUsers`, reqBody);
   return res;
 };
+
+export const updateUser = async (userToUpdate: User, userId: string) => {
+  const url = `${API_URL}/users/${userId}`;
+  const response = await runApi('PATCH', url, userToUpdate, undefined, true);
+  return response.data;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-const useTagInput = (maxTags = 5) => {
-  const [tags, setTags] = useState<string[]>([]);
+const useTagInput = (maxTags = 5, initialTags: string[] = []) => {
+  const [tags, setTags] = useState<string[]>(initialTags);
 
   const handleAddTag = (newTag: string) => {
     if (newTag && !tags.includes(newTag) && tags.length < maxTags) {
