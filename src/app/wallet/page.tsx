@@ -1,5 +1,6 @@
 'use client';
 
+import { DataTable } from '@/app/wallet/data-table';
 import { Sidebar } from '@/components';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
@@ -48,12 +49,23 @@ const Home = () => {
           <div className='border-b-1 border-b border-gray-200 p-10 text-2xl'>
             Transaction History
           </div>
-          <div className='border-b-1 border-b border-gray-200 h-[50vh]'>
-            <div className='flex justify-center items-center h-full'>
-              No Transactions
-            </div>
+          <div className='border-b-1 border-b border-gray-200 min-h-[50vh]'>
+            <DataTable
+              currentPage={1}
+              totalPages={10}
+              onPageChange={(page) => console.log(page)}
+              transactions={[
+                {
+                  id: '1',
+                  timestamp: '24/02/2024',
+                  symbol: 'USDC',
+                  txnId: 'random',
+                  amount: '2,564.3',
+                },
+              ]}
+            />
           </div>
-          <div className='p-8 flex flex-col gap-3'>
+          {/* <div className='p-8 flex flex-col gap-3'>
             <div className='block lg:hidden flex flex-row gap-1 justify-center align-center'>
               <Button variant='ghost' size='icon'>
                 1
@@ -112,7 +124,7 @@ const Home = () => {
                 <MoveRight />
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
