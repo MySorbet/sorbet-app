@@ -6,7 +6,7 @@ import React from 'react';
 
 export const WalletContainer = () => {
   return (
-    <div className='rounded-xl bg-white border border-2 border-gray-200'>
+    <div className='shadow-sm rounded-xl bg-white border border-2 border-gray-200'>
       <div className='flex flex-col lg:flex-row lg:justify-between gap-3 items-center justify-center lg:px-16 rounded-tl-xl rounded-tr-xl bg-[#0D0449] min-h-40 text-white'>
         <div className='flex flex-row gap-2 items-center justify-center'>
           <div>
@@ -23,11 +23,11 @@ export const WalletContainer = () => {
           </div>
         </div>
         <div className='flex flex-row gap-2'>
-          <Button className='bg-sorbet gap-2'>
+          <Button className='bg-sorbet gap-2 hover:bg-sorbet hover:brightness-125'>
             Send
             <Send size={18} />
           </Button>
-          <Button className='bg-sorbet gap-2 hover:bg-gray-100'>
+          <Button className='bg-sorbet gap-2 hover:bg-sorbet hover:brightness-125'>
             Top Up
             <Plus size={19} />
           </Button>

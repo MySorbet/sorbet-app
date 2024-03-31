@@ -59,7 +59,7 @@ export const CreditCardForm = () => {
   };
 
   return (
-    <div className='credit-card-form bg-white rounded-xl px-4 py-8 lg:p-12 flex flex-col gap-8'>
+    <div className='shadow-sm border border-2 border-gray-200 credit-card-form bg-white rounded-xl px-4 py-8 lg:p-12 flex flex-col gap-8'>
       <div className='text-center text-xl'>Credit Card</div>
       <div className=''>
         <Cards
@@ -73,7 +73,7 @@ export const CreditCardForm = () => {
       </div>
       {!isCardAdded ? (
         <Button
-          className='gap-1 bg-sorbet'
+          className='gap-1 bg-sorbet hover:bg-sorbet hover:brightness-125'
           onClick={() => setIsCardAdded(true)}
         >
           <Plus size={18} /> Add Card
@@ -224,7 +224,10 @@ export const CreditCardForm = () => {
                 <p className='text-red-500 text-xs'>{errors.zipCode.message}</p>
               )}
             </div>
-            <Button className='bg-sorbet w-full' type='submit'>
+            <Button
+              className='bg-sorbet w-full hover:bg-sorbet hover:brightness-125'
+              type='submit'
+            >
               Save Card
             </Button>
           </form>
