@@ -1,6 +1,6 @@
 'use client';
 
-import CreditCardForm from '@/app/wallet/credit-card';
+import { CreditCardForm } from '@/app/wallet/credit-card';
 import { WalletContainer } from '@/app/wallet/wallet-container';
 import { Sidebar } from '@/components';
 import { Header } from '@/components/header';

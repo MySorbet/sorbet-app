@@ -10,6 +10,8 @@
     position: relative;
     transform-style: preserve-3d;
     transition: all 0.4s linear;
+    background: linear-gradient(25deg, #8676FB, #AB7BFF);
+    border-radius: 10px;
     width: 290px; }
     .rccs__card--front, .rccs__card--back {
       -webkit-backface-visibility: hidden;

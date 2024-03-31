@@ -1,21 +1,49 @@
 import './styles.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
 import React, { useState } from 'react';
 import Cards from 'react-credit-cards';
 import type { Focused } from 'react-credit-cards';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
 
-const CreditCardForm = () => {
+const schema = z.object({
+  cardName: z.string().min(1, { message: 'Name is required' }),
+  cardNumber: z
+    .string()
+    .length(16, { message: 'Card number must be 16 digits' })
+    .regex(/^\d{16}$/, {
+      message: 'Card number is not valid',
+    }),
+  expiry: z.string().regex(/^(0[1-9]|1[0-2])([0-9]{2})$/, {
+    message: 'Expiry date is not valid',
+  }),
+  cvc: z.string().length(3, { message: 'CVC must be 3 digits' }),
+  zipCode: z.string().min(1, { message: 'Zip Code is required' }),
+});
+
+export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvc, setCvc] = useState('');
   const [focus, setFocus] = useState<Focused | undefined>(undefined);
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
   const handleInputFocus = (e: any) => {
-    const allowedFocusFields = ['number', 'name', 'expiry', 'cvc'];
+    const allowedFocusFields = [
+      'cardNumber',
+      'cardName',
+      'expiry',
+      'cvc',
+      'zipCode',
+    ];
     const focusValue = e.target.name;
     if (allowedFocusFields.includes(focusValue)) {
       setFocus(focusValue);
@@ -25,36 +53,21 @@ const CreditCardForm = () => {
     }
   };
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'cardNumber':
-        setCardNumber(value);
-        break;
-      case 'cardName':
-        setCardName(value);
-        break;
-      case 'expiry':
-        setExpiry(value);
-        break;
-      case 'cvc':
-        setCvc(value);
-        break;
-      default:
-        break;
-    }
+  const onSubmit = (data: any) => {
+    console.log(data);
+    setIsCardAdded(false);
   };
 
   return (
-    <div className='credit-card-form bg-white rounded-xl p-12 flex flex-col gap-8'>
+    <div className='credit-card-form bg-white rounded-xl px-4 py-8 lg:p-12 flex flex-col gap-8'>
       <div className='text-center text-xl'>Credit Card</div>
       <div className=''>
         <Cards
-          number={cardNumber}
-          name={cardName}
+          number={control._formValues.cardNumber || ''}
+          name={control._formValues.cardName || ''}
           issuer={undefined}
-          expiry={expiry}
-          cvc={cvc}
+          expiry={control._formValues.expiry || ''}
+          cvc={control._formValues.cvc || ''}
           focused={focus}
         />
       </div>
@@ -66,100 +79,157 @@ const CreditCardForm = () => {
           <Plus size={18} /> Add Card
         </Button>
       ) : (
-        <div className='w-full'>
-          <form>
+        <div className='w-full h-full'>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col gap-2 mb-4'>
               <label className='text-sm text-gray-700'>Full Name</label>
-              <Input
-                type='text'
+              <Controller
                 name='cardName'
-                placeholder='Full Name'
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type='text'
+                    placeholder='Full Name'
+                    onFocus={handleInputFocus}
+                    className={errors.cardName ? 'border-red-500' : ''}
+                  />
+                )}
               />
+              {errors.cardName &&
+                typeof errors.cardName.message === 'string' && (
+                  <p className='text-red-500 text-xs'>
+                    {errors.cardName.message}
+                  </p>
+                )}{' '}
             </div>
             <div className='flex flex-col gap-2 mb-4'>
               <label className='text-sm text-gray-700'>Card Number</label>
-              <Input
-                type='tel'
+              <Controller
                 name='cardNumber'
-                placeholder='****-****-****-****'
-                onChange={(e) => {
-                  let value = e.target.value
-                    .replace(/\D/g, '')
-                    .substring(0, 16);
-                  const formattedValue = value
-                    ? value.match(/.{1,4}/g)?.join('-') ?? ''
-                    : '';
-                  e.target.value = value; // Keep the actual value without hyphens for processing
-                  handleInputChange(e);
-                  e.target.value = formattedValue; // Display value with hyphens for user
-                }}
-                onFocus={handleInputFocus}
-                pattern='\d{4}-\d{4}-\d{4}-\d{4}'
-                maxLength={19}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    value={
+                      field.value &&
+                      field.value
+                        .replace(/\D/g, '')
+                        .replace(/(\d{4})(?=\d)/g, '$1-')
+                    }
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value
+                          .replace(/\D/g, '')
+                          .replace(/(\d{4})(?=\d)/g, '$1')
+                      )
+                    }
+                    type='tel'
+                    placeholder='****-****-****-****'
+                    maxLength={19}
+                    onFocus={handleInputFocus}
+                    className={errors.cardNumber ? 'border-red-500' : ''}
+                  />
+                )}
               />
+              {errors.cardNumber &&
+                typeof errors.cardNumber.message === 'string' && (
+                  <p className='text-red-500 text-xs'>
+                    {errors.cardNumber.message}
+                  </p>
+                )}
             </div>
             <div className='flex flex-row gap-2 mb-4'>
               <div className='flex flex-col gap-2'>
                 <label className='text-sm text-gray-700'>Exp Date</label>
-                <Input
-                  type='text'
+                <Controller
                   name='expiry'
-                  placeholder='MM/DD'
-                  onChange={(e) => {
-                    let value = e.target.value;
-                    const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-                    // Automatically add slash after MM
-                    if (value.length === 2 && !value.includes('/')) {
-                      value = value + '/';
-                      e.target.value = value;
-                    }
-                    if (regex.test(value) || value === '') {
-                      handleInputChange(e);
-                    }
-                  }}
-                  onFocus={handleInputFocus}
-                  maxLength={5}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      value={
+                        field.value &&
+                        field.value
+                          .replace(/\D/g, '')
+                          .replace(/^(1[0-2]|0[1-9])([0-3][0-9])$/, '$1/$2')
+                          .substring(0, 5)
+                      }
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value
+                            .replace(/\D/g, '')
+                            .replace(/^(1[0-2]|0[1-9])([0-3][0-9])$/, '$1$2')
+                            .substring(0, 4)
+                        )
+                      }
+                      type='text'
+                      placeholder='MM/DD'
+                      onFocus={handleInputFocus}
+                      className={errors.expiry ? 'border-red-500' : ''}
+                    />
+                  )}
                 />
+                {errors.expiry && typeof errors.expiry.message === 'string' && (
+                  <p className='text-red-500 text-xs'>
+                    {errors.expiry.message}
+                  </p>
+                )}
               </div>
               <div className='flex flex-col gap-2'>
                 <label className='text-sm text-gray-700'>CVC</label>
-                <Input
-                  type='text'
+                <Controller
                   name='cvc'
-                  placeholder='CVC'
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 3);
-                    e.target.value = value;
-                    handleInputChange(e);
-                  }}
-                  onFocus={handleInputFocus}
-                  maxLength={3}
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      value={
+                        field.value &&
+                        field.value.replace(/\D/g, '').substring(0, 3)
+                      }
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value.replace(/\D/g, '').substring(0, 3)
+                        )
+                      }
+                      type='text'
+                      placeholder='CVC'
+                      onFocus={handleInputFocus}
+                      className={errors.cvc ? 'border-red-500' : ''}
+                    />
+                  )}
                 />
+                {errors.cvc && typeof errors.cvc.message === 'string' && (
+                  <p className='text-red-500 text-xs'>{errors.cvc.message}</p>
+                )}
               </div>
             </div>
             <div className='flex flex-col gap-2 mb-4'>
               <label className='text-sm text-gray-700'>Zip Code</label>
-              <Input
-                type='text'
+              <Controller
                 name='zipCode'
-                placeholder='Zipcode'
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type='text'
+                    placeholder='Zipcode'
+                    onFocus={handleInputFocus}
+                    className={errors.zipCode ? 'border-red-500' : ''}
+                  />
+                )}
               />
+              {errors.zipCode && typeof errors.zipCode.message === 'string' && (
+                <p className='text-red-500 text-xs'>{errors.zipCode.message}</p>
+              )}
             </div>
+            <Button className='bg-sorbet w-full' type='submit'>
+              Save Card
+            </Button>
           </form>
-          <Button
-            className='bg-sorbet w-full'
-            onClick={() => setIsCardAdded(false)}
-          >
-            Save Card
-          </Button>
         </div>
       )}
     </div>
   );
 };
-
-export default CreditCardForm;
