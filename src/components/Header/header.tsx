@@ -9,7 +9,7 @@ export const Header = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className='bg-[#F9FAFB]'>
+    <div className='bg-[#F2F3F7]'>
       <div className='flex w-full justify-between container mx-auto py-4'>
         <div className='flex gap-6'>
           <img src='/svg/logo.svg' alt='logo' width={44} height={44} />
