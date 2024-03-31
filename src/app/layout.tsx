@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html>
       <Head />
-      <body className='bg-[#F9FAFB]'>
+      <body className='bg-[#F2F3F7]'>
         <Provider store={store}>
           <ToastContainer
             position='top-right'
