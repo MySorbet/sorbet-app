@@ -58,8 +58,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
 
   const handleProfileClicked = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    dispatch(setOpenSidebar(false));
+    handleSidebarClose();
     router.push('/profile');
+  };
+
+  const handleWalletClicked = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    handleSidebarClose();
+    router.push('/wallet');
   };
 
   const handleSidebarClose = () => {
@@ -117,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   <SidebarHeaderOption
                     label='Wallet'
                     icon={<WalletMinimal />}
-                    comingSoon
+                    onClick={handleWalletClicked}
                   />
                 </div>
                 <div className='col-span-1'>
