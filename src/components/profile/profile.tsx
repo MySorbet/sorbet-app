@@ -38,9 +38,11 @@ export const Profile: React.FC = () => {
           </>
         )}
 
-        <div className={cn('mt-24', editMode ? 'mb-24' : '')}>
-          <WidgetContainer editMode={editMode} />
-        </div>
+        {user && (
+          <div className={cn('mt-24', editMode ? 'mb-24' : '')}>
+            <WidgetContainer editMode={editMode} />
+          </div>
+        )}
       </div>
     </div>
   );
