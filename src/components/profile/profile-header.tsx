@@ -37,7 +37,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <div className='flex flex-row gap-2 justify-center'>
         {user.tags &&
           user.tags.map((tag: string) => (
-            <span className='border border-1 border-gray-400 py-1 px-2 rounded-full text-xs'>
+            <span
+              className='border border-1 border-gray-400 py-1 px-2 rounded-full text-xs'
+              key={tag}
+            >
               {tag}
             </span>
           ))}
