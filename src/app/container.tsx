@@ -1,3 +1,4 @@
+import { fetchUserDetails } from '@/api/auth';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -7,15 +8,23 @@ interface Props {
 }
 
 const Container: React.FC<Props> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, accessToken, checkAuth } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user && !window.location.pathname.includes('signup')) {
-      router.push('/signin');
-    } else {
-    }
-  }, [user, router]);
+    const checkUserAndFetchDetails = async () => {
+      if (!user && !window.location.pathname.includes('signup')) {
+        router.push('/signin');
+      } else {
+        if (accessToken) {
+          const user = await checkAuth();
+          console.log('Found user', user);
+        }
+      }
+    };
+
+    checkUserAndFetchDetails();
+  }, [router, accessToken]);
 
   return <>{children}</>;
 };

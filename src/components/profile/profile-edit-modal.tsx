@@ -57,11 +57,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   handleModalVisisble,
   user,
 }) => {
-  const userInfo = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
 
   const [userData, setUserData] = useState<User>(initUser);
-  const [image, setImage] = useState(userInfo?.profileImage);
+  const [image, setImage] = useState(user?.profileImage);
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -135,11 +134,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     );
     const i = e.target.files[0];
     setImage(URL.createObjectURL(i));
-  };
-
-  const onClose = () => {
-    setUserData(userInfo);
-    setImage(userInfo.profileImage);
   };
 
   const deleteImage = async (e: any) => {
@@ -261,9 +255,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onPlaceSelected={(place) =>
                         console.log(JSON.stringify(place))
                       }
-                      defaultValue={
-                        userInfo && userInfo.city ? userInfo.city : ''
-                      }
+                      defaultValue={user && user.city ? user.city : ''}
                     />
                   )}
                 />
