@@ -9,6 +9,12 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 import type { Layout as WidgetLayout } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
+const breakpoints = {
+  xs: 480,
+  sm: 768,
+  md: 996,
+  lg: 1200,
+};
 
 interface WidgetContainerProps {
   className?: string;
@@ -27,7 +33,7 @@ interface ExtendedWidgetLayout extends WidgetLayout {
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
-  items = 0,
+  items = 5,
   rowHeight = 120,
   cols = 10,
   editMode,
@@ -38,6 +44,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
+  const [previousBreakpoint, setPreviousBreakpoint] = useState('lg');
 
   const generateLayout = useCallback((): ExtendedWidgetLayout[] => {
     return Array.from({ length: items }, (_, i): ExtendedWidgetLayout => {
@@ -47,8 +55,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         y: 0,
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
-        type: WidgetType.InstagramProfile,
-        content: {},
+        type: WidgetType.Dribbble,
+        content: {
+          image:
+            'https://cdn.dribbble.com/userupload/13957177/file/original-aff79f2b861496ad136568ba5e059543.png?resize=752x',
+        },
         static: !editMode,
         isResizable: false,
         isDraggable: editMode,
@@ -159,6 +170,34 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       alert(error);
     }
   }, [error]);
+
+  useEffect(() => {
+    const calculateBreakpoint = () => {
+      const width = window.innerWidth;
+      let breakpoint = 'lg';
+      if (width < breakpoints.xs) breakpoint = 'xs';
+      else if (width >= breakpoints.xs && width < breakpoints.sm)
+        breakpoint = 'sm';
+      else if (width >= breakpoints.sm && width < breakpoints.md)
+        breakpoint = 'md';
+      else if (width >= breakpoints.md && width < breakpoints.lg)
+        breakpoint = 'lg';
+
+      if (breakpoint !== currentBreakpoint) {
+        setCurrentBreakpoint(breakpoint);
+      }
+    };
+
+    calculateBreakpoint();
+
+    window.addEventListener('resize', calculateBreakpoint);
+
+    return () => window.removeEventListener('resize', calculateBreakpoint);
+  }, [window.innerWidth]);
+
+  useEffect(() => {
+    console.log(currentBreakpoint);
+  }, [currentBreakpoint]);
 
   return (
     <div ref={containerRef}>
