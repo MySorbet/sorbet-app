@@ -30,11 +30,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <h1 className='text-2xl font-semibold'>{`${user.firstName} ${user.lastName}`}</h1>
       </div>
       <div className='flex justify-center'>
-        <div className='w-5/12'>
+        <div className='lg:w-5/12'>
           <h1 className='text-3xl font-semibold text-center'>{user.bio}</h1>
         </div>
       </div>
-      <div className='flex flex-row gap-2 justify-center'>
+      <div className='lg:flex lg:flex-row gap-2 justify-center grid grid-cols-2 lg:grid-cols-none'>
         {user.tags &&
           user.tags.map((tag: string) => (
             <span
