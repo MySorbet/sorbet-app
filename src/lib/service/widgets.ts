@@ -35,54 +35,90 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
 export const getDribbleShot = async({ url }: GetDribbleShotType) => {
   const body: GetDribbleShotType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/dribbble`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/dribbble`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getBehanceItem = async({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/behance`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/behance`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getMediumArticleMetadata = async({ url }: GetMediumArticleType) => {
   const body: GetMediumArticleType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/medium`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/medium`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getYouTubeVideoMetadata = async({ url }: GetYouTubeVideoType) => {
   const body: GetYouTubeVideoType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/youtube`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/youtube`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getSubstackMetadata = async({ url }: GetSubstackArticleType) => {
   const body: GetSubstackArticleType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/substack`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/substack`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getSpotifyAlbumDetails = async({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/album`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/album`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getSpotifySongDetails = async({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/song`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/song`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getSoundcloudTrackDetails = async({ url }: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/soundcloud`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/soundcloud`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };
 
 export const getInstagramProfileMetadata = async({ url }: GetInstagramType) => {
   const body: GetInstagramType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/instagram`, body);
-  return response;
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/instagram`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
 };

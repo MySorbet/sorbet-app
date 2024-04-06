@@ -1,5 +1,6 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
+import { useToast } from '@/components/ui/use-toast';
 import { getWidgetContent } from '@/lib/service';
 import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
@@ -26,6 +27,7 @@ interface WidgetContainerProps {
 }
 
 interface ExtendedWidgetLayout extends WidgetLayout {
+  id: string;
   type: WidgetType;
   loading?: boolean;
   content?: any;
@@ -33,7 +35,7 @@ interface ExtendedWidgetLayout extends WidgetLayout {
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
-  items = 5,
+  items = 0,
   rowHeight = 120,
   cols = 10,
   editMode,
@@ -46,6 +48,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
   const [previousBreakpoint, setPreviousBreakpoint] = useState('lg');
+  const { toast } = useToast();
 
   const generateLayout = useCallback((): ExtendedWidgetLayout[] => {
     return Array.from({ length: items }, (_, i): ExtendedWidgetLayout => {
@@ -63,6 +66,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         static: !editMode,
         isResizable: false,
         isDraggable: editMode,
+        id: '',
       };
     });
   }, [items]);
@@ -87,7 +91,16 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setError(null);
     try {
       const type: WidgetType = parseWidgetTypeFromUrl(url);
-      const content = await getWidgetContent({ url, type });
+      let widget: any;
+      try {
+        widget = await getWidgetContent({ url, type });
+      } catch (error) {
+        toast({
+          title: 'Failed to add widget',
+          description: 'If the issue persists, contact support',
+        });
+        return;
+      }
 
       const widgetToAdd: ExtendedWidgetLayout = {
         i: (layout.length + 1).toString(),
@@ -96,11 +109,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
         type: type,
-        content: content?.data,
+        content: widget.content,
         static: !editMode,
         isResizable: false,
         isDraggable: editMode,
         loading: false,
+        id: widget.id,
       };
 
       setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
@@ -125,7 +139,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         data-grid={item}
       >
         <Widget
-          identifier={item.i}
+          identifier={item.id}
           w={item.w}
           h={item.h}
           type={item.type}
