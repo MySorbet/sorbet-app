@@ -1,3 +1,5 @@
+import type { Layout as WidgetLayout } from 'react-grid-layout';
+
 export interface GetItemTypeBase {
   url: string;
 }
@@ -109,3 +111,9 @@ export const WidgetDimensions: { [key in WidgetSize]: { w: number, h: number } }
   [WidgetSize.C]: { w: 4, h: 2 },
   [WidgetSize.D]: { w: 2, h: 4 },
 };
+
+export interface ExtendedWidgetLayout extends WidgetLayout {
+  type: WidgetType;
+  loading?: boolean;
+  content?: any;
+}

@@ -37,7 +37,7 @@ interface WidgetProps {
   editMode: boolean;
   content?: any;
   loading?: boolean;
-  handleResize: (key: string, w: number, h: number) => void;
+  handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
 }
 
@@ -57,7 +57,7 @@ export const Widget: React.FC<WidgetProps> = ({
   );
 
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
-    handleResize(identifier, w, h);
+    handleResize(identifier, w, h, widgetSize);
     setWidgetSize(widgetSize);
   };
 
