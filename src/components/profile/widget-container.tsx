@@ -1,7 +1,7 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
-import { getWidgetContent } from '@/lib/service';
+import { deleteWidget, getWidgetContent } from '@/lib/service';
 import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
@@ -82,8 +82,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     });
   };
 
-  const handleWidgetRemove = (key: string) => {
-    setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
+  const handleWidgetRemove = async (key: string) => {
+    await deleteWidget(key);
+    setLayout((prevLayout) => prevLayout.filter((item) => item.id !== key));
   };
 
   const handleWidgetAdd = async (url: string) => {

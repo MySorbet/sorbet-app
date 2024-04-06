@@ -33,6 +33,15 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
   }
 };
 
+export const deleteWidget = async (id: string) => {
+  const response = await runApi('DELETE', `${config.devApiUrl}/widgets/${id}`, {}, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+}
+
 export const getDribbleShot = async({ url }: GetDribbleShotType) => {
   const body: GetDribbleShotType = { url };
   const response = await runApi('POST', `${config.devApiUrl}/widgets/dribbble`, body, {}, true);
