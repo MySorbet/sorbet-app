@@ -3,6 +3,7 @@ import {
   BehanceWidget,
   DefaultWidget,
   DribbbleWidget,
+  FigmaWidget,
   GithubWidget,
   InstagramWidget,
   MediumWidget,
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
 import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
+  FigmaWidgetContentType,
   GithubWidgetContentType,
   InstagramWidgetContentType,
   MediumArticleContentType,
@@ -147,6 +149,15 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <GithubWidget
             content={content as GithubWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.Figma:
+        setWidgetContent(
+          <FigmaWidget
+            content={content as FigmaWidgetContentType}
             size={widgetSize}
           />
         );

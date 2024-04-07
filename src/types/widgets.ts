@@ -50,6 +50,12 @@ export interface GithubWidgetContentType {
   image: string;
 }
 
+export interface FigmaWidgetContentType {
+  title: string;
+  description: string;
+  image: string;
+}
+
 export interface YoutubeWidgetContentType {
   title: string;
   thumbnail: string;
@@ -101,6 +107,7 @@ export enum WidgetType {
   Text = 'Text',
   Medium = 'Medium',
   Substack = 'Substack',
+  Figma = 'figma',
 }
 
 export enum WidgetSize {

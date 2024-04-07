@@ -19,6 +19,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Text]: 'text.png',
     [WidgetType.Medium]: 'medium.png',
     [WidgetType.Substack]: 'substack.png',
+    [WidgetType.Figma]: 'figma.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
