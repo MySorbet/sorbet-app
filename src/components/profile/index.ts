@@ -20,6 +20,7 @@ import { SpotifyAlbumWidget } from "./widget-spotify-album";
 import { SpotifySongWidget } from "./widget-spotify-song"; 
 import { SoundcloudWidget } from "./widget-soundcloud"; 
 import { InstagramWidget } from "./widget-instagram"; 
+import { GithubWidget } from "./widget-github"; 
 
 export { 
   Profile, 
@@ -43,5 +44,6 @@ export {
   SpotifySongWidget,
   SoundcloudWidget,
   InstagramWidget,
-  YouTubeIframe
+  YouTubeIframe,
+  GithubWidget
 };

@@ -45,6 +45,11 @@ export interface MediumArticleContentType {
   host: string;
 }
 
+export interface GithubWidgetContentType {
+  title: string;
+  image: string;
+}
+
 export interface YoutubeWidgetContentType {
   title: string;
   thumbnail: string;
