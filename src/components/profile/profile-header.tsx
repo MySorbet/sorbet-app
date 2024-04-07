@@ -57,15 +57,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         ) : (
           <Button className='bg-[#573DF5] px-5'>Hire Me</Button>
         )}
-        {editMode && (
-          <a
-            href='#'
-            className='text-[#573DF5] flex flex-row align-center gap-1 items-center'
-          >
-            <SquareArrowOutUpRight size={16} />
-            <span>Share</span>
-          </a>
-        )}
+        <a
+          href='#'
+          className='text-[#573DF5] flex flex-row align-center gap-1 items-center'
+        >
+          <SquareArrowOutUpRight size={16} />
+          <span>Share</span>
+        </a>
       </div>
     </>
   );

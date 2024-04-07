@@ -192,7 +192,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [editMode]);
 
   useEffect(() => {
-    if (layout.length > 0) {
+    if (layout.length > 0 && editMode) {
       let payload: UpdateWidgetsBulkDto[] = [];
       layout.map((item) =>
         payload.push({

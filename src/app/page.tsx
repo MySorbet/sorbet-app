@@ -1,5 +1,6 @@
 'use client';
 
+import Container from '@/app/container';
 import { Sidebar } from '@/components';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
@@ -13,10 +14,14 @@ const Home = () => {
   return (
     <>
       <Header />
-      {user && <Sidebar show={toggleOpenSidebar} userInfo={user} />}
-      <div>
-        <Profile />
-      </div>
+      {user && (
+        <>
+          <Sidebar show={toggleOpenSidebar} userInfo={user} />
+          <Container>
+            <Profile user={user} canEdit />
+          </Container>
+        </>
+      )}
     </>
   );
 };

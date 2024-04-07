@@ -33,6 +33,15 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
   }
 };
 
+export const getWidgetsByUsername = async(username: string) => {
+  const response = await runApi('GET', `${config.devApiUrl}/widgets/username/${username}`, {}, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
 export const getWidgetsForUser = async(userId: string) => {
   const response = await runApi('GET', `${config.devApiUrl}/widgets/user/${userId}`, {}, {}, true);
   if (response.statusCode >= 200 && response.statusCode < 300) {

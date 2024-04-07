@@ -3,14 +3,15 @@ import {
   ProfileEditModal,
   WidgetContainer,
 } from '@/components/profile';
-import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
+import { User } from '@/types';
 import React, { useState } from 'react';
 
-export const Profile: React.FC = () => {
-  const [editMode, setEditMode] = useState<boolean>(true);
+export const Profile: React.FC<{ user: User; canEdit?: boolean }> = ({
+  user,
+  canEdit = false,
+}) => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  const { user } = useAuth();
 
   const handleProfileEdit = () => {
     setShowEditModal((prev) => !prev);
@@ -28,7 +29,7 @@ export const Profile: React.FC = () => {
             <ProfileHeader
               user={user}
               onEditClick={handleProfileEdit}
-              editMode={editMode}
+              editMode={canEdit}
             />
             <ProfileEditModal
               editModalVisible={showEditModal}
@@ -39,8 +40,8 @@ export const Profile: React.FC = () => {
         )}
 
         {user && (
-          <div className={cn('mt-24', editMode ? 'mb-24' : '')}>
-            <WidgetContainer editMode={editMode} userId={user.id} />
+          <div className={cn('mt-24', canEdit ? 'mb-24' : '')}>
+            <WidgetContainer editMode={canEdit} userId={user.id} />
           </div>
         )}
       </div>
