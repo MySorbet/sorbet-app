@@ -241,10 +241,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
-  useEffect(() => {
-    console.log(currentBreakpoint);
-  }, [currentBreakpoint]);
-
   return (
     <div ref={containerRef}>
       <ReactGridLayout

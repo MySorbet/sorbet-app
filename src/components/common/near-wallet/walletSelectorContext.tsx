@@ -103,8 +103,6 @@ export const WalletSelectorContextProvider: React.FC<{
         distinctUntilChanged()
       )
       .subscribe((nextAccounts) => {
-        console.log('Accounts Update', nextAccounts);
-
         setAccounts(nextAccounts);
       });
 

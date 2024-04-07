@@ -18,7 +18,6 @@ const Container: React.FC<Props> = ({ children }) => {
       } else {
         if (accessToken) {
           const user = await checkAuth();
-          console.log('Found user', user);
         }
       }
     };
