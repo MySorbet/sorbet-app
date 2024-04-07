@@ -107,7 +107,7 @@ export enum WidgetType {
   Text = 'Text',
   Medium = 'Medium',
   Substack = 'Substack',
-  Figma = 'figma',
+  Figma = 'Figma',
 }
 
 export enum WidgetSize {
