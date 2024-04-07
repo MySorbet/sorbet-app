@@ -18,6 +18,9 @@ const Container: React.FC<Props> = ({ children }) => {
       } else {
         if (accessToken) {
           const user = await checkAuth();
+          if (!user) {
+            router.push('/signin');
+          }
         }
       }
     };

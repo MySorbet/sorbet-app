@@ -2,6 +2,7 @@
 
 import Container from '@/app/container';
 import { Sidebar } from '@/components';
+import { Spinner } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useAuth } from '@/hooks';
@@ -21,6 +22,11 @@ const Home = () => {
             <Profile user={user} canEdit />
           </Container>
         </>
+      )}
+      {!user && (
+        <div className='flex w-full h-[100vh] justify-center align-center items-center'>
+          <Spinner />
+        </div>
       )}
     </>
   );
