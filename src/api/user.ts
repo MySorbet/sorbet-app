@@ -19,20 +19,20 @@ export const deleteProfileImageAsync = async (userId: string) => {
   return res;
 };
 
-export const getWidgetsFromUserId = async (userId: string) => {
-  const res = await runApi('GET', `${API_URL}/widgets/findByUserId/${userId}`);
+export const getUsersAll = async () => {
+  const res = await runApi('GET', `${API_URL}/users/getAll`);
   return res;
 };
 
-export const getUsersAll = async () => {
-  const res = await runApi('GET', `${API_URL}/user/getAll`);
+export const getUserByAccountId = async (accountId: string) => {
+  const res = await runApi('GET', `${API_URL}/users/findByAccountId/${accountId}`);
   return res;
 };
 
 export const getUsersBySearch = async (skills: string[], location: string) => {
   const reqBody = { skills, location };
   console.log(reqBody, 'reqbody');
-  const res = await runApi('POST', `${API_URL}/user/searchUsers`, reqBody);
+  const res = await runApi('POST', `${API_URL}/users/searchUsers`, reqBody);
   return res;
 };
 

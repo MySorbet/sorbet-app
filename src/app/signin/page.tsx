@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Signin = () => {
@@ -18,13 +18,14 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const { modal: nearModal } = useWalletSelector();
   const router = useRouter();
   const { user, loginWithEmail } = useAuth();
 
-  if (user) {
-    router.push('/');
-  }
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   const onSubmit = handleSubmit(async (data) => {
     if (!data.email) {

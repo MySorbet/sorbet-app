@@ -1,14 +1,33 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
-import { getWidgetContent } from '@/lib/service';
-import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  deleteWidget,
+  getWidgetContent,
+  getWidgetsForUser,
+  updateWidget,
+  updateWidgetsBulk,
+} from '@/lib/service';
+import {
+  ExtendedWidgetLayout,
+  UpdateWidgetsBulkDto,
+  WidgetDimensions,
+  WidgetDto,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import RGL, { WidthProvider } from 'react-grid-layout';
-import type { Layout as WidgetLayout } from 'react-grid-layout';
+import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
+const breakpoints = {
+  xs: 480,
+  sm: 768,
+  md: 996,
+  lg: 1200,
+};
 
 interface WidgetContainerProps {
   className?: string;
@@ -16,13 +35,8 @@ interface WidgetContainerProps {
   rowHeight?: number;
   cols?: number;
   editMode: boolean;
+  userId: string;
   onLayoutChange?: (layout: any) => void;
-}
-
-interface ExtendedWidgetLayout extends WidgetLayout {
-  type: WidgetType;
-  loading?: boolean;
-  content?: any;
 }
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
@@ -31,6 +45,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   rowHeight = 120,
   cols = 10,
   editMode,
+  userId,
   onLayoutChange = () => {},
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
@@ -38,58 +53,82 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
+  const { toast } = useToast();
 
-  const generateLayout = useCallback((): ExtendedWidgetLayout[] => {
-    return Array.from({ length: items }, (_, i): ExtendedWidgetLayout => {
-      return {
-        i: i.toString(),
-        x: i * 2,
-        y: 0,
-        w: WidgetDimensions[WidgetSize.A].w,
-        h: WidgetDimensions[WidgetSize.A].h,
-        type: WidgetType.InstagramProfile,
-        content: {},
-        static: !editMode,
-        isResizable: false,
-        isDraggable: editMode,
-      };
-    });
-  }, [items]);
+  const generateLayout = useCallback(async (): Promise<
+    ExtendedWidgetLayout[]
+  > => {
+    const userWidgets: WidgetDto[] = await getWidgetsForUser(userId);
+    if (!userWidgets || userWidgets.length < 1) return [];
 
-  const handleWidgetResize = (key: string, w: number, h: number) => {
+    return userWidgets.map((widget: WidgetDto, i: number) => ({
+      i: widget.id,
+      x: widget.layout.x,
+      y: widget.layout.y,
+      w: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].w,
+      h: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].h,
+      type: WidgetType[widget.type as keyof typeof WidgetType],
+      content: widget.content,
+      static: !editMode,
+      isResizable: false,
+      isDraggable: editMode,
+      size: WidgetSize[widget.size as keyof typeof WidgetSize],
+    }));
+  }, [userId, editMode]);
+
+  const handleWidgetResize = (
+    key: string,
+    w: number,
+    h: number,
+    widgetSize: WidgetSize
+  ) => {
     setLayout((prevLayout) => {
       return prevLayout.map((item) => {
         if (item.i === key) {
-          return { ...item, w, h };
+          updateWidget(key, item, widgetSize);
+          return { ...item, w, h, size: widgetSize };
         }
         return item;
       });
     });
   };
 
-  const handleWidgetRemove = (key: string) => {
+  const handleWidgetRemove = async (key: string) => {
+    await deleteWidget(key);
     setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
   };
 
   const handleWidgetAdd = async (url: string) => {
     setAddingWidget(true);
     setError(null);
+
     try {
       const type: WidgetType = parseWidgetTypeFromUrl(url);
-      const content = await getWidgetContent({ url, type });
+      let widget: any;
+      try {
+        widget = await getWidgetContent({ url, type });
+      } catch (error) {
+        toast({
+          title: 'Failed to add widget',
+          description: 'If the issue persists, contact support',
+        });
+        return;
+      }
 
       const widgetToAdd: ExtendedWidgetLayout = {
-        i: (layout.length + 1).toString(),
+        i: widget.id,
         x: (layout.length * 2) % cols,
         y: Infinity,
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
         type: type,
-        content: content?.data,
+        content: widget.content,
         static: !editMode,
         isResizable: false,
         isDraggable: editMode,
         loading: false,
+        size: WidgetSize.A,
       };
 
       setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
@@ -132,12 +171,18 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       const existingItem = layout.find((item) => item.i === layoutItem.i);
       return existingItem ? { ...existingItem, ...layoutItem } : layoutItem;
     });
+
     setLayout(updatedLayout);
     onLayoutChange(updatedLayout);
   };
 
   useEffect(() => {
-    setLayout(generateLayout());
+    const fetchLayout = async () => {
+      const layout = await generateLayout();
+      setLayout(layout);
+    };
+
+    fetchLayout();
   }, [generateLayout]);
 
   useEffect(() => {
@@ -147,18 +192,54 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [editMode]);
 
   useEffect(() => {
+    if (layout.length > 0 && editMode) {
+      let payload: UpdateWidgetsBulkDto[] = [];
+      layout.map((item) =>
+        payload.push({
+          id: item.i,
+          layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+          size: WidgetSize[item.size].toString(),
+        })
+      );
+      updateWidgetsBulk(payload);
+    }
+  }, [layout]);
+
+  useEffect(() => {
     if (containerRef.current) {
       setContainerWidth(containerRef.current.offsetWidth);
     }
   }, []);
 
-  // Display error toast if there is an error
   useEffect(() => {
     if (error) {
-      // Replace this with your toast notification library or custom toast component
       alert(error);
     }
   }, [error]);
+
+  useEffect(() => {
+    const calculateBreakpoint = () => {
+      const width = window.innerWidth;
+      let breakpoint = 'lg';
+      if (width < breakpoints.xs) breakpoint = 'xs';
+      else if (width >= breakpoints.xs && width < breakpoints.sm)
+        breakpoint = 'sm';
+      else if (width >= breakpoints.sm && width < breakpoints.md)
+        breakpoint = 'md';
+      else if (width >= breakpoints.md && width < breakpoints.lg)
+        breakpoint = 'lg';
+
+      if (breakpoint !== currentBreakpoint) {
+        setCurrentBreakpoint(breakpoint);
+      }
+    };
+
+    calculateBreakpoint();
+
+    window.addEventListener('resize', calculateBreakpoint);
+
+    return () => window.removeEventListener('resize', calculateBreakpoint);
+  }, [window.innerWidth]);
 
   return (
     <div ref={containerRef}>

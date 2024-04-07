@@ -13267,7 +13267,7 @@ react-google-autocomplete@^2.7.3:
 
 react-grid-layout@^1.4.4:
   version "1.4.4"
-  resolved "https://registry.npmjs.org/react-grid-layout/-/react-grid-layout-1.4.4.tgz"
+  resolved "https://registry.yarnpkg.com/react-grid-layout/-/react-grid-layout-1.4.4.tgz#0bdb19d6db061556868fef1f430cc8c14d21f131"
   integrity sha512-7+Lg8E8O8HfOH5FrY80GCIR1SHTn2QnAYKh27/5spoz+OHhMmEhU/14gIkRzJOtympDPaXcVRX/nT1FjmeOUmQ==
   dependencies:
     clsx "^2.0.0"

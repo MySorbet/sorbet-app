@@ -89,13 +89,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const response = await fetchUserDetails(accessToken as string);
-      if (!response.data || response.data.user === undefined) {
-        throw new Error('No user found for access token');
-      }
-
-      const authenticatedUser = response.data.user as User;
-
+      const authenticatedUser = response as User;
       setUser(authenticatedUser);
+      dispatch(updateUserData(authenticatedUser));
+
       return authenticatedUser;
     } catch (error) {
       return null;

@@ -39,7 +39,12 @@ export const signUpWithWallet = async (
 };
 
 export const fetchUserDetails = async (token: string) => {
-  const headers = { Authorization: `Bearer ${token}` };
-  const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
-  return res;
+  try {
+    const headers = { Authorization: `Bearer ${token}` };
+    const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
+    return res.data;
+  } catch (error) {
+    console.error('Failed to fetch user details:', error);
+    throw new Error('Error fetching user details');
+  }
 };

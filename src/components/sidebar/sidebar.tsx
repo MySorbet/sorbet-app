@@ -47,8 +47,14 @@ const SidebarHeaderOption: React.FC<{
 export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
+
+  const handleRedirect = (event: any, url: string) => {
+    event.preventDefault();
+    handleSidebarClose();
+    router.push(url);
+  };
 
   const handleLogout = async () => {
     dispatch(reset());
@@ -57,9 +63,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   };
 
   const handleProfileClicked = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    dispatch(setOpenSidebar(false));
-    router.push('/profile');
+    handleRedirect(event, `/${user?.accountId}`);
+  };
+
+  const handleWalletClicked = (event: React.MouseEvent<HTMLDivElement>) => {
+    handleRedirect(event, '/wallet');
   };
 
   const handleSidebarClose = () => {
@@ -117,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   <SidebarHeaderOption
                     label='Wallet'
                     icon={<WalletMinimal />}
-                    comingSoon
+                    onClick={handleWalletClicked}
                   />
                 </div>
                 <div className='col-span-1'>

@@ -1,6 +1,6 @@
 export interface FormattedResponse {
   status: string;
-  statusCode: string;
+  statusCode: number;
   data: any;
   message: string;
 }

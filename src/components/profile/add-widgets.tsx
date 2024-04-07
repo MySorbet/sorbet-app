@@ -64,7 +64,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
 
   return (
-    <div className={`lg:w-[480px] ${panelClass}`}>
+    <div className={`w-full lg:w-[480px] ${panelClass}`}>
       {error && (
         <div
           className={`transition-transform duration-500 ${
@@ -77,11 +77,11 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         </div>
       )}
       <div
-        className={`flex flex-row gap-4 bg-white p-4 shadow-lg shadow-gray-200 rounded-2xl w-full ${panelClass}`}
+        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 shadow-lg shadow-gray-200 rounded-2xl w-full ${panelClass}`}
       >
         <div
           className={cn(
-            'flex items-center border-2 py-2 px-3 rounded-2xl flex-grow',
+            'flex items-center border-2 lg:py-2 lg:px-3 py-1 px-2 rounded-2xl flex-grow',
             error ? 'border-red-500' : 'border-gray-300'
           )}
         >
@@ -99,7 +99,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           <div>
             <button
               type='submit'
-              className='cursor-pointer flex-none bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'
+              className='cursor-pointer flex-none bg-[#573DF5] text-white px-4 text-xs lg:text-sm py-1 rounded-lg'
               onClick={handleUrlSubmit}
               disabled={loading}
             >

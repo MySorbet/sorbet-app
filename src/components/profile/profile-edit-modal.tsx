@@ -5,13 +5,14 @@ import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import type { User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -35,43 +36,28 @@ interface ProfileEditModalProps {
   user?: User;
 }
 
-const initUser = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  accountId: '',
-  email: '',
-  bio: '',
-  title: '',
-  profileImage: '',
-  profileBannerImage: '',
-  tempLocation: '',
-  tags: [''],
-  role: '',
-  nearWallet: '',
-  city: '',
-};
-
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
   handleModalVisisble,
   user,
 }) => {
-  const userInfo = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
 
-  const [userData, setUserData] = useState<User>(initUser);
-  const [image, setImage] = useState(userInfo?.profileImage);
+  const [image, setImage] = useState(user?.profileImage);
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const updateProfileMutation = useMutation({
     mutationFn: (userToUpdate: User) =>
       updateUser(userToUpdate, userToUpdate.id),
     onSuccess: (user: User) => {
       dispatch(updateUserData(user));
-      handleModalVisisble(false);
+      toast({
+        title: 'Profile updated',
+        description: 'Your changes were saved successfully',
+      });
     },
     onError: (error: any) => {
       alert(
@@ -99,13 +85,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     },
   });
 
-  const onChange = (e: any) => {
-    setUserData({
-      ...userData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     let profileImgRes = '';
@@ -113,7 +92,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     if (user) {
       const userToUpdate = {
         ...user,
-        profileImage: profileImgRes ? profileImgRes : userData.profileImage,
+        profileImage: profileImgRes ? profileImgRes : user.profileImage,
         firstName: data.firstName,
         lastName: data.lastName,
         city: data.city,
@@ -137,18 +116,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setImage(URL.createObjectURL(i));
   };
 
-  const onClose = () => {
-    setUserData(userInfo);
-    setImage(userInfo.profileImage);
-  };
-
   const deleteImage = async (e: any) => {
-    const res = await deleteProfileImageAsync(userData.id);
+    const res = await deleteProfileImageAsync(user?.accountId ?? '');
     setImage(res.data.profileImage);
-    setUserData({
-      ...userData,
-      profileImage: res.data.profileImage,
-    });
     setFile(null);
   };
 
@@ -215,8 +185,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     {...register('firstName', {
                       required: 'First name is required',
                     })}
-                    defaultValue={userData?.firstName}
-                    onChange={onChange}
+                    defaultValue={user?.firstName}
                   />
                   {errors.firstName && (
                     <p className='text-xs text-red-500 mt-1'>
@@ -235,8 +204,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     {...register('lastName', {
                       required: 'Last name is required',
                     })}
-                    defaultValue={userData?.lastName}
-                    onChange={onChange}
+                    defaultValue={user?.lastName}
                   />
                   {errors.lastName && (
                     <p className='text-xs text-red-500 mt-1'>
@@ -256,14 +224,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     <InputLocation
                       onInputChange={(e) => {
                         field.onChange(e);
-                        onChange(e);
                       }}
                       onPlaceSelected={(place) =>
                         console.log(JSON.stringify(place))
                       }
-                      defaultValue={
-                        userInfo && userInfo.city ? userInfo.city : ''
-                      }
+                      defaultValue={user && user.city ? user.city : ''}
                     />
                   )}
                 />
@@ -282,8 +247,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   placeholder='A few words about yourself'
                   rows={4}
                   {...register('bio', { required: 'Bio is required' })}
-                  defaultValue={userData?.bio}
-                  onChange={onChange}
+                  defaultValue={user?.bio}
                 />
                 <label className='text-sm font-normal text-[#475467]'>
                   Max 60 characters
@@ -315,7 +279,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 )}
               </div>
               <div className='w-full'>
-                <Button className='w-full bg-sorbet' disabled={isSubmitting}>
+                <Button
+                  type='submit'
+                  className='w-full bg-sorbet'
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? <Loader /> : 'Save Changes'}
                 </Button>
               </div>
