@@ -40,7 +40,7 @@ export const Profile: React.FC<{ user: User; canEdit?: boolean }> = ({
         )}
 
         {user && (
-          <div className={cn('mt-24', canEdit ? 'mb-24' : '')}>
+          <div className={cn('mt-12', canEdit ? 'mb-24' : '')}>
             <WidgetContainer editMode={canEdit} userId={user.id} />
           </div>
         )}
