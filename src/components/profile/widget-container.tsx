@@ -4,6 +4,7 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   deleteWidget,
   getWidgetContent,
+  getWidgetsForUser,
   updateWidget,
   updateWidgetsBulk,
 } from '@/lib/service';
@@ -11,6 +12,7 @@ import {
   ExtendedWidgetLayout,
   UpdateWidgetsBulkDto,
   WidgetDimensions,
+  WidgetDto,
   WidgetSize,
   WidgetType,
 } from '@/types';
@@ -33,6 +35,7 @@ interface WidgetContainerProps {
   rowHeight?: number;
   cols?: number;
   editMode: boolean;
+  userId: string;
   onLayoutChange?: (layout: any) => void;
 }
 
@@ -42,6 +45,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   rowHeight = 120,
   cols = 10,
   editMode,
+  userId,
   onLayoutChange = () => {},
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
@@ -52,25 +56,26 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
   const { toast } = useToast();
 
-  const generateLayout = useCallback((): ExtendedWidgetLayout[] => {
-    return Array.from({ length: items }, (_, i): ExtendedWidgetLayout => {
-      return {
-        i: i.toString(),
-        x: i * 2,
-        y: 0,
-        w: WidgetDimensions[WidgetSize.A].w,
-        h: WidgetDimensions[WidgetSize.A].h,
-        type: WidgetType.Dribbble,
-        content: {
-          image:
-            'https://cdn.dribbble.com/userupload/13957177/file/original-aff79f2b861496ad136568ba5e059543.png?resize=752x',
-        },
-        static: !editMode,
-        isResizable: false,
-        isDraggable: editMode,
-      };
-    });
-  }, [items]);
+  const generateLayout = useCallback(async (): Promise<
+    ExtendedWidgetLayout[]
+  > => {
+    const userWidgets: WidgetDto[] = await getWidgetsForUser(userId);
+    if (!userWidgets || userWidgets.length < 1) return [];
+
+    return userWidgets.map((widget: WidgetDto, i: number) => ({
+      i: widget.id,
+      x: widget.layout.x,
+      y: widget.layout.y,
+      w: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].w,
+      h: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].h,
+      type: WidgetType[widget.type as keyof typeof WidgetType],
+      content: widget.content,
+      static: !editMode,
+      isResizable: false,
+      isDraggable: editMode,
+      size: WidgetSize[widget.size as keyof typeof WidgetSize],
+    }));
+  }, [userId, editMode]);
 
   const handleWidgetResize = (
     key: string,
@@ -82,7 +87,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       return prevLayout.map((item) => {
         if (item.i === key) {
           updateWidget(key, item, widgetSize);
-          return { ...item, w, h };
+          return { ...item, w, h, size: widgetSize };
         }
         return item;
       });
@@ -123,6 +128,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         isResizable: false,
         isDraggable: editMode,
         loading: false,
+        size: WidgetSize.A,
       };
 
       setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
@@ -171,7 +177,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   useEffect(() => {
-    setLayout(generateLayout());
+    const fetchLayout = async () => {
+      const layout = await generateLayout();
+      setLayout(layout);
+    };
+
+    fetchLayout();
   }, [generateLayout]);
 
   useEffect(() => {
@@ -187,6 +198,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         payload.push({
           id: item.i,
           layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+          size: WidgetSize[item.size].toString(),
         })
       );
       updateWidgetsBulk(payload);

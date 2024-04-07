@@ -40,7 +40,7 @@ export const Profile: React.FC = () => {
 
         {user && (
           <div className={cn('mt-24', editMode ? 'mb-24' : '')}>
-            <WidgetContainer editMode={editMode} />
+            <WidgetContainer editMode={editMode} userId={user.id} />
           </div>
         )}
       </div>

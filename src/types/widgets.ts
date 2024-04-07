@@ -116,9 +116,22 @@ export interface ExtendedWidgetLayout extends WidgetLayout {
   type: WidgetType;
   loading?: boolean;
   content?: any;
+  size: WidgetSize;
 }
 
 export interface UpdateWidgetsBulkDto {
   id: string;
   layout: { x: number, y: number, w: number, h: number }
+  size: string;
+}
+
+export interface WidgetDto {
+  id: string;
+  type: string;
+  size: string;
+  content: any;
+  layout: { x: number, y: number, w: number, h: number }
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
 }
