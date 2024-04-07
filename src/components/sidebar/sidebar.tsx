@@ -47,8 +47,14 @@ const SidebarHeaderOption: React.FC<{
 export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
+
+  const handleRedirect = (event: any, url: string) => {
+    event.preventDefault();
+    handleSidebarClose();
+    router.push(url);
+  };
 
   const handleLogout = async () => {
     dispatch(reset());
@@ -57,15 +63,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   };
 
   const handleProfileClicked = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    handleSidebarClose();
-    router.push('/profile');
+    handleRedirect(event, `/${user?.accountId}`);
   };
 
   const handleWalletClicked = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    handleSidebarClose();
-    router.push('/wallet');
+    handleRedirect(event, '/wallet');
   };
 
   const handleSidebarClose = () => {
