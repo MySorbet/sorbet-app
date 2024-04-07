@@ -1,9 +1,15 @@
 import { Widget } from './widget';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
-import { deleteWidget, getWidgetContent, updateWidget } from '@/lib/service';
+import {
+  deleteWidget,
+  getWidgetContent,
+  updateWidget,
+  updateWidgetsBulk,
+} from '@/lib/service';
 import {
   ExtendedWidgetLayout,
+  UpdateWidgetsBulkDto,
   WidgetDimensions,
   WidgetSize,
   WidgetType,
@@ -11,7 +17,7 @@ import {
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import RGL, { WidthProvider } from 'react-grid-layout';
+import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -159,6 +165,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       const existingItem = layout.find((item) => item.i === layoutItem.i);
       return existingItem ? { ...existingItem, ...layoutItem } : layoutItem;
     });
+
     setLayout(updatedLayout);
     onLayoutChange(updatedLayout);
   };
@@ -174,15 +181,26 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [editMode]);
 
   useEffect(() => {
+    if (layout.length > 0) {
+      let payload: UpdateWidgetsBulkDto[] = [];
+      layout.map((item) =>
+        payload.push({
+          id: item.i,
+          layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+        })
+      );
+      updateWidgetsBulk(payload);
+    }
+  }, [layout]);
+
+  useEffect(() => {
     if (containerRef.current) {
       setContainerWidth(containerRef.current.offsetWidth);
     }
   }, []);
 
-  // Display error toast if there is an error
   useEffect(() => {
     if (error) {
-      // Replace this with your toast notification library or custom toast component
       alert(error);
     }
   }, [error]);

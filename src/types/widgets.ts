@@ -117,3 +117,8 @@ export interface ExtendedWidgetLayout extends WidgetLayout {
   loading?: boolean;
   content?: any;
 }
+
+export interface UpdateWidgetsBulkDto {
+  id: string;
+  layout: { x: number, y: number, w: number, h: number }
+}

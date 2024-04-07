@@ -1,5 +1,5 @@
 import { runApi } from '@/utils';
-import { ExtendedWidgetLayout, GetBehanceItemType, GetDribbleShotType, GetInstagramType, GetMediumArticleType, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, WidgetSize, WidgetType } from '@/types';
+import { ExtendedWidgetLayout, GetBehanceItemType, GetDribbleShotType, GetInstagramType, GetMediumArticleType, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, UpdateWidgetsBulkDto, WidgetSize, WidgetType } from '@/types';
 import { config } from '@/lib/config';
 
 export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
@@ -33,14 +33,27 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
   }
 };
 
-export const updateWidget = async (widgetId: string, widgetLayout: ExtendedWidgetLayout, widgetSize: number) => {
-  const widgetSizeAsString = WidgetSize[widgetSize];
-  const payload = {
+export const updateWidgetsBulk = async (widgetLayouts: UpdateWidgetsBulkDto[]) => {
+  const response = await runApi('PATCH', `${config.devApiUrl}/widgets/bulk-update`, widgetLayouts, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const updateWidget = async (widgetId: string, widgetLayout: ExtendedWidgetLayout, widgetSize?: number) => {
+  let payload: any = {
     type: widgetLayout.type,
     content: widgetLayout.content,
-    size: widgetSizeAsString,
     layout: { x: widgetLayout.x, y: widgetLayout.y, w: widgetLayout.w, h: widgetLayout.h }
   };
+
+  if (widgetSize) {
+    const widgetSizeAsString = WidgetSize[widgetSize];
+    payload = {...payload, size: widgetSizeAsString};
+  }
+
   const response = await runApi('PATCH', `${config.devApiUrl}/widgets/${widgetId}`, payload, {}, true);
 
   if (response.statusCode >= 200 && response.statusCode < 300) {
