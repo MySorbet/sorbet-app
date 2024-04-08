@@ -50,6 +50,13 @@ export interface GithubWidgetContentType {
   image: string;
 }
 
+export interface TwitterWidgetContentType {
+  accountName: string;
+  accountDescription: string;
+  bannerImage: string;
+  profileImage: string;
+}
+
 export interface FigmaWidgetContentType {
   title: string;
   description: string;
@@ -102,6 +109,7 @@ export enum WidgetType {
   InstagramPost = 'InstagramPost',
   InstagramProfile = 'InstagramProfile',
   TwitterProfile = 'TwitterProfile',
+  Twitter = 'Twitter',
   Dribbble = 'Dribbble',
   Behance = 'Behance',
   Text = 'Text',

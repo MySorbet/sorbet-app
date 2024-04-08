@@ -12,6 +12,7 @@ import {
   SpotifyAlbumWidget,
   SpotifySongWidget,
   SubstackWidget,
+  TwitterWidget,
   YouTubeWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ import {
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
+  TwitterWidgetContentType,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -158,6 +160,15 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <FigmaWidget
             content={content as FigmaWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.Twitter:
+        setWidgetContent(
+          <TwitterWidget
+            content={content as TwitterWidgetContentType}
             size={widgetSize}
           />
         );

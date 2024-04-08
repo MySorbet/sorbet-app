@@ -22,6 +22,7 @@ import { SoundcloudWidget } from "./widget-soundcloud";
 import { InstagramWidget } from "./widget-instagram"; 
 import { GithubWidget } from "./widget-github"; 
 import { FigmaWidget } from "./widget-figma"; 
+import { TwitterWidget } from "./widget-twitter"; 
 
 export { 
   Profile, 
@@ -47,5 +48,6 @@ export {
   InstagramWidget,
   YouTubeIframe,
   GithubWidget,
-  FigmaWidget
+  FigmaWidget,
+  TwitterWidget
 };

@@ -20,6 +20,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Medium]: 'medium.png',
     [WidgetType.Substack]: 'substack.png',
     [WidgetType.Figma]: 'figma.png',
+    [WidgetType.Twitter]: 'twitter.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
