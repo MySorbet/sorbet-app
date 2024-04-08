@@ -43,6 +43,7 @@ interface WidgetProps {
   editMode: boolean;
   content?: any;
   loading?: boolean;
+  initialSize?: WidgetSize;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
 }
@@ -53,6 +54,7 @@ export const Widget: React.FC<WidgetProps> = ({
   editMode,
   loading,
   content,
+  initialSize = WidgetSize.A,
   handleResize,
   handleRemove,
 }) => {
@@ -206,7 +208,7 @@ export const Widget: React.FC<WidgetProps> = ({
           }`}
         >
           <div className='flex flex-row gap-1'>
-            <ResizeWidget onResize={onWidgetResize} />
+            <ResizeWidget onResize={onWidgetResize} initialSize={initialSize} />
             <Button
               variant='outline'
               size='icon'

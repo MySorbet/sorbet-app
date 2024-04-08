@@ -161,6 +161,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           handleRemove={handleWidgetRemove}
           editMode={editMode}
           content={item.content}
+          initialSize={item.size}
         />
       </motion.div>
     ));
