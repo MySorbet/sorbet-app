@@ -86,7 +86,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setLayout((prevLayout) => {
       return prevLayout.map((item) => {
         if (item.i === key) {
-          updateWidget(key, item, widgetSize);
           return { ...item, w, h, size: widgetSize };
         }
         return item;
