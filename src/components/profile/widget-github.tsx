@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { GithubWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
@@ -28,6 +29,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
               alt='Github content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -48,6 +50,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
               alt='Github content'
               className='w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -67,6 +70,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -86,6 +90,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );

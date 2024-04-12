@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { WidgetSize, WidgetType, YoutubeWidgetContentType } from '@/types';
 import React, { useEffect } from 'react';
@@ -41,6 +42,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
               alt='Medium content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -58,6 +60,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
               alt='Medium content'
               className='w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -76,6 +79,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -92,6 +96,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );

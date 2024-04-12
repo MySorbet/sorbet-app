@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile';
 import { DribbbleWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
@@ -24,6 +25,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
               : 'object-contain'
           }`}
         />
+        <ImageOverlay />
       </div>
     </>
   );

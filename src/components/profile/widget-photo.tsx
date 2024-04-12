@@ -1,5 +1,5 @@
-import { WidgetHeader } from '@/components/profile';
-import { PhotoWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { ImageOverlay } from '@/components/common';
+import { PhotoWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
 
 interface PhotoWidgetType {
@@ -17,7 +17,7 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content, size }) => {
           size === WidgetSize.C || size === WidgetSize.D ? '' : 'object-contain'
         }`}
       />
-      <div className='absolute inset-0 bg-gradient-to-t from-transparent to-black opacity-50'></div>
+      <ImageOverlay />
     </div>
   );
 };

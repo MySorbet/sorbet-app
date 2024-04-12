@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { InstagramWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
@@ -58,6 +59,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
           <div className='flex-grow relative overflow-hidden'>
             <div className='grid grid-cols-3 gap-1'>
               <ImageGallery images={content.images} heightClass='h-20' />
+              <ImageOverlay />
             </div>
           </div>
         </div>
@@ -73,6 +75,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
           <div className='w-4/6 h-full w-full relative rounded-xl overflow-hidden bg-white text-black'>
             <div className='grid grid-cols-2 gap-2 w-full h-full'>
               <ImageGallery images={content.images} heightClass='h-44' />
+              <ImageOverlay />
             </div>
           </div>
         </div>
@@ -90,6 +93,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
           <div className='w-1/2 relative rounded-xl overflow-hidden h-full'>
             <div className='grid grid-cols-2 gap-2 w-full h-full'>
               <ImageGallery images={content.images} heightClass='h-20' />
+              <ImageOverlay />
             </div>
           </div>
         </div>
@@ -107,6 +111,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
           >
             <div className='grid grid-cols-2 gap-2 w-full h-full'>
               <ImageGallery images={content.images} heightClass='h-28' />
+              <ImageOverlay />
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { BehanceWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
@@ -24,6 +25,8 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
               : 'object-contain'
           }`}
         />
+
+        <ImageOverlay />
       </div>
     </>
   );

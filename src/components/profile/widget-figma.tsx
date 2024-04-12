@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { FigmaWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
@@ -28,6 +29,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
               alt='Figma content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -48,6 +50,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
               alt='Figma content'
               className='w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -67,6 +70,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -86,6 +90,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );
