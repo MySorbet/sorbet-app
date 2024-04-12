@@ -37,12 +37,12 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
               <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
             </div>
             <div>
-              <div className='bg-gray-100 p-6 border border-1 border-gray-200 text-4xl  rounded-xl'>
+              <div className='bg-gray-100 p-6 border border-1 border-gray-200 text-4xl justify-center flex rounded-xl'>
                 <span className='text-gray-500'>mysorbet.xyz/</span>
                 <span>{params.username}</span>
               </div>
               <div className='mt-4 text-center'>
-                The handle is avail able for you to build your internet presence
+                The handle is available for you to build your internet presence
                 today!
               </div>
             </div>

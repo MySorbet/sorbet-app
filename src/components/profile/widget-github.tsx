@@ -1,37 +1,32 @@
-import { ImageOverlay, WidgetDescription } from '@/components/common';
-import { WidgetHeader } from '@/components/profile';
-import { DribbbleWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React from 'react';
+import { ImageOverlay } from '@/components/common';
+import { WidgetHeader } from '@/components/profile/widget-header';
+import { GithubWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import React, { useEffect } from 'react';
 
-interface DribbbleWidgetType {
-  content: DribbbleWidgetContentType;
+interface GithubWidgetType {
+  content: GithubWidgetContentType;
   size: WidgetSize;
 }
 
-export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
-  content,
-  size,
-}) => {
+export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
   let widgetLayout;
   switch (size) {
     case WidgetSize.A:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-20'>
-              <WidgetHeader type={WidgetType.Dribbble} />
+            <div className='w-1/6'>
+              <WidgetHeader type={WidgetType.Github} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
-              <div className='text-xs text-gray-500'>
-                <WidgetDescription description={content.description} />
-              </div>
+              <div className='text-xs text-gray-500'>github.com</div>
             </div>
           </div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
-              alt='Dribbble content'
+              alt='Github content'
               className='absolute inset-0 w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -43,16 +38,16 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.Dribbble} noMargin />
+            <WidgetHeader type={WidgetType.Github} noMargin />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>{content.description}</div>
+            <div className='text-xs text-gray-500'>github.com</div>
           </div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
-              alt='Dribbble content'
+              alt='Github content'
               className='w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -64,14 +59,14 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Dribbble} />
+            <WidgetHeader type={WidgetType.Github} />
             <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>{content.description}</div>
+            <div className='text-xs text-gray-500'>github.com</div>
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
             <img
               src={content.image}
-              alt='Dribbble content'
+              alt='Github content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
@@ -83,17 +78,15 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.Dribbble} noMargin />
+          <WidgetHeader type={WidgetType.Github} noMargin />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>
-              <WidgetDescription description={content.description} />
-            </div>
+            <div className='text-xs text-gray-500'>github.com</div>
           </div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img
               src={content.image}
-              alt='Dribbble content'
+              alt='Github content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />

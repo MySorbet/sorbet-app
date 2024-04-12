@@ -1,5 +1,5 @@
 import { runApi } from '@/utils';
-import { ExtendedWidgetLayout, GetBehanceItemType, GetDribbleShotType, GetInstagramType, GetMediumArticleType, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, UpdateWidgetsBulkDto, WidgetSize, WidgetType } from '@/types';
+import { ExtendedWidgetLayout, GetBehanceItemType, GetDribbleShotType, GetInstagramType, GetMediumArticleType, GetPhotoWidget, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetYouTubeVideoType, UpdateWidgetsBulkDto, WidgetSize, WidgetType } from '@/types';
 import { config } from '@/lib/config';
 
 export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
@@ -30,6 +30,9 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
     case WidgetType.InstagramProfile:
       return getInstagramProfileMetadata({ url });
+
+    case WidgetType.Photo:
+      return getPhotoWidget({ url });
   }
 };
 
@@ -173,6 +176,16 @@ export const getSoundcloudTrackDetails = async({ url }: GetSoundcloudType) => {
 export const getInstagramProfileMetadata = async({ url }: GetInstagramType) => {
   const body: GetInstagramType = { url };
   const response = await runApi('POST', `${config.devApiUrl}/widgets/instagram`, body, {}, true);
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    return response.data;
+  } else {
+    throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getPhotoWidget = async({ url }: GetPhotoWidget) => {
+  const body: GetPhotoWidget = { url };
+  const response = await runApi('POST', `${config.devApiUrl}/widgets/photo`, body, {}, true);
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {

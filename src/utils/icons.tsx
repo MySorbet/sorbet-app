@@ -3,7 +3,7 @@ import { WidgetType } from '@/types';
 export const getSocialIconForWidget = (widgetType: WidgetType): string => {
   const iconMap: { [key in WidgetType]?: string } = {
     [WidgetType.Nfts]: 'nft.png',
-    [WidgetType.Photo]: 'photo.png',
+    [WidgetType.Photo]: 'default.png',
     [WidgetType.PhotoGallery]: 'gallery.png',
     [WidgetType.Youtube]: 'youtube.png',
     [WidgetType.YoutubePlaylist]: 'youtube.png',
@@ -19,6 +19,8 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Text]: 'text.png',
     [WidgetType.Medium]: 'medium.png',
     [WidgetType.Substack]: 'substack.png',
+    [WidgetType.Figma]: 'figma.png',
+    [WidgetType.Twitter]: 'twitter.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
@@ -32,6 +34,11 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     const domainParts = hostname.split('.');
     let platform =
       domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
+
+    // Check if the URL is from a GCP storage bucket
+    if (hostname.endsWith('storage.googleapis.com')) {
+      return WidgetType.Photo;
+    }
 
     if (platform.toLowerCase() === 'substack' && pathname.includes('/p/')) {
       return WidgetType.Substack;

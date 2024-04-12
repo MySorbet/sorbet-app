@@ -43,9 +43,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  const [image, setImage] = useState(user?.profileImage);
+  const [image, setImage] = useState<string | undefined>(user?.profileImage);
   const [skills, setSkills] = useState<string[]>([]);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<Blob | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -87,12 +87,35 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    let profileImgRes = '';
+    let uploadedImageUrl: string = '';
+    if (user?.id && image !== user?.profileImage && file !== undefined) {
+      const imageFormData = new FormData();
+      imageFormData.append('file', file);
+      imageFormData.append('fileType', 'image');
+      imageFormData.append('destination', 'profile');
+      imageFormData.append('oldImageUrl', user?.profileImage);
+      imageFormData.append('userId', user?.id);
+
+      const response = await uploadProfileImageAsync(imageFormData);
+      if (
+        response.status === 'success' &&
+        response.data &&
+        response.data.fileUrl
+      ) {
+        uploadedImageUrl = response.data.fileUrl;
+      } else {
+        toast({
+          title: 'Profile Image not updated',
+          description:
+            'Your profile image could not be saved due to an error. Rest of the details were still saved.',
+        });
+      }
+    }
 
     if (user) {
       const userToUpdate = {
         ...user,
-        profileImage: profileImgRes ? profileImgRes : user.profileImage,
+        profileImage: uploadedImageUrl ? uploadedImageUrl : user.profileImage,
         firstName: data.firstName,
         lastName: data.lastName,
         city: data.city,
@@ -119,7 +142,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const deleteImage = async (e: any) => {
     const res = await deleteProfileImageAsync(user?.accountId ?? '');
     setImage(res.data.profileImage);
-    setFile(null);
+    setFile(undefined);
   };
 
   const handleSkillChange = (skills: string[]) => {

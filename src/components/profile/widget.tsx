@@ -3,6 +3,8 @@ import {
   BehanceWidget,
   DefaultWidget,
   DribbbleWidget,
+  FigmaWidget,
+  GithubWidget,
   InstagramWidget,
   MediumWidget,
   ResizeWidget,
@@ -10,18 +12,24 @@ import {
   SpotifyAlbumWidget,
   SpotifySongWidget,
   SubstackWidget,
+  TwitterWidget,
   YouTubeWidget,
+  PhotoWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
+  FigmaWidgetContentType,
+  GithubWidgetContentType,
   InstagramWidgetContentType,
   MediumArticleContentType,
+  PhotoWidgetContentType,
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
+  TwitterWidgetContentType,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -37,6 +45,7 @@ interface WidgetProps {
   editMode: boolean;
   content?: any;
   loading?: boolean;
+  initialSize?: WidgetSize;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
 }
@@ -47,6 +56,7 @@ export const Widget: React.FC<WidgetProps> = ({
   editMode,
   loading,
   content,
+  initialSize = WidgetSize.A,
   handleResize,
   handleRemove,
 }) => {
@@ -141,6 +151,42 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
+      case WidgetType.Github:
+        setWidgetContent(
+          <GithubWidget
+            content={content as GithubWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.Figma:
+        setWidgetContent(
+          <FigmaWidget
+            content={content as FigmaWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.Twitter:
+        setWidgetContent(
+          <TwitterWidget
+            content={content as TwitterWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.Photo:
+        setWidgetContent(
+          <PhotoWidget
+            content={content as PhotoWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
       case WidgetType.Default:
         setWidgetContent(<DefaultWidget />);
         break;
@@ -160,7 +206,8 @@ export const Widget: React.FC<WidgetProps> = ({
       )}
       <div
         className={cn(
-          'shadow-widget bg-white p-3 flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out'
+          'shadow-widget bg-white flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out',
+          type === WidgetType.Photo ? '' : 'p-3'
         )}
         key={identifier}
         onMouseEnter={() => editMode && setShowResizeWidget(true)}
@@ -173,7 +220,7 @@ export const Widget: React.FC<WidgetProps> = ({
           }`}
         >
           <div className='flex flex-row gap-1'>
-            <ResizeWidget onResize={onWidgetResize} />
+            <ResizeWidget onResize={onWidgetResize} initialSize={initialSize} />
             <Button
               variant='outline'
               size='icon'

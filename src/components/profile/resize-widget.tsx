@@ -6,10 +6,14 @@ import React, { useState } from 'react';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
+  initialSize: WidgetSize;
 }
 
-export const ResizeWidget: React.FC<ResizeWidgetProps> = ({ onResize }) => {
-  const [currentSize, setCurrentSize] = useState<WidgetSize>(WidgetSize.A);
+export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
+  onResize,
+  initialSize = WidgetSize.A,
+}) => {
+  const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
   const btnClass = 'h-4 w-7 flex items-center justify-center';
 
   const onResizeClick = (

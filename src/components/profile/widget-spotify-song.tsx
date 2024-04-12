@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { SpotifyWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import { Play } from 'lucide-react';
@@ -44,6 +45,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
               alt='Spotify content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -65,6 +67,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
               alt='Spotify content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -90,6 +93,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
               alt='Spotify content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -114,6 +118,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );

@@ -1,3 +1,4 @@
+import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { SubstackWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
@@ -26,10 +27,10 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-1/4'>
+            <div className='w-8'>
               <WidgetHeader type={currentType} />
             </div>
-            <div>{localHeader}</div>
+            <div className='w-90'>{localHeader}</div>
           </div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
@@ -37,6 +38,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
               alt='Substack content'
               className='absolute inset-0 w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -54,6 +56,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
               alt='Substack content'
               className='w-full h-full object-cover'
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -72,6 +75,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );
@@ -88,6 +92,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
+            <ImageOverlay />
           </div>
         </div>
       );

@@ -20,6 +20,8 @@ export interface GetSoundcloudType extends GetItemTypeBase {}
 
 export interface GetInstagramType extends GetItemTypeBase {}
 
+export interface GetPhotoWidget extends GetItemTypeBase {}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -33,16 +35,42 @@ export interface Widget {
 
 export interface DribbbleWidgetContentType {
   image: string;
+  title: string;
+  description: string;
+}
+
+export interface PhotoWidgetContentType {
+  image: string;
 }
 
 export interface BehanceWidgetContentType {
   image: string;
+  title: string;
+  description: string;
 }
 
 export interface MediumArticleContentType {
   title: string;
   image: string;
   host: string;
+}
+
+export interface GithubWidgetContentType {
+  title: string;
+  image: string;
+}
+
+export interface TwitterWidgetContentType {
+  accountName: string;
+  accountDescription: string;
+  bannerImage: string;
+  profileImage: string;
+}
+
+export interface FigmaWidgetContentType {
+  title: string;
+  description: string;
+  image: string;
 }
 
 export interface YoutubeWidgetContentType {
@@ -91,11 +119,13 @@ export enum WidgetType {
   InstagramPost = 'InstagramPost',
   InstagramProfile = 'InstagramProfile',
   TwitterProfile = 'TwitterProfile',
+  Twitter = 'Twitter',
   Dribbble = 'Dribbble',
   Behance = 'Behance',
   Text = 'Text',
   Medium = 'Medium',
   Substack = 'Substack',
+  Figma = 'Figma',
 }
 
 export enum WidgetSize {
