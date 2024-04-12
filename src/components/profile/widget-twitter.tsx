@@ -8,6 +8,19 @@ interface TwitterWidgetType {
   size: WidgetSize;
 }
 
+const TwitterProfileDescription: React.FC<{ description: string }> = ({
+  description,
+}) => {
+  const DESCRIPTION_CHARS_LIMIT = 80;
+  return (
+    <span>
+      {description.length > DESCRIPTION_CHARS_LIMIT
+        ? `${description.substring(0, DESCRIPTION_CHARS_LIMIT)}...`
+        : description}
+    </span>
+  );
+};
+
 export const TwitterWidget: React.FC<TwitterWidgetType> = ({
   content,
   size,
@@ -24,7 +37,9 @@ export const TwitterWidget: React.FC<TwitterWidgetType> = ({
             <div>
               <div className='text-sm font-semibold'>{content.accountName}</div>
               <div className='text-xs text-gray-500'>
-                {content.accountDescription}
+                <TwitterProfileDescription
+                  description={content.accountDescription}
+                />
               </div>
             </div>
           </div>
@@ -48,7 +63,9 @@ export const TwitterWidget: React.FC<TwitterWidgetType> = ({
           <div>
             <div className='text-sm font-semibold'>{content.accountName}</div>
             <div className='text-xs text-gray-500'>
-              {content.accountDescription}
+              <TwitterProfileDescription
+                description={content.accountDescription}
+              />
             </div>
           </div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
@@ -76,7 +93,7 @@ export const TwitterWidget: React.FC<TwitterWidgetType> = ({
               </div>
             </div>
           </div>
-          <div className={`relative rounded-xl overflow-hidden w-3/5`}>
+          <div className={`relative rounded-xl overflow-hidden w-50`}>
             <img
               src={content.bannerImage}
               alt='Twitter content'
