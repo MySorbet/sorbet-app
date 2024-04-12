@@ -14,6 +14,7 @@ import {
   SubstackWidget,
   TwitterWidget,
   YouTubeWidget,
+  PhotoWidget,
 } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -24,6 +25,7 @@ import {
   GithubWidgetContentType,
   InstagramWidgetContentType,
   MediumArticleContentType,
+  PhotoWidgetContentType,
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
@@ -176,6 +178,15 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
+      case WidgetType.Photo:
+        setWidgetContent(
+          <PhotoWidget
+            content={content as PhotoWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
       case WidgetType.Default:
         setWidgetContent(<DefaultWidget />);
         break;
@@ -195,7 +206,8 @@ export const Widget: React.FC<WidgetProps> = ({
       )}
       <div
         className={cn(
-          'shadow-widget bg-white p-3 flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out'
+          'shadow-widget bg-white flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out',
+          type === WidgetType.Photo ? '' : 'p-3'
         )}
         key={identifier}
         onMouseEnter={() => editMode && setShowResizeWidget(true)}

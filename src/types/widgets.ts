@@ -20,6 +20,8 @@ export interface GetSoundcloudType extends GetItemTypeBase {}
 
 export interface GetInstagramType extends GetItemTypeBase {}
 
+export interface GetPhotoWidget extends GetItemTypeBase {}
+
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -32,6 +34,10 @@ export interface Widget {
 }
 
 export interface DribbbleWidgetContentType {
+  image: string;
+}
+
+export interface PhotoWidgetContentType {
   image: string;
 }
 

@@ -1,4 +1,5 @@
 import { Widget } from './widget';
+import { uploadWidgetsImageAsync } from '@/api/images';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -98,15 +99,41 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
   };
 
-  const handleWidgetAdd = async (url: string) => {
+  const handleWidgetAdd = async (url: string, image: File | undefined) => {
     setAddingWidget(true);
     setError(null);
+    let widgetUrl: string = url;
 
     try {
       const type: WidgetType = parseWidgetTypeFromUrl(url);
+
+      if (type === WidgetType.Photo && image && image !== undefined) {
+        const imageFormData = new FormData();
+        imageFormData.append('file', image);
+        imageFormData.append('fileType', 'image');
+        imageFormData.append('destination', 'widgets');
+        imageFormData.append('userId', '');
+
+        const response = await uploadWidgetsImageAsync(imageFormData);
+        if (
+          response.status === 'success' &&
+          response.data &&
+          response.data.fileUrl
+        ) {
+          widgetUrl = response.data.fileUrl;
+        } else {
+          toast({
+            title: 'Widget image not upload',
+            description:
+              'Your widget image could not be saved due to an error. Please try again.',
+          });
+          return;
+        }
+      }
+
       let widget: any;
       try {
-        widget = await getWidgetContent({ url, type });
+        widget = await getWidgetContent({ url: widgetUrl, type });
       } catch (error) {
         toast({
           title: 'Failed to add widget',

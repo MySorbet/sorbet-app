@@ -17,7 +17,7 @@ import { Link, CircleHelp, ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface AddWidgetsProps {
-  addUrl: (url: string) => void;
+  addUrl: (url: string, image?: File | undefined) => void;
   loading?: boolean;
 }
 
@@ -26,6 +26,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
+  const [image, setImage] = useState<File | undefined>(undefined);
   const [error, showError] = useState<boolean>(false);
 
   const handleUrlSubmit = () => {
@@ -59,6 +60,12 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
     if (!loading) {
       showError(status);
     }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : undefined;
+    setImage(file);
+    addUrl('https://storage.googleapis.com', file);
   };
 
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
@@ -128,14 +135,20 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
-                type='submit'
-                className={`cursor-pointer flex-none hover:text-sorbet ${panelClass}`}
-                onClick={handleUrlSubmit}
-                disabled={loading}
+              <label
+                className={`cursor-pointer flex hover:text-sorbet align-center justify-center items-center ${panelClass} ${
+                  loading ? 'opacity-50' : ''
+                }`}
               >
+                <input
+                  type='file'
+                  className='hidden'
+                  onChange={handleImageUpload}
+                  disabled={loading}
+                  accept='image/*'
+                />
                 <ImagePlus size={24} />
-              </button>
+              </label>
             </TooltipTrigger>
             <TooltipContent>Upload custom image as widget</TooltipContent>
           </Tooltip>
