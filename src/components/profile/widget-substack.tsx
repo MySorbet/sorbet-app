@@ -27,10 +27,10 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-1/4'>
+            <div className='w-8'>
               <WidgetHeader type={currentType} />
             </div>
-            <div>{localHeader}</div>
+            <div className='w-90'>{localHeader}</div>
           </div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
