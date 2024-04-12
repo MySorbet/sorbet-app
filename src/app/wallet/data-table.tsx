@@ -1,12 +1,12 @@
 import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
-import { MoveLeft, MoveRight } from 'lucide-react';
+import { MoveLeft, MoveRight, SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
 interface Transaction {
   id: string;
-  timestamp: string;
-  symbol: string;
+  createdAt: string;
+  asset: string;
   txnId: string;
   amount: string;
 }
@@ -17,6 +17,7 @@ interface DataTableProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   isLoading?: boolean;
+  tableHeaders: string[]; // Add tableHeaders to props
 }
 
 const PageNumbers: React.FC<{
@@ -79,6 +80,7 @@ export const DataTable: React.FC<DataTableProps> = ({
   totalPages,
   onPageChange,
   isLoading, // Destructure isLoading prop
+  tableHeaders, // Destructure tableHeaders prop
 }) => {
   return (
     <div className='relative min-h-[50vh]'>
@@ -100,39 +102,52 @@ export const DataTable: React.FC<DataTableProps> = ({
           <table className='w-full text-sm font-md text-left text-gray-500'>
             <thead className='text-md bg-gray-50'>
               <tr>
-                <th
-                  scope='col'
-                  className='py-5 px-6 text-gray-500 font-semibold'
-                >
-                  Date
-                </th>
-                <th
-                  scope='col'
-                  className='py-5 px-6 text-gray-500 font-semibold'
-                >
-                  Asset
-                </th>
-                <th
-                  scope='col'
-                  className='py-5 px-6 text-gray-500 font-semibold'
-                >
-                  Transaction ID
-                </th>
-                <th
-                  scope='col'
-                  className='py-5 px-6 text-gray-500 font-semibold'
-                >
-                  Amount
-                </th>
+                {tableHeaders.map((header) => (
+                  <th
+                    key={header}
+                    scope='col'
+                    className='py-5 px-6 text-gray-500 font-semibold'
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {transactions.map((transaction) => (
                 <tr key={transaction.id} className='bg-white border-b'>
-                  <td className='py-5 px-6'>{transaction.timestamp}</td>
-                  <td className='py-5 px-6'>{transaction.symbol}</td>
-                  <td className='py-5 px-6'>{transaction.txnId}</td>
-                  <td className='py-5 px-6'>{transaction.amount}</td>
+                  <td className='py-5 px-6'>
+                    <span className='text-gray-600'>
+                      {new Date(transaction.createdAt).toLocaleDateString()}
+                    </span>
+                    <br />
+                    <span className='text-xs'>
+                      {new Date(transaction.createdAt).toLocaleTimeString()}
+                    </span>
+                  </td>
+                  <td className='py-5 px-6'>{transaction.asset}</td>
+                  <td className='gap-1 py-5 px-6 underline cursor-pointer'>
+                    <div
+                      className='flex gap-1 items-center'
+                      onClick={() =>
+                        window.open(
+                          `https://nearblocks.io/txns/${transaction.txnId}`,
+                          '_blank'
+                        )
+                      }
+                    >
+                      <span>
+                        {`${transaction.txnId.slice(
+                          0,
+                          5
+                        )}...${transaction.txnId.slice(-5)}`}
+                      </span>
+                      <SquareArrowOutUpRight size={16} />
+                    </div>
+                  </td>
+                  <td className='py-5 px-6'>
+                    {transaction.amount.toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
