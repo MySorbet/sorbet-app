@@ -62,11 +62,15 @@ export const TwitterWidget: React.FC<TwitterWidgetType> = ({
     case WidgetSize.C:
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
-          <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Twitter} />
-            <div className='text-sm font-semibold'>{content.accountName}</div>
-            <div className='text-xs text-gray-500'>
-              {content.accountDescription}
+          <div className='flex flex-row gap-2'>
+            <div className='w-1/5'>
+              <WidgetHeader type={WidgetType.Twitter} />
+            </div>
+            <div>
+              <div className='text-sm font-semibold'>{content.accountName}</div>
+              <div className='text-xs text-gray-500'>
+                {content.accountDescription}
+              </div>
             </div>
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
