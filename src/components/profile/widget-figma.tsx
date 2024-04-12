@@ -1,7 +1,7 @@
 import { ImageOverlay } from '@/components/common';
 import { WidgetHeader } from '@/components/profile/widget-header';
 import { FigmaWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface FigmaWidgetType {
   content: FigmaWidgetContentType;

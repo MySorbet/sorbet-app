@@ -4,5 +4,6 @@ import { Loading } from "./loading/Loading";
 import { Spinner } from "./spinner";
 import { InputTags } from "./input-tags";
 import { ImageOverlay } from "./image-overlay";
+import { WidgetDescription } from "./widget-description";
 
-export { useWalletSelector, ToggleAvailable, Loading, Spinner, InputTags, ImageOverlay };
+export { useWalletSelector, ToggleAvailable, Loading, Spinner, InputTags, ImageOverlay, WidgetDescription };

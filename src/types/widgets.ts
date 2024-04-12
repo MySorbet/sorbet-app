@@ -35,6 +35,8 @@ export interface Widget {
 
 export interface DribbbleWidgetContentType {
   image: string;
+  title: string;
+  description: string;
 }
 
 export interface PhotoWidgetContentType {
