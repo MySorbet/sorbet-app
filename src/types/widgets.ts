@@ -45,6 +45,8 @@ export interface PhotoWidgetContentType {
 
 export interface BehanceWidgetContentType {
   image: string;
+  title: string;
+  description: string;
 }
 
 export interface MediumArticleContentType {
