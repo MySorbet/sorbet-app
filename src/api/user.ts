@@ -46,3 +46,9 @@ export const getTransactions = async(userId: string, currentPage: number = 1, it
   const res = await runApi('GET', `${API_URL}/transactions/user/${userId}${queryParams}`, {}, {}, true);
   return res;
 }
+
+
+export const getBalances = async(email: string) => {
+  const res = await runApi('GET', `${API_URL}/users/${email}/balances`, {}, {}, true);
+  return res;
+}

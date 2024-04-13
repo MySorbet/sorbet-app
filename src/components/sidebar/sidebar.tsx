@@ -154,9 +154,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                         width={20}
                         height={20}
                       />
-                      <div>2,000 USDC</div>
+                      <div>{user?.balance?.usdc.toLocaleString()} USDC</div>
                     </div>
-                    <div className='text-gray-600'>$2,000</div>
+                    <div className='text-gray-600'>
+                      ${user?.balance?.usdc.toLocaleString()}
+                    </div>
                   </div>
                   <div className='flex justify-between'>
                     <div className='flex flex-row gap-2'>
@@ -166,9 +168,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                         width={17}
                         height={17}
                       />
-                      <div>15,346 NEAR</div>
+                      <div>{user?.balance?.near} NEAR</div>
                     </div>
-                    <div className='text-gray-600'>$5,240</div>
+                    <div className='text-gray-600'>
+                      ${user?.balance?.nearUsd}
+                    </div>
                   </div>
                 </div>
               </div>
