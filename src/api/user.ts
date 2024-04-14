@@ -14,7 +14,10 @@ export const getUserFromUserId = async (userId: string) => {
 export const deleteProfileImageAsync = async (userId: string) => {
   const res = await runApi(
     'DELETE',
-    `${API_URL}/user/deleteUserAvatar/${userId}`
+    `${API_URL}/images/delete/${userId}`,
+    {},
+    {},
+    true
   );
   return res;
 };

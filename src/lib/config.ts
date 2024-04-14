@@ -10,6 +10,7 @@ interface AppConfig {
   contractId: string;
   relayerUrl: string;
   authDomain: string;
+  defaultProfileImage?: string;
   googleMapKey?: string;
   gcpProfileBucketName?: string;
   dribbleClientId?: string;
@@ -35,6 +36,7 @@ const appConfigSchema = z.object({
   relayerUrl: z.string().url(),
   authDomain: z.string().url(),
   googleMapKey: z.string().optional(),
+  defaultProfileImage: z.string().optional().default('https://storage.cloud.google.com/sorbet-profile-images/default-avatar.jpeg'),
   gcpProfileBucketName: z.string().optional(),
   dribbleClientId: z.string().optional(),
   dribbleClientSecret: z.string().optional(),
@@ -59,6 +61,7 @@ export const config: AppConfig = appConfigSchema.parse({
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  defaultProfileImage: process.env.NEXT_DEFAULT_PROFILE_IMAGE,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
   gcpProfileBucketName: process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
   dribbleClientId: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_ID,

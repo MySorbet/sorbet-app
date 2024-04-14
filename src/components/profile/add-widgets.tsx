@@ -28,6 +28,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const [url, setUrl] = useState<string>('');
   const [image, setImage] = useState<File | undefined>(undefined);
   const [error, showError] = useState<boolean>(false);
+  const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(true);
 
   const handleUrlSubmit = () => {
     if (!loading) {
@@ -56,16 +57,20 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
     }
   };
 
-  const handleShowErrorAlert = (status: boolean) => {
-    if (!loading) {
-      showError(status);
-    }
-  };
-
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : undefined;
-    setImage(file);
-    addUrl('https://storage.googleapis.com', file);
+    if (file) {
+      const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+      const fileSize = file.size / 1024 / 1024; // in MB
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+      if (validExtensions.includes(fileExtension!) && fileSize <= 10) {
+        setImage(file);
+        addUrl('https://storage.googleapis.com', file);
+      } else {
+        showErrorInvalidImage(true);
+      }
+    }
   };
 
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
@@ -79,7 +84,38 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           }`}
         >
           <div className='mb-2'>
-            <InvalidAlert handleAlertVisible={handleShowErrorAlert} />
+            <InvalidAlert
+              handleAlertVisible={(status: boolean) => showError(status)}
+              title='Link not supported'
+            >
+              <p className='mt-2'>We only support the following links:</p>
+              <p className='font-semibold'>
+                Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
+                Medium, Substack.
+              </p>
+            </InvalidAlert>
+          </div>
+        </div>
+      )}
+
+      {errorInvalidImage && (
+        <div
+          className={`transition-transform duration-500 ${
+            error ? 'translate-y-0' : '-translate-y-1'
+          }`}
+        >
+          <div className='mb-2'>
+            <InvalidAlert
+              handleAlertVisible={(show: boolean) =>
+                showErrorInvalidImage(show)
+              }
+              title='Error uploading file'
+            >
+              <p className='mt-2'>
+                You can only upload jpg, png or gif files only.
+              </p>
+              <p>Maximum 10mb file size</p>
+            </InvalidAlert>
           </div>
         </div>
       )}

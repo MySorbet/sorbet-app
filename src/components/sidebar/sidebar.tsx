@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
@@ -60,14 +61,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
     dispatch(reset());
     logout();
     router.push('/signin');
-  };
-
-  const handleProfileClicked = (event: React.MouseEvent<HTMLDivElement>) => {
-    handleRedirect(event, `/${user?.accountId}`);
-  };
-
-  const handleWalletClicked = (event: React.MouseEvent<HTMLDivElement>) => {
-    handleRedirect(event, '/wallet');
   };
 
   const handleSidebarClose = () => {
@@ -122,11 +115,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
             <div>
               <div className='grid grid-cols-3 gap-2'>
                 <div className='col-span-1'>
-                  <SidebarHeaderOption
-                    label='Wallet'
-                    icon={<WalletMinimal />}
-                    onClick={handleWalletClicked}
-                  />
+                  <Link href='/wallet'>
+                    <SidebarHeaderOption
+                      label='Wallet'
+                      icon={<WalletMinimal />}
+                    />
+                  </Link>
                 </div>
                 <div className='col-span-1'>
                   <SidebarHeaderOption
@@ -136,11 +130,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   />
                 </div>
                 <div className='col-span-1'>
-                  <SidebarHeaderOption
-                    label='My Profile'
-                    icon={<CircleArrowRight />}
-                    onClick={handleProfileClicked}
-                  />
+                  <Link href={`/${user?.accountId}`}>
+                    <SidebarHeaderOption
+                      label='My Profile'
+                      icon={<CircleArrowRight />}
+                    />
+                  </Link>
                 </div>
               </div>
               <div className='bg-white p-5 flex flex-col rounded-xl mt-3'>

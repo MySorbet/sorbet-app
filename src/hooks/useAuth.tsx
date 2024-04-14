@@ -3,10 +3,17 @@ import { fetchUserDetails, signInAsync, signInWithWallet } from '@/api/auth';
 import { getBalances } from '@/api/user';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
-import { useAppDispatch } from '@/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setOpenSidebar, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
-import { ReactNode, createContext, useContext, useMemo, useState } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 
 const AuthContext = createContext({
   user: null as User | null,
@@ -33,18 +40,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
   const dispatch = useAppDispatch();
   const { modal: nearModal, selector } = useWalletSelector();
+  const reduxUser = useAppSelector((state) => state.userReducer.user);
+
+  useEffect(() => {
+    if (reduxUser) {
+      setUser(reduxUser);
+    }
+  }, [reduxUser, setUser]);
 
   const loginWithEmail = async (email: string) => {
     const response = await signInAsync({ email });
     if (!response.data || response.data.user === undefined) {
       return 'User account not found, please try again or sign up for an account';
     } else {
-      // const walletResponse: any = await selector.wallet('fast-auth-wallet');
-      // await walletResponse.signIn({
-      //   contractId: config.contractId,
-      //   email: email,
-      //   isRecovery: false,
-      // });
       const user = response.data.user;
       const token = response.data.access_token;
       setUser(user);

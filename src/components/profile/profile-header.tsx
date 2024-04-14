@@ -20,14 +20,20 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <div className='flex justify-center'>
         <Avatar className={`w-20 h-20`}>
           <AvatarImage
-            src={user.profileImage ?? `/avatar.svg`}
+            src={
+              !user.profileImage || user.profileImage === ''
+                ? `/avatar.svg`
+                : user.profileImage
+            }
             alt={user.accountId}
           />
           <AvatarFallback>{user.accountId}</AvatarFallback>
         </Avatar>
       </div>
       <div className='flex justify-center'>
-        <h1 className='text-2xl font-semibold'>{`${user.firstName} ${user.lastName}`}</h1>
+        {user.firstName && user.lastName && (
+          <h1 className='text-2xl font-semibold'>{`${user.firstName} ${user.lastName}`}</h1>
+        )}
       </div>
       <div className='flex justify-center'>
         <div className='lg:w-5/12'>
@@ -45,26 +51,28 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </span>
           ))}
       </div>
-      <div className='flex flex-row gap-6 justify-center mt-4 items-center'>
-        {editMode ? (
-          <Button
-            variant='outline'
-            className='px-5'
-            onClick={() => onEditClick()}
+      {user && (
+        <div className='flex flex-row gap-6 justify-center mt-4 items-center'>
+          {editMode ? (
+            <Button
+              variant='outline'
+              className='px-5'
+              onClick={() => onEditClick()}
+            >
+              <span>Edit Profile</span>
+            </Button>
+          ) : (
+            <Button className='bg-[#573DF5] px-5'>Hire Me</Button>
+          )}
+          <a
+            href='#'
+            className='text-[#573DF5] flex flex-row align-center gap-1 items-center'
           >
-            <span>Edit Profile</span>
-          </Button>
-        ) : (
-          <Button className='bg-[#573DF5] px-5'>Hire Me</Button>
-        )}
-        <a
-          href='#'
-          className='text-[#573DF5] flex flex-row align-center gap-1 items-center'
-        >
-          <SquareArrowOutUpRight size={16} />
-          <span>Share</span>
-        </a>
-      </div>
+            <SquareArrowOutUpRight size={16} />
+            <span>Share</span>
+          </a>
+        </div>
+      )}
     </>
   );
 };
