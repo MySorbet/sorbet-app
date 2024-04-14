@@ -90,7 +90,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
 
-    const userToUpdate: User = { ...user };
+    let userToUpdate: User = { ...user };
 
     if (user?.id && user?.profileImage != null && image === undefined) {
       await deleteProfileImageAsync(user?.id);
@@ -120,11 +120,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
 
     if (user) {
-      userToUpdate.firstName = data.firstName;
-      userToUpdate.lastName = data.lastName;
-      userToUpdate.city = data.city;
-      userToUpdate.tags = data.tags;
-      userToUpdate.bio = data.bio;
+      userToUpdate = {
+        ...userToUpdate,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        city: data.city,
+        tags: skills,
+        bio: data.bio,
+      };
 
       updateProfileMutation.mutate(userToUpdate);
     } else {
@@ -263,9 +266,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onInputChange={(e) => {
                         field.onChange(e);
                       }}
-                      onPlaceSelected={(place) =>
-                        console.log(JSON.stringify(place))
-                      }
+                      onPlaceSelected={() => console.log()}
                       defaultValue={user && user.city ? user.city : ''}
                     />
                   )}

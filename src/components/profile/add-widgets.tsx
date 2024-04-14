@@ -28,7 +28,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const [url, setUrl] = useState<string>('');
   const [image, setImage] = useState<File | undefined>(undefined);
   const [error, showError] = useState<boolean>(false);
-  const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(true);
+  const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(false);
 
   const handleUrlSubmit = () => {
     if (!loading) {
