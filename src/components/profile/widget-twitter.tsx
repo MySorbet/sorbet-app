@@ -31,7 +31,7 @@ export const TwitterWidget: React.FC<TwitterWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-1/2'>
+            <div className='w-20'>
               <WidgetHeader type={WidgetType.Twitter} />
             </div>
             <div>

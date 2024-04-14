@@ -18,7 +18,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-20'>
+            <div className='w-16'>
               <WidgetHeader type={WidgetType.Behance} />
             </div>
             <div>

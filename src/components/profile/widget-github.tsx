@@ -15,7 +15,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-1/6'>
+            <div className='w-10'>
               <WidgetHeader type={WidgetType.Github} />
             </div>
             <div>
