@@ -20,7 +20,7 @@ import {
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import RGL, { Layout, WidthProvider } from 'react-grid-layout';
+import RGL, { WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {

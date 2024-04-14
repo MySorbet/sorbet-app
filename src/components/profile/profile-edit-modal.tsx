@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import type { User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -33,7 +33,7 @@ type FormData = z.infer<typeof schema>;
 interface ProfileEditModalProps {
   editModalVisible: boolean;
   handleModalVisisble: (open: boolean) => void;
-  user?: User;
+  user: User;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
@@ -90,9 +90,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
 
-    let uploadedImageUrl: string = '';
-    if (user?.accountId && user?.profileImage !== '' && image === '') {
+    const userToUpdate: User = { ...user };
+
+    if (user?.id && user?.profileImage != null && image === undefined) {
       await deleteProfileImageAsync(user?.id);
+      userToUpdate.profileImage = '';
     } else if (user?.id && image !== user?.profileImage && file !== undefined) {
       const imageFormData = new FormData();
       imageFormData.append('file', file);
@@ -107,7 +109,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         response.data &&
         response.data.fileUrl
       ) {
-        uploadedImageUrl = response.data.fileUrl;
+        userToUpdate.profileImage = response.data.fileUrl;
       } else {
         toast({
           title: 'Profile Image not updated',
@@ -118,15 +120,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
 
     if (user) {
-      const userToUpdate = {
-        ...user,
-        profileImage: uploadedImageUrl ? uploadedImageUrl : user.profileImage,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        city: data.city,
-        tags: skills,
-        bio: data.bio,
-      };
+      userToUpdate.firstName = data.firstName;
+      userToUpdate.lastName = data.lastName;
+      userToUpdate.city = data.city;
+      userToUpdate.tags = data.tags;
+      userToUpdate.bio = data.bio;
 
       updateProfileMutation.mutate(userToUpdate);
     } else {
@@ -161,11 +159,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const handleSkillChange = (skills: string[]) => {
     setSkills(skills);
   };
-
-  useEffect(() => {
-    console.log('image', image);
-    console.log('file', file);
-  }, [image, file]);
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
