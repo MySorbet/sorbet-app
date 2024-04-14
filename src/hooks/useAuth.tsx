@@ -1,5 +1,6 @@
 import { useLocalStorage } from './useLocalStorage';
 import { fetchUserDetails, signInAsync, signInWithWallet } from '@/api/auth';
+import { getBalances } from '@/api/user';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
 import { useAppDispatch } from '@/redux/hook';
@@ -90,7 +91,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await fetchUserDetails(accessToken as string);
       const authenticatedUser = response as User;
-      setUser(authenticatedUser);
+
+      const balanceResponse = await getBalances(authenticatedUser.email);
+      if (balanceResponse.status === 'success') {
+        setUser({ ...authenticatedUser, balance: balanceResponse.data });
+      } else {
+        setUser(authenticatedUser);
+      }
+
       dispatch(updateUserData(authenticatedUser));
 
       return authenticatedUser;

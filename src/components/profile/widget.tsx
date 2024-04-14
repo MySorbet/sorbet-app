@@ -61,7 +61,7 @@ export const Widget: React.FC<WidgetProps> = ({
   handleRemove,
 }) => {
   const [showResizeWidget, setShowResizeWidget] = useState(false);
-  const [widgetSize, setWidgetSize] = useState<WidgetSize>(WidgetSize.A);
+  const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
