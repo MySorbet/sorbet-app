@@ -12,7 +12,7 @@ import type { User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -43,7 +43,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  const [image, setImage] = useState<string | undefined>(user?.profileImage);
+  const [image, setImage] = useState<string | undefined>(
+    user?.profileImage || undefined
+  );
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,8 +89,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
+
     let uploadedImageUrl: string = '';
-    if (user?.id && image !== user?.profileImage && file !== undefined) {
+    if (user?.accountId && user?.profileImage !== '' && image === '') {
+      await deleteProfileImageAsync(user?.id);
+    } else if (user?.id && image !== user?.profileImage && file !== undefined) {
       const imageFormData = new FormData();
       imageFormData.append('file', file);
       imageFormData.append('fileType', 'image');
@@ -139,15 +144,28 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setImage(URL.createObjectURL(i));
   };
 
-  const deleteImage = async (e: any) => {
-    const res = await deleteProfileImageAsync(user?.accountId ?? '');
-    setImage(res.data.profileImage);
+  const deleteImage = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+
+    setImage(undefined);
     setFile(undefined);
+
+    const fileInput = document.getElementById(
+      'profileImage'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
   const handleSkillChange = (skills: string[]) => {
     setSkills(skills);
   };
+
+  useEffect(() => {
+    console.log('image', image);
+    console.log('file', file);
+  }, [image, file]);
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
@@ -158,7 +176,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         </DialogHeader>
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
-            {image ? (
+            {image && image != '' ? (
               <img
                 src={image}
                 alt='avatar'
@@ -183,8 +201,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             </label>
             {image && (
               <div
-                className='flex cursor-pointer items-center justify-center rounded-lg border-[1px] border-[#D0D5DD] p-2'
-                onClick={deleteImage}
+                className={`flex items-center justify-center rounded-lg border-[1px] border-[#D0D5DD] p-2 ${
+                  image || user?.profileImage
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-50'
+                }`}
+                onClick={image || user?.profileImage ? deleteImage : undefined}
               >
                 <img
                   src='/images/trash-01.svg'

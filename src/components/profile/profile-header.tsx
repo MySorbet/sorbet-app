@@ -20,7 +20,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <div className='flex justify-center'>
         <Avatar className={`w-20 h-20`}>
           <AvatarImage
-            src={user.profileImage ?? `/avatar.svg`}
+            src={
+              !user.profileImage || user.profileImage === ''
+                ? `/avatar.svg`
+                : user.profileImage
+            }
             alt={user.accountId}
           />
           <AvatarFallback>{user.accountId}</AvatarFallback>
