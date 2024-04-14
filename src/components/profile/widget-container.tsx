@@ -44,7 +44,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
   items = 0,
   rowHeight = 120,
-  cols = 10,
+  cols = 8,
   editMode,
   userId,
   onLayoutChange = () => {},
@@ -171,8 +171,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         className='widget-motion-wrapper'
         initial={false}
         animate={{
-          height: item.h * rowHeight + 20 * (item.h - 1),
-          width: item.w * (containerWidth / cols) - 29,
+          height: item.h * rowHeight + 25 * (item.h - 1),
+          width: item.w * (containerWidth / cols) - 30,
         }}
         style={{ width: '100%', height: '100%' }}
         key={item.i}
