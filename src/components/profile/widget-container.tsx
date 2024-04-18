@@ -239,12 +239,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, []);
 
   useEffect(() => {
-    if (error) {
-      alert(error);
-    }
-  }, [error]);
-
-  useEffect(() => {
     const calculateBreakpoint = () => {
       const width = window.innerWidth;
       let breakpoint = 'lg';
