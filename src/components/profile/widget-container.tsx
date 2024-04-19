@@ -21,7 +21,7 @@ import {
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import RGL, { WidthProvider } from 'react-grid-layout';
+import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -101,11 +101,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         return item;
       });
     });
+    persistWidgetsLayoutOnChange();
   };
 
   const handleWidgetRemove = async (key: string) => {
     await deleteWidget(key);
     setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
+    persistWidgetsLayoutOnChange();
   };
 
   const handleWidgetAdd = async (url: string, image: File | undefined) => {
@@ -173,6 +175,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     } finally {
       setAddingWidget(false);
     }
+    persistWidgetsLayoutOnChange();
   };
 
   const generateDOM = () => {
@@ -215,6 +218,45 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     onLayoutChange(updatedLayout);
   };
 
+  const persistWidgetsLayoutOnChange = (items?: ExtendedWidgetLayout[]) => {
+    const itemsToUse = items && items.length > 0 ? items : layout;
+    if (itemsToUse.length > 0 && editMode) {
+      let payload: UpdateWidgetsBulkDto[] = [];
+      itemsToUse.map((item) =>
+        payload.push({
+          id: item.i,
+          layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+          size: WidgetSize[item.size].toString(),
+        })
+      );
+      updateWidgetsBulk(payload);
+    }
+  };
+
+  const handleWidgetDropStop = (
+    newLayout: Layout[],
+    oldItem: Layout,
+    newItem: Layout,
+    placeholder: Layout,
+    event: MouseEvent,
+    element: HTMLElement
+  ) => {
+    const extendedLayoutObjects: ExtendedWidgetLayout[] = newLayout.map(
+      (item) => {
+        const layoutItem = layout.find((layoutItem) => layoutItem.i === item.i);
+        const extendedItem = {
+          ...item,
+          type: layoutItem?.type,
+          loading: layoutItem?.loading,
+          content: layoutItem?.content,
+          size: layoutItem?.size,
+        };
+        return extendedItem as ExtendedWidgetLayout;
+      }
+    );
+    persistWidgetsLayoutOnChange(extendedLayoutObjects);
+  };
+
   useEffect(() => {
     const updateAnimationStyles = () => {
       const newAnimationStyles: {
@@ -251,20 +293,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       prevLayout.map((item) => ({ ...item, static: !editMode }))
     );
   }, [editMode]);
-
-  // useEffect(() => {
-  //   if (layout.length > 0 && editMode) {
-  //     let payload: UpdateWidgetsBulkDto[] = [];
-  //     layout.map((item) =>
-  //       payload.push({
-  //         id: item.i,
-  //         layout: { h: item.h, w: item.w, x: item.x, y: item.y },
-  //         size: WidgetSize[item.size].toString(),
-  //       })
-  //     );
-  //     updateWidgetsBulk(payload);
-  //   }
-  // }, [layout]);
 
   useEffect(() => {
     let cols = 8;
@@ -348,6 +376,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         rowHeight={rowHeight}
         margin={[25, 25]}
         cols={cols}
+        onDragStop={handleWidgetDropStop}
         isDraggable={editMode}
         isResizable={editMode}
       >
