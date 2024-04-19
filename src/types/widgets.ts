@@ -130,7 +130,7 @@ export enum WidgetType {
 
 export enum WidgetSize {
   A,
-  B,
+  B, 
   C,
   D
 }
@@ -141,6 +141,12 @@ export const WidgetDimensions: { [key in WidgetSize]: { w: number, h: number } }
   [WidgetSize.C]: { w: 4, h: 2 },
   [WidgetSize.D]: { w: 2, h: 4 },
 };
+
+export const getWidgetDimensions = ({ breakpoint = 'lg', size = WidgetSize.A }: { breakpoint?: string, size?: WidgetSize } = {}) => {
+  const dimensions = WidgetDimensions[size];
+  let adjustedDimensions = { ...dimensions };
+  return adjustedDimensions;
+}
 
 export interface ExtendedWidgetLayout extends WidgetLayout {
   type: WidgetType;

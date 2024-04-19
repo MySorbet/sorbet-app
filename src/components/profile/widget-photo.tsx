@@ -13,7 +13,7 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content, size }) => {
       <img
         src={content.image}
         alt='Photo content'
-        className={`w-full h-full object-cover ${
+        className={`relative w-full h-full object-cover ${
           size === WidgetSize.C || size === WidgetSize.D ? '' : 'object-contain'
         }`}
       />
