@@ -145,38 +145,6 @@ export const WidgetDimensions: { [key in WidgetSize]: { w: number, h: number } }
 export const getWidgetDimensions = ({ breakpoint = 'lg', size = WidgetSize.A }: { breakpoint?: string, size?: WidgetSize } = {}) => {
   const dimensions = WidgetDimensions[size];
   let adjustedDimensions = { ...dimensions };
-  
-  // if ((size === WidgetSize.C || size === WidgetSize.D) && (['xxs', 'xs', 'sm', 'md'].includes(breakpoint))) {
-  //   adjustedDimensions = { w: 2, h: 2 };
-  // } 
-
-  // switch (breakpoint) {
-  //   case 'xxs':
-  //     adjustedDimensions.w = Math.max(1, Math.floor(dimensions.w * 0.3));
-  //     adjustedDimensions.h = Math.max(1, Math.floor(dimensions.h * 0.3));
-  //     break;
-  //   case 'xs':
-  //     adjustedDimensions.w = Math.max(1, Math.floor(dimensions.w * 0.5));
-  //     adjustedDimensions.h = Math.max(1, Math.floor(dimensions.h * 0.5));
-  //     break;
-  //   case 'sm':
-  //     adjustedDimensions.w = Math.max(1, Math.floor(dimensions.w * 0.75));
-  //     adjustedDimensions.h = Math.max(1, Math.floor(dimensions.h * 0.75));
-  //     break;
-  //   case 'md':
-  //     adjustedDimensions.w = Math.max(1, Math.floor(dimensions.w * 0.8));
-  //     adjustedDimensions.h = Math.max(1, Math.floor(dimensions.h * 0.8));
-  //     break;
-  //   case 'lg':
-  //     adjustedDimensions = { ...dimensions };
-  //     break;
-  //   case 'xl':
-  //     adjustedDimensions = { ...dimensions };
-  //     break;
-  //   default:
-  //     adjustedDimensions = { ...dimensions };
-  // }
-
   return adjustedDimensions;
 }
 
