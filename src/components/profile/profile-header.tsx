@@ -44,7 +44,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         {user.tags &&
           user.tags.map((tag: string) => (
             <span
-              className='border border-1 border-gray-400 py-1 px-2 rounded-full text-xs'
+              className='border border-1 border-gray-400 py-1 px-2 rounded-full text-xs text-center'
               key={tag}
             >
               {tag}

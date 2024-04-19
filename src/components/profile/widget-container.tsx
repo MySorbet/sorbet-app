@@ -16,6 +16,7 @@ import {
   WidgetDto,
   WidgetSize,
   WidgetType,
+  getWidgetDimensions,
 } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
@@ -24,17 +25,18 @@ import RGL, { WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
+  xxs: 240,
   xs: 480,
   sm: 768,
   md: 996,
   lg: 1200,
+  xl: 1600,
 };
 
 interface WidgetContainerProps {
   className?: string;
   items?: number;
   rowHeight?: number;
-  cols?: number;
   editMode: boolean;
   userId: string;
   onLayoutChange?: (layout: any) => void;
@@ -42,19 +44,26 @@ interface WidgetContainerProps {
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
-  items = 0,
   rowHeight = 120,
-  cols = 8,
   editMode,
   userId,
   onLayoutChange = () => {},
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
+  const [initialLayout, setInitialLayout] = useState<ExtendedWidgetLayout[]>(
+    []
+  );
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
+  const [cols, setCols] = useState<number>(8);
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
+  const widgetRefs = useRef<{ [key: string]: HTMLDivElement }>({});
+  const [animationStyles, setAnimationStyles] = useState<{
+    [key: string]: { width: number; height: number };
+  }>({});
+
   const { toast } = useToast();
 
   const generateLayout = useCallback(async (): Promise<
@@ -158,6 +167,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       };
 
       setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
+      setInitialLayout((prevLayout) => [...prevLayout, widgetToAdd]);
     } catch (e) {
       setError('Failed to add widget. Please try again.');
     } finally {
@@ -166,31 +176,33 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   const generateDOM = () => {
-    return layout.map((item) => (
-      <motion.div
-        className='widget-motion-wrapper'
-        initial={false}
-        animate={{
-          height: item.h * rowHeight + 25 * (item.h - 1),
-          width: item.w * (containerWidth / cols) - 30,
-        }}
-        style={{ width: '100%', height: '100%' }}
-        key={item.i}
-        data-grid={item}
-      >
-        <Widget
-          identifier={item.i}
-          w={item.w}
-          h={item.h}
-          type={item.type}
-          handleResize={handleWidgetResize}
-          handleRemove={handleWidgetRemove}
-          editMode={editMode}
-          content={item.content}
-          initialSize={item.size}
-        />
-      </motion.div>
-    ));
+    return layout.map((item) => {
+      return (
+        <motion.div
+          className='widget-motion-wrapper'
+          initial={false}
+          animate={animationStyles[item.i]}
+          style={{ width: '100%', height: '100%' }}
+          key={item.i}
+          data-grid={item}
+          ref={(el) => {
+            if (el) widgetRefs.current[item.i] = el;
+          }}
+        >
+          <Widget
+            identifier={item.i}
+            w={item.w}
+            h={item.h}
+            type={item.type}
+            handleResize={handleWidgetResize}
+            handleRemove={handleWidgetRemove}
+            editMode={editMode}
+            content={item.content}
+            initialSize={item.size}
+          />
+        </motion.div>
+      );
+    });
   };
 
   const handleLayoutChange = (newLayout: ExtendedWidgetLayout[]) => {
@@ -204,9 +216,31 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   useEffect(() => {
+    const updateAnimationStyles = () => {
+      const newAnimationStyles: {
+        [key: string]: { width: number; height: number };
+      } = {};
+      Object.keys(widgetRefs.current).forEach((key) => {
+        const el = widgetRefs.current[key];
+        if (el) {
+          const { offsetWidth: width, offsetHeight: height } = el;
+          newAnimationStyles[key] = { width, height };
+        }
+      });
+      setAnimationStyles(newAnimationStyles);
+    };
+
+    updateAnimationStyles();
+
+    window.addEventListener('resize', updateAnimationStyles);
+    return () => window.removeEventListener('resize', updateAnimationStyles);
+  }, [layout]);
+
+  useEffect(() => {
     const fetchLayout = async () => {
       const layout = await generateLayout();
       setLayout(layout);
+      setInitialLayout(layout);
     };
 
     fetchLayout();
@@ -218,19 +252,61 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     );
   }, [editMode]);
 
+  // useEffect(() => {
+  //   if (layout.length > 0 && editMode) {
+  //     let payload: UpdateWidgetsBulkDto[] = [];
+  //     layout.map((item) =>
+  //       payload.push({
+  //         id: item.i,
+  //         layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+  //         size: WidgetSize[item.size].toString(),
+  //       })
+  //     );
+  //     updateWidgetsBulk(payload);
+  //   }
+  // }, [layout]);
+
   useEffect(() => {
-    if (layout.length > 0 && editMode) {
-      let payload: UpdateWidgetsBulkDto[] = [];
-      layout.map((item) =>
-        payload.push({
-          id: item.i,
-          layout: { h: item.h, w: item.w, x: item.x, y: item.y },
-          size: WidgetSize[item.size].toString(),
-        })
-      );
-      updateWidgetsBulk(payload);
+    let cols = 8;
+    switch (currentBreakpoint) {
+      case 'xxs':
+        cols = 2;
+        break;
+      case 'xs':
+        cols = 2;
+        break;
+      case 'sm':
+        cols = 4;
+        break;
+      case 'md':
+        cols = 6;
+        break;
+      case 'lg':
+      default:
+        setCols(8);
+        setLayout(initialLayout);
+        return;
     }
-  }, [layout]);
+    setCols(cols);
+
+    setLayout((prevLayout) => {
+      let maxY = 0;
+      return prevLayout.map((item, index) => {
+        const { w, h } = getWidgetDimensions({
+          breakpoint: currentBreakpoint,
+          size: item.size,
+        });
+        let x = item.x;
+        let y = item.y;
+        if (x + w > cols) {
+          x = 0;
+          y = maxY + 1;
+        }
+        maxY = Math.max(maxY, y + h);
+        return { ...item, w, h, x, y };
+      });
+    });
+  }, [currentBreakpoint, initialLayout]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -252,6 +328,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
       if (breakpoint !== currentBreakpoint) {
         setCurrentBreakpoint(breakpoint);
+        console.log('breakpoint changed', breakpoint);
       }
     };
 
