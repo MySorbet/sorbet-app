@@ -356,7 +356,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
       if (breakpoint !== currentBreakpoint) {
         setCurrentBreakpoint(breakpoint);
-        console.log('breakpoint changed', breakpoint);
       }
     };
 
@@ -368,26 +367,34 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [window.innerWidth]);
 
   return (
-    <div ref={containerRef}>
-      <ReactGridLayout
-        layout={layout}
-        onLayoutChange={handleLayoutChange}
-        className={`${className} react-grid-layout`}
-        rowHeight={rowHeight}
-        margin={[25, 25]}
-        cols={cols}
-        onDragStop={handleWidgetDropStop}
-        isDraggable={editMode}
-        isResizable={editMode}
-      >
-        {generateDOM()}
-      </ReactGridLayout>
+    <>
+      <div className='flex flex-col gap-2 md:hidden bg-orange-100 text-orange-700 text-center py-4 px-4 rounded-xl'>
+        <span className='font-bold'>Important</span>
+        <span>
+          You can only edit widgets on desktop to ensure best experience.
+        </span>
+      </div>
+      <div ref={containerRef}>
+        <ReactGridLayout
+          layout={layout}
+          onLayoutChange={handleLayoutChange}
+          className={`${className} react-grid-layout`}
+          rowHeight={rowHeight}
+          margin={[25, 25]}
+          cols={cols}
+          onDragStop={handleWidgetDropStop}
+          isDraggable={editMode}
+          isResizable={editMode}
+        >
+          {generateDOM()}
+        </ReactGridLayout>
 
-      {editMode && (
-        <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
-          <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
-        </div>
-      )}
-    </div>
+        {editMode && (
+          <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
+            <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
+          </div>
+        )}
+      </div>
+    </>
   );
 };

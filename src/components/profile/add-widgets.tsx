@@ -76,7 +76,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
 
   return (
-    <div className={`w-full lg:w-[480px] ${panelClass}`}>
+    <div className={`hidden lg:block lg:w-[480px] ${panelClass}`}>
       {error && (
         <div
           className={`transition-transform duration-500 ${
