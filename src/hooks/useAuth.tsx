@@ -43,12 +43,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const reduxUser = useAppSelector((state) => state.userReducer.user);
 
   useEffect(() => {
-    if (reduxUser) {
+    if (
+      reduxUser &&
+      reduxUser.firstName &&
+      reduxUser.lastName &&
+      reduxUser.id
+    ) {
       setUser(reduxUser);
     }
   }, [reduxUser, setUser]);
 
   const loginWithEmail = async (email: string) => {
+    // try {
+    //   console.log('initiating fast auth login');
+    //   selector.wallet('fast-auth-wallet').then((fastAuthWallet: any) => {
+    //     fastAuthWallet.signIn({
+    //       contractId: config.contractId,
+    //       email: email,
+    //       isRecovery: true,
+    //     });
+    //   });
+    //   return 'Login successful';
+    // } catch (error) {
+    //   return 'Login failed';
+    // }
     const response = await signInAsync({ email });
     if (!response.data || response.data.user === undefined) {
       return 'User account not found, please try again or sign up for an account';
