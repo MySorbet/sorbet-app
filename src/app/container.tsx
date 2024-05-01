@@ -1,4 +1,5 @@
 import { fetchUserDetails } from '@/api/auth';
+import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const Container: React.FC<Props> = ({ children }) => {
-  const { user, accessToken, checkAuth } = useAuth();
+  const { user, accessToken, checkAuth, appLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -21,6 +22,8 @@ const Container: React.FC<Props> = ({ children }) => {
           if (!user) {
             router.push('/signin');
           }
+        } else {
+          router.push('/signin');
         }
       }
     };
@@ -28,7 +31,13 @@ const Container: React.FC<Props> = ({ children }) => {
     checkUserAndFetchDetails();
   }, [router, accessToken]);
 
-  return <>{children}</>;
+  if (appLoading) {
+    return <Loading />;
+  } else if (user && accessToken) {
+    return <>{children}</>;
+  } else {
+    return <p>Nothing to see here</p>;
+  }
 };
 
 export default Container;

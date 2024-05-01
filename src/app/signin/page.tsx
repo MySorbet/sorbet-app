@@ -19,10 +19,10 @@ const Signin = () => {
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-  const { user, loginWithEmail } = useAuth();
+  const { user, loginWithEmail, accessToken } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (user && accessToken) {
       router.push('/');
     }
   }, [user, router]);

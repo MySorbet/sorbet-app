@@ -1,7 +1,6 @@
 'use client';
 
 import Head from './head';
-import Container from '@/app/container';
 import { WalletSelectorContextProvider } from '@/components/common/near-wallet/walletSelectorContext';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/useAuth';
@@ -27,7 +26,7 @@ export default function RootLayout({
           <WalletSelectorContextProvider>
             <AuthProvider>
               <QueryClientProvider client={queryClient}>
-                <Container>{children}</Container>
+                {children}
               </QueryClientProvider>
             </AuthProvider>
           </WalletSelectorContextProvider>

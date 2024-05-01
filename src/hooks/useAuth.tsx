@@ -18,7 +18,7 @@ import {
 const AuthContext = createContext({
   user: null as User | null,
   accessToken: null as string | null,
-  loading: false as boolean,
+  appLoading: false as boolean,
   loginWithEmail: async (email: string): Promise<string> => {
     return '';
   },
@@ -33,7 +33,7 @@ const AuthContext = createContext({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null);
-  const [loading, setLoading] = useState(true);
+  const [appLoading, setAppLoading] = useState(true);
   const [accessToken, setAccessToken] = useLocalStorage<string | null>(
     'access_token',
     null
@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       reduxUser.id
     ) {
       setUser(reduxUser);
+      setAppLoading(false);
     }
   }, [reduxUser, setUser]);
 
@@ -103,7 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       return 'Failed to connect wallet or log in';
     } finally {
-      setLoading(false);
+      setAppLoading(false);
     }
   };
 
@@ -112,7 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return null;
     }
 
-    setLoading(true);
+    setAppLoading(true);
 
     try {
       const response = await fetchUserDetails(accessToken as string);
@@ -131,14 +132,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       return null;
     } finally {
-      setLoading(false);
+      setAppLoading(false);
     }
   };
 
   const logout = () => {
     setUser(null);
     setAccessToken(null);
-    setLoading(false);
+    setAppLoading(false);
   };
 
   const value = useMemo(
@@ -148,10 +149,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loginWithEmail,
       loginWithWallet,
       logout,
-      loading,
+      appLoading,
       checkAuth,
     }),
-    [user, accessToken, loading]
+    [user, accessToken, appLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
