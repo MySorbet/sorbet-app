@@ -51,7 +51,7 @@ export const getWidgetsForUser = async(userId: string) => {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response.data;
     } else {
-      throw new Error(`Error ${response.status}: ${response.message}`);
+      throw new Error(`Error ${response?.status}: ${response.data?.message}`);
     }
   }
 };

@@ -1,5 +1,6 @@
 import { Widget } from './widget';
 import { uploadWidgetsImageAsync } from '@/api/images';
+import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -375,6 +376,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         </span>
       </div>
       <div ref={containerRef}>
+        {layout.length < 1 && <NoWidgetsContent />}
         <ReactGridLayout
           layout={layout}
           onLayoutChange={handleLayoutChange}

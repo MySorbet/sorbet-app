@@ -9,11 +9,11 @@ export const API_URL = config.devApiUrl;
 export const getFormatedResponse = (res: any): FormattedResponse => {
   let response: FormattedResponse;
 
-  if ((res?.status === 200 || res?.status === 201) && res.data != '') {
+  if ((res?.status === 200 || res?.status === 201)) {
     response = {
       status: 'success',
       statusCode: res?.data?.statusCode || res?.status,
-      message: 'API get success',
+      message: 'Request was successful',
       data: res?.data,
     };
   } else {
