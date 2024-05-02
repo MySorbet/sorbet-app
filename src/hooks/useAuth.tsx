@@ -19,11 +19,20 @@ const AuthContext = createContext({
   user: null as User | null,
   accessToken: null as string | null,
   appLoading: false as boolean,
-  loginWithEmail: async (email: string): Promise<string> => {
-    return '';
+  loginWithEmail: async (
+    email: string
+  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
+    return { status: '', message: '', error: {}, data: {} };
   },
-  loginWithWallet: async (accountId: string): Promise<string> => {
-    return '';
+  loginWithWallet: async (
+    accountId: string
+  ): Promise<{
+    status: string;
+    message: string;
+    error?: any;
+    data?: any;
+  }> => {
+    return { status: '', message: '', error: {}, data: {} };
   },
   logout: () => {},
   checkAuth: async (): Promise<User | null> => {
@@ -69,16 +78,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //   return 'Login failed';
     // }
     const response = await signInAsync({ email });
-    if (!response.data || response.data.user === undefined) {
-      return 'User account not found, please try again or sign up for an account';
-    } else {
+    if (response.status === 'success') {
       const user = response.data.user;
       const token = response.data.access_token;
       setUser(user);
       setAccessToken(token);
       dispatch(updateUserData(user));
       dispatch(setOpenSidebar(false));
-      return 'Login successful';
+      return {
+        ...response,
+        status: 'success',
+        message: 'Login successful',
+        data: response.data,
+      };
+    } else {
+      return {
+        ...response,
+        status: 'failed',
+        message: response.message,
+      };
     }
   };
 
@@ -86,7 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await signInWithWallet(accountId);
       if (!response.data || response.data.user === undefined) {
-        return 'User account not found, please try again or sign up for an account';
+        return response;
       } else {
         const walletResponse: any = await selector.wallet('fast-auth-wallet');
         await walletResponse.signIn({
@@ -99,10 +117,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
         setAccessToken(token);
         dispatch(updateUserData(user));
-        return 'Wallet connected and user logged in';
+        return response;
       }
     } catch (error) {
-      return 'Failed to connect wallet or log in';
+      return { status: 'failed', message: '', error: '' };
     } finally {
       setAppLoading(false);
     }

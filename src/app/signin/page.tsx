@@ -5,6 +5,7 @@ import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ const Signin = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const { user, loginWithEmail, accessToken } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (user && accessToken) {
@@ -28,19 +30,19 @@ const Signin = () => {
   }, [user, router]);
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!data.email) {
-      return;
-    }
-
     setLoading(true);
 
-    const loginMessage = await loginWithEmail(data.email);
-    if (loginMessage !== 'Login successful') {
-      alert(loginMessage);
-      setLoading(false);
-    } else {
+    const response = await loginWithEmail(data.email);
+    if (response.status === 'success') {
       setLoading(false);
       router?.push('/');
+    } else {
+      toast({
+        title: 'Failed to login',
+        description: response.message,
+        variant: 'destructive',
+      });
+      setLoading(false);
     }
   });
 

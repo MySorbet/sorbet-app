@@ -60,7 +60,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const handleLogout = async () => {
     dispatch(reset());
     logout();
-    window.location.href = '/signin';
+    router.push('/signin');
   };
 
   const handleSidebarClose = () => {

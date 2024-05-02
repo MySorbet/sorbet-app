@@ -19,8 +19,8 @@ export const getFormatedResponse = (res: any): FormattedResponse => {
   } else {
     response = {
       status: 'failed',
-      statusCode: res?.data?.statusCode || res?.status,
-      message: '',
+      statusCode: res?.data.statusCode,
+      message: res?.data.message,
       data: null,
     };
   }
@@ -58,7 +58,6 @@ export const runApi = async (type: string, url: string, reqBody?: any, headers?:
     }
     return getFormatedResponse(res);
   } catch (error: any) {
-    console.log(error);
     return getFormatedResponse(error.response);
   }
 };
