@@ -107,8 +107,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   const handleWidgetRemove = async (key: string) => {
     await deleteWidget(key);
-    setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
-    persistWidgetsLayoutOnChange();
+    setLayout((prevLayout) => {
+      const newLayout = prevLayout.filter((item) => item.i !== key);
+      if (newLayout.length > 0) {
+        persistWidgetsLayoutOnChange();
+      }
+      return newLayout;
+    });
   };
 
   const handleWidgetAdd = async (url: string, image: File | undefined) => {
@@ -376,7 +381,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         </span>
       </div>
       <div ref={containerRef}>
-        {layout.length < 1 && <NoWidgetsContent />}
+        {layout.length < 1 && editMode && <NoWidgetsContent />}
         <ReactGridLayout
           layout={layout}
           onLayoutChange={handleLayoutChange}

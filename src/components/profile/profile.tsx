@@ -29,7 +29,7 @@ export const Profile: React.FC<{ user: User; canEdit?: boolean }> = ({
             <ProfileHeader
               user={user}
               onEditClick={handleProfileEdit}
-              editMode={canEdit}
+              canEdit={canEdit}
             />
             <ProfileEditModal
               editModalVisible={showEditModal}

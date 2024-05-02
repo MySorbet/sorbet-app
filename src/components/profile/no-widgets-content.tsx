@@ -16,7 +16,7 @@ const NoWidgetsContent = () => {
         </div>
         <div>
           <p>
-            2. Paste the URL in the add widget input at the bottom of your page.
+            2. Paste the URL in the add widget input at the bottom of your page
           </p>
           <img
             src='https://i.imgur.com/K65Hr65.png'
