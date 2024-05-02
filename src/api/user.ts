@@ -22,11 +22,6 @@ export const deleteProfileImageAsync = async (userId: string) => {
   return res;
 };
 
-export const getUsersAll = async () => {
-  const res = await runApi('GET', `${API_URL}/users/getAll`);
-  return res;
-};
-
 export const getUserByAccountId = async (accountId: string) => {
   const res = await runApi('GET', `${API_URL}/users/findByAccountId/${accountId}`);
   return res;

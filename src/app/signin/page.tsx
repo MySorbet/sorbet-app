@@ -19,8 +19,9 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
   const { user, loginWithEmail, accessToken } = useAuth();
+  const { modal: nearModal, selector } = useWalletSelector();
+  const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -45,6 +46,11 @@ const Signin = () => {
       setLoading(false);
     }
   });
+
+  const handleWalletLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    nearModal.show();
+  };
 
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
@@ -82,7 +88,7 @@ const Signin = () => {
               </Button>
               {/* <Button
                 className='h-11 gap-1 self-stretch rounded-lg bg-[#22252a] px-2 py-1 text-sm text-white'
-                onClick={() => nearModal.show()}
+                onClick={handleWalletLogin}
               >
                 Connect Wallet
               </Button> */}

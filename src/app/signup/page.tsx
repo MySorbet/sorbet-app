@@ -18,8 +18,8 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { selector } = useWalletSelector();
   const { user, accessToken } = useAuth();
+  const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const {
     register,
@@ -71,6 +71,11 @@ const Signup = () => {
     },
     []
   );
+
+  const handleWalletLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    nearModal.show();
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     if (!data?.username || !data.email || !data.firstName || !data.lastName)
@@ -188,7 +193,7 @@ const Signup = () => {
           <p className='text-sm text-red-500'>{errors.email?.message}</p>
         )}
       </div>
-      <div className='item w-full mb-2'>
+      {/* <div className='item w-full mb-2'>
         <label className='text-[#595B5A]'>Account ID</label>
         <Input
           {...register('username', {
@@ -208,8 +213,14 @@ const Signup = () => {
       </div>
       <p className={`subText mb-4 text-sm text-center`}>
         <span className={accountStatusState || ''}>{accountStatusMessage}</span>
-      </p>
-      <div className='item w-full'>
+      </p> */}
+      <div className='item w-full mt-4'>
+        {/* <Button
+          className='h-11 gap-1 self-stretch rounded-lg bg-sorbet px-2 py-1 text-sm text-white'
+          onClick={handleWalletLogin}
+        >
+          Register with Wallet
+        </Button> */}
         <Button
           className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'

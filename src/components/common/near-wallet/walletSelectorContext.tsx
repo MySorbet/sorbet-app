@@ -56,17 +56,17 @@ export const WalletSelectorContextProvider: React.FC<{
       debug: true,
       modules: [
         setupMyNearWallet(),
-        setupLedger(),
         setupNearWallet(),
         setupMathWallet(),
-        setupNarwallets(),
         setupHereWallet(),
-        setupCoin98Wallet(),
-        setupFinerWallet(),
-        setupFastAuthWallet({
-          relayerUrl: config.relayerUrl,
-          walletUrl: config.authDomain,
-        }),
+        // setupLedger(),
+        // setupNarwallets(),
+        // setupCoin98Wallet(),
+        // setupFinerWallet(),
+        // setupFastAuthWallet({
+        //   relayerUrl: config.relayerUrl,
+        //   walletUrl: config.authDomain,
+        // }),
       ],
     });
     const _modal = setupModal(_selector, {
