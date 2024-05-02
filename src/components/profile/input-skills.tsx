@@ -29,6 +29,9 @@ export const InputSkills: React.FC<InputSkillsProps> = ({
       <label className='text-sm font-medium text-[#344054]'>
         Add your skills
       </label>
+      <span className='text-sm text-gray-600 italic'>
+        <i>Type in a skill and press enter to select</i>
+      </span>
       <InputTags
         tags={tags}
         addTag={handleAddTag}

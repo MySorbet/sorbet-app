@@ -36,7 +36,7 @@ const Container: React.FC<Props> = ({ children }) => {
   } else if (user && accessToken) {
     return <>{children}</>;
   } else {
-    return <p>Nothing to see here</p>;
+    return <Loading />;
   }
 };
 

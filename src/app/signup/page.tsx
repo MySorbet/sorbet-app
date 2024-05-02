@@ -87,7 +87,7 @@ const Signup = () => {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      accountId: data.username,
+      accountId: `${data.username}.${currentNetwork.fastAuth.accountIdSuffix}`,
     });
 
     if (response.status === 'success') {

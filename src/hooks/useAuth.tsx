@@ -4,7 +4,7 @@ import { getBalances } from '@/api/user';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { setOpenSidebar, updateUserData } from '@/redux/userSlice';
+import { reset, setOpenSidebar, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 import {
   ReactNode,
@@ -137,7 +137,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const response = await fetchUserDetails(accessToken as string);
       const authenticatedUser = response as User;
 
-      const balanceResponse = await getBalances(authenticatedUser.email);
+      const balanceResponse = await getBalances(authenticatedUser.id);
+      console.log(balanceResponse);
       if (balanceResponse.status === 'success') {
         setUser({ ...authenticatedUser, balance: balanceResponse.data });
       } else {
@@ -158,6 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setAccessToken(null);
     setAppLoading(false);
+    dispatch(reset());
   };
 
   const value = useMemo(
