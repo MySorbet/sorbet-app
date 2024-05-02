@@ -19,20 +19,19 @@ const Signup = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
   const { selector } = useWalletSelector();
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
   const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
-    setValue,
-    formState: { errors, touchedFields },
+    formState: { errors },
     clearErrors,
   } = useForm();
 
   const formValues = watch();
 
-  if (user) {
+  if (user && accessToken) {
     router.push('/');
   }
 
