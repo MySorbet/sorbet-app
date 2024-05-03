@@ -76,6 +76,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -161,6 +162,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const handleSkillChange = (skills: string[]) => {
     setSkills(skills);
+    setValue('tags', skills);
   };
 
   return (
@@ -266,7 +268,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onInputChange={(e) => {
                         field.onChange(e);
                       }}
-                      onPlaceSelected={() => console.log()}
+                      onPlaceSelected={(place) =>
+                        setValue('city', place?.formatted_address)
+                      }
                       defaultValue={user && user.city ? user.city : ''}
                     />
                   )}
@@ -289,7 +293,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   defaultValue={user?.bio}
                 />
                 <label className='text-sm font-normal text-[#475467]'>
-                  Max 60 characters
+                  Max 100 characters
                 </label>
                 {errors.bio && (
                   <p className='text-xs text-red-500 mt-1'>

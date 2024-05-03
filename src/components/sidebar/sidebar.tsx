@@ -149,10 +149,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                         width={20}
                         height={20}
                       />
-                      <div>{user?.balance?.usdc.toLocaleString()} USDC</div>
+                      <div>
+                        {user?.balance?.usdc.toLocaleString() || `0`} USDC
+                      </div>
                     </div>
                     <div className='text-gray-600'>
-                      ${user?.balance?.usdc.toLocaleString()}
+                      ${user?.balance?.usdc.toLocaleString() || `0`}
                     </div>
                   </div>
                   <div className='flex justify-between'>
@@ -163,10 +165,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                         width={17}
                         height={17}
                       />
-                      <div>{user?.balance?.near} NEAR</div>
+                      <div>{user?.balance?.near || `0`} NEAR</div>
                     </div>
                     <div className='text-gray-600'>
-                      ${user?.balance?.nearUsd}
+                      ${user?.balance?.nearUsd || `0`}
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import Container from '@/app/container';
 import { CreditCardForm } from '@/app/wallet/credit-card';
 import { WalletContainer } from '@/app/wallet/wallet-container';
 import { Sidebar } from '@/components';
@@ -12,7 +13,7 @@ const Home = () => {
   const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
 
   return (
-    <>
+    <Container>
       <Header />
       {user && <Sidebar show={toggleOpenSidebar} userInfo={user} />}
       <div className='container my-24'>
@@ -25,7 +26,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-    </>
+    </Container>
   );
 };
 

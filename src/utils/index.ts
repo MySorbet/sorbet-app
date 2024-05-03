@@ -9,18 +9,18 @@ export const API_URL = config.devApiUrl;
 export const getFormatedResponse = (res: any): FormattedResponse => {
   let response: FormattedResponse;
 
-  if ((res?.status === 200 || res?.status === 201) && res.data != '') {
+  if ((res?.status === 200 || res?.status === 201)) {
     response = {
       status: 'success',
       statusCode: res?.data?.statusCode || res?.status,
-      message: 'API get success',
+      message: 'Request was successful',
       data: res?.data,
     };
   } else {
     response = {
       status: 'failed',
-      statusCode: res?.data?.statusCode || res?.status,
-      message: '',
+      statusCode: res?.data.statusCode,
+      message: res?.data.message,
       data: null,
     };
   }
@@ -58,7 +58,6 @@ export const runApi = async (type: string, url: string, reqBody?: any, headers?:
     }
     return getFormatedResponse(res);
   } catch (error: any) {
-    console.log(error);
     return getFormatedResponse(error.response);
   }
 };

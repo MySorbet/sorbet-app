@@ -5,13 +5,13 @@ import { SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
 interface ProfileHeaderProps {
-  editMode: boolean;
+  canEdit: boolean;
   user: User;
   onEditClick: () => void;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  editMode,
+  canEdit,
   user,
   onEditClick,
 }) => {
@@ -51,9 +51,21 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </span>
           ))}
       </div>
+      <div>
+        {(!user.firstName || !user.lastName || !user.bio) && canEdit && (
+          <div className='w-full flex justify-center'>
+            <div className='text-sorbet border border-1 border-dashed border-sorbet rounded-lg p-4'>
+              <i>
+                You can start adding your profile info using the Edit Profile
+                button below
+              </i>
+            </div>
+          </div>
+        )}
+      </div>
       {user && (
         <div className='flex flex-row gap-6 justify-center mt-4 items-center'>
-          {editMode ? (
+          {canEdit ? (
             <Button
               variant='outline'
               className='px-5'

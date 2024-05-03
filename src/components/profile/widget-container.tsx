@@ -1,5 +1,6 @@
 import { Widget } from './widget';
 import { uploadWidgetsImageAsync } from '@/api/images';
+import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -106,8 +107,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   const handleWidgetRemove = async (key: string) => {
     await deleteWidget(key);
-    setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
-    persistWidgetsLayoutOnChange();
+    setLayout((prevLayout) => {
+      const newLayout = prevLayout.filter((item) => item.i !== key);
+      if (newLayout.length > 0) {
+        persistWidgetsLayoutOnChange();
+      }
+      return newLayout;
+    });
   };
 
   const handleWidgetAdd = async (url: string, image: File | undefined) => {
@@ -368,6 +374,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   return (
     <>
+      {layout.length < 1 && editMode && <NoWidgetsContent />}
       <div className='flex flex-col gap-2 md:hidden bg-orange-100 text-orange-700 text-center py-4 px-4 rounded-xl'>
         <span className='font-bold'>Important</span>
         <span>

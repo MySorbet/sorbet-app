@@ -24,6 +24,7 @@ import { GithubWidget } from "./widget-github";
 import { FigmaWidget } from "./widget-figma"; 
 import { TwitterWidget } from "./widget-twitter"; 
 import { PhotoWidget } from "./widget-photo"; 
+import { NoWidgetsContent } from "./no-widgets-content"; 
 
 export { 
   Profile, 
@@ -51,5 +52,6 @@ export {
   GithubWidget,
   FigmaWidget,
   TwitterWidget,
-  PhotoWidget
+  PhotoWidget,
+  NoWidgetsContent
 };

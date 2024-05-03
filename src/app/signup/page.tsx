@@ -5,6 +5,7 @@ import { signUpAsync } from '@/api/auth';
 import { useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
@@ -18,21 +19,21 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { selector } = useWalletSelector();
-  const { user } = useAuth();
+  const { user, accessToken, loginWithEmail } = useAuth();
+  const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
-    setValue,
-    formState: { errors, touchedFields },
+    formState: { errors },
     clearErrors,
   } = useForm();
 
   const formValues = watch();
+  const { toast } = useToast();
 
-  if (user) {
+  if (user && accessToken) {
     router.push('/');
   }
 
@@ -73,32 +74,60 @@ const Signup = () => {
     []
   );
 
+  const handleWalletLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    nearModal.show();
+  };
+
   const onSubmit = handleSubmit(async (data) => {
     if (!data?.username || !data.email || !data.firstName || !data.lastName)
       return;
 
-    const res = await signUpAsync({
+    const response = await signUpAsync({
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      accountId: data.username,
+      accountId: `${data.username}.${currentNetwork.fastAuth.accountIdSuffix}`,
     });
-    if (res.data) {
-      selector
-        .wallet('fast-auth-wallet')
-        .then((fastAuthWallet: any) => {
-          fastAuthWallet.signIn({
-            contractId: config.contractId,
-            email: data.email,
-            accountId: data.username,
-            isRecovery: false,
-          });
-        })
-        .then(() => {
-          setLoading(false);
-          setSignedUp(true);
+
+    if (response.status === 'success') {
+      const loginResponse = await loginWithEmail(data.email);
+      if (loginResponse.status === 'success') {
+        setLoading(false);
+        router.push('/');
+      } else {
+        toast({
+          title: 'Unable to login',
+          description:
+            'Your account was created but something went wrong when logging you in.',
         });
+        setLoading(false);
+      }
+    } else {
+      toast({
+        title: 'Unable to create user account',
+        description: response.message,
+        variant: 'destructive',
+      });
+      setLoading(false);
     }
+
+    // if (res.data) {
+    //   selector
+    //     .wallet('fast-auth-wallet')
+    //     .then((fastAuthWallet: any) => {
+    //       fastAuthWallet.signIn({
+    //         contractId: config.contractId,
+    //         email: data.email,
+    //         accountId: data.username,
+    //         isRecovery: false,
+    //       });
+    //     })
+    //     .then(() => {
+    //       setLoading(false);
+    //       setSignedUp(true);
+    //     });
+    // }
   });
 
   useEffect(() => {
@@ -210,7 +239,13 @@ const Signup = () => {
       <p className={`subText mb-4 text-sm text-center`}>
         <span className={accountStatusState || ''}>{accountStatusMessage}</span>
       </p>
-      <div className='item w-full'>
+      <div className='item w-full mt-4'>
+        {/* <Button
+          className='h-11 gap-1 self-stretch rounded-lg bg-sorbet px-2 py-1 text-sm text-white'
+          onClick={handleWalletLogin}
+        >
+          Register with Wallet
+        </Button> */}
         <Button
           className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'

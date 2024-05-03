@@ -22,11 +22,6 @@ export const deleteProfileImageAsync = async (userId: string) => {
   return res;
 };
 
-export const getUsersAll = async () => {
-  const res = await runApi('GET', `${API_URL}/users/getAll`);
-  return res;
-};
-
 export const getUserByAccountId = async (accountId: string) => {
   const res = await runApi('GET', `${API_URL}/users/findByAccountId/${accountId}`);
   return res;
@@ -51,7 +46,7 @@ export const getTransactions = async(userId: string, currentPage: number = 1, it
 }
 
 
-export const getBalances = async(email: string) => {
-  const res = await runApi('GET', `${API_URL}/users/${email}/balances`, {}, {}, true);
+export const getBalances = async(userId: string) => {
+  const res = await runApi('GET', `${API_URL}/users/${userId}/balances`, {}, {}, true);
   return res;
 }

@@ -5,6 +5,7 @@ import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -18,31 +19,38 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
+  const { user, loginWithEmail, accessToken } = useAuth();
+  const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
-  const { user, loginWithEmail } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
+    if (user && accessToken) {
       router.push('/');
     }
   }, [user, router]);
 
   const onSubmit = handleSubmit(async (data) => {
-    if (!data.email) {
-      return;
-    }
-
     setLoading(true);
 
-    const loginMessage = await loginWithEmail(data.email);
-    if (loginMessage !== 'Login successful') {
-      alert(loginMessage);
-      setLoading(false);
-    } else {
+    const response = await loginWithEmail(data.email);
+    if (response.status === 'success') {
       setLoading(false);
       router?.push('/');
+    } else {
+      toast({
+        title: 'Failed to login',
+        description: response.message,
+        variant: 'destructive',
+      });
+      setLoading(false);
     }
   });
+
+  const handleWalletLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    nearModal.show();
+  };
 
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
@@ -80,7 +88,7 @@ const Signin = () => {
               </Button>
               {/* <Button
                 className='h-11 gap-1 self-stretch rounded-lg bg-[#22252a] px-2 py-1 text-sm text-white'
-                onClick={() => nearModal.show()}
+                onClick={handleWalletLogin}
               >
                 Connect Wallet
               </Button> */}

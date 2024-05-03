@@ -33,7 +33,7 @@ export const InputLocation: React.FC<LocationProps> = ({
           onPlaceSelected={(place) => onPlaceSelected(place)}
           onChange={(e) => onInputChange(e)}
           defaultValue={defaultValue}
-          className={`h-full w-full rounded-md border-[#D0D5DD] p-[10px] text-base font-normal text-[#667085] outline-none`}
+          className={`h-full w-full p-[10px] text-base font-normal text-[#667085] outline-none z-50`}
           options={{
             types: ['(cities)'],
           }}

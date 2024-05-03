@@ -4,7 +4,7 @@ import { getBalances } from '@/api/user';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { setOpenSidebar, updateUserData } from '@/redux/userSlice';
+import { reset, setOpenSidebar, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 import {
   ReactNode,
@@ -18,12 +18,21 @@ import {
 const AuthContext = createContext({
   user: null as User | null,
   accessToken: null as string | null,
-  loading: false as boolean,
-  loginWithEmail: async (email: string): Promise<string> => {
-    return '';
+  appLoading: false as boolean,
+  loginWithEmail: async (
+    email: string
+  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
+    return { status: '', message: '', error: {}, data: {} };
   },
-  loginWithWallet: async (accountId: string): Promise<string> => {
-    return '';
+  loginWithWallet: async (
+    accountId: string
+  ): Promise<{
+    status: string;
+    message: string;
+    error?: any;
+    data?: any;
+  }> => {
+    return { status: '', message: '', error: {}, data: {} };
   },
   logout: () => {},
   checkAuth: async (): Promise<User | null> => {
@@ -33,7 +42,7 @@ const AuthContext = createContext({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null);
-  const [loading, setLoading] = useState(true);
+  const [appLoading, setAppLoading] = useState(true);
   const [accessToken, setAccessToken] = useLocalStorage<string | null>(
     'access_token',
     null
@@ -50,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       reduxUser.id
     ) {
       setUser(reduxUser);
+      setAppLoading(false);
     }
   }, [reduxUser, setUser]);
 
@@ -68,16 +78,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //   return 'Login failed';
     // }
     const response = await signInAsync({ email });
-    if (!response.data || response.data.user === undefined) {
-      return 'User account not found, please try again or sign up for an account';
-    } else {
+    if (response.status === 'success') {
       const user = response.data.user;
       const token = response.data.access_token;
       setUser(user);
       setAccessToken(token);
       dispatch(updateUserData(user));
       dispatch(setOpenSidebar(false));
-      return 'Login successful';
+      return {
+        ...response,
+        status: 'success',
+        message: 'Login successful',
+        data: response.data,
+      };
+    } else {
+      return {
+        ...response,
+        status: 'failed',
+        message: response.message,
+      };
     }
   };
 
@@ -85,7 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await signInWithWallet(accountId);
       if (!response.data || response.data.user === undefined) {
-        return 'User account not found, please try again or sign up for an account';
+        return response;
       } else {
         const walletResponse: any = await selector.wallet('fast-auth-wallet');
         await walletResponse.signIn({
@@ -98,12 +117,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
         setAccessToken(token);
         dispatch(updateUserData(user));
-        return 'Wallet connected and user logged in';
+        return response;
       }
     } catch (error) {
-      return 'Failed to connect wallet or log in';
+      return { status: 'failed', message: '', error: '' };
     } finally {
-      setLoading(false);
+      setAppLoading(false);
     }
   };
 
@@ -112,13 +131,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return null;
     }
 
-    setLoading(true);
+    setAppLoading(true);
 
     try {
       const response = await fetchUserDetails(accessToken as string);
       const authenticatedUser = response as User;
 
-      const balanceResponse = await getBalances(authenticatedUser.email);
+      const balanceResponse = await getBalances(authenticatedUser.id);
       if (balanceResponse.status === 'success') {
         setUser({ ...authenticatedUser, balance: balanceResponse.data });
       } else {
@@ -131,14 +150,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       return null;
     } finally {
-      setLoading(false);
+      setAppLoading(false);
     }
   };
 
   const logout = () => {
     setUser(null);
     setAccessToken(null);
-    setLoading(false);
+    setAppLoading(false);
+    dispatch(reset());
   };
 
   const value = useMemo(
@@ -148,10 +168,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loginWithEmail,
       loginWithWallet,
       logout,
-      loading,
+      appLoading,
       checkAuth,
     }),
-    [user, accessToken, loading]
+    [user, accessToken, appLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
