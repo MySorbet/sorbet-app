@@ -268,7 +268,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onInputChange={(e) => {
                         field.onChange(e);
                       }}
-                      onPlaceSelected={() => console.log()}
+                      onPlaceSelected={(place) =>
+                        setValue('city', place?.formatted_address)
+                      }
                       defaultValue={user && user.city ? user.city : ''}
                     />
                   )}

@@ -138,7 +138,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const authenticatedUser = response as User;
 
       const balanceResponse = await getBalances(authenticatedUser.id);
-      console.log(balanceResponse);
       if (balanceResponse.status === 'success') {
         setUser({ ...authenticatedUser, balance: balanceResponse.data });
       } else {

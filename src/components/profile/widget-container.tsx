@@ -374,6 +374,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   return (
     <>
+      {layout.length < 1 && editMode && <NoWidgetsContent />}
       <div className='flex flex-col gap-2 md:hidden bg-orange-100 text-orange-700 text-center py-4 px-4 rounded-xl'>
         <span className='font-bold'>Important</span>
         <span>
@@ -381,7 +382,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         </span>
       </div>
       <div ref={containerRef}>
-        {layout.length < 1 && editMode && <NoWidgetsContent />}
         <ReactGridLayout
           layout={layout}
           onLayoutChange={handleLayoutChange}

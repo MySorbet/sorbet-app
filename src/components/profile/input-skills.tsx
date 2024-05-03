@@ -22,7 +22,7 @@ export const InputSkills: React.FC<InputSkillsProps> = ({
 
   useEffect(() => {
     handleTagsChange(tags);
-  }, [tags, handleTagsChange]);
+  }, [tags]);
 
   return (
     <div className='w-full flex flex-col gap-2 items-start'>
