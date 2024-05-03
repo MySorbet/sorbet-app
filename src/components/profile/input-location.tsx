@@ -37,7 +37,6 @@ export const InputLocation: React.FC<LocationProps> = ({
           options={{
             types: ['(cities)'],
           }}
-          placeholder='Enter your city, country'
         />
       </div>
     </div>

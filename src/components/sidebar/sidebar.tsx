@@ -1,6 +1,5 @@
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useAuth } from '@/hooks';
-import { reset } from '@/redux/contractSlice';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import type { User } from '@/types';
@@ -58,7 +57,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   };
 
   const handleLogout = async () => {
-    dispatch(reset());
     logout();
     router.push('/signin');
   };
