@@ -1,10 +1,9 @@
 version: "3"
 
 services:
-  with-docker-multi-env-production:
+  sorbet-frontend-production:
+    platform: linux/amd64
     build:
       context: ../../
       dockerfile: docker/production/Dockerfile
-    image: with-docker-multi-env-production
-    ports:
-      - "3003:3000"
+    image: sorbet-frontend-production:1.0.0
