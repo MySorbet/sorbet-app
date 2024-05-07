@@ -4,6 +4,7 @@ import Container from '@/app/container';
 import { CreditCardForm } from '@/app/wallet/credit-card';
 import { WalletContainer } from '@/app/wallet/wallet-container';
 import { Sidebar } from '@/components';
+import { PageTitle } from '@/components/common';
 import { Header } from '@/components/header';
 import { useAuth } from '@/hooks';
 import { useAppSelector } from '@/redux/hook';
@@ -15,6 +16,7 @@ const Home = () => {
   return (
     <Container>
       <Header />
+      <PageTitle title='Wallet' />
       {user && <Sidebar show={toggleOpenSidebar} userInfo={user} />}
       <div className='container my-24'>
         <div className='flex flex-col lg:flex-row gap-6'>

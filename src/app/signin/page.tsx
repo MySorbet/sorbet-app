@@ -1,7 +1,7 @@
 'use client';
 
 import './signin.css';
-import { Loading } from '@/components/common';
+import { Loading, PageTitle } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,6 +55,7 @@ const Signin = () => {
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
       {isLoading && <Loading />}
+      {/* <PageTitle title='Sign in' /> */}
       <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 px-6 text-black max-sm:w-[300px]'>
         <form onSubmit={onSubmit}>
           <div className='flex flex-col items-start gap-6 px-6 pb-6'>

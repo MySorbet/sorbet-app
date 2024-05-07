@@ -1,7 +1,7 @@
 'use client';
 
 import { getUserByAccountId } from '@/api/user';
-import { Sidebar } from '@/components';
+import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { Button } from '@/components/ui/button';
@@ -29,7 +29,12 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
   return (
     <>
       {!notFound && <Header isPublic />}
-      {user && <Profile user={user} canEdit={false} />}
+      {user && (
+        <>
+          <Profile user={user} canEdit={false} />
+          <UserSocialPreview title={`${user.firstName} ${user.lastName}`} />
+        </>
+      )}
       {notFound && (
         <div className='container mt-4 w-full h-[100vh]'>
           <div className='flex flex-col gap-10 w-full h-full justify-center items-center align-center'>

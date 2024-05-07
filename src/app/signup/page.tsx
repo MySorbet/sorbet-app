@@ -2,7 +2,7 @@
 
 import './signup.css';
 import { signUpAsync } from '@/api/auth';
-import { useWalletSelector } from '@/components/common';
+import { PageTitle, useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -282,13 +282,16 @@ const Signup = () => {
   );
 
   return (
-    <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-      <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
-        <div className='flex flex-col items-start gap-6 px-6 pb-6'>
-          {signedUp ? alreadySignedUp : registerForm}
+    <>
+      <PageTitle title='Create your account' />
+      <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
+        <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
+          <div className='flex flex-col items-start gap-6 px-6 pb-6'>
+            {signedUp ? alreadySignedUp : registerForm}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
