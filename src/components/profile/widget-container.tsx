@@ -112,7 +112,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setLayout((prevLayout) => {
       const newLayout = prevLayout.filter((item) => item.i !== key);
       if (newLayout.length > 0) {
-        persistWidgetsLayoutOnChange();
+        persistWidgetsLayoutOnChange(newLayout);
       }
       return newLayout;
     });
@@ -176,14 +176,17 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         size: WidgetSize.A,
       };
 
-      setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
+      setLayout((prevLayout) => {
+        const newLayout = [...prevLayout, widgetToAdd];
+        persistWidgetsLayoutOnChange(newLayout);
+        return newLayout;
+      });
       setInitialLayout((prevLayout) => [...prevLayout, widgetToAdd]);
     } catch (e) {
       setError('Failed to add widget. Please try again.');
     } finally {
       setAddingWidget(false);
     }
-    persistWidgetsLayoutOnChange();
   };
 
   const generateDOM = () => {
