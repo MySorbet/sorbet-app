@@ -46,6 +46,7 @@ interface WidgetProps {
   content?: any;
   loading?: boolean;
   initialSize?: WidgetSize;
+  redirectUrl?: string;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
 }
@@ -56,6 +57,7 @@ export const Widget: React.FC<WidgetProps> = ({
   editMode,
   loading,
   content,
+  redirectUrl,
   initialSize = WidgetSize.A,
   handleResize,
   handleRemove,
@@ -69,6 +71,13 @@ export const Widget: React.FC<WidgetProps> = ({
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h, widgetSize);
     setWidgetSize(widgetSize);
+  };
+
+  const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (!editMode && redirectUrl) {
+      window.open(redirectUrl, '_blank');
+    }
   };
 
   useEffect(() => {
@@ -212,6 +221,7 @@ export const Widget: React.FC<WidgetProps> = ({
         key={identifier}
         onMouseEnter={() => editMode && setShowResizeWidget(true)}
         onMouseLeave={() => editMode && setShowResizeWidget(false)}
+        onClick={onWidgetClick}
       >
         {widgetContent}
         <div

@@ -20,7 +20,11 @@ export interface GetSoundcloudType extends GetItemTypeBase {}
 
 export interface GetInstagramType extends GetItemTypeBase {}
 
-export interface GetPhotoWidget extends GetItemTypeBase {}
+export interface GetPhotoWidget extends GetItemTypeBase { }
+
+export interface GetGithubWidget extends GetItemTypeBase { }
+
+export interface GetTwitterWidget extends GetItemTypeBase {}
 
 export interface Widget {
   id: string;
@@ -151,6 +155,7 @@ export const getWidgetDimensions = ({ breakpoint = 'lg', size = WidgetSize.A }: 
 export interface ExtendedWidgetLayout extends WidgetLayout {
   type: WidgetType;
   loading?: boolean;
+  redirectUrl?: string;
   content?: any;
   size: WidgetSize;
 }
@@ -166,6 +171,7 @@ export interface WidgetDto {
   type: string;
   size: string;
   content: any;
+  redirectUrl?: string;
   layout: { x: number, y: number, w: number, h: number }
   userId: string;
   createdAt: string;

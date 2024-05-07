@@ -84,6 +84,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       static: !editMode,
       isResizable: false,
       isDraggable: editMode,
+      redirectUrl: widget.redirectUrl,
       size: WidgetSize[widget.size as keyof typeof WidgetSize],
     }));
   }, [userId, editMode]);
@@ -95,14 +96,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     widgetSize: WidgetSize
   ) => {
     setLayout((prevLayout) => {
-      return prevLayout.map((item) => {
+      const newLayout = prevLayout.map((item) => {
         if (item.i === key) {
           return { ...item, w, h, size: widgetSize };
         }
         return item;
       });
+      persistWidgetsLayoutOnChange(newLayout);
+      return newLayout;
     });
-    persistWidgetsLayoutOnChange();
   };
 
   const handleWidgetRemove = async (key: string) => {
@@ -162,7 +164,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       const widgetToAdd: ExtendedWidgetLayout = {
         i: widget.id,
         x: (layout.length * 2) % cols,
-        y: Infinity,
+        y: 0,
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
         type: type,
@@ -208,6 +210,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
             editMode={editMode}
             content={item.content}
             initialSize={item.size}
+            redirectUrl={item.redirectUrl}
           />
         </motion.div>
       );

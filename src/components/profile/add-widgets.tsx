@@ -91,7 +91,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               <p className='mt-2'>We only support the following links:</p>
               <p className='font-semibold'>
                 Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
-                Medium, Substack.
+                Medium, Substack, Twitter, GitHub
               </p>
             </InvalidAlert>
           </div>
