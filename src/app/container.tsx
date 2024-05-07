@@ -1,4 +1,3 @@
-import { fetchUserDetails } from '@/api/auth';
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
@@ -9,7 +8,7 @@ interface Props {
 }
 
 const Container: React.FC<Props> = ({ children }) => {
-  const { user, accessToken, checkAuth, appLoading } = useAuth();
+  const { user, accessToken, checkAuth, appLoading, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -20,6 +19,7 @@ const Container: React.FC<Props> = ({ children }) => {
         if (accessToken) {
           const user = await checkAuth();
           if (!user) {
+            logout();
             router.push('/signin');
           }
         } else {

@@ -19,7 +19,7 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const { user, loginWithEmail, accessToken } = useAuth();
+  const { user, loginWithEmail, accessToken, checkAuth } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const { toast } = useToast();
