@@ -1,10 +1,11 @@
 'use client';
 
 import { getUserByAccountId } from '@/api/user';
-import { Sidebar } from '@/components';
+import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { Button } from '@/components/ui/button';
+import { config } from '@/lib/config';
 import { User } from '@/types';
 import { useEffect, useState } from 'react';
 
@@ -15,7 +16,9 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
   useEffect(() => {
     const fetchUser = async () => {
       if (params.username.length > 0) {
-        const userResponse = await getUserByAccountId(params.username);
+        const userResponse = await getUserByAccountId(
+          `${params.username}.${config.networkId}`
+        );
         if (userResponse.data) {
           setUser(userResponse.data as User);
         } else {
@@ -29,7 +32,12 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
   return (
     <>
       {!notFound && <Header isPublic />}
-      {user && <Profile user={user} canEdit={false} />}
+      {user && (
+        <>
+          <Profile user={user} canEdit={false} />
+          <UserSocialPreview title={`${user.firstName} ${user.lastName}`} />
+        </>
+      )}
       {notFound && (
         <div className='container mt-4 w-full h-[100vh]'>
           <div className='flex flex-col gap-10 w-full h-full justify-center items-center align-center'>

@@ -84,6 +84,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       static: !editMode,
       isResizable: false,
       isDraggable: editMode,
+      redirectUrl: widget.redirectUrl,
       size: WidgetSize[widget.size as keyof typeof WidgetSize],
     }));
   }, [userId, editMode]);
@@ -95,14 +96,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     widgetSize: WidgetSize
   ) => {
     setLayout((prevLayout) => {
-      return prevLayout.map((item) => {
+      const newLayout = prevLayout.map((item) => {
         if (item.i === key) {
           return { ...item, w, h, size: widgetSize };
         }
         return item;
       });
+      persistWidgetsLayoutOnChange(newLayout);
+      return newLayout;
     });
-    persistWidgetsLayoutOnChange();
   };
 
   const handleWidgetRemove = async (key: string) => {
@@ -110,7 +112,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     setLayout((prevLayout) => {
       const newLayout = prevLayout.filter((item) => item.i !== key);
       if (newLayout.length > 0) {
-        persistWidgetsLayoutOnChange();
+        persistWidgetsLayoutOnChange(newLayout);
       }
       return newLayout;
     });
@@ -162,7 +164,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       const widgetToAdd: ExtendedWidgetLayout = {
         i: widget.id,
         x: (layout.length * 2) % cols,
-        y: Infinity,
+        y: 0,
         w: WidgetDimensions[WidgetSize.A].w,
         h: WidgetDimensions[WidgetSize.A].h,
         type: type,
@@ -174,14 +176,17 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         size: WidgetSize.A,
       };
 
-      setLayout((prevLayout) => [...prevLayout, widgetToAdd]);
+      setLayout((prevLayout) => {
+        const newLayout = [...prevLayout, widgetToAdd];
+        persistWidgetsLayoutOnChange(newLayout);
+        return newLayout;
+      });
       setInitialLayout((prevLayout) => [...prevLayout, widgetToAdd]);
     } catch (e) {
       setError('Failed to add widget. Please try again.');
     } finally {
       setAddingWidget(false);
     }
-    persistWidgetsLayoutOnChange();
   };
 
   const generateDOM = () => {
@@ -208,6 +213,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
             editMode={editMode}
             content={item.content}
             initialSize={item.size}
+            redirectUrl={item.redirectUrl}
           />
         </motion.div>
       );

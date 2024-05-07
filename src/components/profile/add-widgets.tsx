@@ -91,7 +91,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               <p className='mt-2'>We only support the following links:</p>
               <p className='font-semibold'>
                 Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
-                Medium, Substack.
+                Medium, Substack, Twitter, GitHub
               </p>
             </InvalidAlert>
           </div>
@@ -131,24 +131,29 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           <div>
             <Link className='mr-2' size={22} />
           </div>
-          <input
-            type='text'
-            className='outline-none flex-1'
-            placeholder='Add a url...'
-            onChange={handleUrlChange}
-            value={url}
-            disabled={loading}
-          />
-          <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUrlSubmit();
+            }}
+            className='w-full flex items-center flex-grow justify-between'
+          >
+            <input
+              type='text'
+              className='outline-none flex-1'
+              placeholder='Add a url...'
+              onChange={handleUrlChange}
+              value={url}
+              disabled={loading}
+            />
             <button
               type='submit'
               className='cursor-pointer flex-none bg-[#573DF5] text-white px-4 text-xs lg:text-sm py-1 rounded-lg'
-              onClick={handleUrlSubmit}
               disabled={loading}
             >
               {loading ? <Spinner size='small' /> : <span>Add</span>}
             </button>
-          </div>
+          </form>
           <div className='ml-2 text-gray-500 cursor-pointer'>
             <Popover>
               <PopoverTrigger asChild>

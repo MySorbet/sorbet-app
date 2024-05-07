@@ -1,6 +1,5 @@
 export const siteConfig = {
   title: 'Sorbet',
-  description: 'Sorbet',
-  /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
+  description: 'The all-in-one solution for your freelance work, powered by blockchain.',
   url: '',
 };
