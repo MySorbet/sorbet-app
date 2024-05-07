@@ -5,6 +5,7 @@ import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { Button } from '@/components/ui/button';
+import { config } from '@/lib/config';
 import { User } from '@/types';
 import { useEffect, useState } from 'react';
 
@@ -15,7 +16,9 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
   useEffect(() => {
     const fetchUser = async () => {
       if (params.username.length > 0) {
-        const userResponse = await getUserByAccountId(params.username);
+        const userResponse = await getUserByAccountId(
+          `${params.username}.${config.networkId}`
+        );
         if (userResponse.data) {
           setUser(userResponse.data as User);
         } else {

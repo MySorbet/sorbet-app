@@ -65,6 +65,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
     dispatch(setOpenSidebar(false));
   };
 
+  const accountIdToUsername = (accountId: string | undefined) => {
+    if (!accountId) {
+      return '';
+    }
+
+    const parts = accountId.split('.');
+    return parts.length < 2 ? accountId : parts[0];
+  };
+
   return (
     <div
       className={`fixed lg:left-0 z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
@@ -117,6 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                     <SidebarHeaderOption
                       label='Wallet'
                       icon={<WalletMinimal />}
+                      onClick={() => handleSidebarClose()}
                     />
                   </Link>
                 </div>
@@ -128,10 +138,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   />
                 </div>
                 <div className='col-span-1'>
-                  <Link href={`/${user?.accountId}`}>
+                  <Link href={`/${accountIdToUsername(user?.accountId)}`}>
                     <SidebarHeaderOption
                       label='My Profile'
                       icon={<CircleArrowRight />}
+                      onClick={() => handleSidebarClose()}
                     />
                   </Link>
                 </div>
