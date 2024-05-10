@@ -1,11 +1,13 @@
 import { GigsColumn } from './gigs-column';
 import { GigsCard } from '@/app/gigs/gigs-card';
+import { GigsComms } from '@/app/gigs/gigs-comms';
 import React from 'react';
 
 export const GigsBoard = () => {
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+        <GigsComms isOpen={true} />
         <GigsColumn title='Offers' count={1}>
           <GigsCard
             requester='Humza Khan'
