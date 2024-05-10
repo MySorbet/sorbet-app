@@ -1,6 +1,7 @@
 'use client';
 
-import { ChatLayout, ChatLayoutMinimal } from '@/app/gigs/chat';
+import { ChatLayoutMinimal } from '@/app/gigs/chat';
+import { ContractContainer } from '@/app/gigs/contract';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
@@ -29,7 +30,7 @@ const TabSelector: React.FC<TabSelectorProps> = ({
   setActiveTab,
 }) => {
   return (
-    <div className='border border-1 border-solid border-gray-100 rounded-full max-h-11'>
+    <div className='border border-1 border-solid border-gray-100 rounded-full h-11'>
       <Button
         variant={`outline`}
         className={cn(
@@ -69,6 +70,7 @@ export const GigsComms = ({ isOpen = false }: GigsCommsProps) => {
         {activeTab === ActiveTab.Chat && (
           <ChatLayoutMinimal defaultLayout={undefined} navCollapsedSize={8} />
         )}
+        {activeTab === ActiveTab.Contract && <ContractContainer />}
       </DialogContent>
     </Dialog>
   );
