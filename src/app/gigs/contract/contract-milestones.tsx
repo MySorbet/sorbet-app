@@ -16,7 +16,7 @@ const Milestone = ({
   onDelete: (index: number) => void;
 }) => {
   return (
-    <Card className='p-3 rounded-2xl'>
+    <Card className='p-3 rounded-2xl shadow-[0px_0px_16px_1px_#0000001F]'>
       <div className='space-y-1'>
         <Label htmlFor={`milestone-name-${index}`}>Milestone {index}</Label>
         <Controller
@@ -118,7 +118,7 @@ export const ContractMilestones = () => {
       className='flex flex-col gap-2 mt-4'
     >
       <h2 className='text-center'>Break your project down into milestones.</h2>
-      <Card className='p-3 rounded-2xl'>
+      <Card className='p-3 rounded-2xl shadow-[0px_0px_16px_1px_#0000001F]'>
         <div className='space-y-1'>
           <Label htmlFor='project-name'>Project name</Label>
           <Controller
