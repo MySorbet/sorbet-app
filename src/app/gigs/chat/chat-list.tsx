@@ -97,7 +97,9 @@ export function ChatList({
           ))}
         </AnimatePresence>
       </div>
-      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} />
+      <div className='mt-4'>
+        <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} />
+      </div>
     </div>
   );
 }
