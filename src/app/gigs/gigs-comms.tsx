@@ -3,7 +3,12 @@
 import { ChatLayoutMinimal } from '@/app/gigs/chat';
 import { ContractContainer } from '@/app/gigs/contract';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogOverlay,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import {
   MessageCircle as IconMessage,
@@ -13,6 +18,7 @@ import React, { useState } from 'react';
 
 export interface GigsCommsProps {
   isOpen?: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 enum ActiveTab {
@@ -57,12 +63,13 @@ const TabSelector: React.FC<TabSelectorProps> = ({
   );
 };
 
-export const GigsComms = ({ isOpen = false }: GigsCommsProps) => {
+export const GigsComms = ({ isOpen = false, onOpenChange }: GigsCommsProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Chat);
 
   return (
-    <Dialog open={isOpen}>
-      <DialogContent className='flex flex-col w-[95vw] md:min-w-[80vw] lg:min-w-[55vw] md:min-h-[80vh] lg:h-[65vh]'>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogOverlay className='bg-[#F3F3F4]/90' />
+      <DialogContent className='flex flex-col lg:h-[75vh] max-w-[900px] rounded-2xl'>
         <div className='flex justify-between px-4 py-2 h-14'>
           <DialogTitle className='text-2xl'>Chat with Rami</DialogTitle>
           <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
