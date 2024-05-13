@@ -1,7 +1,7 @@
 'use client';
 
 import { ChatLayoutMinimal } from '@/app/gigs/chat';
-import { ContractContainer } from '@/app/gigs/contract';
+import { ContractContainer, ContractOverview } from '@/app/gigs/contract';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,6 +19,7 @@ import React, { useState } from 'react';
 export interface GigsCommsProps {
   isOpen?: boolean;
   onOpenChange: (open: boolean) => void;
+  isClient?: boolean;
 }
 
 enum ActiveTab {
@@ -63,7 +64,11 @@ const TabSelector: React.FC<TabSelectorProps> = ({
   );
 };
 
-export const GigsComms = ({ isOpen = false, onOpenChange }: GigsCommsProps) => {
+export const GigsComms = ({
+  isOpen = false,
+  onOpenChange,
+  isClient = false,
+}: GigsCommsProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Chat);
 
   return (
@@ -77,7 +82,8 @@ export const GigsComms = ({ isOpen = false, onOpenChange }: GigsCommsProps) => {
         {activeTab === ActiveTab.Chat && (
           <ChatLayoutMinimal defaultLayout={undefined} navCollapsedSize={8} />
         )}
-        {activeTab === ActiveTab.Contract && <ContractContainer />}
+        {activeTab === ActiveTab.Contract &&
+          (isClient ? <ContractOverview /> : <ContractContainer />)}
       </DialogContent>
     </Dialog>
   );

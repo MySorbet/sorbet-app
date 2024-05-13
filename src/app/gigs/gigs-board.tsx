@@ -3,7 +3,11 @@ import { GigsCard } from '@/app/gigs/gigs-card';
 import { GigsComms } from '@/app/gigs/gigs-comms';
 import React from 'react';
 
-export const GigsBoard = () => {
+export interface GigsBoardProps {
+  isClient?: boolean;
+}
+
+export const GigsBoard = ({ isClient = false }) => {
   const [isCommsOpen, setIsCommsOpen] = React.useState(false);
 
   const handleCardClick = () => {
@@ -17,8 +21,12 @@ export const GigsBoard = () => {
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <GigsComms isOpen={isCommsOpen} onOpenChange={onGigsCommsOpenChange} />
-        <GigsColumn title='Offers' count={1}>
+        <GigsComms
+          isOpen={isCommsOpen}
+          onOpenChange={onGigsCommsOpenChange}
+          isClient={isClient}
+        />
+        <GigsColumn title={isClient ? 'Offers Sent' : 'Offers'} count={1}>
           <div onClick={handleCardClick}>
             <GigsCard
               requester='Humza Khan'
