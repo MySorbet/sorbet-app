@@ -5,7 +5,18 @@ import { Label } from '@/components/ui/label';
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 
-export const ContractFixedPrice = () => {
+export interface ContractFixedPriceData {
+  projectName: string;
+  totalAmount: number;
+}
+
+export interface ContractFixedPriceProps {
+  onFormSubmit: (data: ContractFixedPriceData) => void;
+}
+
+export const ContractFixedPrice = ({
+  onFormSubmit,
+}: ContractFixedPriceProps) => {
   const {
     control,
     handleSubmit,
@@ -19,7 +30,11 @@ export const ContractFixedPrice = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    const formattedData: ContractFixedPriceData = {
+      projectName: data.projectName,
+      totalAmount: parseFloat(data.totalAmount),
+    };
+    onFormSubmit(formattedData);
   };
 
   return (

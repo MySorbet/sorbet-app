@@ -83,16 +83,33 @@ const Milestone = ({
   );
 };
 
-export const ContractMilestones = () => {
+export interface ContractMilestone {
+  name: string;
+  amount: number;
+}
+export interface ContractMilestonesFormData {
+  projectName: string;
+  milestones: ContractMilestone[];
+}
+
+export interface ContractMilestonesProps {
+  onFormSubmit: (data: ContractMilestonesFormData) => void;
+}
+
+export const ContractMilestones = ({
+  onFormSubmit,
+}: ContractMilestonesProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
     trigger,
+    getValues,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
       'project-name': '',
+      milestones: [],
     },
   });
 
@@ -108,8 +125,15 @@ export const ContractMilestones = () => {
     await trigger(); // Re-evaluate form validation after deleting a milestone
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (formData: any) => {
+    const data: ContractMilestonesFormData = {
+      projectName: formData['project-name'],
+      milestones: milestones.map((_, index) => ({
+        name: formData[`milestone-name-${index + 1}`],
+        amount: parseFloat(formData[`milestone-amount-${index + 1}`]),
+      })),
+    };
+    onFormSubmit(data);
   };
 
   return (
