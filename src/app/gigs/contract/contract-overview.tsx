@@ -3,23 +3,67 @@ import {
   ContractClientMilestoneFundingStatus,
   ContractClientMilestoneStatus,
 } from '@/app/gigs/contract';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { HelpCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import { HelpCircle, TriangleAlert } from 'lucide-react';
+import React, { useState, useRef } from 'react';
 
 export const ContractOverview = () => {
   const [contractApproved, setContractApproved] = useState<boolean>(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
 
   const handleApprove = () => {
     setContractApproved(true);
   };
 
   const handleReject = () => {
+    setIsRejectDialogOpen(true);
+  };
+
+  const confirmReject = () => {
     setContractApproved(false);
+    setIsRejectDialogOpen(false);
+  };
+
+  const cancelReject = () => {
+    setIsRejectDialogOpen(false);
   };
 
   return (
     <div className='contract-container p-4 bg-gray-100 rounded-2xl flex flex-col items-center w-full h-full'>
+      <AlertDialog
+        open={isRejectDialogOpen}
+        onOpenChange={setIsRejectDialogOpen}
+      >
+        <AlertDialogContent>
+          <div className='flex flex-col gap-4 justify-center items-center align-center'>
+            <div>
+              <TriangleAlert
+                className='w-24 h-24'
+                strokeWidth={1}
+                stroke={`#595C5A`}
+              />
+            </div>
+            <div className='text-3xl font-semibold'>Reject contract?</div>
+            <div className='px-8 text-lg text-center'>
+              Confirm if you would like to reject this contract. The freelancer
+              will be notified.
+            </div>
+            <div className='flex flex-row gap-2 w-full mt-12'>
+              <AlertDialogCancel className='w-full'>Cancel</AlertDialogCancel>
+              <AlertDialogAction className='w-full bg-red-600'>
+                Reject Contract
+              </AlertDialogAction>
+            </div>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className='flex flex-row w-full justify-between items-start'>
         <div className='flex flex-col gap-1'>
           <h2 className='font-medium text-2xl'>
