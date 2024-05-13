@@ -59,7 +59,7 @@ const Milestone = ({
                 type='number'
                 className='pr-12' // padding right to make space for the USD label
               />
-              <span className='absolute inset-y-0 right-0 bottom-3 pr-4 flex items-center pointer-events-none text-sm text-gray-500'>
+              <span className='absolute inset-y-0 right-0 bottom-0 pr-4 flex items-center pointer-events-none text-sm text-gray-500'>
                 USD
               </span>
               {error && (

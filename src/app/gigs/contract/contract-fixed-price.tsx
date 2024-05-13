@@ -27,6 +27,7 @@ export const ContractFixedPrice = () => {
       onSubmit={handleSubmit(onSubmit)}
       className='flex flex-col gap-2 mt-4'
     >
+      <p className='text-center'>Set a fixed price for this contract</p>
       <Card className='p-3 rounded-2xl shadow-[0px_0px_16px_1px_#0000001F]'>
         <div className='space-y-1'>
           <Label htmlFor='projectName'>Project name</Label>
