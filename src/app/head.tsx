@@ -7,7 +7,6 @@ export default function Head() {
 
   return (
     <head>
-      <title>{title}</title>
       <meta content='width=device-width, initial-scale=1' name='viewport' />
 
       <meta name='description' content={description} />
