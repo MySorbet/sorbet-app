@@ -3,6 +3,7 @@ export interface SignUpWithEmailTypes {
   lastName: string;
   email: string;
   accountId: string;
+  userType: string;
 }
 
 export interface SignInWithEmailTypes {

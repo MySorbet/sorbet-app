@@ -8,12 +8,16 @@ interface ProfileHeaderProps {
   canEdit: boolean;
   user: User;
   onEditClick: () => void;
+  onHireMeClick?: () => void;
+  disableHireMe?: boolean;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   canEdit,
   user,
   onEditClick,
+  onHireMeClick,
+  disableHireMe = false,
 }) => {
   return (
     <>
@@ -74,7 +78,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               <span>Edit Profile</span>
             </Button>
           ) : (
-            <Button className='bg-[#573DF5] px-5'>Hire Me</Button>
+            <Button
+              className='bg-[#573DF5] px-5'
+              onClick={onHireMeClick}
+              disabled={disableHireMe}
+            >
+              Hire Me
+            </Button> // Added onClick event for Hire Me button
           )}
           <a
             href='#'

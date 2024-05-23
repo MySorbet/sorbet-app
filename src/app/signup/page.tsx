@@ -5,11 +5,13 @@ import { signUpAsync } from '@/api/auth';
 import { PageTitle, useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 
 const Signup = () => {
@@ -28,7 +30,17 @@ const Signup = () => {
     watch,
     formState: { errors },
     clearErrors,
-  } = useForm();
+    setValue,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      userType: 'FREELANCER',
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+    },
+  });
 
   const formValues = watch();
   const { toast } = useToast();
@@ -83,11 +95,14 @@ const Signup = () => {
     if (!data?.username || !data.email || !data.firstName || !data.lastName)
       return;
 
+    const userType = getValues('userType');
+
     const response = await signUpAsync({
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
       accountId: `${data.username}.${currentNetwork.fastAuth.accountIdSuffix}`,
+      userType: userType,
     });
 
     if (response.status === 'success') {
@@ -170,6 +185,29 @@ const Signup = () => {
   const registerForm = (
     <form onSubmit={onSubmit}>
       <h1 className='text-[32px] mb-4 text-center'>Sign up</h1>
+
+      <div className='row my-4 flex justify-left md:justify-center'>
+        <RadioGroup
+          defaultValue='FREELANCER'
+          className='flex flex-col gap-3 md:flex-row md:gap-6'
+          onChange={(event) =>
+            setValue('userType', (event.target as HTMLInputElement).value)
+          }
+        >
+          <div className='flex items-center space-x-2'>
+            <RadioGroupItem value='FREELANCER' id='r1' />
+            <Label htmlFor='r1' className='text-[#595B5A]'>
+              I'm a freelancer
+            </Label>
+          </div>
+          <div className='flex items-center space-x-2'>
+            <RadioGroupItem value='CLIENT' id='r2' />
+            <Label htmlFor='r2' className='text-[#595B5A]'>
+              I'm a client
+            </Label>
+          </div>
+        </RadioGroup>
+      </div>
       <div className='row mb-4'>
         <div className='item'>
           <label className='text-[#595B5A]'>First name</label>
@@ -236,6 +274,7 @@ const Signup = () => {
           <p className='text-sm text-red-500'>{errors.username?.message}</p>
         )}
       </div>
+
       <p className={`subText mb-4 text-sm text-center`}>
         <span className={accountStatusState || ''}>{accountStatusMessage}</span>
       </p>

@@ -1,26 +1,21 @@
 'use client';
 
 import { Chat } from './chat';
-import { ChatSidebar } from './chat-sidebar';
-import { userData } from './data';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable';
-import { cn } from '@/lib/utils';
+import { Message, userData } from './data';
 import React, { useEffect, useState } from 'react';
 
 interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
+  handlewNewMessage?: (newMessage: Message) => void;
 }
 
 export function ChatLayoutMinimal({
   defaultLayout = [320, 480],
   defaultCollapsed = false,
   navCollapsedSize,
+  handlewNewMessage,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [selectedUser, setSelectedUser] = React.useState(userData[0]);
@@ -45,8 +40,9 @@ export function ChatLayoutMinimal({
 
   return (
     <Chat
-      messages={selectedUser.messages}
+      messages={[]}
       selectedUser={selectedUser}
+      handlewNewMessage={handlewNewMessage}
       isMobile={isMobile}
       showTopbar={false}
     />

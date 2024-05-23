@@ -12,10 +12,12 @@ export interface ContractFixedPriceData {
 
 export interface ContractFixedPriceProps {
   onFormSubmit: (data: ContractFixedPriceData) => void;
+  projectName?: string;
 }
 
 export const ContractFixedPrice = ({
   onFormSubmit,
+  projectName,
 }: ContractFixedPriceProps) => {
   const {
     control,
@@ -24,7 +26,7 @@ export const ContractFixedPrice = ({
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      projectName: '',
+      projectName: projectName || '',
       totalAmount: '',
     },
   });
@@ -56,6 +58,8 @@ export const ContractFixedPrice = ({
                   {...field}
                   id='projectName'
                   placeholder='Name your project'
+                  value={projectName || ''}
+                  disabled={!!projectName}
                 />
                 {error && (
                   <p className='text-red-500 text-xs mt-1'>{error.message}</p>

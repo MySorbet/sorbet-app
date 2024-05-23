@@ -13,6 +13,7 @@ export interface User {
   role: string;
   nearWallet: string;
   city: string;
+  userType: string;
   balance?: {
     usdc: number,
     near: number

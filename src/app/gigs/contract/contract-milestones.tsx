@@ -94,10 +94,12 @@ export interface ContractMilestonesFormData {
 
 export interface ContractMilestonesProps {
   onFormSubmit: (data: ContractMilestonesFormData) => void;
+  projectName?: string;
 }
 
 export const ContractMilestones = ({
   onFormSubmit,
+  projectName,
 }: ContractMilestonesProps) => {
   const {
     control,
@@ -108,7 +110,7 @@ export const ContractMilestones = ({
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      'project-name': '',
+      'project-name': projectName || '',
       milestones: [],
     },
   });
@@ -155,6 +157,8 @@ export const ContractMilestones = ({
                   {...field}
                   id='project-name'
                   placeholder='Name your project'
+                  value={projectName || ''}
+                  disabled={!!projectName}
                 />
                 {error && (
                   <p className='text-red-500 text-xs mt-1'>{error.message}</p>
