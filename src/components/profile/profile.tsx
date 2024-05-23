@@ -7,10 +7,12 @@ import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import React, { useState } from 'react';
 
-export const Profile: React.FC<{ user: User; canEdit?: boolean }> = ({
-  user,
-  canEdit = false,
-}) => {
+export const Profile: React.FC<{
+  user: User;
+  canEdit?: boolean;
+  onHireMeClick?: () => void;
+  disableHireMe?: boolean;
+}> = ({ user, canEdit = false, onHireMeClick, disableHireMe = false }) => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const handleProfileEdit = () => {
@@ -30,6 +32,8 @@ export const Profile: React.FC<{ user: User; canEdit?: boolean }> = ({
               user={user}
               onEditClick={handleProfileEdit}
               canEdit={canEdit}
+              onHireMeClick={onHireMeClick}
+              disableHireMe={disableHireMe}
             />
             <ProfileEditModal
               editModalVisible={showEditModal}

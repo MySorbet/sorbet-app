@@ -7,6 +7,7 @@ import { ImageOverlay } from "./image-overlay";
 import { WidgetDescription } from "./widget-description";
 import { UserSocialPreview } from "./user-social-preview";
 import { PageTitle } from "./page-title";
+import { ConfirmDialog } from "./confirm-dialog";
 
 export {
   useWalletSelector,
@@ -17,5 +18,6 @@ export {
   ImageOverlay,
   WidgetDescription,
   UserSocialPreview,
-  PageTitle
+  PageTitle,
+  ConfirmDialog
 };

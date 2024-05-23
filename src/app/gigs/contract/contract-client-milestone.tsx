@@ -21,6 +21,9 @@ export interface ContractClientMilestoneProps {
   status: ContractClientMilestoneStatus;
   fundingStatus: ContractClientMilestoneFundingStatus;
   fundingButtonDisabled?: boolean;
+  title: string;
+  amount: number;
+  isClient: boolean;
 }
 
 export const ContractClientMilestone = ({
@@ -28,6 +31,9 @@ export const ContractClientMilestone = ({
   status,
   fundingStatus,
   fundingButtonDisabled = false,
+  title,
+  amount,
+  isClient,
 }: ContractClientMilestoneProps) => {
   const isCompleted = status === ContractClientMilestoneStatus.Completed;
 
@@ -64,8 +70,8 @@ export const ContractClientMilestone = ({
             )}
 
             <div className='flex flex-col gap-1'>
-              <h2 className='font-medium'>Brand guide book</h2>
-              <p className='font-medium text-sm'>$1,500</p>
+              <h2 className='font-medium'>{title}</h2>
+              <p className='font-medium text-sm'>${amount.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -84,32 +90,33 @@ export const ContractClientMilestone = ({
               </Badge>
             </div>
             <div>
-              {status !== ContractClientMilestoneStatus.PendingApproval && (
-                <>
-                  {fundingStatus ===
-                  ContractClientMilestoneFundingStatus.funded ? (
-                    <h2 className='text-center text-gray-400 font-medium'>
-                      Funded
-                    </h2>
-                  ) : (
-                    fundingStatus ===
-                      ContractClientMilestoneFundingStatus.pending && (
-                      <>
-                        <Button
-                          variant='default'
-                          className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
-                            fundingButtonDisabled &&
-                            `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
-                          }`}
-                          size={`sm`}
-                        >
-                          Add Funds <Plus className='ml-1' size={17} />
-                        </Button>
-                      </>
-                    )
-                  )}
-                </>
-              )}
+              {isClient &&
+                status !== ContractClientMilestoneStatus.PendingApproval && (
+                  <>
+                    {fundingStatus ===
+                    ContractClientMilestoneFundingStatus.funded ? (
+                      <h2 className='text-center text-gray-400 font-medium'>
+                        Funded
+                      </h2>
+                    ) : (
+                      fundingStatus ===
+                        ContractClientMilestoneFundingStatus.pending && (
+                        <>
+                          <Button
+                            variant='default'
+                            className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
+                              fundingButtonDisabled &&
+                              `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
+                            }`}
+                            size={`sm`}
+                          >
+                            Add Funds <Plus className='ml-1' size={17} />
+                          </Button>
+                        </>
+                      )
+                    )}
+                  </>
+                )}
             </div>
           </div>
         </div>

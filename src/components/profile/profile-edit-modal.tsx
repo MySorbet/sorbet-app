@@ -3,7 +3,12 @@ import { deleteProfileImageAsync } from '@/api/user';
 import { updateUser } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogOverlay,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hook';
@@ -167,6 +172,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
+      <DialogOverlay className='bg-black/80' />
       <DialogContent className={isSubmitting ? 'opacity-50' : ''}>
         {' '}
         <DialogHeader className='text-2xl font-semibold'>

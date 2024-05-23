@@ -8,6 +8,7 @@ interface ChatProps {
   selectedUser: UserData;
   isMobile: boolean;
   showTopbar?: boolean;
+  handlewNewMessage?: (newMessage: Message) => void;
 }
 
 export function Chat({
@@ -15,6 +16,7 @@ export function Chat({
   selectedUser,
   isMobile,
   showTopbar = true,
+  handlewNewMessage,
 }: ChatProps) {
   const [messagesState, setMessages] = React.useState<Message[]>(
     messages ?? []
@@ -22,6 +24,9 @@ export function Chat({
 
   const sendMessage = (newMessage: Message) => {
     setMessages([...messagesState, newMessage]);
+    if (handlewNewMessage) {
+      handlewNewMessage(newMessage);
+    }
   };
 
   return (

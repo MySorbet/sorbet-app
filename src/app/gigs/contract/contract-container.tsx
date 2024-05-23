@@ -1,28 +1,88 @@
+import { createContract, updateOfferStatus } from '@/api/gigs';
 import {
   ContractFixedPrice,
   ContractFixedPriceData,
   ContractMilestones,
   ContractMilestonesFormData,
 } from '@/app/gigs/contract';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
+import { CreateContractType, OfferType } from '@/types';
 import { CircleCheckBig } from 'lucide-react';
 import React, { useState } from 'react';
 
-export const ContractContainer = () => {
+export interface ContractContainerProps {
+  handleRejectOfferClick?: () => void;
+  afterContractSubmited?: () => void;
+  currentOffer?: OfferType;
+}
+
+export const ContractContainer = ({
+  handleRejectOfferClick,
+  afterContractSubmited,
+  currentOffer,
+}: ContractContainerProps) => {
   const [tab, setTab] = useState<string>('milestones');
   const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
+  const { toast } = useToast();
 
-  const onMilestonesFormSubmit = (formData: ContractMilestonesFormData) => {
-    if (tab === 'milestones') {
-      setIsFormSubmitted(true);
-      console.log(formData);
+  const onMilestonesFormSubmit = async (
+    formData: ContractMilestonesFormData
+  ) => {
+    if (tab === 'milestones' && currentOffer) {
+      const totalAmount = formData.milestones.reduce(
+        (sum, milestone) => sum + milestone.amount,
+        0
+      );
+      const reqBody: CreateContractType = {
+        name: formData.projectName,
+        totalAmount: totalAmount,
+        contractType: 'Milestones',
+        milestones: formData.milestones,
+        offerId: currentOffer.id,
+        clientUsername: currentOffer.username,
+      };
+
+      const response = await createContract(reqBody);
+      if (response && response.status === 'success') {
+        // await updateOfferStatus(currentOffer.id, 'Accepted');
+        setIsFormSubmitted(true);
+        if (afterContractSubmited) {
+          afterContractSubmited();
+        }
+      } else {
+        toast({
+          title: 'Unable to submit contract',
+          description: 'Something went wrong, please try again',
+        });
+      }
     }
   };
 
-  const onFixedPriceFormSubmit = (formData: ContractFixedPriceData) => {
-    if (tab === 'fixed-price') {
-      setIsFormSubmitted(true);
-      console.log(formData);
+  const onFixedPriceFormSubmit = async (formData: ContractFixedPriceData) => {
+    if (tab === 'fixed-price' && currentOffer) {
+      const reqBody: CreateContractType = {
+        name: formData.projectName,
+        totalAmount: formData.totalAmount,
+        contractType: 'FixedPrice',
+        offerId: currentOffer.id,
+        clientUsername: currentOffer.username,
+      };
+
+      const response = await createContract(reqBody);
+      if (response && response.status === 'success') {
+        // await updateOfferStatus(currentOffer.id, 'Accepted');
+        setIsFormSubmitted(true);
+        if (afterContractSubmited) {
+          afterContractSubmited();
+        }
+      } else {
+        toast({
+          title: 'Unable to submit contract',
+          description: 'Something went wrong, please try again',
+        });
+      }
     }
   };
 
@@ -61,12 +121,27 @@ export const ContractContainer = () => {
           </TabsList>
         </div>
         <TabsContent value='milestones'>
-          <ContractMilestones onFormSubmit={onMilestonesFormSubmit} />
+          <ContractMilestones
+            onFormSubmit={onMilestonesFormSubmit}
+            projectName={currentOffer?.projectName}
+          />
         </TabsContent>
         <TabsContent value='fixed-price'>
-          <ContractFixedPrice onFormSubmit={onFixedPriceFormSubmit} />
+          <ContractFixedPrice
+            onFormSubmit={onFixedPriceFormSubmit}
+            projectName={currentOffer?.projectName}
+          />
         </TabsContent>
       </Tabs>
+      <div className='w-[85%]'>
+        <Button
+          variant='destructive'
+          className='w-full mt-4'
+          onClick={handleRejectOfferClick}
+        >
+          Reject Offer
+        </Button>
+      </div>
     </div>
   );
 };
