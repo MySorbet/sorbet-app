@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "PORT=6100 next dev",
+    "start:dev": "PORT=6100 next dev",
     "build": "env-cmd -f .env.production next build",
-    "start": "next start",
+    "start:prod": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && yarn format",
     "lint:strict": "eslint --max-warnings=0 src",
