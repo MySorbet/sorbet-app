@@ -14,6 +14,12 @@ const Home = () => {
   const reduxUser = useAppSelector((state) => state.userReducer.user);
   const [user, setUser] = useState(authUser || reduxUser);
   const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (window.innerWidth <= 768) setIsMobile(true);
+    else setIsMobile(false);
+  }, [window]);
 
   useEffect(() => {
     setUser(authUser || reduxUser);
@@ -26,7 +32,7 @@ const Home = () => {
       {user && (
         <>
           <Sidebar show={toggleOpenSidebar} userInfo={user} />
-          <Profile user={user} canEdit />
+          <Profile user={user} canEdit={!isMobile} />
         </>
       )}
     </Container>
