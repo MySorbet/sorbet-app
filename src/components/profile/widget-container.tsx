@@ -3,8 +3,7 @@ import { uploadWidgetsImageAsync } from '@/api/images';
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
-import { useDeleteWidget } from '@/hooks/useDeleteWidget';
-import { useGetWidgetContent } from '@/hooks/useGetWidgetContent';
+import { useDeleteWidget, useGetWidgetsForUser } from '@/hooks';
 import {
   deleteWidget,
   getWidgetContent,
@@ -22,7 +21,6 @@ import {
   getWidgetDimensions,
 } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
@@ -70,16 +68,16 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const { toast } = useToast();
 
   const { mutateAsync: deleteWidgetMutation } = useDeleteWidget();
-
   const {
-    isLoading: getWidgetLoading,
-    data: getWidgetData,
-    error: getWidgetError,
-  } = useGetWidgetContent();
+    data: userWidgetData,
+    isPending: isUserWidgetPending,
+    isError: isUserWidgetError,
+  } = useGetWidgetsForUser(userId);
+
   const generateLayout = useCallback(async (): Promise<
     ExtendedWidgetLayout[]
   > => {
-    const userWidgets: WidgetDto[] = await getWidgetsForUser(userId);
+    const userWidgets: WidgetDto[] = userWidgetData;
     if (!userWidgets || userWidgets.length < 1) return [];
 
     return userWidgets.map((widget: WidgetDto, i: number) => ({
