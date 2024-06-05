@@ -8,13 +8,7 @@ import {
   useGetWidgetsForUser,
   useGetWidgetContent,
 } from '@/hooks';
-import {
-  deleteWidget,
-  getWidgetContent,
-  getWidgetsForUser,
-  updateWidget,
-  updateWidgetsBulk,
-} from '@/lib/service';
+import { updateWidgetsBulk } from '@/lib/service';
 import {
   ExtendedWidgetLayout,
   UpdateWidgetsBulkDto,
@@ -392,7 +386,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }, [window.innerWidth]);
 
   if (isUserWidgetPending) return <div>Loading...</div>;
-
+  if (isUserWidgetError) {
+    toast({ title: 'Error', description: 'Failed to fetch widgets' });
+  }
   return (
     <>
       {layout.length < 1 && editMode && <NoWidgetsContent />}
