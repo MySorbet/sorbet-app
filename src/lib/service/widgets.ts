@@ -16,8 +16,7 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { runApi, validateToken } from '@/utils';
-import axios from 'axios';
+import { runApi } from '@/utils';
 
 export const getWidgetContent = async ({
   url,
