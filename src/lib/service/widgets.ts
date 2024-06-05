@@ -1,8 +1,31 @@
-import { runApi } from '@/utils';
-import { ExtendedWidgetLayout, GetBehanceItemType, GetDribbleShotType, GetGithubWidget, GetInstagramType, GetMediumArticleType, GetPhotoWidget, GetSoundcloudType, GetSpotifyType, GetSubstackArticleType, GetTwitterWidget, GetYouTubeVideoType, UpdateWidgetsBulkDto, WidgetSize, WidgetType } from '@/types';
 import { config } from '@/lib/config';
+import {
+  ExtendedWidgetLayout,
+  GetBehanceItemType,
+  GetDribbleShotType,
+  GetGithubWidget,
+  GetInstagramType,
+  GetMediumArticleType,
+  GetPhotoWidget,
+  GetSoundcloudType,
+  GetSpotifyType,
+  GetSubstackArticleType,
+  GetTwitterWidget,
+  GetYouTubeVideoType,
+  UpdateWidgetsBulkDto,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
+import { runApi, validateToken } from '@/utils';
+import axios from 'axios';
 
-export const getWidgetContent = async ({ url, type }: { url: string; type: WidgetType }) => {
+export const getWidgetContent = async ({
+  url,
+  type,
+}: {
+  url: string;
+  type: WidgetType;
+}) => {
   switch (type) {
     case WidgetType.Dribbble:
       return getDribbleShot({ url });
@@ -33,17 +56,23 @@ export const getWidgetContent = async ({ url, type }: { url: string; type: Widge
 
     case WidgetType.Photo:
       return getPhotoWidget({ url });
-    
+
     case WidgetType.Github:
       return getGithubProfile({ url });
-    
+
     case WidgetType.Twitter:
       return getTwitterProfile({ url });
   }
 };
 
-export const getWidgetsByUsername = async(username: string) => {
-  const response = await runApi('GET', `${config.devApiUrl}/widgets/username/${username}`, {}, {}, true);
+export const getWidgetsByUsername = async (username: string) => {
+  const response = await runApi(
+    'GET',
+    `${config.devApiUrl}/widgets/username/${username}`,
+    {},
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -51,9 +80,15 @@ export const getWidgetsByUsername = async(username: string) => {
   }
 };
 
-export const getWidgetsForUser = async(userId: string) => {
+export const getWidgetsForUser = async (userId: string) => {
   if (userId != null) {
-    const response = await runApi('GET', `${config.devApiUrl}/widgets/user/${userId}`, {}, {}, true);
+    const response = await runApi(
+      'GET',
+      `${config.devApiUrl}/widgets/user/${userId}`,
+      {},
+      {},
+      true
+    );
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response.data;
     } else {
@@ -62,8 +97,16 @@ export const getWidgetsForUser = async(userId: string) => {
   }
 };
 
-export const updateWidgetsBulk = async (widgetLayouts: UpdateWidgetsBulkDto[]) => {
-  const response = await runApi('PATCH', `${config.devApiUrl}/widgets/bulk-update`, widgetLayouts, {}, true);
+export const updateWidgetsBulk = async (
+  widgetLayouts: UpdateWidgetsBulkDto[]
+) => {
+  const response = await runApi(
+    'PATCH',
+    `${config.devApiUrl}/widgets/bulk-update`,
+    widgetLayouts,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -71,19 +114,34 @@ export const updateWidgetsBulk = async (widgetLayouts: UpdateWidgetsBulkDto[]) =
   }
 };
 
-export const updateWidget = async (widgetId: string, widgetLayout: ExtendedWidgetLayout, widgetSize?: number) => {
+export const updateWidget = async (
+  widgetId: string,
+  widgetLayout: ExtendedWidgetLayout,
+  widgetSize?: number
+) => {
   let payload: any = {
     type: widgetLayout.type,
     content: widgetLayout.content,
-    layout: { x: widgetLayout.x, y: widgetLayout.y, w: widgetLayout.w, h: widgetLayout.h }
+    layout: {
+      x: widgetLayout.x,
+      y: widgetLayout.y,
+      w: widgetLayout.w,
+      h: widgetLayout.h,
+    },
   };
 
   if (widgetSize) {
     const widgetSizeAsString = WidgetSize[widgetSize];
-    payload = {...payload, size: widgetSizeAsString};
+    payload = { ...payload, size: widgetSizeAsString };
   }
 
-  const response = await runApi('PATCH', `${config.devApiUrl}/widgets/${widgetId}`, payload, {}, true);
+  const response = await runApi(
+    'PATCH',
+    `${config.devApiUrl}/widgets/${widgetId}`,
+    payload,
+    {},
+    true
+  );
 
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
@@ -93,17 +151,29 @@ export const updateWidget = async (widgetId: string, widgetLayout: ExtendedWidge
 };
 
 export const deleteWidget = async (id: string) => {
-  const response = await runApi('DELETE', `${config.devApiUrl}/widgets/${id}`, {}, {}, true);
+  const response = await runApi(
+    'DELETE',
+    `${config.devApiUrl}/widgets/${id}`,
+    {},
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
   }
-}
+};
 
-export const getDribbleShot = async({ url }: GetDribbleShotType) => {
+export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
   const body: GetDribbleShotType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/dribbble`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/dribbble`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -111,9 +181,15 @@ export const getDribbleShot = async({ url }: GetDribbleShotType) => {
   }
 };
 
-export const getBehanceItem = async({ url }: GetBehanceItemType) => {
+export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/behance`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/behance`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -121,9 +197,17 @@ export const getBehanceItem = async({ url }: GetBehanceItemType) => {
   }
 };
 
-export const getMediumArticleMetadata = async({ url }: GetMediumArticleType) => {
+export const getMediumArticleMetadata = async ({
+  url,
+}: GetMediumArticleType) => {
   const body: GetMediumArticleType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/medium`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/medium`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -131,9 +215,15 @@ export const getMediumArticleMetadata = async({ url }: GetMediumArticleType) => 
   }
 };
 
-export const getYouTubeVideoMetadata = async({ url }: GetYouTubeVideoType) => {
+export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
   const body: GetYouTubeVideoType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/youtube`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/youtube`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -141,9 +231,15 @@ export const getYouTubeVideoMetadata = async({ url }: GetYouTubeVideoType) => {
   }
 };
 
-export const getSubstackMetadata = async({ url }: GetSubstackArticleType) => {
+export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
   const body: GetSubstackArticleType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/substack`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/substack`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -151,9 +247,15 @@ export const getSubstackMetadata = async({ url }: GetSubstackArticleType) => {
   }
 };
 
-export const getSpotifyAlbumDetails = async({ url }: GetSpotifyType) => {
+export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/album`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/spotify/album`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -161,9 +263,15 @@ export const getSpotifyAlbumDetails = async({ url }: GetSpotifyType) => {
   }
 };
 
-export const getSpotifySongDetails = async({ url }: GetSpotifyType) => {
+export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/spotify/song`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/spotify/song`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -171,9 +279,15 @@ export const getSpotifySongDetails = async({ url }: GetSpotifyType) => {
   }
 };
 
-export const getSoundcloudTrackDetails = async({ url }: GetSoundcloudType) => {
+export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/soundcloud`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/soundcloud`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -181,9 +295,17 @@ export const getSoundcloudTrackDetails = async({ url }: GetSoundcloudType) => {
   }
 };
 
-export const getInstagramProfileMetadata = async({ url }: GetInstagramType) => {
+export const getInstagramProfileMetadata = async ({
+  url,
+}: GetInstagramType) => {
   const body: GetInstagramType = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/instagram`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/instagram`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -191,9 +313,15 @@ export const getInstagramProfileMetadata = async({ url }: GetInstagramType) => {
   }
 };
 
-export const getPhotoWidget = async({ url }: GetPhotoWidget) => {
+export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
   const body: GetPhotoWidget = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/photo`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/photo`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -201,9 +329,15 @@ export const getPhotoWidget = async({ url }: GetPhotoWidget) => {
   }
 };
 
-export const getGithubProfile = async({ url }: GetGithubWidget) => {
+export const getGithubProfile = async ({ url }: GetGithubWidget) => {
   const body: GetGithubWidget = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/github`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/github`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {
@@ -211,9 +345,15 @@ export const getGithubProfile = async({ url }: GetGithubWidget) => {
   }
 };
 
-export const getTwitterProfile = async({ url }: GetTwitterWidget) => {
+export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
   const body: GetTwitterWidget = { url };
-  const response = await runApi('POST', `${config.devApiUrl}/widgets/twitter`, body, {}, true);
+  const response = await runApi(
+    'POST',
+    `${config.devApiUrl}/widgets/twitter`,
+    body,
+    {},
+    true
+  );
   if (response.statusCode >= 200 && response.statusCode < 300) {
     return response.data;
   } else {

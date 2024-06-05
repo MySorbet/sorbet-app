@@ -20,6 +20,7 @@ import {
   getWidgetDimensions,
 } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
@@ -64,8 +65,35 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [animationStyles, setAnimationStyles] = useState<{
     [key: string]: { width: number; height: number };
   }>({});
-
+  const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  const { mutateAsync: deleteWidgetMutation } = useMutation({
+    mutationFn: (key: string) => deleteWidget(key),
+    onSuccess: () => {
+      toast({
+        title: 'Widget removed',
+        description: 'The widget has been removed from your profile',
+      });
+      queryClient.invalidateQueries({ queryKey: ['widgets'] });
+    },
+    onError: () => {
+      toast({
+        title: 'Failed to remove widget',
+        description: 'If the issue persists, contact support',
+      });
+    },
+  });
+
+  const {
+    isLoading: getWidgetLoading,
+    data: getWidgetData,
+    error: getWidgetError,
+  } = useQuery({
+    queryKey: ['widgets'],
+    queryFn: () => (url: string, type: WidgetType) =>
+      getWidgetContent({ url, type }),
+  });
 
   const generateLayout = useCallback(async (): Promise<
     ExtendedWidgetLayout[]
@@ -108,7 +136,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   const handleWidgetRemove = async (key: string) => {
-    await deleteWidget(key);
+    await deleteWidgetMutation(key);
     setLayout((prevLayout) => {
       const newLayout = prevLayout.filter((item) => item.i !== key);
       if (newLayout.length > 0) {
