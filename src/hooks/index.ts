@@ -4,6 +4,7 @@ import { useGetWidgetContent } from './useGetWidgetContent';
 import { useGetWidgetsForUser } from './useGetWidgetsForUser';
 import { useLocalStorage } from './useLocalStorage';
 import { useTagInput } from './useTagInput';
+import { useUpdateWidgetsBulk } from './useUpdateWidgesBulk';
 
 export {
   useAuth,
@@ -12,4 +13,5 @@ export {
   useDeleteWidget,
   useGetWidgetsForUser,
   useGetWidgetContent,
+  useUpdateWidgetsBulk,
 };

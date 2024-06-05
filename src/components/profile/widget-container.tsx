@@ -1,3 +1,4 @@
+import { Spinner } from '../common';
 import { Widget } from './widget';
 import { uploadWidgetsImageAsync } from '@/api/images';
 import { NoWidgetsContent } from '@/components';
@@ -7,8 +8,8 @@ import {
   useDeleteWidget,
   useGetWidgetsForUser,
   useGetWidgetContent,
+  useUpdateWidgetsBulk,
 } from '@/hooks';
-import { updateWidgetsBulk } from '@/lib/service';
 import {
   ExtendedWidgetLayout,
   UpdateWidgetsBulkDto,
@@ -65,8 +66,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }>({});
   const { toast } = useToast();
 
-  const { mutateAsync: deleteWidgetMutation } = useDeleteWidget();
-  const { mutateAsync: getWidgetContent } = useGetWidgetContent();
+  const { mutateAsync: updateWidgetsBulk } = useUpdateWidgetsBulk();
+  const { mutateAsync: deleteWidget } = useDeleteWidget();
+  const {
+    mutateAsync: getWidgetContent,
+    isPending: isGetWidgetContentPending,
+  } = useGetWidgetContent();
   const {
     data: userWidgetData,
     isPending: isUserWidgetPending,
@@ -94,7 +99,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       redirectUrl: widget.redirectUrl,
       size: WidgetSize[widget.size as keyof typeof WidgetSize],
     }));
-  }, [userId, editMode, isUserWidgetPending]);
+  }, [userId, editMode, userWidgetData]);
 
   const handleWidgetResize = (
     key: string,
@@ -115,7 +120,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   const handleWidgetRemove = async (key: string) => {
-    await deleteWidgetMutation(key);
+    await deleteWidget(key);
     setLayout((prevLayout) => {
       const newLayout = prevLayout.filter((item) => item.i !== key);
       if (newLayout.length > 0) {
@@ -385,10 +390,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
-  if (isUserWidgetPending) return <div>Loading...</div>;
-  if (isUserWidgetError) {
-    toast({ title: 'Error', description: 'Failed to fetch widgets' });
-  }
   return (
     <>
       {layout.length < 1 && editMode && <NoWidgetsContent />}
@@ -399,19 +400,25 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         </span>
       </div>
       <div ref={containerRef}>
-        <ReactGridLayout
-          layout={layout}
-          onLayoutChange={handleLayoutChange}
-          className={`${className} react-grid-layout`}
-          rowHeight={rowHeight}
-          margin={[25, 25]}
-          cols={cols}
-          onDragStop={handleWidgetDropStop}
-          isDraggable={editMode}
-          isResizable={editMode}
-        >
-          {generateDOM()}
-        </ReactGridLayout>
+        {isGetWidgetContentPending ? (
+          <div className='flex justify-center items-center h-96'>
+            <Spinner />
+          </div>
+        ) : (
+          <ReactGridLayout
+            layout={layout}
+            onLayoutChange={handleLayoutChange}
+            className={`${className} react-grid-layout`}
+            rowHeight={rowHeight}
+            margin={[25, 25]}
+            cols={cols}
+            onDragStop={handleWidgetDropStop}
+            isDraggable={editMode}
+            isResizable={editMode}
+          >
+            {generateDOM()}
+          </ReactGridLayout>
+        )}
 
         {editMode && (
           <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
