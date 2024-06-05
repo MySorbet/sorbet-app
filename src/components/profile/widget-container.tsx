@@ -1,6 +1,5 @@
 import { Spinner } from '../common';
 import { Widget } from './widget';
-import { uploadWidgetsImageAsync } from '@/api/images';
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
@@ -9,6 +8,7 @@ import {
   useGetWidgetsForUser,
   useGetWidgetContent,
   useUpdateWidgetsBulk,
+  useUploadWidgetsImage,
 } from '@/hooks';
 import {
   ExtendedWidgetLayout,
@@ -66,6 +66,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   }>({});
   const { toast } = useToast();
 
+  const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetsBulk } = useUpdateWidgetsBulk();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
   const {
