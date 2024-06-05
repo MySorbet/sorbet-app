@@ -5,23 +5,23 @@ import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useDeleteWidget,
-  useGetWidgetsForUser,
   useGetWidgetContent,
+  useGetWidgetsForUser,
   useUpdateWidgetsBulk,
   useUploadWidgetsImage,
 } from '@/hooks';
 import {
   ExtendedWidgetLayout,
+  getWidgetDimensions,
   UpdateWidgetsBulkDto,
   WidgetDimensions,
   WidgetDto,
   WidgetSize,
   WidgetType,
-  getWidgetDimensions,
 } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -42,6 +42,8 @@ interface WidgetContainerProps {
   userId: string;
   onLayoutChange?: (layout: any) => void;
 }
+
+//________________________________________________________________________________________________________________
 
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',

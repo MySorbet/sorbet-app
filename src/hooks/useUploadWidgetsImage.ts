@@ -8,7 +8,9 @@ export const useUploadWidgetsImage = () => {
 
   return useMutation({
     mutationFn: (data: FormData) => uploadWidgetsImageAsync(data),
-    onError: () =>
-      toast({ title: 'Error', description: 'Failed to upload widget image' }),
+    onError: (error) => {
+      console.error('ERROR:', error);
+      toast({ title: 'Error', description: 'Failed to upload widget image' });
+    },
   });
 };
