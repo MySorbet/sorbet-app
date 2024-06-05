@@ -3,7 +3,11 @@ import { uploadWidgetsImageAsync } from '@/api/images';
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
-import { useDeleteWidget, useGetWidgetsForUser } from '@/hooks';
+import {
+  useDeleteWidget,
+  useGetWidgetsForUser,
+  useGetWidgetContent,
+} from '@/hooks';
 import {
   deleteWidget,
   getWidgetContent,
@@ -68,6 +72,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const { toast } = useToast();
 
   const { mutateAsync: deleteWidgetMutation } = useDeleteWidget();
+  const { mutateAsync: getWidgetContent } = useGetWidgetContent();
   const {
     data: userWidgetData,
     isPending: isUserWidgetPending,
@@ -78,6 +83,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     ExtendedWidgetLayout[]
   > => {
     const userWidgets: WidgetDto[] = userWidgetData;
+    console.log(userWidgetData);
     if (!userWidgets || userWidgets.length < 1) return [];
 
     return userWidgets.map((widget: WidgetDto, i: number) => ({
@@ -94,7 +100,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       redirectUrl: widget.redirectUrl,
       size: WidgetSize[widget.size as keyof typeof WidgetSize],
     }));
-  }, [userId, editMode]);
+  }, [userId, editMode, isUserWidgetPending]);
 
   const handleWidgetResize = (
     key: string,
@@ -384,6 +390,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
+
+  if (isUserWidgetPending) return <div>Loading...</div>;
 
   return (
     <>
