@@ -3,6 +3,8 @@ import { uploadWidgetsImageAsync } from '@/api/images';
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
+import { useDeleteWidget } from '@/hooks/useDeleteWidget';
+import { useGetWidgetContent } from '@/hooks/useGetWidgetContent';
 import {
   deleteWidget,
   getWidgetContent,
@@ -65,36 +67,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [animationStyles, setAnimationStyles] = useState<{
     [key: string]: { width: number; height: number };
   }>({});
-  const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { mutateAsync: deleteWidgetMutation } = useMutation({
-    mutationFn: (key: string) => deleteWidget(key),
-    onSuccess: () => {
-      toast({
-        title: 'Widget removed',
-        description: 'The widget has been removed from your profile',
-      });
-      queryClient.invalidateQueries({ queryKey: ['widgets'] });
-    },
-    onError: () => {
-      toast({
-        title: 'Failed to remove widget',
-        description: 'If the issue persists, contact support',
-      });
-    },
-  });
+  const { mutateAsync: deleteWidgetMutation } = useDeleteWidget();
 
   const {
     isLoading: getWidgetLoading,
     data: getWidgetData,
     error: getWidgetError,
-  } = useQuery({
-    queryKey: ['widgets'],
-    queryFn: () => (url: string, type: WidgetType) =>
-      getWidgetContent({ url, type }),
-  });
-
+  } = useGetWidgetContent();
   const generateLayout = useCallback(async (): Promise<
     ExtendedWidgetLayout[]
   > => {
