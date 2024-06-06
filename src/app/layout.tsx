@@ -4,6 +4,7 @@ import Head from './head';
 import { WalletSelectorContextProvider } from '@/components/common/near-wallet/walletSelectorContext';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/useAuth';
+import { config } from '@/lib/config';
 import { store } from '@/redux/store';
 import '@/styles/colors.css';
 import '@/styles/globals.css';
