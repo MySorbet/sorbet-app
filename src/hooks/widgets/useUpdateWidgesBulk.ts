@@ -9,7 +9,8 @@ export const useUpdateWidgetsBulk = () => {
 
   return useMutation({
     mutationFn: (payload: UpdateWidgetsBulkDto[]) => updateWidgetsBulk(payload),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['widgets'] }),
+    onSettled: async () =>
+      await queryClient.invalidateQueries({ queryKey: ['widgets'] }),
     onError: (error) =>
       toast({
         title: 'Failed to update widget',

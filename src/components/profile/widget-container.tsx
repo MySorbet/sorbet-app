@@ -71,21 +71,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetsBulk } = useUpdateWidgetsBulk();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
-  const {
-    mutateAsync: getWidgetContent,
-    isPending: isGetWidgetContentPending,
-  } = useGetWidgetContent();
-  const {
-    data: userWidgetData,
-    isPending: isUserWidgetPending,
-    isError: isUserWidgetError,
-  } = useGetWidgetsForUser(userId);
+  const { mutateAsync: getWidgetContent } = useGetWidgetContent();
+  const { data: userWidgetData, isPending: isUserWidgetPending } =
+    useGetWidgetsForUser(userId);
 
   const generateLayout = useCallback(async (): Promise<
     ExtendedWidgetLayout[]
   > => {
     const userWidgets: WidgetDto[] = userWidgetData;
-    console.log(userWidgetData);
+
     if (!userWidgets || userWidgets.length < 1) return [];
 
     return userWidgets.map((widget: WidgetDto, i: number) => ({
@@ -393,6 +387,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
+  if (isUserWidgetPending) return <Spinner />;
+
   return (
     <>
       {layout.length < 1 && editMode && <NoWidgetsContent />}
@@ -403,25 +399,19 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         </span>
       </div>
       <div ref={containerRef}>
-        {isGetWidgetContentPending ? (
-          <div className='flex justify-center items-center h-96'>
-            <Spinner />
-          </div>
-        ) : (
-          <ReactGridLayout
-            layout={layout}
-            onLayoutChange={handleLayoutChange}
-            className={`${className} react-grid-layout`}
-            rowHeight={rowHeight}
-            margin={[25, 25]}
-            cols={cols}
-            onDragStop={handleWidgetDropStop}
-            isDraggable={editMode}
-            isResizable={editMode}
-          >
-            {generateDOM()}
-          </ReactGridLayout>
-        )}
+        <ReactGridLayout
+          layout={layout}
+          onLayoutChange={handleLayoutChange}
+          className={`${className} react-grid-layout`}
+          rowHeight={rowHeight}
+          margin={[25, 25]}
+          cols={cols}
+          onDragStop={handleWidgetDropStop}
+          isDraggable={editMode}
+          isResizable={editMode}
+        >
+          {generateDOM()}
+        </ReactGridLayout>
 
         {editMode && (
           <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
