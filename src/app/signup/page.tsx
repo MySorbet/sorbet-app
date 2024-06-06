@@ -42,9 +42,6 @@ const Signup = () => {
     },
   });
 
-  const { isPending: accountAvailabiltyPending, data: accountAvailable } =
-    useCheckIsAccountAvailable();
-
   const formValues = watch();
   const { toast } = useToast();
 
