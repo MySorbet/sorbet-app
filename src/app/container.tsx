@@ -1,5 +1,6 @@
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
+import { KnockProvider, KnockFeedProvider } from '@knocklabs/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -34,7 +35,14 @@ const Container: React.FC<Props> = ({ children }) => {
   if (appLoading) {
     return <Loading />;
   } else if (user && accessToken) {
-    return <>{children}</>;
+    return (
+      <KnockProvider
+        apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY || ''}
+        userId={user.id}
+      >
+        {children}
+      </KnockProvider>
+    );
   } else {
     return <Loading />;
   }

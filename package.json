@@ -21,6 +21,8 @@
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@hookform/resolvers": "^3.3.4",
+    "@knocklabs/node": "^0.6.11",
+    "@knocklabs/react": "^0.2.23",
     "@lemonsqueezy/wedges": "^1.2.2",
     "@near-js/iframe-rpc": "^0.0.2",
     "@near-wallet-selector/coin98-wallet": "^8.7.2",
