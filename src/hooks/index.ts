@@ -4,3 +4,4 @@ import { useTagInput } from './useTagInput';
 
 export { useAuth, useLocalStorage, useTagInput };
 export * from './widgets';
+export * from './auth';

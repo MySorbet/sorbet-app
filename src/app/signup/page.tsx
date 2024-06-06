@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
+import { useAuth, useCheckIsAccountAvailable } from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, FormEvent } from 'react';
@@ -41,6 +41,9 @@ const Signup = () => {
       email: '',
     },
   });
+
+  const { isPending: accountAvailabiltyPending, data: accountAvailable } =
+    useCheckIsAccountAvailable();
 
   const formValues = watch();
   const { toast } = useToast();
