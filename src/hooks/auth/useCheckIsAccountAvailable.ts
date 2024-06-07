@@ -1,6 +1,6 @@
 import { checkIsAccountAvailable } from '../../api/auth';
 import { useToast } from '@/components/ui/use-toast';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 export const useCheckIsAccountAvailable = () => {
   const { toast } = useToast();
@@ -15,13 +15,5 @@ export const useCheckIsAccountAvailable = () => {
       });
       console.error(error);
     },
-  });
-};
-
-export const useCheckIsAccountAvailable2 = (username: string) => {
-  return useQuery({
-    queryKey: ['account-available', username],
-    queryFn: async () => await checkIsAccountAvailable(username),
-    enabled: username.length > 0,
   });
 };
