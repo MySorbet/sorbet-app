@@ -42,49 +42,17 @@ const Signup = () => {
     },
   });
 
+  const {
+    isPending: checkAccountPending,
+    mutateAsync: checkIsAccountAvailable,
+  } = useCheckIsAccountAvailable();
+
   const formValues = watch();
   const { toast } = useToast();
 
   if (user && accessToken) {
     router.push('/');
   }
-
-  const checkIsAccountAvailable = useCallback(
-    async (desiredUsername: string) => {
-      setIsAccountAvailable(null);
-      try {
-        if (!desiredUsername) return;
-
-        const response = await fetch(currentNetwork.nodeUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 'dontcare',
-            method: 'query',
-            params: {
-              request_type: 'view_account',
-              finality: 'final',
-              account_id: `${desiredUsername}.${currentNetwork.fastAuth.accountIdSuffix}`,
-            },
-          }),
-        });
-        const data = await response.json();
-        if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
-          return setIsAccountAvailable(true);
-        }
-
-        if (data?.result?.code_hash) {
-          return setIsAccountAvailable(false);
-        }
-      } catch (error: any) {
-        setIsAccountAvailable(false);
-      }
-    },
-    []
-  );
 
   const handleWalletLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -158,11 +126,18 @@ const Signup = () => {
       setIsAccountValid(isValid);
       if (!isValid) return;
 
-      checkIsAccountAvailable(formValues?.username);
+      (async () => {
+        setIsAccountAvailable(null);
+        const availability = await checkIsAccountAvailable(formValues.username);
+
+        availability == undefined
+          ? setIsAccountAvailable(false)
+          : setIsAccountAvailable(availability);
+      })();
     }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, [checkIsAccountAvailable, clearErrors, formValues?.username]);
+  }, [clearErrors, formValues?.username]);
 
   let accountStatusMessage = '';
   let accountStatusState = '';
@@ -288,7 +263,7 @@ const Signup = () => {
         <Button
           className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'
-          disabled={isLoading}
+          disabled={checkAccountPending || isLoading}
         >
           {isLoading ? 'Processing...' : 'Continue'}
         </Button>

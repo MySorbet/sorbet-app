@@ -12,6 +12,7 @@ export const signUpAsync = async ({
 }: SignUpWithEmailTypes) => {
   const reqBody = { firstName, lastName, email, accountId, userType };
   const res = await runApi('POST', `${API_URL}/auth/signup/email`, reqBody);
+  console.log(res);
   return res;
 };
 
@@ -51,9 +52,11 @@ export const fetchUserDetails = async (token: string) => {
 };
 
 export const checkIsAccountAvailable = async (username: string) => {
+  console.log('inside checkIsAccountAvailable');
   try {
-    if (username) return;
+    if (!username) return;
 
+    console.log('Checking account availability for:', username);
     const response = await fetch(currentNetwork.nodeUrl, {
       method: 'POST',
       headers: {
@@ -71,17 +74,21 @@ export const checkIsAccountAvailable = async (username: string) => {
       }),
     });
     const data = await response.json();
+    console.log('data for username: ', data);
     if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
       // Account is available
+      console.log('account available');
       return true;
     }
 
     if (data?.result?.code_hash) {
       // Account is taken
+      console.log('account taken');
       return false;
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
+    console.error('Error checking account availability:', error);
     return false;
   }
 };

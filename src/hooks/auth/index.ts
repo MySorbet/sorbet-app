@@ -1,13 +1,5 @@
-import {
-  useCheckIsAccountAvailable,
-  useCheckIsAccountAvailable2,
-} from './useCheckIsAccountAvailable';
+import { useCheckIsAccountAvailable } from './useCheckIsAccountAvailable';
 import { useLoginWithEmail } from './useLoginWithEmail';
 import { useSignUpAsync } from './useSignUpAsync';
 
-export {
-  useCheckIsAccountAvailable,
-  useLoginWithEmail,
-  useSignUpAsync,
-  useCheckIsAccountAvailable2,
-};
+export { useCheckIsAccountAvailable, useLoginWithEmail, useSignUpAsync };
