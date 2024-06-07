@@ -12,7 +12,6 @@ export const signUpAsync = async ({
 }: SignUpWithEmailTypes) => {
   const reqBody = { firstName, lastName, email, accountId, userType };
   const res = await runApi('POST', `${API_URL}/auth/signup/email`, reqBody);
-  console.log(res);
   return res;
 };
 

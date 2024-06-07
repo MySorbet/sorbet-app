@@ -1,14 +1,14 @@
 'use client';
 
 import './signup.css';
-import { signUpAsync } from '@/api/auth';
+// import { signUpAsync } from '@/api/auth';
 import { PageTitle, useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useCheckIsAccountAvailable } from '@/hooks';
+import { useAuth, useCheckIsAccountAvailable, useSignUpAsync } from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, FormEvent } from 'react';
@@ -46,6 +46,8 @@ const Signup = () => {
     isPending: checkAccountPending,
     mutateAsync: checkIsAccountAvailable,
   } = useCheckIsAccountAvailable();
+  const { isPending: signUpPending, mutateAsync: signUpAsync } =
+    useSignUpAsync();
 
   const formValues = watch();
   const { toast } = useToast();
@@ -265,7 +267,7 @@ const Signup = () => {
           type='submit'
           disabled={checkAccountPending || isLoading}
         >
-          {isLoading ? 'Processing...' : 'Continue'}
+          {isLoading || signUpPending ? 'Processing...' : 'Continue'}
         </Button>
       </div>
       <div className='inline-block w-full text-base mt-4 text-center'>
