@@ -19,13 +19,15 @@ const Signin = () => {
     setValue,
     formState: { errors },
   } = useForm();
-  const [isLoading, setLoading] = useState<boolean>(false);
   const { user, accessToken, checkAuth } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const { toast } = useToast();
-  const { isPending: loginPending, mutateAsync: loginWithEmail } =
-    useLoginWithEmail();
+  const {
+    isPending: loginPending,
+    mutateAsync: loginWithEmail,
+    isError: loginError,
+  } = useLoginWithEmail();
 
   useEffect(() => {
     if (user && accessToken) {
@@ -35,14 +37,8 @@ const Signin = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await loginWithEmail(data.email);
-    if (response === 'success') {
+    if (response.status === 'success') {
       router?.push('/');
-    } else {
-      toast({
-        title: 'Failed to login',
-        description: response.message,
-        variant: 'destructive',
-      });
     }
   });
 
@@ -50,6 +46,14 @@ const Signin = () => {
     event.preventDefault();
     nearModal.show();
   };
+
+  if (loginError) {
+    toast({
+      title: 'Failed to login',
+      description: 'Please try again',
+      variant: 'destructive',
+    });
+  }
 
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
