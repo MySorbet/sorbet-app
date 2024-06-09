@@ -13,18 +13,30 @@ export const useUpdateWidgetsBulk = () => {
   const { toast } = useToast();
 
   return useMutation({
-    onMutate: async (data: UpdateWidgetsBulkParams) => {
-      await queryClient.cancelQueries({ queryKey: ['widgets', data.userId] });
-      queryClient.setQueryData(['widgets', data.userId], data.payload);
-    },
     mutationFn: async (data: UpdateWidgetsBulkParams) =>
       await updateWidgetsBulk(data.payload),
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ['widgets'] }),
-    onError: (error) =>
+    onMutate: async (data: UpdateWidgetsBulkParams) => {
+      await queryClient.cancelQueries({ queryKey: ['widgets', data.userId] });
+      const previousWidgets = queryClient.getQueryData([
+        'widgets',
+        data.userId,
+      ]);
+
+      queryClient.setQueryData(['widgets', data.userId], data.payload);
+
+      return { previousWidgets, userId: data.userId };
+    },
+    onError: (error, newWidgets, context) => {
+      queryClient.setQueryData(
+        ['widgets', context?.userId],
+        context?.previousWidgets
+      );
       toast({
         title: 'Failed to update widget',
         description: 'If the issue persists, contact support',
-      }),
+      });
+    },
+    onSettled: async () =>
+      await queryClient.invalidateQueries({ queryKey: ['widgets'] }),
   });
 };
