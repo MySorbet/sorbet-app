@@ -6,6 +6,7 @@ import { useWalletSelector } from '@/components/common/near-wallet/walletSelecto
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { useLoginWithEmail } from '@/hooks';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -19,10 +20,12 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const { user, loginWithEmail, accessToken, checkAuth } = useAuth();
+  const { user, accessToken, checkAuth } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const { toast } = useToast();
+  const { isPending: loginPending, mutateAsync: loginWithEmail } =
+    useLoginWithEmail();
 
   useEffect(() => {
     if (user && accessToken) {
@@ -31,11 +34,8 @@ const Signin = () => {
   }, [user, router]);
 
   const onSubmit = handleSubmit(async (data) => {
-    setLoading(true);
-
     const response = await loginWithEmail(data.email);
-    if (response.status === 'success') {
-      setLoading(false);
+    if (response === 'success') {
       router?.push('/');
     } else {
       toast({
@@ -43,7 +43,6 @@ const Signin = () => {
         description: response.message,
         variant: 'destructive',
       });
-      setLoading(false);
     }
   });
 
@@ -54,7 +53,7 @@ const Signin = () => {
 
   return (
     <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-      {isLoading && <Loading />}
+      {loginPending && <Loading />}
       {/* <PageTitle title='Sign in' /> */}
       <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 px-6 text-black max-sm:w-[300px]'>
         <form onSubmit={onSubmit}>

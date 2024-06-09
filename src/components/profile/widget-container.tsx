@@ -74,6 +74,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const { mutateAsync: getWidgetContent } = useGetWidgetContent();
   const { data: userWidgetData, isPending: isUserWidgetPending } =
     useGetWidgetsForUser(userId);
+  /*
+    Steps:
+      - Fetch user widgets using useQuery
+      - Render ui based on what is fetched
+        - For updates, we can implement optimistic updates, or do as we have it and
+          update through state, then the backend.
+      -
+  */
 
   const generateLayout = useCallback(async (): Promise<
     ExtendedWidgetLayout[]
