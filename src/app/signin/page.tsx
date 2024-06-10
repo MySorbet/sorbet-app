@@ -39,6 +39,12 @@ const Signin = () => {
     const response = await loginWithEmail(data.email);
     if (response.status === 'success') {
       router?.push('/');
+    } else {
+      toast({
+        title: 'Failed to login',
+        description: response.message,
+        variant: 'destructive',
+      });
     }
   });
 
