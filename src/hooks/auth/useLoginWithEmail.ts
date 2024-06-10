@@ -10,7 +10,7 @@ export const useLoginWithEmail = () => {
       if (response.status === 'success') {
         return { status: 'success', message: response.message };
       } else {
-        throw new Error(response.message);
+        return { status: 'falied', message: response.message };
       }
     },
   });

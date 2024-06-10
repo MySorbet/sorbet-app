@@ -8,7 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useCheckIsAccountAvailable, useSignUpAsync } from '@/hooks';
+import {
+  useAuth,
+  useCheckIsAccountAvailable,
+  useSignUpAsync,
+  useLoginWithEmail,
+} from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, FormEvent } from 'react';
@@ -48,6 +53,8 @@ const Signup = () => {
   } = useCheckIsAccountAvailable();
   const { isPending: signUpPending, mutateAsync: signUpAsync } =
     useSignUpAsync();
+  const { isPending: loginPending, mutateAsync: loginWithEmailAsync } =
+    useLoginWithEmail();
 
   const formValues = watch();
   const { toast } = useToast();
@@ -267,7 +274,7 @@ const Signup = () => {
           type='submit'
           disabled={checkAccountPending || isLoading}
         >
-          {isLoading || signUpPending ? 'Processing...' : 'Continue'}
+          {signUpPending ? 'Processing...' : 'Continue'}
         </Button>
       </div>
       <div className='inline-block w-full text-base mt-4 text-center'>
