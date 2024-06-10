@@ -206,6 +206,37 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     }
   };
 
+  const generateDOM = () => {
+    return layout.map((item) => {
+      return (
+        <motion.div
+          className='widget-motion-wrapper'
+          initial={false}
+          animate={animationStyles[item.i]}
+          style={{ width: '100%', height: '100%' }}
+          key={item.i}
+          data-grid={item}
+          ref={(el) => {
+            if (el) widgetRefs.current[item.i] = el;
+          }}
+        >
+          <Widget
+            identifier={item.i}
+            w={item.w}
+            h={item.h}
+            type={item.type}
+            handleResize={handleWidgetResize}
+            handleRemove={handleWidgetRemove}
+            editMode={editMode}
+            content={item.content}
+            initialSize={item.size}
+            redirectUrl={item.redirectUrl}
+          />
+        </motion.div>
+      );
+    });
+  };
+
   const handleLayoutChange = (newLayout: ExtendedWidgetLayout[]) => {
     const updatedLayout = newLayout.map((layoutItem) => {
       const existingItem = layout.find((item) => item.i === layoutItem.i);
@@ -227,7 +258,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           size: WidgetSize[item.size].toString(),
         })
       );
-      updateWidgetsBulk({ payload, userId });
+      updateWidgetsBulk(payload);
     }
   };
 
@@ -387,52 +418,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           isDraggable={editMode}
           isResizable={editMode}
         >
-          {userWidgetData.map((widget: WidgetDto) => {
-            const item = {
-              i: widget.id,
-              x: widget.layout.x,
-              y: widget.layout.y,
-              w: WidgetDimensions[
-                WidgetSize[widget.size as keyof typeof WidgetSize]
-              ].w,
-              h: WidgetDimensions[
-                WidgetSize[widget.size as keyof typeof WidgetSize]
-              ].h,
-              type: WidgetType[widget.type as keyof typeof WidgetType],
-              content: widget.content,
-              static: !editMode,
-              isResizable: false,
-              isDraggable: editMode,
-              redirectUrl: widget.redirectUrl,
-              size: WidgetSize[widget.size as keyof typeof WidgetSize],
-            };
-            return (
-              <motion.div
-                className='widget-motion-wrapper'
-                initial={false}
-                animate={animationStyles[item.i]}
-                style={{ width: '100%', height: '100%' }}
-                key={item.i}
-                data-grid={item}
-                ref={(el) => {
-                  if (el) widgetRefs.current[item.i] = el;
-                }}
-              >
-                <Widget
-                  identifier={item.i}
-                  w={item.w}
-                  h={item.h}
-                  type={item.type}
-                  handleResize={handleWidgetResize}
-                  handleRemove={handleWidgetRemove}
-                  editMode={editMode}
-                  content={item.content}
-                  initialSize={item.size}
-                  redirectUrl={item.redirectUrl}
-                />
-              </motion.div>
-            );
-          })}
+          {generateDOM()}
         </ReactGridLayout>
 
         {editMode && (

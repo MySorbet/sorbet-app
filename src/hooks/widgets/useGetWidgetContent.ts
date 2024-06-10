@@ -18,7 +18,7 @@ export const useGetWidgetContent = () => {
     onError: (error) => {
       toast({ title: 'Error', description: 'Failed to fetch widget content' });
     },
-    onSettled: async () =>
-      await queryClient.invalidateQueries({ queryKey: ['widgets'] }),
+    // No need to invalidate query since we are not mutating data here
+    // Can use onSettled callback to do something
   });
 };

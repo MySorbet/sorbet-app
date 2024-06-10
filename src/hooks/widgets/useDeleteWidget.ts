@@ -7,14 +7,14 @@ export const useDeleteWidget = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (id: string) => deleteWidget(id),
-    onSettled: () =>
-      // Double check what the query key should be when for the initial fetch
-      queryClient.invalidateQueries({ queryKey: ['widgets'] }),
+    mutationFn: async (id: string) => await deleteWidget(id),
     onError: (error) =>
       toast({
         title: 'Failed to remove widget',
         description: 'If the issue persists, contact support',
       }),
+    onSettled: () =>
+      // Double check what the query key should be when for the initial fetch
+      queryClient.invalidateQueries({ queryKey: ['widgets'] }),
   });
 };
