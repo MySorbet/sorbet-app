@@ -13,5 +13,6 @@ export const useSignUpAsync = () => {
         title: 'Error',
         description: error.message,
       }),
+    onSettled: () => {},
   });
 };

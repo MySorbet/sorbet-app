@@ -26,7 +26,7 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { user, accessToken, loginWithEmail } = useAuth();
+  const { user, accessToken } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const {
@@ -53,7 +53,7 @@ const Signup = () => {
   } = useCheckIsAccountAvailable();
   const { isPending: signUpPending, mutateAsync: signUpAsync } =
     useSignUpAsync();
-  const { isPending: loginPending, mutateAsync: loginWithEmailAsync } =
+  const { isPending: loginPending, mutateAsync: loginWithEmail } =
     useLoginWithEmail();
 
   const formValues = watch();
@@ -85,7 +85,6 @@ const Signup = () => {
     if (response.status === 'success') {
       const loginResponse = await loginWithEmail(data.email);
       if (loginResponse.status === 'success') {
-        setLoading(false);
         router.push('/');
       } else {
         toast({
@@ -93,7 +92,6 @@ const Signup = () => {
           description:
             'Your account was created but something went wrong when logging you in.',
         });
-        setLoading(false);
       }
     } else {
       toast({
@@ -101,7 +99,6 @@ const Signup = () => {
         description: response.message,
         variant: 'destructive',
       });
-      setLoading(false);
     }
 
     // if (res.data) {
@@ -272,9 +269,9 @@ const Signup = () => {
         <Button
           className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'
-          disabled={checkAccountPending || isLoading}
+          disabled={checkAccountPending || isLoading || loginPending}
         >
-          {signUpPending ? 'Processing...' : 'Continue'}
+          {loginPending || signUpPending ? 'Processing...' : 'Continue'}
         </Button>
       </div>
       <div className='inline-block w-full text-base mt-4 text-center'>
