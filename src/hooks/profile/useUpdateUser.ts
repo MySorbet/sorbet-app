@@ -5,7 +5,7 @@ import { updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 
-export const useUpdateUser = (setIsSubmitting: (loading: boolean) => void) => {
+export const useUpdateUser = () => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
@@ -25,7 +25,7 @@ export const useUpdateUser = (setIsSubmitting: (loading: boolean) => void) => {
       );
     },
     onSettled: () => {
-      setIsSubmitting(false);
+      // Request complete
     },
   });
 };

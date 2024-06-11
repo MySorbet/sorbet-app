@@ -1,4 +1,3 @@
-import { updateUser } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,13 +7,11 @@ import {
   DialogOverlay,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
 import {
   useDeleteProfileImage,
   useUploadProfileImage,
   useUpdateUser,
 } from '@/hooks';
-import { useAppDispatch } from '@/redux/hook';
 import type { User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
@@ -47,15 +44,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   handleModalVisisble,
   user,
 }) => {
-  const dispatch = useAppDispatch();
-
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
   );
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
 
   const {
     isPending: uploadProfileImagePending,
@@ -68,7 +61,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   } = useDeleteProfileImage();
 
   const { isPending: updateProfilePending, mutate: updateProfile } =
-    useUpdateUser(setIsSubmitting);
+    useUpdateUser();
 
   const {
     register,
@@ -88,8 +81,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   });
 
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-
     let userToUpdate: User = { ...user };
 
     if (user?.id && user?.profileImage != null && image === undefined) {
@@ -107,7 +98,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         imageFormData,
         userToUpdate,
       });
-      setIsSubmitting(false);
     }
 
     if (user) {
@@ -158,7 +148,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
       <DialogOverlay className='bg-black/80' />
-      <DialogContent className={isSubmitting ? 'opacity-50' : ''}>
+      <DialogContent
+        className={
+          updateProfilePending ||
+          deleteProfileImagePending ||
+          uploadProfileImagePending
+            ? 'opacity-50'
+            : ''
+        }
+      >
         {' '}
         <DialogHeader className='text-2xl font-semibold'>
           Edit Profile
@@ -316,9 +314,19 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Button
                   type='submit'
                   className='w-full bg-sorbet'
-                  disabled={isSubmitting}
+                  disabled={
+                    updateProfilePending ||
+                    deleteProfileImagePending ||
+                    uploadProfileImagePending
+                  }
                 >
-                  {isSubmitting ? <Loader /> : 'Save Changes'}
+                  {updateProfilePending ||
+                  deleteProfileImagePending ||
+                  uploadProfileImagePending ? (
+                    <Loader />
+                  ) : (
+                    'Save Changes'
+                  )}
                 </Button>
               </div>
             </div>
