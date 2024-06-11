@@ -25,6 +25,7 @@ import {
   DialogOverlay,
 } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
+import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { ContractType, OfferType } from '@/types';
 import {
@@ -46,7 +47,7 @@ export interface GigsCommsProps {
   afterContractSubmitted?: () => void;
 }
 
-enum ActiveTab {
+export enum ActiveTab {
   Chat,
   Contract,
 }
@@ -104,6 +105,18 @@ export const GigsComms = ({
   const [offers, setOffers] = useState([]);
   const { toast } = useToast();
 
+  const {
+    isPending: getContractPending,
+    data: contractData,
+    error: getContractError,
+  } = useGetContractForOffer({
+    currentOfferId,
+    isOpen,
+    activeTab,
+    setContract,
+    isClient,
+  });
+
   const handlewNewMessage = async (newMessage: Message) => {};
 
   const renderContractView = () => {
@@ -142,27 +155,27 @@ export const GigsComms = ({
     }
   };
 
-  useEffect(() => {
-    const fetchContracts = async () => {
-      setIsLoading(true);
-      const response = await getContractForOffer(currentOfferId);
+  // useEffect(() => {
+  //   const fetchContracts = async () => {
+  //     setIsLoading(true);
+  //     const response = await getContractForOffer(currentOfferId);
 
-      if (response && response.status === 'success') {
-        setContract(response.data);
-      } else {
-        toast({
-          title: 'Unable to fetch contract information',
-          description: 'If the problem persists, please contract support',
-        });
-      }
+  //     if (response && response.status === 'success') {
+  //       setContract(response.data);
+  //     } else {
+  //       toast({
+  //         title: 'Unable to fetch contract information',
+  //         description: 'If the problem persists, please contract support',
+  //       });
+  //     }
 
-      setIsLoading(false);
-    };
+  //     setIsLoading(false);
+  //   };
 
-    if (isOpen && activeTab === ActiveTab.Contract) {
-      fetchContracts();
-    }
-  }, [isOpen, activeTab, isClient]);
+  //   if (isOpen && activeTab === ActiveTab.Contract) {
+  //     fetchContracts();
+  //   }
+  // }, [isOpen, activeTab, isClient]);
 
   return (
     <>
