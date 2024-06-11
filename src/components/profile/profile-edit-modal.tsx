@@ -9,8 +9,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { useDeleteProfileImage } from '@/hooks/profile/useDeleteProfileImage';
-import { useUploadProfileImage } from '@/hooks/profile/useUploadProfileImage';
+import {
+  useDeleteProfileImage,
+  useUploadProfileImage,
+  useUpdateUser,
+} from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import type { User } from '@/types';
