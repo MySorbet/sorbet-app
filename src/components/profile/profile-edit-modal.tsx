@@ -35,13 +35,13 @@ type FormData = z.infer<typeof schema>;
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
-  handleModalVisisble: (open: boolean) => void;
+  handleModalVisible: (open: boolean) => void;
   user: User;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
-  handleModalVisisble,
+  handleModalVisible,
   user,
 }) => {
   const [image, setImage] = useState<string | undefined>(
@@ -146,7 +146,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   return (
-    <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
+    <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogOverlay className='bg-black/80' />
       <DialogContent
         className={
