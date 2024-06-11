@@ -1,4 +1,3 @@
-import { deleteProfileImageAsync } from '@/api/user';
 import { updateUser } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { useDeleteProfileImage } from '@/hooks/profile/useDeleteProfileImage';
 import { useUploadProfileImage } from '@/hooks/profile/useUploadProfileImage';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
@@ -60,6 +60,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     isPending: uploadProfileImagePending,
     mutateAsync: uploadProfileImageAsync,
   } = useUploadProfileImage();
+
+  const {
+    isPending: deleteProfileImagePending,
+    mutateAsync: deleteProfileImageAsync,
+  } = useDeleteProfileImage();
 
   const updateProfileMutation = useMutation({
     mutationFn: (userToUpdate: User) =>
