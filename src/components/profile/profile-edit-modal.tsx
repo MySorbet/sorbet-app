@@ -1,4 +1,3 @@
-import { uploadProfileImageAsync } from '@/api/images';
 import { deleteProfileImageAsync } from '@/api/user';
 import { updateUser } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
@@ -11,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { useUploadProfileImage } from '@/hooks/profile/useUploadProfileImage';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import type { User } from '@/types';
@@ -55,6 +55,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [file, setFile] = useState<Blob | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const {
+    isPending: uploadProfileImagePending,
+    mutateAsync: uploadProfileImageAsync,
+  } = useUploadProfileImage();
 
   const updateProfileMutation = useMutation({
     mutationFn: (userToUpdate: User) =>
@@ -109,20 +114,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       imageFormData.append('oldImageUrl', user?.profileImage);
       imageFormData.append('userId', user?.id);
 
-      const response = await uploadProfileImageAsync(imageFormData);
-      if (
-        response.status === 'success' &&
-        response.data &&
-        response.data.fileUrl
-      ) {
-        userToUpdate.profileImage = response.data.fileUrl;
-      } else {
-        toast({
-          title: 'Profile Image not updated',
-          description:
-            'Your profile image could not be saved due to an error. Rest of the details were still saved.',
-        });
-      }
+      await uploadProfileImageAsync({
+        imageFormData,
+        userToUpdate,
+      });
+      setIsSubmitting(false);
     }
 
     if (user) {
