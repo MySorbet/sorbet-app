@@ -15,10 +15,8 @@ import {
   useUpdateUser,
 } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
-import { updateUserData } from '@/redux/userSlice';
 import type { User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -69,25 +67,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     mutateAsync: deleteProfileImageAsync,
   } = useDeleteProfileImage();
 
-  const updateProfileMutation = useMutation({
-    mutationFn: (userToUpdate: User) =>
-      updateUser(userToUpdate, userToUpdate.id),
-    onSuccess: (user: User) => {
-      dispatch(updateUserData(user));
-      toast({
-        title: 'Profile updated',
-        description: 'Your changes were saved successfully',
-      });
-    },
-    onError: (error: any) => {
-      alert(
-        'Unable to save changes to your profile due to an issue at our end, please try again soon.'
-      );
-    },
-    onSettled: () => {
-      setIsSubmitting(false);
-    },
-  });
+  const { isPending: updateProfilePending, mutate: updateProfile } =
+    useUpdateUser(setIsSubmitting);
 
   const {
     register,
@@ -139,7 +120,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: data.bio,
       };
 
-      updateProfileMutation.mutate(userToUpdate);
+      updateProfile(userToUpdate);
     } else {
       alert('Unable to update profile details right now.');
     }
