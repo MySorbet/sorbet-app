@@ -111,6 +111,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       };
 
       updateProfile(userToUpdate);
+
+      handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
     }
