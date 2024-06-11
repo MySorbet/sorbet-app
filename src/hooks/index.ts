@@ -6,3 +6,4 @@ export { useAuth, useLocalStorage, useTagInput };
 export * from './widgets';
 export * from './auth';
 export * from './profile';
+export * from './gigs';

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-
 import { config } from '@/lib/config';
 import { getCoordinatesFromFormattedAddress } from '@/utils/geocode';
+import React, { useEffect, useState } from 'react';
 
 interface MapContainerProps {
   locationName: string;
