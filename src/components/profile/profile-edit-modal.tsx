@@ -59,6 +59,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const {
     isPending: deleteProfileImagePending,
     mutateAsync: deleteProfileImageAsync,
+    isError: deleteProfileImageError,
   } = useDeleteProfileImage();
 
   const { isPending: updateProfilePending, mutate: updateProfile } =
@@ -86,6 +87,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
     if (user?.id && user?.profileImage != null && image === undefined) {
       await deleteProfileImageAsync(user?.id);
+
+      if (deleteProfileImageError) return;
+
       userToUpdate.profileImage = '';
     } else if (user?.id && image !== user?.profileImage && file !== undefined) {
       const imageFormData = new FormData();
