@@ -16,7 +16,7 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   return useQuery({
     queryKey: ['contractForOffer'],
     queryFn: async () => {
-      console.log('getContractOffer')
+      console.log('getContractOffer');
       const response = await getContractForOffer(currentOfferId);
 
       if (response && response.status === 'success') {
@@ -30,6 +30,6 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
       }
     },
     // Query function will only run whenm the isOpen and activeTab are true and the activeTab is the Contract tab
-    // enabled: isOpen && activeTab === ActiveTab.Contract,
+    enabled: isOpen && activeTab === ActiveTab.Contract,
   });
 };
