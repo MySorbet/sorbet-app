@@ -4,7 +4,6 @@ import {
   createOffer,
   findContractsWithFreelancer,
   getClientFreelancerOffers,
-  getContractForOffer,
 } from '@/api/gigs';
 import { ChatLayoutMinimal } from '@/app/gigs/chat';
 import { Message } from '@/app/gigs/chat/data';

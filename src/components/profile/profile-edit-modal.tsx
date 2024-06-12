@@ -53,8 +53,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const {
     isPending: uploadProfileImagePending,
     mutateAsync: uploadProfileImageAsync,
+    isError: uploadProfileImageError,
   } = useUploadProfileImage();
-
+  console.log('uploadProfileError: ', uploadProfileImageError);
   const {
     isPending: deleteProfileImagePending,
     mutateAsync: deleteProfileImageAsync,
@@ -99,6 +100,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         userToUpdate,
       });
     }
+
+    if (uploadProfileImageError) return;
 
     if (user) {
       userToUpdate = {

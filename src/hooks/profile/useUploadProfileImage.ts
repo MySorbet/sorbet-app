@@ -1,7 +1,9 @@
 import { uploadProfileImageAsync } from '@/api/images';
 import { useToast } from '@/components/ui/use-toast';
 import type { User } from '@/types';
+import { API_URL, validateToken } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 
 type uploadProfileImageParams = {
   imageFormData: FormData;
@@ -23,12 +25,15 @@ export const useUploadProfileImage = () => {
       ) {
         userToUpdate.profileImage = response.data.fileUrl;
       } else {
-        toast({
-          title: 'Profile Image not updated',
-          description:
-            'Your profile image could not be saved due to an error. Rest of the details were still saved.',
-        });
+        throw new Error('Profile Image not updated');
       }
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Profile Image not updated',
+        description:
+          'Your profile image could not be saved due to an error. Rest of the details were still saved.',
+      });
     },
   });
 };
