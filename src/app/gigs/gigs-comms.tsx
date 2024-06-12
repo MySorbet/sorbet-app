@@ -32,7 +32,7 @@ import {
   MessageCircle as IconMessage,
   FileCheck2 as IconContract,
 } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export interface GigsCommsProps {
   isOpen?: boolean;
@@ -100,10 +100,7 @@ export const GigsComms = ({
   handleRejectOffer,
 }: GigsCommsProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Chat);
-  const [contract, setContract] = useState<ContractType | undefined>();
-  const [isLoading, setIsLoading] = useState(false);
   const [offers, setOffers] = useState([]);
-  const { toast } = useToast();
 
   const {
     isPending: getContractPending,
@@ -113,19 +110,19 @@ export const GigsComms = ({
     currentOfferId,
     isOpen,
     activeTab,
-    setContract,
-    isClient,
   });
 
   const handlewNewMessage = async (newMessage: Message) => {};
 
   const renderContractView = () => {
     if (isClient) {
-      if (contract) {
-        if (contract.status === 'Rejected') {
+      if (contractData) {
+        if (contractData.status === 'Rejected') {
           return <ContractRejected isClient={isClient} />;
         } else {
-          return <ContractOverview contract={contract} isClient={isClient} />;
+          return (
+            <ContractOverview contract={contractData} isClient={isClient} />
+          );
         }
       } else {
         if (offers.length > 0) {
@@ -135,13 +132,15 @@ export const GigsComms = ({
         }
       }
     } else {
-      if (contract) {
-        if (contract.status === 'PendingApproval') {
+      if (contractData) {
+        if (contractData.status === 'PendingApproval') {
           return <ContractPendingFreelancer />;
-        } else if (contract.status === 'Rejected') {
+        } else if (contractData.status === 'Rejected') {
           return <ContractRejected isClient={isClient} />;
         } else {
-          return <ContractOverview contract={contract} isClient={isClient} />;
+          return (
+            <ContractOverview contract={contractData} isClient={isClient} />
+          );
         }
       } else {
         return (
@@ -192,7 +191,7 @@ export const GigsComms = ({
             </DialogTitle>
             <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
-          {isLoading ? (
+          {getContractPending ? (
             <div className='flex justify-center items-center h-full'>
               <Spinner />
             </div>
