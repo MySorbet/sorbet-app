@@ -31,8 +31,7 @@ export const useUploadProfileImage = () => {
     onError: (error: any) => {
       toast({
         title: 'Profile Image not updated',
-        description:
-          'Your profile image could not be saved due to an error. Rest of the details were still saved.',
+        description: 'Your profile image could not be saved due to an error.',
       });
     },
   });
