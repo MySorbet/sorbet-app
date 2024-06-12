@@ -7,7 +7,7 @@ import {
 import { GigsCard } from '@/app/gigs/gigs-card';
 import { GigsComms } from '@/app/gigs/gigs-comms';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
+import { useAuth, useUpdateOfferStatus } from '@/hooks';
 import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
 import { FormattedResponse, OfferType } from '@/types';
 import { Loader } from 'lucide-react';
@@ -37,6 +37,9 @@ export const GigsBoard = ({ isClient = false }) => {
     isError: fetchOffersError,
   } = useFetchOffers(loggedInUser);
 
+  const { isPending: updateOfferStatusLoading, mutate: updateOfferStatus } =
+    useUpdateOfferStatus();
+
   const handleCardClick = (offer: OfferType) => {
     setIsCommsOpen(true);
     setCurrentOffer(offer);
@@ -53,20 +56,8 @@ export const GigsBoard = ({ isClient = false }) => {
   };
 
   const handleOfferReject = async () => {
-    if (currentOffer) {
-      if (confirm('Are you sure you want to reject this offer?')) {
-        await updateOfferStatus(currentOffer.id, 'Rejected');
-        toast({
-          title: 'Offer rejected',
-          description: 'The offer was rejected successfully',
-        });
-        setIsCommsOpen(false);
-        fetchOffers();
-      } else {
-        // Logic to handle cancellation of rejection
-        console.log('Rejection cancelled.');
-      }
-    }
+    updateOfferStatus({ currentOffer: currentOffer, status: 'rejected' });
+    setIsCommsOpen(false);
   };
 
   return (
