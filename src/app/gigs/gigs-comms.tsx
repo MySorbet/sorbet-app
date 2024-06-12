@@ -105,11 +105,14 @@ export const GigsComms = ({
     isPending: getContractPending,
     data: contractData,
     error: getContractError,
+    isError: isGetContractError,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
+
+  console.log('isGetContractError: ', isGetContractError);
 
   const handlewNewMessage = async (newMessage: Message) => {};
 
