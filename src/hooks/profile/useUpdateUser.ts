@@ -10,22 +10,28 @@ export const useUpdateUser = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: (userToUpdate: User) =>
-      updateUser(userToUpdate, userToUpdate.id),
+    mutationFn: async (userToUpdate: User) => {
+      const response = await updateUser(userToUpdate, userToUpdate.id);
+      if (response.status == 'failed') {
+        throw new Error('Failed to update user profile.');
+      }
+      return response;
+    },
     onSuccess: (user: User) => {
       dispatch(updateUserData(user));
       toast({
         title: 'Profile updated',
-        description: 'Your changes were saved successfully',
+        description: 'Your changes were saved successfully.',
       });
     },
     onError: (error: any) => {
-      alert(
-        'Unable to save changes to your profile due to an issue at our end, please try again soon.'
-      );
+      toast({
+        title: 'Profile not updated',
+        description: 'Your profile could not be saved due to an error.',
+      });
     },
     onSettled: () => {
-      // Request complete
+      // Request complete.
     },
   });
 };
