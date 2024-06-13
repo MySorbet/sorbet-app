@@ -26,8 +26,9 @@ export const useUpdateUser = () => {
     },
     onError: (error: any) => {
       toast({
-        title: 'Profile not updated',
-        description: 'Your profile could not be saved due to an error.',
+        title: 'User profile failed to update.',
+        description:
+          'Your profile could not be saved. If the issue persists, please contact support.',
       });
     },
     onSettled: () => {

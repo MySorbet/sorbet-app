@@ -1,9 +1,7 @@
 import { uploadProfileImageAsync } from '@/api/images';
 import { useToast } from '@/components/ui/use-toast';
 import type { User } from '@/types';
-import { API_URL, validateToken } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 
 type uploadProfileImageParams = {
   imageFormData: FormData;

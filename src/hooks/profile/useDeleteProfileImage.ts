@@ -8,11 +8,11 @@ export const useDeleteProfileImage = () => {
   return useMutation({
     mutationFn: async (userId: string) => {
       const response = await deleteProfileImageAsync(userId);
-      if (response.status == 'failed') {
+      if (response.status == 'success') {
+        return response;
+      } else {
         throw new Error('Profile Image not deleted');
       }
-
-      return response;
     },
     onError: (error: any) => {
       toast({

@@ -1,17 +1,11 @@
 import { GigsColumn } from './gigs-column';
-import {
-  getClientOffers,
-  getFreelancerOffers,
-  updateOfferStatus,
-} from '@/api/gigs';
 import { GigsCard } from '@/app/gigs/gigs-card';
 import { GigsComms } from '@/app/gigs/gigs-comms';
-import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useUpdateOfferStatus } from '@/hooks';
 import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
-import { FormattedResponse, OfferType } from '@/types';
+import { OfferType } from '@/types';
 import { Loader } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export interface GigsBoardProps {
   isClient?: boolean;
@@ -29,16 +23,11 @@ export const GigsBoard = ({ isClient = false }) => {
   const [clientUsername, setClientUsername] = useState<string | undefined>(
     undefined
   );
-  const { toast } = useToast();
 
-  const {
-    isLoading: isFetchOffersLoading,
-    data: offers,
-    isError: fetchOffersError,
-  } = useFetchOffers(loggedInUser);
+  const { isLoading: isFetchOffersLoading, data: offers } =
+    useFetchOffers(loggedInUser);
 
-  const { isPending: updateOfferStatusLoading, mutate: updateOfferStatus } =
-    useUpdateOfferStatus();
+  const { mutate: updateOfferStatus } = useUpdateOfferStatus();
 
   const handleCardClick = (offer: OfferType) => {
     setIsCommsOpen(true);
