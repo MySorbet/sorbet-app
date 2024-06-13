@@ -29,7 +29,6 @@ export const useFetchOffers = (loggedInUser: User | null) => {
             );
             break;
         }
-        console.log('response: ', response);
         if (response && response.status === 'success') {
           return response.data;
         } else {
