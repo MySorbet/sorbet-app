@@ -7,7 +7,12 @@ export const useSignUpAsync = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (data: SignUpWithEmailTypes) => await signUpAsync(data),
+    mutationFn: async (data: SignUpWithEmailTypes) => {
+      const response = await signUpAsync(data);
+      if (response.status === 'success') {
+        return;
+      }
+    },
     onError: (error) =>
       toast({
         title: 'Error',
