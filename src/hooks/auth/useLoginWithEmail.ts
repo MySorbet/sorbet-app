@@ -1,8 +1,10 @@
 import { useAuth } from '../useAuth';
+import { useToast } from '@/components/ui/use-toast';
 import { useMutation } from '@tanstack/react-query';
 
 export const useLoginWithEmail = () => {
   const { loginWithEmail } = useAuth();
+  const { toast } = useToast();
 
   return useMutation({
     mutationFn: async (email: string) => {
@@ -10,8 +12,11 @@ export const useLoginWithEmail = () => {
       if (response.status === 'success') {
         return { status: 'success', message: response.message };
       } else {
-        return { status: 'falied', message: response.message };
+        throw new Error('Failed to login with email');
       }
+    },
+    onError: (error: any) => {
+      toast({ title: 'Authentication error', description: error.message });
     },
   });
 };

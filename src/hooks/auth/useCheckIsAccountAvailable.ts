@@ -6,11 +6,16 @@ export const useCheckIsAccountAvailable = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (username: string) =>
-      await checkIsAccountAvailable(username),
+    mutationFn: async (username: string) => {
+      const response = await checkIsAccountAvailable(username);
+      if (response == false) {
+        throw new Error('Username is already taken');
+      }
+      return response;
+    },
     onError: (error) => {
       toast({
-        title: 'Error',
+        title: 'Error checking username availability',
         description: error.message,
       });
       console.error(error);
