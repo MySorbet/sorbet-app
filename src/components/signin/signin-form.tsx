@@ -16,7 +16,7 @@ const SignInForm = () => {
         id='signin-form'
         className='px-0 py-2 gap-4 flex flex-col justify-between flex-1'
       >
-        <div className='flex flex-col gap-[6px] h-24'>
+        <div className='flex flex-col gap-[6px] h-28 '>
           <Label htmlFor='email'>Email</Label>
           <Input />
         </div>
