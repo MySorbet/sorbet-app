@@ -1,10 +1,5 @@
 'use client';
 
-import {
-  createOffer,
-  findContractsWithFreelancer,
-  getClientFreelancerOffers,
-} from '@/api/gigs';
 import { ChatLayoutMinimal } from '@/app/gigs/chat';
 import { Message } from '@/app/gigs/chat/data';
 import {
@@ -23,10 +18,9 @@ import {
   DialogTitle,
   DialogOverlay,
 } from '@/components/ui/dialog';
-import { useToast } from '@/components/ui/use-toast';
 import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { ContractType, OfferType } from '@/types';
+import { OfferType } from '@/types';
 import {
   MessageCircle as IconMessage,
   FileCheck2 as IconContract,
@@ -104,15 +98,13 @@ export const GigsComms = ({
   const {
     isPending: getContractPending,
     data: contractData,
-    error: getContractError,
-    isError: isGetContractError,
+    // error: getContractError,
+    // isError: isGetContractError,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
-
-  console.log('isGetContractError: ', isGetContractError);
 
   const handlewNewMessage = async (newMessage: Message) => {};
 
@@ -155,28 +147,6 @@ export const GigsComms = ({
       }
     }
   };
-
-  // useEffect(() => {
-  //   const fetchContracts = async () => {
-  //     setIsLoading(true);
-  //     const response = await getContractForOffer(currentOfferId);
-
-  //     if (response && response.status === 'success') {
-  //       setContract(response.data);
-  //     } else {
-  //       toast({
-  //         title: 'Unable to fetch contract information',
-  //         description: 'If the problem persists, please contract support',
-  //       });
-  //     }
-
-  //     setIsLoading(false);
-  //   };
-
-  //   if (isOpen && activeTab === ActiveTab.Contract) {
-  //     fetchContracts();
-  //   }
-  // }, [isOpen, activeTab, isClient]);
 
   return (
     <>
