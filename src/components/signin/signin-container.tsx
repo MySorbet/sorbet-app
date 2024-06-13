@@ -194,7 +194,7 @@ const SignInContainer = () => {
               filterUnits='userSpaceOnUse'
               colorInterpolationFilters='sRGB'
             >
-              <feFlood flood-opacity='0' result='BackgroundImageFix' />
+              <feFlood floodOpacity='0' result='BackgroundImageFix' />
               <feBlend
                 mode='normal'
                 in='SourceGraphic'
@@ -219,7 +219,7 @@ const SignInContainer = () => {
               <stop offset='0.38' stopColor='#F75274' />
               <stop offset='0.52' stopColor='#D53692' />
               <stop offset='0.74' stopColor='#8F39CE' />
-              <stop offset='1' stop-color='#5B4FE9' />
+              <stop offset='1' stopColor='#5B4FE9' />
             </linearGradient>
             <clipPath id='clip0_2836_2410'>
               <rect
