@@ -10,14 +10,18 @@ export const useSignUpAsync = () => {
     mutationFn: async (data: SignUpWithEmailTypes) => {
       const response = await signUpAsync(data);
       if (response.status === 'success') {
-        return;
+        return response;
+      } else {
+        throw new Error('Failed to sign up');
       }
     },
-    onError: (error) =>
+    onError: (error) => {
       toast({
-        title: 'Error',
+        title: 'Unable to create user account',
         description: error.message,
-      }),
+        variant: 'destructive',
+      });
+    },
     onSettled: () => {},
   });
 };

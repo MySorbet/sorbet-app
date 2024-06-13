@@ -57,7 +57,6 @@ const Signup = () => {
     useLoginWithEmail();
 
   const formValues = watch();
-  const { toast } = useToast();
 
   if (user && accessToken) {
     router.push('/');
@@ -86,19 +85,7 @@ const Signup = () => {
       const loginResponse = await loginWithEmail(data.email);
       if (loginResponse.status === 'success') {
         router.push('/');
-      } else {
-        toast({
-          title: 'Unable to login',
-          description:
-            'Your account was created but something went wrong when logging you in.',
-        });
       }
-    } else {
-      toast({
-        title: 'Unable to create user account',
-        description: response.message,
-        variant: 'destructive',
-      });
     }
 
     // if (res.data) {
