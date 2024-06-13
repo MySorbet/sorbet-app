@@ -15,7 +15,7 @@ export const useCheckIsAccountAvailable = () => {
     },
     onError: (error) => {
       toast({
-        title: 'Error',
+        title: 'Error checking username availability',
         description: error.message,
       });
       console.error(error);
