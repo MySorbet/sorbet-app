@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm, useFormState, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -21,16 +21,9 @@ const SignInForm = () => {
   const { register, handleSubmit, control } = useForm({
     resolver: zodResolver(schema),
   });
-  const { isValidating, errors, isValid, isLoading, touchedFields } =
-    useFormState({
-      control,
-    });
-  const email = useWatch({ control, name: 'email' });
-  console.log('isValidating: ', isValidating);
-  console.log('isValid: ', isValid);
-  console.log('touchedFields: ', touchedFields);
-  console.log('errors: ', errors);
-  console.log('email: ', email);
+  const { isValidating, isValid, touchedFields } = useFormState({
+    control,
+  });
 
   const router = useRouter();
   const { user, accessToken } = useAuth();
@@ -85,10 +78,8 @@ const SignInForm = () => {
               )
             ) : null}
           </div>
-          {errors.email && (
-            <p className='text-sm text-red-500'>
-              {errors.email.message as string}
-            </p>
+          {!isValid && touchedFields.email && (
+            <p className='text-sm text-red-500'>Invalid email format</p>
           )}
         </div>
         <div className='flex flex-col h-full justify-between'>
@@ -97,8 +88,12 @@ const SignInForm = () => {
             className='flex flex-col gap-3 items-center'
           >
             <Button
-              className='flex w-full bg-[#573DF5] text-base font-semibold p-[10px]'
-              disabled={false}
+              className={
+                isValid
+                  ? 'flex w-full bg-[#573DF5] text-base font-semibold p-[10px] border border-[#573DF5]'
+                  : 'flex w-full font-semibold p-[10px] text-base bg-#F2F4F7] text-[#98A2B3] border border-[#EAECF0]'
+              }
+              disabled={!isValid}
               type='submit'
             >
               {loginLoading ? <Loader /> : 'Continue'}
