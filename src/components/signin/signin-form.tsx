@@ -10,7 +10,7 @@ import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useForm, useFormState, useWatch } from 'react-hook-form';
+import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 const schema = z.object({
