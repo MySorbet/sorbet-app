@@ -20,7 +20,7 @@
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^3.6.0",
     "@knocklabs/node": "^0.6.11",
     "@knocklabs/react": "^0.2.23",
     "@lemonsqueezy/wedges": "^1.2.2",

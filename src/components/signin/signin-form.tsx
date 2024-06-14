@@ -5,20 +5,33 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { useAuth } from '@/hooks';
 import { useLoginWithEmail } from '@/hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormState, useWatch } from 'react-hook-form';
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email({ message: 'Invalid email format' }),
+});
 
 const SignInForm = () => {
-  const [valid, setValid] = useState(true);
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, control } = useForm({
+    resolver: zodResolver(schema),
+  });
+  const { isValidating, errors, isValid, isLoading, touchedFields } =
+    useFormState({
+      control,
+    });
+  const email = useWatch({ control, name: 'email' });
+  console.log('isValidating: ', isValidating);
+  console.log('isValid: ', isValid);
+  console.log('touchedFields: ', touchedFields);
+  console.log('errors: ', errors);
+  console.log('email: ', email);
+
   const router = useRouter();
   const { user, accessToken } = useAuth();
 
@@ -52,23 +65,30 @@ const SignInForm = () => {
           <Label htmlFor='email'>Email</Label>
           <div className='relative'>
             <Input
+              className={
+                !isValid && touchedFields.email
+                  ? 'border-red-500 ring-red-500'
+                  : ''
+              }
               {...register('email', {
                 required: 'Please enter a valid email address',
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: 'Please enter a valid email address',
-                },
               })}
-              onChange={(e) => {
-                setValue('email', e.target.value);
-              }}
             />
-            {valid && (
-              <CircleCheck className='h-4 w-4 text-[#079455] absolute right-4 top-3' />
+            {isValidating && (
+              <Loader className='h-4 w-4  absolute right-4 top-3' />
             )}
+            {touchedFields.email ? (
+              isValid ? (
+                <CircleCheck className='h-4 w-4 text-[#079455] absolute right-4 top-3' />
+              ) : (
+                <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+              )
+            ) : null}
           </div>
-          {typeof errors.email?.message === 'string' && (
-            <p className='text-sm text-red-500'>{errors.email?.message}</p>
+          {errors.email && (
+            <p className='text-sm text-red-500'>
+              {errors.email.message as string}
+            </p>
           )}
         </div>
         <div className='flex flex-col h-full justify-between'>
