@@ -3,9 +3,20 @@
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { useAuth } from '@/hooks';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const SignInForm = () => {
+  const router = useRouter();
+  const { user, accessToken } = useAuth();
+  useEffect(() => {
+    if (user && accessToken) {
+      router.push('/');
+    }
+  }, [user, router]);
+
   return (
     <div
       style={{

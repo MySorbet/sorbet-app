@@ -37,7 +37,7 @@ export const Profile: React.FC<{
             />
             <ProfileEditModal
               editModalVisible={showEditModal}
-              handleModalVisisble={handleProfileModalVisible}
+              handleModalVisible={handleProfileModalVisible}
               user={user}
             />
           </>

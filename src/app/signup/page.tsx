@@ -1,14 +1,19 @@
 'use client';
 
 import './signup.css';
-import { signUpAsync } from '@/api/auth';
+// import { signUpAsync } from '@/api/auth';
 import { PageTitle, useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
+import {
+  useAuth,
+  useCheckIsAccountAvailable,
+  useSignUpAsync,
+  useLoginWithEmail,
+} from '@/hooks';
 import { config, currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, FormEvent } from 'react';
@@ -21,7 +26,7 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { user, accessToken, loginWithEmail } = useAuth();
+  const { user, accessToken } = useAuth();
   const { modal: nearModal, selector } = useWalletSelector();
   const router = useRouter();
   const {
@@ -42,49 +47,20 @@ const Signup = () => {
     },
   });
 
+  const {
+    isPending: checkAccountPending,
+    mutateAsync: checkIsAccountAvailable,
+  } = useCheckIsAccountAvailable();
+  const { isPending: signUpPending, mutateAsync: signUpAsync } =
+    useSignUpAsync();
+  const { isPending: loginPending, mutateAsync: loginWithEmail } =
+    useLoginWithEmail();
+
   const formValues = watch();
-  const { toast } = useToast();
 
   if (user && accessToken) {
     router.push('/');
   }
-
-  const checkIsAccountAvailable = useCallback(
-    async (desiredUsername: string) => {
-      setIsAccountAvailable(null);
-      try {
-        if (!desiredUsername) return;
-
-        const response = await fetch(currentNetwork.nodeUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 'dontcare',
-            method: 'query',
-            params: {
-              request_type: 'view_account',
-              finality: 'final',
-              account_id: `${desiredUsername}.${currentNetwork.fastAuth.accountIdSuffix}`,
-            },
-          }),
-        });
-        const data = await response.json();
-        if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
-          return setIsAccountAvailable(true);
-        }
-
-        if (data?.result?.code_hash) {
-          return setIsAccountAvailable(false);
-        }
-      } catch (error: any) {
-        setIsAccountAvailable(false);
-      }
-    },
-    []
-  );
 
   const handleWalletLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -108,23 +84,8 @@ const Signup = () => {
     if (response.status === 'success') {
       const loginResponse = await loginWithEmail(data.email);
       if (loginResponse.status === 'success') {
-        setLoading(false);
         router.push('/');
-      } else {
-        toast({
-          title: 'Unable to login',
-          description:
-            'Your account was created but something went wrong when logging you in.',
-        });
-        setLoading(false);
       }
-    } else {
-      toast({
-        title: 'Unable to create user account',
-        description: response.message,
-        variant: 'destructive',
-      });
-      setLoading(false);
     }
 
     // if (res.data) {
@@ -158,11 +119,18 @@ const Signup = () => {
       setIsAccountValid(isValid);
       if (!isValid) return;
 
-      checkIsAccountAvailable(formValues?.username);
+      (async () => {
+        setIsAccountAvailable(null);
+        const availability = await checkIsAccountAvailable(formValues.username);
+
+        availability == undefined
+          ? setIsAccountAvailable(false)
+          : setIsAccountAvailable(availability);
+      })();
     }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, [checkIsAccountAvailable, clearErrors, formValues?.username]);
+  }, [clearErrors, formValues?.username]);
 
   let accountStatusMessage = '';
   let accountStatusState = '';
@@ -288,9 +256,9 @@ const Signup = () => {
         <Button
           className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'
-          disabled={isLoading}
+          disabled={checkAccountPending || isLoading || loginPending}
         >
-          {isLoading ? 'Processing...' : 'Continue'}
+          {loginPending || signUpPending ? 'Processing...' : 'Continue'}
         </Button>
       </div>
       <div className='inline-block w-full text-base mt-4 text-center'>
