@@ -4,18 +4,35 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { useAuth } from '@/hooks';
+import { useLoginWithEmail } from '@/hooks';
+import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const SignInForm = () => {
+  const [valid, setValid] = useState(true);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
   const router = useRouter();
   const { user, accessToken } = useAuth();
+
+  const { isPending: loginLoading, mutateAsync: loginWithEmail } =
+    useLoginWithEmail();
   useEffect(() => {
     if (user && accessToken) {
       router.push('/');
     }
   }, [user, router]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    await loginWithEmail(data.email);
+  });
 
   return (
     <div
@@ -26,13 +43,33 @@ const SignInForm = () => {
     >
       <h1 className='text-2xl font-semibold'>Sign In</h1>
 
-      <div
+      <form
+        onSubmit={onSubmit}
         id='signin-form'
         className='px-0 py-2 gap-4 flex flex-col justify-between flex-1'
       >
         <div className='flex flex-col gap-[6px] h-28 '>
           <Label htmlFor='email'>Email</Label>
-          <Input />
+          <div className='relative'>
+            <Input
+              {...register('email', {
+                required: 'Please enter a valid email address',
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: 'Please enter a valid email address',
+                },
+              })}
+              onChange={(e) => {
+                setValue('email', e.target.value);
+              }}
+            />
+            {valid && (
+              <CircleCheck className='h-4 w-4 text-[#079455] absolute right-4 top-3' />
+            )}
+          </div>
+          {typeof errors.email?.message === 'string' && (
+            <p className='text-sm text-red-500'>{errors.email?.message}</p>
+          )}
         </div>
         <div className='flex flex-col h-full justify-between'>
           <div
@@ -41,9 +78,10 @@ const SignInForm = () => {
           >
             <Button
               className='flex w-full bg-[#573DF5] text-base font-semibold p-[10px]'
-              disabled={true}
+              disabled={false}
+              type='submit'
             >
-              Continue
+              {loginLoading ? <Loader /> : 'Continue'}
             </Button>
             <p className='text-sm font-medium'>Or</p>
             <Button className='bg-[#FFFFFF] border border-[#D6BBFB] text-[#573DF5] w-full gap-[6px] text-base font-semibold p-[10px]'>
@@ -75,7 +113,7 @@ const SignInForm = () => {
             </Link>
           </p>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
