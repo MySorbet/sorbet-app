@@ -1,6 +1,9 @@
+'use client';
+
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import Link from 'next/link';
 
 const SignInForm = () => {
   return (
@@ -53,9 +56,12 @@ const SignInForm = () => {
           </div>
           <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
             Don't have an account?{' '}
-            <strong className='text-xs leading-[18px] text-[#6230EC]'>
+            <Link
+              className='text-xs leading-[18px] text-[#6230EC] font-bold'
+              href={'/signup'}
+            >
               Sign up
-            </strong>
+            </Link>
           </p>
         </div>
       </div>
