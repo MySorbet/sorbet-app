@@ -12,7 +12,7 @@ export const useLoginWithEmail = () => {
       if (response.status === 'success') {
         return { status: 'success', message: response.message };
       } else {
-        throw new Error('Failed to login with email');
+        throw new Error(response.message || 'Failed to login with email');
       }
     },
     onError: (error: any) => {
