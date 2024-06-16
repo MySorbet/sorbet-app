@@ -87,12 +87,12 @@ const Signin = () => {
               >
                 Login with Email
               </Button>
-              {/* <Button
+              <Button
                 className='h-11 gap-1 self-stretch rounded-lg bg-[#22252a] px-2 py-1 text-sm text-white'
                 onClick={handleWalletLogin}
               >
                 Connect Wallet
-              </Button> */}
+              </Button>
             </div>
             <div className='inline-block w-full text-base text-center'>
               Already have an account?
