@@ -32,6 +32,7 @@ const Signup = () => {
     clearErrors,
     setValue,
     getValues,
+    reset,
   } = useForm({
     defaultValues: {
       userType: 'FREELANCER',
@@ -45,6 +46,34 @@ const Signup = () => {
 
   const formValues = watch();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const storedData = localStorage.getItem('signupForm');
+    if (storedData) {
+      const { values, timestamp } = JSON.parse(storedData);
+      const currentTime = new Date().getTime();
+      const twentyMinutes = 20 * 60 * 1000;
+      if (currentTime - timestamp < twentyMinutes) {
+        reset(values);
+      } else {
+        localStorage.removeItem('signupForm');
+      }
+    }
+  }, [router, reset]);
+
+  useEffect(() => {
+    if (isValid) {
+      const timestamp = new Date().getTime();
+      const dataToStore = {
+        values: formValues,
+        timestamp: timestamp,
+      };
+      localStorage.setItem('signupForm', JSON.stringify(dataToStore));
+      console.log('storing values', dataToStore);
+    } else {
+      console.log('ignoring local save');
+    }
+  }, [formValues, isValid]);
 
   const checkIsAccountAvailable = useCallback(
     async (desiredUsername: string) => {
@@ -266,6 +295,11 @@ const Signup = () => {
 
       <div className='item w-full mb-2'>
         <label className='text-[#595B5A]'>Connect wallet</label>
+        {!isValid && (
+          <span className='text-xs italic'>
+            Fill in rest of the form to unlock connect wallet
+          </span>
+        )}
         <div className='flex w-full items-center'>
           <Input
             className='flex-1 rounded-lg'
@@ -276,7 +310,7 @@ const Signup = () => {
           <Button
             className='ml-2 rounded-lg bg-sorbet px-4 py-1 text-sm text-white'
             onClick={handleWalletLogin}
-            disabled={accounts.length > 0}
+            disabled={accounts.length > 0 || !isValid}
           >
             Connect Wallet
           </Button>
@@ -319,26 +353,18 @@ const Signup = () => {
     </div>
   );
 
-  if (isLoading) {
-    return <Loading />;
-  } else {
-    if (!user && !accessToken) {
-      return (
-        <>
-          <PageTitle title='Create your account' />
-          <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-            <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
-              <div className='flex flex-col items-start gap-6 px-6 pb-6'>
-                {signedUp ? alreadySignedUp : registerForm}
-              </div>
-            </div>
+  return (
+    <>
+      <PageTitle title='Create your account' />
+      <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
+        <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
+          <div className='flex flex-col items-start gap-6 px-6 pb-6'>
+            {signedUp ? alreadySignedUp : registerForm}
           </div>
-        </>
-      );
-    } else {
-      return <Loading />;
-    }
-  }
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Signup;
