@@ -1,14 +1,5 @@
 'use client';
 
-const SignUpPage = () => {
-  return (
-\
-  );
-};
-
-export default SignUpPage;
-'use client';
-
 import './signup.css';
 // import { signUpAsync } from '@/api/auth';
 import { PageTitle, useWalletSelector } from '@/components/common';

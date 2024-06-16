@@ -1,6 +1,6 @@
 const listItemStyles = 'flex text-lg font-medium items-center w-[186px] gap-3';
 
-const SignInHero = () => {
+const AuthHero = () => {
   return (
     <div className='w-[436px] h-[498-px] flex flex-col gap-10 px-0 py-6'>
       <div className='flex items-center gap-2 w-28 text-base'>
@@ -104,4 +104,4 @@ const SignInHero = () => {
   );
 };
 
-export { SignInHero };
+export { AuthHero };
