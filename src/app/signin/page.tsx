@@ -1,8 +1,8 @@
 'use client';
 
 import './signin.css';
-import { signInWithWallet } from '@/api/auth';
-import { Loading, PageTitle } from '@/components/common';
+import { getUserByAccountId } from '@/api/user';
+import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -20,8 +20,7 @@ const Signin = () => {
     formState: { errors },
   } = useForm();
   const [isLoading, setLoading] = useState<boolean>(false);
-  const { user, loginWithEmail, accessToken, loginWithWallet, checkAuth } =
-    useAuth();
+  const { user, loginWithEmail, accessToken, loginWithWallet } = useAuth();
   const {
     modal: nearModal,
     selector,
@@ -33,6 +32,17 @@ const Signin = () => {
   const [activeNearAccount, setActiveNearAccount] = useState<string | null>(
     null
   );
+  const [accountNotFound, setAccountNotFound] = useState<boolean>(false);
+
+  const handleSignOut = async () => {
+    try {
+      const wallet = await selector.wallet();
+      await wallet.signOut();
+    } catch (err) {
+      console.log('Failed to sign out');
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     if (user && accessToken) {
@@ -42,10 +52,23 @@ const Signin = () => {
 
   useEffect(() => {
     const checkNearConnection = async () => {
-      const isConnected = selector.isSignedIn();
-      if (isConnected) {
+      if (accounts.length > 0) {
         const activeAccount = accountId;
         setActiveNearAccount(activeAccount);
+
+        if (activeAccount) {
+          const response = await getUserByAccountId(activeAccount);
+          if (response.status !== 'success') {
+            toast({
+              title: 'No account found',
+              description:
+                'No account found for the connected wallet, please signup first',
+              variant: 'destructive',
+            });
+            setAccountNotFound(true);
+            await handleSignOut();
+          }
+        }
       }
     };
 
@@ -62,10 +85,6 @@ const Signin = () => {
         const publicKey = params.get('publicKey');
 
         if (accountId && signature && publicKey) {
-          console.log('Account ID:', accountId);
-          console.log('Signature:', signature);
-          console.log('Public Key:', publicKey);
-
           const response = await loginWithWallet(accountId);
           if (response.status === 'success') {
             setLoading(false);
@@ -112,13 +131,24 @@ const Signin = () => {
 
     if (accounts.length > 0) {
       const wallet = await selector.wallet();
-      const recipient = await wallet.getAccounts();
-      await wallet.signMessage({
-        message,
-        recipient: recipient[0].accountId,
-        nonce: challenge,
-        callbackUrl: '',
-      });
+      if (wallet) {
+        const recipient = await wallet.getAccounts();
+        if (recipient.length > 0) {
+          await wallet.signMessage({
+            message,
+            recipient: recipient[0].accountId,
+            nonce: challenge,
+            callbackUrl: '',
+          });
+        } else {
+          toast({
+            title: 'No wallet accounts found',
+            description:
+              'Please make sure your wallet has accounts and is connected.',
+            variant: 'destructive',
+          });
+        }
+      }
     }
   };
 
@@ -129,7 +159,9 @@ const Signin = () => {
         <form onSubmit={onSubmit}>
           <div className='flex flex-col items-center gap-6 px-6 pb-6'>
             <h1 className='text-[32px] text-center'>Sign in</h1>
-            {accounts.length > 0 && <div>Welcome back {accountId}</div>}
+            {accounts.length > 0 && !accountNotFound && (
+              <div>Welcome back {accountId}</div>
+            )}
             <div className='item w-full'>
               <Button
                 className='h-11 gap-1 self-stretch rounded-lg bg-sorbet px-2 py-1 text-sm text-white'
@@ -141,7 +173,7 @@ const Signin = () => {
               </Button>
             </div>
             <div className='inline-block w-full text-base text-center'>
-              Already have an account?
+              Don't have an account?
               <span
                 className='text-sorbet cursor-pointer pl-1 font-semibold'
                 onClick={() => router.push('/signup')}

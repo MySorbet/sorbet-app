@@ -52,8 +52,8 @@ const Signup = () => {
     if (storedData) {
       const { values, timestamp } = JSON.parse(storedData);
       const currentTime = new Date().getTime();
-      const twentyMinutes = 20 * 60 * 1000;
-      if (currentTime - timestamp < twentyMinutes) {
+      const fiveMinutes = 5 * 60 * 1000;
+      if (currentTime - timestamp < fiveMinutes) {
         reset(values);
       } else {
         localStorage.removeItem('signupForm');
@@ -69,9 +69,6 @@ const Signup = () => {
         timestamp: timestamp,
       };
       localStorage.setItem('signupForm', JSON.stringify(dataToStore));
-      console.log('storing values', dataToStore);
-    } else {
-      console.log('ignoring local save');
     }
   }, [formValues, isValid]);
 
@@ -315,6 +312,9 @@ const Signup = () => {
             Connect Wallet
           </Button>
         </div>
+        {typeof errors.username?.message === 'string' && (
+          <p className='text-sm text-red-500'>{errors.username?.message}</p>
+        )}
       </div>
 
       <div className='item w-full mt-4'>
