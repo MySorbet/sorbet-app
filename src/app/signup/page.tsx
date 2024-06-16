@@ -21,8 +21,8 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { user, accessToken, loginWithEmail, checkAuth } = useAuth();
-  const { modal: nearModal, selector, accounts } = useWalletSelector();
+  const { user, accessToken, loginWithEmail } = useAuth();
+  const { modal: nearModal, accounts } = useWalletSelector();
   const router = useRouter();
   const {
     register,
@@ -45,26 +45,6 @@ const Signup = () => {
 
   const formValues = watch();
   const { toast } = useToast();
-
-  useEffect(() => {
-    const checkUserAndFetchDetails = async () => {
-      if (!user && !accessToken) {
-        const user = await checkAuth();
-        if (!user) {
-          router.push('/signin');
-        }
-      }
-
-      setLoading(false);
-    };
-
-    setLoading(true);
-    checkUserAndFetchDetails();
-  }, [user, accessToken, checkAuth, router]);
-
-  if (user && accessToken) {
-    router.push('/');
-  }
 
   const checkIsAccountAvailable = useCallback(
     async (desiredUsername: string) => {
