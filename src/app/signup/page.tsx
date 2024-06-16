@@ -2,7 +2,7 @@
 
 import './signup.css';
 import { signUpAsync } from '@/api/auth';
-import { PageTitle, useWalletSelector } from '@/components/common';
+import { Loading, PageTitle, useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +21,7 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { user, accessToken, loginWithEmail } = useAuth();
+  const { user, accessToken, loginWithEmail, checkAuth } = useAuth();
   const { modal: nearModal, selector, accounts } = useWalletSelector();
   const router = useRouter();
   const {
@@ -45,6 +45,22 @@ const Signup = () => {
 
   const formValues = watch();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkUserAndFetchDetails = async () => {
+      if (!user && !accessToken) {
+        const user = await checkAuth();
+        if (!user) {
+          router.push('/signin');
+        }
+      }
+
+      setLoading(false);
+    };
+
+    setLoading(true);
+    checkUserAndFetchDetails();
+  }, [user, accessToken, checkAuth, router]);
 
   if (user && accessToken) {
     router.push('/');
@@ -108,7 +124,7 @@ const Signup = () => {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      accountId: `${data.username}.${currentNetwork.fastAuth.accountIdSuffix}`,
+      accountId: `${data.username}`,
       userType: userType,
     });
 
@@ -323,18 +339,26 @@ const Signup = () => {
     </div>
   );
 
-  return (
-    <>
-      <PageTitle title='Create your account' />
-      <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-        <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
-          <div className='flex flex-col items-start gap-6 px-6 pb-6'>
-            {signedUp ? alreadySignedUp : registerForm}
+  if (isLoading) {
+    return <Loading />;
+  } else {
+    if (!user && !accessToken) {
+      return (
+        <>
+          <PageTitle title='Create your account' />
+          <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
+            <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
+              <div className='flex flex-col items-start gap-6 px-6 pb-6'>
+                {signedUp ? alreadySignedUp : registerForm}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </>
-  );
+        </>
+      );
+    } else {
+      return <Loading />;
+    }
+  }
 };
 
 export default Signup;
