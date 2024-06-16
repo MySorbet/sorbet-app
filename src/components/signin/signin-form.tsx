@@ -91,7 +91,7 @@ const SignInForm = () => {
               className={
                 isValid
                   ? 'flex w-full bg-[#573DF5] text-base font-semibold p-[10px] border border-[#573DF5]'
-                  : 'flex w-full font-semibold p-[10px] text-base bg-#F2F4F7] text-[#98A2B3] border border-[#EAECF0]'
+                  : 'flex w-full font-semibold p-[10px] text-base bg-[#F2F4F7] text-[#98A2B3] border border-[#EAECF0]'
               }
               disabled={!isValid}
               type='submit'
@@ -99,7 +99,7 @@ const SignInForm = () => {
               {loginLoading ? <Loader /> : 'Continue'}
             </Button>
             <p className='text-sm font-medium'>Or</p>
-            <Button className='bg-[#FFFFFF] border border-[#D6BBFB] text-[#573DF5] w-full gap-[6px] text-base font-semibold p-[10px]'>
+            <Button className='bg-[#FFFFFF] border border-[#D6BBFB] text-[#573DF5] w-full gap-[6px] text-base font-semibold p-[10px] group hover:bg-[#573DF5] hover:text-white'>
               <svg
                 width='21'
                 height='20'
@@ -113,6 +113,7 @@ const SignInForm = () => {
                   strokeWidth='1.66667'
                   strokeLinecap='round'
                   strokeLinejoin='round'
+                  className='group-hover:stroke-white'
                 />
               </svg>
               Connect Wallet
