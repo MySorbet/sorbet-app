@@ -22,7 +22,12 @@ const Signin = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const { user, loginWithEmail, accessToken, loginWithWallet, checkAuth } =
     useAuth();
-  const { modal: nearModal, selector, accountId } = useWalletSelector();
+  const {
+    modal: nearModal,
+    selector,
+    accountId,
+    accounts,
+  } = useWalletSelector();
   const router = useRouter();
   const { toast } = useToast();
   const [activeNearAccount, setActiveNearAccount] = useState<string | null>(
@@ -104,14 +109,17 @@ const Signin = () => {
     const challenge = randomBytes(32);
     const message = 'Login with Sorbet';
     await nearModal.show();
-    const wallet = await selector.wallet();
-    const recipient = await wallet.getAccounts();
-    await wallet.signMessage({
-      message,
-      recipient: recipient[0].accountId,
-      nonce: challenge,
-      callbackUrl: '',
-    });
+
+    if (accounts.length > 0) {
+      const wallet = await selector.wallet();
+      const recipient = await wallet.getAccounts();
+      await wallet.signMessage({
+        message,
+        recipient: recipient[0].accountId,
+        nonce: challenge,
+        callbackUrl: '',
+      });
+    }
   };
 
   return (
@@ -119,14 +127,17 @@ const Signin = () => {
       {isLoading && <Loading />}
       <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 px-6 text-black max-sm:w-[300px]'>
         <form onSubmit={onSubmit}>
-          <div className='flex flex-col items-start gap-6 px-6 pb-6'>
-            <h1 className='text-[32px]'>Sign in</h1>
+          <div className='flex flex-col items-center gap-6 px-6 pb-6'>
+            <h1 className='text-[32px] text-center'>Sign in</h1>
+            {accounts.length > 0 && <div>Welcome back {accountId}</div>}
             <div className='item w-full'>
               <Button
                 className='h-11 gap-1 self-stretch rounded-lg bg-sorbet px-2 py-1 text-sm text-white'
                 onClick={handleWalletLogin}
               >
-                Login with Wallet
+                {accounts.length > 0
+                  ? 'Login with wallet'
+                  : 'Connect wallet to login'}
               </Button>
             </div>
             <div className='inline-block w-full text-base text-center'>
