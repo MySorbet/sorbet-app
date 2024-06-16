@@ -2,14 +2,14 @@
 
 import './signup.css';
 import { signUpAsync } from '@/api/auth';
-import { PageTitle, useWalletSelector } from '@/components/common';
+import { Loading, PageTitle, useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
-import { config, currentNetwork } from '@/lib/config';
+import { currentNetwork } from '@/lib/config';
 import { useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
@@ -21,14 +21,14 @@ const Signup = () => {
   const [isAccountValid, setIsAccountValid] = useState<boolean | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [signedUp, setSignedUp] = useState<boolean>(false);
-  const { user, accessToken, loginWithEmail } = useAuth();
-  const { modal: nearModal, selector } = useWalletSelector();
+  const { user, accessToken, loginWithEmail, checkAuth } = useAuth();
+  const { modal: nearModal, selector, accounts } = useWalletSelector();
   const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
     clearErrors,
     setValue,
     getValues,
@@ -40,10 +40,27 @@ const Signup = () => {
       username: '',
       email: '',
     },
+    mode: 'onChange',
   });
 
   const formValues = watch();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkUserAndFetchDetails = async () => {
+      if (!user && !accessToken) {
+        const user = await checkAuth();
+        if (!user) {
+          router.push('/signin');
+        }
+      }
+
+      setLoading(false);
+    };
+
+    setLoading(true);
+    checkUserAndFetchDetails();
+  }, [user, accessToken, checkAuth, router]);
 
   if (user && accessToken) {
     router.push('/');
@@ -91,6 +108,12 @@ const Signup = () => {
     nearModal.show();
   };
 
+  useEffect(() => {
+    if (accounts.length > 0) {
+      setValue('username', accounts[0].accountId);
+    }
+  }, [accounts, setValue]);
+
   const onSubmit = handleSubmit(async (data) => {
     if (!data?.username || !data.email || !data.firstName || !data.lastName)
       return;
@@ -101,7 +124,7 @@ const Signup = () => {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      accountId: `${data.username}.${currentNetwork.fastAuth.accountIdSuffix}`,
+      accountId: `${data.username}`,
       userType: userType,
     });
 
@@ -126,23 +149,6 @@ const Signup = () => {
       });
       setLoading(false);
     }
-
-    // if (res.data) {
-    //   selector
-    //     .wallet('fast-auth-wallet')
-    //     .then((fastAuthWallet: any) => {
-    //       fastAuthWallet.signIn({
-    //         contractId: config.contractId,
-    //         email: data.email,
-    //         accountId: data.username,
-    //         isRecovery: false,
-    //       });
-    //     })
-    //     .then(() => {
-    //       setLoading(false);
-    //       setSignedUp(true);
-    //     });
-    // }
   });
 
   useEffect(() => {
@@ -256,7 +262,7 @@ const Signup = () => {
           <p className='text-sm text-red-500'>{errors.email?.message}</p>
         )}
       </div>
-      <div className='item w-full mb-2'>
+      {/* <div className='item w-full mb-2'>
         <label className='text-[#595B5A]'>Account ID</label>
         <Input
           {...register('username', {
@@ -273,22 +279,35 @@ const Signup = () => {
         {typeof errors.username?.message === 'string' && (
           <p className='text-sm text-red-500'>{errors.username?.message}</p>
         )}
+        */}
+      {/* <p className={`subText mb-4 text-sm text-center`}>
+        <span className={accountStatusState || ''}>{accountStatusMessage}</span>
+      </p> */}
+
+      <div className='item w-full mb-2'>
+        <label className='text-[#595B5A]'>Connect wallet</label>
+        <div className='flex w-full items-center'>
+          <Input
+            className='flex-1 rounded-lg'
+            placeholder='Enter wallet address'
+            value={accounts.length > 0 ? accounts[0].accountId : ''}
+            readOnly
+          />
+          <Button
+            className='ml-2 rounded-lg bg-sorbet px-4 py-1 text-sm text-white'
+            onClick={handleWalletLogin}
+            disabled={accounts.length > 0}
+          >
+            Connect Wallet
+          </Button>
+        </div>
       </div>
 
-      <p className={`subText mb-4 text-sm text-center`}>
-        <span className={accountStatusState || ''}>{accountStatusMessage}</span>
-      </p>
       <div className='item w-full mt-4'>
-        {/* <Button
-          className='h-11 gap-1 self-stretch rounded-lg bg-sorbet px-2 py-1 text-sm text-white'
-          onClick={handleWalletLogin}
-        >
-          Register with Wallet
-        </Button> */}
         <Button
           className='bg-sorbet h-11 gap-1 self-stretch rounded-lg px-2 py-1 text-sm text-white'
           type='submit'
-          disabled={isLoading}
+          disabled={isLoading || !isValid}
         >
           {isLoading ? 'Processing...' : 'Continue'}
         </Button>
@@ -320,18 +339,26 @@ const Signup = () => {
     </div>
   );
 
-  return (
-    <>
-      <PageTitle title='Create your account' />
-      <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
-        <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
-          <div className='flex flex-col items-start gap-6 px-6 pb-6'>
-            {signedUp ? alreadySignedUp : registerForm}
+  if (isLoading) {
+    return <Loading />;
+  } else {
+    if (!user && !accessToken) {
+      return (
+        <>
+          <PageTitle title='Create your account' />
+          <div className='flex h-screen flex-col items-center justify-center bg-[#F2F2F2] bg-no-repeat'>
+            <div className='w-[500px] items-center justify-center rounded-2xl bg-[#FFFFFF] p-6 text-black max-sm:w-[300px]'>
+              <div className='flex flex-col items-start gap-6 px-6 pb-6'>
+                {signedUp ? alreadySignedUp : registerForm}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </>
-  );
+        </>
+      );
+    } else {
+      return <Loading />;
+    }
+  }
 };
 
 export default Signup;
