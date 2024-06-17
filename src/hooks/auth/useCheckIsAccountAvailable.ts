@@ -8,10 +8,10 @@ export const useCheckIsAccountAvailable = () => {
   return useMutation({
     mutationFn: async (username: string) => {
       const response = await checkIsAccountAvailable(username);
-      if (response == false) {
-        throw new Error('Username is already taken');
-      }
-      return response;
+      // if (response == false) {
+      //   throw new Error('Username is already taken');
+      // }
+      return response || false;
     },
     onError: (error) => {
       toast({

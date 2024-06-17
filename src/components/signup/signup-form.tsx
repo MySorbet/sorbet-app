@@ -9,11 +9,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  useFormField,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { useCheckIsAccountAvailable } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -25,6 +28,7 @@ const schema = z.object({
 });
 
 const SignUpForm = () => {
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -39,12 +43,19 @@ const SignUpForm = () => {
     control: form.control,
   });
 
+  const {
+    isPending: checkAccountPending,
+    mutateAsync: checkIsAccountAvailable,
+    isError: checkAccountError,
+  } = useCheckIsAccountAvailable();
+
   const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
-    console.log(values);
+    console.log('VALS: ', values);
   });
-
-  console.log('Form errors', errors);
-
+  console.log('checkAccountPending: ', checkAccountPending);
+  console.log('checkAccountError: ', checkAccountError);
+  console.log('touchedFields: ', touchedFields);
+  console.log('errors.accountId: ', errors.accountId);
   return (
     <div
       style={{
@@ -60,7 +71,6 @@ const SignUpForm = () => {
               control={form.control}
               name='firstName'
               render={({ field }) => {
-                console.log('Field', field);
                 return (
                   <FormItem>
                     <FormLabel>First name</FormLabel>
@@ -120,9 +130,9 @@ const SignUpForm = () => {
             name='email'
             render={({ field }) => {
               return (
-                <FormItem className='w-full'>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
+                <FormItem className='w-full flex flex-col gap-[6px]'>
+                  <FormLabel className='m-0 p-0'>Email</FormLabel>
+                  <FormControl className='m-0 p-0'>
                     <div className='relative w-full'>
                       <Input
                         {...form.register('email')}
@@ -141,7 +151,7 @@ const SignUpForm = () => {
                       ) : null}
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className='m-0 p-0' />
                 </FormItem>
               );
             }}
@@ -150,6 +160,14 @@ const SignUpForm = () => {
             control={form.control}
             name='accountId'
             render={({ field }) => {
+              console.log(field.value);
+              const handleChange = async (e: any) => {
+                field.onChange(e);
+                const value = e.target.value;
+                const available = await checkIsAccountAvailable(value);
+                console.log('available: ', available);
+                setUsernameAvailable(available);
+              };
               return (
                 <FormItem>
                   <FormLabel>Account ID</FormLabel>
@@ -164,9 +182,15 @@ const SignUpForm = () => {
                               ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
                               : 'rounded-l-md rounded-r-none'
                           }
+                          {...field}
+                          onChange={(e) => handleChange(e)}
                         />
-                        {touchedFields.accountId ? (
-                          errors.accountId ? (
+                        {checkAccountPending ? (
+                          <Loader className='h-4 w-4 absolute right-4 top-3' />
+                        ) : touchedFields.accountId ? (
+                          checkAccountError ||
+                          errors.accountId ||
+                          !usernameAvailable ? (
                             <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
                           ) : (
                             <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
@@ -178,18 +202,28 @@ const SignUpForm = () => {
                       </div>
                     </div>
                   </FormControl>
-                  {errors.accountId ? (
-                    <FormMessage />
+                  {touchedFields.accountId ? (
+                    !usernameAvailable ? (
+                      <FormMessage className='text-[#D92D20]'>
+                        {field.value}.near is taken, try something else
+                      </FormMessage>
+                    ) : (
+                      <FormMessage className='text-[#2DD920]'>
+                        Account ID is available
+                      </FormMessage>
+                    )
                   ) : (
-                    <FormDescription>
-                      Customize your own user name
-                    </FormDescription>
+                    <FormMessage className='text-[#475467]'>
+                      Customize your own username
+                    </FormMessage>
                   )}
                 </FormItem>
               );
             }}
           />
-          <Button type='submit'>Continue</Button>
+          <Button type='submit' disabled={!isValid} className={'w-full'}>
+            Continue
+          </Button>
         </form>
       </Form>
       <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
