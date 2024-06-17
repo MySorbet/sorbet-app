@@ -66,161 +66,172 @@ const SignUpForm = () => {
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <div className='flex flex-row gap-6'>
+          <div className='flex flex-col gap-4 p-2'>
+            <div className='flex flex-row gap-6'>
+              <FormField
+                control={form.control}
+                name='firstName'
+                render={({ field }) => {
+                  return (
+                    <FormItem className='space-y-[6px]'>
+                      <FormLabel className='text-sm text-[#344054]'>
+                        First name
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            {...form.register('firstName')}
+                            placeholder='First name'
+                            {...field}
+                            className={
+                              !!errors.firstName
+                                ? 'border-red-500 ring-red-500'
+                                : ''
+                            }
+                          />
+                          {errors.firstName && (
+                            <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                          )}
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
+              <FormField
+                control={form.control}
+                name='lastName'
+                render={({ field }) => {
+                  return (
+                    <FormItem className='space-y-[6px]'>
+                      <FormLabel className='text-sm text-[#344054]'>
+                        Last name
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            {...form.register('lastName')}
+                            placeholder='Last name'
+                            {...field}
+                            className={
+                              !!errors.lastName
+                                ? 'border-red-500 ring-red-500'
+                                : ''
+                            }
+                          />
+                          {errors.lastName && (
+                            <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                          )}
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
             <FormField
               control={form.control}
-              name='firstName'
+              name='email'
               render={({ field }) => {
                 return (
-                  <FormItem>
-                    <FormLabel>First name</FormLabel>
-                    <FormControl>
-                      <div className='relative'>
-                        <Input
-                          {...form.register('firstName')}
-                          placeholder='First name'
-                          {...field}
-                          className={
-                            !!errors.firstName
-                              ? 'border-red-500 ring-red-500'
-                              : ''
-                          }
-                        />
-                        {errors.firstName && (
-                          <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                        )}
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                );
-              }}
-            />
-            <FormField
-              control={form.control}
-              name='lastName'
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Last name</FormLabel>
-                    <FormControl>
-                      <div className='relative'>
-                        <Input
-                          {...form.register('lastName')}
-                          placeholder='Last name'
-                          {...field}
-                          className={
-                            !!errors.lastName
-                              ? 'border-red-500 ring-red-500'
-                              : ''
-                          }
-                        />
-                        {errors.lastName && (
-                          <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                        )}
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                );
-              }}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }) => {
-              return (
-                <FormItem className='w-full flex flex-col gap-[6px]'>
-                  <FormLabel className='m-0 p-0'>Email</FormLabel>
-                  <FormControl className='m-0 p-0'>
-                    <div className='relative w-full'>
-                      <Input
-                        {...form.register('email')}
-                        placeholder='your@email.com'
-                        {...field}
-                        className={
-                          !!errors.email ? 'border-red-500 ring-red-500' : ''
-                        }
-                      />
-                      {touchedFields.email ? (
-                        errors.email ? (
-                          <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                        ) : (
-                          <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
-                        )
-                      ) : null}
-                    </div>
-                  </FormControl>
-                  <FormMessage className='m-0 p-0' />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name='accountId'
-            render={({ field }) => {
-              console.log(field.value);
-              const handleChange = async (e: any) => {
-                field.onChange(e);
-                const value = e.target.value;
-                const available = await checkIsAccountAvailable(value);
-                console.log('available: ', available);
-                setUsernameAvailable(available);
-              };
-              return (
-                <FormItem>
-                  <FormLabel>Account ID</FormLabel>
-                  <FormControl>
-                    <div className='flex flex-row w-full'>
+                  <FormItem className='w-full flex flex-col gap-[6px] space-y-0'>
+                    <FormLabel className='m-0 p-0 text-sm text-[#344054]'>
+                      Email
+                    </FormLabel>
+                    <FormControl className='m-0 p-0'>
                       <div className='relative w-full'>
                         <Input
-                          {...form.register('accountId')}
-                          placeholder='user-name'
-                          className={
-                            !!errors.accountId
-                              ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
-                              : 'rounded-l-md rounded-r-none'
-                          }
+                          {...form.register('email')}
+                          placeholder='your@email.com'
                           {...field}
-                          onChange={(e) => handleChange(e)}
+                          className={
+                            !!errors.email
+                              ? 'border-red-500 ring-red-500 m-0'
+                              : 'm-0'
+                          }
                         />
-                        {checkAccountPending ? (
-                          <Loader className='h-4 w-4 absolute right-4 top-3' />
-                        ) : touchedFields.accountId ? (
-                          checkAccountError ||
-                          errors.accountId ||
-                          !usernameAvailable ? (
+                        {touchedFields.email ? (
+                          errors.email ? (
                             <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
                           ) : (
                             <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
                           )
                         ) : null}
                       </div>
-                      <div className='h-10 flex items-center justify-center rounded-l-none rounded-r-md border text-base px-4 py-[10px] text-[#344054] hover:cursor-default'>
-                        .near
+                    </FormControl>
+                    <FormMessage className='m-0 p-0  text-sm' />
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name='accountId'
+              render={({ field }) => {
+                console.log(field.value);
+                const handleChange = async (e: any) => {
+                  field.onChange(e);
+                  const value = e.target.value;
+                  const available = await checkIsAccountAvailable(value);
+                  console.log('available: ', available);
+                  setUsernameAvailable(available);
+                };
+                return (
+                  <FormItem className='w-full flex flex-col gap-[6px] space-y-0'>
+                    <FormLabel className='text-sm text-[#344054]'>
+                      Account ID
+                    </FormLabel>
+                    <FormControl>
+                      <div className='flex flex-row w-full'>
+                        <div className='relative w-full'>
+                          <Input
+                            {...form.register('accountId')}
+                            placeholder='user-name'
+                            className={
+                              !!errors.accountId
+                                ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
+                                : 'rounded-l-md rounded-r-none'
+                            }
+                            {...field}
+                            onChange={(e) => handleChange(e)}
+                          />
+                          {checkAccountPending ? (
+                            <Loader className='h-4 w-4 absolute right-4 top-3' />
+                          ) : touchedFields.accountId ? (
+                            checkAccountError ||
+                            errors.accountId ||
+                            !usernameAvailable ? (
+                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                            ) : (
+                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
+                            )
+                          ) : null}
+                        </div>
+                        <div className='h-10 flex items-center justify-center rounded-l-none rounded-r-md border text-base px-4 py-[10px] text-[#344054] hover:cursor-default'>
+                          .near
+                        </div>
                       </div>
-                    </div>
-                  </FormControl>
-                  {touchedFields.accountId ? (
-                    !usernameAvailable ? (
-                      <FormMessage className='text-[#D92D20]'>
-                        {field.value}.near is taken, try something else
-                      </FormMessage>
+                    </FormControl>
+                    {touchedFields.accountId ? (
+                      !usernameAvailable ? (
+                        <FormMessage className='text-[#D92D20] text-sm'>
+                          {field.value}.near is taken, try something else
+                        </FormMessage>
+                      ) : (
+                        <FormMessage className='text-[#2DD920] text-sm'>
+                          Account ID is available
+                        </FormMessage>
+                      )
                     ) : (
-                      <FormMessage className='text-[#2DD920]'>
-                        Account ID is available
+                      <FormMessage className='text-[#475467] text-sm'>
+                        Customize your own username
                       </FormMessage>
-                    )
-                  ) : (
-                    <FormMessage className='text-[#475467]'>
-                      Customize your own username
-                    </FormMessage>
-                  )}
-                </FormItem>
-              );
-            }}
-          />
+                    )}
+                  </FormItem>
+                );
+              }}
+            />
+          </div>
           <Button type='submit' disabled={!isValid} className={'w-full'}>
             Continue
           </Button>
