@@ -84,6 +84,33 @@ const SignUpForm = () => {
               );
             }}
           />
+          <FormField
+            control={form.control}
+            name='lastName'
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Last name</FormLabel>
+                  <FormControl>
+                    <div className='relative'>
+                      <Input
+                        {...form.register('lastName')}
+                        placeholder='Last name'
+                        {...field}
+                        className={
+                          !!errors.lastName ? 'border-red-500 ring-red-500' : ''
+                        }
+                      />
+                      {errors.lastName && (
+                        <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
           <Button type='submit'>Continue</Button>
         </form>
       </Form>
