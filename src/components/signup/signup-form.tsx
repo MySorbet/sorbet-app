@@ -232,7 +232,11 @@ const SignUpForm = () => {
               }}
             />
           </div>
-          <Button type='submit' disabled={!isValid} className={'w-full'}>
+          <Button
+            type='submit'
+            disabled={!isValid || !usernameAvailable}
+            className={'w-full bg-[#573DF5] border-[#7F56D9]'}
+          >
             Continue
           </Button>
         </form>

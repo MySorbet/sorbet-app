@@ -88,11 +88,7 @@ const SignInForm = () => {
             className='flex flex-col gap-3 items-center'
           >
             <Button
-              className={
-                isValid
-                  ? 'flex w-full bg-[#573DF5] text-base font-semibold p-[10px] border border-[#573DF5]'
-                  : 'flex w-full font-semibold p-[10px] text-base bg-[#F2F4F7] text-[#98A2B3] border border-[#EAECF0]'
-              }
+              className={'w-full bg-[#573DF5] border-[#7F56D9]'}
               disabled={!isValid}
               type='submit'
             >
