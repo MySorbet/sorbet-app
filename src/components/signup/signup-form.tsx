@@ -111,6 +111,44 @@ const SignUpForm = () => {
               );
             }}
           />
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => {
+              return (
+                <FormItem className='w-full'>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <div className='flex flex-row w-full'>
+                      <div className='relative w-full'>
+                        <Input
+                          {...form.register('email')}
+                          placeholder='Email'
+                          {...field}
+                          className={
+                            !!errors.email
+                              ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
+                              : 'rounded-l-md rounded-r-none'
+                          }
+                        />
+                        {touchedFields.email ? (
+                          errors.email ? (
+                            <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                          ) : (
+                            <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
+                          )
+                        ) : null}
+                      </div>
+                      <div className='h-10 flex items-center justify-center rounded-l-none rounded-r-md border text-base px-4 py-[10px] text-[#344054]'>
+                        .near
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
           <Button type='submit'>Continue</Button>
         </form>
       </Form>
