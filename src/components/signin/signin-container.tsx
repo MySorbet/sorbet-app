@@ -1,5 +1,5 @@
-import { SignInHero } from './auth-hero';
-import { AuthHero } from './signin-form';
+import { AuthHero } from './auth-hero';
+import { SignInForm } from './signin-form';
 
 const SignInContainer = () => {
   return (
@@ -235,8 +235,8 @@ const SignInContainer = () => {
         </svg>
       </div>
       <div className='h-[562px] w-[980px] border border-[#4F38DD] border-opacity-80 rounded-[32px] bg-gradient-to-r from-[#FFFFFFCC] to-[#D4CEFDCC]  p-8 pl-12 flex justify-between z-20'>
-        <SignInHero />
         <AuthHero />
+        <SignInForm />
       </div>
     </div>
   );
