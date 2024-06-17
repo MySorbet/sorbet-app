@@ -61,12 +61,12 @@ const SignUpForm = () => {
       style={{
         boxShadow: '0px 20px 60px 0px #20202026',
       }}
-      className='bg-[#F9F7FF] w-[400px] p-6 rounded-3xl flex flex-col gap-8'
+      className='bg-[#F9F7FF] w-[400px] p-6 rounded-3xl flex flex-col gap-6'
     >
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <div className='flex flex-col gap-4 p-2'>
+          <div className='flex flex-col gap-4 p-2 min-h-[310px]'>
             <div className='flex flex-row gap-6'>
               <FormField
                 control={form.control}
