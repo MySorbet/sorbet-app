@@ -20,7 +20,7 @@ import { z } from 'zod';
 const schema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
   lastName: z.string().min(1, { message: 'Last name is required' }),
-  email: z.string().email({ message: 'Invalid email address' }),
+  email: z.string().email({ message: 'Invalid email format' }),
   accountId: z.string().min(1, { message: 'Account ID is required' }),
 });
 
@@ -55,63 +55,66 @@ const SignUpForm = () => {
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
         <form onSubmit={onSubmit}>
-          <FormField
-            control={form.control}
-            name='firstName'
-            render={({ field }) => {
-              console.log('Field', field);
-              return (
-                <FormItem>
-                  <FormLabel>First name</FormLabel>
-                  <FormControl>
-                    <div className='relative'>
-                      <Input
-                        {...form.register('firstName')}
-                        placeholder='First name'
-                        {...field}
-                        className={
-                          !!errors.firstName
-                            ? 'border-red-500 ring-red-500'
-                            : ''
-                        }
-                      />
-                      {errors.firstName && (
-                        <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
-          <FormField
-            control={form.control}
-            name='lastName'
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Last name</FormLabel>
-                  <FormControl>
-                    <div className='relative'>
-                      <Input
-                        {...form.register('lastName')}
-                        placeholder='Last name'
-                        {...field}
-                        className={
-                          !!errors.lastName ? 'border-red-500 ring-red-500' : ''
-                        }
-                      />
-                      {errors.lastName && (
-                        <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
+          <div className='flex flex-row gap-6'>
+            <FormField
+              control={form.control}
+              name='firstName'
+              render={({ field }) => {
+                console.log('Field', field);
+                return (
+                  <FormItem>
+                    <FormLabel>First name</FormLabel>
+                    <FormControl>
+                      <div className='relative'>
+                        <Input
+                          {...form.register('firstName')}
+                          placeholder='First name'
+                          {...field}
+                          className={
+                            !!errors.firstName
+                              ? 'border-red-500 ring-red-500'
+                              : ''
+                          }
+                        />
+                        {errors.firstName && (
+                          <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                        )}
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
+            <FormField
+              control={form.control}
+              name='lastName'
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>Last name</FormLabel>
+                    <FormControl>
+                      <div className='relative'>
+                        <Input
+                          {...form.register('lastName')}
+                          placeholder='Last name'
+                          {...field}
+                          className={
+                            !!errors.lastName
+                              ? 'border-red-500 ring-red-500'
+                              : ''
+                          }
+                        />
+                        {errors.lastName && (
+                          <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                        )}
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                );
+              }}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name='email'
@@ -126,9 +129,7 @@ const SignUpForm = () => {
                         placeholder='your@email.com'
                         {...field}
                         className={
-                          !!errors.email
-                            ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
-                            : 'rounded-l-md rounded-r-none'
+                          !!errors.email ? 'border-red-500 ring-red-500' : ''
                         }
                       />
                       {touchedFields.email ? (
