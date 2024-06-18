@@ -8,7 +8,14 @@ import { Search } from 'lucide-react';
 import { useState } from 'react';
 
 const Step3 = () => {
-  const [skills, setSkills] = useState<string[]>([]);
+  const [skill, setSkill] = useState<string>('');
+  const [skills, setSkills] = useState<string[]>([
+    'React',
+    'Node.js',
+    'TypeScript',
+    'GraphQL',
+    'MongoDB',
+  ]);
 
   return (
     <FormContainer>
@@ -30,9 +37,15 @@ const Step3 = () => {
             <div className='flex h-full items-center'>
               <Search className='h-5 w-5 text-[#667085]' />
             </div>
-            <div className='flex'>{/* <SkillBadge /> */}</div>
-            <div className='w-full'>
-              <Input className='border-none bg-inherit focus:outline-none' />
+            <div className='flex flex-col'>
+              <div className='skills flex gap-[3px] flex-wrap w-full'>
+                {skills.map((current) => (
+                  <SkillBadge key={current} skill={current} />
+                ))}
+              </div>
+              <div className='w-full'>
+                <Input className='border-none bg-inherit focus:outline-none' />
+              </div>
             </div>
           </div>
           <h3 className="text-sm font-normal text-[#344054]'">Max 5 skills</h3>
