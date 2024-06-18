@@ -22,9 +22,20 @@ const Step1 = () => {
                 <User className='text-[#667085] w-9 h-9' />
               </AvatarFallback>
             </Avatar>
-            <Button className='border border-[#D0D5DD] bg-[#FFFFFF] shadow-sm shadow-[#1018280D] text-[#344054]'>
+            <label
+              htmlFor='profileImage'
+              className='flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
+            >
               Upload Avatar
-            </Button>
+              <input
+                id='profileImage'
+                name='profileImage'
+                onChange={(e) => console.log(e)}
+                type='file'
+                className='hidden'
+                accept='image/*'
+              />
+            </label>
           </div>
           <div className='flex flex-col gap-[6px]'>
             <h1 className='text-sm text-[#344054]'>Where are you located?</h1>
