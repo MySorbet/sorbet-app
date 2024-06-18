@@ -18,9 +18,9 @@ const SignUpContainer = () => {
         <AuthHero />
         {/* <SignUpForm /> */}
         {/* <Step1 /> */}
-        {/* <Step2 /> */}
+        <Step2 />
         {/* <Step3 /> */}
-        <AllSet />
+        {/* <AllSet /> */}
       </div>
     </div>
   );

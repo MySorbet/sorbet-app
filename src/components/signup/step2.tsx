@@ -3,8 +3,11 @@
 import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
+import { useState } from 'react';
 
 const Step2 = () => {
+  const [bio, setBio] = useState<string>('');
+
   return (
     <FormContainer>
       <div className='flex flex-col gap-6 h-full'>
@@ -18,7 +21,8 @@ const Step2 = () => {
           </h1>
           <Textarea
             placeholder='A few words about yourself'
-            className='border border-[#D0D5DD] shadow-sm shadow-[#1018280D] h-[154px]'
+            className='border border-[#D0D5DD] shadow-sm shadow-[#1018280D] h-[154px] focus-visible:ring-transparent '
+            onChange={(e) => setBio(e.target.value)}
           />
         </div>
         <div className='flex gap-3'>
