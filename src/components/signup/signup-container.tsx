@@ -14,10 +14,11 @@ type UserSignUp = {
   firstName: string;
   lastName: string;
   accountId: string;
-  avatar?: string;
-  location?: string;
-  bio?: string;
-  skills?: string[];
+  image: string | undefined;
+  file: File | undefined;
+  location: string | undefined;
+  bio: string | undefined;
+  skills: string[] | undefined;
 };
 
 export type UserSignUpContextType = {
@@ -37,6 +38,11 @@ const SignUpContainer = () => {
     lastName: '',
     email: '',
     accountId: '',
+    image: undefined,
+    file: undefined,
+    location: undefined,
+    bio: undefined,
+    skills: undefined,
   });
   const [step, setStep] = useState<number>(0);
   return (

@@ -12,15 +12,28 @@ const Step1 = () => {
   const { setUserData, setStep } = useContext(
     UserSignUpContext
   ) as UserSignUpContextType;
-  const [avatar, setAvatar] = useState<File | null>(null);
+  const [image, setImage] = useState<string | undefined>('');
+  const [file, setFile] = useState<File | undefined>(undefined);
   const [location, setLocation] = useState<string>('');
 
   const handleNext = () => {
     setUserData((data) => ({
       ...data,
       location,
+      image,
+      file
     }));
     setStep(2);
+  };
+
+  const handleFileChange = (e: any) => {
+    setFile(
+      e.target.files && e.target.files.length > 0
+        ? e.target.files[0]
+        : undefined
+    );
+    const i = e.target.files[0];
+    setImage(URL.createObjectURL(i));
   };
 
   return (
@@ -46,7 +59,7 @@ const Step1 = () => {
               <input
                 id='profileImage'
                 name='profileImage'
-                onChange={(e) => console.log(e)}
+                onChange={(e) => handleFileChange(e)}
                 type='file'
                 className='hidden'
                 accept='image/*'
