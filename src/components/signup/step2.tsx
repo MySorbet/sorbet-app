@@ -3,10 +3,19 @@
 import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { useState } from 'react';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
+import { useContext, useState } from 'react';
 
 const Step2 = () => {
+  const { setUserData, setStep } = useContext(
+    UserSignUpContext
+  ) as UserSignUpContextType;
   const [bio, setBio] = useState<string>('');
+
+  const handleNext = () => {
+    setUserData((prev) => ({ ...prev, bio }));
+    setStep(3);
+  };
 
   return (
     <FormContainer>
@@ -26,10 +35,16 @@ const Step2 = () => {
           />
         </div>
         <div className='flex gap-3'>
-          <Button className='bg-[#FFFFFF] border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054]'>
+          <Button
+            className='bg-[#FFFFFF] border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054]'
+            onClick={() => setStep(1)}
+          >
             Back
           </Button>
-          <Button className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D]'>
+          <Button
+            className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D]'
+            onClick={handleNext}
+          >
             Next
           </Button>
         </div>

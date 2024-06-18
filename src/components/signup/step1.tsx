@@ -4,9 +4,25 @@ import { FormContainer } from '../signin';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { MapPin, User } from 'lucide-react';
+import { useContext, useState } from 'react';
 
 const Step1 = () => {
+  const { setUserData, setStep } = useContext(
+    UserSignUpContext
+  ) as UserSignUpContextType;
+  const [avatar, setAvatar] = useState<File | null>(null);
+  const [location, setLocation] = useState<string>('');
+
+  const handleNext = () => {
+    setUserData((data) => ({
+      ...data,
+      location,
+    }));
+    setStep(2);
+  };
+
   return (
     <FormContainer>
       <div className='flex flex-col gap-6 h-full'>
@@ -40,12 +56,19 @@ const Step1 = () => {
           <div className='flex flex-col gap-[6px]'>
             <h1 className='text-sm text-[#344054]'>Where are you located?</h1>
             <div className='relative'>
-              <Input placeholder='Enter location' className='pl-10' />
+              <Input
+                placeholder='Enter location'
+                className='pl-10'
+                onChange={(e) => setLocation(e.target.value)}
+              />
               <MapPin className='absolute h-5 w-5 text-[#667085] top-[10px] left-3' />
             </div>
           </div>
         </div>
-        <Button className='bg-[#573DF5] border-[#7F56D9] text-[#FFFFFF] shadow-sm shadow-[#1018280D] w-full'>
+        <Button
+          className='bg-[#573DF5] border-[#7F56D9] text-[#FFFFFF] shadow-sm shadow-[#1018280D] w-full'
+          onClick={handleNext}
+        >
           Next
         </Button>
       </div>

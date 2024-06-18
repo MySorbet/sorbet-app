@@ -11,11 +11,12 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { useCheckIsAccountAvailable } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -27,6 +28,9 @@ const schema = z.object({
 });
 
 const SignUpForm = () => {
+  const { userData, setUserData, setStep } = useContext(
+    UserSignUpContext
+  ) as UserSignUpContextType;
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -49,12 +53,15 @@ const SignUpForm = () => {
   } = useCheckIsAccountAvailable();
 
   const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
-    console.log('VALS: ', values);
+    setUserData({
+      accountId: values.accountId,
+      email: values.email,
+      firstName: values.firstName,
+      lastName: values.lastName,
+    });
+    setStep(1);
   });
-  console.log('checkAccountPending: ', checkAccountPending);
-  console.log('checkAccountError: ', checkAccountError);
-  console.log('touchedFields: ', touchedFields);
-  console.log('errors.accountId: ', errors.accountId);
+
   return (
     <FormContainer>
       <h1 className='text-2xl font-semibold'>Sign Up</h1>

@@ -3,12 +3,17 @@
 import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
 import { PasteLinkDemo } from './paste-link-demo';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { SocialsDemo } from './socials-demo';
 import { WidgetResizeDemo } from './widget-resize-demo';
 import { useRouter } from 'next/navigation';
+import { useContext } from 'react';
 
 const AllSet = () => {
+  const { userData } = useContext(UserSignUpContext) as UserSignUpContextType;
   const router = useRouter();
+
+  console.log('USER DATA', userData);
 
   return (
     <FormContainer>

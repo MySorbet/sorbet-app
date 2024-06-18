@@ -2,11 +2,15 @@
 
 import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { SkillBadge } from './skill-badge';
 import { Search } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useState, useContext } from 'react';
 
 const Step3 = () => {
+  const { setUserData, setStep } = useContext(
+    UserSignUpContext
+  ) as UserSignUpContextType;
   const [skill, setSkill] = useState<string>('');
   const [skills, setSkills] = useState<string[]>([]);
 
@@ -18,7 +22,10 @@ const Step3 = () => {
     }
   };
 
-  const handleCreateProfile = async () => {};
+  const handleCreateProfile = async () => {
+    setUserData((data) => ({ ...data, skills }));
+    setStep(4);
+  };
 
   return (
     <FormContainer>
@@ -64,7 +71,10 @@ const Step3 = () => {
           <h3 className="text-sm font-normal text-[#344054]'">Max 5 skills</h3>
         </div>
         <div className='flex gap-3'>
-          <Button className='bg-[#FFFFFF] hover:bg-gray-300 border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054] font-semibold text-base'>
+          <Button
+            className='bg-[#FFFFFF] hover:bg-gray-300 border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054] font-semibold text-base'
+            onClick={() => setStep(2)}
+          >
             Back
           </Button>
           <Button
