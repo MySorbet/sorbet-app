@@ -1,6 +1,7 @@
 'use client';
 
 import { BlurredLogos } from '../common';
+import { AllSet } from './all-set';
 import { SignUpForm } from './signup-form';
 import { Step1 } from './step1';
 import { Step2 } from './step2';
@@ -18,7 +19,8 @@ const SignUpContainer = () => {
         {/* <SignUpForm /> */}
         {/* <Step1 /> */}
         {/* <Step2 /> */}
-        <Step3 />
+        {/* <Step3 /> */}
+        <AllSet />
       </div>
     </div>
   );
