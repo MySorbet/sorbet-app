@@ -2,10 +2,9 @@
 
 import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import { SkillBadge } from './skill-badge';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const Step3 = () => {
   const [skill, setSkill] = useState<string>('');
@@ -16,6 +15,16 @@ const Step3 = () => {
     'GraphQL',
     'MongoDB',
   ]);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (skill.length == 0) return;
+      setSkills((skills) => [...skills, skill]);
+      setSkill('');
+    }
+  };
 
   return (
     <FormContainer>
@@ -40,13 +49,22 @@ const Step3 = () => {
             <div className='flex flex-col'>
               <div className='skills flex gap-[3px] flex-wrap w-full '>
                 {skills.map((current) => (
-                  <SkillBadge key={current} skill={current} />
+                  <SkillBadge
+                    key={current}
+                    skill={current}
+                    setSkills={setSkills}
+                  />
                 ))}
               </div>
               <div className='flex items-center w-full '>
                 <input
+                  value={skill}
                   className='border-none bg-inherit focus:outline-none p-0 text-sm h-11 '
                   placeholder='Add skills here'
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  onChange={(e) => {
+                    setSkill(e.target.value);
+                  }}
                 />
               </div>
             </div>
