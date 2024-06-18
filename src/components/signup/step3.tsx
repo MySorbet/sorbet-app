@@ -31,20 +31,23 @@ const Step3 = () => {
           <div
             className={
               'skills-container flex border border-[#D0D5DD] shadow-sm shadow-[#1018280D] w-full rounded-[8px] gap-1  ' +
-              (skills.length > 0 ? 'py-[10px] px-[14px]' : 'px-[14px]')
+              (skills.length > 0 ? 'pt-[10px] px-[14px]' : 'px-[14px]')
             }
           >
             <div className='flex h-full items-center'>
               <Search className='h-5 w-5 text-[#667085]' />
             </div>
             <div className='flex flex-col'>
-              <div className='skills flex gap-[3px] flex-wrap w-full'>
+              <div className='skills flex gap-[3px] flex-wrap w-full '>
                 {skills.map((current) => (
                   <SkillBadge key={current} skill={current} />
                 ))}
               </div>
-              <div className='w-full'>
-                <Input className='border-none bg-inherit focus:outline-none' />
+              <div className='flex items-center w-full '>
+                <input
+                  className='border-none bg-inherit focus:outline-none p-0 text-sm h-11 '
+                  placeholder='Add skills here'
+                />
               </div>
             </div>
           </div>
