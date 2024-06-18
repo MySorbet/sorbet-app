@@ -3,11 +3,12 @@
 const WidgetResizeDemo = () => {
   return (
     <svg
-      width='130'
-      height='54'
-      viewBox='0 0 130 54'
+      width='103'
+      height='26.4857'
+      viewBox='6.5 7 103 26.5'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
+      className='rounded-full drop-shadow-sm shadow-[#00000033]'
     >
       <g opacity='0.8' filter='url(#filter0_d_2836_9846)'>
         <rect

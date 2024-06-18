@@ -5,8 +5,11 @@ import { Button } from '../ui/button';
 import { PasteLinkDemo } from './paste-link-demo';
 import { SocialsDemo } from './socials-demo';
 import { WidgetResizeDemo } from './widget-resize-demo';
+import { useRouter } from 'next/navigation';
 
 const AllSet = () => {
+  const router = useRouter();
+
   return (
     <FormContainer>
       <div className='flex flex-col gap-6 h-full'>
@@ -27,7 +30,10 @@ const AllSet = () => {
           </p>
           <WidgetResizeDemo />
         </div>
-        <Button className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'>
+        <Button
+          className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
+          onClick={() => router.push('/')}
+        >
           Edit My Profile
         </Button>
       </div>

@@ -8,7 +8,7 @@ const PasteLinkDemo = () => {
       viewBox='24 24 278 49.75'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
-      className='bg-none p-0 rounded-[11.58px] '
+      className='bg-none p-0 rounded-[11.58px] drop-shadow-sm shadow-[#00000033]'
     >
       <g opacity='0.8' filter='url(#filter0_d_2836_9777)'>
         <rect
