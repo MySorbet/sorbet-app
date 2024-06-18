@@ -12,7 +12,7 @@ export const useSignUpAsync = () => {
       if (response.status === 'success') {
         return response;
       } else {
-        throw new Error('Failed to sign up');
+        throw new Error(response.message);
       }
     },
     onError: (error) => {

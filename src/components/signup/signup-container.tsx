@@ -16,9 +16,9 @@ type UserSignUp = {
   accountId: string;
   image: string | undefined;
   file: File | undefined;
-  location: string | undefined;
-  bio: string | undefined;
-  skills: string[] | undefined;
+  location: string;
+  bio: string;
+  skills: string[];
 };
 
 export type UserSignUpContextType = {
@@ -34,15 +34,18 @@ export const UserSignUpContext = createContext<UserSignUpContextType | null>(
 
 const SignUpContainer = () => {
   const [userData, setUserData] = useState<UserSignUp>({
+    // useSignUpAsync
     firstName: '',
     lastName: '',
     email: '',
     accountId: '',
-    image: undefined,
+    // useUploadProfileImageAsync
+    image: '',
     file: undefined,
-    location: undefined,
-    bio: undefined,
-    skills: undefined,
+    // useUpdateUser
+    location: '',
+    bio: '',
+    skills: [],
   });
   const [step, setStep] = useState<number>(0);
   return (

@@ -12,6 +12,7 @@ export const useUpdateUser = () => {
   return useMutation({
     mutationFn: async (userToUpdate: User) => {
       const response = await updateUser(userToUpdate, userToUpdate.id);
+      console.log(response);
       if (response.status == 'failed') {
         throw new Error('Failed to update user profile.');
       }

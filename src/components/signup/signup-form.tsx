@@ -12,7 +12,11 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { UserSignUpContext, UserSignUpContextType } from './signup-container';
-import { useCheckIsAccountAvailable } from '@/hooks';
+import {
+  useCheckIsAccountAvailable,
+  useSignUpAsync,
+  useLoginWithEmail,
+} from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import Link from 'next/link';
@@ -42,7 +46,7 @@ const SignUpForm = () => {
     },
     mode: 'all',
   });
-  const { isValidating, isValid, touchedFields, errors } = useFormState({
+  const { isValid, touchedFields, errors } = useFormState({
     control: form.control,
   });
 
@@ -51,14 +55,26 @@ const SignUpForm = () => {
     mutateAsync: checkIsAccountAvailable,
     isError: checkAccountError,
   } = useCheckIsAccountAvailable();
+  const { isPending: signUpPending, mutateAsync: signUpAsync } =
+    useSignUpAsync();
+  const { mutateAsync: loginWithEmail } = useLoginWithEmail();
 
   const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
-    setUserData({
-      accountId: values.accountId,
-      email: values.email,
-      firstName: values.firstName,
-      lastName: values.lastName,
+    // setUserData({
+    //   accountId: values.accountId,
+    //   email: values.email,
+    //   firstName: values.firstName,
+    //   lastName: values.lastName,
+    // });
+    setUserData((user) => ({ ...user, ...values }));
+    // On error, this will throw and toast what went wrong
+    await signUpAsync({
+      ...values,
+      userType: 'FREELANCER',
     });
+    // On error, this will throw and toast what went wrong
+    await loginWithEmail(values.email);
+
     setStep(1);
   });
 
@@ -169,12 +185,10 @@ const SignUpForm = () => {
               control={form.control}
               name='accountId'
               render={({ field }) => {
-                console.log(field.value);
                 const handleChange = async (e: any) => {
                   field.onChange(e);
                   const value = e.target.value;
                   const available = await checkIsAccountAvailable(value);
-                  console.log('available: ', available);
                   setUsernameAvailable(available);
                 };
                 return (
@@ -238,12 +252,12 @@ const SignUpForm = () => {
             disabled={!isValid || !usernameAvailable}
             className={'w-full bg-[#573DF5] border-[#7F56D9]'}
           >
-            Continue
+            {signUpPending ? <Loader /> : 'Continue'}
           </Button>
         </form>
       </Form>
       <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
-        Don't have an account?{' '}
+        Already have an account?{' '}
         <Link
           className='text-xs leading-[18px] text-[#6230EC] font-bold'
           href={'/signin'}

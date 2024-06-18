@@ -4,28 +4,82 @@ import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
 import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { SkillBadge } from './skill-badge';
-import { Search } from 'lucide-react';
-import { useState, useContext } from 'react';
+import { useUpdateUser, useUploadProfileImage, useAuth } from '@/hooks';
+import { useAppSelector } from '@/redux/hook';
+import { User } from '@/types';
+import { Search, Loader } from 'lucide-react';
+import { useState, useContext, useEffect } from 'react';
 
 const Step3 = () => {
-  const { setUserData, setStep } = useContext(
+  const { userData, setUserData, setStep } = useContext(
     UserSignUpContext
   ) as UserSignUpContextType;
   const [skill, setSkill] = useState<string>('');
   const [skills, setSkills] = useState<string[]>([]);
+  const { user: authUser } = useAuth();
+  const reduxUser = useAppSelector((state) => state.userReducer.user);
+  const [user, setUser] = useState(authUser || reduxUser);
+  const { isPending: uploadPending, mutateAsync: uploadProfileImage } =
+    useUploadProfileImage();
+  const { isPending: updatePending, mutate: updateUser } = useUpdateUser();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       if (skill.length == 0) return;
+      const copy = skills.slice();
       setSkills((skills) => [...skills, skill]);
+      const updatedCopy = [...copy, skill];
+      setUserData((data) => ({ ...data, skills: updatedCopy }));
       setSkill('');
     }
   };
 
   const handleCreateProfile = async () => {
-    setUserData((data) => ({ ...data, skills }));
-    setStep(4);
+    // Create user account via signup
+    // Update user data
+    // login with email to see if the login is successful
+    // go to step 4
+    let userToUpdate: User = { ...user };
+
+    if (
+      user?.id &&
+      userData.image !== user?.profileImage &&
+      userData.file !== undefined
+    ) {
+      const imageFormData = new FormData();
+      imageFormData.append('file', userData.file);
+      imageFormData.append('fileType', 'image');
+      imageFormData.append('destination', 'profile');
+      imageFormData.append('oldImageUrl', user?.profileImage);
+      imageFormData.append('userId', user?.id);
+
+      await uploadProfileImage({
+        imageFormData,
+        userToUpdate,
+      });
+    }
+
+    if (user) {
+      userToUpdate = {
+        ...userToUpdate,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        city: userData.location,
+        tags: skills,
+        bio: userData.bio,
+      };
+
+      updateUser(userToUpdate);
+      setStep(4);
+    }
   };
+  useEffect(() => {
+    setSkills(userData.skills);
+  }, []);
+
+  useEffect(() => {
+    setUser(authUser || reduxUser);
+  }, [authUser, reduxUser]);
 
   return (
     <FormContainer>
@@ -81,7 +135,7 @@ const Step3 = () => {
             className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
             onClick={handleCreateProfile}
           >
-            Create Profile
+            {updatePending || uploadPending ? <Loader /> : 'Create Profile'}
           </Button>
         </div>
       </div>

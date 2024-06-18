@@ -7,7 +7,7 @@ import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { useContext, useState } from 'react';
 
 const Step2 = () => {
-  const { setUserData, setStep } = useContext(
+  const { setUserData, setStep, userData } = useContext(
     UserSignUpContext
   ) as UserSignUpContextType;
   const [bio, setBio] = useState<string>('');
@@ -32,6 +32,7 @@ const Step2 = () => {
             placeholder='A few words about yourself'
             className='border border-[#D0D5DD] shadow-sm shadow-[#1018280D] h-[154px] focus-visible:ring-transparent '
             onChange={(e) => setBio(e.target.value)}
+            defaultValue={userData.bio}
           />
         </div>
         <div className='flex gap-3'>

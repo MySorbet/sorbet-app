@@ -9,7 +9,7 @@ import { MapPin, User } from 'lucide-react';
 import { useContext, useState } from 'react';
 
 const Step1 = () => {
-  const { setUserData, setStep } = useContext(
+  const { userData, setUserData, setStep } = useContext(
     UserSignUpContext
   ) as UserSignUpContextType;
   const [image, setImage] = useState<string | undefined>('');
@@ -17,11 +17,11 @@ const Step1 = () => {
   const [location, setLocation] = useState<string>('');
 
   const handleNext = () => {
-    setUserData((data) => ({
-      ...data,
+    setUserData((user) => ({
+      ...user,
       location,
       image,
-      file
+      file,
     }));
     setStep(2);
   };
@@ -46,7 +46,7 @@ const Step1 = () => {
         <div className='flex flex-col flex-1 gap-10'>
           <div className='h-[76px] flex w-full py-2 gap-4 items-center'>
             <Avatar className='w-[60px] h-[60px] drop-shadow-xl shadow-[#1018280F] border-[1.2px] border-[#00000014]'>
-              <AvatarImage />
+              <AvatarImage src={image} />
               <AvatarFallback className='w-[60px] h-[60px] bg-[#F2F4F7] '>
                 <User className='text-[#667085] w-9 h-9' />
               </AvatarFallback>
@@ -73,6 +73,7 @@ const Step1 = () => {
                 placeholder='Enter location'
                 className='pl-10'
                 onChange={(e) => setLocation(e.target.value)}
+                defaultValue={userData.location}
               />
               <MapPin className='absolute h-5 w-5 text-[#667085] top-[10px] left-3' />
             </div>

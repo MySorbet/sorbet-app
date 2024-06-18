@@ -10,7 +10,7 @@ export const useLoginWithEmail = () => {
     mutationFn: async (email: string) => {
       const response = await loginWithEmail(email);
       if (response.status === 'success') {
-        return { status: 'success', message: response.message };
+        return response;
       } else {
         throw new Error(response.message || 'Failed to login with email');
       }

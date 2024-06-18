@@ -13,8 +13,6 @@ const AllSet = () => {
   const { userData } = useContext(UserSignUpContext) as UserSignUpContextType;
   const router = useRouter();
 
-  console.log('USER DATA', userData);
-
   return (
     <FormContainer>
       <div className='flex flex-col gap-6 h-full'>
