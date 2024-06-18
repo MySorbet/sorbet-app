@@ -8,15 +8,7 @@ import { useRef, useState } from 'react';
 
 const Step3 = () => {
   const [skill, setSkill] = useState<string>('');
-  const [skills, setSkills] = useState<string[]>([
-    'React',
-    'Node.js',
-    'TypeScript',
-    'GraphQL',
-    'MongoDB',
-  ]);
-
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [skills, setSkills] = useState<string[]>([]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -25,6 +17,8 @@ const Step3 = () => {
       setSkill('');
     }
   };
+
+  const handleCreateProfile = async () => {};
 
   return (
     <FormContainer>
@@ -59,12 +53,10 @@ const Step3 = () => {
               <div className='flex items-center w-full '>
                 <input
                   value={skill}
-                  className='border-none bg-inherit focus:outline-none p-0 text-sm h-11 '
+                  className='border-none bg-inherit focus:outline-none p-0 pl-1 text-sm h-11 '
                   placeholder='Add skills here'
                   onKeyDown={(e) => handleKeyDown(e)}
-                  onChange={(e) => {
-                    setSkill(e.target.value);
-                  }}
+                  onChange={(e) => setSkill(e.target.value)}
                 />
               </div>
             </div>
@@ -72,10 +64,13 @@ const Step3 = () => {
           <h3 className="text-sm font-normal text-[#344054]'">Max 5 skills</h3>
         </div>
         <div className='flex gap-3'>
-          <Button className='bg-[#FFFFFF] border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054] font-semibold text-base'>
+          <Button className='bg-[#FFFFFF] hover:bg-gray-300 border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054] font-semibold text-base'>
             Back
           </Button>
-          <Button className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'>
+          <Button
+            className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
+            onClick={handleCreateProfile}
+          >
             Create Profile
           </Button>
         </div>
