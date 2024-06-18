@@ -3,6 +3,7 @@
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { FormContainer } from './form-container';
 import { useAuth } from '@/hooks';
 import { useLoginWithEmail } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,12 +42,7 @@ const SignInForm = () => {
   });
 
   return (
-    <div
-      style={{
-        boxShadow: '0px 20px 60px 0px #20202026',
-      }}
-      className='bg-[#F9F7FF] w-[400px] p-6 rounded-3xl flex flex-col gap-8'
-    >
+    <FormContainer>
       <h1 className='text-2xl font-semibold'>Sign In</h1>
 
       <form
@@ -88,7 +84,7 @@ const SignInForm = () => {
             className='flex flex-col gap-3 items-center'
           >
             <Button
-              className={'w-full bg-[#573DF5] border-[#7F56D9]'}
+              className={'w-full bg-[#573DF5] border-[#7F56D9] text-base'}
               disabled={!isValid}
               type='submit'
             >
@@ -126,7 +122,7 @@ const SignInForm = () => {
           </p>
         </div>
       </form>
-    </div>
+    </FormContainer>
   );
 };
 

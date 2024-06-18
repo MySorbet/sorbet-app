@@ -1,15 +1,14 @@
 'use client';
 
+import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  useFormField,
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { useCheckIsAccountAvailable } from '@/hooks';
@@ -57,12 +56,7 @@ const SignUpForm = () => {
   console.log('touchedFields: ', touchedFields);
   console.log('errors.accountId: ', errors.accountId);
   return (
-    <div
-      style={{
-        boxShadow: '0px 20px 60px 0px #20202026',
-      }}
-      className='bg-[#F9F7FF] w-[400px] p-6 rounded-3xl flex flex-col gap-6'
-    >
+    <FormContainer>
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
         <form onSubmit={onSubmit}>
@@ -250,7 +244,7 @@ const SignUpForm = () => {
           Sign in
         </Link>
       </p>
-    </div>
+    </FormContainer>
   );
 };
 
