@@ -32,7 +32,7 @@ const schema = z.object({
 });
 
 const SignUpForm = () => {
-  const { userData, setUserData, setStep } = useContext(
+  const { setUserData, setStep } = useContext(
     UserSignUpContext
   ) as UserSignUpContextType;
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
@@ -60,12 +60,6 @@ const SignUpForm = () => {
   const { mutateAsync: loginWithEmail } = useLoginWithEmail();
 
   const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
-    // setUserData({
-    //   accountId: values.accountId,
-    //   email: values.email,
-    //   firstName: values.firstName,
-    //   lastName: values.lastName,
-    // });
     setUserData((user) => ({ ...user, ...values }));
     // On error, this will throw and toast what went wrong
     await signUpAsync({

@@ -35,10 +35,6 @@ const Step3 = () => {
   };
 
   const handleCreateProfile = async () => {
-    // Create user account via signup
-    // Update user data
-    // login with email to see if the login is successful
-    // go to step 4
     let userToUpdate: User = { ...user };
 
     if (
