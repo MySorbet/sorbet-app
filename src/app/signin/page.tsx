@@ -1,4 +1,3 @@
-import SignIn from './signin';
 import { SignInContainer } from '@/components/signin';
 
 const SignInPage = () => {

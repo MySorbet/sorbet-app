@@ -1,6 +1,5 @@
 'use client';
 
-import Signup from './signup';
 import { SignUpContainer } from '@/components';
 
 const SignUpPage = () => {
