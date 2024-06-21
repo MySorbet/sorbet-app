@@ -1,3 +1,5 @@
+import { User } from '@/types/user';
+
 export interface FindContractsType {
   freelancerUsername: string;
   clientUsername: string;
@@ -26,6 +28,8 @@ export interface OfferType {
   tags: string[];
   projectName: string;
   projectDescription: string;
+  recipient?: User;
+  creator?: User;
 }
 
 export enum ContractMilestoneStatus {
@@ -49,6 +53,8 @@ export interface ContractType {
   dateCreated: string;
   dateUpdated: string;
   offerId: string;
+  client?: User;
+  freelancer?: User;
 }
 
 export interface MilestoneType {
