@@ -121,21 +121,22 @@ export const ContractClientMilestone = ({
                   Funded
                 </h2>
               )}
-              {status === ContractMilestoneStatus.FundingPending && (
-                <>
-                  <Button
-                    variant='default'
-                    className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
-                      fundingButtonDisabled &&
-                      `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
-                    }`}
-                    size={`sm`}
-                    onClick={handleMilestoneFunding}
-                  >
-                    Add Funds <Plus className='ml-1' size={17} />
-                  </Button>
-                </>
-              )}
+              {isApproved &&
+                status === ContractMilestoneStatus.FundingPending && (
+                  <>
+                    <Button
+                      variant='default'
+                      className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
+                        fundingButtonDisabled &&
+                        `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
+                      }`}
+                      size={`sm`}
+                      onClick={handleMilestoneFunding}
+                    >
+                      Add Funds <Plus className='ml-1' size={17} />
+                    </Button>
+                  </>
+                )}
             </div>
           </div>
         </div>

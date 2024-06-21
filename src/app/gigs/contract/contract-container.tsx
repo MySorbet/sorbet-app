@@ -2,6 +2,7 @@ import { createContract, updateOfferStatus } from '@/api/gigs';
 import {
   ContractFixedPrice,
   ContractFixedPriceData,
+  ContractMilestone,
   ContractMilestones,
   ContractMilestonesFormData,
 } from '@/app/gigs/contract';
@@ -12,6 +13,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ID } from '@/constant/constant';
 import { useLocalStorage } from '@/hooks';
 import { CreateContractType, OfferType } from '@/types';
+import { Transaction } from '@near-wallet-selector/core';
 import { CircleCheckBig } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -53,7 +55,11 @@ export const ContractContainer = ({
 
       const response = await createContract(reqBody);
       if (response && response.status === 'success') {
-        await createOnchainContract(response.data?.id, currentOffer.username);
+        await createOnchainContract(
+          response.data?.id,
+          currentOffer.username,
+          formData.milestones
+        );
         setIsFormSubmitted(true);
         if (afterContractSubmited) {
           afterContractSubmited();
@@ -67,32 +73,66 @@ export const ContractContainer = ({
     }
   };
 
+  const toYoctoNEAR = (amount: number) => {
+    const yoctoMultiplier = BigInt('1000000000000000000000000'); // 10^24
+    return (BigInt(amount) * yoctoMultiplier).toString();
+  };
+
   const createOnchainContract = async (
     projectId: string,
-    clientAccountId: string
+    clientAccountId: string,
+    milestones?: ContractMilestone[]
   ) => {
     if (accounts.length > 0) {
       setLastChainOp('create_project');
+      const transactions: Array<Transaction> = [];
+      transactions.push({
+        signerId: accounts[0].accountId,
+        receiverId: CONTRACT_ID,
+        actions: [
+          {
+            type: 'FunctionCall',
+            params: {
+              methodName: 'create_project',
+              args: {
+                project_id: projectId,
+                client_id: clientAccountId,
+              },
+              gas: '300000000000000', // gas amount
+              deposit: '0', // No deposit needed for this function call
+            },
+          },
+        ],
+      });
+
+      if (milestones) {
+        milestones.forEach((milestone: ContractMilestone, index: number) => {
+          transactions.push({
+            signerId: accounts[0].accountId,
+            receiverId: CONTRACT_ID,
+            actions: [
+              {
+                type: 'FunctionCall',
+                params: {
+                  methodName: 'add_schedule',
+                  args: {
+                    project_id: projectId,
+                    short_code: `m${index + 1}`,
+                    description: milestone.name,
+                    value: toYoctoNEAR(milestone.amount),
+                  },
+                  gas: '300000000000000', // gas amount
+                  deposit: '100000000000000', // 0.1 NEAR deposit
+                },
+              },
+            ],
+          });
+        });
+      }
+
       const wallet = await selector.wallet();
       return await wallet
-        .signAndSendTransaction({
-          signerId: accounts[0].accountId,
-          receiverId: CONTRACT_ID,
-          actions: [
-            {
-              type: 'FunctionCall',
-              params: {
-                methodName: 'create_project',
-                args: {
-                  project_id: projectId,
-                  client_id: clientAccountId,
-                },
-                gas: '300000000000000', // gas amount
-                deposit: '0', // No deposit needed for this function call
-              },
-            },
-          ],
-        })
+        .signAndSendTransactions({ transactions })
         .catch((err) => {
           toast({
             title: 'Transaction Failed',
