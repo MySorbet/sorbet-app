@@ -1,28 +1,30 @@
 import { useAuth } from '../useAuth';
 import { getClientOffers, getFreelancerOffers } from '@/api/gigs';
 import { useToast } from '@/components/ui/use-toast';
+import { GigsContentType, User } from '@/types';
 import { FormattedResponse } from '@/types';
-import type { User } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
-export const useFetchOffers = (loggedInUser: User | null) => {
+export const useFetchOffers = (
+  loggedInUser: User | null,
+  gigsContentType: GigsContentType
+) => {
   const { toast } = useToast();
 
   return useQuery({
     queryKey: ['offers'],
     queryFn: async () => {
-      console.log('useFetchOffers fired');
       if (loggedInUser?.accountId) {
         let response: FormattedResponse | undefined;
 
-        switch (loggedInUser?.userType) {
-          case 'CLIENT':
+        switch (gigsContentType) {
+          case GigsContentType.Sent:
             response = await getClientOffers(
               loggedInUser?.accountId,
               'Pending'
             );
             break;
-          case 'FREELANCER':
+          case GigsContentType.Received:
             response = await getFreelancerOffers(
               loggedInUser?.accountId,
               'Pending'

@@ -17,7 +17,6 @@ export interface CreateMilestoneType {
   amount: number;
 }
 
-
 export interface OfferType {
   id: string;
   name: string;
@@ -65,4 +64,9 @@ export interface CreateOfferType {
   projectStart: string;
   clientUsername: string;
   freelancerUsername: string;
+}
+
+export enum GigsContentType {
+  Sent,
+  Received,
 }

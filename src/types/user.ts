@@ -12,7 +12,6 @@ export interface User {
   tempLocation: string;
   role: string;
   city: string;
-  userType: string;
   balance?: {
     usdc: number;
     near: number;
