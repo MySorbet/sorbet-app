@@ -11,3 +11,8 @@ export function getFromSessionStorage(key: string): string | null {
   }
   return null;
 }
+
+export const toYoctoNEAR = (amount: number) => {
+  const yoctoMultiplier = BigInt('1000000000000000000000000'); // 10^24
+  return (BigInt(amount) * yoctoMultiplier).toString();
+};

@@ -156,6 +156,7 @@ export const ContractOverview = ({
                 title={milestone.name}
                 amount={milestone.amount}
                 index={index}
+                projectId={contract.id}
               />
             ))}
           </>

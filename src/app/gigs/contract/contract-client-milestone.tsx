@@ -3,7 +3,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
+import { CONTRACT_ID } from '@/constant/constant';
+import { useAuth, useLocalStorage } from '@/hooks';
+import { toYoctoNEAR } from '@/lib/helper';
 import { ContractMilestoneStatus } from '@/types';
 import { Check, Lock, Plus, Zap } from 'lucide-react';
 import React from 'react';
@@ -15,6 +17,7 @@ export interface ContractClientMilestoneProps {
   title: string;
   amount: number;
   index: number;
+  projectId: string;
 }
 
 export const ContractClientMilestone = ({
@@ -24,9 +27,14 @@ export const ContractClientMilestone = ({
   title,
   amount,
   index,
+  projectId,
 }: ContractClientMilestoneProps) => {
   const isCompleted = status === ContractMilestoneStatus.Approved;
   const { accounts, selector } = useWalletSelector();
+  const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
+    'lastChainOp',
+    ''
+  );
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -45,10 +53,55 @@ export const ContractClientMilestone = ({
     }
   };
 
+  const onMilestoneFunded = async (
+    projectId: string,
+    scheduleId: string,
+    amount: number
+  ) => {
+    if (accounts.length > 0) {
+      setLastChainOp('fund_schedule');
+      const wallet = await selector.wallet();
+      return await wallet
+        .signAndSendTransaction({
+          signerId: accounts[0].accountId,
+          receiverId: CONTRACT_ID,
+          actions: [
+            {
+              type: 'FunctionCall',
+              params: {
+                methodName: 'fund_schedule',
+                args: {
+                  project_id: projectId,
+                  schedule_id: scheduleId,
+                },
+                gas: '300000000000000', // gas amount
+                deposit: toYoctoNEAR(amount),
+              },
+            },
+          ],
+        })
+        .catch((err) => {
+          toast({
+            title: 'Transaction Failed',
+            description: 'Failed to fund milestone on the NEAR blockchain.',
+            variant: 'destructive',
+          });
+          console.error('Failed to fund milestone', err);
+          throw err;
+        });
+    } else {
+      toast({
+        title: 'Unable to fund milestone',
+        description: 'No connected wallet was detected. Please try again.',
+      });
+    }
+  };
+
   const handleMilestoneFunding = async () => {
     if (accounts.length > 0) {
       if (user?.balance?.usdc && user?.balance?.usdc >= amount) {
-        const wallet = await selector.wallet();
+        setLastChainOp('fund_schedule');
+        await onMilestoneFunded(projectId, index.toString(), amount);
       } else {
         toast({
           title: 'Insufficient balance',

@@ -34,6 +34,11 @@ export const GigsContainer = ({ isClient = false }) => {
             title: 'Project created successfully',
             description: 'Your project was created successfully.',
           };
+        case 'fund_schedule':
+          return {
+            title: 'Milestone funded',
+            description: 'The milestone was funded successfully',
+          };
         default:
           return {
             title: '',

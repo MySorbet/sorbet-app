@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ID } from '@/constant/constant';
 import { useLocalStorage } from '@/hooks';
+import { toYoctoNEAR } from '@/lib/helper';
 import { CreateContractType, OfferType } from '@/types';
 import { Transaction } from '@near-wallet-selector/core';
 import { CircleCheckBig } from 'lucide-react';
@@ -71,11 +72,6 @@ export const ContractContainer = ({
         });
       }
     }
-  };
-
-  const toYoctoNEAR = (amount: number) => {
-    const yoctoMultiplier = BigInt('1000000000000000000000000'); // 10^24
-    return (BigInt(amount) * yoctoMultiplier).toString();
   };
 
   const createOnchainContract = async (
