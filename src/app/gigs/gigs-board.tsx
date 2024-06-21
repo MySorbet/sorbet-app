@@ -3,15 +3,19 @@ import { GigsCard } from '@/app/gigs/gigs-card';
 import { GigsComms } from '@/app/gigs/gigs-comms';
 import { useAuth, useUpdateOfferStatus } from '@/hooks';
 import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
-import { OfferType } from '@/types';
+import { GigsContentType, OfferType } from '@/types';
 import { Loader } from 'lucide-react';
 import React, { useState } from 'react';
 
 export interface GigsBoardProps {
   isClient?: boolean;
+  gigsContentType: GigsContentType;
 }
 
-export const GigsBoard = ({ isClient = false }) => {
+export const GigsBoard = ({
+  isClient = false,
+  gigsContentType,
+}: GigsBoardProps) => {
   const [isCommsOpen, setIsCommsOpen] = React.useState(false);
   const { user: loggedInUser } = useAuth();
   const [currentOffer, setCurrentOffer] = React.useState<OfferType | undefined>(
@@ -24,8 +28,10 @@ export const GigsBoard = ({ isClient = false }) => {
     undefined
   );
 
-  const { isLoading: isFetchOffersLoading, data: offers } =
-    useFetchOffers(loggedInUser);
+  const { isLoading: isFetchOffersLoading, data: offers } = useFetchOffers(
+    loggedInUser,
+    gigsContentType
+  );
 
   const { mutate: updateOfferStatus } = useUpdateOfferStatus();
 

@@ -126,21 +126,23 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   const handleWidgetAdd = async (url: string, image: File | undefined) => {
+    console.log('url: ', url);
     setAddingWidget(true);
     setError(null);
     let widgetUrl: string = url;
 
     try {
       const type: WidgetType = parseWidgetTypeFromUrl(url);
-
+      console.log('adding ', type);
       if (type === WidgetType.Photo && image && image !== undefined) {
         const imageFormData = new FormData();
         imageFormData.append('file', image);
         imageFormData.append('fileType', 'image');
         imageFormData.append('destination', 'widgets');
         imageFormData.append('userId', '');
-
+        console.log('uploading widgets image...');
         const response = await uploadWidgetsImageAsync(imageFormData);
+        console.log('upload widgets image response: ', response);
         if (
           response.status === 'success' &&
           response.data &&
@@ -159,6 +161,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
       let widget: any;
       try {
+        console.log('getting widget content...');
         widget = await getWidgetContent({ url: widgetUrl, type });
       } catch (error) {
         toast({

@@ -4,13 +4,18 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { FormContainer } from './form-container';
+import { getUserByAccountId } from '@/api/user';
+import { Loading } from '@/components/common';
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
 import { useLoginWithEmail } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { randomBytes } from 'crypto';
 import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -19,6 +24,7 @@ const schema = z.object({
 });
 
 const SignInForm = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
   const { register, handleSubmit, control } = useForm({
     resolver: zodResolver(schema),
   });
@@ -27,10 +33,32 @@ const SignInForm = () => {
   });
 
   const router = useRouter();
-  const { user, accessToken } = useAuth();
+  const { toast } = useToast();
+  const [activeNearAccount, setActiveNearAccount] = useState<string | null>(
+    null
+  );
+  const [accountNotFound, setAccountNotFound] = useState<boolean>(false);
+  const { user, accessToken, loginWithWallet } = useAuth();
+  const {
+    modal: nearModal,
+    selector,
+    accountId,
+    accounts,
+  } = useWalletSelector();
 
   const { isPending: loginLoading, mutateAsync: loginWithEmail } =
     useLoginWithEmail();
+
+  const handleSignOut = async () => {
+    try {
+      const wallet = await selector.wallet();
+      await wallet.signOut();
+    } catch (err) {
+      console.log('Failed to sign out');
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (user && accessToken) {
       router.push('/');
@@ -38,13 +66,102 @@ const SignInForm = () => {
   }, [user, router]);
 
   const onSubmit = handleSubmit(async (data) => {
-    await loginWithEmail(data.email);
+    toast({
+      title: 'Try login with wallet',
+      description:
+        'Email login is not active yet. You can use the Connect Wallet option to login for now.',
+    });
   });
+
+  useEffect(() => {
+    const checkNearConnection = async () => {
+      if (accounts.length > 0) {
+        const activeAccount = accountId;
+        setActiveNearAccount(activeAccount);
+
+        if (activeAccount) {
+          const response = await getUserByAccountId(activeAccount);
+          if (response.status !== 'success') {
+            toast({
+              title: 'No account found',
+              description:
+                'No account found for the connected wallet, please signup first',
+              variant: 'destructive',
+            });
+            setAccountNotFound(true);
+            await handleSignOut();
+          }
+        }
+      }
+    };
+
+    checkNearConnection();
+  }, [selector, accountId]);
+
+  useEffect(() => {
+    const handleWalletLogin = async () => {
+      const urlHash = window.location.hash;
+      if (urlHash) {
+        const params = new URLSearchParams(urlHash.substring(1));
+        const accountId = params.get('accountId');
+        const signature = params.get('signature');
+        const publicKey = params.get('publicKey');
+
+        if (accountId && signature && publicKey) {
+          const response = await loginWithWallet(accountId);
+          if (response.status === 'success') {
+            setLoading(false);
+            router?.push('/');
+          } else {
+            toast({
+              title: 'Failed to login',
+              description: response.message,
+              variant: 'destructive',
+            });
+            setLoading(false);
+          }
+        }
+      }
+    };
+
+    handleWalletLogin();
+  }, [router]);
+
+  const handleWalletLogin = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    const challenge = randomBytes(32);
+    const message = 'Login with Sorbet';
+    await nearModal.show();
+
+    if (accounts.length > 0) {
+      const wallet = await selector.wallet();
+      if (wallet) {
+        const recipient = await wallet.getAccounts();
+        if (recipient.length > 0) {
+          await wallet.signMessage({
+            message,
+            recipient: recipient[0].accountId,
+            nonce: challenge,
+            callbackUrl: '',
+          });
+        } else {
+          toast({
+            title: 'No wallet accounts found',
+            description:
+              'Please make sure your wallet has accounts and is connected.',
+            variant: 'destructive',
+          });
+        }
+      }
+    }
+  };
 
   return (
     <FormContainer>
+      {isLoading && <Loading />}
       <h1 className='text-2xl font-semibold'>Sign In</h1>
-
       <form
         onSubmit={onSubmit}
         id='signin-form'
@@ -91,7 +208,10 @@ const SignInForm = () => {
               {loginLoading ? <Loader /> : 'Continue'}
             </Button>
             <p className='text-sm font-medium'>Or</p>
-            <Button className='bg-[#FFFFFF] border border-[#D6BBFB] text-[#573DF5] w-full gap-[6px] text-base font-semibold p-[10px] group hover:bg-[#573DF5] hover:text-white'>
+            <Button
+              className='bg-[#FFFFFF] border border-[#D6BBFB] text-[#573DF5] w-full gap-[6px] text-base font-semibold p-[10px] group hover:bg-[#573DF5] hover:text-white'
+              onClick={handleWalletLogin}
+            >
               <svg
                 width='21'
                 height='20'

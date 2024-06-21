@@ -11,12 +11,10 @@ export interface User {
   tags: string[];
   tempLocation: string;
   role: string;
-  nearWallet: string;
   city: string;
-  userType: string;
   balance?: {
-    usdc: number,
-    near: number
-    nearUsd: number
-  }
+    usdc: number;
+    near: number;
+    nearUsd: number;
+  };
 }

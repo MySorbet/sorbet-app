@@ -7,7 +7,12 @@ export const useUploadWidgetsImage = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: FormData) => await uploadWidgetsImageAsync(data),
+    mutationFn: async (data: FormData) => {
+      console.log('widget form data: ', data);
+      const res = await uploadWidgetsImageAsync(data);
+      console.log('res: ', res);
+      return res;
+    },
     onError: (error) => {
       console.error('ERROR:', error);
       toast({ title: 'Error', description: 'Failed to upload widget image' });

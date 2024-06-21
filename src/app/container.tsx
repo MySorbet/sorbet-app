@@ -1,6 +1,6 @@
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
-import { KnockProvider, KnockFeedProvider } from '@knocklabs/react';
+import { KnockFeedProvider, KnockProvider } from '@knocklabs/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
