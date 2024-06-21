@@ -4,10 +4,10 @@ import { ChatLayoutMinimal } from '@/app/gigs/chat';
 import { Message } from '@/app/gigs/chat/data';
 import {
   ContractContainer,
-  ContractOverview,
   ContractNotFound,
-  ContractPendingOffer,
+  ContractOverview,
   ContractPendingFreelancer,
+  ContractPendingOffer,
   ContractRejected,
 } from '@/app/gigs/contract';
 import { Spinner } from '@/components/common/spinner';
@@ -15,15 +15,15 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   DialogOverlay,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { OfferType } from '@/types';
+import { MilestoneType, OfferType } from '@/types';
 import {
-  MessageCircle as IconMessage,
   FileCheck2 as IconContract,
+  MessageCircle as IconMessage,
 } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -115,7 +115,11 @@ export const GigsComms = ({
           return <ContractRejected isClient={isClient} />;
         } else {
           return (
-            <ContractOverview contract={contractData} isClient={isClient} />
+            <ContractOverview
+              contract={contractData}
+              isClient={isClient}
+              milestones={contractData.milestones as MilestoneType[]}
+            />
           );
         }
       } else {

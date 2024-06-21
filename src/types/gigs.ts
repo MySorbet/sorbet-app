@@ -28,6 +28,13 @@ export interface OfferType {
   projectDescription: string;
 }
 
+export enum ContractMilestoneStatus {
+  FundingPending = 'FundingPending',
+  Active = 'Active',
+  InReview = 'InReview',
+  Approved = 'Approved',
+}
+
 export interface ContractType {
   id: string;
   name: string;
@@ -54,7 +61,7 @@ export interface MilestoneType {
   dateCreated: string;
   dateUpdated: string;
   amount: number;
-  status: string;
+  status: ContractMilestoneStatus;
 }
 
 export interface CreateOfferType {

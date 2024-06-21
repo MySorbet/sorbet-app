@@ -1,9 +1,5 @@
 import { updateContractStatus } from '@/api/gigs';
-import {
-  ContractClientMilestone,
-  ContractClientMilestoneFundingStatus,
-  ContractClientMilestoneStatus,
-} from '@/app/gigs/contract';
+import { ContractClientMilestone } from '@/app/gigs/contract';
 import { Spinner } from '@/components/common';
 import {
   AlertDialog,
@@ -153,39 +149,16 @@ export const ContractOverview = ({
       <div className='flex flex-col gap-3 mt-6 w-full'>
         {milestones && milestones.length > 0 && (
           <>
-            {milestones.map((milestone: MilestoneType) => (
+            {milestones.map((milestone: MilestoneType, index: number) => (
               <ContractClientMilestone
                 isApproved={contractApproved}
-                status={
-                  contractApproved
-                    ? ContractClientMilestoneStatus.Completed
-                    : ContractClientMilestoneStatus.PendingApproval
-                }
+                status={milestone.status}
                 title={milestone.name}
                 amount={milestone.amount}
-                fundingStatus={ContractClientMilestoneFundingStatus.pending}
-                isClient={isClient}
+                index={index}
               />
             ))}
           </>
-        )}
-        {(!milestones || milestones.length < 1) && (
-          <ContractClientMilestone
-            isApproved={contractApproved}
-            status={
-              contractApproved
-                ? ContractClientMilestoneStatus.FundsPending
-                : ContractClientMilestoneStatus.PendingApproval
-            }
-            title={`Fixed Price Contract`}
-            amount={contract.totalAmount}
-            fundingStatus={
-              contractApproved
-                ? ContractClientMilestoneFundingStatus.pending
-                : ContractClientMilestoneFundingStatus.funded
-            }
-            isClient={isClient}
-          />
         )}
       </div>
       <div className='w-full'>
