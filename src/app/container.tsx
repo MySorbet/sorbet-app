@@ -35,14 +35,7 @@ const Container: React.FC<Props> = ({ children }) => {
   if (appLoading) {
     return <Loading />;
   } else if (user && accessToken) {
-    return (
-      <KnockProvider
-        apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY || ''}
-        userId={user.id}
-      >
-        {children}
-      </KnockProvider>
-    );
+    return <>{children}</>;
   } else {
     return <Loading />;
   }

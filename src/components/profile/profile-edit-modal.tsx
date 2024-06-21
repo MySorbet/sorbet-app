@@ -1,6 +1,3 @@
-import { uploadProfileImageAsync } from '@/api/images';
-import { deleteProfileImageAsync } from '@/api/user';
-import { updateUser } from '@/api/user';
 import { InputLocation, InputSkills } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,12 +7,13 @@ import {
   DialogOverlay,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
-import { useAppDispatch } from '@/redux/hook';
-import { updateUserData } from '@/redux/userSlice';
+import {
+  useDeleteProfileImage,
+  useUploadProfileImage,
+  useUpdateUser,
+} from '@/hooks';
 import type { User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -37,44 +35,35 @@ type FormData = z.infer<typeof schema>;
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
-  handleModalVisisble: (open: boolean) => void;
+  handleModalVisible: (open: boolean) => void;
   user: User;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
-  handleModalVisisble,
+  handleModalVisible,
   user,
 }) => {
-  const dispatch = useAppDispatch();
-
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
   );
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
 
-  const updateProfileMutation = useMutation({
-    mutationFn: (userToUpdate: User) =>
-      updateUser(userToUpdate, userToUpdate.id),
-    onSuccess: (user: User) => {
-      dispatch(updateUserData(user));
-      toast({
-        title: 'Profile updated',
-        description: 'Your changes were saved successfully',
-      });
-    },
-    onError: (error: any) => {
-      alert(
-        'Unable to save changes to your profile due to an issue at our end, please try again soon.'
-      );
-    },
-    onSettled: () => {
-      setIsSubmitting(false);
-    },
-  });
+  const {
+    isPending: uploadProfileImagePending,
+    mutateAsync: uploadProfileImageAsync,
+    isError: uploadProfileImageError,
+  } = useUploadProfileImage();
+
+  const {
+    isPending: deleteProfileImagePending,
+    mutateAsync: deleteProfileImageAsync,
+    isError: deleteProfileImageError,
+  } = useDeleteProfileImage();
+
+  const { isPending: updateProfilePending, mutate: updateProfile } =
+    useUpdateUser();
 
   const {
     register,
@@ -94,12 +83,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   });
 
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-
     let userToUpdate: User = { ...user };
 
     if (user?.id && user?.profileImage != null && image === undefined) {
       await deleteProfileImageAsync(user?.id);
+
+      if (deleteProfileImageError) return;
+
       userToUpdate.profileImage = '';
     } else if (user?.id && image !== user?.profileImage && file !== undefined) {
       const imageFormData = new FormData();
@@ -109,21 +99,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       imageFormData.append('oldImageUrl', user?.profileImage);
       imageFormData.append('userId', user?.id);
 
-      const response = await uploadProfileImageAsync(imageFormData);
-      if (
-        response.status === 'success' &&
-        response.data &&
-        response.data.fileUrl
-      ) {
-        userToUpdate.profileImage = response.data.fileUrl;
-      } else {
-        toast({
-          title: 'Profile Image not updated',
-          description:
-            'Your profile image could not be saved due to an error. Rest of the details were still saved.',
-        });
-      }
+      await uploadProfileImageAsync({
+        imageFormData,
+        userToUpdate,
+      });
     }
+
+    if (uploadProfileImageError) return;
 
     if (user) {
       userToUpdate = {
@@ -135,7 +117,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         bio: data.bio,
       };
 
-      updateProfileMutation.mutate(userToUpdate);
+      updateProfile(userToUpdate);
+
+      handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
     }
@@ -171,9 +155,17 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   return (
-    <Dialog open={editModalVisible} onOpenChange={handleModalVisisble}>
+    <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogOverlay className='bg-black/80' />
-      <DialogContent className={isSubmitting ? 'opacity-50' : ''}>
+      <DialogContent
+        className={
+          updateProfilePending ||
+          deleteProfileImagePending ||
+          uploadProfileImagePending
+            ? 'opacity-50'
+            : ''
+        }
+      >
         {' '}
         <DialogHeader className='text-2xl font-semibold'>
           Edit Profile
@@ -331,9 +323,19 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Button
                   type='submit'
                   className='w-full bg-sorbet'
-                  disabled={isSubmitting}
+                  disabled={
+                    updateProfilePending ||
+                    deleteProfileImagePending ||
+                    uploadProfileImagePending
+                  }
                 >
-                  {isSubmitting ? <Loader /> : 'Save Changes'}
+                  {updateProfilePending ||
+                  deleteProfileImagePending ||
+                  uploadProfileImagePending ? (
+                    <Loader />
+                  ) : (
+                    'Save Changes'
+                  )}
                 </Button>
               </div>
             </div>

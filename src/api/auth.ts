@@ -1,7 +1,7 @@
-import { API_URL, runApi } from '@/utils';
-
-import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
+import { currentNetwork } from '@/lib/config';
 import { User } from '@/types';
+import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
+import { API_URL, runApi } from '@/utils';
 
 export const signUpAsync = async ({
   firstName,
@@ -47,5 +47,42 @@ export const fetchUserDetails = async (token: string) => {
   } catch (error) {
     console.error('Failed to fetch user details:', error);
     throw new Error('Error fetching user details');
+  }
+};
+
+export const checkIsAccountAvailable = async (username: string) => {
+  try {
+    if (!username) return;
+
+    const response = await fetch(currentNetwork.nodeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 'dontcare',
+        method: 'query',
+        params: {
+          request_type: 'view_account',
+          finality: 'final',
+          account_id: `${username}.${currentNetwork.fastAuth.accountIdSuffix}`,
+        },
+      }),
+    });
+    const data = await response.json();
+    if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
+      // Account is available
+      return true;
+    }
+
+    if (data?.result?.code_hash) {
+      // Account is taken
+      return false;
+    }
+  } catch (error: any) {
+    // Error in checking availabilty, retry
+    console.error('Error checking account availability:', error);
+    return false;
   }
 };

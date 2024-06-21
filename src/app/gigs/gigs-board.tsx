@@ -1,15 +1,11 @@
 import { GigsColumn } from './gigs-column';
-import {
-  getClientOffers,
-  getFreelancerOffers,
-  updateOfferStatus,
-} from '@/api/gigs';
 import { GigsCard } from '@/app/gigs/gigs-card';
 import { GigsComms } from '@/app/gigs/gigs-comms';
-import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
-import { FormattedResponse, OfferType } from '@/types';
-import React, { useEffect, useState } from 'react';
+import { useAuth, useUpdateOfferStatus } from '@/hooks';
+import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
+import { OfferType } from '@/types';
+import { Loader } from 'lucide-react';
+import React, { useState } from 'react';
 
 export interface GigsBoardProps {
   isClient?: boolean;
@@ -17,7 +13,6 @@ export interface GigsBoardProps {
 
 export const GigsBoard = ({ isClient = false }) => {
   const [isCommsOpen, setIsCommsOpen] = React.useState(false);
-  const [offers, setOffers] = React.useState([]);
   const { user: loggedInUser } = useAuth();
   const [currentOffer, setCurrentOffer] = React.useState<OfferType | undefined>(
     undefined
@@ -28,38 +23,11 @@ export const GigsBoard = ({ isClient = false }) => {
   const [clientUsername, setClientUsername] = useState<string | undefined>(
     undefined
   );
-  const { toast } = useToast();
 
-  const fetchOffers = async () => {
-    if (loggedInUser?.accountId) {
-      let response: FormattedResponse | undefined;
+  const { isLoading: isFetchOffersLoading, data: offers } =
+    useFetchOffers(loggedInUser);
 
-      switch (loggedInUser?.userType) {
-        case 'CLIENT':
-          response = await getClientOffers(loggedInUser?.accountId, 'Pending');
-          break;
-        case 'FREELANCER':
-          response = await getFreelancerOffers(
-            loggedInUser?.accountId,
-            'Pending'
-          );
-          break;
-      }
-
-      if (response && response.status === 'success') {
-        setOffers(response.data);
-      } else {
-        toast({
-          title: 'Unable to load offers',
-          description: 'Contact support if issue persists',
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchOffers();
-  }, []);
+  const { mutate: updateOfferStatus } = useUpdateOfferStatus();
 
   const handleCardClick = (offer: OfferType) => {
     setIsCommsOpen(true);
@@ -71,25 +39,14 @@ export const GigsBoard = ({ isClient = false }) => {
   };
 
   const afterContractSubmitted = () => {
-    fetchOffers();
+    // fetchOffers();
     // TODO: fetch active contracts
+    // After a contract is submitted, we can invalidate the query cache at the 'offers' key
   };
 
   const handleOfferReject = async () => {
-    if (currentOffer) {
-      if (confirm('Are you sure you want to reject this offer?')) {
-        await updateOfferStatus(currentOffer.id, 'Rejected');
-        toast({
-          title: 'Offer rejected',
-          description: 'The offer was rejected successfully',
-        });
-        setIsCommsOpen(false);
-        fetchOffers();
-      } else {
-        // Logic to handle cancellation of rejection
-        console.log('Rejection cancelled.');
-      }
-    }
+    updateOfferStatus({ currentOffer: currentOffer, status: 'rejected' });
+    setIsCommsOpen(false);
   };
 
   return (
@@ -108,6 +65,7 @@ export const GigsBoard = ({ isClient = false }) => {
           title={isClient ? 'Offers Sent' : 'Offers'}
           count={offers?.length || 0}
         >
+          {isFetchOffersLoading && <Loader />}
           {offers?.map((offer: OfferType) => (
             <div onClick={() => handleCardClick(offer)} key={offer.id}>
               <GigsCard

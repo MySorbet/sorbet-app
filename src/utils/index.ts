@@ -1,15 +1,15 @@
 'use client';
 
 import { FormattedResponse } from '../types';
-import axios from 'axios';
 import { config } from '@/lib/config';
+import axios from 'axios';
 
 export const API_URL = config.devApiUrl;
 
 export const getFormatedResponse = (res: any): FormattedResponse => {
   let response: FormattedResponse;
 
-  if ((res?.status === 200 || res?.status === 201)) {
+  if (res?.status === 200 || res?.status === 201) {
     response = {
       status: 'success',
       statusCode: res?.data?.statusCode || res?.status,
@@ -28,8 +28,13 @@ export const getFormatedResponse = (res: any): FormattedResponse => {
   return response;
 };
 
-
-export const runApi = async (type: string, url: string, reqBody?: any, headers?: any, includeAuth: boolean = false) => {
+export const runApi = async (
+  type: string,
+  url: string,
+  reqBody?: any,
+  headers?: any,
+  includeAuth: boolean = false
+) => {
   let apiReqHeader = { headers };
 
   if (includeAuth) {
@@ -60,4 +65,23 @@ export const runApi = async (type: string, url: string, reqBody?: any, headers?:
   } catch (error: any) {
     return getFormatedResponse(error.response);
   }
+};
+
+export const validateToken = (headers?: any, includeAuth: boolean = false) => {
+  let apiReqHeader = { headers };
+
+  if (includeAuth) {
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
+      apiReqHeader = {
+        ...apiReqHeader,
+        headers: {
+          ...apiReqHeader.headers,
+          Authorization: `Bearer ${accessToken.replace(/['"]+/g, '')}`,
+        },
+      };
+    }
+  }
+
+  return apiReqHeader;
 };

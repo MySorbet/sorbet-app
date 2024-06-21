@@ -1,27 +1,27 @@
+import { Spinner } from '../common';
 import { Widget } from './widget';
-import { uploadWidgetsImageAsync } from '@/api/images';
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/add-widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
-  deleteWidget,
-  getWidgetContent,
-  getWidgetsForUser,
-  updateWidget,
-  updateWidgetsBulk,
-} from '@/lib/service';
+  useDeleteWidget,
+  useGetWidgetContent,
+  useGetWidgetsForUser,
+  useUpdateWidgetsBulk,
+  useUploadWidgetsImage,
+} from '@/hooks';
 import {
   ExtendedWidgetLayout,
+  getWidgetDimensions,
   UpdateWidgetsBulkDto,
   WidgetDimensions,
   WidgetDto,
   WidgetSize,
   WidgetType,
-  getWidgetDimensions,
 } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -64,13 +64,20 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [animationStyles, setAnimationStyles] = useState<{
     [key: string]: { width: number; height: number };
   }>({});
-
   const { toast } = useToast();
+
+  const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
+  const { mutateAsync: updateWidgetsBulk } = useUpdateWidgetsBulk();
+  const { mutateAsync: deleteWidget } = useDeleteWidget();
+  const { mutateAsync: getWidgetContent } = useGetWidgetContent();
+  const { data: userWidgetData, isPending: isUserWidgetPending } =
+    useGetWidgetsForUser(userId);
 
   const generateLayout = useCallback(async (): Promise<
     ExtendedWidgetLayout[]
   > => {
-    const userWidgets: WidgetDto[] = await getWidgetsForUser(userId);
+    const userWidgets: WidgetDto[] = userWidgetData;
+
     if (!userWidgets || userWidgets.length < 1) return [];
 
     return userWidgets.map((widget: WidgetDto, i: number) => ({
@@ -87,7 +94,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       redirectUrl: widget.redirectUrl,
       size: WidgetSize[widget.size as keyof typeof WidgetSize],
     }));
-  }, [userId, editMode]);
+  }, [userId, editMode, userWidgetData]);
 
   const handleWidgetResize = (
     key: string,
@@ -377,6 +384,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
+
+  if (isUserWidgetPending) return <Spinner />;
 
   return (
     <>
