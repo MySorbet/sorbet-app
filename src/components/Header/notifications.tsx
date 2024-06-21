@@ -2,8 +2,8 @@ import './notifications.css';
 import { NotificationToasts } from '@/components/notifications';
 import {
   KnockFeedProvider,
-  NotificationIconButton,
   NotificationFeedPopover,
+  NotificationIconButton,
 } from '@knocklabs/react';
 import React, { useRef, useState } from 'react';
 
