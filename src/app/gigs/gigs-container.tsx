@@ -61,7 +61,7 @@ export const GigsContainer = ({ isClient = false }) => {
     if (transactionHashes && !errorCode && !errorMessage) {
       const { title, description } = getSuccessNotification();
       toast({ title, description });
-    } else if (transactionHashes && errorCode && errorMessage) {
+    } else if (errorCode && errorMessage) {
       toast({
         title: 'Transaction failed',
         description: `Transaction failed with error: ${decodeURIComponent(

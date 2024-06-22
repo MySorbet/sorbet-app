@@ -118,7 +118,7 @@ export const ContractContainer = ({
                     value: toYoctoNEAR(milestone.amount),
                   },
                   gas: '300000000000000', // gas amount
-                  deposit: '100000000000000', // 0.1 NEAR deposit
+                  deposit: '100000000000000000000000', // 0.1 NEAR deposit
                 },
               },
             ],
