@@ -20,3 +20,15 @@ export const useLoginWithEmail = () => {
     },
   });
 };
+
+export const useLoginWithEmail2 = () => {
+  const { loginWithEmail } = useAuth();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (email: string) => await loginWithEmail(email),
+    onError: (error: any) => {
+      toast({ title: 'Authentication error', description: error.message });
+    },
+  });
+};

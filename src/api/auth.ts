@@ -2,6 +2,7 @@ import { currentNetwork } from '@/lib/config';
 import { User } from '@/types';
 import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
 import { API_URL, runApi } from '@/utils';
+import axios from 'axios';
 
 export const signUpAsync = async ({
   firstName,
@@ -19,6 +20,16 @@ export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
   const reqBody = { email };
   const res = await runApi('POST', `${API_URL}/auth/signin/email`, reqBody);
   return res;
+};
+
+export const signInAsync2 = async ({ email }: SignInWithEmailTypes) => {
+  try {
+    const reqBody = { email };
+    const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };
 
 // [POST] /api/auth/signin
