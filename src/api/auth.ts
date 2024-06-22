@@ -16,6 +16,22 @@ export const signUpAsync = async ({
   return res;
 };
 
+export const signUpAsync2 = async ({
+  firstName,
+  lastName,
+  email,
+  accountId,
+  userType,
+}: SignUpWithEmailTypes) => {
+  try {
+    const reqBody = { firstName, lastName, email, accountId, userType };
+    const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
   const reqBody = { email };
   const res = await runApi('POST', `${API_URL}/auth/signin/email`, reqBody);
