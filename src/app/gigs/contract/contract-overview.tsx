@@ -157,6 +157,7 @@ export const ContractOverview = ({
                 amount={milestone.amount}
                 index={index}
                 projectId={contract.id}
+                isClient={isClient}
               />
             ))}
           </>

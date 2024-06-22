@@ -137,7 +137,11 @@ export const GigsComms = ({
           return <ContractRejected isClient={isClient} />;
         } else {
           return (
-            <ContractOverview contract={contractData} isClient={isClient} />
+            <ContractOverview
+              contract={contractData}
+              isClient={isClient}
+              milestones={contractData.milestones as MilestoneType[]}
+            />
           );
         }
       } else {
