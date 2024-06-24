@@ -1,6 +1,7 @@
 import { CreateContractType, CreateOfferType, User } from '@/types';
 import { FindContractsType } from '@/types';
-import { API_URL, runApi } from '@/utils';
+import { API_URL, runApi, validateToken } from '@/utils';
+import axios from 'axios';
 
 export const findContractsWithFreelancer = async ({
   freelancerUsername,
@@ -119,6 +120,22 @@ export const updateOfferStatus = async (offerId: string, status: string) => {
     true
   );
   return res;
+};
+
+export const updateOfferStatus2 = async (offerId: string, status: string) => {
+  const reqBody = { status };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/offers/status/${offerId}`,
+      reqBody,
+      apiReqHeaders
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };
 
 export const createOffer = async (body: CreateOfferType) => {
