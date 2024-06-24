@@ -1,4 +1,4 @@
-import { getContractForOffer } from '@/api/gigs';
+import { getContractForOffer, getContractForOffer2 } from '@/api/gigs';
 import { ActiveTab } from '@/app/gigs/gigs-comms';
 import { useToast } from '@/components/ui/use-toast';
 import { useQuery } from '@tanstack/react-query';
@@ -30,6 +30,18 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
       }
     },
     // Query function will only run whenm the isOpen and activeTab are true and the activeTab is the Contract tab
+    enabled: isOpen && activeTab === ActiveTab.Contract,
+  });
+};
+
+export const useGetContractForOffer2 = (data: useGetContractForOfferParams) => {
+  const { currentOfferId, isOpen, activeTab } = data;
+
+  return useQuery({
+    queryKey: ['contractForOffer'],
+    queryFn: async () => {
+      return await getContractForOffer2(currentOfferId);
+    },
     enabled: isOpen && activeTab === ActiveTab.Contract,
   });
 };

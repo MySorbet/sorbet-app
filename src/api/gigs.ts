@@ -95,6 +95,19 @@ export const getContractForOffer = async (offerId: string) => {
   return res;
 };
 
+export const getContractForOffer2 = async (offerId: string) => {
+  const apiReqHeaders = validateToken({}, true);
+  try {
+    const res = await axios.get(
+      `${API_URL}/contracts/forOffer/${offerId}`,
+      apiReqHeaders
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const updateContractStatus = async (
   contractId: string,
   status: string
