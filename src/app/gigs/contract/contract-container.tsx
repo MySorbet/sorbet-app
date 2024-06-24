@@ -115,7 +115,7 @@ export const ContractContainer = ({
                     project_id: projectId,
                     short_code: `m${index + 1}`,
                     description: milestone.name,
-                    value: toYoctoNEAR(milestone.amount),
+                    value: toYoctoNEAR(milestone.amount.toFixed()),
                   },
                   gas: '300000000000000', // gas amount
                   deposit: '100000000000000000000000', // 0.1 NEAR deposit

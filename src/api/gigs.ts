@@ -109,6 +109,21 @@ export const updateContractStatus = async (
   return res;
 };
 
+export const updateMilestoneStatus = async (
+  milestoneId: string,
+  status: string
+) => {
+  const reqBody = { status };
+  const res = await runApi(
+    'PATCH',
+    `${API_URL}/milestones/${milestoneId}/status`,
+    reqBody,
+    {},
+    true
+  );
+  return res;
+};
+
 export const updateOfferStatus = async (offerId: string, status: string) => {
   const reqBody = { status };
   const res = await runApi(

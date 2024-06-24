@@ -158,6 +158,7 @@ export const ContractOverview = ({
                 index={index}
                 projectId={contract.id}
                 isClient={isClient}
+                milestoneId={milestone.id}
               />
             ))}
           </>

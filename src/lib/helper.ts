@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export function getFromLocalStorage(key: string): string | null {
   if (typeof window !== 'undefined') {
     return window.localStorage.getItem(key);
@@ -12,7 +14,6 @@ export function getFromSessionStorage(key: string): string | null {
   return null;
 }
 
-export const toYoctoNEAR = (amount: number) => {
-  const yoctoMultiplier = BigInt('1000000000000000000000000'); // 10^24
-  return (BigInt(amount) * yoctoMultiplier).toString();
+export const toYoctoNEAR = (amount: string): string => {
+  return new BigNumber(amount).multipliedBy('1e24').toString();
 };
