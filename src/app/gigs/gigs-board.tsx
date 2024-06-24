@@ -8,14 +8,10 @@ import { Loader } from 'lucide-react';
 import React, { useState } from 'react';
 
 export interface GigsBoardProps {
-  isClient?: boolean;
   gigsContentType: GigsContentType;
 }
 
-export const GigsBoard = ({
-  isClient = false,
-  gigsContentType,
-}: GigsBoardProps) => {
+export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
   const [isCommsOpen, setIsCommsOpen] = React.useState(false);
   const { user: loggedInUser } = useAuth();
   const [currentOffer, setCurrentOffer] = React.useState<OfferType | undefined>(
@@ -61,14 +57,18 @@ export const GigsBoard = ({
         <GigsComms
           isOpen={isCommsOpen}
           onOpenChange={onGigsCommsOpenChange}
-          isClient={isClient}
+          isClient={gigsContentType === GigsContentType.Sent}
           currentOffer={currentOffer}
           handleRejectOffer={handleOfferReject}
           afterContractSubmitted={afterContractSubmitted}
           currentOfferId={currentOffer?.id}
         />
         <GigsColumn
-          title={isClient ? 'Offers Sent' : 'Offers'}
+          title={
+            gigsContentType === GigsContentType.Sent
+              ? 'Offers Sent'
+              : 'Offers Received'
+          }
           count={offers?.length || 0}
         >
           {isFetchOffersLoading && <Loader />}

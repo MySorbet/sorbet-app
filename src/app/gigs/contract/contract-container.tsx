@@ -2,13 +2,19 @@ import { createContract, updateOfferStatus } from '@/api/gigs';
 import {
   ContractFixedPrice,
   ContractFixedPriceData,
+  ContractMilestone,
   ContractMilestones,
   ContractMilestonesFormData,
 } from '@/app/gigs/contract';
+import { useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
+import { CONTRACT_ID } from '@/constant/constant';
+import { useLocalStorage } from '@/hooks';
+import { toYoctoNEAR } from '@/lib/helper';
 import { CreateContractType, OfferType } from '@/types';
+import { Transaction } from '@near-wallet-selector/core';
 import { CircleCheckBig } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -26,7 +32,11 @@ export const ContractContainer = ({
   const [tab, setTab] = useState<string>('milestones');
   const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
   const { toast } = useToast();
-
+  const { selector, accounts } = useWalletSelector();
+  const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
+    'lastChainOp',
+    ''
+  );
   const onMilestonesFormSubmit = async (
     formData: ContractMilestonesFormData
   ) => {
@@ -46,7 +56,11 @@ export const ContractContainer = ({
 
       const response = await createContract(reqBody);
       if (response && response.status === 'success') {
-        // await updateOfferStatus(currentOffer.id, 'Accepted');
+        await createOnchainContract(
+          response.data?.id,
+          currentOffer.username,
+          formData.milestones
+        );
         setIsFormSubmitted(true);
         if (afterContractSubmited) {
           afterContractSubmited();
@@ -57,6 +71,73 @@ export const ContractContainer = ({
           description: 'Something went wrong, please try again',
         });
       }
+    }
+  };
+
+  const createOnchainContract = async (
+    projectId: string,
+    clientAccountId: string,
+    milestones?: ContractMilestone[]
+  ) => {
+    if (accounts.length > 0) {
+      setLastChainOp('create_project');
+      const transactions: Array<Transaction> = [];
+      transactions.push({
+        signerId: accounts[0].accountId,
+        receiverId: CONTRACT_ID,
+        actions: [
+          {
+            type: 'FunctionCall',
+            params: {
+              methodName: 'create_project',
+              args: {
+                project_id: projectId,
+                client_id: clientAccountId,
+              },
+              gas: '300000000000000', // gas amount
+              deposit: '0', // No deposit needed for this function call
+            },
+          },
+        ],
+      });
+
+      if (milestones) {
+        milestones.forEach((milestone: ContractMilestone, index: number) => {
+          transactions.push({
+            signerId: accounts[0].accountId,
+            receiverId: CONTRACT_ID,
+            actions: [
+              {
+                type: 'FunctionCall',
+                params: {
+                  methodName: 'add_schedule',
+                  args: {
+                    project_id: projectId,
+                    short_code: `m${index + 1}`,
+                    description: milestone.name,
+                    value: toYoctoNEAR(milestone.amount.toFixed()),
+                  },
+                  gas: '300000000000000', // gas amount
+                  deposit: '100000000000000000000000', // 0.1 NEAR deposit
+                },
+              },
+            ],
+          });
+        });
+      }
+
+      const wallet = await selector.wallet();
+      return await wallet
+        .signAndSendTransactions({ transactions })
+        .catch((err) => {
+          toast({
+            title: 'Transaction Failed',
+            description: 'Failed to create project on the NEAR blockchain.',
+            variant: 'destructive',
+          });
+          console.error('Failed to create project', err);
+          throw err;
+        });
     }
   };
 
@@ -72,7 +153,7 @@ export const ContractContainer = ({
 
       const response = await createContract(reqBody);
       if (response && response.status === 'success') {
-        // await updateOfferStatus(currentOffer.id, 'Accepted');
+        await createOnchainContract(response.data?.id, currentOffer.username);
         setIsFormSubmitted(true);
         if (afterContractSubmited) {
           afterContractSubmited();
