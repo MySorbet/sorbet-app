@@ -130,6 +130,23 @@ export const updateWidgetsBulk = async (
   }
 };
 
+export const updateWidgetsBulk2 = async (
+  widgetLayouts: UpdateWidgetsBulkDto[]
+) => {
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.patch(
+      `${config.devApiUrl}/widgets/bulk-update`,
+      widgetLayouts,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const updateWidget = async (
   widgetId: string,
   widgetLayout: ExtendedWidgetLayout,
