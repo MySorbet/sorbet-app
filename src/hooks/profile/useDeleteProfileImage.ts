@@ -28,12 +28,7 @@ export const useDeleteProfileImage2 = () => {
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      try {
-        const response = await deleteProfileImageAsync2(userId);
-        return response;
-      } catch (error: any) {
-        throw new Error('Profile image not deleted');
-      }
+      return await deleteProfileImageAsync2(userId);
     },
     onError: (error: any) => {
       toast({
