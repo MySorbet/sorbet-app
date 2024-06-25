@@ -1,4 +1,4 @@
-import { deleteProfileImageAsync } from '@/api/user';
+import { deleteProfileImageAsync, deleteProfileImageAsync2 } from '@/api/user';
 import { useToast } from '@/components/ui/use-toast';
 import { useMutation } from '@tanstack/react-query';
 
@@ -18,6 +18,27 @@ export const useDeleteProfileImage = () => {
       toast({
         title: 'Profile Image not deleted',
         description: 'Your profile image could not be deleted due to an error.',
+      });
+    },
+  });
+};
+
+export const useDeleteProfileImage2 = () => {
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      try {
+        const response = await deleteProfileImageAsync2(userId);
+        return response;
+      } catch (error: any) {
+        throw new Error('Profile image not deleted');
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Profile image not deleted',
+        description: 'Your profile image could not be deleted due to an error',
       });
     },
   });
