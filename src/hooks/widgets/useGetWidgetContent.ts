@@ -13,12 +13,8 @@ export const useGetWidgetContent = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: GetWidgetContentParams) => {
-      console.log('get widget content data: ', data);
-      const res = await getWidgetContent({ url: data.url, type: data.type });
-      console.log('get widget content result: ', res);
-      return res;
-    },
+    mutationFn: async (data: GetWidgetContentParams) =>
+      await getWidgetContent({ url: data.url, type: data.type }),
     onError: (error) => {
       toast({ title: 'Error', description: 'Failed to fetch widget content' });
     },

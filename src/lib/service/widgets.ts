@@ -195,6 +195,22 @@ export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
   }
 };
 
+export const getDribbleShot2 = async ({ url }: GetDribbleShotType) => {
+  const body: GetDribbleShotType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/dribbble`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
   const response = await runApi(
@@ -208,6 +224,22 @@ export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getBehanceItem2 = async ({ url }: GetBehanceItemType) => {
+  const body: GetBehanceItemType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = axios.post(
+      `${config.devApiUrl}/widgets/behance`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 
@@ -229,6 +261,24 @@ export const getMediumArticleMetadata = async ({
   }
 };
 
+export const getMediumArticleMetadata2 = async ({
+  url,
+}: GetMediumArticleType) => {
+  const body: GetMediumArticleType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/medium`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
   const body: GetYouTubeVideoType = { url };
   const response = await runApi(
@@ -242,6 +292,24 @@ export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getYouTubeVideoMetadata2 = async ({
+  url,
+}: GetYouTubeVideoType) => {
+  const body: GetYouTubeVideoType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/youtube`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 
@@ -261,6 +329,22 @@ export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
   }
 };
 
+export const getSubstackMetadata2 = async ({ url }: GetSubstackArticleType) => {
+  const body: GetSubstackArticleType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/substack`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
   const response = await runApi(
@@ -274,6 +358,22 @@ export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getSpotifyAlbumDetails2 = async ({ url }: GetSpotifyType) => {
+  const body: GetSpotifyType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/spotify/album`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 
@@ -293,6 +393,22 @@ export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
   }
 };
 
+export const getSpotifySongDetails2 = async ({ url }: GetSpotifyType) => {
+  const body: GetSpotifyType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/spotify/song`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
   const response = await runApi(
@@ -306,6 +422,24 @@ export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getSoundcloudTrackDetails2 = async ({
+  url,
+}: GetSoundcloudType) => {
+  const body: GetSoundcloudType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/soundcloud`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 
@@ -327,6 +461,24 @@ export const getInstagramProfileMetadata = async ({
   }
 };
 
+export const getInstagramProfileMetadata2 = async ({
+  url,
+}: GetInstagramType) => {
+  const body: GetInstagramType = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/instagram`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
   const body: GetPhotoWidget = { url };
   const response = await runApi(
@@ -340,6 +492,22 @@ export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getPhotoWidget2 = async ({ url }: GetPhotoWidget) => {
+  const body: GetPhotoWidget = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/photo`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
 
@@ -359,6 +527,22 @@ export const getGithubProfile = async ({ url }: GetGithubWidget) => {
   }
 };
 
+export const getGithubProfile2 = async ({ url }: GetGithubWidget) => {
+  const body: GetGithubWidget = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/github`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
   const body: GetTwitterWidget = { url };
   const response = await runApi(
@@ -372,5 +556,21 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const getTwitterProfile2 = async ({ url }: GetTwitterWidget) => {
+  const body: GetTwitterWidget = { url };
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/twitter`,
+      body,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
 };
