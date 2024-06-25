@@ -1,4 +1,4 @@
-import { updateOfferStatus, updateOfferStatus2 } from '@/api/gigs';
+import { updateOfferStatus } from '@/api/gigs';
 import { useToast } from '@/components/ui/use-toast';
 import { OfferType } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -33,37 +33,6 @@ export const useUpdateOfferStatus = () => {
     },
     onError: (error: any) => {
       toast({ title: 'Failed to update offer.', description: error.message });
-    },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ['offers'] }),
-  });
-};
-
-export const useUpdateOfferStatus2 = () => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: updateOfferStatusParams) => {
-      const { currentOffer, status } = data;
-
-      if (currentOffer) {
-        if (confirm('Are you sure you want to update this offer?')) {
-          try {
-            await updateOfferStatus2(currentOffer.id, status);
-            toast({
-              title: 'Offer rejected',
-              description: 'The offer was rejected successfully',
-            });
-          } catch (error: any) {
-            throw new Error('Failed to reject offer');
-          }
-        }
-      } else {
-        throw new Error('Offer not found');
-      }
-    },
-    onError: (error: any) => {
-      toast({ title: 'Failed to update offer', description: error.message });
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['offers'] }),
   });

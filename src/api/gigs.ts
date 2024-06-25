@@ -119,18 +119,6 @@ export const updateContractStatus = async (
 
 export const updateOfferStatus = async (offerId: string, status: string) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/offers/status/${offerId}`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
-};
-
-export const updateOfferStatus2 = async (offerId: string, status: string) => {
-  const reqBody = { status };
   const apiReqHeaders = validateToken({}, true);
 
   try {
@@ -139,7 +127,7 @@ export const updateOfferStatus2 = async (offerId: string, status: string) => {
       reqBody,
       apiReqHeaders
     );
-    return res.data;
+    return getFormatedResponse(res);
   } catch (error: any) {
     throw new Error(error.message);
   }
