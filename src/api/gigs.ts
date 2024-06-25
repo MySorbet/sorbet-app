@@ -1,6 +1,6 @@
 import { CreateContractType, CreateOfferType, User } from '@/types';
 import { FindContractsType } from '@/types';
-import { API_URL, runApi, validateToken } from '@/utils';
+import { API_URL, getFormatedResponse, runApi, validateToken } from '@/utils';
 import axios from 'axios';
 
 export const findContractsWithFreelancer = async ({
@@ -23,21 +23,6 @@ export const getFreelancerOffers = async (
   status?: string
 ) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
-};
-
-export const getFreelancerOffers2 = async (
-  freelancerUserId: string,
-  status?: string
-) => {
-  const queryParams = status ? `?status=${status}` : '';
   const apiReqHeaders = validateToken({}, true);
 
   try {
@@ -45,25 +30,13 @@ export const getFreelancerOffers2 = async (
       `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
       apiReqHeaders
     );
-    return res;
+    return getFormatedResponse(res);
   } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
 export const getClientOffers = async (clientId: string, status?: string) => {
-  const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
-};
-
-export const getClilentOffers2 = async (clientId: string, status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
   const apiReqHeaders = validateToken({}, true);
 
@@ -72,7 +45,7 @@ export const getClilentOffers2 = async (clientId: string, status?: string) => {
       `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
       apiReqHeaders
     );
-    return res;
+    return getFormatedResponse(res);
   } catch (error: any) {
     throw new Error(error.message);
   }
