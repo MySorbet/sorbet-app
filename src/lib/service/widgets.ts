@@ -97,6 +97,22 @@ export const getWidgetsForUser = async (userId: string) => {
   }
 };
 
+export const getWidgetsForUser2 = async (userId: string) => {
+  if (userId !== null) {
+    const apiReqHeaders = validateToken({}, true);
+
+    try {
+      const response = await axios.get(
+        `${config.devApiUrl}/widgets/user/${userId}`,
+        apiReqHeaders
+      );
+      return response;
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+};
+
 export const updateWidgetsBulk = async (
   widgetLayouts: UpdateWidgetsBulkDto[]
 ) => {
