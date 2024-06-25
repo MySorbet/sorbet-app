@@ -16,7 +16,8 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { runApi } from '@/utils';
+import { runApi, validateToken } from '@/utils';
+import axios from 'axios';
 
 export const getWidgetContent = async ({
   url,
@@ -161,6 +162,20 @@ export const deleteWidget = async (id: string) => {
     return response.data;
   } else {
     throw new Error(`Error ${response.status}: ${response.message}`);
+  }
+};
+
+export const deleteWidget2 = async (id: string) => {
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const response = await axios.delete(
+      `${config.devApiUrl}/widgets/${id}`,
+      apiReqHeaders
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(`Error ${error.status}: ${error.message}`);
   }
 };
 
