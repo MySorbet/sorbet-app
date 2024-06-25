@@ -90,25 +90,13 @@ export const getClientFreelancerOffers = async (
 };
 
 export const getContractForOffer = async (offerId: string) => {
-  console.log('offerId', offerId);
-  const res = await runApi(
-    'GET',
-    `${API_URL}/contracts/forOffer/${offerId}`,
-    {},
-    {},
-    true
-  );
-  return res;
-};
-
-export const getContractForOffer2 = async (offerId: string) => {
   const apiReqHeaders = validateToken({}, true);
   try {
     const res = await axios.get(
       `${API_URL}/contracts/forOffer/${offerId}`,
       apiReqHeaders
     );
-    return res.data;
+    return getFormatedResponse(res);
   } catch (error: any) {
     throw new Error(error.message);
   }
