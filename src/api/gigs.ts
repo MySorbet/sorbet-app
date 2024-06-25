@@ -33,6 +33,24 @@ export const getFreelancerOffers = async (
   return res;
 };
 
+export const getFreelancerOffers2 = async (
+  freelancerUserId: string,
+  status?: string
+) => {
+  const queryParams = status ? `?status=${status}` : '';
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
+      apiReqHeaders
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getClientOffers = async (clientId: string, status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
   const res = await runApi(
@@ -43,6 +61,21 @@ export const getClientOffers = async (clientId: string, status?: string) => {
     true
   );
   return res;
+};
+
+export const getClilentOffers2 = async (clientId: string, status?: string) => {
+  const queryParams = status ? `?status=${status}` : '';
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
+      apiReqHeaders
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };
 
 export const createContract = async (body: CreateContractType) => {
