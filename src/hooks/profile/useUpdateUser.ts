@@ -1,4 +1,4 @@
-import { updateUser } from '@/api/user';
+import { updateUser, updateUser2 } from '@/api/user';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
@@ -17,6 +17,34 @@ export const useUpdateUser = () => {
         throw new Error('Failed to update user profile.');
       }
       return response;
+    },
+    onSuccess: (user: User) => {
+      dispatch(updateUserData(user));
+      toast({
+        title: 'Profile updated',
+        description: 'Your changes were saved successfully.',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'User profile failed to update.',
+        description:
+          'Your profile could not be saved. If the issue persists, please contact support.',
+      });
+    },
+    onSettled: () => {
+      // Request complete.
+    },
+  });
+};
+
+export const useUpdateUser2 = () => {
+  const dispatch = useAppDispatch();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async (userToUpdate: User) => {
+      return await updateUser2(userToUpdate, userToUpdate.id);
     },
     onSuccess: (user: User) => {
       dispatch(updateUserData(user));

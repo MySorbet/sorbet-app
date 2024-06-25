@@ -58,6 +58,21 @@ export const updateUser = async (userToUpdate: User, userId: string) => {
   return response.data;
 };
 
+export const updateUser2 = async (userToUpdate: User, userId: string) => {
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/users/${userId}`,
+      userToUpdate,
+      apiReqHeader
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
 export const getTransactions = async (
   userId: string,
   currentPage: number = 1,
