@@ -67,7 +67,7 @@ export const updateUser2 = async (userToUpdate: User, userId: string) => {
       userToUpdate,
       apiReqHeader
     );
-    return response.data;
+    return response;
   } catch (error: any) {
     throw new Error(error.message);
   }
