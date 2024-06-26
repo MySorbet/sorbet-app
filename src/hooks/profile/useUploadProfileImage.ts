@@ -16,11 +16,7 @@ export const useUploadProfileImage = () => {
       const { imageFormData, userToUpdate } = data;
 
       const response = await uploadProfileImageAsync(imageFormData);
-      if (
-        response.status === 'success' &&
-        response.data &&
-        response.data.fileUrl
-      ) {
+      if (response.data && response.data.fileUrl) {
         userToUpdate.profileImage = response.data.fileUrl;
       } else {
         throw new Error('Profile Image not updated');

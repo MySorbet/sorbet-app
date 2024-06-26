@@ -2,11 +2,6 @@ import { API_URL, runApi, validateToken } from '@/utils';
 import axios from 'axios';
 
 export const uploadProfileImageAsync = async (data: FormData) => {
-  const res = await runApi('POST', `${API_URL}/images/upload`, data, {}, true);
-  return res;
-};
-
-export const uploadProfileImageAsync2 = async (data: FormData) => {
   const apiReqHeader = validateToken({}, true);
   try {
     const response = await axios.post(
@@ -17,7 +12,7 @@ export const uploadProfileImageAsync2 = async (data: FormData) => {
 
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
