@@ -14,7 +14,7 @@ export const signUpAsync = async ({
   try {
     const reqBody = { firstName, lastName, email, accountId, userType };
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
-    return getFormatedResponse(res);
+    return res;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -24,7 +24,7 @@ export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
   try {
     const reqBody = { email };
     const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
-    return getFormatedResponse(res);
+    return res;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -59,7 +59,7 @@ export const fetchUserDetails = async (token: string) => {
   }
 };
 
-export const checkIsAccountAvailable = async (username: string) => {
+export const ftAvailable = async (username: string) => {
   try {
     if (!username) return;
 
