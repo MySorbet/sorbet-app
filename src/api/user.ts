@@ -42,12 +42,6 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
 };
 
 export const updateUser = async (userToUpdate: User, userId: string) => {
-  const url = `${API_URL}/users/${userId}`;
-  const response = await runApi('PATCH', url, userToUpdate, undefined, true);
-  return response.data;
-};
-
-export const updateUser2 = async (userToUpdate: User, userId: string) => {
   const apiReqHeader = validateToken({}, true);
 
   try {
@@ -58,7 +52,7 @@ export const updateUser2 = async (userToUpdate: User, userId: string) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
