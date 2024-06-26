@@ -10,7 +10,10 @@ export const useUploadWidgetsImage = () => {
     mutationFn: async (data: FormData) => await uploadWidgetsImageAsync(data),
     onError: (error) => {
       console.error('ERROR:', error);
-      toast({ title: 'Error', description: 'Failed to upload widget image' });
+      toast({
+        title: 'Failed to upload widget image',
+        description: error.message,
+      });
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['widgets'] }),
   });
