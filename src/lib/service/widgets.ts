@@ -89,7 +89,7 @@ export const getWidgetsForUser = async (userId: string) => {
         `${config.devApiUrl}/widgets/user/${userId}`,
         apiReqHeaders
       );
-      return response;
+      return response.data;
     } catch (error: any) {
       throw new Error(error.response.data.message);
     }

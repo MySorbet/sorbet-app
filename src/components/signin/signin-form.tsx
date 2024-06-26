@@ -66,11 +66,12 @@ const SignInForm = () => {
   }, [user, router]);
 
   const onSubmit = handleSubmit(async (data) => {
-    toast({
-      title: 'Try login with wallet',
-      description:
-        'Email login is not active yet. You can use the Connect Wallet option to login for now.',
-    });
+    // toast({
+    //   title: 'Try login with wallet',
+    //   description:
+    //     'Email login is not active yet. You can use the Connect Wallet option to login for now.',
+    // });
+    await loginWithEmail(data.email);
   });
 
   useEffect(() => {
