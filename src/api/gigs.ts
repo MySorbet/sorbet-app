@@ -98,7 +98,7 @@ export const getContractForOffer = async (offerId: string) => {
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 

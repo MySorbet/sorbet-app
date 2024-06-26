@@ -28,7 +28,7 @@ export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
     const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -94,6 +94,6 @@ export const checkIsAccountAvailable = async (username: string) => {
   } catch (error: any) {
     // Error in checking availabilty, retry
     // console.error('Error checking account availability:', error)
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
