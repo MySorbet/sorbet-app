@@ -96,7 +96,7 @@ export const getContractForOffer = async (offerId: string) => {
       `${API_URL}/contracts/forOffer/${offerId}`,
       apiReqHeaders
     );
-    return getFormatedResponse(res);
+    return res;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -127,9 +127,9 @@ export const updateOfferStatus = async (offerId: string, status: string) => {
       reqBody,
       apiReqHeaders
     );
-    return getFormatedResponse(res);
+    return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error('Failed to reject offer');
   }
 };
 
