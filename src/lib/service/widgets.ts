@@ -81,23 +81,6 @@ export const getWidgetsByUsername = async (username: string) => {
 };
 
 export const getWidgetsForUser = async (userId: string) => {
-  if (userId != null) {
-    const response = await runApi(
-      'GET',
-      `${config.devApiUrl}/widgets/user/${userId}`,
-      {},
-      {},
-      true
-    );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return response.data;
-    } else {
-      throw new Error(`Error ${response?.status}: ${response.data?.message}`);
-    }
-  }
-};
-
-export const getWidgetsForUser2 = async (userId: string) => {
   if (userId !== null) {
     const apiReqHeaders = validateToken({}, true);
 
@@ -108,8 +91,10 @@ export const getWidgetsForUser2 = async (userId: string) => {
       );
       return response;
     } catch (error: any) {
-      throw new Error(error.message);
+      throw new Error(error.response.data.message);
     }
+  } else {
+    throw new Error('No user found');
   }
 };
 
