@@ -14,17 +14,6 @@ export const getUserFromUserId = async (userId: string) => {
 };
 
 export const deleteProfileImageAsync = async (userId: string) => {
-  const res = await runApi(
-    'DELETE',
-    `${API_URL}/images/delete/${userId}`,
-    {},
-    {},
-    true
-  );
-  return res;
-};
-
-export const deleteProfileImageAsync2 = async (userId: string) => {
   const apiReqHeaders = validateToken({}, true);
 
   try {
@@ -34,7 +23,7 @@ export const deleteProfileImageAsync2 = async (userId: string) => {
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
