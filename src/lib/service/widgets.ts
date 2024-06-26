@@ -184,21 +184,6 @@ export const updateWidget = async (
 };
 
 export const deleteWidget = async (id: string) => {
-  const response = await runApi(
-    'DELETE',
-    `${config.devApiUrl}/widgets/${id}`,
-    {},
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const deleteWidget2 = async (id: string) => {
   const apiReqHeaders = validateToken({}, true);
 
   try {
@@ -208,27 +193,11 @@ export const deleteWidget2 = async (id: string) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(`Error ${error.status}: ${error.message}`);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
-  const body: GetDribbleShotType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/dribbble`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getDribbleShot2 = async ({ url }: GetDribbleShotType) => {
   const body: GetDribbleShotType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -240,27 +209,11 @@ export const getDribbleShot2 = async ({ url }: GetDribbleShotType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
-  const body: GetBehanceItemType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/behance`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getBehanceItem2 = async ({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -272,29 +225,11 @@ export const getBehanceItem2 = async ({ url }: GetBehanceItemType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getMediumArticleMetadata = async ({
-  url,
-}: GetMediumArticleType) => {
-  const body: GetMediumArticleType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/medium`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getMediumArticleMetadata2 = async ({
   url,
 }: GetMediumArticleType) => {
   const body: GetMediumArticleType = { url };
@@ -308,29 +243,11 @@ export const getMediumArticleMetadata2 = async ({
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
-  const body: GetYouTubeVideoType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/youtube`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getYouTubeVideoMetadata2 = async ({
-  url,
-}: GetYouTubeVideoType) => {
   const body: GetYouTubeVideoType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -342,27 +259,11 @@ export const getYouTubeVideoMetadata2 = async ({
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
-  const body: GetSubstackArticleType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/substack`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getSubstackMetadata2 = async ({ url }: GetSubstackArticleType) => {
   const body: GetSubstackArticleType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -374,27 +275,11 @@ export const getSubstackMetadata2 = async ({ url }: GetSubstackArticleType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
-  const body: GetSpotifyType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/spotify/album`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getSpotifyAlbumDetails2 = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -406,27 +291,11 @@ export const getSpotifyAlbumDetails2 = async ({ url }: GetSpotifyType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
-  const body: GetSpotifyType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/spotify/song`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getSpotifySongDetails2 = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -438,29 +307,11 @@ export const getSpotifySongDetails2 = async ({ url }: GetSpotifyType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
-  const body: GetSoundcloudType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/soundcloud`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getSoundcloudTrackDetails2 = async ({
-  url,
-}: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -472,29 +323,11 @@ export const getSoundcloudTrackDetails2 = async ({
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getInstagramProfileMetadata = async ({
-  url,
-}: GetInstagramType) => {
-  const body: GetInstagramType = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/instagram`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getInstagramProfileMetadata2 = async ({
   url,
 }: GetInstagramType) => {
   const body: GetInstagramType = { url };
@@ -508,27 +341,11 @@ export const getInstagramProfileMetadata2 = async ({
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
-  const body: GetPhotoWidget = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/photo`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getPhotoWidget2 = async ({ url }: GetPhotoWidget) => {
   const body: GetPhotoWidget = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -540,27 +357,11 @@ export const getPhotoWidget2 = async ({ url }: GetPhotoWidget) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getGithubProfile = async ({ url }: GetGithubWidget) => {
-  const body: GetGithubWidget = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/github`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getGithubProfile2 = async ({ url }: GetGithubWidget) => {
   const body: GetGithubWidget = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -572,27 +373,11 @@ export const getGithubProfile2 = async ({ url }: GetGithubWidget) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
 export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
-  const body: GetTwitterWidget = { url };
-  const response = await runApi(
-    'POST',
-    `${config.devApiUrl}/widgets/twitter`,
-    body,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const getTwitterProfile2 = async ({ url }: GetTwitterWidget) => {
   const body: GetTwitterWidget = { url };
   const apiReqHeaders = validateToken({}, true);
 
@@ -604,6 +389,6 @@ export const getTwitterProfile2 = async ({ url }: GetTwitterWidget) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
