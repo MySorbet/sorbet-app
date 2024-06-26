@@ -59,7 +59,7 @@ export const fetchUserDetails = async (token: string) => {
   }
 };
 
-export const ftAvailable = async (username: string) => {
+export const checkIsAccountAvailable = async (username: string) => {
   try {
     if (!username) return;
 
@@ -82,16 +82,18 @@ export const ftAvailable = async (username: string) => {
     const data = await response.json();
     if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
       // Account is available
+      console.log('account available');
       return true;
     }
 
     if (data?.result?.code_hash) {
       // Account is taken
+      console.log('account taken');
       return false;
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
-    console.error('Error checking account availability:', error);
-    return false;
+    // console.error('Error checking account availability:', error)
+    throw new Error(error.message);
   }
 };

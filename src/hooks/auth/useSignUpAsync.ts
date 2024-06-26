@@ -3,7 +3,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { SignUpWithEmailTypes } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 
-export const useSignupAsync = () => {
+export const useSignUpAsync = () => {
   const { toast } = useToast();
 
   return useMutation({
