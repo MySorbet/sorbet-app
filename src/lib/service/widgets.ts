@@ -101,23 +101,6 @@ export const getWidgetsForUser = async (userId: string) => {
 export const updateWidgetsBulk = async (
   widgetLayouts: UpdateWidgetsBulkDto[]
 ) => {
-  const response = await runApi(
-    'PATCH',
-    `${config.devApiUrl}/widgets/bulk-update`,
-    widgetLayouts,
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
-  }
-};
-
-export const updateWidgetsBulk2 = async (
-  widgetLayouts: UpdateWidgetsBulkDto[]
-) => {
   const apiReqHeaders = validateToken({}, true);
 
   try {
@@ -128,7 +111,7 @@ export const updateWidgetsBulk2 = async (
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
