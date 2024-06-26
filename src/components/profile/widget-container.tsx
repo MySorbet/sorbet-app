@@ -143,11 +143,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         console.log('uploading widgets image...');
         const response = await uploadWidgetsImageAsync(imageFormData);
         console.log('upload widgets image response: ', response);
-        if (
-          response.status === 'success' &&
-          response.data &&
-          response.data.fileUrl
-        ) {
+        if (response.data && response.data.fileUrl) {
           widgetUrl = response.data.fileUrl;
         } else {
           toast({
