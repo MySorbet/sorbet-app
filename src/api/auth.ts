@@ -11,12 +11,14 @@ export const signUpAsync = async ({
   accountId,
   userType,
 }: SignUpWithEmailTypes) => {
+  console.log('signing up...');
   try {
     const reqBody = { firstName, lastName, email, accountId, userType };
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
+    console.log('signup response: ', res);
     return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -82,13 +84,11 @@ export const checkIsAccountAvailable = async (username: string) => {
     const data = await response.json();
     if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
       // Account is available
-      console.log('account available');
       return true;
     }
 
     if (data?.result?.code_hash) {
       // Account is taken
-      console.log('account taken');
       return false;
     }
   } catch (error: any) {
