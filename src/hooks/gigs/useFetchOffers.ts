@@ -71,7 +71,7 @@ export const useFetchOffers = (
             break;
         }
 
-        if (response && response.status === 'success') {
+        if (response.data && response.statusText === 'OK') {
           return response.data;
         } else {
           toast({

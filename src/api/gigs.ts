@@ -30,7 +30,7 @@ export const getFreelancerOffers = async (
       `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
       apiReqHeaders
     );
-    return getFormatedResponse(res);
+    return res;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -45,7 +45,7 @@ export const getClientOffers = async (clientId: string, status?: string) => {
       `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
       apiReqHeaders
     );
-    return getFormatedResponse(res);
+    return res;
   } catch (error: any) {
     throw new Error(error.message);
   }
