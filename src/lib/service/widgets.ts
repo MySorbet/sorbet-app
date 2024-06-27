@@ -102,7 +102,6 @@ export const updateWidgetsBulk = async (
   widgetLayouts: UpdateWidgetsBulkDto[]
 ) => {
   const apiReqHeaders = validateToken({}, true);
-
   try {
     const response = await axios.patch(
       `${config.devApiUrl}/widgets/bulk-update`,
