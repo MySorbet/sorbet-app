@@ -21,7 +21,7 @@ export const deleteProfileImageAsync = async (userId: string) => {
       `${API_URL}/images/delete/${userId}`,
       apiReqHeaders
     );
-    return res;
+    return res.data;
   } catch (error: any) {
     throw new Error(error.response.data.message);
   }

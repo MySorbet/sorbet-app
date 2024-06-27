@@ -4,6 +4,7 @@ import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
 
 export const useUpdateUser = () => {
   const dispatch = useAppDispatch();
@@ -12,8 +13,8 @@ export const useUpdateUser = () => {
   return useMutation({
     mutationFn: async (userToUpdate: User): Promise<any> =>
       await updateUser(userToUpdate, userToUpdate.id),
-    onSuccess: (user: User) => {
-      dispatch(updateUserData(user));
+    onSuccess: (user: AxiosResponse) => {
+      dispatch(updateUserData(user.data));
       toast({
         title: 'Profile updated',
         description: 'Your changes were saved successfully.',
