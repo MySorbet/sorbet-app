@@ -140,9 +140,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         imageFormData.append('fileType', 'image');
         imageFormData.append('destination', 'widgets');
         imageFormData.append('userId', '');
-        console.log('uploading widgets image...');
         const response = await uploadWidgetsImageAsync(imageFormData);
-        console.log('upload widgets image response: ', response);
         if (response.data && response.data.fileUrl) {
           widgetUrl = response.data.fileUrl;
         } else {
