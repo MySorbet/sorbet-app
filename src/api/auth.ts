@@ -1,7 +1,8 @@
 import { currentNetwork } from '@/lib/config';
 import { User } from '@/types';
 import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
-import { API_URL, runApi } from '@/utils';
+import { API_URL, getFormatedResponse, runApi } from '@/utils';
+import axios from 'axios';
 
 export const signUpAsync = async ({
   firstName,
@@ -10,15 +11,23 @@ export const signUpAsync = async ({
   accountId,
   userType,
 }: SignUpWithEmailTypes) => {
-  const reqBody = { firstName, lastName, email, accountId, userType };
-  const res = await runApi('POST', `${API_URL}/auth/signup/email`, reqBody);
-  return res;
+  try {
+    const reqBody = { firstName, lastName, email, accountId, userType };
+    const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
-  const reqBody = { email };
-  const res = await runApi('POST', `${API_URL}/auth/signin/email`, reqBody);
-  return res;
+  try {
+    const reqBody = { email };
+    const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 // [POST] /api/auth/signin
@@ -82,7 +91,7 @@ export const checkIsAccountAvailable = async (username: string) => {
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
-    console.error('Error checking account availability:', error);
-    return false;
+    // console.error('Error checking account availability:', error)
+    throw new Error(error.response.data.message);
   }
 };

@@ -1,6 +1,7 @@
 import { CreateContractType, CreateOfferType, User } from '@/types';
 import { FindContractsType } from '@/types';
-import { API_URL, runApi } from '@/utils';
+import { API_URL, getFormatedResponse, runApi, validateToken } from '@/utils';
+import axios from 'axios';
 
 export const findContractsWithFreelancer = async ({
   freelancerUsername,
@@ -22,26 +23,32 @@ export const getFreelancerOffers = async (
   status?: string
 ) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
+      apiReqHeaders
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };
 
 export const getClientOffers = async (clientId: string, status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
+      apiReqHeaders
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };
 
 export const createContract = async (body: CreateContractType) => {
@@ -83,15 +90,16 @@ export const getClientFreelancerOffers = async (
 };
 
 export const getContractForOffer = async (offerId: string) => {
-  console.log('offerId', offerId);
-  const res = await runApi(
-    'GET',
-    `${API_URL}/contracts/forOffer/${offerId}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeaders = validateToken({}, true);
+  try {
+    const res = await axios.get(
+      `${API_URL}/contracts/forOffer/${offerId}`,
+      apiReqHeaders
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 export const updateContractStatus = async (
@@ -111,14 +119,18 @@ export const updateContractStatus = async (
 
 export const updateOfferStatus = async (offerId: string, status: string) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/offers/status/${offerId}`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/offers/status/${offerId}`,
+      reqBody,
+      apiReqHeaders
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error('Failed to reject offer');
+  }
 };
 
 export const createOffer = async (body: CreateOfferType) => {

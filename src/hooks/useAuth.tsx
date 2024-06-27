@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //   return 'Login failed';
     // }
     const response = await signInAsync({ email });
-    if (response.status === 'success') {
+    if (response) {
       const user = response.data.user;
       const token = response.data.access_token;
       setUser(user);
@@ -93,9 +93,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
     } else {
       return {
-        ...response,
         status: 'failed',
-        message: response.message,
+        message: 'Failed to login. Server threw an error',
       };
     }
   };

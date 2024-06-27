@@ -17,15 +17,11 @@ export const useUpdateOfferStatus = () => {
       const { currentOffer, status } = data;
       if (currentOffer) {
         if (confirm('Are you sure you want to update this offer?')) {
-          const response = await updateOfferStatus(currentOffer.id, status);
-          if (response.status == 'success') {
-            toast({
-              title: 'Offer rejected',
-              description: 'The offer was rejected successfully',
-            });
-          } else {
-            throw new Error('Failed to reject offer');
-          }
+          await updateOfferStatus(currentOffer.id, status);
+          toast({
+            title: 'Offer rejected',
+            description: 'The offer was rejected successfully',
+          });
         }
       } else {
         throw new Error('Offer not found');

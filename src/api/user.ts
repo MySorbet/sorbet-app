@@ -1,5 +1,7 @@
 import { User } from '@/types';
-import { API_URL, runApi } from '@/utils';
+import { API_URL, runApi, validateToken } from '@/utils';
+import axios from 'axios';
+
 // [POST] /api/auth/signup
 
 export const getUserFromUserId = async (userId: string) => {
@@ -12,18 +14,24 @@ export const getUserFromUserId = async (userId: string) => {
 };
 
 export const deleteProfileImageAsync = async (userId: string) => {
-  const res = await runApi(
-    'DELETE',
-    `${API_URL}/images/delete/${userId}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeaders = validateToken({}, true);
+
+  try {
+    const res = await axios.delete(
+      `${API_URL}/images/delete/${userId}`,
+      apiReqHeaders
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 export const getUserByAccountId = async (accountId: string) => {
-  const res = await runApi('GET', `${API_URL}/users/findByAccountId/${accountId}`);
+  const res = await runApi(
+    'GET',
+    `${API_URL}/users/findByAccountId/${accountId}`
+  );
   return res;
 };
 
@@ -34,19 +42,43 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
 };
 
 export const updateUser = async (userToUpdate: User, userId: string) => {
-  const url = `${API_URL}/users/${userId}`;
-  const response = await runApi('PATCH', url, userToUpdate, undefined, true);
-  return response.data;
-}
+  const apiReqHeader = validateToken({}, true);
 
-export const getTransactions = async(userId: string, currentPage: number = 1, itemsPerPage: number = 20) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/users/${userId}`,
+      userToUpdate,
+      apiReqHeader
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const getTransactions = async (
+  userId: string,
+  currentPage: number = 1,
+  itemsPerPage: number = 20
+) => {
   const queryParams = `?page=${currentPage}&limit=${itemsPerPage}`;
-  const res = await runApi('GET', `${API_URL}/transactions/user/${userId}${queryParams}`, {}, {}, true);
+  const res = await runApi(
+    'GET',
+    `${API_URL}/transactions/user/${userId}${queryParams}`,
+    {},
+    {},
+    true
+  );
   return res;
-}
+};
 
-
-export const getBalances = async(userId: string) => {
-  const res = await runApi('GET', `${API_URL}/users/${userId}/balances`, {}, {}, true);
+export const getBalances = async (userId: string) => {
+  const res = await runApi(
+    'GET',
+    `${API_URL}/users/${userId}/balances`,
+    {},
+    {},
+    true
+  );
   return res;
-}
+};
