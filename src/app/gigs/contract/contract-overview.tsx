@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { ContractType, MilestoneType } from '@/types';
+import { ContractMilestoneStatus, ContractType, MilestoneType } from '@/types';
 import { HelpCircle, TriangleAlert } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -29,6 +29,21 @@ export const ContractOverview = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
+  const mapContractStatusToMilestoneStatus = (status: string) => {
+    switch (status) {
+      case 'NotStarted':
+      case 'PendingApproval':
+        return ContractMilestoneStatus.FundingPending;
+      case 'InProgress':
+        return ContractMilestoneStatus.Active;
+      case 'Rejected':
+        return ContractMilestoneStatus.FundingPending;
+      case 'PendingApproval':
+      default:
+        return ContractMilestoneStatus.InReview;
+    }
+  };
+
   const handleApprove = async () => {
     setIsLoading(true);
     if (contract) {
@@ -37,7 +52,7 @@ export const ContractOverview = ({
         setContractApproved(true);
         toast({
           title: 'Contract approved',
-          description: 'You can start by funding the milestones',
+          description: 'You can now fund the contract.',
         });
       } else {
         toast({
@@ -147,7 +162,7 @@ export const ContractOverview = ({
         </div>
       </div>
       <div className='flex flex-col gap-3 mt-6 w-full'>
-        {milestones && milestones.length > 0 && (
+        {milestones && milestones.length > 0 ? (
           <>
             {milestones.map((milestone: MilestoneType, index: number) => (
               <ContractClientMilestone
@@ -162,6 +177,17 @@ export const ContractOverview = ({
               />
             ))}
           </>
+        ) : (
+          <ContractClientMilestone
+            isApproved={contractApproved}
+            status={mapContractStatusToMilestoneStatus(contract.status)}
+            title={`Fixed Price Contract`}
+            amount={contract.totalAmount}
+            index={0}
+            projectId={contract.id}
+            isClient={isClient}
+            milestoneId={contract.id}
+          />
         )}
       </div>
       <div className='w-full'>

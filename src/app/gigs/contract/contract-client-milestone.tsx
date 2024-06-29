@@ -1,4 +1,4 @@
-import { updateMilestoneStatus } from '@/api/gigs';
+import { updateContractStatus, updateMilestoneStatus } from '@/api/gigs';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -67,6 +67,11 @@ export const ContractClientMilestone = ({
     if (accounts.length > 0) {
       setLastChainOp('fund_schedule');
       await updateMilestoneStatus(milestoneId, 'Active');
+      if (index == 0) {
+        // We use index to identify which milestone it is, as it is used in the smart contract as schedule_id
+        // If it's the first milestone being funded, update the contract status to started.
+        await updateContractStatus(projectId, 'InProgress');
+      }
       const wallet = await selector.wallet();
       return await wallet
         .signAndSendTransaction({
@@ -125,6 +130,7 @@ export const ContractClientMilestone = ({
   };
 
   const handleMilestoneSubmission = async () => {
+    await updateContractStatus(projectId, 'PendingApproval');
     const response = await updateMilestoneStatus(milestoneId, 'InReview');
     if (response.status && response.status === 'success') {
       toast({
