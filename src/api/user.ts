@@ -27,12 +27,23 @@ export const deleteProfileImageAsync = async (userId: string) => {
   }
 };
 
+// export const getUserByAccountId = async (accountId: string) => {
+//   const res = await runApi(
+//     'GET',
+//     `${API_URL}/users/findByAccountId/${accountId}`
+//   );
+//   return res;
+// };
+
 export const getUserByAccountId = async (accountId: string) => {
-  const res = await runApi(
-    'GET',
-    `${API_URL}/users/findByAccountId/${accountId}`
-  );
-  return res;
+  try {
+    const response = await axios.get(
+      `${API_URL}/users/findByAccountId/${accountId}`
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 export const getUsersBySearch = async (skills: string[], location: string) => {

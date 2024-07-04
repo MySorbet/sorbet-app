@@ -71,10 +71,6 @@ const SignInForm = () => {
       description:
         'Email login is not active yet. You can use the Connect Wallet option to login for now.',
     });
-
-    //
-    // Just included this for testing purposes
-    // await loginWithEmail(data.email)
   });
 
   useEffect(() => {

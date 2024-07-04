@@ -102,6 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginWithWallet = async (accountId: string) => {
     try {
       const response = await signInWithWallet(accountId);
+      console.log('wallet sign in res', response);
       if (response.status === 'success') {
         const user = response.data.user;
         const token = response.data.access_token;
@@ -123,6 +124,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
       }
     } catch (error) {
+      console.log('wallet sign in catch', error);
       return { status: 'failed', message: 'Login failed', error: error };
     } finally {
       setAppLoading(false);
