@@ -4,12 +4,12 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { FormContainer } from './form-container';
-import { getUserByAccountId } from '@/api/user';
+// import { getUserByAccountId } from '@/api/user';
 import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
-import { useLoginWithEmail } from '@/hooks';
+import { useLoginWithEmail, useGetUserByAccountId } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { randomBytes } from 'crypto';
 import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
@@ -49,6 +49,11 @@ const SignInForm = () => {
   const { isPending: loginLoading, mutateAsync: loginWithEmail } =
     useLoginWithEmail();
 
+  const {
+    isPending: isGetUserAccountLoading,
+    mutateAsync: getUserByAccountId,
+  } = useGetUserByAccountId();
+
   const handleSignOut = async () => {
     try {
       const wallet = await selector.wallet();
@@ -80,17 +85,9 @@ const SignInForm = () => {
         setActiveNearAccount(activeAccount);
 
         if (activeAccount) {
-          const response = await getUserByAccountId(activeAccount);
-          if (response.status !== 'success') {
-            toast({
-              title: 'No account found',
-              description:
-                'No account found for the connected wallet, please signup first',
-              variant: 'destructive',
-            });
-            setAccountNotFound(true);
-            await handleSignOut();
-          }
+          await getUserByAccountId(activeAccount);
+          setAccountNotFound(true);
+          await handleSignOut();
         }
       }
     };
