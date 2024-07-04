@@ -1,6 +1,6 @@
 import { updateContractStatus } from '@/api/gigs';
 import { ContractClientMilestone } from '@/app/gigs/contract';
-import { Spinner } from '@/components/common';
+import { Spinner, useWalletSelector } from '@/components/common';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { CONTRACT_ID } from '@/constant/constant';
+import { useLocalStorage } from '@/hooks';
 import { ContractMilestoneStatus, ContractType, MilestoneType } from '@/types';
 import { HelpCircle, TriangleAlert } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -26,7 +28,12 @@ export const ContractOverview = ({
 }: ContractOverviewProps) => {
   const [contractApproved, setContractApproved] = useState<boolean>(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
+  const { accounts, selector } = useWalletSelector();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
+    'lastChainOp',
+    ''
+  );
   const { toast } = useToast();
 
   const mapContractStatusToMilestoneStatus = (status: string) => {
@@ -93,6 +100,41 @@ export const ContractOverview = ({
 
   const cancelReject = () => {
     setIsRejectDialogOpen(false);
+  };
+
+  const finishContract = async () => {
+    const response = await updateContractStatus(contract.id, 'Completed');
+    if (response.status && response.status === 'success') {
+      setLastChainOp('end_project');
+      const wallet = await selector.wallet();
+      await wallet
+        .signAndSendTransaction({
+          signerId: accounts[0].accountId,
+          receiverId: CONTRACT_ID,
+          actions: [
+            {
+              type: 'FunctionCall',
+              params: {
+                methodName: 'end_project',
+                args: {
+                  project_id: contract.id,
+                },
+                gas: '300000000000000',
+                deposit: '',
+              },
+            },
+          ],
+        })
+        .catch((err) => {
+          toast({
+            title: 'Transaction Failed',
+            description: 'Failed to end project on the NEAR blockchain.',
+            variant: 'destructive',
+          });
+          console.error('Failed to fund milestone', err);
+          throw err;
+        });
+    }
   };
 
   useEffect(() => {
@@ -191,7 +233,7 @@ export const ContractOverview = ({
         )}
       </div>
       <div className='w-full'>
-        {!contractApproved && (
+        {!contractApproved ? (
           <>
             <div className='flex gap-2 mt-4 w-full'>
               <Button
@@ -208,6 +250,18 @@ export const ContractOverview = ({
               </Button>
             </div>
           </>
+        ) : (
+          !isClient && (
+            <div className='flex gap-2 mt-4 w-full'>
+              <Button
+                onClick={finishContract}
+                className='w-full md:w-1/6 lg:w-2/12 bg-sorbet text-white'
+                disabled={contract.status === 'Completed'}
+              >
+                Finish Contract
+              </Button>
+            </div>
+          )
         )}
       </div>
     </div>

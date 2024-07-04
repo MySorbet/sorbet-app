@@ -13,7 +13,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ID } from '@/constant/constant';
 import { useLocalStorage } from '@/hooks';
 import { toYoctoNEAR } from '@/lib/helper';
-import { CreateContractType, OfferType } from '@/types';
+import { ContractType, CreateContractType, OfferType } from '@/types';
 import { Transaction } from '@near-wallet-selector/core';
 import { CircleCheckBig } from 'lucide-react';
 import React, { useState } from 'react';
@@ -57,7 +57,7 @@ export const ContractContainer = ({
       const response = await createContract(reqBody);
       if (response && response.status === 'success') {
         await createOnchainContract(
-          response.data?.id,
+          response.data,
           currentOffer.username,
           formData.milestones
         );
@@ -75,7 +75,7 @@ export const ContractContainer = ({
   };
 
   const createOnchainContract = async (
-    projectId: string,
+    contract: ContractType,
     clientAccountId: string,
     milestones?: ContractMilestone[]
   ) => {
@@ -91,7 +91,7 @@ export const ContractContainer = ({
             params: {
               methodName: 'create_project',
               args: {
-                project_id: projectId,
+                project_id: contract.id,
                 client_id: clientAccountId,
               },
               gas: '300000000000000', // gas amount
@@ -112,7 +112,7 @@ export const ContractContainer = ({
                 params: {
                   methodName: 'add_schedule',
                   args: {
-                    project_id: projectId,
+                    project_id: contract.id,
                     short_code: `m${index + 1}`,
                     description: milestone.name,
                     value: toYoctoNEAR(milestone.amount.toFixed()),
@@ -123,6 +123,27 @@ export const ContractContainer = ({
               },
             ],
           });
+        });
+      } else {
+        transactions.push({
+          signerId: accounts[0].accountId,
+          receiverId: CONTRACT_ID,
+          actions: [
+            {
+              type: 'FunctionCall',
+              params: {
+                methodName: 'add_schedule',
+                args: {
+                  project_id: contract.id,
+                  short_code: `m0`,
+                  description: contract.name,
+                  value: toYoctoNEAR(contract.totalAmount.toFixed()),
+                },
+                gas: '300000000000000', // gas amount
+                deposit: '100000000000000000000000', // 0.1 NEAR deposit
+              },
+            },
+          ],
         });
       }
 
@@ -153,7 +174,7 @@ export const ContractContainer = ({
 
       const response = await createContract(reqBody);
       if (response && response.status === 'success') {
-        await createOnchainContract(response.data?.id, currentOffer.username);
+        await createOnchainContract(response.data, currentOffer.username);
         setIsFormSubmitted(true);
         if (afterContractSubmited) {
           afterContractSubmited();

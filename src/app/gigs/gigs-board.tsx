@@ -79,8 +79,8 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
                 requesterImage={offer.profileImage}
                 title={offer.projectName}
                 status={offer.status}
-                description={offer.projectDescription}
-                skills={offer.tags}
+                projectStart={offer.projectStart}
+                budget={offer.budget}
               />
             </div>
           ))}

@@ -15,5 +15,5 @@ export function getFromSessionStorage(key: string): string | null {
 }
 
 export const toYoctoNEAR = (amount: string): string => {
-  return new BigNumber(amount).multipliedBy('1e24').toString();
+  return new BigNumber(amount).multipliedBy('1e24').toFixed();
 };

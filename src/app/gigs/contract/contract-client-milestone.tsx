@@ -35,7 +35,8 @@ export const ContractClientMilestone = ({
   isClient,
   milestoneId,
 }: ContractClientMilestoneProps) => {
-  const isCompleted = status === ContractMilestoneStatus.Approved;
+  const [currentStatus, setCurrentStatus] = React.useState(status);
+  const isCompleted = currentStatus === ContractMilestoneStatus.Approved;
   const { accounts, selector } = useWalletSelector();
   const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
     'lastChainOp',
@@ -45,7 +46,7 @@ export const ContractClientMilestone = ({
   const { toast } = useToast();
 
   const mapStatusLabel = () => {
-    switch (status) {
+    switch (currentStatus) {
       case ContractMilestoneStatus.Active:
         return 'Active';
       case ContractMilestoneStatus.Approved:
@@ -67,11 +68,13 @@ export const ContractClientMilestone = ({
     if (accounts.length > 0) {
       setLastChainOp('fund_schedule');
       await updateMilestoneStatus(milestoneId, 'Active');
+      setCurrentStatus(ContractMilestoneStatus.Active);
       if (index == 0) {
         // We use index to identify which milestone it is, as it is used in the smart contract as schedule_id
         // If it's the first milestone being funded, update the contract status to started.
         await updateContractStatus(projectId, 'InProgress');
       }
+      const finalAmount = BigNumber(amount).multipliedBy(1.021).abs().toFixed();
       const wallet = await selector.wallet();
       return await wallet
         .signAndSendTransaction({
@@ -87,7 +90,7 @@ export const ContractClientMilestone = ({
                   schedule_id: scheduleId,
                 },
                 gas: '300000000000000', // gas amount
-                deposit: toYoctoNEAR(amount.toFixed()),
+                deposit: toYoctoNEAR(finalAmount),
               },
             },
           ],
@@ -130,28 +133,36 @@ export const ContractClientMilestone = ({
   };
 
   const handleMilestoneSubmission = async () => {
-    await updateContractStatus(projectId, 'PendingApproval');
-    const response = await updateMilestoneStatus(milestoneId, 'InReview');
-    if (response.status && response.status === 'success') {
+    if (title === 'Fixed Price Contract') {
       toast({
-        title: 'Milestone submitted',
-        description: 'Milestone is in review now and awaiting approval',
+        title: 'Work submitted',
+        description: 'Your work is in review now and awaiting approval',
       });
+      setCurrentStatus(ContractMilestoneStatus.InReview);
     } else {
-      toast({
-        title: 'Something went wrong',
-        description: 'Unable to submit milestone, please try again',
-        variant: 'destructive',
-      });
+      const response = await updateMilestoneStatus(milestoneId, 'InReview');
+      if (response.status && response.status === 'success') {
+        toast({
+          title: 'Milestone submitted',
+          description: 'Milestone is in review now and awaiting approval',
+        });
+        setCurrentStatus(ContractMilestoneStatus.InReview);
+      } else {
+        toast({
+          title: 'Something went wrong',
+          description: 'Unable to submit milestone, please try again',
+          variant: 'destructive',
+        });
+      }
     }
   };
 
   const handleMilestoneApprove = async () => {
     const response = await updateMilestoneStatus(milestoneId, 'Approved');
     if (response.status && response.status === 'success') {
-      const finalAmount = BigNumber(amount).multipliedBy(1.02).abs().toFixed();
+      const finalAmount = BigNumber(amount).multipliedBy(1.021).abs().toFixed();
       const wallet = await selector.wallet();
-      return await wallet
+      await wallet
         .signAndSendTransaction({
           signerId: accounts[0].accountId,
           receiverId: CONTRACT_ID,
@@ -161,8 +172,8 @@ export const ContractClientMilestone = ({
               params: {
                 methodName: 'approve_schedule',
                 args: {
-                  project_id: projectId,
-                  schedule_id: index,
+                  project_id: projectId.toString(),
+                  schedule_id: index.toString(),
                 },
                 gas: '300000000000000', // gas amount
                 deposit: toYoctoNEAR(finalAmount), // 2% transaction fee
@@ -173,7 +184,7 @@ export const ContractClientMilestone = ({
         .catch((err) => {
           toast({
             title: 'Transaction Failed',
-            description: 'Failed to fund milestone on the NEAR blockchain.',
+            description: 'Failed to approve milestone on the NEAR blockchain.',
             variant: 'destructive',
           });
           console.error('Failed to fund milestone', err);
@@ -203,18 +214,18 @@ export const ContractClientMilestone = ({
       >
         <div className='flex justify-start'>
           <div className='flex flex-row gap-3'>
-            {status === ContractMilestoneStatus.FundingPending && (
+            {currentStatus === ContractMilestoneStatus.FundingPending && (
               <div className='rounded-full border border-gray-300 p-2 w-8 h-8'>
                 <Lock size={14} strokeWidth={3} stroke='#667085' />
               </div>
             )}
-            {status === ContractMilestoneStatus.Approved && (
+            {currentStatus === ContractMilestoneStatus.Approved && (
               <div className='bg-[#F3F3F9] rounded-full border border-[#E5E4F8] p-2 w-8 h-8'>
                 <Check size={16} strokeWidth={4} stroke='#AA91EF' />{' '}
               </div>
             )}
-            {(status === ContractMilestoneStatus.Active ||
-              status === ContractMilestoneStatus.InReview) && (
+            {(currentStatus === ContractMilestoneStatus.Active ||
+              currentStatus === ContractMilestoneStatus.InReview) && (
               <div className='bg-[#F4F3FF] rounded-full border border-[#D9D6FE] p-2 w-8 h-8'>
                 <Zap size={16} strokeWidth={4} stroke='#7A5AF8' />{' '}
               </div>
@@ -232,7 +243,7 @@ export const ContractClientMilestone = ({
             <div>
               <Badge
                 variant={
-                  status === ContractMilestoneStatus.Active
+                  currentStatus === ContractMilestoneStatus.Active
                     ? 'success'
                     : 'outline'
                 }
@@ -241,7 +252,7 @@ export const ContractClientMilestone = ({
               </Badge>
             </div>
             <div>
-              {isClient && status === ContractMilestoneStatus.Active && (
+              {isClient && currentStatus === ContractMilestoneStatus.Active && (
                 <h2 className='text-center text-gray-400 font-medium'>
                   Funded
                 </h2>
@@ -249,7 +260,8 @@ export const ContractClientMilestone = ({
               {isClient && (
                 <>
                   {isApproved &&
-                    status === ContractMilestoneStatus.FundingPending && (
+                    currentStatus ===
+                      ContractMilestoneStatus.FundingPending && (
                       <>
                         <Button
                           variant='default'
@@ -265,7 +277,7 @@ export const ContractClientMilestone = ({
                       </>
                     )}
 
-                  {status === ContractMilestoneStatus.InReview && (
+                  {currentStatus === ContractMilestoneStatus.InReview && (
                     <>
                       <Button
                         variant='default'
@@ -285,18 +297,21 @@ export const ContractClientMilestone = ({
               {!isClient && (
                 <>
                   {isApproved &&
-                    (status === ContractMilestoneStatus.Active ||
-                      status === ContractMilestoneStatus.InReview) && (
+                    (currentStatus === ContractMilestoneStatus.Active ||
+                      currentStatus === ContractMilestoneStatus.InReview) && (
                       <>
                         <Button
                           variant='default'
                           className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
-                            status === ContractMilestoneStatus.InReview &&
+                            currentStatus ===
+                              ContractMilestoneStatus.InReview &&
                             `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
                           }`}
                           size={`sm`}
                           onClick={handleMilestoneSubmission}
-                          disabled={status === ContractMilestoneStatus.InReview}
+                          disabled={
+                            currentStatus === ContractMilestoneStatus.InReview
+                          }
                         >
                           Submit Work
                         </Button>

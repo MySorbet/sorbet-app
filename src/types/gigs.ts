@@ -27,6 +27,8 @@ export interface OfferType {
   status: string;
   tags: string[];
   projectName: string;
+  projectStart?: string;
+  budget?: string;
   projectDescription: string;
   recipient?: User;
   creator?: User;
