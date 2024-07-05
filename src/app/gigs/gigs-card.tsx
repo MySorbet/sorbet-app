@@ -48,7 +48,7 @@ export const GigsCard = ({
       <div className='px-4'>
         <p className='text-lg font-semibold'>{title}</p>
       </div>
-      <div className='bg-gray-100 px-3 py-4 flex flex-col gap-2 '>
+      <div className='bg-gray-100 px-3 py-4 flex flex-col gap-2 rounded-bl-xl rounded-br-xl'>
         <div className='flex justify-between'>
           <div className='flex flex-row gap-1'>
             <Database size={20} />
