@@ -7,7 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useFetchOffers = (
   loggedInUser: User | null,
-  gigsContentType: GigsContentType
+  gigsContentType: GigsContentType,
+  status: string
 ) => {
   const { toast } = useToast();
 
@@ -19,15 +20,12 @@ export const useFetchOffers = (
 
         switch (gigsContentType) {
           case GigsContentType.Sent:
-            response = await getClientOffers(
-              loggedInUser?.accountId,
-              'Pending'
-            );
+            response = await getClientOffers(loggedInUser?.accountId, status);
             break;
           case GigsContentType.Received:
             response = await getFreelancerOffers(
               loggedInUser?.accountId,
-              'Pending'
+              status
             );
             break;
         }

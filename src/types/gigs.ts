@@ -1,3 +1,5 @@
+import { User } from '@/types/user';
+
 export interface FindContractsType {
   freelancerUsername: string;
   clientUsername: string;
@@ -25,7 +27,18 @@ export interface OfferType {
   status: string;
   tags: string[];
   projectName: string;
+  projectStart?: string;
+  budget?: string;
   projectDescription: string;
+  recipient?: User;
+  creator?: User;
+}
+
+export enum ContractMilestoneStatus {
+  FundingPending = 'FundingPending',
+  Active = 'Active',
+  InReview = 'InReview',
+  Approved = 'Approved',
 }
 
 export interface ContractType {
@@ -42,6 +55,8 @@ export interface ContractType {
   dateCreated: string;
   dateUpdated: string;
   offerId: string;
+  client?: User;
+  freelancer?: User;
 }
 
 export interface MilestoneType {
@@ -54,7 +69,7 @@ export interface MilestoneType {
   dateCreated: string;
   dateUpdated: string;
   amount: number;
-  status: string;
+  status: ContractMilestoneStatus;
 }
 
 export interface CreateOfferType {

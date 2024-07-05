@@ -132,7 +132,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                 </div>
                 <div className='col-span-1'>
                   <Link href={`/gigs`}>
-                    <SidebarHeaderOption label='Gigs' icon={<LayoutGrid />} />
+                    <SidebarHeaderOption
+                      label='Gigs'
+                      icon={<LayoutGrid />}
+                      onClick={() => handleSidebarClose()}
+                    />
                   </Link>
                 </div>
                 <div className='col-span-1'>

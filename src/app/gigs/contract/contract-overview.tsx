@@ -1,10 +1,6 @@
-import { updateContractStatus } from '@/api/gigs';
-import {
-  ContractClientMilestone,
-  ContractClientMilestoneFundingStatus,
-  ContractClientMilestoneStatus,
-} from '@/app/gigs/contract';
-import { Spinner } from '@/components/common';
+import { updateContractStatus, updateOfferStatus } from '@/api/gigs';
+import { ContractClientMilestone } from '@/app/gigs/contract';
+import { Spinner, useWalletSelector } from '@/components/common';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +9,15 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { ContractType, MilestoneType } from '@/types';
+import { CONTRACT_ID } from '@/constant/constant';
+import { useLocalStorage } from '@/hooks';
+import { toYoctoNEAR } from '@/lib/helper';
+import {
+  ContractMilestoneStatus,
+  ContractType,
+  MilestoneType,
+  OfferType,
+} from '@/types';
 import { HelpCircle, TriangleAlert } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -21,27 +25,54 @@ export interface ContractOverviewProps {
   contract: ContractType;
   milestones?: MilestoneType[];
   isClient: boolean;
+  offer?: OfferType;
 }
 
 export const ContractOverview = ({
   contract,
   milestones,
   isClient,
+  offer,
 }: ContractOverviewProps) => {
   const [contractApproved, setContractApproved] = useState<boolean>(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
+  const { accounts, selector } = useWalletSelector();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
+    'lastChainOp',
+    ''
+  );
   const { toast } = useToast();
+
+  const mapContractStatusToMilestoneStatus = (status: string) => {
+    switch (status) {
+      case 'NotStarted':
+      case 'PendingApproval':
+        return ContractMilestoneStatus.FundingPending;
+      case 'InProgress':
+        return ContractMilestoneStatus.Active;
+      case 'Rejected':
+        return ContractMilestoneStatus.FundingPending;
+      case 'Completed':
+        return ContractMilestoneStatus.Approved;
+      case 'InReview':
+      default:
+        return ContractMilestoneStatus.InReview;
+    }
+  };
 
   const handleApprove = async () => {
     setIsLoading(true);
     if (contract) {
       const response = await updateContractStatus(contract.id, 'NotStarted');
       if (response && response.status === 'success') {
+        if (offer) {
+          await updateOfferStatus(offer?.id, 'Accepted');
+        }
         setContractApproved(true);
         toast({
           title: 'Contract approved',
-          description: 'You can start by funding the milestones',
+          description: 'You can now fund the contract.',
         });
       } else {
         toast({
@@ -82,6 +113,44 @@ export const ContractOverview = ({
 
   const cancelReject = () => {
     setIsRejectDialogOpen(false);
+  };
+
+  const finishContract = async () => {
+    const response = await updateContractStatus(contract.id, 'Completed');
+    if (response.status && response.status === 'success') {
+      setLastChainOp('end_project');
+      if (offer) {
+        await updateOfferStatus(offer?.id, 'Completed');
+      }
+      const wallet = await selector.wallet();
+      await wallet
+        .signAndSendTransaction({
+          signerId: accounts[0].accountId,
+          receiverId: CONTRACT_ID,
+          actions: [
+            {
+              type: 'FunctionCall',
+              params: {
+                methodName: 'end_project',
+                args: {
+                  project_id: contract.id,
+                },
+                gas: '300000000000000',
+                deposit: toYoctoNEAR('0'),
+              },
+            },
+          ],
+        })
+        .catch((err) => {
+          toast({
+            title: 'Transaction Failed',
+            description: 'Failed to end project on the NEAR blockchain.',
+            variant: 'destructive',
+          });
+          console.error('Failed to fund milestone', err);
+          throw err;
+        });
+    }
   };
 
   useEffect(() => {
@@ -151,45 +220,37 @@ export const ContractOverview = ({
         </div>
       </div>
       <div className='flex flex-col gap-3 mt-6 w-full'>
-        {milestones && milestones.length > 0 && (
+        {milestones && milestones.length > 0 ? (
           <>
-            {milestones.map((milestone: MilestoneType) => (
+            {milestones.map((milestone: MilestoneType, index: number) => (
               <ContractClientMilestone
                 isApproved={contractApproved}
-                status={
-                  contractApproved
-                    ? ContractClientMilestoneStatus.Completed
-                    : ContractClientMilestoneStatus.PendingApproval
-                }
+                status={milestone.status}
                 title={milestone.name}
                 amount={milestone.amount}
-                fundingStatus={ContractClientMilestoneFundingStatus.pending}
+                index={index}
+                projectId={contract.id}
                 isClient={isClient}
+                milestoneId={milestone.id}
               />
             ))}
           </>
-        )}
-        {(!milestones || milestones.length < 1) && (
+        ) : (
           <ContractClientMilestone
             isApproved={contractApproved}
-            status={
-              contractApproved
-                ? ContractClientMilestoneStatus.FundsPending
-                : ContractClientMilestoneStatus.PendingApproval
-            }
+            status={mapContractStatusToMilestoneStatus(contract.status)}
             title={`Fixed Price Contract`}
             amount={contract.totalAmount}
-            fundingStatus={
-              contractApproved
-                ? ContractClientMilestoneFundingStatus.pending
-                : ContractClientMilestoneFundingStatus.funded
-            }
+            index={0}
+            projectId={contract.id}
             isClient={isClient}
+            milestoneId={contract.id}
+            isFixedPrice={true}
           />
         )}
       </div>
       <div className='w-full'>
-        {!contractApproved && (
+        {!contractApproved ? (
           <>
             <div className='flex gap-2 mt-4 w-full'>
               <Button
@@ -206,6 +267,18 @@ export const ContractOverview = ({
               </Button>
             </div>
           </>
+        ) : (
+          !isClient && (
+            <div className='flex gap-2 mt-4 w-full'>
+              <Button
+                onClick={finishContract}
+                className='w-full md:w-1/6 lg:w-2/12 bg-sorbet text-white'
+                disabled={offer?.status === 'Completed'}
+              >
+                Finish Contract
+              </Button>
+            </div>
+          )
         )}
       </div>
     </div>
