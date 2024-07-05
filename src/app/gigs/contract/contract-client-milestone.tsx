@@ -1,4 +1,8 @@
-import { updateContractStatus, updateMilestoneStatus } from '@/api/gigs';
+import {
+  updateContractStatus,
+  updateMilestoneStatus,
+  updateOfferStatus,
+} from '@/api/gigs';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -160,7 +164,7 @@ export const ContractClientMilestone = ({
   const handleMilestoneApprove = async () => {
     const response = await updateMilestoneStatus(milestoneId, 'Approved');
     if (response.status && response.status === 'success') {
-      const finalAmount = BigNumber(amount).multipliedBy(1.021).abs().toFixed();
+      setLastChainOp('approve_schedule');
       const wallet = await selector.wallet();
       await wallet
         .signAndSendTransaction({
@@ -176,7 +180,7 @@ export const ContractClientMilestone = ({
                   schedule_id: index.toString(),
                 },
                 gas: '300000000000000', // gas amount
-                deposit: toYoctoNEAR(finalAmount), // 2% transaction fee
+                deposit: toYoctoNEAR('0'),
               },
             },
           ],

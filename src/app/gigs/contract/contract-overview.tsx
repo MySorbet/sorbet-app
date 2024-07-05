@@ -1,4 +1,4 @@
-import { updateContractStatus } from '@/api/gigs';
+import { updateContractStatus, updateOfferStatus } from '@/api/gigs';
 import { ContractClientMilestone } from '@/app/gigs/contract';
 import { Spinner, useWalletSelector } from '@/components/common';
 import {
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ID } from '@/constant/constant';
 import { useLocalStorage } from '@/hooks';
+import { toYoctoNEAR } from '@/lib/helper';
 import { ContractMilestoneStatus, ContractType, MilestoneType } from '@/types';
 import { HelpCircle, TriangleAlert } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -19,12 +20,14 @@ export interface ContractOverviewProps {
   contract: ContractType;
   milestones?: MilestoneType[];
   isClient: boolean;
+  offerId?: string;
 }
 
 export const ContractOverview = ({
   contract,
   milestones,
   isClient,
+  offerId,
 }: ContractOverviewProps) => {
   const [contractApproved, setContractApproved] = useState<boolean>(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
@@ -56,6 +59,9 @@ export const ContractOverview = ({
     if (contract) {
       const response = await updateContractStatus(contract.id, 'NotStarted');
       if (response && response.status === 'success') {
+        if (offerId) {
+          await updateOfferStatus(offerId, 'Accepted');
+        }
         setContractApproved(true);
         toast({
           title: 'Contract approved',
@@ -106,6 +112,9 @@ export const ContractOverview = ({
     const response = await updateContractStatus(contract.id, 'Completed');
     if (response.status && response.status === 'success') {
       setLastChainOp('end_project');
+      if (offerId) {
+        await updateOfferStatus(offerId, 'Completed');
+      }
       const wallet = await selector.wallet();
       await wallet
         .signAndSendTransaction({
@@ -120,7 +129,7 @@ export const ContractOverview = ({
                   project_id: contract.id,
                 },
                 gas: '300000000000000',
-                deposit: '',
+                deposit: toYoctoNEAR('0'),
               },
             },
           ],

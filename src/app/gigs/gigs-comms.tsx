@@ -119,6 +119,7 @@ export const GigsComms = ({
               contract={contractData}
               isClient={isClient}
               milestones={contractData.milestones as MilestoneType[]}
+              offerId={currentOffer?.id}
             />
           );
         }
@@ -141,6 +142,7 @@ export const GigsComms = ({
               contract={contractData}
               isClient={isClient}
               milestones={contractData.milestones as MilestoneType[]}
+              offerId={currentOffer?.id}
             />
           );
         }

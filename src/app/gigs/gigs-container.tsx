@@ -27,35 +27,48 @@ export const GigsContainer = ({ isClient = false }) => {
   const { toast } = useToast();
 
   const getSuccessNotification = () => {
-    if (lastChainOp !== '') {
-      switch (lastChainOp) {
-        case 'create_project':
-          return {
-            title: 'Project created successfully',
-            description: 'Your project was created successfully.',
-          };
-        case 'fund_schedule':
-          return {
-            title: 'Milestone funded',
-            description: 'The milestone was funded successfully',
-          };
-        case 'end_project':
-          return {
-            title: 'Contract ended',
-            description: 'The project was ended successfully',
-          };
-        default:
-          return {
-            title: '',
-            description: '',
-          };
-      }
-    }
-
-    return {
+    let response = {
       title: 'Unknown',
       description: 'Unknown op',
     };
+
+    if (lastChainOp !== '') {
+      switch (lastChainOp) {
+        case 'create_project':
+          response = {
+            title: 'Project created successfully',
+            description: 'Your project was created successfully.',
+          };
+          break;
+        case 'fund_schedule':
+          response = {
+            title: 'Milestone funded',
+            description: 'The milestone was funded successfully',
+          };
+          break;
+        case 'end_project':
+          response = {
+            title: 'Contract ended',
+            description: 'The project was ended successfully',
+          };
+          break;
+        case 'approve_schedule':
+          response = {
+            title: 'Funds approved',
+            description: 'The project/milestone was approved',
+          };
+          break;
+        default:
+          response = {
+            title: '',
+            description: '',
+          };
+          break;
+      }
+    }
+
+    setLastChainOp('');
+    return response;
   };
 
   useEffect(() => {

@@ -26,7 +26,18 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
 
   const { isLoading: isFetchOffersLoading, data: offers } = useFetchOffers(
     loggedInUser,
-    gigsContentType
+    gigsContentType,
+    ''
+  );
+
+  const pendingOffers = offers?.filter(
+    (offer: OfferType) => offer.status === 'Pending'
+  );
+  const acceptedOffers = offers?.filter(
+    (offer: OfferType) => offer.status === 'Accepted'
+  );
+  const completedOffers = offers?.filter(
+    (offer: OfferType) => offer.status === 'Completed'
   );
 
   const { mutate: updateOfferStatus } = useUpdateOfferStatus();
@@ -69,10 +80,10 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
               ? 'Offers Sent'
               : 'Offers Received'
           }
-          count={offers?.length || 0}
+          count={pendingOffers?.length || 0}
         >
           {isFetchOffersLoading && <Loader />}
-          {offers?.map((offer: OfferType) => (
+          {pendingOffers?.map((offer: OfferType) => (
             <div onClick={() => handleCardClick(offer)} key={offer.id}>
               <GigsCard
                 requester={offer.name}
@@ -85,8 +96,36 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
             </div>
           ))}
         </GigsColumn>
-        <GigsColumn title='In-progress' count={0}></GigsColumn>
-        <GigsColumn title='Completed' count={0}></GigsColumn>
+        <GigsColumn title='In-progress' count={acceptedOffers?.length || 0}>
+          {isFetchOffersLoading && <Loader />}
+          {acceptedOffers?.map((offer: OfferType) => (
+            <div onClick={() => handleCardClick(offer)} key={offer.id}>
+              <GigsCard
+                requester={offer.name}
+                requesterImage={offer.profileImage}
+                title={offer.projectName}
+                status={offer.status}
+                projectStart={offer.projectStart}
+                budget={offer.budget}
+              />
+            </div>
+          ))}
+        </GigsColumn>
+        <GigsColumn title='Completed' count={completedOffers?.length || 0}>
+          {isFetchOffersLoading && <Loader />}
+          {completedOffers?.map((offer: OfferType) => (
+            <div onClick={() => handleCardClick(offer)} key={offer.id}>
+              <GigsCard
+                requester={offer.name}
+                requesterImage={offer.profileImage}
+                title={offer.projectName}
+                status={offer.status}
+                projectStart={offer.projectStart}
+                budget={offer.budget}
+              />
+            </div>
+          ))}
+        </GigsColumn>
       </div>
     </div>
   );
