@@ -26,6 +26,8 @@ export interface ContractClientMilestoneProps {
   index: number;
   projectId: string;
   isClient: boolean;
+  isFixedPrice?: boolean;
+  offerId?: string;
 }
 
 export const ContractClientMilestone = ({
@@ -38,6 +40,8 @@ export const ContractClientMilestone = ({
   projectId,
   isClient,
   milestoneId,
+  isFixedPrice = false,
+  offerId,
 }: ContractClientMilestoneProps) => {
   const [currentStatus, setCurrentStatus] = React.useState(status);
   const isCompleted = currentStatus === ContractMilestoneStatus.Approved;
@@ -71,9 +75,15 @@ export const ContractClientMilestone = ({
   ) => {
     if (accounts.length > 0) {
       setLastChainOp('fund_schedule');
-      await updateMilestoneStatus(milestoneId, 'Active');
+
+      if (!isFixedPrice) {
+        await updateMilestoneStatus(milestoneId, 'Active');
+      } else {
+        await updateContractStatus(projectId, 'InProgress');
+      }
+
       setCurrentStatus(ContractMilestoneStatus.Active);
-      if (index == 0) {
+      if (index == 0 && !isFixedPrice) {
         // We use index to identify which milestone it is, as it is used in the smart contract as schedule_id
         // If it's the first milestone being funded, update the contract status to started.
         await updateContractStatus(projectId, 'InProgress');
@@ -137,34 +147,33 @@ export const ContractClientMilestone = ({
   };
 
   const handleMilestoneSubmission = async () => {
-    if (title === 'Fixed Price Contract') {
+    const response = !isFixedPrice
+      ? await updateMilestoneStatus(milestoneId, 'InReview')
+      : await updateContractStatus(projectId, 'InReview');
+    if (response.status && response.status === 'success') {
       toast({
-        title: 'Work submitted',
-        description: 'Your work is in review now and awaiting approval',
+        title: 'Milestone submitted',
+        description: 'Milestone is in review now and awaiting approval',
       });
       setCurrentStatus(ContractMilestoneStatus.InReview);
     } else {
-      const response = await updateMilestoneStatus(milestoneId, 'InReview');
-      if (response.status && response.status === 'success') {
-        toast({
-          title: 'Milestone submitted',
-          description: 'Milestone is in review now and awaiting approval',
-        });
-        setCurrentStatus(ContractMilestoneStatus.InReview);
-      } else {
-        toast({
-          title: 'Something went wrong',
-          description: 'Unable to submit milestone, please try again',
-          variant: 'destructive',
-        });
-      }
+      toast({
+        title: 'Something went wrong',
+        description: 'Unable to submit milestone, please try again',
+        variant: 'destructive',
+      });
     }
   };
 
   const handleMilestoneApprove = async () => {
-    const response = await updateMilestoneStatus(milestoneId, 'Approved');
+    const response = !isFixedPrice
+      ? await updateMilestoneStatus(milestoneId, 'Approved')
+      : await updateContractStatus(projectId, 'Completed');
     if (response.status && response.status === 'success') {
       setLastChainOp('approve_schedule');
+      if (isFixedPrice && offerId) {
+        await updateOfferStatus(offerId, 'Completed');
+      }
       const wallet = await selector.wallet();
       await wallet
         .signAndSendTransaction({

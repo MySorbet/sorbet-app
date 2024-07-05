@@ -12,7 +12,12 @@ import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ID } from '@/constant/constant';
 import { useLocalStorage } from '@/hooks';
 import { toYoctoNEAR } from '@/lib/helper';
-import { ContractMilestoneStatus, ContractType, MilestoneType } from '@/types';
+import {
+  ContractMilestoneStatus,
+  ContractType,
+  MilestoneType,
+  OfferType,
+} from '@/types';
 import { HelpCircle, TriangleAlert } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
@@ -20,14 +25,14 @@ export interface ContractOverviewProps {
   contract: ContractType;
   milestones?: MilestoneType[];
   isClient: boolean;
-  offerId?: string;
+  offer?: OfferType;
 }
 
 export const ContractOverview = ({
   contract,
   milestones,
   isClient,
-  offerId,
+  offer,
 }: ContractOverviewProps) => {
   const [contractApproved, setContractApproved] = useState<boolean>(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
@@ -48,7 +53,9 @@ export const ContractOverview = ({
         return ContractMilestoneStatus.Active;
       case 'Rejected':
         return ContractMilestoneStatus.FundingPending;
-      case 'PendingApproval':
+      case 'Completed':
+        return ContractMilestoneStatus.Approved;
+      case 'InReview':
       default:
         return ContractMilestoneStatus.InReview;
     }
@@ -59,8 +66,8 @@ export const ContractOverview = ({
     if (contract) {
       const response = await updateContractStatus(contract.id, 'NotStarted');
       if (response && response.status === 'success') {
-        if (offerId) {
-          await updateOfferStatus(offerId, 'Accepted');
+        if (offer) {
+          await updateOfferStatus(offer?.id, 'Accepted');
         }
         setContractApproved(true);
         toast({
@@ -112,8 +119,8 @@ export const ContractOverview = ({
     const response = await updateContractStatus(contract.id, 'Completed');
     if (response.status && response.status === 'success') {
       setLastChainOp('end_project');
-      if (offerId) {
-        await updateOfferStatus(offerId, 'Completed');
+      if (offer) {
+        await updateOfferStatus(offer?.id, 'Completed');
       }
       const wallet = await selector.wallet();
       await wallet
@@ -238,6 +245,7 @@ export const ContractOverview = ({
             projectId={contract.id}
             isClient={isClient}
             milestoneId={contract.id}
+            isFixedPrice={true}
           />
         )}
       </div>
@@ -265,7 +273,7 @@ export const ContractOverview = ({
               <Button
                 onClick={finishContract}
                 className='w-full md:w-1/6 lg:w-2/12 bg-sorbet text-white'
-                disabled={contract.status === 'Completed'}
+                disabled={offer?.status === 'Completed'}
               >
                 Finish Contract
               </Button>
