@@ -85,9 +85,11 @@ const SignInForm = () => {
         setActiveNearAccount(activeAccount);
 
         if (activeAccount) {
-          await getUserByAccountId(activeAccount);
-          setAccountNotFound(true);
-          await handleSignOut();
+          const response = await getUserByAccountId(activeAccount);
+          if (response.data == 'failed') {
+            setAccountNotFound(true);
+            await handleSignOut();
+          }
         }
       }
     };

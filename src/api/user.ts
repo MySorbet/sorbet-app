@@ -27,19 +27,13 @@ export const deleteProfileImageAsync = async (userId: string) => {
   }
 };
 
-// export const getUserByAccountId = async (accountId: string) => {
-//   const res = await runApi(
-//     'GET',
-//     `${API_URL}/users/findByAccountId/${accountId}`
-//   );
-//   return res;
-// };
-
 export const getUserByAccountId = async (accountId: string) => {
   try {
+    console.log('searching for user by account id');
     const response = await axios.get(
       `${API_URL}/users/findByAccountId/${accountId}`
     );
+    console.log('user found!: ', response.data);
     return response;
   } catch (error: any) {
     throw new Error(error.response.data.message);
