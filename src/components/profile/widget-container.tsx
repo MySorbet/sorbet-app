@@ -382,7 +382,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
-  if (isUserWidgetPending) return <Spinner />;
+  if (isUserWidgetPending)
+    return (
+      <div className='w-full h-full flex items-center justify-center'>
+        <Spinner />
+      </div>
+    );
 
   return (
     <>
