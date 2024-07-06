@@ -73,14 +73,26 @@ export const signUpWithWallet = async (
   }
 };
 
+// export const fetchUserDetails = async (token: string) => {
+//   try {
+//     const headers = { Authorization: `Bearer ${token}` };
+// const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
+//     return res.data;
+//   } catch (error) {
+//     console.error('Failed to fetch user details:', error);
+//     throw new Error('Error fetching user details');
+//   }
+// };
+
 export const fetchUserDetails = async (token: string) => {
+  const headers = { Authorization: `Bearer ${token}` };
+  const apiReqHeader = { headers };
+
   try {
-    const headers = { Authorization: `Bearer ${token}` };
-    const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
-    return res.data;
-  } catch (error) {
-    console.error('Failed to fetch user details:', error);
-    throw new Error('Error fetching user details');
+    const res = await axios.get(`${API_URL}/auth/me`, apiReqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 };
 

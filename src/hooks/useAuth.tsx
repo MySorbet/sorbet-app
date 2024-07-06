@@ -139,7 +139,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const response = await fetchUserDetails(accessToken as string);
-      const authenticatedUser = response as User;
+      const authenticatedUser = response.data as User;
 
       const balanceResponse = await getBalances(authenticatedUser.id);
       if (balanceResponse.status === 'success') {
