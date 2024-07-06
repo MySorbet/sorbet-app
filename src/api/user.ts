@@ -29,7 +29,6 @@ export const deleteProfileImageAsync = async (userId: string) => {
 
 export const getUserByAccountId = async (accountId: string) => {
   try {
-    console.log('searching for user by account id');
     const response = await axios.get(
       `${API_URL}/users/findByAccountId/${accountId}`
     );
@@ -45,6 +44,17 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
   const res = await runApi('POST', `${API_URL}/users/searchUsers`, reqBody);
   return res;
 };
+
+// export const getUsersBySearch = async (skills: string[], location: string) => {
+//   const reqBody = { skills, location }
+
+//   try {
+//     const res = await axios.post(`${API_URL}/users/searchUsers`, reqBody)
+//     return res
+//   } catch (error: any) {
+//     throw new Error(error.response.data.message)
+//   }
+// }
 
 export const updateUser = async (userToUpdate: User, userId: string) => {
   const apiReqHeader = validateToken({}, true);
@@ -77,6 +87,25 @@ export const getTransactions = async (
   return res;
 };
 
+// export const getTransactions = async (
+//   userId: string,
+//   currentPage: number = 1,
+//   itemsPerPage: number = 20
+// ) => {
+//   const queryParams = `?page=${currentPage}&limit=${itemsPerPage}`;
+//   const apiReqHeader = validateToken({}, true);
+
+//   try {
+//     const res = await axios.get(
+//       `${API_URL}/transactions/user/${userId}${queryParams}`,
+//       apiReqHeader
+//     );
+//     return res;
+//   } catch (error: any) {
+//     throw new Error(error.response.data.message);
+//   }
+// };
+
 export const getBalances = async (userId: string) => {
   const res = await runApi(
     'GET',
@@ -87,3 +116,13 @@ export const getBalances = async (userId: string) => {
   );
   return res;
 };
+
+// export const getBalances = async (userId: string) => {
+//   const apiReqHeader = validateToken({}, true)
+
+//   try {
+//     const res = axios.get(`${API_URL}/users/${userId}/balances`, apiReqHeader)
+//   } catch (error: any) {
+//     throw new Error(error.response.data.message)
+//   }
+// }
