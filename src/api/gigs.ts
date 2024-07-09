@@ -107,8 +107,6 @@ export const getContractForOffer = async (offerId: string) => {
       `${API_URL}/contracts/forOffer/${offerId}`,
       apiReqHeaders
     );
-    console.log('offerId', offerId);
-    console.log('res for getContractForOffer', res);
     return res;
   } catch (error: any) {
     throw new Error(error.response.data.message);
