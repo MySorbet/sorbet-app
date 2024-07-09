@@ -68,27 +68,18 @@ export const createContract = async (body: CreateContractType) => {
 
 export const getContractsForFreelancer = async (status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/contracts/freelance${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/contracts/freelance${queryParams}`,
+      apiReqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const getContractsForFreelancer = async (status?: string) => {
-//   const queryParams = status ? `?status=${status}` : ''
-//   const apiReqHeader = validateToken({}, true)
-
-//   try {
-//     const res = await axios.get(`${API_URL}/contracts/freelance${queryParams}`, apiReqHeader)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
 
 export const getClientFreelancerOffers = async (
   freelancerUsername: string,
