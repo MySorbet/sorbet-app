@@ -113,32 +113,39 @@ export const getContractForOffer = async (offerId: string) => {
   }
 };
 
+// export const updateContractStatus = async (
+//   contractId: string,
+//   status: string
+// ) => {
+//   const reqBody = { status };
+//   const res = await runApi(
+//     'PATCH',
+//     `${API_URL}/contracts/${contractId}/status`,
+//     reqBody,
+//     {},
+//     true
+//   );
+//   return res;
+// };
+
 export const updateContractStatus = async (
   contractId: string,
   status: string
 ) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/contracts/${contractId}/status`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/contracts/${contractId}/status`,
+      reqBody,
+      apiReqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const updateContractStatus = async (contractId: string, status: string) => {
-//   const reqBody = { status }
-//   const apiReqHeader = validateToken({}, true)
-
-//   try {
-//     const res = await axios.patch(`${API_URL}/contracts/${contractId}/status`, reqBody, apiReqHeader)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
 
 export const updateMilestoneStatus = async (
   milestoneId: string,
