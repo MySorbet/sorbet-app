@@ -53,6 +53,8 @@ export const ContractClientMilestone = ({
   const { user } = useAuth();
   const { toast } = useToast();
 
+  console.log('amount', amount);
+
   const mapStatusLabel = () => {
     switch (currentStatus) {
       case ContractMilestoneStatus.Active:

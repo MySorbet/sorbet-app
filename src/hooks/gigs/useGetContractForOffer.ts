@@ -1,6 +1,6 @@
 import { getContractForOffer } from '@/api/gigs';
 import { ActiveTab } from '@/app/gigs/gigs-comms';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 type useGetContractForOfferParams = {
   currentOfferId: string;
@@ -8,12 +8,19 @@ type useGetContractForOfferParams = {
   activeTab: ActiveTab;
 };
 
+interface Props {
+  currentOfferId: string;
+}
+
 export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   const { currentOfferId, isOpen, activeTab } = data;
 
   return useQuery({
-    queryKey: ['contractForOffer'],
-    queryFn: async () => await getContractForOffer(currentOfferId),
+    queryKey: ['contractForOffer', currentOfferId],
+    queryFn: async () => {
+      const res = await getContractForOffer(currentOfferId);
+      return res.data;
+    },
     enabled: isOpen && activeTab === ActiveTab.Contract,
   });
 };

@@ -173,7 +173,7 @@ export const ContractContainer = ({
       };
 
       const response = await createContract(reqBody);
-      if (response && response.status === 'success') {
+      if (response && response.data) {
         await createOnchainContract(response.data, currentOffer.username);
         setIsFormSubmitted(true);
         if (afterContractSubmited) {

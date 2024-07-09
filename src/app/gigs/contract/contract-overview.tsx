@@ -43,6 +43,8 @@ export const ContractOverview = ({
     ''
   );
   const { toast } = useToast();
+  console.log('contract', contract);
+  console.log('milestones', milestones);
 
   const mapContractStatusToMilestoneStatus = (status: string) => {
     switch (status) {
