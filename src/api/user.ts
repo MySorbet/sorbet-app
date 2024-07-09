@@ -84,22 +84,12 @@ export const getTransactions = async (
 };
 
 export const getBalances = async (userId: string) => {
-  const res = await runApi(
-    'GET',
-    `${API_URL}/users/${userId}/balances`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = axios.get(`${API_URL}/users/${userId}/balances`, apiReqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const getBalances = async (userId: string) => {
-//   const apiReqHeader = validateToken({}, true)
-
-//   try {
-//     const res = axios.get(`${API_URL}/users/${userId}/balances`, apiReqHeader)
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
