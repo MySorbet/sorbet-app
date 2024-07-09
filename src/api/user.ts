@@ -3,14 +3,13 @@ import { API_URL, runApi, validateToken } from '@/utils';
 import axios from 'axios';
 
 // [POST] /api/auth/signup
-
 export const getUserFromUserId = async (userId: string) => {
-  const res = await runApi(
-    'GET',
-    `${API_URL}/user/getUserFromUserId/${userId}`
-  );
-
-  return res;
+  try {
+    const res = await axios.get(`${API_URL}/user/getUserFromUserId/${userId}`);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 export const deleteProfileImageAsync = async (userId: string) => {
