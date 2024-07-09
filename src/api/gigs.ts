@@ -55,17 +55,6 @@ export const getClientOffers = async (clientId: string, status?: string) => {
   }
 };
 
-// export const createContract = async (body: CreateContractType) => {
-//   const res = await runApi(
-//     'POST',
-//     `${API_URL}/contracts`,
-//     body,
-//     undefined,
-//     true
-//   );
-//   return res;
-// };
-
 export const createContract = async (body: CreateContractType) => {
   const apiReqHeader = validateToken({}, true);
 
