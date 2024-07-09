@@ -40,20 +40,14 @@ export const getUserByAccountId = async (accountId: string) => {
 
 export const getUsersBySearch = async (skills: string[], location: string) => {
   const reqBody = { skills, location };
-  const res = await runApi('POST', `${API_URL}/users/searchUsers`, reqBody);
-  return res;
+
+  try {
+    const res = await axios.post(`${API_URL}/users/searchUsers`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const getUsersBySearch = async (skills: string[], location: string) => {
-//   const reqBody = { skills, location }
-
-//   try {
-//     const res = await axios.post(`${API_URL}/users/searchUsers`, reqBody)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
 
 export const updateUser = async (userToUpdate: User, userId: string) => {
   const apiReqHeader = validateToken({}, true);
