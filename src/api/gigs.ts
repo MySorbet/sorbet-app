@@ -86,27 +86,19 @@ export const getClientFreelancerOffers = async (
   clientUsername: string
 ) => {
   const reqBody = { freelancerUsername, clientUsername };
-  const res = await runApi(
-    'POST',
-    `${API_URL}/offers/between-participants`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(
+      `${API_URL}/offers/between-participants`,
+      reqBody,
+      apiReqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const getClientFreelancerOffers = async (freelancerUsername: string, clientUsername: string) => {
-//   const reqBody = { freelancerUsername, clientUsername }
-//   const apiReqHeader = validateToken({}, true)
-
-//   try {
-//     const res = await axios.post(`${API_URL}/offers/between-participants`, reqBody, apiReqHeader)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
 
 export const getContractForOffer = async (offerId: string) => {
   const apiReqHeaders = validateToken({}, true);
