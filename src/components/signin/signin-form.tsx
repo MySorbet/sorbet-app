@@ -85,7 +85,6 @@ const SignInForm = () => {
         setActiveNearAccount(activeAccount);
 
         if (activeAccount) {
-          console.log('activeAccount', activeAccount);
           const response = await getUserByAccountId(activeAccount);
           if (response.data == 'failed') {
             setAccountNotFound(true);

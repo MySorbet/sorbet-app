@@ -31,7 +31,6 @@ export const getUserByAccountId = async (accountId: string) => {
     const response = await axios.get(
       `${API_URL}/users/findByAccountId/${accountId}`
     );
-    console.log('user found!: ', response.data);
     return response;
   } catch (error: any) {
     throw new Error(error.response.data.message);
