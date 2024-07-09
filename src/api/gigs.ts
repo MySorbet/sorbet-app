@@ -8,27 +8,19 @@ export const findContractsWithFreelancer = async ({
   clientUsername,
 }: FindContractsType) => {
   const reqBody = { freelancerUsername, clientUsername };
-  const res = await runApi(
-    'POST',
-    `${API_URL}/contracts/with-freelancer`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(
+      `${API_URL}/contracts/with-freelancer`,
+      reqBody,
+      apiReqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const findContractsWithFreelancer = async ({ freelancerUsername, clientUsername }: FindContractsType) => {
-//   const reqBody = { freelancerUsername, clientUsername }
-//   const apiReqHeader = validateToken({}, true)
-
-//   try {
-//     const res = await axios.post(`${API_URL}/contracts/with-freelancer`, reqBody, apiReqHeader)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
 
 export const getFreelancerOffers = async (
   freelancerUserId: string,
