@@ -169,18 +169,12 @@ export const updateOfferStatus = async (offerId: string, status: string) => {
 
 export const createOffer = async (body: CreateOfferType) => {
   const reqBody = body;
-  const res = await runApi('POST', `${API_URL}/offers`, reqBody, {}, true);
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(`${API_URL}/offers`, reqBody, apiReqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const createOffer = async (body: CreateOfferType) => {
-//   const reqBody = body
-//   const apiReqHeader = validateToken({}, true)
-
-//   try {
-//     const res = await axios.post(`${API_URL}/offers`, reqBody, apiReqHeader)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
