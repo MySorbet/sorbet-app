@@ -113,21 +113,6 @@ export const getContractForOffer = async (offerId: string) => {
   }
 };
 
-// export const updateContractStatus = async (
-//   contractId: string,
-//   status: string
-// ) => {
-//   const reqBody = { status };
-//   const res = await runApi(
-//     'PATCH',
-//     `${API_URL}/contracts/${contractId}/status`,
-//     reqBody,
-//     {},
-//     true
-//   );
-//   return res;
-// };
-
 export const updateContractStatus = async (
   contractId: string,
   status: string
@@ -152,14 +137,18 @@ export const updateMilestoneStatus = async (
   status: string
 ) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/milestones/${milestoneId}/status`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/milestones/${milestoneId}/status`,
+      reqBody,
+      apiReqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
 
 export const updateOfferStatus = async (offerId: string, status: string) => {
