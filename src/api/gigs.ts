@@ -55,27 +55,27 @@ export const getClientOffers = async (clientId: string, status?: string) => {
   }
 };
 
-export const createContract = async (body: CreateContractType) => {
-  const res = await runApi(
-    'POST',
-    `${API_URL}/contracts`,
-    body,
-    undefined,
-    true
-  );
-  return res;
-};
-
 // export const createContract = async (body: CreateContractType) => {
-//   const apiReqHeader = validateToken({}, true)
+//   const res = await runApi(
+//     'POST',
+//     `${API_URL}/contracts`,
+//     body,
+//     undefined,
+//     true
+//   );
+//   return res;
+// };
 
-//   try {
-//     const res = await axios.post(`${API_URL}/contracts`, body, apiReqHeader)
-//     return res
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message)
-//   }
-// }
+export const createContract = async (body: CreateContractType) => {
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(`${API_URL}/contracts`, body, apiReqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
 
 export const getContractsForFreelancer = async (status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
