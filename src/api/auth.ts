@@ -31,12 +31,6 @@ export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
 };
 
 // [POST] /api/auth/signin
-// export const signInWithWallet = async (address: string) => {
-//   const reqBody = { address };
-// const res = await runApi('POST', `${API_URL}/auth/signin/wallet`, reqBody);
-//   return res;
-// };
-
 export const signInWithWallet = async (address: string) => {
   const reqBody = { address };
   try {
@@ -54,24 +48,14 @@ export const signUpWithWallet = async (
   phone: string | null
 ) => {
   const reqBody = { address, email, phone };
-  const res = await runApi('POST', `${API_URL}/auth/signup/wallet`, reqBody);
-  return res;
+
+  try {
+    const res = axios.post(`${API_URL}/auth/signup/wallet`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const signUpWithWallet = async (
-//   address: string,
-//   email: string | null,
-//   phone: string | null
-// ) => {
-//   const reqBody = { address, email, phone };
-
-//   try {
-//     const res = axios.post(`${API_URL}/auth/signup/wallet`, reqBody);
-//     return res;
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message);
-//   }
-// };
 
 // export const fetchUserDetails = async (token: string) => {
 //   try {
