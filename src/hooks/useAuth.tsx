@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await signInWithWallet(accountId);
       console.log('wallet sign in res', response);
-      if (response.status === 'success') {
+      if (response.data) {
         const user = response.data.user;
         const token = response.data.access_token;
         setUser(user);
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return {
           ...response,
           status: 'failed',
-          message: response.message,
+          message: 'Failed to sign in with wallet',
         };
       }
     } catch (error) {

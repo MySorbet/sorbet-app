@@ -31,21 +31,21 @@ export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
 };
 
 // [POST] /api/auth/signin
-export const signInWithWallet = async (address: string) => {
-  const reqBody = { address };
-  const res = await runApi('POST', `${API_URL}/auth/signin/wallet`, reqBody);
-  return res;
-};
-
 // export const signInWithWallet = async (address: string) => {
 //   const reqBody = { address };
-//   try {
-//     const res = await axios.post(`${API_URL}/auth/signin/wallet`, reqBody);
-//     return res;
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message);
-//   }
+// const res = await runApi('POST', `${API_URL}/auth/signin/wallet`, reqBody);
+//   return res;
 // };
+
+export const signInWithWallet = async (address: string) => {
+  const reqBody = { address };
+  try {
+    const res = await axios.post(`${API_URL}/auth/signin/wallet`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+};
 
 // [POST] /api/auth/signin
 export const signUpWithWallet = async (

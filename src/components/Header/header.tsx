@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Notifications } from '@/components/header/notifications';
+import { Notifications } from '@/components/Header/notifications';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
         {!isPublic && (
           <div className='flex items-center justify-end gap-4'>
             <div className='flex flex-row align-center gap-2 items-center'>
-              {/* <Notifications /> */}
+              <Notifications />
               <div>
                 <img
                   src='/images/menu.svg'
