@@ -1,7 +1,6 @@
 import { currentNetwork } from '@/lib/config';
-import { User } from '@/types';
 import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
-import { API_URL, getFormatedResponse, runApi } from '@/utils';
+import { API_URL } from '@/utils';
 import axios from 'axios';
 
 export const signUpAsync = async ({
