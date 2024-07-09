@@ -1,6 +1,6 @@
-import { CreateContractType, CreateOfferType, User } from '@/types';
+import { CreateContractType, CreateOfferType } from '@/types';
 import { FindContractsType } from '@/types';
-import { API_URL, getFormatedResponse, runApi, validateToken } from '@/utils';
+import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
 
 export const findContractsWithFreelancer = async ({
