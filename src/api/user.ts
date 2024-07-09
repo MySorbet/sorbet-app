@@ -70,34 +70,18 @@ export const getTransactions = async (
   itemsPerPage: number = 20
 ) => {
   const queryParams = `?page=${currentPage}&limit=${itemsPerPage}`;
-  const res = await runApi(
-    'GET',
-    `${API_URL}/transactions/user/${userId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/transactions/user/${userId}${queryParams}`,
+      apiReqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
 };
-
-// export const getTransactions = async (
-//   userId: string,
-//   currentPage: number = 1,
-//   itemsPerPage: number = 20
-// ) => {
-//   const queryParams = `?page=${currentPage}&limit=${itemsPerPage}`;
-//   const apiReqHeader = validateToken({}, true);
-
-//   try {
-//     const res = await axios.get(
-//       `${API_URL}/transactions/user/${userId}${queryParams}`,
-//       apiReqHeader
-//     );
-//     return res;
-//   } catch (error: any) {
-//     throw new Error(error.response.data.message);
-//   }
-// };
 
 export const getBalances = async (userId: string) => {
   const res = await runApi(

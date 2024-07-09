@@ -26,7 +26,7 @@ export const WalletContainer = () => {
             pageNumber,
             itemsPerPage
           );
-          if (response.status === 'success' && response.data) {
+          if (response && response.data) {
             if (response.data.data.length > 0) {
               setTransactionsData({
                 transactions: response.data.data,
