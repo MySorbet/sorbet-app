@@ -13,7 +13,11 @@ import {
 import { Input } from '../ui/input';
 import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { Loading, useWalletSelector } from '@/components/common';
-import { useSignUpAsync, useLoginWithEmail } from '@/hooks';
+import {
+  useCheckIsAccountAvailable,
+  useLoginWithEmail,
+  useSignUpAsync,
+} from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import Link from 'next/link';
@@ -87,7 +91,6 @@ const SignUpForm = () => {
         timestamp: timestamp,
       };
       localStorage.setItem('signupForm', JSON.stringify(dataToStore));
-      console.log('Saving form state', dataToStore);
     }
   }, [formValues, isValid]);
 
