@@ -58,7 +58,11 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
 
   useEffect(() => {
     setFreelancerUsername(params.username);
-    setClientUsername(loggedInUser ? loggedInUser.accountId : undefined);
+    setClientUsername(
+      loggedInUser && loggedInUser.accountId
+        ? loggedInUser.accountId.split('.')[0]
+        : undefined
+    );
 
     const fetchUser = async () => {
       if (params.username.length > 0) {
