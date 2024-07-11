@@ -1,4 +1,4 @@
-import { API_URL, runApi, validateToken } from '@/utils';
+import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
 
 export const uploadProfileImageAsync = async (data: FormData) => {

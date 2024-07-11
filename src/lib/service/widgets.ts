@@ -16,7 +16,7 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { runApi, validateToken } from '@/utils';
+import { validateToken } from '@/utils';
 import axios from 'axios';
 
 export const getWidgetContent = async ({
@@ -66,17 +66,16 @@ export const getWidgetContent = async ({
 };
 
 export const getWidgetsByUsername = async (username: string) => {
-  const response = await runApi(
-    'GET',
-    `${config.devApiUrl}/widgets/username/${username}`,
-    {},
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
+  const apiReqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${config.devApiUrl}/widgets/username/${username}`,
+      apiReqHeader
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -135,18 +134,17 @@ export const updateWidget = async (
     payload = { ...payload, size: widgetSizeAsString };
   }
 
-  const response = await runApi(
-    'PATCH',
-    `${config.devApiUrl}/widgets/${widgetId}`,
-    payload,
-    {},
-    true
-  );
+  const apiReqHeader = validateToken({}, true);
 
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
+  try {
+    const res = await axios.patch(
+      `${config.devApiUrl}/widgets/${widgetId}`,
+      payload,
+      apiReqHeader
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 };
 

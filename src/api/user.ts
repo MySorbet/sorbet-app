@@ -1,5 +1,5 @@
 import { User } from '@/types';
-import { API_URL, runApi, validateToken } from '@/utils';
+import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
 
 // [POST] /api/auth/signup
