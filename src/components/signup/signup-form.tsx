@@ -87,7 +87,6 @@ const SignUpForm = () => {
         timestamp: timestamp,
       };
       localStorage.setItem('signupForm', JSON.stringify(dataToStore));
-      console.log('Saving form state', dataToStore);
     }
   }, [formValues, isValid]);
 

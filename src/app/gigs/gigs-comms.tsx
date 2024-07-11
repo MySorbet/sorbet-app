@@ -18,6 +18,7 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useToast } from '@/components/ui/use-toast';
 import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { MilestoneType, OfferType } from '@/types';
@@ -26,6 +27,7 @@ import {
   MessageCircle as IconMessage,
 } from 'lucide-react';
 import React, { useState } from 'react';
+import { useEffect } from 'react-resizable-panels/dist/declarations/src/vendor/react';
 
 export interface GigsCommsProps {
   isOpen?: boolean;
@@ -94,17 +96,25 @@ export const GigsComms = ({
 }: GigsCommsProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Chat);
   const [offers, setOffers] = useState([]);
+  const { toast } = useToast();
 
   const {
     isPending: getContractPending,
     data: contractData,
     // error: getContractError,
-    // isError: isGetContractError,
+    isError: isGetContractError,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
+
+  useEffect(() => {
+    toast({
+      title: 'Unable to fetch contract information',
+      description: 'If the problem persists, please contract support',
+    });
+  }, [isGetContractError]);
 
   const handlewNewMessage = async (newMessage: Message) => {};
 
