@@ -15,8 +15,8 @@ import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { Loading, useWalletSelector } from '@/components/common';
 import {
   useCheckIsAccountAvailable,
-  useSignUpAsync,
   useLoginWithEmail,
+  useSignUpAsync,
 } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
@@ -96,7 +96,6 @@ const SignUpForm = () => {
         timestamp: timestamp,
       };
       localStorage.setItem('signupForm', JSON.stringify(dataToStore));
-      console.log('Saving form state', dataToStore);
     }
   }, [formValues, isValid]);
 
