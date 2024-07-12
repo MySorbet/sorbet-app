@@ -100,7 +100,6 @@ export const checkIsAccountAvailable = async (username: string) => {
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
-    // console.error('Error checking account availability:', error)
     throw new Error(error.response.data.message);
   }
 };
