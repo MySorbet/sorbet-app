@@ -8,7 +8,9 @@ export const getUserFromUserId = async (userId: string) => {
     const res = await axios.get(`${API_URL}/user/getUserFromUserId/${userId}`);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get get user from userId: ${error.response.data.message}`
+    );
   }
 };
 
@@ -22,7 +24,9 @@ export const deleteProfileImageAsync = async (userId: string) => {
     );
     return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to delete profile image: ${error.response.data.message}`
+    );
   }
 };
 
@@ -33,7 +37,9 @@ export const getUserByAccountId = async (accountId: string) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get user by account id: ${error.response.data.message}`
+    );
   }
 };
 
@@ -44,7 +50,9 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
     const res = await axios.post(`${API_URL}/users/searchUsers`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get users by search: ${error.response.data.message}`
+    );
   }
 };
 
@@ -59,7 +67,7 @@ export const updateUser = async (userToUpdate: User, userId: string) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to update user: ${error.response.data.message}`);
   }
 };
 
@@ -78,7 +86,9 @@ export const getTransactions = async (
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get transaction: ${error.response.data.message}`
+    );
   }
 };
 
@@ -89,6 +99,6 @@ export const getBalances = async (userId: string) => {
     const res = axios.get(`${API_URL}/users/${userId}/balances`, reqHeader);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to get balances: ${error.response.data.message}`);
   }
 };

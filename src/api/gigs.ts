@@ -18,7 +18,9 @@ export const findContractsWithFreelancer = async ({
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to find contracts with freelancer: ${error.response.data.message}`
+    );
   }
 };
 
@@ -36,7 +38,9 @@ export const getFreelancerOffers = async (
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(
+      `Failed to get freelancer offers: ${error.response.data.message}`
+    );
   }
 };
 
@@ -51,7 +55,9 @@ export const getClientOffers = async (clientId: string, status?: string) => {
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(
+      `Failed to get client offers: ${error.response.data.message}`
+    );
   }
 };
 
@@ -62,7 +68,9 @@ export const createContract = async (body: CreateContractType) => {
     const res = await axios.post(`${API_URL}/contracts`, body, reqHeader);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to create contract: ${error.response.data.message}`
+    );
   }
 };
 
@@ -77,7 +85,9 @@ export const getContractsForFreelancer = async (status?: string) => {
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get contracts for freelancer: ${error.response.data.message}`
+    );
   }
 };
 
@@ -96,7 +106,9 @@ export const getClientFreelancerOffers = async (
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get client freelancer offers: ${error.response.data.message}`
+    );
   }
 };
 
@@ -109,7 +121,9 @@ export const getContractForOffer = async (offerId: string) => {
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to contract for offer: ${error.response.data.message}`
+    );
   }
 };
 
@@ -128,7 +142,9 @@ export const updateContractStatus = async (
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to update contract status: ${error.response.data.message}`
+    );
   }
 };
 
@@ -147,7 +163,9 @@ export const updateMilestoneStatus = async (
     );
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to update milestone status: ${error.response.data.message}`
+    );
   }
 };
 
@@ -163,7 +181,7 @@ export const updateOfferStatus = async (offerId: string, status: string) => {
     );
     return res;
   } catch (error: any) {
-    throw new Error('Failed to reject offer');
+    throw new Error(`Failed to reject offer: ${error.response.data.message}`);
   }
 };
 
@@ -175,6 +193,6 @@ export const createOffer = async (body: CreateOfferType) => {
     const res = await axios.post(`${API_URL}/offers`, reqBody, reqHeader);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to create offer: ${error.response.data.message}`);
   }
 };

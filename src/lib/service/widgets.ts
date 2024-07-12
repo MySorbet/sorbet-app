@@ -75,7 +75,9 @@ export const getWidgetsByUsername = async (username: string) => {
     );
     return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get widgets for ${username}: ${error.response.data.message}`
+    );
   }
 };
 
@@ -90,7 +92,9 @@ export const getWidgetsForUser = async (userId: string) => {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response.data.message);
+      throw new Error(
+        `Failed to fetch widgets for user: ${error.response.data.message}`
+      );
     }
   } else {
     throw new Error('No user found');
@@ -109,7 +113,9 @@ export const updateWidgetsBulk = async (
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to update widgets in bulk: ${error.response.data.message}`
+    );
   }
 };
 
@@ -144,7 +150,7 @@ export const updateWidget = async (
     );
     return res.data;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to update widget: ${error.response.data.message}`);
   }
 };
 
@@ -158,7 +164,7 @@ export const deleteWidget = async (id: string) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to delete widget: ${error.response.data.message}`);
   }
 };
 
@@ -174,7 +180,9 @@ export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get DribbbleShot: ${error.response.data.message}`
+    );
   }
 };
 
@@ -190,7 +198,9 @@ export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Behance item: ${error.response.data.message}`
+    );
   }
 };
 
@@ -208,7 +218,9 @@ export const getMediumArticleMetadata = async ({
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Medium article metadata: ${error.response.data.message}`
+    );
   }
 };
 
@@ -224,7 +236,9 @@ export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get YouTube video metadata: ${error.response.data.message}`
+    );
   }
 };
 
@@ -240,7 +254,9 @@ export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Substack metadata: ${error.response.data.message}`
+    );
   }
 };
 
@@ -256,7 +272,9 @@ export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Spotify album details: ${error.response.data.message}`
+    );
   }
 };
 
@@ -272,7 +290,9 @@ export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Spotify song details: ${error.response.data.message}`
+    );
   }
 };
 
@@ -288,7 +308,9 @@ export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Soundcloud track details: ${error.response.data.message}`
+    );
   }
 };
 
@@ -306,7 +328,9 @@ export const getInstagramProfileMetadata = async ({
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Instagram profile metadata: ${error.response.data.message}`
+    );
   }
 };
 
@@ -322,7 +346,9 @@ export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get photo widget: ${error.response.data.message}`
+    );
   }
 };
 
@@ -338,7 +364,9 @@ export const getGithubProfile = async ({ url }: GetGithubWidget) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Github profile data: ${error.response.data.message}`
+    );
   }
 };
 
@@ -354,6 +382,8 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Twitter profile data: ${error.response.data.message}`
+    );
   }
 };

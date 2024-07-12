@@ -12,7 +12,9 @@ export const uploadProfileImageAsync = async (data: FormData) => {
 
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to upload profile image: ${error.response.data.message}`
+    );
   }
 };
 
@@ -27,6 +29,8 @@ export const uploadWidgetsImageAsync = async (data: FormData) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to upload widgets image: ${error.response.data.message}`
+    );
   }
 };
