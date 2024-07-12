@@ -13,12 +13,12 @@ export const getUserFromUserId = async (userId: string) => {
 };
 
 export const deleteProfileImageAsync = async (userId: string) => {
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.delete(
       `${API_URL}/images/delete/${userId}`,
-      apiReqHeaders
+      reqHeader
     );
     return res.data;
   } catch (error: any) {
@@ -49,13 +49,13 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
 };
 
 export const updateUser = async (userToUpdate: User, userId: string) => {
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.patch(
       `${API_URL}/users/${userId}`,
       userToUpdate,
-      apiReqHeader
+      reqHeader
     );
     return response;
   } catch (error: any) {
@@ -69,12 +69,12 @@ export const getTransactions = async (
   itemsPerPage: number = 20
 ) => {
   const queryParams = `?page=${currentPage}&limit=${itemsPerPage}`;
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.get(
       `${API_URL}/transactions/user/${userId}${queryParams}`,
-      apiReqHeader
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -83,10 +83,10 @@ export const getTransactions = async (
 };
 
 export const getBalances = async (userId: string) => {
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
-    const res = axios.get(`${API_URL}/users/${userId}/balances`, apiReqHeader);
+    const res = axios.get(`${API_URL}/users/${userId}/balances`, reqHeader);
     return res;
   } catch (error: any) {
     throw new Error(error.response.data.message);

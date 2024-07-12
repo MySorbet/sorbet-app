@@ -8,13 +8,13 @@ export const findContractsWithFreelancer = async ({
   clientUsername,
 }: FindContractsType) => {
   const reqBody = { freelancerUsername, clientUsername };
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.post(
       `${API_URL}/contracts/with-freelancer`,
       reqBody,
-      apiReqHeader
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -27,12 +27,12 @@ export const getFreelancerOffers = async (
   status?: string
 ) => {
   const queryParams = status ? `?status=${status}` : '';
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.get(
       `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
-      apiReqHeaders
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -42,12 +42,12 @@ export const getFreelancerOffers = async (
 
 export const getClientOffers = async (clientId: string, status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.get(
       `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
-      apiReqHeaders
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -56,10 +56,10 @@ export const getClientOffers = async (clientId: string, status?: string) => {
 };
 
 export const createContract = async (body: CreateContractType) => {
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
-    const res = await axios.post(`${API_URL}/contracts`, body, apiReqHeader);
+    const res = await axios.post(`${API_URL}/contracts`, body, reqHeader);
     return res;
   } catch (error: any) {
     throw new Error(error.response.data.message);
@@ -68,12 +68,12 @@ export const createContract = async (body: CreateContractType) => {
 
 export const getContractsForFreelancer = async (status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.get(
       `${API_URL}/contracts/freelance${queryParams}`,
-      apiReqHeader
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -86,13 +86,13 @@ export const getClientFreelancerOffers = async (
   clientUsername: string
 ) => {
   const reqBody = { freelancerUsername, clientUsername };
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.post(
       `${API_URL}/offers/between-participants`,
       reqBody,
-      apiReqHeader
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -101,11 +101,11 @@ export const getClientFreelancerOffers = async (
 };
 
 export const getContractForOffer = async (offerId: string) => {
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
   try {
     const res = await axios.get(
       `${API_URL}/contracts/forOffer/${offerId}`,
-      apiReqHeaders
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -118,13 +118,13 @@ export const updateContractStatus = async (
   status: string
 ) => {
   const reqBody = { status };
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.patch(
       `${API_URL}/contracts/${contractId}/status`,
       reqBody,
-      apiReqHeader
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -137,13 +137,13 @@ export const updateMilestoneStatus = async (
   status: string
 ) => {
   const reqBody = { status };
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.patch(
       `${API_URL}/milestones/${milestoneId}/status`,
       reqBody,
-      apiReqHeader
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -153,13 +153,13 @@ export const updateMilestoneStatus = async (
 
 export const updateOfferStatus = async (offerId: string, status: string) => {
   const reqBody = { status };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const res = await axios.patch(
       `${API_URL}/offers/status/${offerId}`,
       reqBody,
-      apiReqHeaders
+      reqHeader
     );
     return res;
   } catch (error: any) {
@@ -169,10 +169,10 @@ export const updateOfferStatus = async (offerId: string, status: string) => {
 
 export const createOffer = async (body: CreateOfferType) => {
   const reqBody = body;
-  const apiReqHeader = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
-    const res = await axios.post(`${API_URL}/offers`, reqBody, apiReqHeader);
+    const res = await axios.post(`${API_URL}/offers`, reqBody, reqHeader);
     return res;
   } catch (error: any) {
     throw new Error(error.response.data.message);

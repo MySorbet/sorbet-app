@@ -5,20 +5,20 @@ import { config } from '@/lib/config';
 export const API_URL = config.devApiUrl;
 
 export const validateToken = (headers?: any, includeAuth: boolean = false) => {
-  let apiReqHeader = { headers };
+  let reqHeader = { headers };
 
   if (includeAuth) {
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
-      apiReqHeader = {
-        ...apiReqHeader,
+      reqHeader = {
+        ...reqHeader,
         headers: {
-          ...apiReqHeader.headers,
+          ...reqHeader.headers,
           Authorization: `Bearer ${accessToken.replace(/['"]+/g, '')}`,
         },
       };
     }
   }
 
-  return apiReqHeader;
+  return reqHeader;
 };
