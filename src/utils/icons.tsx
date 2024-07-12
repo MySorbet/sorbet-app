@@ -31,8 +31,7 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname;
     const pathname = urlObj.pathname;
-    const domainParts = hostname.split('.')
-    console.log('domainParts', domainParts)
+    const domainParts = hostname.split('.');
     let platform =
       domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
 
