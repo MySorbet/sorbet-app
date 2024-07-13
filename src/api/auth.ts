@@ -58,10 +58,10 @@ export const signUpWithWallet = async (
 
 export const fetchUserDetails = async (token: string) => {
   const headers = { Authorization: `Bearer ${token}` };
-  const apiReqHeader = { headers };
+  const reqHeader = { headers };
 
   try {
-    const res = await axios.get(`${API_URL}/auth/me`, apiReqHeader);
+    const res = await axios.get(`${API_URL}/auth/me`, reqHeader);
     return res;
   } catch (error: any) {
     throw new Error(error.response.data.message);
@@ -100,7 +100,6 @@ export const checkIsAccountAvailable = async (username: string) => {
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
-    // console.error('Error checking account availability:', error)
     throw new Error(error.response.data.message);
   }
 };

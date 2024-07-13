@@ -16,7 +16,7 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { runApi, validateToken } from '@/utils';
+import { validateToken } from '@/utils';
 import axios from 'axios';
 
 export const getWidgetContent = async ({
@@ -66,32 +66,35 @@ export const getWidgetContent = async ({
 };
 
 export const getWidgetsByUsername = async (username: string) => {
-  const response = await runApi(
-    'GET',
-    `${config.devApiUrl}/widgets/username/${username}`,
-    {},
-    {},
-    true
-  );
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${config.devApiUrl}/widgets/username/${username}`,
+      reqHeader
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get widgets for ${username}: ${error.response.data.message}`
+    );
   }
 };
 
 export const getWidgetsForUser = async (userId: string) => {
   if (userId !== null) {
-    const apiReqHeaders = validateToken({}, true);
+    const reqHeader = validateToken({}, true);
 
     try {
       const response = await axios.get(
         `${config.devApiUrl}/widgets/user/${userId}`,
-        apiReqHeaders
+        reqHeader
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response.data.message);
+      throw new Error(
+        `Failed to fetch widgets for user: ${error.response.data.message}`
+      );
     }
   } else {
     throw new Error('No user found');
@@ -101,16 +104,18 @@ export const getWidgetsForUser = async (userId: string) => {
 export const updateWidgetsBulk = async (
   widgetLayouts: UpdateWidgetsBulkDto[]
 ) => {
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
   try {
     const response = await axios.patch(
       `${config.devApiUrl}/widgets/bulk-update`,
       widgetLayouts,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to update widgets in bulk: ${error.response.data.message}`
+    );
   }
 };
 
@@ -135,64 +140,67 @@ export const updateWidget = async (
     payload = { ...payload, size: widgetSizeAsString };
   }
 
-  const response = await runApi(
-    'PATCH',
-    `${config.devApiUrl}/widgets/${widgetId}`,
-    payload,
-    {},
-    true
-  );
+  const reqHeader = validateToken({}, true);
 
-  if (response.statusCode >= 200 && response.statusCode < 300) {
-    return response.data;
-  } else {
-    throw new Error(`Error ${response.status}: ${response.message}`);
+  try {
+    const res = await axios.patch(
+      `${config.devApiUrl}/widgets/${widgetId}`,
+      payload,
+      reqHeader
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(`Failed to update widget: ${error.response.data.message}`);
   }
 };
 
 export const deleteWidget = async (id: string) => {
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.delete(
       `${config.devApiUrl}/widgets/${id}`,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to delete widget: ${error.response.data.message}`);
   }
 };
 
 export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
   const body: GetDribbleShotType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/dribbble`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get DribbbleShot: ${error.response.data.message}`
+    );
   }
 };
 
 export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = axios.post(
       `${config.devApiUrl}/widgets/behance`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Behance item: ${error.response.data.message}`
+    );
   }
 };
 
@@ -200,97 +208,109 @@ export const getMediumArticleMetadata = async ({
   url,
 }: GetMediumArticleType) => {
   const body: GetMediumArticleType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/medium`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Medium article metadata: ${error.response.data.message}`
+    );
   }
 };
 
 export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
   const body: GetYouTubeVideoType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/youtube`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get YouTube video metadata: ${error.response.data.message}`
+    );
   }
 };
 
 export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
   const body: GetSubstackArticleType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/substack`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Substack metadata: ${error.response.data.message}`
+    );
   }
 };
 
 export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/spotify/album`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Spotify album details: ${error.response.data.message}`
+    );
   }
 };
 
 export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/spotify/song`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Spotify song details: ${error.response.data.message}`
+    );
   }
 };
 
 export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/soundcloud`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Soundcloud track details: ${error.response.data.message}`
+    );
   }
 };
 
@@ -298,64 +318,72 @@ export const getInstagramProfileMetadata = async ({
   url,
 }: GetInstagramType) => {
   const body: GetInstagramType = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/instagram`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Instagram profile metadata: ${error.response.data.message}`
+    );
   }
 };
 
 export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
   const body: GetPhotoWidget = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/photo`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get photo widget: ${error.response.data.message}`
+    );
   }
 };
 
 export const getGithubProfile = async ({ url }: GetGithubWidget) => {
   const body: GetGithubWidget = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/github`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Github profile data: ${error.response.data.message}`
+    );
   }
 };
 
 export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
   const body: GetTwitterWidget = { url };
-  const apiReqHeaders = validateToken({}, true);
+  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.devApiUrl}/widgets/twitter`,
       body,
-      apiReqHeaders
+      reqHeader
     );
     return response;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get Twitter profile data: ${error.response.data.message}`
+    );
   }
 };
