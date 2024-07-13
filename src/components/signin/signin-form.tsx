@@ -4,7 +4,6 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { FormContainer } from './form-container';
-// import { getUserByAccountId } from '@/api/user';
 import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
@@ -86,7 +85,7 @@ const SignInForm = () => {
 
         if (activeAccount) {
           const response = await getUserByAccountId(activeAccount);
-          if (response.data == 'failed') {
+          if (response.data === 'failed') {
             setAccountNotFound(true);
             await handleSignOut();
           }

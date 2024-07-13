@@ -26,7 +26,12 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+import React, { useState } from 'react';
+import { useEffect } from 'react-resizable-panels/dist/declarations/src/vendor/react';
+>>>>>>> sendbird-test
 
 export interface GigsCommsProps {
   isOpen?: boolean;
@@ -100,7 +105,7 @@ export const GigsComms = ({
   const {
     isPending: getContractPending,
     data: contractData,
-    error: getContractError,
+    // error: getContractError,
     isError: isGetContractError,
   } = useGetContractForOffer({
     currentOfferId,
@@ -109,7 +114,7 @@ export const GigsComms = ({
   });
 
   useEffect(() => {
-    if (isGetContractError == true) {
+    if (isGetContractError === true) {
       toast({
         title: 'Unable to fetch contract information',
         description: 'If the problem persists, please contract support',
@@ -117,7 +122,7 @@ export const GigsComms = ({
     }
   }, [isGetContractError]);
 
-  const handlewNewMessage = async (newMessage: Message) => {};
+  const handlewNewMessage = async (newMessage: Message) => { };
 
   const renderContractView = () => {
     if (isClient) {
