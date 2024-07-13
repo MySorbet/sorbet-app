@@ -2,6 +2,7 @@
 import { Notifications } from '@/components/Header/notifications';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -17,7 +18,7 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
       <div className='flex w-full justify-between container mx-auto py-4'>
         <div className='flex gap-6'>
           <Link href='/'>
-            <img src='/svg/logo.svg' alt='logo' width={44} height={44} />
+            <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
           </Link>
         </div>
         {!isPublic && (

@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks';
 import { useLoginWithEmail, useGetUserByAccountId } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { randomBytes } from 'crypto';
-import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
+import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -105,11 +105,11 @@ const SignInForm = () => {
         const accountId = params.get('accountId');
         const signature = params.get('signature');
         const publicKey = params.get('publicKey');
+        setLoading(true);
 
         if (accountId && signature && publicKey) {
           const response = await loginWithWallet(accountId);
           if (response.status === 'success') {
-            setLoading(false);
             router?.push('/');
           } else {
             toast({
@@ -227,8 +227,14 @@ const SignInForm = () => {
                   className='group-hover:stroke-white'
                 />
               </svg>
-              Connect Wallet
+              {accounts.length > 0 ? 'Sign message to login' : 'Connect Wallet'}
             </Button>
+            {accounts.length > 0 && (
+              <div>
+                Wallet Detected:
+                <span className='font-bold text-sorbet'> {accountId}</span>
+              </div>
+            )}
           </div>
           <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
             Don't have an account?{' '}
