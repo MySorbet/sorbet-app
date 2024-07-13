@@ -15,7 +15,7 @@ export const signUpAsync = async ({
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to sign up: ${error.response.data.message}`);
   }
 };
 
@@ -25,7 +25,7 @@ export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
     const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(`Failed to sign in: ${error.response.data.message}`);
   }
 };
 
@@ -36,7 +36,9 @@ export const signInWithWallet = async (address: string) => {
     const res = await axios.post(`${API_URL}/auth/signin/wallet`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to sign in with wallet: ${error.response.data.message}`
+    );
   }
 };
 
@@ -52,7 +54,9 @@ export const signUpWithWallet = async (
     const res = axios.post(`${API_URL}/auth/signup/wallet`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to sign up with wallet: ${error.response.data.message}`
+    );
   }
 };
 
@@ -64,7 +68,9 @@ export const fetchUserDetails = async (token: string) => {
     const res = await axios.get(`${API_URL}/auth/me`, reqHeader);
     return res;
   } catch (error: any) {
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to get user details: ${error.response.data.message}`
+    );
   }
 };
 
@@ -100,6 +106,8 @@ export const checkIsAccountAvailable = async (username: string) => {
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
-    throw new Error(error.response.data.message);
+    throw new Error(
+      `Failed to check if account is available: ${error.response.data.message}`
+    );
   }
 };
