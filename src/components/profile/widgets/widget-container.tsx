@@ -1,7 +1,8 @@
-import { Spinner } from '../common';
+import { Spinner } from '../../common';
 import { Widget } from './widget';
 import { NoWidgetsContent } from '@/components';
-import { AddWidgets } from '@/components/profile/add-widgets';
+import { AddWidgets } from '@/components/profile/widgets/add-widgets';
+import { DesktopOnlyAlert } from '@/components/profile/widgets/desktop-only-alert';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useDeleteWidget,
@@ -393,12 +394,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   return (
     <>
       {layout.length < 1 && editMode && <NoWidgetsContent />}
-      <div className='flex flex-col gap-2 md:hidden bg-orange-100 text-orange-700 text-center py-4 px-4 rounded-xl'>
-        <span className='font-bold'>Important</span>
-        <span>
-          You can only edit widgets on desktop to ensure best experience.
-        </span>
-      </div>
+      <DesktopOnlyAlert />
       <div ref={containerRef}>
         <ReactGridLayout
           layout={layout}
