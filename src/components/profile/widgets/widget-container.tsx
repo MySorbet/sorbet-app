@@ -43,6 +43,9 @@ interface WidgetContainerProps {
   onLayoutChange?: (layout: any) => void;
 }
 
+/**
+ * Root component which renders all widgets and link input to add new widgets.
+ */
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   className = 'layout',
   rowHeight = 120,
