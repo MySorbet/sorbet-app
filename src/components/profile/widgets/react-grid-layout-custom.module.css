@@ -1,0 +1,23 @@
+/*
+Style tweaks to react-grid-layout defaults.
+We need to use :global() to prevent Next from transforming the classes we are trying to target within RGL. 
+Read this to learn more https://stackoverflow.com/a/69541558
+*/
+
+.react-grid-layout-custom {
+  /* Isolate the z-index shenanigans below to RGL */
+  isolation: isolate;
+}
+
+.react-grid-layout-custom :global(.react-grid-item) {
+  /* Stack dragged items above placeholders */
+  z-index: 2;
+}
+
+.react-grid-layout-custom :global(.react-grid-item.react-grid-placeholder) {
+  /* TODO: Reference brand color from theme */
+  background-color: #573DF5;
+  @apply rounded-xl;
+  /* Stack placeholders below dragged items */
+  z-index: 1;
+}

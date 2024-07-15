@@ -1,4 +1,5 @@
 import { Spinner } from '../../common';
+import styles from './react-grid-layout-custom.module.css';
 import { Widget } from './widget';
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/widgets/add-widgets';
@@ -24,6 +25,8 @@ import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -36,8 +39,6 @@ const breakpoints = {
 };
 
 interface WidgetContainerProps {
-  className?: string;
-  items?: number;
   rowHeight?: number;
   editMode: boolean;
   userId: string;
@@ -48,7 +49,6 @@ interface WidgetContainerProps {
  * Root component which renders all widgets and link input to add new widgets.
  */
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
-  className = 'layout',
   rowHeight = 120,
   editMode,
   userId,
@@ -399,7 +399,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         <ReactGridLayout
           layout={layout}
           onLayoutChange={handleLayoutChange}
-          className={`${className} react-grid-layout`}
+          className={styles['react-grid-layout-custom']}
           rowHeight={rowHeight}
           margin={[25, 25]}
           cols={cols}
