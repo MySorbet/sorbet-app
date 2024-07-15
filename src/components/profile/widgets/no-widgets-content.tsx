@@ -1,6 +1,10 @@
 import { NoWidgetsSocialsDisplay } from './no-widgets-socials.';
 import React from 'react';
 
+/**
+ * Content shown to a profile owner when there are no widgets present.
+ *
+ */
 const NoWidgetsContent = () => {
   return (
     <div className='bg-[#FFFFFF] rounded-3xl flex flex-1 items-center justify-center h-40'>

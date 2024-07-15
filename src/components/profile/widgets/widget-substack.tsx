@@ -1,37 +1,41 @@
-import { ImageOverlay, WidgetDescription } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widget-header';
-import { BehanceWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React from 'react';
+import { ImageOverlay } from '@/components/common';
+import { WidgetHeader } from '@/components/profile/widgets/widget-header';
+import { SubstackWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import React, { useEffect } from 'react';
 
-interface BehanceWidgetType {
-  content: BehanceWidgetContentType;
+interface SubstackWidgetType {
+  content: SubstackWidgetContentType;
   size: WidgetSize;
 }
 
-export const BehanceWidget: React.FC<BehanceWidgetType> = ({
+export const SubstackWidget: React.FC<SubstackWidgetType> = ({
   content,
   size,
 }) => {
   let widgetLayout;
+  const currentType = WidgetType.Substack;
+
+  const localHeader = (
+    <>
+      <div className='text-sm font-semibold'>{content.title}</div>
+      <div className='text-xs text-gray-500'>{content.host}</div>
+    </>
+  );
+
   switch (size) {
     case WidgetSize.A:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-16'>
-              <WidgetHeader type={WidgetType.Behance} />
+            <div className='w-8'>
+              <WidgetHeader type={currentType} />
             </div>
-            <div>
-              <div className='text-sm font-semibold'>{content.title}</div>
-              <div className='text-xs text-gray-500'>
-                <WidgetDescription description={content.description} />
-              </div>
-            </div>
+            <div className='w-90'>{localHeader}</div>
           </div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
-              alt='Behance content'
+              alt='Substack content'
               className='absolute inset-0 w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -43,16 +47,13 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.Behance} noMargin />
+            <WidgetHeader type={currentType} noMargin />
           </div>
-          <div>
-            <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>{content.description}</div>
-          </div>
+          <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
-              alt='Behance content'
+              alt='Substack content'
               className='w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -64,14 +65,13 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Behance} />
-            <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>{content.description}</div>
+            <WidgetHeader type={currentType} />
+            {localHeader}
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
             <img
               src={content.image}
-              alt='Behance content'
+              alt='Substack content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
@@ -83,17 +83,12 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.Behance} noMargin />
-          <div>
-            <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>
-              <WidgetDescription description={content.description} />
-            </div>
-          </div>
+          <WidgetHeader type={currentType} noMargin />
+          <div>{localHeader}</div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img
               src={content.image}
-              alt='Behance content'
+              alt='Substack content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />

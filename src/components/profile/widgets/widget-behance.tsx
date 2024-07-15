@@ -1,32 +1,37 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widget-header';
-import { GithubWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React, { useEffect } from 'react';
+import { ImageOverlay, WidgetDescription } from '@/components/common';
+import { WidgetHeader } from '@/components/profile/widgets/widget-header';
+import { BehanceWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import React from 'react';
 
-interface GithubWidgetType {
-  content: GithubWidgetContentType;
+interface BehanceWidgetType {
+  content: BehanceWidgetContentType;
   size: WidgetSize;
 }
 
-export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
+export const BehanceWidget: React.FC<BehanceWidgetType> = ({
+  content,
+  size,
+}) => {
   let widgetLayout;
   switch (size) {
     case WidgetSize.A:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-10'>
-              <WidgetHeader type={WidgetType.Github} />
+            <div className='w-16'>
+              <WidgetHeader type={WidgetType.Behance} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
-              <div className='text-xs text-gray-500'>github.com</div>
+              <div className='text-xs text-gray-500'>
+                <WidgetDescription description={content.description} />
+              </div>
             </div>
           </div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
-              alt='Github content'
+              alt='Behance content'
               className='absolute inset-0 w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -38,16 +43,16 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.Github} noMargin />
+            <WidgetHeader type={WidgetType.Behance} noMargin />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>github.com</div>
+            <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
             <img
               src={content.image}
-              alt='Github content'
+              alt='Behance content'
               className='w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -59,14 +64,14 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Github} />
+            <WidgetHeader type={WidgetType.Behance} />
             <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>github.com</div>
+            <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
             <img
               src={content.image}
-              alt='Github content'
+              alt='Behance content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
@@ -78,15 +83,17 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.Github} noMargin />
+          <WidgetHeader type={WidgetType.Behance} noMargin />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
-            <div className='text-xs text-gray-500'>github.com</div>
+            <div className='text-xs text-gray-500'>
+              <WidgetDescription description={content.description} />
+            </div>
           </div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img
               src={content.image}
-              alt='Github content'
+              alt='Behance content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
