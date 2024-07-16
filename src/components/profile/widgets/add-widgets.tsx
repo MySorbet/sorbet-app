@@ -21,6 +21,9 @@ interface AddWidgetsProps {
   loading?: boolean;
 }
 
+/**
+ * Renders a fancy input to add links and images as widgets
+ */
 export const AddWidgets: React.FC<AddWidgetsProps> = ({
   addUrl,
   loading = false,
