@@ -77,9 +77,9 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
 
   return (
-    <div className={`hidden lg:block lg:w-[480px] ${panelClass}`}>
+    <div className={`hidden lg:block lg:w-[480px] isolate ${panelClass}`}>
       {error && (
-        <div className='animate-in slide-in-from-bottom-8 mb-2'>
+        <div className='animate-in slide-in-from-bottom-8 mb-2 z-0'>
           <InvalidAlert
             handleAlertVisible={(status: boolean) => {
               showError(status);
@@ -97,7 +97,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       )}
 
       {errorInvalidImage && (
-        <div className={'animate-in slide-in-from-bottom-8 mb-2'}>
+        <div className={'animate-in slide-in-from-bottom-8 mb-2 z-0'}>
           <InvalidAlert
             handleAlertVisible={(show: boolean) => showErrorInvalidImage(show)}
             title='Error uploading file'
@@ -110,7 +110,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         </div>
       )}
       <div
-        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 rounded-2xl w-full drop-shadow-xl ${panelClass}`}
+        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 rounded-2xl w-full drop-shadow-xl z-10 ${panelClass}`}
       >
         <div
           className={cn(
