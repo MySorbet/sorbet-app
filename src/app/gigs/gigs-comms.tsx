@@ -26,12 +26,7 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
-=======
-import React, { useState } from 'react';
-import { useEffect } from 'react-resizable-panels/dist/declarations/src/vendor/react';
->>>>>>> sendbird-test
 
 export interface GigsCommsProps {
   isOpen?: boolean;
