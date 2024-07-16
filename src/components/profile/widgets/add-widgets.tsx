@@ -78,49 +78,38 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   return (
     <div className={`hidden lg:block lg:w-[480px] ${panelClass}`}>
       {error && (
-        <div
-          className={`transition-transform duration-500 ${
-            error ? 'translate-y-0' : '-translate-y-1'
-          }`}
-        >
-          <div className='mb-2'>
-            <InvalidAlert
-              handleAlertVisible={(status: boolean) => showError(status)}
-              title='Link not supported'
-            >
-              <p className='mt-2'>We only support the following links:</p>
-              <p className='font-semibold'>
-                Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
-                Medium, Substack, Twitter, GitHub
-              </p>
-            </InvalidAlert>
-          </div>
+        <div className='animate-in slide-in-from-bottom-8 mb-2'>
+          <InvalidAlert
+            handleAlertVisible={(status: boolean) => {
+              showError(status);
+              setUrl('');
+            }}
+            title='Link not supported'
+          >
+            <p className='mt-2'>We only support the following links:</p>
+            <p className='font-semibold'>
+              Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube, Medium,
+              Substack, Twitter, GitHub
+            </p>
+          </InvalidAlert>
         </div>
       )}
 
       {errorInvalidImage && (
-        <div
-          className={`transition-transform duration-500 ${
-            error ? 'translate-y-0' : '-translate-y-1'
-          }`}
-        >
-          <div className='mb-2'>
-            <InvalidAlert
-              handleAlertVisible={(show: boolean) =>
-                showErrorInvalidImage(show)
-              }
-              title='Error uploading file'
-            >
-              <p className='mt-2'>
-                You can only upload jpg, png or gif files only.
-              </p>
-              <p>Maximum 10mb file size</p>
-            </InvalidAlert>
-          </div>
+        <div className={'animate-in slide-in-from-bottom-8 mb-2'}>
+          <InvalidAlert
+            handleAlertVisible={(show: boolean) => showErrorInvalidImage(show)}
+            title='Error uploading file'
+          >
+            <p className='mt-2'>
+              You can only upload jpg, png or gif files only.
+            </p>
+            <p>Maximum 10mb file size</p>
+          </InvalidAlert>
         </div>
       )}
       <div
-        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 shadow-lg shadow-gray-200 rounded-2xl w-full ${panelClass}`}
+        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 rounded-2xl w-full drop-shadow-xl ${panelClass}`}
       >
         <div
           className={cn(
@@ -141,7 +130,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             <input
               type='text'
               className='outline-none flex-1'
-              placeholder='Add a url...'
+              placeholder='paste link'
               onChange={handleUrlChange}
               value={url}
               disabled={loading}
