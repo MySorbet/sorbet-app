@@ -26,7 +26,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
-  const [image, setImage] = useState<File | undefined>(undefined);
   const [error, showError] = useState<boolean>(false);
   const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(false);
 
@@ -65,7 +64,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
       if (validExtensions.includes(fileExtension!) && fileSize <= 10) {
-        setImage(file);
         addUrl('https://storage.googleapis.com', file);
       } else {
         showErrorInvalidImage(true);
