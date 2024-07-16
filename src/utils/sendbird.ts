@@ -30,20 +30,6 @@ const params: SendbirdChatParams<[GroupChannelModule]> = {
 
 const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 
-// Create new sb user
-const createSBUser = async (userId: string, nickname: string) => {
-  try {
-    // Creates new user setting the id with what we pass in
-    // Using userId we are storing in our database as the sendbird id
-    const user = await sb.connect(userId);
-    // true allows users to automatically join group channel without having to call GroupChannel.acceptInvitation()
-    await sb.setChannelInvitationPreference(true);
-    await sb.updateCurrentUserInfo({ nickname: nickname });
-  } catch (error: any) {
-    console.log('error creating new user ', error);
-  }
-};
-
 const findUser = async (userId: string) => {
   try {
     const queryParams = { userIdsFilter: [userId] };
@@ -55,48 +41,6 @@ const findUser = async (userId: string) => {
     return user;
   } catch (error: any) {
     console.log('error finding a user ', error);
-  }
-};
-
-// Create a channel for two users once a gig is created
-const createNewChannel = async (
-  channelName: string,
-  userIdsToInvite: string[]
-) => {
-  const sortedIds = userIdsToInvite.sort();
-  const channelUrl = localStorage.getItem(JSON.stringify(sortedIds));
-  if (channelUrl) {
-    const channel = await findChannel(channelUrl);
-    console.log('channel found! returning channel data', channel);
-    return channel;
-  }
-
-  console.log('no channels found for these users.');
-  console.log('creating a new channel for ', userIdsToInvite);
-
-  try {
-    const groupChannelParams: GroupChannelParams = {
-      invitedUserIds: [],
-      name: '',
-      operatorUserIds: [],
-    };
-    groupChannelParams.invitedUserIds = userIdsToInvite;
-    groupChannelParams.name = channelName;
-    groupChannelParams.operatorUserIds = userIdsToInvite;
-    const channel = await sb.groupChannel.createChannel(groupChannelParams);
-
-    localStorage.setItem(JSON.stringify(sortedIds), channel.url);
-
-    console.log('new channel created for ', userIdsToInvite);
-    console.log('channel details ', channel.url);
-
-    return channel;
-  } catch (error: any) {
-    console.log(
-      'error creating channel for: ',
-      userIdsToInvite[0],
-      userIdsToInvite[1]
-    );
   }
 };
 
@@ -124,4 +68,4 @@ const loadMessages = async (channel: GroupChannel, messageHandlers: any) => {
   return collection;
 };
 
-export { sb, createSBUser, findUser, createNewChannel, loadMessages };
+export { sb, findUser, loadMessages, findChannel };
