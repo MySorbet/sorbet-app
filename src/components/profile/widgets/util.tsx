@@ -1,5 +1,11 @@
 import { WidgetType } from '@/types';
 
+/**
+ * Maps widget type to social icon.
+ *
+ * @param widgetType - The type of the widget.
+ * @returns The path to the social icon image to be used as `src`
+ */
 export const getSocialIconForWidget = (widgetType: WidgetType): string => {
   const iconMap: { [key in WidgetType]?: string } = {
     [WidgetType.Nfts]: 'nft.png',
