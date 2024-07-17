@@ -1,14 +1,15 @@
 import ChatBottombar from './chat-bottombar';
-import { Message, UserData } from './data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { User } from '@/types';
+import { SBMessage } from '@/types/sendbird';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useRef } from 'react';
 
 interface ChatListProps {
-  messages?: Message[];
-  selectedUser: UserData;
-  sendMessage: (newMessage: Message) => void;
+  messages?: SBMessage[];
+  selectedUser: User;
+  sendMessage: (newMessage: SBMessage) => void;
   isMobile: boolean;
 }
 
@@ -55,26 +56,26 @@ export function ChatList({
               }}
               className={cn(
                 'flex flex-col gap-2 p-2 whitespace-pre-wrap',
-                message.name !== selectedUser.name ? 'items-end' : 'items-start'
+                message.userId === selectedUser.id ? 'items-end' : 'items-start'
               )}
             >
               <div className='flex gap-1 items-center'>
-                {message.name === selectedUser.name && (
+                {message.userId === selectedUser.id && (
                   <Avatar className='flex justify-center items-center'>
                     <AvatarImage
                       src={message.avatar ? message.avatar : '/avatar.svg'}
-                      alt={message.name}
+                      alt={message.nickname}
                       width={6}
                       height={6}
                     />
-                    <AvatarFallback>{message.name}</AvatarFallback>
+                    <AvatarFallback>{message.nickname[0]}</AvatarFallback>
                   </Avatar>
                 )}
                 <span
                   className={cn(
-                    'bg-accent p-3 rounded-3xl max-w-xs',
+                    'bg-accent p-3 mr-3 rounded-3xl max-w-xs',
                     `${
-                      message.name !== selectedUser.name
+                      message.userId === selectedUser.id
                         ? 'bg-sorbet text-white'
                         : 'bg-[#D7D7D7]'
                     }`
@@ -82,11 +83,11 @@ export function ChatList({
                 >
                   {message.message}
                 </span>
-                {message.name !== selectedUser.name && (
+                {message.userId !== selectedUser.id && (
                   <Avatar className='flex justify-center items-center'>
                     <AvatarImage
                       src={message.avatar}
-                      alt={message.name}
+                      alt={message.nickname}
                       width={6}
                       height={6}
                     />
@@ -98,7 +99,11 @@ export function ChatList({
         </AnimatePresence>
       </div>
       <div className='mt-4'>
-        <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} />
+        <ChatBottombar
+          sendMessage={sendMessage}
+          isMobile={isMobile}
+          selectedUser={selectedUser}
+        />
       </div>
     </div>
   );
