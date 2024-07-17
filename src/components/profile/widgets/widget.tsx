@@ -16,6 +16,7 @@ import {
   YouTubeWidget,
   PhotoWidget,
 } from '@/components/profile';
+import { WidgetErrorFallback } from '@/components/profile/widgets/widget-error-fallback';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -36,6 +37,7 @@ import {
 } from '@/types';
 import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 interface WidgetProps {
   identifier: string;
@@ -207,7 +209,12 @@ export const Widget: React.FC<WidgetProps> = ({
   }, [type, widgetSize, content]);
 
   return (
-    <>
+    <ErrorBoundary
+      FallbackComponent={WidgetErrorFallback}
+      onReset={(details) => {
+        // Reset the state of your app so the error doesn't happen again
+      }}
+    >
       {loading && (
         <div className='flex justify-center align-center items-center bg-gray-300 opacity-70 h-full w-full absolute z-50 rounded-xl'>
           <Spinner />
@@ -245,6 +252,6 @@ export const Widget: React.FC<WidgetProps> = ({
           </div>
         </div>
       </div>
-    </>
+    </ErrorBoundary>
   );
 };
