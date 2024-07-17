@@ -8,6 +8,9 @@ import {
 } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { User } from '@/types';
+import { SBMessage } from '@/types/sendbird';
+import { timestampToTime } from '@/utils/sendbird';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   FileImage,
@@ -22,8 +25,9 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 
 interface ChatBottombarProps {
-  sendMessage: (newMessage: Message) => void;
+  sendMessage: (newMessage: SBMessage) => void;
   isMobile: boolean;
+  selectedUser: User;
 }
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
@@ -31,6 +35,7 @@ export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
 export default function ChatBottombar({
   sendMessage,
   isMobile,
+  selectedUser,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -40,23 +45,26 @@ export default function ChatBottombar({
   };
 
   const handleThumbsUp = () => {
-    const newMessage: Message = {
-      id: message.length + 1,
-      name: loggedInUserData.name,
-      avatar: loggedInUserData.avatar,
-      message: '👍',
-    };
-    sendMessage(newMessage);
-    setMessage('');
+    // const newMessage: Message = {
+    //   id: message.length + 1,
+    //   name: loggedInUserData.name,
+    //   avatar: loggedInUserData.avatar,
+    //   message: '👍',
+    // };
+    // sendMessage(newMessage);
+    // setMessage('');
   };
 
   const handleSend = () => {
+    const fullName = `${selectedUser.firstName} ${selectedUser.lastName}`;
     if (message.trim()) {
-      const newMessage: Message = {
-        id: message.length + 1,
-        name: loggedInUserData.name,
-        avatar: loggedInUserData.avatar,
+      const timestampData = timestampToTime(new Date().getTime());
+      const newMessage: SBMessage = {
+        userId: selectedUser.id,
+        nickname: fullName,
+        avatar: selectedUser.profileImage,
         message: message.trim(),
+        timestampData: timestampData,
       };
       sendMessage(newMessage);
       setMessage('');
