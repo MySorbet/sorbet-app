@@ -63,10 +63,10 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNarwallets(),
         setupCoin98Wallet(),
         setupFinerWallet(),
-        // setupFastAuthWallet({
-        //   relayerUrl: config.relayerUrl,
-        //   walletUrl: config.authDomain,
-        // }),
+        setupFastAuthWallet({
+          relayerUrl: config.relayerUrl,
+          walletUrl: config.authDomain
+        }),
       ],
     });
     const _modal = setupModal(_selector, {

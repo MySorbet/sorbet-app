@@ -58,11 +58,7 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
 
   useEffect(() => {
     setFreelancerUsername(params.username);
-    setClientUsername(
-      loggedInUser && loggedInUser.accountId
-        ? loggedInUser.accountId.split('.')[0]
-        : undefined
-    );
+    setClientUsername(loggedInUser ? loggedInUser.accountId : undefined);
 
     const fetchUser = async () => {
       if (params.username.length > 0) {
@@ -72,12 +68,16 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
         if (userResponse.data) {
           setUser(userResponse.data as User);
         } else {
-          setNotFound(true);
+          setNotFound(false);
         }
       }
     };
     fetchUser();
   }, [params.username, loggedInUser]);
+
+  useEffect(() => {
+    console.log("object")
+  }, []);
 
   const onOfferDialogClose = (open: boolean) => {
     setOfferDialogOpen(open);

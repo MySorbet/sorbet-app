@@ -128,13 +128,13 @@ export const ContractClientMilestone = ({
 
   const handleMilestoneFunding = async () => {
     if (accounts.length > 0) {
-      if (user?.balance?.near && user?.balance?.near >= amount) {
+      if (user?.balance?.usdc && user?.balance?.usdc >= amount) {
         setLastChainOp('fund_schedule');
         await onMilestoneFunded(projectId, index.toString(), amount);
       } else {
         toast({
           title: 'Insufficient balance',
-          description: `You need at least ${amount} NEAR to perform this action. Only ${user?.balance?.usdc} NEAR was detected`,
+          description: `You need at least ${amount} USDC to perform this action. Only ${user?.balance?.usdc} USDC was detected`,
         });
       }
     } else {

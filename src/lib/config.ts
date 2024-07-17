@@ -1,6 +1,6 @@
+import type { Network, NetworkId } from '@/types/network';
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import type { Network, NetworkId } from '@/types/network';
 
 interface AppConfig {
   nodeEnv: 'development' | 'production' | 'test';
@@ -25,18 +25,27 @@ interface AppConfig {
   spotifyClientSecret?: string;
   youtubeClientId?: string;
   youtubeClientSecret?: string;
+  loginSuccessUrl?: string;
+  loginFailureUrl?: string;
+  signUpSuccessUrl?: string,
+  signUpFailureUrl?: string,
 }
 
 const appConfigSchema = z.object({
   nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
   devApiUrl: z.string().url().optional().default('http://localhost:6200'),
-  showLogger: z.preprocess((val) => (val === 'true'), z.boolean()).default(false),
+  showLogger: z.preprocess((val) => val === 'true', z.boolean()).default(false),
   networkId: z.string().optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
   authDomain: z.string().url(),
   googleMapKey: z.string().optional(),
-  defaultProfileImage: z.string().optional().default('https://storage.cloud.google.com/sorbet-profile-images/default-avatar.jpeg'),
+  defaultProfileImage: z
+    .string()
+    .optional()
+    .default(
+      'https://storage.cloud.google.com/sorbet-profile-images/default-avatar.jpeg'
+    ),
   gcpProfileBucketName: z.string().optional(),
   dribbleClientId: z.string().optional(),
   dribbleClientSecret: z.string().optional(),
@@ -50,6 +59,10 @@ const appConfigSchema = z.object({
   spotifyClientSecret: z.string().optional(),
   youtubeClientId: z.string().optional(),
   youtubeClientSecret: z.string().optional(),
+  loginSuccessUrl: z.string().optional(),
+  loginFailureUrl: z.string().optional(),
+  signUpSuccessUrl: z.string().optional(),
+  signUpFailureUrl: z.string().optional(),
 });
 
 dotenv.config({ path: ['.env', '.env.local'] });
@@ -70,12 +83,18 @@ export const config: AppConfig = appConfigSchema.parse({
   githubClientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
   instagramAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_APP_SECRET,
   instagramClientToken: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN,
-  instagramBasicDisplayAppId: process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
-  instagramBasicDisplayAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
+  instagramBasicDisplayAppId:
+    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
+  instagramBasicDisplayAppSecret:
+    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
   spotifyClientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
   spotifyClientSecret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
   youtubeClientId: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
   youtubeClientSecret: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET,
+  loginSuccessUrl: process.env.NEXT_PUBLIC_LOGIN_SUCCESS_URL,
+  loginFailureUrl: process.env.NEXT_PUBLIC_LOGIN_FAILED_URL,
+  signUpSuccessUrl: process.env.NEXT_PUBLIC_SIGNUP_SUCCESS_URL,
+  signUpFailureUrl: process.env.NEXT_PUBLIC_SIGNUP_FAILED_URL,
 });
 
 export const networks: Record<NetworkId, Network> = {
@@ -86,7 +105,8 @@ export const networks: Record<NetworkId, Network> = {
     walletUrl: 'https://wallet.near.org',
     helperUrl: 'https://helper.mainnet.near.org',
     fastAuth: {
-      mpcRecoveryUrl: 'https://mpc-recovery-leader-mainnet-cg7nolnlpa-ue.a.run.app',
+      mpcRecoveryUrl:
+        'https://mpc-recovery-leader-mainnet-cg7nolnlpa-ue.a.run.app',
       authHelperUrl: 'https://api.kitwallet.app',
       accountIdSuffix: 'near',
       firebase: {
@@ -111,16 +131,16 @@ export const networks: Record<NetworkId, Network> = {
       authHelperUrl: 'https://testnet-api.kitwallet.app',
       accountIdSuffix: 'testnet',
       firebase: {
-        apiKey: "AIzaSyCmD88ExxK3vc7p3qkMvgFfdkyrWa2w2dg",
-        authDomain: "my-fastauth-issuer-ea4c0.firebaseapp.com",
-        projectId: "my-fastauth-issuer-ea4c0",
-        storageBucket: "my-fastauth-issuer-ea4c0.appspot.com",
-        messagingSenderId: "505357561486",
-        appId: "1:505357561486:web:81b6f1a273d8ccd20da3df",
+        apiKey: 'AIzaSyCmD88ExxK3vc7p3qkMvgFfdkyrWa2w2dg',
+        authDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
+        projectId: 'my-fastauth-issuer-ea4c0',
+        storageBucket: 'my-fastauth-issuer-ea4c0.appspot.com',
+        messagingSenderId: '505357561486',
+        appId: '1:505357561486:web:81b6f1a273d8ccd20da3df',
         measurementId: 'G-HF2NBGE60S',
       },
     },
-  }
+  },
 };
 
 export const currentNetwork = networks[config.networkId as NetworkId];

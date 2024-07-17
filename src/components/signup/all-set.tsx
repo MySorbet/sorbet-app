@@ -13,10 +13,11 @@ const AllSet = () => {
   return (
     <FormContainer>
       <div className='flex flex-col gap-6 h-full'>
-        <h1 className='font-semibold text-2xl'>Your profile is ready 🎉</h1>
+        <h1 className='font-semibold text-2xl'>All set!</h1>
         <div className='flex flex-col bg-[#F0EBF9] h-full py-4 px-3 rounded-xl gap-4'>
           <p className='text-sm font-medium text-[#344054]'>
-            Start by adding widgets using the textbox at the bottom of the page
+            Your profile is ready. Start by adding widgets using the input at
+            the bottom of the viewport.
           </p>
           <PasteLinkDemo />
           <p className='text-sm font-medium text-[#344054]'>
@@ -24,14 +25,14 @@ const AllSet = () => {
           </p>
           <SocialsDemo />
           <p className='text-sm font-medium text-[#344054]'>
-            You can change the size by hovering over a widget and selecting a
-            new size
+            Once added you can change the size by hovering over a widget and
+            selecting from the control
           </p>
           <WidgetResizeDemo />
         </div>
         <Button
           className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/daniel')}
         >
           Edit My Profile
         </Button>

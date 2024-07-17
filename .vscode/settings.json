@@ -5,8 +5,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   },
-  // Lock everyone into using prettier
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Tailwind CSS Autocomplete, add more if used in projects
   "tailwindCSS.classAttributes": [
     "class",
