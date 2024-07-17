@@ -3,9 +3,8 @@ import React from 'react';
 
 /**
  * Content shown to a profile owner when there are no widgets present.
- *
  */
-const NoWidgetsContent = () => {
+export const NoWidgetsContent = () => {
   return (
     <div className='bg-[#FFFFFF] rounded-3xl flex flex-1 items-center justify-center h-40'>
       <div className='flex flex-col gap-4 items-center justify-center'>
@@ -17,5 +16,3 @@ const NoWidgetsContent = () => {
     </div>
   );
 };
-
-export { NoWidgetsContent };
