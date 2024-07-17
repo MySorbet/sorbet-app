@@ -1,46 +1,40 @@
 import { SENDBIRD_INFO } from '@/constant/constant';
+import { SBMessageTimeDto } from '@/types/sendbird';
 import SendbirdChat, {
   SendbirdChatParams,
   SendbirdChatWith,
 } from '@sendbird/chat';
 import {
-  GroupChannelHandler,
   GroupChannelModule,
-  GroupChannelFilter,
-  GroupChannelListOrder,
   MessageFilter,
   MessageCollectionInitPolicy,
-  SendbirdGroupChat,
-  GroupChannelCollection,
-  GroupChannelCollectionParams,
-  GroupChannelCreateParams,
   GroupChannel,
 } from '@sendbird/chat/groupChannel';
 
-interface GroupChannelParams extends GroupChannelCreateParams {
-  invitedUserIds: string[];
-  name: string;
-  operatorUserIds: string[];
-} // Initialize the SendbirdChat instance to use APIs in your app.
+// Initialize the SendbirdChat instance to use APIs in your app.
 const params: SendbirdChatParams<[GroupChannelModule]> = {
-  appId: SENDBIRD_INFO.appId,
+  appId: SENDBIRD_INFO.appId as string,
   localCacheEnabled: true,
   modules: [new GroupChannelModule()],
 };
 
 const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 
-const findUser = async (userId: string) => {
+const initializeConnection = async (userId: string | null | undefined) => {
+  console.log('Attempting to initialize connection...');
+  if (!userId) {
+    console.log('No user found, returning');
+    return;
+  }
+
   try {
-    const queryParams = { userIdsFilter: [userId] };
-
-    const query = sb.createApplicationUserListQuery(queryParams);
-
-    const user = await query.next();
-
+    console.log('Connecting to sendbird...');
+    const user = await sb.connect(userId);
+    console.log('Connected! User: ', user);
     return user;
   } catch (error: any) {
-    console.log('error finding a user ', error);
+    console.log('SB error: ', error);
+    throw new Error('Failed to connect to Sendbird');
   }
 };
 
@@ -52,20 +46,46 @@ const findChannel = async (url: string) => {
 
 // For sending and receiving messages
 
-const loadMessages = async (channel: GroupChannel, messageHandlers: any) => {
+const loadMessages = async (channelId: string, messageHandlers: any) => {
+  const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
+
   const messageFilter = new MessageFilter();
 
   const collection = channel.createMessageCollection({
     filter: messageFilter,
     startingPoint: Date.now(),
-    limit: 20,
+    limit: 100,
   });
 
   collection.setMessageCollectionHandler(messageHandlers);
 
   collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API);
 
-  return collection;
+  return { collection, channel };
 };
 
-export { sb, findUser, loadMessages, findChannel };
+const timestampToTime = (timestamp: number) => {
+  // Convert milliseconds to a Date object
+  const date = new Date(timestamp);
+
+  // Format the date
+  const year = date.getFullYear().toString();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2); // Months are zero-based
+  const day = ('0' + date.getDate()).slice(-2);
+  const hour = ('0' + date.getHours()).slice(-2);
+  const minute = ('0' + date.getMinutes()).slice(-2);
+  const second = ('0' + date.getSeconds()).slice(-2);
+
+  // Return formatted date and time string
+  const timeObject: SBMessageTimeDto = {
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second,
+  };
+  return timeObject;
+};
+
+export { sb, loadMessages, findChannel, initializeConnection, timestampToTime };
