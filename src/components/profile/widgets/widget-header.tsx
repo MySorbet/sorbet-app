@@ -1,4 +1,4 @@
-import { getSocialIconForWidget } from '@/components/profile/widgets/util';
+import { getSocialIconForWidget } from '@/components/profile/widgets';
 import { WidgetType } from '@/types';
 
 interface WidgetHeaderProps {

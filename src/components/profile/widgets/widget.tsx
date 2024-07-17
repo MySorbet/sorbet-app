@@ -16,7 +16,7 @@ import {
   YouTubeWidget,
   PhotoWidget,
 } from '@/components/profile';
-import { WidgetErrorFallback } from '@/components/profile/widgets/widget-error-fallback';
+import { WidgetErrorFallback } from '@/components/profile/widgets';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {

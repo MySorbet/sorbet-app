@@ -1,5 +1,5 @@
 import { ImageOverlay, WidgetDescription } from '@/components/common';
-import { WidgetHeader } from '@/components/profile';
+import { WidgetHeader } from '@/components/profile/widgets';
 import { DribbbleWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
 

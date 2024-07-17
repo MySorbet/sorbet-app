@@ -2,9 +2,9 @@ import { Spinner } from '../../common';
 import styles from './react-grid-layout-custom.module.css';
 import { Widget } from './widget';
 import { NoWidgetsContent } from '@/components';
-import { AddWidgets } from '@/components/profile/widgets/add-widgets';
-import { DesktopOnlyAlert } from '@/components/profile/widgets/desktop-only-alert';
-import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
+import { AddWidgets } from '@/components/profile/widgets';
+import { DesktopOnlyAlert } from '@/components/profile/widgets';
+import { parseWidgetTypeFromUrl } from '@/components/profile/widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useDeleteWidget,

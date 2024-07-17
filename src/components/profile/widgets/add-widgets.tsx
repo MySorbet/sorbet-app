@@ -1,6 +1,6 @@
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
-import { validateUrl } from '@/components/profile/widgets/util';
+import { validateUrl } from '@/components/profile/widgets';
 import {
   Popover,
   PopoverContent,

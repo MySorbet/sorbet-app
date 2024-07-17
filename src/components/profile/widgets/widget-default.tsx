@@ -1,4 +1,4 @@
-import { WidgetHeader } from '@/components/profile/widgets/widget-header';
+import { WidgetHeader } from '@/components/profile/widgets';
 import { WidgetType } from '@/types';
 import React from 'react';
 
