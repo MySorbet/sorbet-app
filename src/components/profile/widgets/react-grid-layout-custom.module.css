@@ -15,9 +15,7 @@ Read this to learn more https://stackoverflow.com/a/69541558
 }
 
 .react-grid-layout-custom :global(.react-grid-item.react-grid-placeholder) {
-  /* TODO: Reference brand color from theme */
-  background-color: #573DF5;
-  @apply rounded-xl;
   /* Stack placeholders below dragged items */
   z-index: 1;
+  @apply bg-sorbet @apply rounded-xl;
 }
