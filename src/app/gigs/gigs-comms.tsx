@@ -107,7 +107,6 @@ export const GigsComms = ({
     isOpen,
     activeTab,
   });
-
   useEffect(() => {
     if (isGetContractError === true) {
       toast({
@@ -116,8 +115,6 @@ export const GigsComms = ({
       });
     }
   }, [isGetContractError]);
-
-  const handlewNewMessage = async (newMessage: Message) => { };
 
   const renderContractView = () => {
     if (isClient) {
@@ -192,9 +189,9 @@ export const GigsComms = ({
             <>
               {activeTab === ActiveTab.Chat && (
                 <ChatLayoutMinimal
+                  channelId={contractData?.channelId}
                   defaultLayout={undefined}
                   navCollapsedSize={8}
-                  handlewNewMessage={handlewNewMessage}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}
