@@ -1,5 +1,6 @@
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
+import { validateUrl } from '@/components/profile/widgets/util';
 import {
   Popover,
   PopoverContent,
@@ -12,7 +13,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { validateUrl } from '@/utils/url';
 import { Link, CircleHelp, ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
