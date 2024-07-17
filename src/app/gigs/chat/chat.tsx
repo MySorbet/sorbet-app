@@ -1,14 +1,17 @@
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
 import { Message, UserData } from './data';
-import React from 'react';
+import { User } from '@/types';
+import { SBMessage } from '@/types/sendbird';
+import { GroupChannel } from '@sendbird/chat/groupChannel';
+import React, { Dispatch, SetStateAction } from 'react';
 
 interface ChatProps {
-  messages?: Message[];
-  selectedUser: UserData;
+  messages?: SBMessage[];
+  selectedUser: User;
   isMobile: boolean;
   showTopbar?: boolean;
-  handlewNewMessage?: (newMessage: Message) => void;
+  channel: GroupChannel | undefined | null;
 }
 
 export function Chat({
@@ -16,25 +19,26 @@ export function Chat({
   selectedUser,
   isMobile,
   showTopbar = true,
-  handlewNewMessage,
+  channel,
 }: ChatProps) {
-  const [messagesState, setMessages] = React.useState<Message[]>(
-    messages ?? []
-  );
+  console.log('Messages from chat ', messages);
 
-  const sendMessage = (newMessage: Message) => {
-    setMessages([...messagesState, newMessage]);
-    if (handlewNewMessage) {
-      handlewNewMessage(newMessage);
-    }
+  const sendMessage = (newMessage: SBMessage) => {
+    if (!channel) return;
+    channel
+      .sendUserMessage({ message: newMessage.message })
+      .onSucceeded((message) => {})
+      .onFailed((error) => {
+        console.log('message failed : ', error);
+      });
   };
 
   return (
-    <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl'>
+    <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl '>
       {showTopbar && <ChatTopbar selectedUser={selectedUser} />}
 
       <ChatList
-        messages={messagesState}
+        messages={messages}
         selectedUser={selectedUser}
         sendMessage={sendMessage}
         isMobile={isMobile}
