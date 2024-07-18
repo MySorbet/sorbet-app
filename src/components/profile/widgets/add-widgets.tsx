@@ -77,7 +77,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
 
   return (
-    <div className={`hidden lg:block lg:w-[480px] isolate ${panelClass}`}>
+    <div className={`hidden md:block lg:w-[480px] isolate ${panelClass}`}>
       {error && (
         <div className='animate-in slide-in-from-bottom-8 mb-2 z-0'>
           <InvalidAlert
