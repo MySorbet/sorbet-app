@@ -9,8 +9,13 @@ Read this to learn more https://stackoverflow.com/a/69541558
   isolation: isolate;
 }
 
+.react-grid-layout-custom :global(.react-grid-item.react-draggable-dragging) {
+  /* Stack dragged items above other items and placeholders */
+  z-index: 3;
+}
+
 .react-grid-layout-custom :global(.react-grid-item) {
-  /* Stack dragged items above placeholders */
+  /* Stack items above placeholders */
   z-index: 2;
 }
 
