@@ -54,11 +54,12 @@ export function ChatLayoutMinimal({
     onMessagesAdded: (context: any, channel: any, messages: any) => {
       console.log('onMessagesAdded', messages);
       messages.forEach((currentMessage: any) => {
-        const messageToAdd = {
+        const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
           message: currentMessage.message,
           nickname: currentMessage.sender.nickname,
           avatar: currentMessage.sender.plainProfileUrl,
+          timestampData: timestampToTime(Date.now()),
         };
         const updatedMessages = [...stateRef.current.messages, messageToAdd];
         updateState({ ...stateRef.current, messages: updatedMessages });
