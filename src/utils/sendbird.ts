@@ -88,4 +88,32 @@ const timestampToTime = (timestamp: number) => {
   return timeObject;
 };
 
-export { sb, loadMessages, findChannel, initializeConnection, timestampToTime };
+const convertMilitaryToRegular = (
+  hour: string | undefined,
+  minute: string | undefined
+) => {
+  if (!hour || !minute) return;
+
+  const numHour = Number(hour);
+  let newHour: string;
+  let suffix: string;
+
+  if (numHour > 12) {
+    newHour = String(numHour - 12);
+    suffix = 'PM';
+  } else {
+    newHour = hour.substring(1);
+    suffix = 'AM';
+  }
+
+  return `${newHour}:${minute}${suffix}`;
+};
+
+export {
+  sb,
+  loadMessages,
+  findChannel,
+  initializeConnection,
+  timestampToTime,
+  convertMilitaryToRegular,
+};
