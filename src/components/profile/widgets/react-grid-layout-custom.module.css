@@ -17,5 +17,6 @@ Read this to learn more https://stackoverflow.com/a/69541558
 .react-grid-layout-custom :global(.react-grid-item.react-grid-placeholder) {
   /* Stack placeholders below dragged items */
   z-index: 1;
-  @apply bg-sorbet @apply rounded-xl;
+  @apply bg-sorbet;
+  @apply rounded-xl;
 }
