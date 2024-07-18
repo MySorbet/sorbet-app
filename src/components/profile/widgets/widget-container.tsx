@@ -1,7 +1,10 @@
-import { Spinner } from '../common';
+import { Spinner } from '../../common';
+import styles from './react-grid-layout-custom.module.css';
 import { Widget } from './widget';
 import { NoWidgetsContent } from '@/components';
-import { AddWidgets } from '@/components/profile/add-widgets';
+import { AddWidgets } from '@/components/profile/widgets';
+import { DesktopOnlyAlert } from '@/components/profile/widgets';
+import { parseWidgetTypeFromUrl } from '@/components/profile/widgets';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useDeleteWidget,
@@ -19,10 +22,11 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { parseWidgetTypeFromUrl } from '@/utils/icons';
 import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -35,16 +39,16 @@ const breakpoints = {
 };
 
 interface WidgetContainerProps {
-  className?: string;
-  items?: number;
   rowHeight?: number;
   editMode: boolean;
   userId: string;
   onLayoutChange?: (layout: any) => void;
 }
 
+/**
+ * Root component which renders all widgets and link input to add new widgets.
+ */
 export const WidgetContainer: React.FC<WidgetContainerProps> = ({
-  className = 'layout',
   rowHeight = 120,
   editMode,
   userId,
@@ -390,17 +394,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   return (
     <>
       {layout.length < 1 && editMode && <NoWidgetsContent />}
-      <div className='flex flex-col gap-2 md:hidden bg-orange-100 text-orange-700 text-center py-4 px-4 rounded-xl'>
-        <span className='font-bold'>Important</span>
-        <span>
-          You can only edit widgets on desktop to ensure best experience.
-        </span>
-      </div>
+      <DesktopOnlyAlert />
       <div ref={containerRef}>
         <ReactGridLayout
           layout={layout}
           onLayoutChange={handleLayoutChange}
-          className={`${className} react-grid-layout`}
+          className={styles['react-grid-layout-custom']}
           rowHeight={rowHeight}
           margin={[25, 25]}
           cols={cols}

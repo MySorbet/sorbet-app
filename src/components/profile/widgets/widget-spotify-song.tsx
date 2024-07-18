@@ -1,5 +1,5 @@
 import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widget-header';
+import { WidgetHeader } from '@/components/profile/widgets';
 import { SpotifyWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import { Play } from 'lucide-react';
 import React, { useEffect } from 'react';
