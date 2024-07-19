@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
 import { convertMilitaryToRegular } from '@/utils/sendbird';
+import { GroupChannel } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useRef } from 'react';
 
@@ -12,6 +13,7 @@ interface ChatListProps {
   selectedUser: User;
   sendMessage: (newMessage: SBMessage) => void;
   isMobile: boolean;
+  channel: GroupChannel | undefined | null;
 }
 
 export function ChatList({
@@ -19,6 +21,7 @@ export function ChatList({
   selectedUser,
   sendMessage,
   isMobile,
+  channel,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -107,44 +110,9 @@ export function ChatList({
           sendMessage={sendMessage}
           isMobile={isMobile}
           selectedUser={selectedUser}
+          channel={channel}
         />
       </div>
     </div>
   );
 }
-
-/*
-  {message.userId === selectedUser.id && (
-    <Avatar className='flex justify-center items-center'>
-      <AvatarImage
-        src={message.avatar ? message.avatar : '/avatar.svg'}
-        alt={message.nickname}
-        width={6}
-        height={6}
-      />
-      <AvatarFallback>{message.nickname[0]}</AvatarFallback>
-    </Avatar>
-  )}
-  <span
-    className={cn(
-      'bg-accent p-3 mr-3 rounded-3xl max-w-xs',
-      `${
-        message.userId === selectedUser.id
-          ? 'bg-sorbet text-white'
-          : 'bg-[#D7D7D7]'
-      }`
-    )}
-  >
-    {message.message}
-  </span>
-  {message.userId !== selectedUser.id && (
-    <Avatar className='flex justify-center items-center'>
-      <AvatarImage
-        src={message.avatar}
-        alt={message.nickname}
-        width={6}
-        height={6}
-      />
-    </Avatar>
-  )}
-*/
