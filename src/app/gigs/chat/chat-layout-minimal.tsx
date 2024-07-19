@@ -5,10 +5,12 @@ import { Message, userData } from './data';
 import { useAuth } from '@/hooks';
 import { SBMessage } from '@/types/sendbird';
 import {
+  initializeChannelEvents,
   initializeConnection,
   loadMessages,
   timestampToTime,
 } from '@/utils/sendbird';
+import { GroupChannelHandler } from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -67,15 +69,23 @@ export function ChatLayoutMinimal({
     },
   };
 
+  const channelHandlers = {
+    onTypingStatusUpdated: (groupChannel: any) => {
+      console.log('onTypingStatusUpdated', groupChannel);
+    },
+  };
+
   useEffect(() => {
     async function initializeChat() {
-      const sbuser = await initializeConnection(user?.id);
+      await initializeConnection(user?.id);
 
       if (channelId) {
-        const { collection, channel } = await loadMessages(
+        const { messageCollection, channel } = await loadMessages(
           channelId,
-          messageHandlers
+          messageHandlers,
+          channelHandlers
         );
+
         const ts = Date.now();
         const messageListParams: MessageListParams = {
           prevResultSize: 20,
@@ -101,7 +111,7 @@ export function ChatLayoutMinimal({
 
         updateState({
           ...stateRef.current,
-          messageCollection: collection,
+          messageCollection: messageCollection,
           currentlyJoinedChannel: channel,
           messages: fetchedMessages,
         });
