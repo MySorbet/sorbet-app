@@ -216,14 +216,14 @@ export const Widget: React.FC<WidgetProps> = ({
       }}
     >
       {loading && (
-        <div className='flex justify-center align-center items-center bg-gray-300 opacity-70 h-full w-full absolute z-50 rounded-xl'>
+        <div className='flex justify-center align-center items-center bg-gray-300 opacity-70 h-full w-full absolute z-50 rounded-3xl drop-shadow-md'>
           <Spinner />
         </div>
       )}
       <div
         className={cn(
-          'shadow-widget bg-white flex flex-col rounded-xl w-full h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out',
-          type === WidgetType.Photo ? '' : 'p-3'
+          'bg-white flex flex-col rounded-3xl w-full drop-shadow-md h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out',
+          type !== WidgetType.Photo && 'p-4'
         )}
         key={identifier}
         onMouseEnter={() => editMode && setShowResizeWidget(true)}
