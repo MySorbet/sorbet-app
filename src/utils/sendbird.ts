@@ -9,6 +9,8 @@ import {
   MessageFilter,
   MessageCollectionInitPolicy,
   GroupChannel,
+  GroupChannelFilter,
+  GroupChannelListOrder,
 } from '@sendbird/chat/groupChannel';
 
 // Initialize the SendbirdChat instance to use APIs in your app.
@@ -30,7 +32,6 @@ const initializeConnection = async (userId: string | null | undefined) => {
   try {
     console.log('Connecting to sendbird...');
     const user = await sb.connect(userId);
-    console.log('Connected! User: ', user);
     return user;
   } catch (error: any) {
     console.log('SB error: ', error);
@@ -44,24 +45,34 @@ const findChannel = async (url: string) => {
   return channel;
 };
 
+const initializeChannelEvents = (channelHandler: any) => {
+  const key = 'test';
+  sb.groupChannel.addGroupChannelHandler(key, channelHandler);
+  console.log('Successfully initialized handler');
+};
 // For sending and receiving messages
 
-const loadMessages = async (channelId: string, messageHandlers: any) => {
+const loadMessages = async (
+  channelId: string,
+  messageHandlers: any,
+  channelHandlers: any
+) => {
   const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
 
   const messageFilter = new MessageFilter();
 
-  const collection = channel.createMessageCollection({
+  const messageCollection = channel.createMessageCollection({
     filter: messageFilter,
     startingPoint: Date.now(),
     limit: 100,
   });
+  messageCollection.setMessageCollectionHandler(messageHandlers);
 
-  collection.setMessageCollectionHandler(messageHandlers);
+  messageCollection.initialize(
+    MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API
+  );
 
-  collection.initialize(MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API);
-
-  return { collection, channel };
+  return { messageCollection, channel };
 };
 
 const timestampToTime = (timestamp: number) => {
@@ -116,4 +127,5 @@ export {
   initializeConnection,
   timestampToTime,
   convertMilitaryToRegular,
+  initializeChannelEvents,
 };
