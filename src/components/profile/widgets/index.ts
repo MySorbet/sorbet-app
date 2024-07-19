@@ -22,4 +22,5 @@ export { YouTubeWidget } from './widget-youtube';
 export { YouTubeIframe } from './youtube-iframe';
 export { DesktopOnlyAlert } from './desktop-only-alert';
 export { WidgetErrorFallback } from './widget-error-fallback';
+export { WidgetHeader } from './widget-header';
 export * from './util';
