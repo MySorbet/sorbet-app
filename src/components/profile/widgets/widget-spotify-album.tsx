@@ -1,5 +1,5 @@
 import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { WidgetIcon } from '@/components/profile/widgets';
 import { SpotifyWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import { Play } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -32,7 +32,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2 '>
           <div className='flex justify-between'>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} noMargin />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
@@ -54,7 +54,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} noMargin />
           </div>
           <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden mt-6 bg-white text-black'>
@@ -76,7 +76,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
         <div className='h-full flex flex-row gap-2'>
           <div className='w-1/5 h-full'>
             <div className='flex flex-col gap-1 h-full'>
-              <WidgetHeader type={currentType} />
+              <WidgetIcon type={currentType} />
               <div>{localHeader}</div>
               <div className='mt-auto'>
                 <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg mt-auto'>
@@ -101,7 +101,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} noMargin />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play

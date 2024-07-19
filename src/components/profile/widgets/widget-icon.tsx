@@ -1,18 +1,19 @@
 import { getSocialIconForWidget } from '@/components/profile/widgets';
 import { WidgetType } from '@/types';
+import Image from 'next/image';
 
-interface WidgetHeaderProps {
+interface WidgetIconProps {
   type: WidgetType;
   noMargin?: boolean;
 }
 
-export const WidgetHeader: React.FC<WidgetHeaderProps> = ({
-  type,
-  noMargin,
-}) => {
+/**
+ * This misnamed component renders the icon for a widget.
+ */
+export const WidgetIcon: React.FC<WidgetIconProps> = ({ type, noMargin }) => {
   return (
     <div className={noMargin ? '' : 'mb-4'}>
-      <img
+      <Image
         src={getSocialIconForWidget(type)}
         alt={type}
         width={30}

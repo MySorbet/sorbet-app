@@ -1,5 +1,5 @@
 import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { WidgetIcon } from '@/components/profile/widgets';
 import { TwitterWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
 
@@ -21,9 +21,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-20'>
-              <WidgetHeader type={WidgetType.TwitterProfile} />
-            </div>
+            <WidgetIcon type={WidgetType.TwitterProfile} />
             <div>
               <div className='text-sm font-semibold'>{content.accountName}</div>
               <div className='text-xs text-gray-500'>
@@ -48,7 +46,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.TwitterProfile} noMargin />
+            <WidgetIcon type={WidgetType.TwitterProfile} noMargin />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.accountName}</div>
@@ -74,7 +72,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
         <div className='h-full flex flex-row gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-1/5'>
-              <WidgetHeader type={WidgetType.TwitterProfile} />
+              <WidgetIcon type={WidgetType.TwitterProfile} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.accountName}</div>
@@ -98,7 +96,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.TwitterProfile} noMargin />
+          <WidgetIcon type={WidgetType.TwitterProfile} noMargin />
           <div>
             <div className='text-sm font-semibold'>{content.accountName}</div>
             <div className='text-xs text-gray-500'>

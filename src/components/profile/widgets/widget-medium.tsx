@@ -1,5 +1,5 @@
 import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { WidgetIcon } from '@/components/profile/widgets';
 import { MediumArticleContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
 
@@ -20,7 +20,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-1/4'>
-              <WidgetHeader type={WidgetType.Medium} />
+              <WidgetIcon type={WidgetType.Medium} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -42,7 +42,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.Medium} noMargin />
+            <WidgetIcon type={WidgetType.Medium} noMargin />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -63,7 +63,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Medium} />
+            <WidgetIcon type={WidgetType.Medium} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
@@ -82,7 +82,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.Medium} noMargin />
+          <WidgetIcon type={WidgetType.Medium} noMargin />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>

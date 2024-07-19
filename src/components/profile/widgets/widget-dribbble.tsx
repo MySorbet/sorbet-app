@@ -1,5 +1,5 @@
 import { ImageOverlay, WidgetDescription } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { WidgetIcon } from '@/components/profile/widgets';
 import { DribbbleWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
 
@@ -19,7 +19,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-16'>
-              <WidgetHeader type={WidgetType.Dribbble} />
+              <WidgetIcon type={WidgetType.Dribbble} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -43,7 +43,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.Dribbble} noMargin />
+            <WidgetIcon type={WidgetType.Dribbble} noMargin />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -64,7 +64,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Dribbble} />
+            <WidgetIcon type={WidgetType.Dribbble} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
@@ -83,7 +83,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.Dribbble} noMargin />
+          <WidgetIcon type={WidgetType.Dribbble} noMargin />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>

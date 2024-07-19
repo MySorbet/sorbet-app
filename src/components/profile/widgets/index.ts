@@ -9,7 +9,7 @@ export { DefaultWidget } from './widget-default';
 export { DribbbleWidget } from './widget-dribbble';
 export { FigmaWidget } from './widget-figma';
 export { GithubWidget } from './widget-github';
-export { WidgetHeader } from './widget-header';
+export { WidgetIcon } from './widget-icon';
 export { InstagramWidget } from './widget-instagram';
 export { MediumWidget } from './widget-medium';
 export { PhotoWidget } from './widget-photo';
