@@ -136,6 +136,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
  * If more complex behavior is needed, consider using [react-twitter-widgets](https://github.com/andrewsuzuki/react-twitter-widgets).
  *
  * TODO: Consider [using `user_id`](https://arc.net/l/quote/omopvnmc) rather than `screen_name`.
+ * TODO: Should this be disabled in edit mode?
  */
 const FollowButton: React.FC<{ handle: string }> = ({ handle }) => {
   return (
