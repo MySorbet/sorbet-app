@@ -1,5 +1,6 @@
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
+import { validateUrl } from '@/components/profile/widgets';
 import {
   Popover,
   PopoverContent,
@@ -12,7 +13,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { validateUrl } from '@/utils/url';
 import { Link, CircleHelp, ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -21,12 +21,14 @@ interface AddWidgetsProps {
   loading?: boolean;
 }
 
+/**
+ * Renders a fancy input to add links and images as widgets
+ */
 export const AddWidgets: React.FC<AddWidgetsProps> = ({
   addUrl,
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
-  const [image, setImage] = useState<File | undefined>(undefined);
   const [error, showError] = useState<boolean>(false);
   const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(false);
 
@@ -65,7 +67,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
       if (validExtensions.includes(fileExtension!) && fileSize <= 10) {
-        setImage(file);
         addUrl('https://storage.googleapis.com', file);
       } else {
         showErrorInvalidImage(true);
@@ -76,51 +77,40 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
 
   return (
-    <div className={`hidden lg:block lg:w-[480px] ${panelClass}`}>
+    <div className={`hidden md:block lg:w-[480px] isolate ${panelClass}`}>
       {error && (
-        <div
-          className={`transition-transform duration-500 ${
-            error ? 'translate-y-0' : '-translate-y-1'
-          }`}
-        >
-          <div className='mb-2'>
-            <InvalidAlert
-              handleAlertVisible={(status: boolean) => showError(status)}
-              title='Link not supported'
-            >
-              <p className='mt-2'>We only support the following links:</p>
-              <p className='font-semibold'>
-                Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
-                Medium, Substack, Twitter, GitHub
-              </p>
-            </InvalidAlert>
-          </div>
+        <div className='animate-in slide-in-from-bottom-8 mb-2 z-0'>
+          <InvalidAlert
+            handleAlertVisible={(status: boolean) => {
+              showError(status);
+              setUrl('');
+            }}
+            title='Link not supported'
+          >
+            <p className='mt-2'>We only support the following links:</p>
+            <p className='font-semibold'>
+              Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube, Medium,
+              Substack, Twitter, GitHub
+            </p>
+          </InvalidAlert>
         </div>
       )}
 
       {errorInvalidImage && (
-        <div
-          className={`transition-transform duration-500 ${
-            error ? 'translate-y-0' : '-translate-y-1'
-          }`}
-        >
-          <div className='mb-2'>
-            <InvalidAlert
-              handleAlertVisible={(show: boolean) =>
-                showErrorInvalidImage(show)
-              }
-              title='Error uploading file'
-            >
-              <p className='mt-2'>
-                You can only upload jpg, png or gif files only.
-              </p>
-              <p>Maximum 10mb file size</p>
-            </InvalidAlert>
-          </div>
+        <div className={'animate-in slide-in-from-bottom-8 mb-2 z-0'}>
+          <InvalidAlert
+            handleAlertVisible={(show: boolean) => showErrorInvalidImage(show)}
+            title='Error uploading file'
+          >
+            <p className='mt-2'>
+              You can only upload jpg, png or gif files only.
+            </p>
+            <p>Maximum 10mb file size</p>
+          </InvalidAlert>
         </div>
       )}
       <div
-        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 shadow-lg shadow-gray-200 rounded-2xl w-full ${panelClass}`}
+        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 rounded-2xl w-full drop-shadow-xl z-10 ${panelClass}`}
       >
         <div
           className={cn(
@@ -141,7 +131,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             <input
               type='text'
               className='outline-none flex-1'
-              placeholder='Add a url...'
+              placeholder='paste link'
               onChange={handleUrlChange}
               value={url}
               disabled={loading}

@@ -1,27 +1,17 @@
 import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widget-header';
+import { WidgetHeader } from '@/components/profile/widgets';
 import { TwitterWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
 
-interface TwitterWidgetType {
-  content: TwitterWidgetContentType;
-  size: WidgetSize;
+interface TwitterWidgetProps {
+  content: TwitterWidgetContentType /** The content from twitter for the widget to render */;
+  size: WidgetSize /** The size of the widget to render */;
 }
 
-const TwitterProfileDescription: React.FC<{ description: string }> = ({
-  description,
-}) => {
-  const DESCRIPTION_CHARS_LIMIT = 80;
-  return (
-    <span>
-      {description.length > DESCRIPTION_CHARS_LIMIT
-        ? `${description.substring(0, DESCRIPTION_CHARS_LIMIT)}...`
-        : description}
-    </span>
-  );
-};
-
-export const TwitterWidget: React.FC<TwitterWidgetType> = ({
+/**
+ * Render a Twitter widget with the given content and size
+ */
+export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   content,
   size,
 }) => {
@@ -132,4 +122,20 @@ export const TwitterWidget: React.FC<TwitterWidgetType> = ({
   }
 
   return widgetLayout;
+};
+
+/**
+ * Local component to render the twitter profile description, truncating it if it exceeds `DESCRIPTION_CHARS_LIMIT`
+ */
+const TwitterProfileDescription: React.FC<{ description: string }> = ({
+  description,
+}) => {
+  const DESCRIPTION_CHARS_LIMIT = 80;
+  return (
+    <span>
+      {description.length > DESCRIPTION_CHARS_LIMIT
+        ? `${description.substring(0, DESCRIPTION_CHARS_LIMIT)}...`
+        : description}
+    </span>
+  );
 };
