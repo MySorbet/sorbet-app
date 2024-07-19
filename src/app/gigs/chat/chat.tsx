@@ -21,13 +21,13 @@ export function Chat({
   showTopbar = true,
   channel,
 }: ChatProps) {
-  console.log('Messages from chat ', messages);
-
   const sendMessage = (newMessage: SBMessage) => {
     if (!channel) return;
     channel
       .sendUserMessage({ message: newMessage.message })
-      .onSucceeded((message) => {})
+      .onSucceeded((message) => {
+        channel.endTyping();
+      })
       .onFailed((error) => {
         console.log('message failed : ', error);
       });
@@ -42,6 +42,7 @@ export function Chat({
         selectedUser={selectedUser}
         sendMessage={sendMessage}
         isMobile={isMobile}
+        channel={channel}
       />
     </div>
   );
