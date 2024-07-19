@@ -1,4 +1,4 @@
-import { ImageOverlay } from '@/components/common';
+import { ImageOverlay } from '@/components/profile/widgets';
 import { WidgetIcon } from '@/components/profile/widgets';
 import { InstagramWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';

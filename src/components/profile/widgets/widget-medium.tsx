@@ -1,5 +1,4 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetIcon } from '@/components/profile/widgets';
+import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
 import { MediumArticleContentType, WidgetSize, WidgetType } from '@/types';
 import React, { useEffect } from 'react';
 

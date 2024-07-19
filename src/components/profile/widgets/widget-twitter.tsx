@@ -1,6 +1,8 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetIcon } from '@/components/profile/widgets';
-import { WidgetHeader } from '@/components/profile/widgets/';
+import {
+  WidgetHeader,
+  WidgetIcon,
+  ImageOverlay,
+} from '@/components/profile/widgets/';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TwitterWidgetContentType, WidgetSize, WidgetType } from '@/types';

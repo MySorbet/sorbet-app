@@ -1,4 +1,4 @@
-import { ImageOverlay } from '@/components/common';
+import { ImageOverlay } from '@/components/profile/widgets';
 import { PhotoWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
 

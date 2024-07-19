@@ -1,7 +1,6 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetIcon } from '@/components/profile/widgets';
+import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
 import { SubstackWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface SubstackWidgetType {
   content: SubstackWidgetContentType;
