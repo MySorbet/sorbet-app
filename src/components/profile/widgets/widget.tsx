@@ -180,7 +180,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Twitter:
+      case WidgetType.TwitterProfile:
         setWidgetContent(
           <TwitterWidget
             content={content as TwitterWidgetContentType}

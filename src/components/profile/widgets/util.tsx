@@ -70,6 +70,15 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
       }
     }
 
+    // Twitter / X. Currently only profiles are supported -- hence the exclusion of /status/
+    if (
+      (platform.toLowerCase() === 'twitter' ||
+        platform.toLowerCase() === 'x') &&
+      !pathname.includes('/status/')
+    ) {
+      return WidgetType.TwitterProfile;
+    }
+
     return WidgetType[
       (platform.charAt(0).toUpperCase() +
         platform.slice(1)) as keyof typeof WidgetType
