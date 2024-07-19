@@ -1,11 +1,13 @@
 import { ImageOverlay } from '@/components/common';
 import { WidgetIcon } from '@/components/profile/widgets';
 import { TwitterWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface TwitterWidgetProps {
-  content: TwitterWidgetContentType /** The content from twitter for the widget to render */;
-  size: WidgetSize /** The size of the widget to render */;
+  /** The content from twitter for the widget to render */
+  content: TwitterWidgetContentType;
+  /** The size of the widget to render */
+  size: WidgetSize;
 }
 
 /**
