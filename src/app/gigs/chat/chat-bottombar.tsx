@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
 import { timestampToTime } from '@/utils/sendbird';
+import { GroupChannel } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   FileImage,
@@ -28,6 +29,7 @@ interface ChatBottombarProps {
   sendMessage: (newMessage: SBMessage) => void;
   isMobile: boolean;
   selectedUser: User;
+  channel: GroupChannel | undefined | null;
 }
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
@@ -36,12 +38,29 @@ export default function ChatBottombar({
   sendMessage,
   isMobile,
   selectedUser,
+  channel,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(event.target.value);
+  const handleInputChange = async (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const messageInputValue = event.target.value;
+    setMessage(messageInputValue);
+
+    if (!channel) {
+      console.log('channel is not defined');
+      return;
+    }
+
+    if (messageInputValue !== '') {
+      await channel.startTyping();
+      console.log('Starting typing...');
+    } else {
+      await channel.endTyping();
+      console.log('End typing...');
+    }
   };
 
   const handleThumbsUp = () => {
