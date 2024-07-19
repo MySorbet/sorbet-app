@@ -42,7 +42,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={WidgetType.Medium} noMargin />
+            <WidgetIcon type={WidgetType.Medium} className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -82,7 +82,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={WidgetType.Medium} noMargin />
+          <WidgetIcon type={WidgetType.Medium} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>

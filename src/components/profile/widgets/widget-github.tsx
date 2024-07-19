@@ -38,7 +38,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={WidgetType.Github} noMargin />
+            <WidgetIcon type={WidgetType.Github} className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -78,7 +78,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={WidgetType.Github} noMargin />
+          <WidgetIcon type={WidgetType.Github} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>

@@ -51,7 +51,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
           </div>
           <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
@@ -87,7 +87,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={currentType} noMargin />
+          <WidgetIcon type={currentType} className='m-0' />
           <div>{localHeader}</div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img

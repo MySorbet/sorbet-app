@@ -43,7 +43,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={WidgetType.Behance} noMargin />
+            <WidgetIcon type={WidgetType.Behance} className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -83,7 +83,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={WidgetType.Behance} noMargin />
+          <WidgetIcon type={WidgetType.Behance} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>

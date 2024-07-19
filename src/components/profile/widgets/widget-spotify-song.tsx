@@ -32,7 +32,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2 '>
           <div className='flex justify-between'>
-            <WidgetIcon type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
@@ -54,7 +54,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
@@ -102,7 +102,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
