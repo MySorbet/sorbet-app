@@ -10,7 +10,12 @@ import {
   loadMessages,
   timestampToTime,
 } from '@/utils/sendbird';
-import { GroupChannelHandler } from '@sendbird/chat/groupChannel';
+import {
+  GroupChannel,
+  GroupChannelHandler,
+  Member,
+  MessageCollectionEventHandler,
+} from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -52,9 +57,8 @@ export function ChatLayoutMinimal({
   const stateRef = useRef<any>();
   stateRef.current = state;
 
-  const messageHandlers = {
+  const messageHandlers: MessageCollectionEventHandler = {
     onMessagesAdded: (context: any, channel: any, messages: any) => {
-      console.log('onMessagesAdded', messages);
       messages.forEach((currentMessage: any) => {
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
@@ -69,15 +73,19 @@ export function ChatLayoutMinimal({
     },
   };
 
-  const channelHandlers = {
-    onTypingStatusUpdated: (groupChannel: any) => {
-      console.log('onTypingStatusUpdated', groupChannel);
+  const channelHandlers = new GroupChannelHandler({
+    onTypingStatusUpdated: (groupChannel: GroupChannel) => {
+      const typingUsers = groupChannel.getTypingUsers();
+
+      updateState({ ...stateRef.current, typingMembers: typingUsers });
     },
-  };
+  });
 
   useEffect(() => {
     async function initializeChat() {
       await initializeConnection(user?.id);
+
+      initializeChannelEvents(channelHandlers);
 
       if (channelId) {
         const { messageCollection, channel } = await loadMessages(
@@ -145,6 +153,7 @@ export function ChatLayoutMinimal({
       isMobile={isMobile}
       showTopbar={false}
       channel={state.currentlyJoinedChannel}
+      typingMembers={state.typingMembers as Member[]}
     />
   );
 }
