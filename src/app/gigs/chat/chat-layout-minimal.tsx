@@ -90,8 +90,7 @@ export function ChatLayoutMinimal({
       if (channelId) {
         const { messageCollection, channel } = await loadMessages(
           channelId,
-          messageHandlers,
-          channelHandlers
+          messageHandlers
         );
 
         const ts = Date.now();
