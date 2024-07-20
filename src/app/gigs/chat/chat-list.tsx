@@ -1,10 +1,11 @@
 import ChatBottombar from './chat-bottombar';
+import { TypingIndicator } from '@/components/chat/typing-indicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
 import { convertMilitaryToRegular } from '@/utils/sendbird';
-import { GroupChannel } from '@sendbird/chat/groupChannel';
+import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useRef } from 'react';
 
@@ -14,6 +15,7 @@ interface ChatListProps {
   sendMessage: (newMessage: SBMessage) => void;
   isMobile: boolean;
   channel: GroupChannel | undefined | null;
+  typingMembers: Member[];
 }
 
 export function ChatList({
@@ -22,6 +24,7 @@ export function ChatList({
   sendMessage,
   isMobile,
   channel,
+  typingMembers,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +33,7 @@ export function ChatList({
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, typingMembers.length]);
 
   return (
     <div className='w-full overflow-y-auto overflow-x-hidden h-full flex flex-col'>
@@ -104,6 +107,26 @@ export function ChatList({
             );
           })}
         </AnimatePresence>
+        {typingMembers.length > 0 && (
+          <div className='flex flex-col gap-1 mt-5'>
+            <Avatar className='flex justify-center items-center'>
+              <AvatarImage
+                src={
+                  typingMembers[0].profileUrl
+                    ? typingMembers[0].profileUrl
+                    : '/avatar.svg'
+                }
+                alt={typingMembers[0].nickname}
+                width={6}
+                height={6}
+              />
+              <AvatarFallback>{typingMembers[0].nickname[0]}</AvatarFallback>
+            </Avatar>
+            <div className=' bg-[#D7D7D7] p-2 px-3 ml-8 rounded-2xl'>
+              <TypingIndicator />
+            </div>
+          </div>
+        )}
       </div>
       <div className='mt-4'>
         <ChatBottombar
