@@ -72,8 +72,23 @@ export function ChatList({
                 )}
               >
                 <div className='flex flex-col gap-1 items-center'>
-                  {index === 0 ||
-                    (messages[index - 1].userId !== message.userId && (
+                  {index === 0 && (
+                    <div className='flex items-center gap-1 mt-5'>
+                      <Avatar className='flex justify-center items-center'>
+                        <AvatarImage
+                          src={message.avatar ? message.avatar : '/avatar.svg'}
+                          alt={message.nickname}
+                          width={6}
+                          height={6}
+                        />
+                        <AvatarFallback>{message.nickname[0]}</AvatarFallback>
+                      </Avatar>
+                      <span className='text-base'>{message.nickname}</span>
+                      <span className='text-sm'>{time}</span>
+                    </div>
+                  )}
+                  {index > 0 &&
+                    messages[index - 1].userId !== message.userId && (
                       <div className='flex items-center gap-1 mt-5'>
                         <Avatar className='flex justify-center items-center'>
                           <AvatarImage
@@ -89,7 +104,7 @@ export function ChatList({
                         <span className='text-base'>{message.nickname}</span>
                         <span className='text-sm'>{time}</span>
                       </div>
-                    ))}
+                    )}
                 </div>
                 <span
                   className={cn(
