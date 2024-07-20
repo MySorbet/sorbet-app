@@ -52,11 +52,7 @@ const initializeChannelEvents = (channelHandler: any) => {
 };
 // For sending and receiving messages
 
-const loadMessages = async (
-  channelId: string,
-  messageHandlers: any,
-  channelHandlers: any
-) => {
+const loadMessages = async (channelId: string, messageHandlers: any) => {
   const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
 
   const messageFilter = new MessageFilter();
