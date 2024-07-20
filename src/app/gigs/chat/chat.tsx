@@ -3,7 +3,7 @@ import ChatTopbar from './chat-topbar';
 import { Message, UserData } from './data';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
-import { GroupChannel } from '@sendbird/chat/groupChannel';
+import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import React, { Dispatch, SetStateAction } from 'react';
 
 interface ChatProps {
@@ -12,6 +12,7 @@ interface ChatProps {
   isMobile: boolean;
   showTopbar?: boolean;
   channel: GroupChannel | undefined | null;
+  typingMembers?: Member[];
 }
 
 export function Chat({
@@ -20,6 +21,7 @@ export function Chat({
   isMobile,
   showTopbar = true,
   channel,
+  typingMembers,
 }: ChatProps) {
   const sendMessage = (newMessage: SBMessage) => {
     if (!channel) return;
@@ -43,6 +45,7 @@ export function Chat({
         sendMessage={sendMessage}
         isMobile={isMobile}
         channel={channel}
+        typingMembers={typingMembers as Member[]}
       />
     </div>
   );
