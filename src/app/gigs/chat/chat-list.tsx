@@ -109,6 +109,29 @@ export function ChatList({
         </AnimatePresence>
         {typingMembers.length > 0 && (
           <div className='flex flex-col gap-1'>
+            {messages &&
+              messages[messages.length - 1]?.userId !==
+                typingMembers[0].userId && (
+                <div className='flex items-center gap-1 mt-5'>
+                  <Avatar className='flex justify-center items-center'>
+                    <AvatarImage
+                      src={
+                        typingMembers[0].profileUrl
+                          ? typingMembers[0].profileUrl
+                          : '/avatar.svg'
+                      }
+                      alt={typingMembers[0].nickname}
+                      width={6}
+                      height={6}
+                    />
+                    <AvatarFallback>
+                      {typingMembers[0].nickname[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className='text-base'>{typingMembers[0].nickname}</span>
+                </div>
+              )}
+
             <div className=' bg-[#D7D7D7] p-2 px-3 ml-8 rounded-2xl mt-1'>
               <TypingIndicator />
             </div>
