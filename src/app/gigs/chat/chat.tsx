@@ -28,6 +28,7 @@ export function Chat({
 
     if (newMessage.file && newMessage.file.length === 1) {
       const params = {
+        lo
         file: newMessage.file[0],
         name: newMessage.file[0].name,
         type: newMessage.file[0].type,

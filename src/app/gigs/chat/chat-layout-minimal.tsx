@@ -120,6 +120,7 @@ export function ChatLayoutMinimal({
           if (currentMessage.plainUrl) {
             message.fileUrl = currentMessage.plainUrl;
           }
+          console.log('currentMessage', currentMessage);
           return message;
         });
 

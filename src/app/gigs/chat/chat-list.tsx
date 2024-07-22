@@ -7,6 +7,7 @@ import { SBMessage } from '@/types/sendbird';
 import { convertMilitaryToRegular } from '@/utils/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import React, { useRef } from 'react';
 
 interface ChatListProps {
@@ -107,18 +108,24 @@ export function ChatList({
                       </div>
                     )}
                 </div>
-                <span
-                  className={cn(
-                    'bg-accent p-2 px-3  ml-8 rounded-2xl max-w-xs mt-1 font-light',
-                    `${
-                      message.userId === selectedUser.id
-                        ? 'bg-sorbet text-white'
-                        : 'bg-[#D7D7D7]'
-                    }`
-                  )}
-                >
-                  {message.message}
-                </span>
+                {!message.fileUrl ? (
+                  <span
+                    className={cn(
+                      'bg-accent p-2 px-3  ml-8 rounded-2xl max-w-xs mt-1 font-light',
+                      `${
+                        message.userId === selectedUser.id
+                          ? 'bg-sorbet text-white'
+                          : 'bg-[#D7D7D7]'
+                      }`
+                    )}
+                  >
+                    {message.message}
+                  </span>
+                ) : (
+                  <>
+                    <img src={message.fileUrl} alt={message.fileUrl} />
+                  </>
+                )}
               </motion.div>
             );
           })}
