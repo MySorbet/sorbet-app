@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
@@ -48,10 +49,17 @@ export default function ChatBottombar({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { toast } = useToast();
+
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
   const handleAddFile = async (event: any) => {
+    // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
+    if (files.length === 1) {
+      toast({ title: 'Only one file can be uploaded at a time.' });
+      return;
+    }
     setFiles((files) => [...files, event.target.files[0]]);
     if (files.length > 0) {
       await channel?.startTyping();
