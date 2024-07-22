@@ -26,8 +26,7 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
-import React, { useState } from 'react';
-import { useEffect } from 'react-resizable-panels/dist/declarations/src/vendor/react';
+import React, { useState, useEffect } from 'react';
 
 export interface GigsCommsProps {
   isOpen?: boolean;
