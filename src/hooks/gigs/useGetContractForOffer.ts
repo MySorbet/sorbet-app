@@ -29,7 +29,7 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
         throw new Error('Unable to fetch contract information');
       }
     },
-    // Query function will only run whenm the isOpen and activeTab are true and the activeTab is the Contract tab
+    // Query function will only run when the isOpen and activeTab are true and the activeTab is the Contract tab
     enabled: isOpen && activeTab === ActiveTab.Contract,
   });
 };

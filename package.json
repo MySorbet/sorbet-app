@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:dev": "next dev",
+    "start:dev": "PORT=6100 next dev",
     "build": "env-cmd -f .env.production next build",
     "start:prod": "next start",
     "lint": "next lint",

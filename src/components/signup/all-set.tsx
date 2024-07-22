@@ -31,7 +31,7 @@ const AllSet = () => {
         </div>
         <Button
           className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
-          onClick={() => router.push('/daniel')}
+          onClick={() => router.push('/')}
         >
           Edit My Profile
         </Button>
