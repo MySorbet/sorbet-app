@@ -51,29 +51,25 @@ export default function ChatBottombar({
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleAddFile = (event: any) => {
+  const handleAddFile = async (event: any) => {
     setFiles((files) => [...files, URL.createObjectURL(event.target.files[0])]);
+    if (files.length > 0) {
+      await channel?.startTyping();
+    } else {
+      await channel?.endTyping();
+    }
   };
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    if (message.length > 0) {
-    }
     const messageInputValue = event.target.value;
     setMessage(messageInputValue);
 
-    if (!channel) {
-      console.log('channel is not defined but it should be...');
-      return;
-    }
-
     if (messageInputValue !== '') {
-      await channel.startTyping();
-      console.log('Starting typing...');
+      await channel?.startTyping();
     } else {
-      await channel.endTyping();
-      console.log('End typing...');
+      await channel?.endTyping();
     }
   };
 
