@@ -4,6 +4,7 @@
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "aaron-bond.better-comments"
+    "aaron-bond.better-comments",
+    "meouwu.css-var-color-decorator"
   ]
 }

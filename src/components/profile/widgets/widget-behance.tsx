@@ -1,45 +1,37 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widget-header';
-import { WidgetSize, WidgetType, YoutubeWidgetContentType } from '@/types';
-import React, { useEffect } from 'react';
+import { ImageOverlay, WidgetDescription } from '@/components/common';
+import { WidgetHeader } from '@/components/profile/widgets';
+import { BehanceWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import React from 'react';
 
-interface YouTubeWidgetType {
-  content: YoutubeWidgetContentType;
+interface BehanceWidgetType {
+  content: BehanceWidgetContentType;
   size: WidgetSize;
 }
 
-export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
+export const BehanceWidget: React.FC<BehanceWidgetType> = ({
   content,
   size,
 }) => {
-  useEffect(() => {
-    console.log(size.toString());
-  }, [size]);
-
   let widgetLayout;
-  const currentType = WidgetType.Youtube;
-
-  const localHeader = (
-    <>
-      <div className='text-sm font-semibold'>{content.title}</div>
-      <div className='text-xs text-gray-500'>www.youtube.com</div>
-    </>
-  );
-
   switch (size) {
     case WidgetSize.A:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
-            <div className='w-1/4'>
-              <WidgetHeader type={currentType} />
+            <div className='w-16'>
+              <WidgetHeader type={WidgetType.Behance} />
             </div>
-            <div>{localHeader}</div>
+            <div>
+              <div className='text-sm font-semibold'>{content.title}</div>
+              <div className='text-xs text-gray-500'>
+                <WidgetDescription description={content.description} />
+              </div>
+            </div>
           </div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
-              src={content.thumbnail}
-              alt='Medium content'
+              src={content.image}
+              alt='Behance content'
               className='absolute inset-0 w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -51,13 +43,16 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetHeader type={WidgetType.Behance} noMargin />
           </div>
-          <div>{localHeader}</div>
+          <div>
+            <div className='text-sm font-semibold'>{content.title}</div>
+            <div className='text-xs text-gray-500'>{content.description}</div>
+          </div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
             <img
-              src={content.thumbnail}
-              alt='Medium content'
+              src={content.image}
+              alt='Behance content'
               className='w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -69,13 +64,14 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={currentType} />
-            {localHeader}
+            <WidgetHeader type={WidgetType.Behance} />
+            <div className='text-sm font-semibold'>{content.title}</div>
+            <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
             <img
-              src={content.thumbnail}
-              alt='Medium content'
+              src={content.image}
+              alt='Behance content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
@@ -87,12 +83,17 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={currentType} noMargin />
-          <div>{localHeader}</div>
+          <WidgetHeader type={WidgetType.Behance} noMargin />
+          <div>
+            <div className='text-sm font-semibold'>{content.title}</div>
+            <div className='text-xs text-gray-500'>
+              <WidgetDescription description={content.description} />
+            </div>
+          </div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img
-              src={content.thumbnail}
-              alt='Medium content'
+              src={content.image}
+              alt='Behance content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />

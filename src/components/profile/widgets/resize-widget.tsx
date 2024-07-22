@@ -30,7 +30,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   return (
-    <div className='cursor-pointer bg-[#573DF5] flex flex-row text-white rounded-full justify-center align-center items-center min-w-[140px] z-20 hidden lg:flex'>
+    <div className='cursor-pointer bg-[#573DF5] flex flex-row text-white rounded-full justify-center align-center items-center min-w-[140px] z-20 hidden md:flex'>
       <button
         className={btnClass}
         onClick={(e) => onResizeClick(e, WidgetSize.A)}
