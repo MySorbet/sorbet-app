@@ -51,7 +51,6 @@ export default function ChatBottombar({
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  console.log(files);
   const handleAddFile = (event: any) => {
     setFiles((files) => [...files, URL.createObjectURL(event.target.files[0])]);
   };
@@ -59,11 +58,13 @@ export default function ChatBottombar({
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
+    if (message.length > 0) {
+    }
     const messageInputValue = event.target.value;
     setMessage(messageInputValue);
 
     if (!channel) {
-      console.log('channel is not defined');
+      console.log('channel is not defined but it should be...');
       return;
     }
 
@@ -200,7 +201,7 @@ export default function ChatBottombar({
               />
               <FileImage
                 size={20}
-                className='text-muted-foreground hover:cursor-pointer'
+                className='text-muted-foreground hover:cursor-pointer hover:text-foreground transition'
                 onClick={handleFileClick}
               />
             </div>
@@ -234,47 +235,49 @@ export default function ChatBottombar({
             },
           }}
         >
-          <div className='w-full border rounded-full flex flex-col min-h-9 resize-none overflow-hidden bg-background'>
-            {files.length > 0 ? (
-              <div className='flex gap-1 my-2 pl-4'>
-                {files.map((file: string, index: number) => (
-                  <FilePreview
-                    key={index}
-                    file={file}
-                    removeFile={() =>
-                      setFiles((files) => {
-                        const newFiles = files.filter(
-                          (current: string) => current !== file
-                        );
-                        return newFiles;
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            ) : (
-              <Textarea
-                autoComplete='off'
-                value={message}
-                ref={inputRef}
-                onKeyDown={handleKeyPress}
-                onChange={handleInputChange}
-                name='message'
-                placeholder='Aa'
-                className=' border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 h-9'
-              ></Textarea>
-            )}
-          </div>
+          <div className='flex items-center'>
+            <div className='w-full border rounded-full flex resize-none overflow-hidden bg-background'>
+              {files.length > 0 ? (
+                <div className='flex gap-1 my-2 pl-4'>
+                  {files.map((file: string, index: number) => (
+                    <FilePreview
+                      key={index}
+                      file={file}
+                      removeFile={() =>
+                        setFiles((files) => {
+                          const newFiles = files.filter(
+                            (current: string) => current !== file
+                          );
+                          return newFiles;
+                        })
+                      }
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Textarea
+                  autoComplete='off'
+                  value={message}
+                  ref={inputRef}
+                  onKeyDown={handleKeyPress}
+                  onChange={handleInputChange}
+                  name='message'
+                  placeholder='Aa'
+                  className=' border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 h-9'
+                ></Textarea>
+              )}
+            </div>
 
-          <div className='absolute right-2 bottom-0.5'>
-            <EmojiPicker
-              onChange={(value) => {
-                setMessage(message + value);
-                if (inputRef.current) {
-                  inputRef.current.focus();
-                }
-              }}
-            />
+            <div className='absolute right-4 top-3'>
+              <EmojiPicker
+                onChange={(value) => {
+                  setMessage(message + value);
+                  if (inputRef.current) {
+                    inputRef.current.focus();
+                  }
+                }}
+              />
+            </div>
           </div>
         </motion.div>
 
