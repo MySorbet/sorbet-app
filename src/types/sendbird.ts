@@ -10,8 +10,18 @@ export interface SBMessageTimeDto {
 export interface SBMessage {
   userId: string;
   message: string;
-  file?: File;
+  fileUrl?: string;
+  file?: File[];
   nickname: string;
   avatar?: string;
   timestampData?: SBMessageTimeDto;
+}
+//size, type ,array buffer, stream, text
+
+export interface SBFileMessage {
+  size: any;
+  type: any;
+  arrayBuffer: any;
+  stream: any;
+  text: any;
 }

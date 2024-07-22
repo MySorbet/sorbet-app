@@ -44,7 +44,7 @@ export default function ChatBottombar({
   channel,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,7 +52,7 @@ export default function ChatBottombar({
     if (fileInputRef.current) fileInputRef.current.click();
   };
   const handleAddFile = async (event: any) => {
-    setFiles((files) => [...files, URL.createObjectURL(event.target.files[0])]);
+    setFiles((files) => [...files, event.target.files[0]]);
     if (files.length > 0) {
       await channel?.startTyping();
     } else {
@@ -86,22 +86,35 @@ export default function ChatBottombar({
   };
 
   const handleSend = () => {
-    const fullName = `${selectedUser.firstName} ${selectedUser.lastName}`;
-    if (message.trim()) {
-      const timestampData = timestampToTime(new Date().getTime());
+    if (message.length > 0) {
+      const fullName = `${selectedUser.firstName} ${selectedUser.lastName}`;
+      if (message.trim()) {
+        const timestampData = timestampToTime(new Date().getTime());
+        const newMessage: SBMessage = {
+          userId: selectedUser.id,
+          nickname: fullName,
+          avatar: selectedUser.profileImage,
+          message: message.trim(),
+          timestampData: timestampData,
+        };
+        sendMessage(newMessage);
+        setMessage('');
+
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }
+    } else {
       const newMessage: SBMessage = {
         userId: selectedUser.id,
-        nickname: fullName,
+        nickname: `${selectedUser.firstName} ${selectedUser.lastName}`,
         avatar: selectedUser.profileImage,
-        message: message.trim(),
-        timestampData: timestampData,
+        message: '',
+        file: files,
+        timestampData: timestampToTime(Date.now()),
       };
       sendMessage(newMessage);
-      setMessage('');
-
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+      setFiles([]);
     }
   };
 
@@ -236,14 +249,14 @@ export default function ChatBottombar({
             <div className='w-full border rounded-full flex resize-none overflow-hidden bg-background'>
               {files.length > 0 ? (
                 <div className='flex gap-1 my-2 pl-4'>
-                  {files.map((file: string, index: number) => (
+                  {files.map((file: File, index: number) => (
                     <FilePreview
                       key={index}
-                      file={file}
+                      file={URL.createObjectURL(file)}
                       removeFile={() =>
                         setFiles((files) => {
                           const newFiles = files.filter(
-                            (current: string) => current !== file
+                            (current: File) => current.name !== file.name
                           );
                           return newFiles;
                         })
@@ -278,7 +291,7 @@ export default function ChatBottombar({
           </div>
         </motion.div>
 
-        {message.trim() ? (
+        {message.trim() || files.length ? (
           <Link
             href='#'
             className={cn(

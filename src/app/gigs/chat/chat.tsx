@@ -25,14 +25,31 @@ export function Chat({
 }: ChatProps) {
   const sendMessage = (newMessage: SBMessage) => {
     if (!channel) return;
-    channel
-      .sendUserMessage({ message: newMessage.message })
-      .onSucceeded((message) => {
-        channel.endTyping();
-      })
-      .onFailed((error) => {
-        console.log('message failed : ', error);
-      });
+
+    if (newMessage.file && newMessage.file.length === 1) {
+      const params = {
+        file: newMessage.file[0],
+        name: newMessage.file[0].name,
+        type: newMessage.file[0].type,
+      };
+      channel
+        .sendFileMessage(params)
+        .onSucceeded(() => {
+          channel.endTyping();
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
+    } else {
+      channel
+        .sendUserMessage({ message: newMessage.message })
+        .onSucceeded((message) => {
+          channel.endTyping();
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
+    }
   };
 
   return (

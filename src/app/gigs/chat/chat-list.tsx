@@ -27,6 +27,7 @@ export function ChatList({
   typingMembers,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  console.log('messages', messages);
 
   React.useEffect(() => {
     if (messagesContainerRef.current) {

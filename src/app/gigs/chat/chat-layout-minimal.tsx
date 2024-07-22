@@ -67,6 +67,9 @@ export function ChatLayoutMinimal({
           avatar: currentMessage.sender.plainProfileUrl,
           timestampData: timestampToTime(Date.now()),
         };
+        if (currentMessage.messageParams.file) {
+          messageToAdd.file = currentMessage.messageParams.file;
+        }
         const updatedMessages = [...stateRef.current.messages, messageToAdd];
         updateState({ ...stateRef.current, messages: updatedMessages });
       });
@@ -107,13 +110,17 @@ export function ChatLayoutMinimal({
 
         const fetchedMessages = latestMessages.map((currentMessage: any) => {
           const time = timestampToTime(currentMessage.createdAt);
-          return {
+          const message: SBMessage = {
             userId: currentMessage.sender.userId,
             message: currentMessage.message,
             nickname: currentMessage.sender.nickname,
             avatar: currentMessage.sender.plainProfileUrl,
             timestampData: time,
           };
+          if (currentMessage.plainUrl) {
+            message.fileUrl = currentMessage.plainUrl;
+          }
+          return message;
         });
 
         updateState({
