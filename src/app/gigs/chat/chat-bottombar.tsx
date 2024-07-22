@@ -1,3 +1,4 @@
+import { FilePreview } from './chat-file-preview';
 import { Message, loggedInUserData } from './data';
 import { EmojiPicker } from './emoji-picker';
 import { buttonVariants } from '@/components/ui/button';
@@ -233,26 +234,36 @@ export default function ChatBottombar({
             },
           }}
         >
-          <div className='w-full border rounded-full flex items-center min-h-9 resize-none overflow-hidden bg-background'>
-            {files.length > 0 && (
-              <Image
-                src={files[0]}
-                alt='file'
-                height={4}
-                width={4}
-                className='h-8 w-10 ml-3'
-              />
+          <div className='w-full border rounded-full flex flex-col min-h-9 resize-none overflow-hidden bg-background'>
+            {files.length > 0 ? (
+              <div className='flex gap-1 my-2 pl-4'>
+                {files.map((file: string, index: number) => (
+                  <FilePreview
+                    key={index}
+                    file={file}
+                    removeFile={() =>
+                      setFiles((files) => {
+                        const newFiles = files.filter(
+                          (current: string) => current !== file
+                        );
+                        return newFiles;
+                      })
+                    }
+                  />
+                ))}
+              </div>
+            ) : (
+              <Textarea
+                autoComplete='off'
+                value={message}
+                ref={inputRef}
+                onKeyDown={handleKeyPress}
+                onChange={handleInputChange}
+                name='message'
+                placeholder='Aa'
+                className=' border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 h-9'
+              ></Textarea>
             )}
-            <Textarea
-              autoComplete='off'
-              value={message}
-              ref={inputRef}
-              onKeyDown={handleKeyPress}
-              onChange={handleInputChange}
-              name='message'
-              placeholder='Aa'
-              className='border-none focus-visible:ring-transparent focus-visible:ring-0'
-            ></Textarea>
           </div>
 
           <div className='absolute right-2 bottom-0.5'>
