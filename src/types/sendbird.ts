@@ -10,6 +10,7 @@ export interface SBMessageTimeDto {
 export interface SBMessage {
   userId: string;
   message: string;
+  file?: File;
   nickname: string;
   avatar?: string;
   timestampData?: SBMessageTimeDto;
