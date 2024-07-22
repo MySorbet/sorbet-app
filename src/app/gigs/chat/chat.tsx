@@ -28,14 +28,21 @@ export function Chat({
 
     if (newMessage.file && newMessage.file.length === 1) {
       const params = {
-        lo
         file: newMessage.file[0],
         name: newMessage.file[0].name,
         type: newMessage.file[0].type,
+        url: URL.createObjectURL(newMessage.file[0]),
+        thumbnailSizes: [
+          {
+            maxWidth: 80,
+            maxHeight: 100,
+          },
+        ],
       };
       channel
         .sendFileMessage(params)
-        .onSucceeded(() => {
+        .onSucceeded((fileMessageParams) => {
+          console.log('filemessageparams', fileMessageParams);
           channel.endTyping();
         })
         .onFailed((error) => {

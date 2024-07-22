@@ -1,4 +1,5 @@
 import ChatBottombar from './chat-bottombar';
+import { FileDisplay } from './chat-file-display';
 import { TypingIndicator } from '@/components/chat/typing-indicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -122,9 +123,17 @@ export function ChatList({
                     {message.message}
                   </span>
                 ) : (
-                  <>
-                    <img src={message.fileUrl} alt={message.fileUrl} />
-                  </>
+                  <div className='ml-8 mt-1'>
+                    <FileDisplay
+                      key={index}
+                      color={
+                        message.userId === selectedUser.id
+                          ? 'bg-sorbet text-white'
+                          : 'bg-[#D7D7D7]'
+                      }
+                    />
+                    {message.fileUrl}
+                  </div>
                 )}
               </motion.div>
             );

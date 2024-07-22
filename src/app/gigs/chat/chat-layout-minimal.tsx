@@ -60,6 +60,7 @@ export function ChatLayoutMinimal({
   const messageHandlers: MessageCollectionEventHandler = {
     onMessagesAdded: (context: any, channel: any, messages: any) => {
       messages.forEach((currentMessage: any) => {
+        // console.log('current Message ', currentMessage);
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
           message: currentMessage.message,
@@ -68,8 +69,11 @@ export function ChatLayoutMinimal({
           timestampData: timestampToTime(Date.now()),
         };
         if (currentMessage.messageParams.file) {
-          messageToAdd.file = currentMessage.messageParams.file;
+          console.log('MESSAGWE PARAMES');
+          console.log(currentMessage);
+          messageToAdd.fileUrl = currentMessage.messageParams.url;
         }
+        console.log('messageToAdd', messageToAdd);
         const updatedMessages = [...stateRef.current.messages, messageToAdd];
         updateState({ ...stateRef.current, messages: updatedMessages });
       });
