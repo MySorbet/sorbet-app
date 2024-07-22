@@ -23,6 +23,7 @@ import {
   Smile,
   ThumbsUp,
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 
@@ -42,16 +43,16 @@ export default function ChatBottombar({
   channel,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<string[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-
+  console.log(files);
   const handleAddFile = (event: any) => {
-    console.log(event);
+    setFiles((files) => [...files, URL.createObjectURL(event.target.files[0])]);
   };
 
   const handleInputChange = async (
@@ -232,16 +233,28 @@ export default function ChatBottombar({
             },
           }}
         >
-          <Textarea
-            autoComplete='off'
-            value={message}
-            ref={inputRef}
-            onKeyDown={handleKeyPress}
-            onChange={handleInputChange}
-            name='message'
-            placeholder='Aa'
-            className='w-full border rounded-full flex items-center h-9 resize-none overflow-hidden bg-background'
-          ></Textarea>
+          <div className='w-full border rounded-full flex items-center min-h-9 resize-none overflow-hidden bg-background'>
+            {files.length > 0 && (
+              <Image
+                src={files[0]}
+                alt='file'
+                height={4}
+                width={4}
+                className='h-8 w-10 ml-3'
+              />
+            )}
+            <Textarea
+              autoComplete='off'
+              value={message}
+              ref={inputRef}
+              onKeyDown={handleKeyPress}
+              onChange={handleInputChange}
+              name='message'
+              placeholder='Aa'
+              className='border-none focus-visible:ring-transparent focus-visible:ring-0'
+            ></Textarea>
+          </div>
+
           <div className='absolute right-2 bottom-0.5'>
             <EmojiPicker
               onChange={(value) => {
