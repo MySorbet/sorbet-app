@@ -78,14 +78,15 @@ export default function ChatBottombar({
   };
 
   const handleThumbsUp = () => {
-    // const newMessage: Message = {
-    //   id: message.length + 1,
-    //   name: loggedInUserData.name,
-    //   avatar: loggedInUserData.avatar,
-    //   message: '👍',
-    // };
-    // sendMessage(newMessage);
-    // setMessage('');
+    const newMessage: SBMessage = {
+      userId: selectedUser.id,
+      nickname: `${selectedUser.firstName} ${selectedUser.lastName}`,
+      avatar: selectedUser.profileImage,
+      message: '👍',
+      timestampData: timestampToTime(Date.now()),
+    };
+    sendMessage(newMessage);
+    setMessage('');
   };
 
   const handleSend = () => {
