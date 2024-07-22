@@ -1,6 +1,7 @@
 import { Message, loggedInUserData } from './data';
 import { EmojiPicker } from './emoji-picker';
 import { buttonVariants } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
@@ -41,7 +42,17 @@ export default function ChatBottombar({
   channel,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleAddFile = (event: any) => {
+    console.log(event);
+  };
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -135,19 +146,26 @@ export default function ChatBottombar({
                 >
                   <Mic size={20} className='text-muted-foreground' />
                 </Link>
-                {BottombarIcons.map((icon, index) => (
-                  <Link
-                    key={index}
-                    href='#'
-                    className={cn(
-                      buttonVariants({ variant: 'ghost', size: 'icon' }),
-                      'h-9 w-9',
-                      'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                    )}
-                  >
-                    <icon.icon size={20} className='text-muted-foreground' />
-                  </Link>
-                ))}
+                <Link
+                  href='#'
+                  className={cn(
+                    buttonVariants({ variant: 'ghost', size: 'icon' }),
+                    'h-9 w-9',
+                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
+                  )}
+                >
+                  <FileImage size={20} className='text-muted-foreground' />
+                </Link>
+                <Link
+                  href='#'
+                  className={cn(
+                    buttonVariants({ variant: 'ghost', size: 'icon' }),
+                    'h-9 w-9',
+                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
+                  )}
+                >
+                  <Paperclip size={20} className='text-muted-foreground' />
+                </Link>
               </div>
             ) : (
               <Link
@@ -165,19 +183,35 @@ export default function ChatBottombar({
         </Popover>
         {!message.trim() && !isMobile && (
           <div className='flex'>
-            {BottombarIcons.map((icon, index) => (
-              <Link
-                key={index}
-                href='#'
-                className={cn(
-                  buttonVariants({ variant: 'ghost', size: 'icon' }),
-                  'h-9 w-9',
-                  'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                )}
-              >
-                <icon.icon size={20} className='text-muted-foreground' />
-              </Link>
-            ))}
+            <div
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'icon' }),
+                'h-9 w-9',
+                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Input
+                type='file'
+                className='hidden'
+                ref={fileInputRef}
+                onChange={handleAddFile}
+              />
+              <FileImage
+                size={20}
+                className='text-muted-foreground hover:cursor-pointer'
+                onClick={handleFileClick}
+              />
+            </div>
+            <Link
+              href='#'
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'icon' }),
+                'h-9 w-9',
+                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Paperclip size={20} className='text-muted-foreground' />
+            </Link>
           </div>
         )}
       </div>
