@@ -304,7 +304,10 @@ export default function ChatBottombar({
             )}
             onClick={handleThumbsUp}
           >
-            <ThumbsUp size={20} className='text-muted-foreground' />
+            <ThumbsUp
+              size={20}
+              className='text-muted-foreground hover:text-foreground transition'
+            />
           </Link>
         )}
       </AnimatePresence>
