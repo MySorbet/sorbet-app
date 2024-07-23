@@ -1,7 +1,7 @@
 import { currentNetwork } from '@/lib/config';
-import { User } from '@/types';
 import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
-import { API_URL, runApi } from '@/utils';
+import { API_URL } from '@/utils';
+import axios from 'axios';
 
 export const signUpAsync = async ({
   firstName,
@@ -10,22 +10,36 @@ export const signUpAsync = async ({
   accountId,
   userType,
 }: SignUpWithEmailTypes) => {
-  const reqBody = { firstName, lastName, email, accountId, userType };
-  const res = await runApi('POST', `${API_URL}/auth/signup/email`, reqBody);
-  return res;
+  try {
+    const reqBody = { firstName, lastName, email, accountId, userType };
+    const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to sign up: ${error.response.data.message}`);
+  }
 };
 
 export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
-  const reqBody = { email };
-  const res = await runApi('POST', `${API_URL}/auth/signin/email`, reqBody);
-  return res;
+  try {
+    const reqBody = { email };
+    const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to sign in: ${error.response.data.message}`);
+  }
 };
 
 // [POST] /api/auth/signin
 export const signInWithWallet = async (address: string) => {
   const reqBody = { address };
-  const res = await runApi('POST', `${API_URL}/auth/signin/wallet`, reqBody);
-  return res;
+  try {
+    const res = await axios.post(`${API_URL}/auth/signin/wallet`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to sign in with wallet: ${error.response.data.message}`
+    );
+  }
 };
 
 // [POST] /api/auth/signin
@@ -35,18 +49,28 @@ export const signUpWithWallet = async (
   phone: string | null
 ) => {
   const reqBody = { address, email, phone };
-  const res = await runApi('POST', `${API_URL}/auth/signup/wallet`, reqBody);
-  return res;
+
+  try {
+    const res = axios.post(`${API_URL}/auth/signup/wallet`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to sign up with wallet: ${error.response.data.message}`
+    );
+  }
 };
 
 export const fetchUserDetails = async (token: string) => {
+  const headers = { Authorization: `Bearer ${token}` };
+  const reqHeader = { headers };
+
   try {
-    const headers = { Authorization: `Bearer ${token}` };
-    const res = await runApi('GET', `${API_URL}/auth/me`, null, headers);
-    return res.data;
-  } catch (error) {
-    console.error('Failed to fetch user details:', error);
-    throw new Error('Error fetching user details');
+    const res = await axios.get(`${API_URL}/auth/me`, reqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get user details: ${error.response.data.message}`
+    );
   }
 };
 
@@ -82,7 +106,8 @@ export const checkIsAccountAvailable = async (username: string) => {
     }
   } catch (error: any) {
     // Error in checking availabilty, retry
-    console.error('Error checking account availability:', error);
-    return false;
+    throw new Error(
+      `Failed to check if account is available: ${error.response.data.message}`
+    );
   }
 };

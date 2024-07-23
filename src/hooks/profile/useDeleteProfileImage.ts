@@ -7,17 +7,12 @@ export const useDeleteProfileImage = () => {
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      const response = await deleteProfileImageAsync(userId);
-      if (response.status == 'success') {
-        return response;
-      } else {
-        throw new Error('Profile Image not deleted');
-      }
+      return await deleteProfileImageAsync(userId);
     },
     onError: (error: any) => {
       toast({
-        title: 'Profile Image not deleted',
-        description: 'Your profile image could not be deleted due to an error.',
+        title: 'Profile image not deleted',
+        description: 'Your profile image could not be deleted due to an error',
       });
     },
   });

@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //   return 'Login failed';
     // }
     const response = await signInAsync({ email });
-    if (response.status === 'success') {
+    if (response) {
       const user = response.data.user;
       const token = response.data.access_token;
       setUser(user);
@@ -93,9 +93,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
     } else {
       return {
-        ...response,
         status: 'failed',
-        message: response.message,
+        message: 'Failed to login. Server threw an error',
       };
     }
   };
@@ -103,7 +102,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginWithWallet = async (accountId: string) => {
     try {
       const response = await signInWithWallet(accountId);
-      if (response.status === 'success') {
+      console.log('wallet sign in res', response);
+      if (response.data) {
         const user = response.data.user;
         const token = response.data.access_token;
         setUser(user);
@@ -120,10 +120,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return {
           ...response,
           status: 'failed',
-          message: response.message,
+          message: 'Failed to sign in with wallet',
         };
       }
     } catch (error) {
+      console.log('wallet sign in catch', error);
       return { status: 'failed', message: 'Login failed', error: error };
     } finally {
       setAppLoading(false);
@@ -139,10 +140,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const response = await fetchUserDetails(accessToken as string);
-      const authenticatedUser = response as User;
+      const authenticatedUser = response.data as User;
 
       const balanceResponse = await getBalances(authenticatedUser.id);
-      if (balanceResponse.status === 'success') {
+      if (balanceResponse && balanceResponse.data) {
         setUser({ ...authenticatedUser, balance: balanceResponse.data });
       } else {
         setUser(authenticatedUser);

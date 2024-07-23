@@ -143,13 +143,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         imageFormData.append('fileType', 'image');
         imageFormData.append('destination', 'widgets');
         imageFormData.append('userId', '');
-
         const response = await uploadWidgetsImageAsync(imageFormData);
-        if (
-          response.status === 'success' &&
-          response.data &&
-          response.data.fileUrl
-        ) {
+        if (response.data && response.data.fileUrl) {
           widgetUrl = response.data.fileUrl;
         } else {
           toast({
@@ -389,7 +384,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
-  if (isUserWidgetPending) return <Spinner />;
+  if (isUserWidgetPending)
+    return (
+      <div className='w-full h-full flex items-center justify-center'>
+        <Spinner />
+      </div>
+    );
 
   return (
     <>

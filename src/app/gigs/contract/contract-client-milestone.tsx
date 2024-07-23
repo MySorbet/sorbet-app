@@ -150,7 +150,7 @@ export const ContractClientMilestone = ({
     const response = !isFixedPrice
       ? await updateMilestoneStatus(milestoneId, 'InReview')
       : await updateContractStatus(projectId, 'InReview');
-    if (response.status && response.status === 'success') {
+    if (response && response.data) {
       toast({
         title: 'Milestone submitted',
         description: 'Milestone is in review now and awaiting approval',
@@ -169,7 +169,7 @@ export const ContractClientMilestone = ({
     const response = !isFixedPrice
       ? await updateMilestoneStatus(milestoneId, 'Approved')
       : await updateContractStatus(projectId, 'Completed');
-    if (response.status && response.status === 'success') {
+    if (response && response.data) {
       setLastChainOp('approve_schedule');
       if (isFixedPrice && offerId) {
         await updateOfferStatus(offerId, 'Completed');
