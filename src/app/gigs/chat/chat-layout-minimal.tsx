@@ -1,7 +1,6 @@
 'use client';
 
 import { Chat } from './chat';
-import { Message, userData } from './data';
 import { useAuth } from '@/hooks';
 import { SBFileMessage, SBMessage } from '@/types/sendbird';
 import {
@@ -33,25 +32,12 @@ export function ChatLayoutMinimal({
   channelId,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-  const [selectedUser, setSelectedUser] = React.useState(userData[0]);
   const [isMobile, setIsMobile] = useState(false);
   const [state, updateState] = useState({
-    applicationUsers: [],
-    groupChannelMembers: [],
     currentlyJoinedChannel: null,
     messages: [],
-    channels: [],
-    messageInputValue: '',
-    userNameInputValue: '',
-    userIdInputValue: '',
-    channelNameUpdateValue: '',
-    settingUpUser: true,
-    file: null,
-    messageToUpdate: null,
     typingMembers: [],
     messageCollection: null,
-    loading: false,
-    error: false,
   });
   const { user } = useAuth();
   const stateRef = useRef<any>();
@@ -91,7 +77,6 @@ export function ChatLayoutMinimal({
             messageToAdd.fileData = fileData;
           }
         }
-        console.log('messageToAdd', messageToAdd);
         const updatedMessages = [...stateRef.current.messages, messageToAdd];
         updateState({ ...stateRef.current, messages: updatedMessages });
       });
