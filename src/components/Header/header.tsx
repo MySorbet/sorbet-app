@@ -1,7 +1,7 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
-import { Notifications } from '@/components/header/notifications';
+import { Notifications } from '@/components/Header/notifications';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import Link from 'next/link';

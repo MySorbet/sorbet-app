@@ -37,7 +37,7 @@ export const WalletContainer = () => {
     if (user) {
       setLoading(true);
       const response = await getOverview(last_days);
-      if (response.status === 'success') {
+      if (response && response.data) {
         setTransactions(response.data.transactions);
         setBalances(response.data.balances);
       }

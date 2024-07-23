@@ -1,20 +1,27 @@
-import { CreateContractType, CreateOfferType, User } from '@/types';
+import { CreateContractType, CreateOfferType } from '@/types';
 import { FindContractsType } from '@/types';
-import { API_URL, runApi } from '@/utils';
+import { API_URL, validateToken } from '@/utils';
+import axios from 'axios';
 
 export const findContractsWithFreelancer = async ({
   freelancerUsername,
   clientUsername,
 }: FindContractsType) => {
   const reqBody = { freelancerUsername, clientUsername };
-  const res = await runApi(
-    'POST',
-    `${API_URL}/contracts/with-freelancer`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(
+      `${API_URL}/contracts/with-freelancer`,
+      reqBody,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to find contracts with freelancer: ${error.response.data.message}`
+    );
+  }
 };
 
 export const getFreelancerOffers = async (
@@ -22,49 +29,66 @@ export const getFreelancerOffers = async (
   status?: string
 ) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get freelancer offers: ${error.response.data.message}`
+    );
+  }
 };
 
 export const getClientOffers = async (clientId: string, status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get client offers: ${error.response.data.message}`
+    );
+  }
 };
 
 export const createContract = async (body: CreateContractType) => {
-  const res = await runApi(
-    'POST',
-    `${API_URL}/contracts`,
-    body,
-    undefined,
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(`${API_URL}/contracts`, body, reqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to create contract: ${error.response.data.message}`
+    );
+  }
 };
 
 export const getContractsForFreelancer = async (status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
-  const res = await runApi(
-    'GET',
-    `${API_URL}/contracts/freelance${queryParams}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/contracts/freelance${queryParams}`,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get contracts for freelancer: ${error.response.data.message}`
+    );
+  }
 };
 
 export const getClientFreelancerOffers = async (
@@ -72,26 +96,35 @@ export const getClientFreelancerOffers = async (
   clientUsername: string
 ) => {
   const reqBody = { freelancerUsername, clientUsername };
-  const res = await runApi(
-    'POST',
-    `${API_URL}/offers/between-participants`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(
+      `${API_URL}/offers/between-participants`,
+      reqBody,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get client freelancer offers: ${error.response.data.message}`
+    );
+  }
 };
 
 export const getContractForOffer = async (offerId: string) => {
-  console.log('offerId', offerId);
-  const res = await runApi(
-    'GET',
-    `${API_URL}/contracts/forOffer/${offerId}`,
-    {},
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+  try {
+    const res = await axios.get(
+      `${API_URL}/contracts/forOffer/${offerId}`,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to contract for offer: ${error.response.data.message}`
+    );
+  }
 };
 
 export const updateContractStatus = async (
@@ -99,14 +132,20 @@ export const updateContractStatus = async (
   status: string
 ) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/contracts/${contractId}/status`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/contracts/${contractId}/status`,
+      reqBody,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to update contract status: ${error.response.data.message}`
+    );
+  }
 };
 
 export const updateMilestoneStatus = async (
@@ -114,30 +153,46 @@ export const updateMilestoneStatus = async (
   status: string
 ) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/milestones/${milestoneId}/status`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/milestones/${milestoneId}/status`,
+      reqBody,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to update milestone status: ${error.response.data.message}`
+    );
+  }
 };
 
 export const updateOfferStatus = async (offerId: string, status: string) => {
   const reqBody = { status };
-  const res = await runApi(
-    'PATCH',
-    `${API_URL}/offers/status/${offerId}`,
-    reqBody,
-    {},
-    true
-  );
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.patch(
+      `${API_URL}/offers/status/${offerId}`,
+      reqBody,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to reject offer: ${error.response.data.message}`);
+  }
 };
 
 export const createOffer = async (body: CreateOfferType) => {
   const reqBody = body;
-  const res = await runApi('POST', `${API_URL}/offers`, reqBody, {}, true);
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.post(`${API_URL}/offers`, reqBody, reqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to create offer: ${error.response.data.message}`);
+  }
 };

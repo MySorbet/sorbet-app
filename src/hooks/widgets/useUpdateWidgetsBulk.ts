@@ -15,7 +15,7 @@ export const useUpdateWidgetsBulk = () => {
     onError: (error) =>
       toast({
         title: 'Failed to update widget',
-        description: 'If the issue persists, contact support',
+        description: error.message + ' If the issue persists, contact support',
       }),
   });
 };

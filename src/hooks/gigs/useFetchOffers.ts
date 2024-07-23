@@ -1,8 +1,6 @@
-import { useAuth } from '../useAuth';
 import { getClientOffers, getFreelancerOffers } from '@/api/gigs';
 import { useToast } from '@/components/ui/use-toast';
 import { GigsContentType, User } from '@/types';
-import { FormattedResponse } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 export const useFetchOffers = (
@@ -16,7 +14,7 @@ export const useFetchOffers = (
     queryKey: ['offers'],
     queryFn: async () => {
       if (loggedInUser?.accountId) {
-        let response: FormattedResponse | undefined;
+        let response: any;
 
         switch (gigsContentType) {
           case GigsContentType.Sent:
@@ -29,14 +27,17 @@ export const useFetchOffers = (
             );
             break;
         }
-        if (response && response.status === 'success') {
+
+        if (response.data && response.statusText === 'OK') {
           return response.data;
         } else {
           toast({
-            title: 'Unable to load offers',
-            description: 'Contact support if issue persists',
+            title: 'Failed to fetch offers',
+            description: 'Try again. If this issue persists, contact support.',
           });
-          throw new Error('Unable to load offers');
+          throw new Error(
+            'Fetching offers failed. Server returned a failed response.'
+          );
         }
       }
     },

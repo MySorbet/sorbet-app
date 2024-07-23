@@ -7,21 +7,12 @@ export const useSignUpAsync = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (data: SignUpWithEmailTypes) => {
-      const response = await signUpAsync(data);
-      if (response.status === 'success') {
-        return response;
-      } else {
-        throw new Error(response.message);
-      }
-    },
-    onError: (error) => {
+    mutationFn: async (data: SignUpWithEmailTypes) => await signUpAsync(data),
+    onError: (error) =>
       toast({
         title: 'Unable to create user account',
         description: error.message,
         variant: 'destructive',
-      });
-    },
-    onSettled: () => {},
+      }),
   });
 };

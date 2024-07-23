@@ -13,11 +13,7 @@ import {
 import { Input } from '../ui/input';
 import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 import { Loading, useWalletSelector } from '@/components/common';
-import {
-  useCheckIsAccountAvailable,
-  useLoginWithEmail,
-  useSignUpAsync,
-} from '@/hooks';
+import { useSignUpAsync, useLoginWithEmail } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import Link from 'next/link';
@@ -57,11 +53,6 @@ const SignUpForm = () => {
   const { mutateAsync: loginWithEmail } = useLoginWithEmail();
   const { isPending: signUpPending, mutateAsync: signUpAsync } =
     useSignUpAsync();
-  const {
-    isPending: checkAccountPending,
-    mutateAsync: checkIsAccountAvailable,
-    isError: checkAccountError,
-  } = useCheckIsAccountAvailable();
 
   const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
     setUserData((user) => ({ ...user, ...values }));
@@ -317,17 +308,6 @@ const SignUpForm = () => {
                             }
                             readOnly
                           />
-                          {checkAccountPending ? (
-                            <Loader className='h-4 w-4 absolute right-4 top-3' />
-                          ) : touchedFields.accountId ? (
-                            checkAccountError ||
-                            errors.accountId ||
-                            !usernameAvailable ? (
-                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                            ) : (
-                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
-                            )
-                          ) : null}
                         </div>
                         {/* <div className='h-10 flex items-center justify-center rounded-l-none rounded-r-md border text-base px-4 py-[10px] text-[#344054] hover:cursor-default'>
                           .near

@@ -1,11 +1,36 @@
-import { API_URL, runApi } from '@/utils';
+import { API_URL, validateToken } from '@/utils';
+import axios from 'axios';
 
 export const uploadProfileImageAsync = async (data: FormData) => {
-  const res = await runApi('POST', `${API_URL}/images/upload`, data, {}, true);
-  return res;
+  const reqHeader = validateToken({}, true);
+  try {
+    const response = await axios.post(
+      `${API_URL}/images/upload`,
+      data,
+      reqHeader
+    );
+
+    return response;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to upload profile image: ${error.response.data.message}`
+    );
+  }
 };
 
 export const uploadWidgetsImageAsync = async (data: FormData) => {
-  const res = await runApi('POST', `${API_URL}/images/widgets`, data, {}, true);
-  return res;
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${API_URL}/images/widgets`,
+      data,
+      reqHeader
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to upload widgets image: ${error.response.data.message}`
+    );
+  }
 };
