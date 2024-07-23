@@ -10,9 +10,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { User } from '@/types';
 import { FileMessage, SendMessageParams, TextMessage } from '@/types/sendbird';
-import { timestampToTime } from '@/utils/sendbird';
 import { GroupChannel } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
