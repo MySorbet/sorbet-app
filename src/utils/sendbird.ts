@@ -9,11 +9,9 @@ import {
   MessageFilter,
   MessageCollectionInitPolicy,
   GroupChannel,
-  GroupChannelFilter,
-  GroupChannelListOrder,
 } from '@sendbird/chat/groupChannel';
 
-// Initialize the SendbirdChat instance to use APIs in your app.
+// Initialize the SendbirdChat module
 const params: SendbirdChatParams<[GroupChannelModule]> = {
   appId: SENDBIRD_INFO.appId as string,
   localCacheEnabled: true,
@@ -22,6 +20,7 @@ const params: SendbirdChatParams<[GroupChannelModule]> = {
 
 const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 
+// Call when user clicks on a gig and renders chat component
 const initializeConnection = async (userId: string | null | undefined) => {
   console.log('Attempting to initialize connection...');
   if (!userId) {
@@ -39,19 +38,16 @@ const initializeConnection = async (userId: string | null | undefined) => {
   }
 };
 
-// Check if a channel exists
-const findChannel = async (url: string) => {
-  const channel: GroupChannel = await sb.groupChannel.getChannel(url);
-  return channel;
-};
-
+// Specifically for onTypingStatusUpdated event. Event is not accessible in MessageCollection like onMessagesAdded is.
+// Only accessible through a GroupChannelHandler
 const initializeChannelEvents = (channelHandler: any) => {
   const key = 'test';
   sb.groupChannel.addGroupChannelHandler(key, channelHandler);
   console.log('Successfully initialized handler');
 };
-// For sending and receiving messages
 
+// Calls to Sendbird and fetches last 100 messages for a specific channel
+// messageCollection currently unused, but may be needed later so I left it in just in case
 const loadMessages = async (channelId: string, messageHandlers: any) => {
   const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
 
@@ -94,8 +90,7 @@ const timestampToTime = (timestamp: number) => {
   };
   return timeObject;
 };
-// 23:01 --> 11:01 PM
-// 00:29 --> 12:29 AM
+
 const convertMilitaryToRegular = (
   hour: string | undefined,
   minute: string | undefined
@@ -147,7 +142,6 @@ const getTimeDifferenceInMinutes = (time1: string, time2: string) => {
 export {
   sb,
   loadMessages,
-  findChannel,
   initializeConnection,
   timestampToTime,
   convertMilitaryToRegular,
