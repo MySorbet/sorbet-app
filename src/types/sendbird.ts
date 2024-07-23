@@ -23,7 +23,15 @@ export interface SBFileMessage {
   size: number;
 }
 
-export interface SendMessageParams {
-  type: string;
-  message: File[] | string;
+export interface FileMessage {
+  type: 'file';
+  message: File[];
 }
+
+export interface TextMessage {
+  type: 'text';
+  message: string;
+}
+
+// Union type for SendMessageParams
+export type SendMessageParams = FileMessage | TextMessage;

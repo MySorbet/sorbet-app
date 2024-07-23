@@ -1,5 +1,4 @@
 import { FilePreview } from './chat-file-preview';
-import { Message, loggedInUserData } from './data';
 import { EmojiPicker } from './emoji-picker';
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
-import { SBMessage } from '@/types/sendbird';
+import { FileMessage, SendMessageParams, TextMessage } from '@/types/sendbird';
 import { timestampToTime } from '@/utils/sendbird';
 import { GroupChannel } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -22,17 +21,14 @@ import {
   Paperclip,
   PlusCircle,
   SendHorizontal,
-  Smile,
   ThumbsUp,
 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatBottombarProps {
-  sendMessage: (newMessage: SBMessage) => void;
+  sendMessage: (newMessage: SendMessageParams) => void;
   isMobile: boolean;
-  selectedUser: User;
   channel: GroupChannel | undefined | null;
 }
 
@@ -41,7 +37,6 @@ export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
 export default function ChatBottombar({
   sendMessage,
   isMobile,
-  selectedUser,
   channel,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
@@ -77,30 +72,22 @@ export default function ChatBottombar({
   };
 
   const handleThumbsUp = () => {
-    const newMessage: SBMessage = {
-      userId: selectedUser.id,
-      nickname: `${selectedUser.firstName} ${selectedUser.lastName}`,
-      avatar: selectedUser.profileImage,
+    const params: TextMessage = {
+      type: 'text',
       message: '👍',
-      timestampData: timestampToTime(Date.now()),
     };
-    sendMessage(newMessage);
+    sendMessage(params);
     setMessage('');
   };
 
   const handleSend = () => {
     if (message.length > 0) {
-      const fullName = `${selectedUser.firstName} ${selectedUser.lastName}`;
       if (message.trim()) {
-        const timestampData = timestampToTime(new Date().getTime());
-        const newMessage: SBMessage = {
-          userId: selectedUser.id,
-          nickname: fullName,
-          avatar: selectedUser.profileImage,
-          message: message.trim(),
-          timestampData: timestampData,
+        const params: TextMessage = {
+          type: 'text',
+          message: message,
         };
-        sendMessage(newMessage);
+        sendMessage(params);
         setMessage('');
 
         if (inputRef.current) {
@@ -108,15 +95,11 @@ export default function ChatBottombar({
         }
       }
     } else {
-      const newMessage: SBMessage = {
-        userId: selectedUser.id,
-        nickname: `${selectedUser.firstName} ${selectedUser.lastName}`,
-        avatar: selectedUser.profileImage,
-        message: '',
-        file: files,
-        timestampData: timestampToTime(Date.now()),
+      const params: FileMessage = {
+        type: 'file',
+        message: files,
       };
-      sendMessage(newMessage);
+      sendMessage(params);
       setFiles([]);
     }
   };

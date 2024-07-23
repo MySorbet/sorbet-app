@@ -1,9 +1,8 @@
 import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
-import { Message, UserData } from './data';
 import { User } from '@/types';
-import { SBMessage } from '@/types/sendbird';
+import { SBMessage, SendMessageParams } from '@/types/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import React, { Dispatch, SetStateAction } from 'react';
 
@@ -24,14 +23,14 @@ export function Chat({
   channel,
   typingMembers,
 }: ChatProps) {
-  const sendMessage = (newMessage: SBMessage) => {
+  const sendMessage = (newMessage: SendMessageParams) => {
     if (!channel) return;
 
-    if (newMessage.file && newMessage.file.length === 1) {
+    if (newMessage.type === 'file') {
       const params = {
-        file: newMessage.file[0],
-        name: newMessage.file[0].name,
-        type: newMessage.file[0].type,
+        file: newMessage.message[0],
+        name: newMessage.message[0].name,
+        type: newMessage.message[0].type,
       };
       channel
         .sendFileMessage(params)
@@ -66,7 +65,6 @@ export function Chat({
         <ChatBottombar
           sendMessage={sendMessage}
           isMobile={isMobile}
-          selectedUser={selectedUser}
           channel={channel}
         />
       </div>
