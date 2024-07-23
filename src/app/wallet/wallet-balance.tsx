@@ -2,9 +2,13 @@ import { SelectDuration } from '@/app/wallet/select-duration';
 import { Plus, Send, Wallet } from 'lucide-react';
 import React from 'react';
 
-export const WalletBalance = () => {
+interface WalletBalanceProps {
+  balance: string;
+}
+
+export const WalletBalance: React.FC<WalletBalanceProps> = ({ balance }) => {
   return (
-    <div className='shadow-[0px_10px_30px_0px_#00000014] rounded-xl bg-white p-6 min-h-[100%]'>
+    <div className='shadow-[0px_10px_30px_0px_#00000014] rounded-3xl bg-white p-6 min-h-[100%]'>
       <div className='flex flex-col gap-1'>
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-3'>
@@ -16,7 +20,7 @@ export const WalletBalance = () => {
                 BALANCE
               </span>
             </div>
-            <div className='text-3xl font-semibold'>1,000.34 USDC</div>
+            <div className='text-3xl font-semibold'>{balance} USD</div>
           </div>
           <div className='flex gap-4'>
             <button className='flex flex-col items-center gap-1 text-sm text-blue-500'>

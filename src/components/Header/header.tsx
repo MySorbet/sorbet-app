@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable @next/next/no-img-element */
 import { Notifications } from '@/components/header/notifications';
 import { useAppDispatch } from '@/redux/hook';

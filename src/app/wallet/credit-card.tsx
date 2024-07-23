@@ -41,7 +41,7 @@ export const CreditCardForm = () => {
 
   return (
     <>
-      <div className='shadow-[0px_10px_30px_0px_#00000014] credit-card-form bg-white rounded-xl px-4 py-8 lg:p-12 flex flex-col gap-8'>
+      <div className='shadow-[0px_10px_30px_0px_#00000014] credit-card-form bg-white rounded-3xl px-4 py-8 lg:p-12 flex flex-col gap-8'>
         <div className=''>
           <Cards
             number={cardData.cardNumber}
