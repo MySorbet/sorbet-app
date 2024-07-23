@@ -183,7 +183,7 @@ export function ChatList({
                 </div>
               )}
 
-            <div className=' bg-[#D7D7D7] p-2 px-3 ml-8 rounded-2xl mt-1'>
+            <div className='flex items-center justify-center py-2 bg-[#D7D7D7]  ml-8 rounded-2xl mt-1 w-16'>
               <TypingIndicator />
             </div>
           </div>
