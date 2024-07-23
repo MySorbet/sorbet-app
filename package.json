@@ -82,6 +82,7 @@
     "base64-js": "^1.5.1",
     "big.js": "^6.2.1",
     "bignumber.js": "^9.1.2",
+    "blob-util": "^2.0.2",
     "bufferutil": "^4.0.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
