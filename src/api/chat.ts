@@ -1,4 +1,3 @@
-// 'use server';
 import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
 import * as blobUtil from 'blob-util';

@@ -1,5 +1,5 @@
 import { FileDisplay } from './chat-file-display';
-import { TypingIndicator } from '@/components/chat/typing-indicator';
+import { TypingIndicator } from './typing-indicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
