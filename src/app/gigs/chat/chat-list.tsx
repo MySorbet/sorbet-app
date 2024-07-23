@@ -109,7 +109,7 @@ export function ChatList({
                       </div>
                     )}
                 </div>
-                {!message.fileUrl ? (
+                {!message.fileData?.sendbirdUrl ? (
                   <span
                     className={cn(
                       'bg-accent p-2 px-3  ml-8 rounded-2xl max-w-xs mt-1 font-light',
@@ -125,14 +125,13 @@ export function ChatList({
                 ) : (
                   <div className='ml-8 mt-1'>
                     <FileDisplay
-                      key={index}
+                      file={message.fileData}
                       color={
                         message.userId === selectedUser.id
                           ? 'bg-sorbet text-white'
                           : 'bg-[#D7D7D7]'
                       }
                     />
-                    {message.fileUrl}
                   </div>
                 )}
               </motion.div>

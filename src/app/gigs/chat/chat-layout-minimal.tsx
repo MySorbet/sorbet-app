@@ -3,7 +3,7 @@
 import { Chat } from './chat';
 import { Message, userData } from './data';
 import { useAuth } from '@/hooks';
-import { SBMessage } from '@/types/sendbird';
+import { SBFileMessage, SBMessage } from '@/types/sendbird';
 import {
   initializeChannelEvents,
   initializeConnection,
@@ -59,8 +59,9 @@ export function ChatLayoutMinimal({
 
   const messageHandlers: MessageCollectionEventHandler = {
     onMessagesAdded: (context: any, channel: any, messages: any) => {
+      console.log(context);
       messages.forEach((currentMessage: any) => {
-        // console.log('current Message ', currentMessage);
+        console.log('from onMessagesAdded ', currentMessage);
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
           message: currentMessage.message,
@@ -68,10 +69,15 @@ export function ChatLayoutMinimal({
           avatar: currentMessage.sender.plainProfileUrl,
           timestampData: timestampToTime(Date.now()),
         };
+
         if (currentMessage.messageParams.file) {
-          console.log('MESSAGWE PARAMES');
-          console.log(currentMessage);
-          messageToAdd.fileUrl = currentMessage.messageParams.url;
+          const fileData: SBFileMessage = {
+            name: currentMessage.messageParams.file.name,
+            sendbirdUrl: URL.createObjectURL(currentMessage.messageParams.file),
+            type: currentMessage.messageParams.file.type,
+            size: currentMessage.messageParams.file.size,
+          };
+          messageToAdd.fileData = fileData;
         }
         console.log('messageToAdd', messageToAdd);
         const updatedMessages = [...stateRef.current.messages, messageToAdd];
@@ -113,6 +119,7 @@ export function ChatLayoutMinimal({
         );
 
         const fetchedMessages = latestMessages.map((currentMessage: any) => {
+          // console.log('fetched messages', currentMessage);
           const time = timestampToTime(currentMessage.createdAt);
           const message: SBMessage = {
             userId: currentMessage.sender.userId,
@@ -122,9 +129,14 @@ export function ChatLayoutMinimal({
             timestampData: time,
           };
           if (currentMessage.plainUrl) {
-            message.fileUrl = currentMessage.plainUrl;
+            const fileData: SBFileMessage = {
+              name: currentMessage.name,
+              sendbirdUrl: currentMessage.plainUrl,
+              type: currentMessage.type,
+              size: currentMessage.size,
+            };
+            message.fileData = fileData;
           }
-          console.log('currentMessage', currentMessage);
           return message;
         });
 

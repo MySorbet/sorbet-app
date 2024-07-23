@@ -12,16 +12,15 @@ export interface SBMessage {
   message: string;
   fileUrl?: string;
   file?: File[];
+  fileData?: SBFileMessage;
   nickname: string;
   avatar?: string;
   timestampData?: SBMessageTimeDto;
 }
-//size, type ,array buffer, stream, text
 
 export interface SBFileMessage {
-  size: any;
-  type: any;
-  arrayBuffer: any;
-  stream: any;
-  text: any;
+  name: string;
+  sendbirdUrl: string;
+  type: string;
+  size: number;
 }

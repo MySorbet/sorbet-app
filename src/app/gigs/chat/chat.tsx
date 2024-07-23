@@ -31,7 +31,6 @@ export function Chat({
         file: newMessage.file[0],
         name: newMessage.file[0].name,
         type: newMessage.file[0].type,
-        url: URL.createObjectURL(newMessage.file[0]),
         thumbnailSizes: [
           {
             maxWidth: 80,
@@ -42,7 +41,6 @@ export function Chat({
       channel
         .sendFileMessage(params)
         .onSucceeded((fileMessageParams) => {
-          console.log('filemessageparams', fileMessageParams);
           channel.endTyping();
         })
         .onFailed((error) => {
