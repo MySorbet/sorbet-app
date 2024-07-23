@@ -61,7 +61,6 @@ export function ChatLayoutMinimal({
     onMessagesAdded: (context: any, channel: any, messages: any) => {
       console.log(context);
       messages.forEach((currentMessage: any) => {
-        console.log('from onMessagesAdded ', currentMessage);
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
           message: currentMessage.message,
@@ -69,15 +68,28 @@ export function ChatLayoutMinimal({
           avatar: currentMessage.sender.plainProfileUrl,
           timestampData: timestampToTime(Date.now()),
         };
-
-        if (currentMessage.messageParams.file) {
-          const fileData: SBFileMessage = {
-            name: currentMessage.messageParams.file.name,
-            sendbirdUrl: URL.createObjectURL(currentMessage.messageParams.file),
-            type: currentMessage.messageParams.file.type,
-            size: currentMessage.messageParams.file.size,
-          };
-          messageToAdd.fileData = fileData;
+        console.log('current message', currentMessage);
+        if (currentMessage.messageType === 'file') {
+          console.log('in fille message');
+          if (currentMessage.messageParams !== null) {
+            const fileData: SBFileMessage = {
+              name: currentMessage.messageParams.file.name,
+              sendbirdUrl: URL.createObjectURL(
+                currentMessage.messageParams.file
+              ),
+              type: currentMessage.messageParams.file.type,
+              size: currentMessage.messageParams.file.size,
+            };
+            messageToAdd.fileData = fileData;
+          } else {
+            const fileData: SBFileMessage = {
+              name: currentMessage.name,
+              sendbirdUrl: currentMessage.plainUrl,
+              type: currentMessage.type,
+              size: currentMessage.size,
+            };
+            messageToAdd.fileData = fileData;
+          }
         }
         console.log('messageToAdd', messageToAdd);
         const updatedMessages = [...stateRef.current.messages, messageToAdd];
