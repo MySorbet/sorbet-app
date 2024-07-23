@@ -22,6 +22,7 @@ interface FileDisplayProps {
 interface FileDisplayActionsProps {
   handleDownloadFile: () => void;
   handleOpenFile: () => void;
+  color;
 }
 
 const FileDisplay = ({ color, file }: FileDisplayProps) => {
@@ -78,6 +79,7 @@ const FileDisplay = ({ color, file }: FileDisplayProps) => {
         link ? (
           <FileDisplay.Container className={color}>
             <FileDisplay.Actions
+              color={color}
               handleOpenFile={handleOpenFile}
               handleDownloadFile={handleDownloadFile}
             />
@@ -120,6 +122,7 @@ const Container = ({
 const Actions = ({
   handleDownloadFile,
   handleOpenFile,
+  color,
 }: FileDisplayActionsProps) => {
   return (
     <div className='flex w-full justify-between'>
@@ -127,7 +130,7 @@ const Actions = ({
         <Tooltip>
           <TooltipTrigger>
             <Download
-              className='w-4 h-4 text-white'
+              className={cn('w-4 h-4', color)}
               onClick={handleDownloadFile}
             />
           </TooltipTrigger>
@@ -138,7 +141,7 @@ const Actions = ({
         <Tooltip>
           <TooltipTrigger>
             <ExternalLink
-              className='w-4 h-4 text-white'
+              className={cn('w-4 h-4', color)}
               onClick={handleOpenFile}
             />
           </TooltipTrigger>
