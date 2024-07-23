@@ -1,6 +1,7 @@
 'use client';
 
 import { fetchFile } from '@/api/chat';
+import { Spinner } from '@/components/common';
 import {
   TooltipProvider,
   TooltipTrigger,
@@ -8,9 +9,10 @@ import {
   TooltipContent,
 } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 import { SBFileMessage } from '@/types/sendbird';
 import { Download, ExternalLink, File, Frown, HeartCrack } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 interface FileDisplayProps {
   color: string;
@@ -19,14 +21,17 @@ interface FileDisplayProps {
 
 const FileDisplay = ({ color, file }: FileDisplayProps) => {
   const [link, setLink] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
   useEffect(() => {
     async function initLink() {
+      setLoading(true);
       const res = await fetchFile(file.sendbirdUrl, file.type);
       if (res) {
         setLink(res);
       }
+      setLoading(false);
     }
 
     initLink();
@@ -64,46 +69,69 @@ const FileDisplay = ({ color, file }: FileDisplayProps) => {
 
   return (
     <>
-      {link ? (
-        <div
-          className={`flex flex-col items-center justify-center w-[80px] h-[100px] rounded-2xl px-1 gap-1 ${color} `}
-        >
-          <div className='flex w-full justify-between'>
-            <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <Download
-                    className='w-4 h-4 text-white'
-                    onClick={handleDownloadFile}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>Download file</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <ExternalLink
-                    className='w-4 h-4 text-white'
-                    onClick={handleOpenFile}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>Open file</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <File className='w-10 h-10' />
-          {file.type.split('/').pop()}
-        </div>
+      {!loading ? (
+        link ? (
+          <FileDisplay.Container className={color}>
+            <div className='flex w-full justify-between'>
+              <TooltipProvider delayDuration={200} skipDelayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Download
+                      className='w-4 h-4 text-white'
+                      onClick={handleDownloadFile}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>Download file</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider delayDuration={200} skipDelayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <ExternalLink
+                      className='w-4 h-4 text-white'
+                      onClick={handleOpenFile}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>Open file</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <File className='w-10 h-10' />
+            {file.type.split('/').pop()}
+          </FileDisplay.Container>
+        ) : (
+          <FileDisplay.Container>
+            <Frown className='w-10 h-10 text-white' />
+          </FileDisplay.Container>
+        )
       ) : (
-        <div
-          className={`flex flex-col items-center justify-center w-[80px] h-[100px] rounded-2xl p-2 bg-gray-600 text-white`}
-        >
-          <Frown className='w-14 h-14' />
-        </div>
+        <FileDisplay.Container className={color}>
+          <Spinner />
+        </FileDisplay.Container>
       )}
     </>
   );
 };
+
+const Container = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div
+      className={cn(
+        `flex flex-col items-center justify-center w-[80px] h-[100px] rounded-2xl px-1 gap-1`,
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+FileDisplay.Container = Container;
 
 export { FileDisplay };
