@@ -1,4 +1,3 @@
-import ChatBottombar from './chat-bottombar';
 import { FileDisplay } from './chat-file-display';
 import { TypingIndicator } from '@/components/chat/typing-indicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -10,26 +9,19 @@ import {
   formatBytes,
   getTimeDifferenceInMinutes,
 } from '@/utils/sendbird';
-import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
+import { Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
 import React, { useRef } from 'react';
 
 interface ChatListProps {
   messages?: SBMessage[];
   selectedUser: User;
-  sendMessage: (newMessage: SBMessage) => void;
-  isMobile: boolean;
-  channel: GroupChannel | undefined | null;
   typingMembers: Member[];
 }
 
 export function ChatList({
   messages,
   selectedUser,
-  sendMessage,
-  isMobile,
-  channel,
   typingMembers,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
