@@ -11,12 +11,17 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { SBFileMessage } from '@/types/sendbird';
-import { Download, ExternalLink, File, Frown, HeartCrack } from 'lucide-react';
+import { Download, ExternalLink, File, Frown } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
 
 interface FileDisplayProps {
   color: string;
   file: SBFileMessage;
+}
+
+interface FileDisplayActionsProps {
+  handleDownloadFile: () => void;
+  handleOpenFile: () => void;
 }
 
 const FileDisplay = ({ color, file }: FileDisplayProps) => {
@@ -72,30 +77,10 @@ const FileDisplay = ({ color, file }: FileDisplayProps) => {
       {!loading ? (
         link ? (
           <FileDisplay.Container className={color}>
-            <div className='flex w-full justify-between'>
-              <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Download
-                      className='w-4 h-4 text-white'
-                      onClick={handleDownloadFile}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>Download file</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <ExternalLink
-                      className='w-4 h-4 text-white'
-                      onClick={handleOpenFile}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>Open file</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+            <FileDisplay.Actions
+              handleOpenFile={handleOpenFile}
+              handleDownloadFile={handleDownloadFile}
+            />
             <File className='w-10 h-10' />
             {file.type.split('/').pop()}
           </FileDisplay.Container>
@@ -132,6 +117,39 @@ const Container = ({
   );
 };
 
+const Actions = ({
+  handleDownloadFile,
+  handleOpenFile,
+}: FileDisplayActionsProps) => {
+  return (
+    <div className='flex w-full justify-between'>
+      <TooltipProvider delayDuration={200} skipDelayDuration={100}>
+        <Tooltip>
+          <TooltipTrigger>
+            <Download
+              className='w-4 h-4 text-white'
+              onClick={handleDownloadFile}
+            />
+          </TooltipTrigger>
+          <TooltipContent>Download file</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <TooltipProvider delayDuration={200} skipDelayDuration={100}>
+        <Tooltip>
+          <TooltipTrigger>
+            <ExternalLink
+              className='w-4 h-4 text-white'
+              onClick={handleOpenFile}
+            />
+          </TooltipTrigger>
+          <TooltipContent>Open file</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+};
+
 FileDisplay.Container = Container;
+FileDisplay.Actions = Actions;
 
 export { FileDisplay };
