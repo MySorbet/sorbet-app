@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
-import { convertMilitaryToRegular } from '@/utils/sendbird';
+import { convertMilitaryToRegular, formatBytes } from '@/utils/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
@@ -29,7 +29,6 @@ export function ChatList({
   typingMembers,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  console.log('messages', messages);
 
   React.useEffect(() => {
     if (messagesContainerRef.current) {
@@ -123,7 +122,7 @@ export function ChatList({
                     {message.message}
                   </span>
                 ) : (
-                  <div className='ml-8 mt-1'>
+                  <div className='ml-8 mt-1 flex gap-2 items-center'>
                     <FileDisplay
                       file={message.fileData}
                       color={
@@ -132,6 +131,12 @@ export function ChatList({
                           : 'bg-[#D7D7D7]'
                       }
                     />
+                    <span>
+                      {message.fileData.name}{' '}
+                      <span className='text-xs'>
+                        {formatBytes(message.fileData.size)}
+                      </span>
+                    </span>
                   </div>
                 )}
               </motion.div>
