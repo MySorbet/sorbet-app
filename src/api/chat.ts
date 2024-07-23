@@ -1,10 +1,10 @@
-import axios from 'axios';
+'use server';
 
 export async function fetchFile(sendbirdUrl: string, type: string) {
   if (sendbirdUrl.includes('blob:')) return sendbirdUrl;
 
   const headers = {
-    'Api-Token': process.env.NEXT_PUBLIC_SEND_BIRD_TOKEN,
+    'Api-Token': process.env.SEND_BIRD_TOKEN || '',
   };
 
   try {
