@@ -1,7 +1,9 @@
 'use server';
 
 export async function fetchFile(sendbirdUrl: string, type: string) {
-  if (sendbirdUrl.includes('blob:')) return sendbirdUrl;
+  if (sendbirdUrl.includes('blob:')) {
+    return sendbirdUrl;
+  }
 
   const headers = {
     'Api-Token': process.env.SEND_BIRD_TOKEN || '',
@@ -16,6 +18,6 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
     const blobUrl = URL.createObjectURL(blob);
     return blobUrl;
   } catch (error: any) {
-    throw new Error(`Failed to fetch file: ${error.response.data.message}`);
+    throw new Error(`Failed to fetch file: ${error}`);
   }
 }

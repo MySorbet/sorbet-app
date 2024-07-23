@@ -71,34 +71,63 @@ export const updateUser = async (userToUpdate: User, userId: string) => {
   }
 };
 
-export const getTransactions = async (
-  userId: string,
-  currentPage: number = 1,
-  itemsPerPage: number = 20
-) => {
-  const queryParams = `?page=${currentPage}&limit=${itemsPerPage}`;
-  const reqHeader = validateToken({}, true);
-
-  try {
-    const res = await axios.get(
-      `${API_URL}/transactions/user/${userId}${queryParams}`,
-      reqHeader
-    );
-    return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get transaction: ${error.response.data.message}`
-    );
-  }
-};
-
 export const getBalances = async (userId: string) => {
   const reqHeader = validateToken({}, true);
 
   try {
-    const res = axios.get(`${API_URL}/users/${userId}/balances`, reqHeader);
+    const res = await axios.get(
+      `${API_URL}/users/${userId}/balances`,
+      reqHeader
+    );
     return res;
   } catch (error: any) {
     throw new Error(`Failed to get balances: ${error.response.data.message}`);
+  }
+};
+
+export const getOverview = async (last_days: number = 30) => {
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/transactions/overview?last_days=${last_days}`,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to get overview`);
+  }
+};
+
+export const getTransactions = async (
+  page: number = 1,
+  limit: number = 20,
+  order: string = 'desc',
+  after_date?: string,
+  before_date?: string
+) => {
+  const reqHeader = validateToken({}, true);
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    order,
+  });
+
+  if (after_date) {
+    queryParams.append('after_date', after_date);
+  }
+
+  if (before_date) {
+    queryParams.append('before_date', before_date);
+  }
+
+  try {
+    const res = await axios.get(
+      `${API_URL}/transactions?${queryParams.toString()}`,
+      reqHeader
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to get transactions`);
   }
 };

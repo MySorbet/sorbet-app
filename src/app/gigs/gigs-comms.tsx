@@ -107,6 +107,7 @@ export const GigsComms = ({
     isOpen,
     activeTab,
   });
+
   useEffect(() => {
     if (isGetContractError === true) {
       toast({

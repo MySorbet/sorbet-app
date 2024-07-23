@@ -22,7 +22,7 @@ interface FileDisplayProps {
 interface FileDisplayActionsProps {
   handleDownloadFile: () => void;
   handleOpenFile: () => void;
-  color;
+  color: string;
 }
 
 const FileDisplay = ({ color, file }: FileDisplayProps) => {

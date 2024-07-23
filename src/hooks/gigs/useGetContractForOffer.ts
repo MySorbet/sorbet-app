@@ -8,10 +8,6 @@ type useGetContractForOfferParams = {
   activeTab: ActiveTab;
 };
 
-interface Props {
-  currentOfferId: string;
-}
-
 export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   const { currentOfferId, isOpen, activeTab } = data;
 
@@ -21,7 +17,6 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
       const res = await getContractForOffer(currentOfferId);
       return res.data;
     },
-    // Query function will only run when the isOpen and activeTab are true and the activeTab is the Contract tab
     enabled: isOpen && activeTab === 0,
   });
 };
