@@ -13,7 +13,7 @@ interface ChatProps {
   isMobile: boolean;
   showTopbar?: boolean;
   channel: GroupChannel | undefined | null;
-  typingMembers?: Member[];
+  typingMembers: Member[];
 }
 
 export function Chat({
@@ -32,12 +32,6 @@ export function Chat({
         file: newMessage.file[0],
         name: newMessage.file[0].name,
         type: newMessage.file[0].type,
-        thumbnailSizes: [
-          {
-            maxWidth: 80,
-            maxHeight: 100,
-          },
-        ],
       };
       channel
         .sendFileMessage(params)
