@@ -93,6 +93,7 @@ export const getOverview = async (last_days: number = 30) => {
       `${API_URL}/transactions/overview?last_days=${last_days}`,
       reqHeader
     );
+    return res;
   } catch (error: any) {
     throw new Error(`Failed to get overview`);
   }

@@ -33,56 +33,13 @@ export const WalletContainer = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-<<<<<<< HEAD
-  const fetchTransactions = useCallback(
-    async (pageNumber = transactionsData.currentPage, itemsPerPage = 20) => {
-      if (user) {
-        setIsLoading(true);
-        try {
-          const response = await getTransactions(
-            user?.id,
-            pageNumber,
-            itemsPerPage
-          );
-          if (response && response.data) {
-            if (response.data.data.length > 0) {
-              setTransactionsData({
-                transactions: response.data.data,
-                currentPage: response.data.currentPage,
-                totalPages: response.data.totalPages,
-              });
-            } else {
-              setTransactionsData((prevState) => ({
-                ...prevState,
-                transactions: [],
-              }));
-            }
-          } else {
-            setErrorMessage('The request failed, please try again.');
-            setTransactionsData((prevState) => ({
-              ...prevState,
-              transactions: [],
-            }));
-          }
-        } catch (error) {
-          console.error(error);
-          setErrorMessage('The request failed, please try again.');
-          setTransactionsData((prevState) => ({
-            ...prevState,
-            transactions: [],
-          }));
-        } finally {
-          setIsLoading(false);
-        }
-=======
   const fetchTransactions = async (last_days: number = 30) => {
     if (user) {
       setLoading(true);
       const response = await getOverview(last_days);
-      if (response.status === 'success') {
+      if (response && response.data) {
         setTransactions(response.data.transactions);
         setBalances(response.data.balances);
->>>>>>> main
       }
       setLoading(false);
     }
