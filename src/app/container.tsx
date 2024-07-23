@@ -1,3 +1,5 @@
+'use client';
+
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
 import { KnockFeedProvider, KnockProvider } from '@knocklabs/react';

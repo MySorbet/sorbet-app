@@ -1,8 +1,9 @@
+'use client';
+
 /* eslint-disable @next/next/no-img-element */
 import { Notifications } from '@/components/Header/notifications';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
-import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -18,7 +19,12 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
       <div className='flex w-full justify-between container mx-auto py-4'>
         <div className='flex gap-6'>
           <Link href='/'>
-            <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
+            <img
+              src='https://i.imgur.com/CbbXxed.png'
+              alt='logo'
+              width={44}
+              height={44}
+            />
           </Link>
         </div>
         {!isPublic && (

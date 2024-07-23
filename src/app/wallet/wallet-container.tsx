@@ -1,21 +1,39 @@
-import { getTransactions } from '@/api/user';
-import { DataTable } from '@/app/wallet/data-table';
-import { Button } from '@/components/ui/button';
+'use client';
+
+import { getOverview } from '@/api/user';
+import Container from '@/app/container';
+import TransactionsTable from '@/app/wallet/all/transactions-table';
+import { CreditCardForm } from '@/app/wallet/credit-card';
+import { FundsFlow } from '@/app/wallet/funds-flow';
+import { SelectDuration } from '@/app/wallet/select-duration';
+import { WalletBalance } from '@/app/wallet/wallet-balance';
+import { Sidebar } from '@/components';
+import { Header } from '@/components/header';
 import { useAuth } from '@/hooks';
-import { Plus, Send } from 'lucide-react';
-import Image from 'next/image';
-import React, { useEffect, useState, useCallback } from 'react';
+import { useAppSelector } from '@/redux/hook';
+import { Balances, Transaction, Transactions } from '@/types/transactions';
+import { MoveDown, Send } from 'lucide-react';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 export const WalletContainer = () => {
   const { user } = useAuth();
-  const [transactionsData, setTransactionsData] = useState({
+  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
+  const [transactions, setTransactions] = useState<Transactions>({
+    money_in: [],
+    money_out: [],
     transactions: [],
-    currentPage: 1,
-    totalPages: 0,
+    total_money_in: '',
+    total_money_out: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [balances, setBalances] = useState<Balances>({
+    usdc: 0,
+    near: 0,
+    nearUsd: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(false);
 
+<<<<<<< HEAD
   const fetchTransactions = useCallback(
     async (pageNumber = transactionsData.currentPage, itemsPerPage = 20) => {
       if (user) {
@@ -56,63 +74,123 @@ export const WalletContainer = () => {
         } finally {
           setIsLoading(false);
         }
+=======
+  const fetchTransactions = async (last_days: number = 30) => {
+    if (user) {
+      setLoading(true);
+      const response = await getOverview(last_days);
+      if (response.status === 'success') {
+        setTransactions(response.data.transactions);
+        setBalances(response.data.balances);
+>>>>>>> main
       }
-    },
-    [user, transactionsData.currentPage]
-  );
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchTransactions();
-  }, [fetchTransactions]);
+  }, [user]);
 
-  const handlePageChange = (newPage: number) => {
-    fetchTransactions(newPage);
+  const handleTxnDurationChange = (value: string) => {
+    const last_days = parseInt(value, 10);
+    fetchTransactions(last_days);
   };
 
   return (
-    <div className='shadow-sm rounded-xl bg-white border border-2 border-gray-200'>
-      <div className='flex flex-col lg:flex-row lg:justify-between gap-3 items-center justify-center lg:px-16 rounded-tl-xl rounded-tr-xl bg-[#0D0449] min-h-40 text-white'>
-        <div className='flex flex-row gap-2 items-center justify-center'>
-          <div>
-            <Image
-              src='/svg/usdc-wallet.svg'
-              alt='USDC'
-              width={40}
-              height={40}
+    <Container>
+      <Header />
+      {user && <Sidebar show={toggleOpenSidebar} userInfo={user} />}
+      <div className='container my-16'>
+        <div className='flex flex-col lg:flex-row gap-6'>
+          <div className='lg:w-8/12'>
+            <WalletBalance
+              balance={(balances.usdc + balances.nearUsd).toLocaleString()}
             />
           </div>
-          <div className='flex flex-col'>
-            <div className='text-md font-thin'>Balance</div>
-            <div className='font-semibold text-xl'>0 USDC</div>
+          <div className='lg:w-4/12'>
+            <CreditCardForm />
           </div>
         </div>
-        <div className='flex flex-row gap-2'>
-          <Button className='bg-sorbet gap-2 hover:bg-sorbet hover:brightness-125'>
-            Send
-            <Send size={18} />
-          </Button>
-          <Button className='bg-sorbet gap-2 hover:bg-sorbet hover:brightness-125'>
-            Top Up
-            <Plus size={19} />
-          </Button>
+        <div className='flex justify-between mt-12 mb-6'>
+          <div className='text-2xl font-semibold'>Money Movements</div>
+          <div>
+            <SelectDuration
+              selectedValue='30'
+              onChange={handleTxnDurationChange}
+            />
+          </div>
+        </div>
+        <div className='flex flex-col lg:flex-row gap-6'>
+          <div className='lg:w-1/2'>
+            <FundsFlow
+              isLoading={loading}
+              title='Money In'
+              balance={transactions.total_money_in}
+              icon={<MoveDown size={16} />}
+              items={
+                !transactions.money_in
+                  ? undefined
+                  : transactions.money_in.map((transaction: Transaction) => ({
+                      icon: <MoveDown size={20} />,
+                      label: 'Received',
+                      account: transaction.sender,
+                      balance: transaction.value,
+                    }))
+              }
+            />
+          </div>
+          <div className='lg:w-1/2'>
+            <FundsFlow
+              isLoading={loading}
+              title='Money Out'
+              balance={transactions.total_money_out}
+              icon={<Send size={16} />}
+              items={
+                !transactions.money_out
+                  ? undefined
+                  : transactions.money_out.map((transaction: Transaction) => ({
+                      icon: <Send size={16} />,
+                      label: 'Sent',
+                      account: transaction.receiver,
+                      balance: transaction.value,
+                    }))
+              }
+            />
+          </div>
+        </div>
+        <div className='flex flex-col mt-12'>
+          <div className='flex justify-between items-center mb-6'>
+            <div className='text-2xl font-semibold'>Recent Transactions</div>
+            <Link href='/wallet/all'>
+              <div className='text-right font-semibold text-sm cursor-pointer text-sorbet'>
+                View all
+              </div>
+            </Link>
+          </div>
+          <TransactionsTable
+            isLoading={loading}
+            minimalMode
+            transactions={
+              !transactions.transactions
+                ? []
+                : transactions.transactions.map((transaction: Transaction) => ({
+                    type:
+                      transaction.sender === user?.accountId
+                        ? 'Sent'
+                        : 'Received',
+                    account:
+                      transaction.sender === user?.accountId
+                        ? transaction.receiver
+                        : transaction.sender,
+                    date: transaction.timestamp,
+                    amount: transaction.value,
+                    hash: transaction.hash,
+                  }))
+            }
+          />
         </div>
       </div>
-      <div className='border-b-1 border-b border-gray-200 p-10 text-2xl'>
-        Transaction History
-      </div>
-      <div className='border-b-1 border-b border-gray-200 min-h-[50vh]'>
-        {errorMessage && (
-          <p className='text-red-500 text-center py-5'>{errorMessage}</p>
-        )}
-        <DataTable
-          currentPage={transactionsData.currentPage}
-          totalPages={transactionsData.totalPages}
-          onPageChange={handlePageChange}
-          tableHeaders={['Date', 'Cryptocurrency', 'Transaction ID', 'Amount']}
-          transactions={transactionsData.transactions}
-          isLoading={isLoading}
-        />
-      </div>
-    </div>
+    </Container>
   );
 };
