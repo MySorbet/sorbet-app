@@ -5,7 +5,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
-import { convertMilitaryToRegular, formatBytes } from '@/utils/sendbird';
+import {
+  convertMilitaryToRegular,
+  formatBytes,
+  getTimeDifferenceInMinutes,
+} from '@/utils/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
@@ -73,7 +77,7 @@ export function ChatList({
                   'items-start'
                 )}
               >
-                <div className='flex flex-col gap-1 items-center'>
+                <div className='flex flex-col gap-1 items-start w-full'>
                   {index === 0 && (
                     <div className='flex items-center gap-1 mt-5'>
                       <Avatar className='flex justify-center items-center'>
@@ -89,6 +93,17 @@ export function ChatList({
                       <span className='text-sm'>{time}</span>
                     </div>
                   )}
+                  {index > 0 &&
+                    getTimeDifferenceInMinutes(
+                      `${message?.timestampData?.hour}:${message?.timestampData?.minute}`,
+                      `${messages[index - 1]?.timestampData?.hour}:${
+                        messages[index - 1]?.timestampData?.minute
+                      }`
+                    ) > 60 && (
+                      <div className='flex w-full justify-center text-gray-500'>
+                        {time}
+                      </div>
+                    )}
                   {index > 0 &&
                     messages[index - 1].userId !== message.userId && (
                       <div className='flex items-center gap-1 mt-5'>
