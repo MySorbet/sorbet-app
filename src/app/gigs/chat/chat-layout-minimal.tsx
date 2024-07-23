@@ -45,7 +45,6 @@ export function ChatLayoutMinimal({
 
   const messageHandlers: MessageCollectionEventHandler = {
     onMessagesAdded: (context: any, channel: any, messages: any) => {
-      console.log(context);
       messages.forEach((currentMessage: any) => {
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
@@ -54,9 +53,7 @@ export function ChatLayoutMinimal({
           avatar: currentMessage.sender.plainProfileUrl,
           timestampData: timestampToTime(Date.now()),
         };
-        console.log('current message', currentMessage);
         if (currentMessage.messageType === 'file') {
-          console.log('in fille message');
           if (currentMessage.messageParams !== null) {
             const fileData: SBFileMessage = {
               name: currentMessage.messageParams.file.name,
@@ -116,7 +113,6 @@ export function ChatLayoutMinimal({
         );
 
         const fetchedMessages = latestMessages.map((currentMessage: any) => {
-          // console.log('fetched messages', currentMessage);
           const time = timestampToTime(currentMessage.createdAt);
           const message: SBMessage = {
             userId: currentMessage.sender.userId,
