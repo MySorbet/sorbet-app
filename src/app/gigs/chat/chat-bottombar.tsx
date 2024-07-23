@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatBottombarProps {
   sendMessage: (newMessage: SBMessage) => void;
@@ -61,11 +61,6 @@ export default function ChatBottombar({
       return;
     }
     setFiles((files) => [...files, event.target.files[0]]);
-    if (files.length > 0) {
-      await channel?.startTyping();
-    } else {
-      await channel?.endTyping();
-    }
   };
 
   const handleInputChange = async (
@@ -137,6 +132,17 @@ export default function ChatBottombar({
       setMessage((prev) => prev + '\n');
     }
   };
+
+  useEffect(() => {
+    async function checkTypingForFiles() {
+      if (files.length > 0) {
+        await channel?.startTyping();
+      } else {
+        await channel?.endTyping();
+      }
+    }
+    checkTypingForFiles();
+  }, [files.length]);
 
   return (
     <div className='p-2 flex justify-between w-full items-center gap-2'>
