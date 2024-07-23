@@ -10,8 +10,6 @@ export interface SBMessageTimeDto {
 export interface SBMessage {
   userId: string;
   message: string;
-  fileUrl?: string;
-  file?: File[];
   fileData?: SBFileMessage;
   nickname: string;
   avatar?: string;
