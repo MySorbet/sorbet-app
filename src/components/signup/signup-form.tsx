@@ -387,9 +387,10 @@ const SignUpForm = () => {
           </div>
           <Button
             type='button'
-            onClick={() =>
-              createAccount({ email: formsEmail, username: formsUsername })
-            }
+            onClick={() => {
+              createAccount({ email: formsEmail, username: formsUsername });
+            }}
+            disabled={errors.accountId || !formsEmail}
             // disabled={!isValid || !usernameAvailable}
             // disabled={!isValid}
             className={'w-full bg-[#573DF5] border-[#7F56D9]'}
