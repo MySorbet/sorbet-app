@@ -1,15 +1,15 @@
 import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widget-header';
-import { SoundcloudTrackContentType, WidgetSize, WidgetType } from '@/types';
+import { WidgetHeader } from '@/components/profile/widgets';
+import { SpotifyWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import { Play } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-interface SoundcloudWidgetType {
-  content: SoundcloudTrackContentType;
+interface SpotifyWidgetType {
+  content: SpotifyWidgetContentType;
   size: WidgetSize;
 }
 
-export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
+export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   content,
   size,
 }) => {
@@ -18,7 +18,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
   }, [size]);
 
   let widgetLayout;
-  const currentType = WidgetType.SoundcloudSong;
+  const currentType = WidgetType.SpotifyAlbum;
 
   const localHeader = (
     <>
@@ -41,8 +41,8 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
           <div>{localHeader}</div>
           <div className='flex-grow relative rounded-xl overflow-hidden'>
             <img
-              src={content.artwork}
-              alt='Soundcloud Content'
+              src={content.cover}
+              alt='Spotify content'
               className='absolute inset-0 w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -55,17 +55,16 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
             <WidgetHeader type={currentType} noMargin />
-            <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
-              <Play size={16} />
-              Play
-            </button>
           </div>
           <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden mt-6 bg-white text-black'>
-            <img
-              src={content.artwork}
-              alt='Soundcloud Content'
-              className='absolute inset-0 w-full h-full object-cover'
+            <iframe
+              title='Spotify'
+              className='SpotifyPlayer absolute w-full h-full'
+              src={`https://embed.spotify.com/?uri=${content.url}&view=list&theme=light`}
+              width='100%'
+              height='450px'
+              style={{ border: 'none', background: 'white' }}
             />
             <ImageOverlay />
           </div>
@@ -89,8 +88,8 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
           </div>
           <div className='relative rounded-xl overflow-hidden w-4/5 h-full'>
             <img
-              src={content.artwork}
-              alt='Soundcloud Content'
+              src={content.cover}
+              alt='Spotify content'
               className='absolute inset-0 w-full h-full object-cover'
             />
             <ImageOverlay />
@@ -113,8 +112,8 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             className={`h-full w-full relative rounded-xl overflow-hidden mt-6`}
           >
             <img
-              src={content.artwork}
-              alt='Soundcloud Content'
+              src={content.cover}
+              alt='Spotify content'
               className='w-full h-full object-cover'
               style={{ objectFit: 'cover' }}
             />
