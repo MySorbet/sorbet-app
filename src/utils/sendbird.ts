@@ -94,7 +94,8 @@ const timestampToTime = (timestamp: number) => {
   };
   return timeObject;
 };
-
+// 23:01 --> 11:01 PM
+// 00:29 --> 12:29 AM
 const convertMilitaryToRegular = (
   hour: string | undefined,
   minute: string | undefined
@@ -108,6 +109,9 @@ const convertMilitaryToRegular = (
   if (numHour > 12) {
     newHour = String(numHour - 12);
     suffix = 'PM';
+  } else if (numHour === 0) {
+    newHour = String(12);
+    suffix = 'AM';
   } else {
     newHour = hour.substring(1);
     suffix = 'AM';
@@ -128,6 +132,18 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
+const convertTimeToMinutes = (timeStr: string) => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+const getTimeDifferenceInMinutes = (time1: string, time2: string) => {
+  const minutes1 = convertTimeToMinutes(time1);
+  const minutes2 = convertTimeToMinutes(time2);
+
+  return Math.abs(minutes2 - minutes1);
+};
+
 export {
   sb,
   loadMessages,
@@ -137,4 +153,5 @@ export {
   convertMilitaryToRegular,
   initializeChannelEvents,
   formatBytes,
+  getTimeDifferenceInMinutes,
 };
