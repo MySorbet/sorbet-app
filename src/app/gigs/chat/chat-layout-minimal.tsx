@@ -54,6 +54,8 @@ export function ChatLayoutMinimal({
           timestampData: timestampToTime(Date.now()),
         };
         if (currentMessage.messageType === 'file') {
+          // This if block is for when a user sends a message
+          // set Sendbird url to a object url blob because the fileUrl key is not accessible though it's defined if you log the currentMessage object
           if (currentMessage.messageParams !== null) {
             const fileData: SBFileMessage = {
               name: currentMessage.messageParams.file.name,
@@ -65,6 +67,7 @@ export function ChatLayoutMinimal({
             };
             messageToAdd.fileData = fileData;
           } else {
+            // This else block is for when a user receives a message
             const fileData: SBFileMessage = {
               name: currentMessage.name,
               sendbirdUrl: currentMessage.plainUrl,
@@ -83,7 +86,6 @@ export function ChatLayoutMinimal({
   const channelHandlers = new GroupChannelHandler({
     onTypingStatusUpdated: (groupChannel: GroupChannel) => {
       const typingUsers = groupChannel.getTypingUsers();
-
       updateState({ ...stateRef.current, typingMembers: typingUsers });
     },
   });
