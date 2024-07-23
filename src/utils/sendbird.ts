@@ -22,18 +22,14 @@ const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 
 // Call when user clicks on a gig and renders chat component
 const initializeConnection = async (userId: string | null | undefined) => {
-  console.log('Attempting to initialize connection...');
   if (!userId) {
-    console.log('No user found, returning');
     return;
   }
 
   try {
-    console.log('Connecting to sendbird...');
     const user = await sb.connect(userId);
     return user;
   } catch (error: any) {
-    console.log('SB error: ', error);
     throw new Error('Failed to connect to Sendbird');
   }
 };
@@ -43,7 +39,6 @@ const initializeConnection = async (userId: string | null | undefined) => {
 const initializeChannelEvents = (channelHandler: any) => {
   const key = 'test';
   sb.groupChannel.addGroupChannelHandler(key, channelHandler);
-  console.log('Successfully initialized handler');
 };
 
 // Calls to Sendbird and fetches last 100 messages for a specific channel

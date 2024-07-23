@@ -4,6 +4,7 @@ import ChatTopbar from './chat-topbar';
 import { User } from '@/types';
 import { SBMessage, SendMessageParams } from '@/types/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
+import { motion } from 'framer-motion';
 import React, { Dispatch, SetStateAction } from 'react';
 
 interface ChatProps {
