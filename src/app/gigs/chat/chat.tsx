@@ -8,7 +8,7 @@ import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import React, { Dispatch, SetStateAction } from 'react';
 
 interface ChatProps {
-  messages?: SBMessage[];
+  messages: SBMessage[];
   selectedUser: User;
   isMobile: boolean;
   showTopbar?: boolean;
@@ -66,9 +66,6 @@ export function Chat({
       <ChatList
         messages={messages}
         selectedUser={selectedUser}
-        sendMessage={sendMessage}
-        isMobile={isMobile}
-        channel={channel}
         typingMembers={typingMembers as Member[]}
       />
       <div className='mt-4'>
