@@ -1,14 +1,14 @@
 'use client';
 
 import { Chat } from './chat';
-import { useAuth } from '@/hooks';
-import { SBFileMessage, SBMessage } from '@/types/sendbird';
 import {
   initializeChannelEvents,
   initializeConnection,
   loadMessages,
   timestampToTime,
-} from '@/utils/sendbird';
+} from './sendbird';
+import { useAuth } from '@/hooks';
+import { SBFileMessage, SBMessage } from '@/types/sendbird';
 import {
   GroupChannel,
   GroupChannelHandler,

@@ -1,14 +1,14 @@
 import { FileDisplay } from './chat-file-display';
+import {
+  convertMilitaryToRegular,
+  formatBytes,
+  getTimeDifferenceInMinutes,
+} from './sendbird';
 import { TypingIndicator } from './typing-indicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage } from '@/types/sendbird';
-import {
-  convertMilitaryToRegular,
-  formatBytes,
-  getTimeDifferenceInMinutes,
-} from '@/utils/sendbird';
 import { Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useRef } from 'react';
