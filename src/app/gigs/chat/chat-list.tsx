@@ -65,7 +65,7 @@ export function ChatList({
                   layout: {
                     type: 'spring',
                     bounce: 0.3,
-                    duration: messages.indexOf(message) * 0.05 + 0.2,
+                    duration: 0.5,
                   },
                 }}
                 style={{
@@ -188,14 +188,6 @@ export function ChatList({
             </div>
           </div>
         )}
-      </div>
-      <div className='mt-4'>
-        <ChatBottombar
-          sendMessage={sendMessage}
-          isMobile={isMobile}
-          selectedUser={selectedUser}
-          channel={channel}
-        />
       </div>
     </div>
   );

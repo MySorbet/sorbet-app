@@ -1,3 +1,4 @@
+import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
 import { Message, UserData } from './data';
@@ -70,6 +71,14 @@ export function Chat({
         channel={channel}
         typingMembers={typingMembers as Member[]}
       />
+      <div className='mt-4'>
+        <ChatBottombar
+          sendMessage={sendMessage}
+          isMobile={isMobile}
+          selectedUser={selectedUser}
+          channel={channel}
+        />
+      </div>
     </div>
   );
 }
