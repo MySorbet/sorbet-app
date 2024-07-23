@@ -2,9 +2,9 @@
 
 import { getOverview } from '@/api/user';
 import Container from '@/app/container';
+import TransactionsTable from '@/app/wallet/all/transactions-table';
 import { CreditCardForm } from '@/app/wallet/credit-card';
 import { FundsFlow } from '@/app/wallet/funds-flow';
-import { RecentTransactions } from '@/app/wallet/recent-transactions';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Sidebar } from '@/components';
@@ -125,11 +125,12 @@ export const WalletContainer = () => {
               </div>
             </Link>
           </div>
-          <RecentTransactions
+          <TransactionsTable
             isLoading={loading}
+            minimalMode
             transactions={
               !transactions.transactions
-                ? undefined
+                ? []
                 : transactions.transactions.map((transaction: Transaction) => ({
                     type:
                       transaction.sender === user?.accountId

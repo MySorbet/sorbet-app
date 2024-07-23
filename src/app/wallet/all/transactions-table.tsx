@@ -27,22 +27,24 @@ export interface TableTransaction {
 
 interface TransactionsTableProps {
   transactions: TableTransaction[];
-  searchValue: string;
-  dateRange: DateRange | undefined;
-  isLoading: boolean;
-  onSearchChange: (value: string) => void;
-  onDateRangeChange: (range: DateRange | undefined) => void;
-  onClearAll: () => void;
+  searchValue?: string;
+  dateRange?: DateRange | undefined;
+  isLoading?: boolean;
+  onSearchChange?: (value: string) => void;
+  onDateRangeChange?: (range: DateRange | undefined) => void;
+  onClearAll?: () => void;
+  minimalMode?: boolean;
 }
 
 const TransactionsTable: React.FC<TransactionsTableProps> = ({
   transactions,
-  searchValue,
+  searchValue = '',
   dateRange,
   isLoading = false,
   onSearchChange,
   onDateRangeChange,
   onClearAll,
+  minimalMode = false,
 }) => {
   const handleTxnClick = (hash: string) => {
     window.open(
@@ -52,59 +54,63 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
   };
 
   return (
-    <div className='shadow-[0px_10px_30px_0px_#00000014] rounded-xl bg-white p-6 min-h-[100%]'>
+    <div className='shadow-[0px_10px_30px_0px_#00000014] rounded-xl bg-white p-6 min-h-[100%] relative'>
       {isLoading && (
         <div className='absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-3xl'>
           <Spinner />
         </div>
       )}
-      <div className='grid grid-cols-12 gap-4 mb-4'>
-        <div className='relative col-span-12 lg:col-span-6'>
-          <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
-            <Search size={20} />
+      {!minimalMode && (
+        <div className='grid grid-cols-12 gap-4 mb-4'>
+          <div className='relative col-span-12 lg:col-span-6'>
+            <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
+              <Search size={20} />
+            </div>
+            <input
+              type='text'
+              placeholder='Search'
+              value={searchValue}
+              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+              className='px-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full'
+            />
           </div>
-          <input
-            type='text'
-            placeholder='Search'
-            value={searchValue}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className='px-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full'
-          />
+          <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className='flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground'>
+                    Amount
+                    <ChevronDown size={16} className='ml-1' />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Coming soon!</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
+            {onDateRangeChange && (
+              <DatePickerWithRange
+                date={dateRange}
+                onDateChange={onDateRangeChange}
+                triggerButton={
+                  <button className='flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground'>
+                    Date
+                    <ChevronDown size={16} className='ml-1' />
+                  </button>
+                }
+              />
+            )}
+          </div>
+          <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
+            <button
+              className='flex items-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground justify-center'
+              onClick={onClearAll}
+            >
+              Clear All
+            </button>
+          </div>
         </div>
-        <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className='flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground'>
-                  Amount
-                  <ChevronDown size={16} className='ml-1' />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Coming soon!</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-        <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
-          <DatePickerWithRange
-            date={dateRange}
-            onDateChange={onDateRangeChange}
-            triggerButton={
-              <button className='flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground'>
-                Date
-                <ChevronDown size={16} className='ml-1' />
-              </button>
-            }
-          />
-        </div>
-        <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
-          <button
-            className='flex items-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground justify-center'
-            onClick={onClearAll}
-          >
-            Clear All
-          </button>
-        </div>
-      </div>
+      )}
       <table className='min-w-full divide-y divide-gray-200'>
         <thead className='border-b'>
           <tr>
