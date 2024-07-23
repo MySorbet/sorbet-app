@@ -22,3 +22,8 @@ export interface SBFileMessage {
   type: string;
   size: number;
 }
+
+export interface SendMessageParams {
+  type: string;
+  message: File[] | string;
+}
