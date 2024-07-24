@@ -1,4 +1,4 @@
-import { SENDBIRD_INFO } from '@/constant/constant';
+import { CONSTANTS } from '@/lib/config';
 import { SBMessageTimeDto } from '@/types/sendbird';
 import SendbirdChat, {
   SendbirdChatParams,
@@ -13,7 +13,7 @@ import {
 
 // Initialize the SendbirdChat module
 const params: SendbirdChatParams<[GroupChannelModule]> = {
-  appId: SENDBIRD_INFO.appId as string,
+  appId: CONSTANTS.SendbirdAppId as string,
   localCacheEnabled: true,
   modules: [new GroupChannelModule()],
 };
@@ -21,11 +21,7 @@ const params: SendbirdChatParams<[GroupChannelModule]> = {
 const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 
 // Call when user clicks on a gig and renders chat component
-const initializeConnection = async (userId: string | null | undefined) => {
-  if (!userId) {
-    return;
-  }
-
+const initializeConnection = async (userId: string) => {
   try {
     const user = await sb.connect(userId);
     return user;

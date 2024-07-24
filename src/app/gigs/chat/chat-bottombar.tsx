@@ -83,7 +83,7 @@ export default function ChatBottombar({
       if (message.trim()) {
         const params: TextMessage = {
           type: 'text',
-          message: message,
+          message: message.trim(),
         };
         sendMessage(params);
         setMessage('');

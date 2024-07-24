@@ -39,7 +39,7 @@ export function ChatLayoutMinimal({
     typingMembers: [],
     messageCollection: null,
   });
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const stateRef = useRef<any>();
   stateRef.current = state;
 
@@ -92,7 +92,13 @@ export function ChatLayoutMinimal({
 
   useEffect(() => {
     async function initializeChat() {
-      await initializeConnection(user?.id);
+      if (!user) {
+        // handle unauthenticated user
+        logout();
+        return;
+      }
+
+      await initializeConnection(user.id);
 
       initializeChannelEvents(channelHandlers);
 
@@ -145,7 +151,7 @@ export function ChatLayoutMinimal({
     }
 
     initializeChat();
-  }, [channelId]);
+  }, [channelId, user]);
 
   useEffect(() => {
     const checkScreenWidth = () => {

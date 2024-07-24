@@ -109,7 +109,7 @@ export const GigsComms = ({
   });
 
   useEffect(() => {
-    if (isGetContractError === true) {
+    if (isGetContractError) {
       toast({
         title: 'Unable to fetch contract information',
         description: 'If the problem persists, please contract support',
