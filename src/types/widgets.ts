@@ -65,9 +65,9 @@ export interface GithubWidgetContentType {
 }
 
 export interface TwitterWidgetContentType {
-  accountName: string;
-  accountHandle: string;
-  accountDescription: string;
+  name: string;
+  handle: string;
+  bio: string;
   bannerImage: string;
   profileImage: string;
 }

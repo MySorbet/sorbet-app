@@ -23,18 +23,20 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   content,
   size,
 }) => {
+  const { name, handle, bio, bannerImage, profileImage } = content;
+
   switch (size) {
     case WidgetSize.A:
       return (
         <WidgetLayout>
           <WidgetHeader>
             <WidgetIcon type={WidgetType.TwitterProfile} className='mb-0' />
-            <FollowButton handle={content.accountHandle} />
+            <FollowButton handle={handle} />
           </WidgetHeader>
-          <Handle handle={content.accountHandle} img={content.profileImage} />
+          <Handle handle={handle} img={profileImage} />
           {/* // TODO: does this need className='flex-grow' on root*/}
           {/* // TODO: does this need className='absolute inset-0' on img*/}
-          <BannerImage src={content.bannerImage} />
+          <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
     case WidgetSize.B:
@@ -42,11 +44,11 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
         <WidgetLayout>
           <WidgetHeader>
             <WidgetIcon type={WidgetType.TwitterProfile} className='m-0' />
-            <FollowButton handle={content.accountHandle} />
+            <FollowButton handle={handle} />
           </WidgetHeader>
-          <Handle handle={content.accountHandle} img={content.profileImage} />
-          <Bio bio={content.accountDescription} />
-          <BannerImage src={content.bannerImage} />
+          <Handle handle={handle} img={profileImage} />
+          <Bio bio={bio} />
+          <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
     case WidgetSize.C:
@@ -54,12 +56,12 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
         <WidgetLayout>
           <WidgetHeader>
             <WidgetIcon type={WidgetType.TwitterProfile} className='m-0' />
-            <FollowButton handle={content.accountHandle} />
+            <FollowButton handle={handle} />
           </WidgetHeader>
-          <Handle handle={content.accountHandle} img={content.profileImage} />
+          <Handle handle={handle} img={profileImage} />
           <div className='flex flex-row gap-3 justify-between h-full'>
-            <Bio bio={content.accountDescription} />
-            <BannerImage src={content.bannerImage} className='w-2/3' />
+            <Bio bio={bio} />
+            <BannerImage src={bannerImage} className='w-2/3' />
           </div>
         </WidgetLayout>
       );
@@ -68,11 +70,11 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
         <WidgetLayout>
           <WidgetHeader>
             <WidgetIcon type={WidgetType.TwitterProfile} className='m-0' />
-            <FollowButton handle={content.accountHandle} />
+            <FollowButton handle={handle} />
           </WidgetHeader>
-          <Handle handle={content.accountHandle} img={content.profileImage} />
-          <Bio bio={content.accountDescription} />
-          <BannerImage src={content.bannerImage} />
+          <Handle handle={handle} img={profileImage} />
+          <Bio bio={bio} />
+          <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
     default:
