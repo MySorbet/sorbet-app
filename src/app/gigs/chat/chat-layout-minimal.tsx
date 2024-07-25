@@ -7,6 +7,7 @@ import {
   loadMessages,
   timestampToTime,
 } from './sendbird';
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
 import { SBFileMessage, SBMessage } from '@/types/sendbird';
 import {
@@ -40,6 +41,7 @@ export function ChatLayoutMinimal({
     messageCollection: null,
   });
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const stateRef = useRef<any>();
   stateRef.current = state;
 
@@ -91,10 +93,18 @@ export function ChatLayoutMinimal({
   });
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | undefined;
     async function initializeChat() {
       if (!user) {
         // handle unauthenticated user
-        logout();
+        toast({
+          title: 'You are not authenticated',
+          description: 'Redirecting to login page',
+          variant: 'destructive',
+        });
+        timeoutId = setTimeout(() => {
+          logout();
+        }, 3000);
         return;
       }
 
@@ -151,6 +161,10 @@ export function ChatLayoutMinimal({
     }
 
     initializeChat();
+
+    return () => {
+      if (timeoutId) return clearTimeout(timeoutId);
+    };
   }, [channelId, user]);
 
   useEffect(() => {
