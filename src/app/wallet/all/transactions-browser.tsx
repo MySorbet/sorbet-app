@@ -50,7 +50,7 @@ export const TransactionsBrowser: React.FC = () => {
       after_date,
       before_date
     );
-    if (res.status === 'success') {
+    if (res.status === 200 && res.data) {
       const formattedTransactions = res.data.transactions.map(
         (transaction: Transaction) => {
           const type =

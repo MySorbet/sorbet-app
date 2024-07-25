@@ -26,7 +26,7 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export interface GigsCommsProps {
   isOpen?: boolean;
@@ -109,13 +109,13 @@ export const GigsComms = ({
   });
 
   useEffect(() => {
-    toast({
-      title: 'Unable to fetch contract information',
-      description: 'If the problem persists, please contract support',
-    });
+    if (isGetContractError) {
+      toast({
+        title: 'Unable to fetch contract information',
+        description: 'If the problem persists, please contract support',
+      });
+    }
   }, [isGetContractError]);
-
-  const handlewNewMessage = async (newMessage: Message) => {};
 
   const renderContractView = () => {
     if (isClient) {
@@ -190,9 +190,9 @@ export const GigsComms = ({
             <>
               {activeTab === ActiveTab.Chat && (
                 <ChatLayoutMinimal
+                  channelId={contractData?.channelId}
                   defaultLayout={undefined}
                   navCollapsedSize={8}
-                  handlewNewMessage={handlewNewMessage}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}
