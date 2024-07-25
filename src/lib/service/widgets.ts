@@ -60,7 +60,7 @@ export const getWidgetContent = async ({
     case WidgetType.Github:
       return getGithubProfile({ url });
 
-    case WidgetType.Twitter:
+    case WidgetType.TwitterProfile:
       return getTwitterProfile({ url });
   }
 };
