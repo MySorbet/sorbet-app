@@ -30,6 +30,14 @@ const initializeConnection = async (userId: string) => {
   }
 };
 
+const removeConnection = async () => {
+  try {
+    await sb.disconnect();
+  } catch (error: any) {
+    console.error(`Failed to disconnect from Sendbird: ${error}`);
+  }
+};
+
 // Specifically for onTypingStatusUpdated event. Event is not accessible in MessageCollection like onMessagesAdded is.
 // Only accessible through a GroupChannelHandler
 const initializeChannelEvents = (channelHandler: any) => {
@@ -139,4 +147,5 @@ export {
   initializeChannelEvents,
   formatBytes,
   getTimeDifferenceInMinutes,
+  removeConnection,
 };
