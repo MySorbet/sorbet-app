@@ -7,9 +7,14 @@ import {
   loadMessages,
   timestampToTime,
 } from './sendbird';
+import { sendNotification } from '@/api/chat';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
-import { SBFileMessage, SBMessage } from '@/types/sendbird';
+import {
+  NewMessageNotificationDto,
+  SBFileMessage,
+  SBMessage,
+} from '@/types/sendbird';
 import {
   GroupChannel,
   GroupChannelHandler,
@@ -17,13 +22,15 @@ import {
   MessageCollectionEventHandler,
 } from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
+import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
-  channelId?: string;
+  channelId: string;
+  contractId: string;
 }
 
 export function ChatLayoutMinimal({
@@ -31,6 +38,7 @@ export function ChatLayoutMinimal({
   defaultCollapsed = false,
   navCollapsedSize,
   channelId,
+  contractId,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isMobile, setIsMobile] = useState(false);
@@ -46,7 +54,25 @@ export function ChatLayoutMinimal({
   stateRef.current = state;
 
   const messageHandlers: MessageCollectionEventHandler = {
-    onMessagesAdded: (context: any, channel: any, messages: any) => {
+    onMessagesAdded: async (context: any, channel: any, messages: any) => {
+      // a check to see if the recipient is offline or online
+      // connectionStatus is determined if there is an active connection to Sendbird
+      const recipient = channel.members.find(
+        (member: any) => member.userId !== user?.id
+      );
+      const sender = channel.members.find(
+        (member: any) => member.userId === user?.id
+      );
+      if (recipient.connectionStatus === 'offline') {
+        const params: NewMessageNotificationDto = {
+          reqContractId: contractId,
+          reqChannelId: channelId,
+          reqSenderId: sender.userId,
+          reqRecipientId: recipient.userId,
+        };
+        sendNotification(params);
+      }
+      // Updating state to render messages
       messages.forEach((currentMessage: any) => {
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
