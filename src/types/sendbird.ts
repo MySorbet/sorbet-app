@@ -33,5 +33,11 @@ export interface TextMessage {
   message: string;
 }
 
-// Union type for SendMessageParams
 export type SendMessageParams = FileMessage | TextMessage;
+
+export interface NewMessageNotificationDto {
+  reqContractId: string;
+  reqChannelId: string;
+  reqSenderId: string;
+  reqRecipientId: string;
+}
