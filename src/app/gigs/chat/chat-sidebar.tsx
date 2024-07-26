@@ -13,7 +13,7 @@ import { MoreHorizontal, SquarePen } from 'lucide-react';
 import Link from 'next/link';
 
 /**
-  Make sure to define the type of the messages prop
+  TODO: Make sure to define the type of the messages prop
 */
 interface ChatSidebarProps {
   isCollapsed: boolean;

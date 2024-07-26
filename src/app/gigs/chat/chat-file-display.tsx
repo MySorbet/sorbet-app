@@ -40,6 +40,8 @@ const icons = {
   png: <ImageIcon className='w-5 h-5 text-white' />,
 };
 
+type SupportedFileIcon = keyof typeof icons;
+
 const FileDisplay = ({ color, file, fileName, fileSize }: FileDisplayProps) => {
   const [link, setLink] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -108,10 +110,7 @@ const FileDisplay = ({ color, file, fileName, fileSize }: FileDisplayProps) => {
             <FileDisplay.Container className='bg-[#00000033]'>
               {
                 icons[
-                  file.type.split('/').pop()?.toLowerCase() as
-                    | 'pdf'
-                    | 'jpeg'
-                    | 'png'
+                  file.type.split('/').pop()?.toLowerCase() as SupportedFileIcon
                 ]
               }
               <p className='text-white mt-1'>
