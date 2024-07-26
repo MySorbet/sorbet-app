@@ -1,5 +1,4 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
 import { FigmaWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
 
@@ -16,7 +15,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-10'>
-              <WidgetHeader type={WidgetType.Figma} />
+              <WidgetIcon type={WidgetType.Figma} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -38,7 +37,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={WidgetType.Figma} noMargin />
+            <WidgetIcon type={WidgetType.Figma} className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -59,7 +58,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={WidgetType.Figma} />
+            <WidgetIcon type={WidgetType.Figma} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
@@ -78,7 +77,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={WidgetType.Figma} noMargin />
+          <WidgetIcon type={WidgetType.Figma} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>

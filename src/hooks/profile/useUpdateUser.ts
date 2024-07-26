@@ -4,22 +4,17 @@ import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
 
 export const useUpdateUser = () => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (userToUpdate: User) => {
-      const response = await updateUser(userToUpdate, userToUpdate.id);
-      console.log(response);
-      if (response.status == 'failed') {
-        throw new Error('Failed to update user profile.');
-      }
-      return response;
-    },
-    onSuccess: (user: User) => {
-      dispatch(updateUserData(user));
+    mutationFn: async (userToUpdate: User): Promise<any> =>
+      await updateUser(userToUpdate, userToUpdate.id),
+    onSuccess: (user: AxiosResponse) => {
+      dispatch(updateUserData(user.data));
       toast({
         title: 'Profile updated',
         description: 'Your changes were saved successfully.',
@@ -28,8 +23,7 @@ export const useUpdateUser = () => {
     onError: (error: any) => {
       toast({
         title: 'User profile failed to update.',
-        description:
-          'Your profile could not be saved. If the issue persists, please contact support.',
+        description: error.message + ' If the issue persists, contact support.',
       });
     },
     onSettled: () => {

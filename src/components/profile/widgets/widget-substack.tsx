@@ -1,7 +1,6 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
 import { SubstackWidgetContentType, WidgetSize, WidgetType } from '@/types';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface SubstackWidgetType {
   content: SubstackWidgetContentType;
@@ -28,7 +27,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-8'>
-              <WidgetHeader type={currentType} />
+              <WidgetIcon type={currentType} />
             </div>
             <div className='w-90'>{localHeader}</div>
           </div>
@@ -47,7 +46,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
           </div>
           <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
@@ -65,7 +64,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetHeader type={currentType} />
+            <WidgetIcon type={currentType} />
             {localHeader}
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
@@ -83,7 +82,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetHeader type={currentType} noMargin />
+          <WidgetIcon type={currentType} className='m-0' />
           <div>{localHeader}</div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img

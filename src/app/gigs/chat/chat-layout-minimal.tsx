@@ -1,25 +1,171 @@
 'use client';
 
 import { Chat } from './chat';
-import { Message, userData } from './data';
-import React, { useEffect, useState } from 'react';
+import {
+  initializeChannelEvents,
+  initializeConnection,
+  loadMessages,
+  timestampToTime,
+} from './sendbird';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/hooks';
+import { SBFileMessage, SBMessage } from '@/types/sendbird';
+import {
+  GroupChannel,
+  GroupChannelHandler,
+  Member,
+  MessageCollectionEventHandler,
+} from '@sendbird/chat/groupChannel';
+import { MessageListParams } from '@sendbird/chat/message';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
-  handlewNewMessage?: (newMessage: Message) => void;
+  channelId?: string;
 }
 
 export function ChatLayoutMinimal({
   defaultLayout = [320, 480],
   defaultCollapsed = false,
   navCollapsedSize,
-  handlewNewMessage,
+  channelId,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-  const [selectedUser, setSelectedUser] = React.useState(userData[0]);
   const [isMobile, setIsMobile] = useState(false);
+  const [state, updateState] = useState({
+    currentlyJoinedChannel: null,
+    messages: [],
+    typingMembers: [],
+    messageCollection: null,
+  });
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
+  const stateRef = useRef<any>();
+  stateRef.current = state;
+
+  const messageHandlers: MessageCollectionEventHandler = {
+    onMessagesAdded: (context: any, channel: any, messages: any) => {
+      messages.forEach((currentMessage: any) => {
+        const messageToAdd: SBMessage = {
+          userId: currentMessage.sender.userId,
+          message: currentMessage.message,
+          nickname: currentMessage.sender.nickname,
+          avatar: currentMessage.sender.plainProfileUrl,
+          timestampData: timestampToTime(Date.now()),
+        };
+        if (currentMessage.messageType === 'file') {
+          // This if block is for when a user sends a message
+          // set Sendbird url to a object url blob because the fileUrl key is not accessible though it's defined if you log the currentMessage object
+          if (currentMessage.messageParams !== null) {
+            const fileData: SBFileMessage = {
+              name: currentMessage.messageParams.file.name,
+              sendbirdUrl: URL.createObjectURL(
+                currentMessage.messageParams.file
+              ),
+              type: currentMessage.messageParams.file.type,
+              size: currentMessage.messageParams.file.size,
+            };
+            messageToAdd.fileData = fileData;
+          } else {
+            // This else block is for when a user receives a message
+            const fileData: SBFileMessage = {
+              name: currentMessage.name,
+              sendbirdUrl: currentMessage.plainUrl,
+              type: currentMessage.type,
+              size: currentMessage.size,
+            };
+            messageToAdd.fileData = fileData;
+          }
+        }
+        const updatedMessages = [...stateRef.current.messages, messageToAdd];
+        updateState({ ...stateRef.current, messages: updatedMessages });
+      });
+    },
+  };
+
+  const channelHandlers = new GroupChannelHandler({
+    onTypingStatusUpdated: (groupChannel: GroupChannel) => {
+      const typingUsers = groupChannel.getTypingUsers();
+      updateState({ ...stateRef.current, typingMembers: typingUsers });
+    },
+  });
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout | undefined;
+    async function initializeChat() {
+      if (!user) {
+        // handle unauthenticated user
+        toast({
+          title: 'You are not authenticated',
+          description: 'Redirecting to login page',
+          variant: 'destructive',
+        });
+        timeoutId = setTimeout(() => {
+          logout();
+        }, 3000);
+        return;
+      }
+
+      await initializeConnection(user.id);
+
+      initializeChannelEvents(channelHandlers);
+
+      if (channelId) {
+        const { messageCollection, channel } = await loadMessages(
+          channelId,
+          messageHandlers
+        );
+
+        const ts = Date.now();
+        const messageListParams: MessageListParams = {
+          prevResultSize: 100,
+          nextResultSize: 0,
+          isInclusive: true,
+        };
+
+        const latestMessages = await channel.getMessagesByTimestamp(
+          ts,
+          messageListParams
+        );
+
+        const fetchedMessages = latestMessages.map((currentMessage: any) => {
+          const time = timestampToTime(currentMessage.createdAt);
+          const message: SBMessage = {
+            userId: currentMessage.sender.userId,
+            message: currentMessage.message,
+            nickname: currentMessage.sender.nickname,
+            avatar: currentMessage.sender.plainProfileUrl,
+            timestampData: time,
+          };
+          if (currentMessage.plainUrl) {
+            const fileData: SBFileMessage = {
+              name: currentMessage.name,
+              sendbirdUrl: currentMessage.plainUrl,
+              type: currentMessage.type,
+              size: currentMessage.size,
+            };
+            message.fileData = fileData;
+          }
+          return message;
+        });
+
+        updateState({
+          ...stateRef.current,
+          messageCollection: messageCollection,
+          currentlyJoinedChannel: channel,
+          messages: fetchedMessages,
+        });
+      }
+    }
+
+    initializeChat();
+
+    return () => {
+      if (timeoutId) return clearTimeout(timeoutId);
+    };
+  }, [channelId, user]);
 
   useEffect(() => {
     const checkScreenWidth = () => {
@@ -40,11 +186,12 @@ export function ChatLayoutMinimal({
 
   return (
     <Chat
-      messages={[]}
-      selectedUser={selectedUser}
-      handlewNewMessage={handlewNewMessage}
+      messages={state.messages}
+      selectedUser={user!}
       isMobile={isMobile}
       showTopbar={false}
+      channel={state.currentlyJoinedChannel}
+      typingMembers={state.typingMembers as Member[]}
     />
   );
 }

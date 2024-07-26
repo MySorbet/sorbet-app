@@ -366,17 +366,6 @@ const SignUpForm = () => {
                                 : '.mainnet'
                             }
                           />
-                          {checkAccountPending ? (
-                            <Loader className='h-4 w-4 absolute right-4 top-3' />
-                          ) : touchedFields.accountId ? (
-                            checkAccountError ||
-                            errors.accountId ||
-                            !usernameAvailable ? (
-                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                            ) : (
-                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
-                            )
-                          ) : null}
                         </div>
                       </div>
                     </FormControl>

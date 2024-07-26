@@ -1,5 +1,5 @@
-import { ImageOverlay } from '@/components/common';
-import { WidgetHeader } from '@/components/profile/widgets';
+import { ImageOverlay } from '@/components/profile/widgets';
+import { WidgetIcon } from '@/components/profile/widgets';
 import { InstagramWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import React from 'react';
 
@@ -53,7 +53,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
           </div>
           <div>{localHeader}</div>
           <div className='flex-grow relative overflow-hidden'>
@@ -69,7 +69,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/6 flex flex-col gap-2'>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
             <div>{localHeader}</div>
           </div>
           <div className='w-4/6 h-full w-full relative rounded-xl overflow-hidden bg-white text-black'>
@@ -86,7 +86,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
         <div className='h-full flex flex-row gap-2'>
           <div className='w-1/2 h-full'>
             <div className='flex flex-col gap-1 h-full'>
-              <WidgetHeader type={currentType} noMargin />
+              <WidgetIcon type={currentType} className='m-0' />
               <div>{localHeader}</div>
             </div>
           </div>
@@ -103,7 +103,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetHeader type={currentType} noMargin />
+            <WidgetIcon type={currentType} className='m-0' />
           </div>
           <div>{localHeader}</div>
           <div

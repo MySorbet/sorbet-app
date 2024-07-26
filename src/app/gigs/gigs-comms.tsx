@@ -18,6 +18,7 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useToast } from '@/components/ui/use-toast';
 import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { MilestoneType, OfferType } from '@/types';
@@ -25,7 +26,7 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export interface GigsCommsProps {
   isOpen?: boolean;
@@ -94,19 +95,27 @@ export const GigsComms = ({
 }: GigsCommsProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Chat);
   const [offers, setOffers] = useState([]);
+  const { toast } = useToast();
 
   const {
     isPending: getContractPending,
     data: contractData,
     // error: getContractError,
-    // isError: isGetContractError,
+    isError: isGetContractError,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
 
-  const handlewNewMessage = async (newMessage: Message) => {};
+  useEffect(() => {
+    if (isGetContractError) {
+      toast({
+        title: 'Unable to fetch contract information',
+        description: 'If the problem persists, please contract support',
+      });
+    }
+  }, [isGetContractError]);
 
   const renderContractView = () => {
     if (isClient) {
@@ -181,9 +190,9 @@ export const GigsComms = ({
             <>
               {activeTab === ActiveTab.Chat && (
                 <ChatLayoutMinimal
+                  channelId={contractData?.channelId}
                   defaultLayout={undefined}
                   navCollapsedSize={8}
-                  handlewNewMessage={handlewNewMessage}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}

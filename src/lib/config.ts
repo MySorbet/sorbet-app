@@ -143,4 +143,8 @@ export const networks: Record<NetworkId, Network> = {
   },
 };
 
+export const CONSTANTS = {
+  SendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
+};
+
 export const currentNetwork = networks[config.networkId as NetworkId];

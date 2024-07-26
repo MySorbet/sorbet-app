@@ -65,7 +65,7 @@ export const ContractOverview = ({
     setIsLoading(true);
     if (contract) {
       const response = await updateContractStatus(contract.id, 'NotStarted');
-      if (response && response.status === 'success') {
+      if (response && response.data) {
         if (offer) {
           await updateOfferStatus(offer?.id, 'Accepted');
         }
@@ -93,7 +93,7 @@ export const ContractOverview = ({
     setIsLoading(true);
     if (contract) {
       const response = await updateContractStatus(contract.id, 'Rejected');
-      if (response && response.status === 'success') {
+      if (response && response.data) {
         setContractApproved(false);
         setIsRejectDialogOpen(false);
         toast({
@@ -117,7 +117,7 @@ export const ContractOverview = ({
 
   const finishContract = async () => {
     const response = await updateContractStatus(contract.id, 'Completed');
-    if (response.status && response.status === 'success') {
+    if (response.status && response.data) {
       setLastChainOp('end_project');
       if (offer) {
         await updateOfferStatus(offer?.id, 'Completed');

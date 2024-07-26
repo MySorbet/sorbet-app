@@ -4,11 +4,10 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { FormContainer } from './form-container';
-import { getUserByAccountId } from '@/api/user';
 import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useRegisterWithEmail } from '@/hooks';
+import { useAuth, useRegisterWithEmail, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
 import { useLoginWithEmail } from '@/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { randomBytes } from 'crypto';
@@ -95,6 +94,11 @@ const SignInForm = () => {
   const {mutateAsync: registerWithEmail} = useRegisterWithEmail();
   const { loading: firebaseUserLoading, user: firebaseUser } = useFirebaseUser();
   const [inFlight, setInFlight] = useState(false);
+
+  const {
+    isPending: isGetUserAccountLoading,
+    mutateAsync: getUserByAccountId,
+  } = useGetUserByAccountId();
 
   const handleSignOut = async () => {
     try {
@@ -349,13 +353,7 @@ const SignInForm = () => {
 
         if (activeAccount) {
           const response = await getUserByAccountId(activeAccount);
-          if (response.status !== 'success') {
-            toast({
-              title: 'No account found',
-              description:
-                'No account found for the connected wallet, please signup first',
-              variant: 'destructive',
-            });
+          if (response.data === 'failed') {
             setAccountNotFound(true);
             await handleSignOut();
           }

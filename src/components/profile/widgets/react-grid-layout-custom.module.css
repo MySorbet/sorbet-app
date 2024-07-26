@@ -23,5 +23,5 @@ Read this to learn more https://stackoverflow.com/a/69541558
   /* Stack placeholders below dragged items */
   z-index: 1;
   @apply bg-sorbet;
-  @apply rounded-xl;
+  @apply rounded-3xl;
 }

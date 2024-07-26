@@ -43,7 +43,7 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
         freelancerUsername: ensureValidAccountId(freelancerUsername),
       });
 
-      if (response.status === 'success') {
+      if (response && response.data) {
         setOfferSent(true);
         return;
       } else {

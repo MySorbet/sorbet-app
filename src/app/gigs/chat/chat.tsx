@@ -1,14 +1,19 @@
+import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
-import { Message, UserData } from './data';
-import React from 'react';
+import { User } from '@/types';
+import { SBMessage, SendMessageParams } from '@/types/sendbird';
+import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
+import { motion } from 'framer-motion';
+import React, { Dispatch, SetStateAction } from 'react';
 
 interface ChatProps {
-  messages?: Message[];
-  selectedUser: UserData;
+  messages: SBMessage[];
+  selectedUser: User;
   isMobile: boolean;
   showTopbar?: boolean;
-  handlewNewMessage?: (newMessage: Message) => void;
+  channel: GroupChannel | undefined | null;
+  typingMembers: Member[];
 }
 
 export function Chat({
@@ -16,29 +21,54 @@ export function Chat({
   selectedUser,
   isMobile,
   showTopbar = true,
-  handlewNewMessage,
+  channel,
+  typingMembers,
 }: ChatProps) {
-  const [messagesState, setMessages] = React.useState<Message[]>(
-    messages ?? []
-  );
+  const sendMessage = (newMessage: SendMessageParams) => {
+    if (!channel) return;
 
-  const sendMessage = (newMessage: Message) => {
-    setMessages([...messagesState, newMessage]);
-    if (handlewNewMessage) {
-      handlewNewMessage(newMessage);
+    if (newMessage.type === 'file') {
+      const params = {
+        file: newMessage.message[0],
+        name: newMessage.message[0].name,
+        type: newMessage.message[0].type,
+      };
+      channel
+        .sendFileMessage(params)
+        .onSucceeded((fileMessageParams) => {
+          channel.endTyping();
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
+    } else {
+      channel
+        .sendUserMessage({ message: newMessage.message })
+        .onSucceeded((message) => {
+          channel.endTyping();
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
     }
   };
 
   return (
-    <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl'>
+    <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl '>
       {showTopbar && <ChatTopbar selectedUser={selectedUser} />}
 
       <ChatList
-        messages={messagesState}
+        messages={messages}
         selectedUser={selectedUser}
-        sendMessage={sendMessage}
-        isMobile={isMobile}
+        typingMembers={typingMembers as Member[]}
       />
+      <div className='mt-4'>
+        <ChatBottombar
+          sendMessage={sendMessage}
+          isMobile={isMobile}
+          channel={channel}
+        />
+      </div>
     </div>
   );
 }
