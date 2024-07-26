@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from '../ui/button';
 import { Notifications } from '@/components/header/notifications';
+import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import Link from 'next/link';
@@ -14,6 +15,8 @@ interface HeaderProps {
 }
 
 export const Header = ({ isPublic = false }: HeaderProps) => {
+  const { user } = useAuth();
+
   const dispatch = useAppDispatch();
 
   const router = useRouter();
@@ -46,17 +49,17 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
             </div>
           </div>
         )}
-        {isPublic && (
+        {isPublic && !user && (
           <div className='flex items-center justify-end gap-4'>
             <Button
               onClick={() => router.push('/signup')}
-              className='font-semibold text-sm text-[#344054] leading-5 py-[10px] px-[14px] bg-white border border-[#D0D5DD]'
+              className='font-semibold text-sm text-[#344054] leading-5 py-[10px] px-[14px] bg-white border border-[#D0D5DD] hover:bg-gray-100'
             >
               Claim my Sorbet
             </Button>
             <Button
               onClick={() => router.push('/signin')}
-              className='font-semibold text-sm text-white leading-5 py-[10px] px-[14px] bg-sorbet border border-[#7F56D9]'
+              className='font-semibold text-sm text-white leading-5 py-[10px] px-[14px] bg-sorbet border border-[#7F56D9] hover:bg-[#523BDF]'
             >
               Login
             </Button>
