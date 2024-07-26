@@ -19,7 +19,7 @@ interface LinkWidgetProps {
  * Render a link widget with the given content and size
  */
 export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
-  const { title, iconUrl, bannerImageUrl } = content;
+  const { title, iconUrl, heroImageUrl } = content;
 
   switch (size) {
     case WidgetSize.A:
@@ -29,7 +29,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} className='m-0' />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={bannerImageUrl} />
+          <BannerImage src={heroImageUrl} />
         </WidgetLayout>
       );
     case WidgetSize.B:
@@ -39,7 +39,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} className='m-0' />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={bannerImageUrl} />
+          <BannerImage src={heroImageUrl} />
         </WidgetLayout>
       );
     case WidgetSize.C:
@@ -50,7 +50,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Title>{title}</Title>
           </WidgetHeader>
           <div className='flex flex-row gap-3 justify-end h-full'>
-            <BannerImage src={bannerImageUrl} className='w-2/3' />
+            <BannerImage src={heroImageUrl} className='w-2/3' />
           </div>
         </WidgetLayout>
       );
@@ -61,7 +61,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} className='m-0' />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={bannerImageUrl} />
+          <BannerImage src={heroImageUrl} />
         </WidgetLayout>
       );
     default:
