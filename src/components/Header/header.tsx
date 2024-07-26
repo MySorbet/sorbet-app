@@ -1,6 +1,7 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
+import { Button } from '../ui/button';
 import { Notifications } from '@/components/header/notifications';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
@@ -40,6 +41,16 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
                 />
               </div>
             </div>
+          </div>
+        )}
+        {isPublic && (
+          <div className='flex items-center justify-end gap-4'>
+            <Button className='font-semibold text-sm text-[#344054] leading-5 py-[10px] px-[14px] bg-white border border-[#D0D5DD]'>
+              Claim my Sorbet
+            </Button>
+            <Button className='font-semibold text-sm text-white leading-5 py-[10px] px-[14px] bg-sorbet border border-[#7F56D9]'>
+              Login
+            </Button>
           </div>
         )}
       </div>
