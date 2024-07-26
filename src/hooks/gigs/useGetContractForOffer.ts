@@ -8,6 +8,11 @@ type useGetContractForOfferParams = {
   activeTab: ActiveTab;
 };
 
+/**
+  Fetches contract data for a given offer, wrapping API call with react-query
+  @params data - object containing currentOfferId, isOpen, and activeTab
+  @returns data of ContractType or null
+*/
 export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   const { currentOfferId, isOpen, activeTab } = data;
 

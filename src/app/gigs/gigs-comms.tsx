@@ -2,7 +2,6 @@
 
 import { removeConnection } from './chat/sendbird';
 import { ChatLayoutMinimal } from '@/app/gigs/chat';
-import { Message } from '@/app/gigs/chat/data';
 import {
   ContractContainer,
   ContractNotFound,
