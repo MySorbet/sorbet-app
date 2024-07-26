@@ -20,9 +20,9 @@ export interface GetSoundcloudType extends GetItemTypeBase {}
 
 export interface GetInstagramType extends GetItemTypeBase {}
 
-export interface GetPhotoWidget extends GetItemTypeBase { }
+export interface GetPhotoWidget extends GetItemTypeBase {}
 
-export interface GetGithubWidget extends GetItemTypeBase { }
+export interface GetGithubWidget extends GetItemTypeBase {}
 
 export interface GetTwitterWidget extends GetItemTypeBase {}
 
@@ -65,8 +65,9 @@ export interface GithubWidgetContentType {
 }
 
 export interface TwitterWidgetContentType {
-  accountName: string;
-  accountDescription: string;
+  name: string;
+  handle: string;
+  bio: string;
   bannerImage: string;
   profileImage: string;
 }
@@ -134,23 +135,28 @@ export enum WidgetType {
 
 export enum WidgetSize {
   A,
-  B, 
+  B,
   C,
-  D
+  D,
 }
 
-export const WidgetDimensions: { [key in WidgetSize]: { w: number, h: number } } = {
+export const WidgetDimensions: {
+  [key in WidgetSize]: { w: number; h: number };
+} = {
   [WidgetSize.A]: { w: 2, h: 2 },
   [WidgetSize.B]: { w: 4, h: 4 },
   [WidgetSize.C]: { w: 4, h: 2 },
   [WidgetSize.D]: { w: 2, h: 4 },
 };
 
-export const getWidgetDimensions = ({ breakpoint = 'lg', size = WidgetSize.A }: { breakpoint?: string, size?: WidgetSize } = {}) => {
+export const getWidgetDimensions = ({
+  breakpoint = 'lg',
+  size = WidgetSize.A,
+}: { breakpoint?: string; size?: WidgetSize } = {}) => {
   const dimensions = WidgetDimensions[size];
   let adjustedDimensions = { ...dimensions };
   return adjustedDimensions;
-}
+};
 
 export interface ExtendedWidgetLayout extends WidgetLayout {
   type: WidgetType;
@@ -162,7 +168,7 @@ export interface ExtendedWidgetLayout extends WidgetLayout {
 
 export interface UpdateWidgetsBulkDto {
   id: string;
-  layout: { x: number, y: number, w: number, h: number }
+  layout: { x: number; y: number; w: number; h: number };
   size: string;
 }
 
@@ -172,7 +178,7 @@ export interface WidgetDto {
   size: string;
   content: any;
   redirectUrl?: string;
-  layout: { x: number, y: number, w: number, h: number }
+  layout: { x: number; y: number; w: number; h: number };
   userId: string;
   createdAt: string;
   updatedAt: string;

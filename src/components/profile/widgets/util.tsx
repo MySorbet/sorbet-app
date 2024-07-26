@@ -70,6 +70,15 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
       }
     }
 
+    // Twitter / X. Currently only profiles are supported -- hence the exclusion of /status/
+    if (
+      (platform.toLowerCase() === 'twitter' ||
+        platform.toLowerCase() === 'x') &&
+      !pathname.includes('/status/')
+    ) {
+      return WidgetType.TwitterProfile;
+    }
+
     return WidgetType[
       (platform.charAt(0).toUpperCase() +
         platform.slice(1)) as keyof typeof WidgetType
@@ -112,8 +121,8 @@ export function validateUrl(url: string) {
   } else if (hostname.includes('medium.com')) {
     regex =
       /^https?:\/\/(www\.)?medium\.com\/@?[a-zA-Z0-9-]+(\/[a-zA-Z0-9-]+)?$/;
-  } else if (hostname.includes('twitter.com')) {
-    regex = /^(https?:\/\/)?(www\.)?twitter\.com\/[a-zA-Z0-9_]+\/?$/;
+  } else if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
+    regex = /^(https?:\/\/)?(www\.)?(twitter|x)\.com\/[a-zA-Z0-9_]+\/?$/;
   } else {
     throw new Error(`Invalid hostname: ${hostname}`);
   }

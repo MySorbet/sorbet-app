@@ -135,7 +135,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     let widgetUrl: string = url;
 
     try {
-      const type: WidgetType = parseWidgetTypeFromUrl(url);
+      const type = parseWidgetTypeFromUrl(url);
+
       if (type === WidgetType.Photo && image && image !== undefined) {
         const imageFormData = new FormData();
         imageFormData.append('file', image);

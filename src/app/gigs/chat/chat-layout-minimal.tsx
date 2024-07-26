@@ -22,7 +22,6 @@ import {
   MessageCollectionEventHandler,
 } from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
-import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 
 interface ChatLayoutProps {
