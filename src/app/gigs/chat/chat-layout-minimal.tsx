@@ -62,9 +62,7 @@ export function ChatLayoutMinimal({
     onMessagesAdded: async (context: any, channel: any, messages: any) => {
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
       const senderId = user?.id;
-      console.log('senderId', senderId);
       const recipientId = user?.id === clientId ? freelanceId : clientId;
-      console.log('recipientId', recipientId);
       // a check to see if the recipient is offline or online
       // connectionStatus is determined if there is an active connection to Sendbird
       const sender = channel.members.find(
