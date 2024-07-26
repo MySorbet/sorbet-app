@@ -5,6 +5,7 @@ import {
   GetDribbleShotType,
   GetGithubWidget,
   GetInstagramType,
+  GetItemTypeBase,
   GetMediumArticleType,
   GetPhotoWidget,
   GetSoundcloudType,
@@ -62,6 +63,9 @@ export const getWidgetContent = async ({
 
     case WidgetType.TwitterProfile:
       return getTwitterProfile({ url });
+
+    case WidgetType.Link:
+      return getLinkData({ url });
   }
 };
 
@@ -384,6 +388,24 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
   } catch (error: any) {
     throw new Error(
       `Failed to get Twitter profile data: ${error.response.data.message}`
+    );
+  }
+};
+
+export const getLinkData = async ({ url }: GetItemTypeBase) => {
+  const body: GetItemTypeBase = { url };
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const response = await axios.post(
+      `${config.devApiUrl}/widgets/link`,
+      body,
+      reqHeader
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get generic link data: ${error.response.data.message}`
     );
   }
 };
