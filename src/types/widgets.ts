@@ -109,10 +109,11 @@ export interface SoundcloudTrackContentType {
   artist: string;
 }
 
+/** This should match sorbet-api LinkMetadata */
 export interface LinkWidgetContentType {
   title: string;
   iconUrl: string;
-  bannerImageUrl: string;
+  heroImageUrl: string;
 }
 
 export enum WidgetType {
