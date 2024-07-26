@@ -1,7 +1,7 @@
 'use client';
 
 import { openToast } from '../../lib/Toast';
-import { basePath, network } from '../../utils/config';
+import { network } from '../../utils/config';
 import {
   accountAddressPatternNoSubAccount,
   getEmailId,
@@ -18,15 +18,14 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { UserSignUpContext, UserSignUpContextType } from './signup-container';
-import { Loading, useWalletSelector } from '@/components/common';
+import { useWalletSelector } from '@/components/common';
 import { handleCreateAccount } from '@/components/signin/signin-form';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useCheckIsAccountAvailable,
-  useSignUpAsync,
   useLoginWithEmail,
+  useSignUpAsync,
 } from '@/hooks';
-import Badge from '@/lib/Badge/Badge';
 import { config } from '@/lib/config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
@@ -141,7 +140,6 @@ const SignUpForm = () => {
 
   const createAccount = useCallback(
     async (data: { email: string; username: string }) => {
-      console.log('object');
       setInFlight(true);
       const success_url = config.signUpSuccessUrl;
       const failure_url = config.signUpFailureUrl;
@@ -168,14 +166,29 @@ const SignUpForm = () => {
           accountId,
           email: data.email,
           isRecovery: 'false',
-          ...(success_url ? { success_url } : {}),
-          ...(failure_url ? { failure_url } : {}),
-          ...(public_key ? { public_key_lak: public_key } : {}),
-          ...(contract_id ? { contract_id } : {}),
-          ...(methodNames ? { methodNames } : {}),
+          success_url: success_url || '',
+          failure_url: failure_url || '',
+          public_key_lak: public_key || '',
+          contract_id: contract_id || '',
+          methodNames: methodNames || '',
         };
 
-        const newSearchParams = new URLSearchParams(searchParameters);
+        await signUpAsync({
+          firstName: 'Sorbet',
+          lastName: 'User',
+          email: data.email,
+          accountId: fullAccountId,
+        });
+
+        await loginWithEmail(data.email);
+        setStep(1);
+
+        const newSearchParams = new URLSearchParams(
+          Object.entries(searchParameters)
+            .filter(([_, v]) => v !== null)
+            .map(([k, v]) => [k, v as string])
+        );
+
         window.parent.postMessage(
           {
             type: 'method',
@@ -220,7 +233,6 @@ const SignUpForm = () => {
     setUserData((user) => ({ ...user, ...values }));
     await signUpAsync({
       ...values,
-      userType: 'FREELANCER',
     });
     await loginWithEmail(values.email);
 
@@ -228,7 +240,6 @@ const SignUpForm = () => {
   });
 
   useEffect(() => {
-    console.log('router', router);
     const storedData = localStorage.getItem('signupForm');
     if (storedData) {
       const { values, timestamp } = JSON.parse(storedData);
@@ -250,7 +261,6 @@ const SignUpForm = () => {
         timestamp: timestamp,
       };
       localStorage.setItem('signupForm', JSON.stringify(dataToStore));
-      console.log('Saving form state', dataToStore);
     }
   }, [formValues, isValid]);
 
@@ -379,9 +389,7 @@ const SignUpForm = () => {
             onClick={() => {
               createAccount({ email: formsEmail, username: formsUsername });
             }}
-            disabled={errors.accountId || !formsEmail}
-            // disabled={!isValid || !usernameAvailable}
-            // disabled={!isValid}
+            disabled={errors.accountId != null || !formsEmail}
             className={'w-full bg-[#573DF5] border-[#7F56D9]'}
           >
             {signUpPending ? <Loader /> : 'Continue'}

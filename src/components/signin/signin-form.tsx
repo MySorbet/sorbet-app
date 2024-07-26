@@ -1,5 +1,11 @@
 'use client';
 
+import { getAuthState } from '../../hooks/useAuthState';
+import useFirebaseUser from '../../hooks/useFirebaseUser';
+import { decodeIfTruthy, inIframe } from '../../utils';
+import { basePath } from '../../utils/config';
+import { NEAR_MAX_ALLOWANCE } from '../../utils/constants';
+import { checkFirestoreReady, firebaseAuth } from '../../utils/firebase';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -7,52 +13,66 @@ import { FormContainer } from './form-container';
 import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useRegisterWithEmail, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
-import { useLoginWithEmail } from '@/hooks';
+import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
+import { useRegisterWithEmail } from '@/hooks/auth/useRegisterWithEmail';
+import { config } from '@/lib/config';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
+import { captureException } from '@sentry/react';
+import BN from 'bn.js';
 import { randomBytes } from 'crypto';
-import { CircleCheck, CircleAlert, Loader } from 'lucide-react';
+import { sendSignInLinkToEmail } from 'firebase/auth';
+import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
+import * as near_api_js_1 from 'near-api-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
-import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
-import { getAuthState } from '../../hooks/useAuthState';
-import { checkFirestoreReady, firebaseAuth } from '../../utils/firebase';
-import useFirebaseUser from '../../hooks/useFirebaseUser';
-import {
-  decodeIfTruthy, inIframe, isUrlNotJavascriptProtocol
-} from '../../utils';
-import { sendSignInLinkToEmail } from 'firebase/auth';
-import { basePath } from '../../utils/config';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import BN from 'bn.js';
-import { NEAR_MAX_ALLOWANCE } from '../../utils/constants';
-import { captureException } from '@sentry/react';
-import { config } from '@/lib/config';
-import * as near_api_js_1 from "near-api-js";
 
 const schema = z.object({
   email: z.string().email({ message: 'Invalid email format' }),
 });
 
+interface CreateAccountParams {
+  accountId: string | null;
+  email: string;
+  isRecovery: boolean;
+  success_url?: string;
+  failure_url?: string;
+  public_key?: string;
+  contract_id?: string;
+  methodNames?: string;
+}
+
 export const handleCreateAccount = async ({
-  accountId, email, isRecovery, success_url, failure_url, public_key, contract_id, methodNames
-}) => {
-  const searchParams = new URLSearchParams({
-    ...(accountId ? { accountId } : {}),
-    ...(isRecovery ? { isRecovery } : {}),
-    ...(success_url ? { success_url } : {}),
-    ...(failure_url ? { failure_url } : {}),
-    ...(public_key ? { public_key_lak: public_key } : {}),
-    ...(contract_id ? { contract_id } : {}),
-    ...(methodNames ? { methodNames } : {})
-  });
+  accountId,
+  email,
+  isRecovery,
+  success_url,
+  failure_url,
+  public_key,
+  contract_id,
+  methodNames,
+}: CreateAccountParams) => {
+  const searchParams = new URLSearchParams(
+    Object.entries({
+      ...(accountId ? { accountId } : {}),
+      ...(isRecovery ? { isRecovery: 'true' } : {}),
+      ...(success_url ? { success_url } : {}),
+      ...(failure_url ? { failure_url } : {}),
+      ...(public_key ? { public_key_lak: public_key } : {}),
+      ...(contract_id ? { contract_id } : {}),
+      ...(methodNames ? { methodNames } : {}),
+    }).reduce((acc, [key, value]) => {
+      if (value !== undefined) acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>)
+  );
 
   await sendSignInLinkToEmail(firebaseAuth, email, {
     url: encodeURI(
-      `https://sorbet-fast-auth-c3tiwq6mya-uc.a.run.app/auth-callback?${searchParams.toString()}`,
+      `https://sorbet-fast-auth-c3tiwq6mya-uc.a.run.app/auth-callback?${searchParams.toString()}`
     ),
     handleCodeInApp: true,
   });
@@ -80,7 +100,6 @@ const SignInForm = () => {
 
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
 
-
   const { user, accessToken, loginWithWallet } = useAuth();
   const {
     modal: nearModal,
@@ -91,8 +110,9 @@ const SignInForm = () => {
 
   const { isPending: loginLoading, mutateAsync: loginWithEmail } =
     useLoginWithEmail();
-  const {mutateAsync: registerWithEmail} = useRegisterWithEmail();
-  const { loading: firebaseUserLoading, user: firebaseUser } = useFirebaseUser();
+  const { mutateAsync: registerWithEmail } = useRegisterWithEmail();
+  const { loading: firebaseUserLoading, user: firebaseUser } =
+    useFirebaseUser();
   const [inFlight, setInFlight] = useState(false);
 
   const {
@@ -112,7 +132,6 @@ const SignInForm = () => {
   // const navigate = useNavigate();
 
   useEffect(() => {
-    
     if (user && accessToken) {
       router.push('/');
     }
@@ -123,43 +142,66 @@ const SignInForm = () => {
   // });
   const handleAuthCallback = useCallback(async () => {
     setInFlight(true);
-    const success_url = config.loginSuccessUrl
-    const public_key =  near_api_js_1.KeyPair.fromRandom('ed25519').getPublicKey().toString();
+    const success_url = config.loginSuccessUrl;
+    const public_key = near_api_js_1.KeyPair.fromRandom('ed25519')
+      .getPublicKey()
+      .toString();
+    const searchParams = new URLSearchParams(window.location.search);
     const methodNames = decodeIfTruthy(searchParams.get('methodNames'));
     const contract_id = config.contractId;
 
     const isPasskeySupported = await isPassKeyAvailable();
     if (!public_key || !contract_id) {
-      window.location.replace(success_url || window.location.origin + (basePath ? `/${basePath}` : ''));
+      window.location.replace(
+        success_url || window.location.origin + (basePath ? `/${basePath}` : '')
+      );
       return;
     }
-    const publicKeyFak = isPasskeySupported ? await window.fastAuthController.getPublicKey() : '';
-    const existingDevice = isPasskeySupported && firebaseUser
-      ? await window.firestoreController.getDeviceCollection(publicKeyFak)
-      : null;
-    const existingDeviceLakKey = existingDevice?.publicKeys?.filter((key: any) => key !== publicKeyFak)[0];
+    const publicKeyFak = isPasskeySupported
+      ? await window.fastAuthController.getPublicKey()
+      : '';
+    const existingDevice =
+      isPasskeySupported && firebaseUser
+        ? await window.firestoreController.getDeviceCollection(publicKeyFak)
+        : null;
+    const existingDeviceLakKey = existingDevice?.publicKeys?.filter(
+      (key: any) => key !== publicKeyFak
+    )[0];
 
     const oidcToken = firebaseUser?.accessToken;
-    const recoveryPk = oidcToken && (await window.fastAuthController.getUserCredential(oidcToken).catch(() => false));
+    const recoveryPk =
+      oidcToken &&
+      (await window.fastAuthController
+        .getUserCredential(oidcToken)
+        .catch(() => false));
     const allKeys = [public_key, publicKeyFak].concat(recoveryPk || []);
     // if given lak key is already attached to webAuthN public key, no need to add it again
     const noNeedToAddKey = existingDeviceLakKey === public_key;
 
     if (noNeedToAddKey) {
-      window.parent.postMessage({
-        type:   'method',
-        method: 'query',
-        id:     1234,
-        params: {
-          request_type: 'complete_authentication',
-          publicKey:    public_key,
-          allKeys:      allKeys.join(','),
-          accountId:    (window as any).fastAuthController.getAccountId()
-        }
-      }, '*');
+      window.parent.postMessage(
+        {
+          type: 'method',
+          method: 'query',
+          id: 1234,
+          params: {
+            request_type: 'complete_authentication',
+            publicKey: public_key,
+            allKeys: allKeys.join(','),
+            accountId: (window as any).fastAuthController.getAccountId(),
+          },
+        },
+        '*'
+      );
       if (!inIframe()) {
-        const parsedUrl = new URL(success_url || window.location.origin + (basePath ? `/${basePath}` : ''));
-        parsedUrl.searchParams.set('account_id', (window as any).fastAuthController.getAccountId());
+        const parsedUrl = new URL(
+          success_url ||
+            window.location.origin + (basePath ? `/${basePath}` : '')
+        );
+        parsedUrl.searchParams.set(
+          'account_id',
+          (window as any).fastAuthController.getAccountId()
+        );
         parsedUrl.searchParams.set('public_key', public_key);
         parsedUrl.searchParams.set('all_keys', allKeys.join(','));
         window.location.replace(parsedUrl.href);
@@ -168,54 +210,71 @@ const SignInForm = () => {
       return;
     }
 
-    window.fastAuthController.signAndSendAddKey({
-      contractId: contract_id,
-      methodNames,
-      allowance:  new BN(NEAR_MAX_ALLOWANCE),
-      publicKey:  public_key,
-    }).then((res) => res && res.json()).then((res) => {
-      const failure = res['Receipts Outcome'].find(({ outcome: { status } }) => Object.keys(status).some((k) => k === 'Failure'))?.outcome?.status?.Failure;
-      if (failure) {
-        return failure;
-      }
+    window.fastAuthController
+      .signAndSendAddKey({
+        contractId: contract_id,
+        methodNames,
+        allowance: new BN(NEAR_MAX_ALLOWANCE),
+        publicKey: public_key,
+      })
+      .then((res) => res && res.json())
+      .then((res) => {
+        const failure = res['Receipts Outcome'].find(
+          ({ outcome: { status } }) =>
+            Object.keys(status).some((k) => k === 'Failure')
+        )?.outcome?.status?.Failure;
+        if (failure) {
+          return failure;
+        }
 
-      if (!firebaseUser) return null;
+        if (!firebaseUser) return null;
 
-      // Add device
-      window.firestoreController.updateUser({
-        userUid:   firebaseUser.uid,
-        // User type is missing accessToken but it exists
-        oidcToken,
-      });
+        // Add device
+        window.firestoreController.updateUser({
+          userUid: firebaseUser.uid,
+          // User type is missing accessToken but it exists
+          oidcToken,
+        });
 
-      // Since FAK is already added, we only add LAK
-      return window.firestoreController.addDeviceCollection({
-        fakPublicKey:  null,
-        lakPublicKey: public_key,
-        gateway:      success_url,
-      }).catch((err) => {
-        console.log('Failed to add device collection', err);
-        throw new Error('Failed to add device collection');
-      });
-    })
+        // Since FAK is already added, we only add LAK
+        return window.firestoreController
+          .addDeviceCollection({
+            fakPublicKey: null,
+            lakPublicKey: public_key,
+            gateway: success_url,
+          })
+          .catch((err) => {
+            console.log('Failed to add device collection', err);
+            throw new Error('Failed to add device collection');
+          });
+      })
       .then((failure) => {
         if (failure?.ActionError?.kind?.LackBalanceForState) {
           window.location.href = `/devices?${searchParams.toString()}`;
         } else {
-          window.parent.postMessage({
-            type:   'method',
-            method: 'query',
-            id:     1234,
-            params: {
-              request_type: 'complete_authentication',
-              publicKey:    public_key,
-              allKeys:      allKeys.join(','),
-              accountId:    (window as any).fastAuthController.getAccountId()
-            }
-          }, '*');
+          window.parent.postMessage(
+            {
+              type: 'method',
+              method: 'query',
+              id: 1234,
+              params: {
+                request_type: 'complete_authentication',
+                publicKey: public_key,
+                allKeys: allKeys.join(','),
+                accountId: (window as any).fastAuthController.getAccountId(),
+              },
+            },
+            '*'
+          );
           if (!inIframe()) {
-            const parsedUrl = new URL(success_url || window.location.origin + (basePath ? `/${basePath}` : ''));
-            parsedUrl.searchParams.set('account_id', (window as any).fastAuthController.getAccountId());
+            const parsedUrl = new URL(
+              success_url ||
+                window.location.origin + (basePath ? `/${basePath}` : '')
+            );
+            parsedUrl.searchParams.set(
+              'account_id',
+              (window as any).fastAuthController.getAccountId()
+            );
             parsedUrl.searchParams.set('public_key', public_key);
             parsedUrl.searchParams.set('all_keys', allKeys.join(','));
             window.location.replace(parsedUrl.href);
@@ -225,14 +284,19 @@ const SignInForm = () => {
       .catch((error) => {
         console.log('error', error);
         captureException(error);
-        window.parent.postMessage({
-          type:    'AddDeviceError',
-          message: typeof error?.message === 'string' ? error.message : 'Something went wrong'
-        }, '*');
+        window.parent.postMessage(
+          {
+            type: 'AddDeviceError',
+            message:
+              typeof error?.message === 'string'
+                ? error.message
+                : 'Something went wrong',
+          },
+          '*'
+        );
         toast({
           title: 'ERROR',
-          description:
-          error.message,
+          description: error.message,
           variant: 'destructive',
         });
       })
@@ -246,15 +310,17 @@ const SignInForm = () => {
 
     const success_url = config.loginSuccessUrl;
     const failure_url = config.loginFailureUrl;
-    const public_key =  near_api_js_1.KeyPair.fromRandom('ed25519').getPublicKey().toString();
+    const public_key = near_api_js_1.KeyPair.fromRandom('ed25519')
+      .getPublicKey()
+      .toString();
     const methodNames = '';
-    const contract_id = config.contractId;  
+    const contract_id = config.contractId;
 
     try {
       await handleCreateAccount({
-        accountId:   null,
-        email:       data.email,
-        isRecovery:  true,
+        accountId: null,
+        email: data.email,
+        isRecovery: true,
         success_url,
         failure_url,
         public_key,
@@ -265,26 +331,31 @@ const SignInForm = () => {
       const paramsObject = {
         email: data.email,
         isRecovery: 'true',
-        ...(data.success_url ? { success_url} : {}),
-        ...(data.failure_url ? { failure_url} : {}),
-        ...(data.public_key ? { public_key_lak: public_key} : {}),
-        ...(data.contract_id ? { contract_id} : {}),
-        ...(data.methodNames ? { methodNames} : {})
+        ...(data.success_url ? { success_url } : {}),
+        ...(data.failure_url ? { failure_url } : {}),
+        ...(data.public_key ? { public_key_lak: public_key } : {}),
+        ...(data.contract_id ? { contract_id } : {}),
+        ...(data.methodNames ? { methodNames } : {}),
       };
       const newSearchParams = new URLSearchParams(paramsObject);
 
       window.location.href = `https://sorbet-fast-auth-c3tiwq6mya-uc.a.run.app/verify-email?${newSearchParams.toString()}`;
     } catch (error: any) {
       console.log(error);
-      const errorMessage = typeof error?.message === 'string' ? error.message : 'Something went wrong';
-      window.parent.postMessage({
-        type:    'addDeviceError',
-        message: errorMessage
-      }, '*');
+      const errorMessage =
+        typeof error?.message === 'string'
+          ? error.message
+          : 'Something went wrong';
+      window.parent.postMessage(
+        {
+          type: 'addDeviceError',
+          message: errorMessage,
+        },
+        '*'
+      );
       toast({
         title: 'ERROR',
-        description:
-        errorMessage,
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -299,16 +370,18 @@ const SignInForm = () => {
       if (!isPasskeySupported) {
         const authenticated = await getAuthState();
         const isFirestoreReady = await checkFirestoreReady();
-        const firebaseAuthInvalid = authenticated === true && !isPasskeySupported && firebaseUser?.email !== data.email;
-        const shouldUseCurrentUser = authenticated === true
-        && !firebaseAuthInvalid
-        && isFirestoreReady;
+        const firebaseAuthInvalid =
+          authenticated === true &&
+          !isPasskeySupported &&
+          firebaseUser?.email !== data.email;
+        const shouldUseCurrentUser =
+          authenticated === true && !firebaseAuthInvalid && isFirestoreReady;
         if (shouldUseCurrentUser) {
           await handleAuthCallback();
           return;
         }
       }
-      
+
       await addDevice({ email: data.email });
     } catch (e: any) {
       console.error('Error occurred during form submission:', e);
@@ -316,8 +389,7 @@ const SignInForm = () => {
 
       toast({
         title: 'ERROR',
-        description:
-          'An error occurred. Please try again later.',
+        description: 'An error occurred. Please try again later.',
         variant: 'destructive',
       });
     } finally {
@@ -332,13 +404,15 @@ const SignInForm = () => {
         const params = new URLSearchParams(urlHash.split('?')[1]);
         const accountId = params.get('account_id');
         const publicKey = params.get('public_key');
-        const cleanedAccountId = accountId?.replace(/\.testnet$|\.mainnet$/, '');
+        const cleanedAccountId = accountId?.replace(
+          /\.testnet$|\.mainnet$/,
+          ''
+        );
 
         if (accountId && publicKey) {
-            router?.push(`/${cleanedAccountId}`);
-          } 
+          router?.push(`/${cleanedAccountId}`);
         }
-      
+      }
     };
 
     handleWalletLogin();
@@ -346,14 +420,14 @@ const SignInForm = () => {
 
   useEffect(() => {
     const checkNearConnection = async () => {
-      console.log({accounts, accountId})
+      console.log({ accounts, accountId });
       if (accounts.length > 0) {
         const activeAccount = accountId;
         setActiveNearAccount(activeAccount);
 
         if (activeAccount) {
           const response = await getUserByAccountId(activeAccount);
-          if (response.data === 'failed') {
+          if (response && response.data === 'failed') {
             setAccountNotFound(true);
             await handleSignOut();
           }
@@ -425,8 +499,8 @@ const SignInForm = () => {
   };
 
   const handleSignUpClick = async () => {
-    await registerWithEmail("");
-  }
+    await registerWithEmail('');
+  };
 
   return (
     <FormContainer>
@@ -509,7 +583,6 @@ const SignInForm = () => {
             >
               Sign up
             </Link>
-          
           </p>
         </div>
       </form>
@@ -518,4 +591,3 @@ const SignInForm = () => {
 };
 
 export { SignInForm };
-

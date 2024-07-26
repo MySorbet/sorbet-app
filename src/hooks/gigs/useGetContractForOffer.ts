@@ -1,5 +1,6 @@
 import { getContractForOffer } from '@/api/gigs';
 import { ActiveTab } from '@/app/gigs/gigs-comms';
+import { useToast } from '@/components/ui/use-toast';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 type useGetContractForOfferParams = {
@@ -10,6 +11,7 @@ type useGetContractForOfferParams = {
 
 export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   const { currentOfferId, isOpen, activeTab } = data;
+  const { toast } = useToast();
 
   return useQuery({
     queryKey: ['contractForOffer', currentOfferId],
@@ -17,7 +19,7 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
       console.log('getContractOffer');
       const response = await getContractForOffer(currentOfferId);
 
-      if (response && response.status === 'success') {
+      if (response && response.data) {
         return response.data;
       } else {
         toast({
