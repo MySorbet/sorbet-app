@@ -1,6 +1,5 @@
-import { updateContractStatus, updateOfferStatus } from '@/api/gigs';
-import { ContractClientMilestone } from '@/app/gigs/contract';
-import { Spinner, useWalletSelector } from '@/components/common';
+import { ContractMilestone } from '@/app/gigs/contract';
+import { Spinner } from '@/components/common';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,10 +7,6 @@ import {
   AlertDialogContent,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
-import { CONTRACT_ID } from '@/constant/constant';
-import { useLocalStorage } from '@/hooks';
-import { toYoctoNEAR } from '@/lib/helper';
 import {
   ContractMilestoneStatus,
   ContractType,
@@ -19,13 +14,42 @@ import {
   OfferType,
 } from '@/types';
 import { HelpCircle, TriangleAlert } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 export interface ContractOverviewProps {
   contract: ContractType;
   milestones?: MilestoneType[];
   isClient: boolean;
   offer?: OfferType;
+  contractApproved: boolean;
+  isRejectDialogOpen: boolean;
+  setIsRejectDialogOpen: () => void;
+  isLoading: boolean;
+  handleApprove: () => void;
+  handleReject: () => void;
+  confirmReject: () => void;
+  cancelReject: () => void;
+  finishContract: () => void;
+  handleMilestoneFunding: (
+    projectId: string,
+    scheduleId: string,
+    amount: number,
+    milestoneId: string,
+    isFixedPrice: boolean,
+    index: number
+  ) => Promise<void>;
+  handleMilestoneSubmission: (
+    projectId: string,
+    milestoneId: string,
+    isFixedPrice: boolean
+  ) => Promise<void>;
+  handleMilestoneApprove: (
+    projectId: string,
+    milestoneId: string,
+    isFixedPrice: boolean,
+    offerId?: string,
+    index?: number
+  ) => Promise<void>;
 }
 
 export const ContractOverview = ({
@@ -33,17 +57,19 @@ export const ContractOverview = ({
   milestones,
   isClient,
   offer,
+  contractApproved,
+  isRejectDialogOpen,
+  setIsRejectDialogOpen,
+  isLoading,
+  handleApprove,
+  handleReject,
+  confirmReject,
+  cancelReject,
+  finishContract,
+  handleMilestoneFunding,
+  handleMilestoneSubmission,
+  handleMilestoneApprove,
 }: ContractOverviewProps) => {
-  const [contractApproved, setContractApproved] = useState<boolean>(false);
-  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
-  const { accounts, selector } = useWalletSelector();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
-    'lastChainOp',
-    ''
-  );
-  const { toast } = useToast();
-
   const mapContractStatusToMilestoneStatus = (status: string) => {
     switch (status) {
       case 'NotStarted':
@@ -60,107 +86,6 @@ export const ContractOverview = ({
         return ContractMilestoneStatus.InReview;
     }
   };
-
-  const handleApprove = async () => {
-    setIsLoading(true);
-    if (contract) {
-      const response = await updateContractStatus(contract.id, 'NotStarted');
-      if (response && response.data) {
-        if (offer) {
-          await updateOfferStatus(offer?.id, 'Accepted');
-        }
-        setContractApproved(true);
-        toast({
-          title: 'Contract approved',
-          description: 'You can now fund the contract.',
-        });
-      } else {
-        toast({
-          title: 'Something went wrong',
-          description:
-            'Unable to approve contract. If the issue persists, please contact support',
-        });
-      }
-    }
-    setIsLoading(false);
-  };
-
-  const handleReject = () => {
-    setIsRejectDialogOpen(true);
-  };
-
-  const confirmReject = async () => {
-    setIsLoading(true);
-    if (contract) {
-      const response = await updateContractStatus(contract.id, 'Rejected');
-      if (response && response.data) {
-        setContractApproved(false);
-        setIsRejectDialogOpen(false);
-        toast({
-          title: 'Contract rejected',
-          description: 'The contract offer was rejected',
-        });
-      } else {
-        toast({
-          title: 'Something went wrong',
-          description:
-            'Unable to reject contract. If the issue persists, please contact support',
-        });
-      }
-    }
-    setIsLoading(false);
-  };
-
-  const cancelReject = () => {
-    setIsRejectDialogOpen(false);
-  };
-
-  const finishContract = async () => {
-    const response = await updateContractStatus(contract.id, 'Completed');
-    if (response.status && response.data) {
-      setLastChainOp('end_project');
-      if (offer) {
-        await updateOfferStatus(offer?.id, 'Completed');
-      }
-      const wallet = await selector.wallet();
-      await wallet
-        .signAndSendTransaction({
-          signerId: accounts[0].accountId,
-          receiverId: CONTRACT_ID,
-          actions: [
-            {
-              type: 'FunctionCall',
-              params: {
-                methodName: 'end_project',
-                args: {
-                  project_id: contract.id,
-                },
-                gas: '300000000000000',
-                deposit: toYoctoNEAR('0'),
-              },
-            },
-          ],
-        })
-        .catch((err) => {
-          toast({
-            title: 'Transaction Failed',
-            description: 'Failed to end project on the NEAR blockchain.',
-            variant: 'destructive',
-          });
-          console.error('Failed to fund milestone', err);
-          throw err;
-        });
-    }
-  };
-
-  useEffect(() => {
-    if (
-      contract.status !== 'Rejected' &&
-      contract.status !== 'PendingApproval'
-    ) {
-      setContractApproved(true);
-    }
-  }, [contract]);
 
   return (
     <div className='contract-container p-4 bg-gray-100 rounded-2xl flex flex-col items-center w-full h-full'>
@@ -223,7 +148,7 @@ export const ContractOverview = ({
         {milestones && milestones.length > 0 ? (
           <>
             {milestones.map((milestone: MilestoneType, index: number) => (
-              <ContractClientMilestone
+              <ContractMilestone
                 isApproved={contractApproved}
                 status={milestone.status}
                 title={milestone.name}
@@ -232,11 +157,33 @@ export const ContractOverview = ({
                 projectId={contract.id}
                 isClient={isClient}
                 milestoneId={milestone.id}
+                handleMilestoneFunding={() =>
+                  handleMilestoneFunding(
+                    contract.id,
+                    index.toString(),
+                    milestone.amount,
+                    milestone.id,
+                    false,
+                    index
+                  )
+                }
+                handleMilestoneSubmission={() =>
+                  handleMilestoneSubmission(contract.id, milestone.id, false)
+                }
+                handleMilestoneApprove={() =>
+                  handleMilestoneApprove(
+                    contract.id,
+                    milestone.id,
+                    false,
+                    offer?.id,
+                    index
+                  )
+                }
               />
             ))}
           </>
         ) : (
-          <ContractClientMilestone
+          <ContractMilestone
             isApproved={contractApproved}
             status={mapContractStatusToMilestoneStatus(contract.status)}
             title={`Fixed Price Contract`}
@@ -246,6 +193,28 @@ export const ContractOverview = ({
             isClient={isClient}
             milestoneId={contract.id}
             isFixedPrice={true}
+            handleMilestoneFunding={() =>
+              handleMilestoneFunding(
+                contract.id,
+                '0',
+                contract.totalAmount,
+                contract.id,
+                true,
+                0
+              )
+            }
+            handleMilestoneSubmission={() =>
+              handleMilestoneSubmission(contract.id, contract.id, true)
+            }
+            handleMilestoneApprove={() =>
+              handleMilestoneApprove(
+                contract.id,
+                contract.id,
+                true,
+                offer?.id,
+                0
+              )
+            }
           />
         )}
       </div>

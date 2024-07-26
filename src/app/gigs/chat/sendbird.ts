@@ -5,10 +5,10 @@ import SendbirdChat, {
   SendbirdChatWith,
 } from '@sendbird/chat';
 import {
-  GroupChannelModule,
-  MessageFilter,
-  MessageCollectionInitPolicy,
   GroupChannel,
+  GroupChannelModule,
+  MessageCollectionInitPolicy,
+  MessageFilter,
 } from '@sendbird/chat/groupChannel';
 
 // Initialize the SendbirdChat module
@@ -25,8 +25,8 @@ const initializeConnection = async (userId: string) => {
   try {
     const user = await sb.connect(userId);
     return user;
-  } catch (error: any) {
-    throw new Error('Failed to connect to Sendbird');
+  } catch (error) {
+    console.log(`Unable to connect with Sendbird: ${JSON.stringify(error)}`);
   }
 };
 
