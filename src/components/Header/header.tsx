@@ -2,9 +2,12 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { Notifications } from '@/components/header/notifications';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 interface HeaderProps {
@@ -12,7 +15,11 @@ interface HeaderProps {
 }
 
 export const Header = ({ isPublic = false }: HeaderProps) => {
+  const { user } = useAuth();
+
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   return (
     <div className='bg-[#F2F3F7]'>
@@ -40,6 +47,22 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
                 />
               </div>
             </div>
+          </div>
+        )}
+        {isPublic && !user && (
+          <div className='flex items-center justify-end gap-4'>
+            <Button
+              onClick={() => router.push('/signup')}
+              className='font-semibold text-sm text-[#344054] leading-5 py-[10px] px-[14px] bg-white border border-[#D0D5DD] hover:bg-gray-100'
+            >
+              Claim my Sorbet
+            </Button>
+            <Button
+              onClick={() => router.push('/signin')}
+              className='font-semibold text-sm text-white leading-5 py-[10px] px-[14px] bg-sorbet border border-[#7F56D9] hover:bg-[#523BDF]'
+            >
+              Login
+            </Button>
           </div>
         )}
       </div>
