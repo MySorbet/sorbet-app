@@ -1,8 +1,4 @@
-import {
-  WidgetHeader,
-  WidgetIcon,
-  ImageOverlay,
-} from '@/components/profile/widgets/';
+import { WidgetHeader, ImageOverlay } from '@/components/profile/widgets/';
 import { cn } from '@/lib/utils';
 import { LinkWidgetContentType, WidgetSize, WidgetType } from '@/types';
 import { Link } from 'lucide-react';
@@ -26,7 +22,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <Icon src={iconUrl} className='m-0' />
+            <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
           <BannerImage src={heroImageUrl} />
@@ -36,7 +32,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <Icon src={iconUrl} className='m-0' />
+            <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
           <BannerImage src={heroImageUrl} />
@@ -46,7 +42,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <Icon src={iconUrl} className='m-0' />
+            <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
           <div className='flex flex-row gap-3 justify-end h-full'>
@@ -58,7 +54,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <Icon src={iconUrl} className='m-0' />
+            <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
           <BannerImage src={heroImageUrl} />
@@ -78,27 +74,35 @@ const Title: React.FC<React.PropsWithChildren> = (props) => {
 };
 
 /**
- * Local component to render the icon for the link. We need to wrap the shared `<WidgetIcon/>` component to handle the case where the icon is not available.
+ * Local component to render a favicon.
+ * - If `src` is not given, a default link icon will be rendered.
+ * - You may pass through props to the `<img>` tag if `src` is given.
+ * - You may pass through className to the `<Link>` icon if `src` is absent.
  */
-const Icon: React.FC<{
-  src?: string;
-  className?: string;
-}> = ({ src, className }) => {
-  // In the case of no src url, render a link icon
-  if (src === undefined) {
-    return (
-      // we should have a reset applying border-box div should be size-8 rounded-xl after the rest if the icons change
-      <Link
-        size={22}
-        className={cn(
-          'box-border size-[30px] p-1 bg-gray-300 rounded-md',
-          className
-        )}
-      />
-    );
-  } else {
-    return <WidgetIcon type={WidgetType.Link} className={className} />;
-  }
+const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
+  src,
+  className,
+  ...rest
+}) => {
+  return src ? (
+    <img
+      className={cn('size-[30px]', className)}
+      src={src}
+      alt={'Icon for widget'}
+      width={30}
+      height={30}
+      {...rest}
+    />
+  ) : (
+    // In the case of no src url, render a link icon.
+    // we should have a reset applying border-box. div should be size-8 rounded-xl after the rest if the icons change
+    <Link
+      className={cn(
+        'box-border size-[30px] p-1 bg-gray-300 rounded-md',
+        className
+      )}
+    />
+  );
 };
 
 /**
@@ -117,20 +121,16 @@ const WidgetLayout = React.forwardRef<
 
 /**
  * Local component to render the banner image for the link.
- *
- * TODO: Use Next.js Image component for better performance.
  */
 const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   src,
   className,
 }) => {
-  if (src === undefined) {
-  }
   return (
     <div
       className={cn(
         `h-full w-full relative rounded-2xl overflow-hidden flex items-center justify-center`,
-        src === undefined && 'bg-gray-200',
+        !src && 'bg-gray-200',
         className
       )}
     >
