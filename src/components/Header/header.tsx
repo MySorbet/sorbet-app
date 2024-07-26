@@ -1,8 +1,8 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
-import { Button } from '../ui/button';
 import { Notifications } from '@/components/header/notifications';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
