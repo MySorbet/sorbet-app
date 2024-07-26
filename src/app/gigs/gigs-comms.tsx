@@ -113,11 +113,12 @@ export const GigsComms = ({
   // properly being updated when a user closes out of the chat
   useEffect(() => {
     async function disconnectSendbird() {
-      if (!isOpen) {
-        await removeConnection();
-      }
+      await removeConnection();
     }
-    disconnectSendbird();
+
+    if (!isOpen) {
+      disconnectSendbird();
+    }
   }, [isOpen]);
 
   useEffect(() => {
@@ -206,6 +207,8 @@ export const GigsComms = ({
                   defaultLayout={undefined}
                   navCollapsedSize={8}
                   contractId={contractData?.id}
+                  clientId={contractData?.clientId}
+                  freelanceId={contractData?.freelanceId}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}

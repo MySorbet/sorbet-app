@@ -30,6 +30,8 @@ interface ChatLayoutProps {
   navCollapsedSize: number;
   channelId: string;
   contractId: string;
+  clientId: string;
+  freelanceId: string;
 }
 
 export function ChatLayoutMinimal({
@@ -38,6 +40,8 @@ export function ChatLayoutMinimal({
   navCollapsedSize,
   channelId,
   contractId,
+  clientId,
+  freelanceId,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isMobile, setIsMobile] = useState(false);
@@ -53,14 +57,21 @@ export function ChatLayoutMinimal({
   stateRef.current = state;
 
   const messageHandlers: MessageCollectionEventHandler = {
+    // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
+    // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context: any, channel: any, messages: any) => {
+      // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
+      const senderId = user?.id;
+      console.log('senderId', senderId);
+      const recipientId = user?.id === clientId ? freelanceId : clientId;
+      console.log('recipientId', recipientId);
       // a check to see if the recipient is offline or online
       // connectionStatus is determined if there is an active connection to Sendbird
-      const recipient = channel.members.find(
-        (member: any) => member.userId !== user?.id
-      );
       const sender = channel.members.find(
-        (member: any) => member.userId === user?.id
+        (member: any) => member.userId === senderId
+      );
+      const recipient = channel.members.find(
+        (member: any) => member.userId !== recipientId
       );
       if (recipient.connectionStatus === 'offline') {
         const params: NewMessageNotificationDto = {
