@@ -81,8 +81,10 @@ export function ChatList({
                         />
                         <AvatarFallback>{message.nickname[0]}</AvatarFallback>
                       </Avatar>
-                      <span className='text-base'>{message.nickname}</span>
-                      <span className='text-sm'>{time}</span>
+                      <span className='text-sm text-[#344054]'>
+                        {message.nickname}
+                      </span>
+                      <span className='text-sm text-[#666666]'>{time}</span>
                     </div>
                   )}
                   {index > 0 &&
@@ -110,8 +112,10 @@ export function ChatList({
                           />
                           <AvatarFallback>{message.nickname[0]}</AvatarFallback>
                         </Avatar>
-                        <span className='text-base'>{message.nickname}</span>
-                        <span className='text-sm'>{time}</span>
+                        <span className='text-sm text-[#344054]'>
+                          {message.nickname}
+                        </span>
+                        <span className='text-sm text-[#666666]'>{time}</span>
                       </div>
                     )}
                 </div>
@@ -131,6 +135,8 @@ export function ChatList({
                 ) : (
                   <div className='ml-8 mt-1 flex gap-2 items-center'>
                     <FileDisplay
+                      fileName={message.fileData.name}
+                      fileSize={message.fileData.size}
                       file={message.fileData}
                       color={
                         message.userId === selectedUser.id
@@ -138,12 +144,6 @@ export function ChatList({
                           : 'bg-[#D7D7D7]'
                       }
                     />
-                    <span>
-                      {message.fileData.name}{' '}
-                      <span className='text-xs'>
-                        {formatBytes(message.fileData.size)}
-                      </span>
-                    </span>
                   </div>
                 )}
               </motion.div>
