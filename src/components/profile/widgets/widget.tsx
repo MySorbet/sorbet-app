@@ -1,7 +1,7 @@
 import { Spinner } from '@/components/common';
 import {
   BehanceWidget,
-  DefaultWidget,
+  LinkWidget,
   DribbbleWidget,
   FigmaWidget,
   GithubWidget,
@@ -25,6 +25,7 @@ import {
   FigmaWidgetContentType,
   GithubWidgetContentType,
   InstagramWidgetContentType,
+  LinkWidgetContentType,
   MediumArticleContentType,
   PhotoWidgetContentType,
   SoundcloudTrackContentType,
@@ -198,8 +199,13 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Default:
-        setWidgetContent(<DefaultWidget />);
+      case WidgetType.Link:
+        setWidgetContent(
+          <LinkWidget
+            content={content as LinkWidgetContentType}
+            size={widgetSize}
+          />
+        );
         break;
 
       default:

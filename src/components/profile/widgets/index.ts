@@ -5,7 +5,7 @@ export { ResizeWidget } from './resize-widget';
 export { Widget } from './widget';
 export { BehanceWidget } from './widget-behance';
 export { WidgetContainer } from './widget-container';
-export { DefaultWidget } from './widget-default';
+export { LinkWidget } from './widget-link';
 export { DribbbleWidget } from './widget-dribbble';
 export { FigmaWidget } from './widget-figma';
 export { GithubWidget } from './widget-github';
