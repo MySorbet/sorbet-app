@@ -10,7 +10,13 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { FileMessage, SendMessageParams, TextMessage } from '@/types/sendbird';
+import {
+  FileMessage,
+  SendMessageParams,
+  SupportedFileIcon,
+  SupportedFileIcons,
+  TextMessage,
+} from '@/types/sendbird';
 import { GroupChannel } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -29,6 +35,7 @@ interface ChatBottombarProps {
   isMobile: boolean;
   channel: GroupChannel | undefined | null;
   contractStatus: string;
+  supportedIcons: SupportedFileIcons;
 }
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
@@ -38,6 +45,7 @@ export default function ChatBottombar({
   isMobile,
   channel,
   contractStatus,
+  supportedIcons,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);
@@ -104,6 +112,13 @@ export default function ChatBottombar({
       setFiles([]);
     }
   };
+
+  console.log(
+    'supportedIcons',
+    Object.keys(supportedIcons)
+      .map((type: string) => '.' + type)
+      .join(',')
+  );
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -215,6 +230,9 @@ export default function ChatBottombar({
                 className='hidden'
                 ref={fileInputRef}
                 onChange={handleAddFile}
+                accept={Object.keys(supportedIcons)
+                  .map((type: string) => '.' + type)
+                  .join(',')}
               />
               <FileImage
                 size={20}

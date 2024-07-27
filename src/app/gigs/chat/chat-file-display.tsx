@@ -11,7 +11,11 @@ import {
 } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { SBFileMessage } from '@/types/sendbird';
+import {
+  SBFileMessage,
+  SupportedFileIcons,
+  SupportedFileIcon,
+} from '@/types/sendbird';
 import {
   Download,
   ExternalLink,
@@ -27,6 +31,7 @@ interface FileDisplayProps {
   file: SBFileMessage;
   fileName: string;
   fileSize: number;
+  supportedIcons: SupportedFileIcons;
 }
 
 interface FileDisplayActionsProps {
@@ -34,15 +39,13 @@ interface FileDisplayActionsProps {
   color: string;
 }
 
-const icons = {
-  pdf: <File className='w-5 h-5 text-white' />,
-  jpeg: <ImageIcon className='w-5 h-5 text-white' />,
-  png: <ImageIcon className='w-5 h-5 text-white' />,
-};
-
-type SupportedFileIcon = keyof typeof icons;
-
-const FileDisplay = ({ color, file, fileName, fileSize }: FileDisplayProps) => {
+const FileDisplay = ({
+  color,
+  file,
+  fileName,
+  fileSize,
+  supportedIcons,
+}: FileDisplayProps) => {
   const [link, setLink] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -109,7 +112,7 @@ const FileDisplay = ({ color, file, fileName, fileSize }: FileDisplayProps) => {
           ) : (
             <FileDisplay.Container className='bg-[#00000033]'>
               {
-                icons[
+                supportedIcons[
                   file.type.split('/').pop()?.toLowerCase() as SupportedFileIcon
                 ]
               }

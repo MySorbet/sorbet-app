@@ -41,3 +41,11 @@ export interface NewMessageNotificationDto {
   reqSenderId: string;
   reqRecipientId: string;
 }
+
+export interface SupportedFileIcons {
+  pdf: JSX.Element;
+  png: JSX.Element;
+  jpeg: JSX.Element;
+}
+
+export type SupportedFileIcon = keyof SupportedFileIcons;

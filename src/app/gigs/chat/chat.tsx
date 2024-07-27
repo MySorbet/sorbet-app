@@ -2,10 +2,23 @@ import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
 import { ContractStatus, User } from '@/types';
-import { SBMessage, SendMessageParams } from '@/types/sendbird';
+import {
+  SBMessage,
+  SendMessageParams,
+  SupportedFileIcons,
+} from '@/types/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import { motion } from 'framer-motion';
+import { File, ImageIcon } from 'lucide-react';
 import React, { Dispatch, SetStateAction } from 'react';
+
+const icons = {
+  pdf: <File className='w-5 h-5 text-white' />,
+  jpeg: <ImageIcon className='w-5 h-5 text-white' />,
+  png: <ImageIcon className='w-5 h-5 text-white' />,
+};
+
+type SupportedFileIcon = keyof typeof icons;
 
 interface ChatProps {
   messages: SBMessage[];
@@ -64,6 +77,7 @@ export function Chat({
         selectedUser={selectedUser}
         typingMembers={typingMembers as Member[]}
         contractStatus={contractStatus}
+        supportedIcons={icons as SupportedFileIcons}
       />
       <div className='mt-4'>
         <ChatBottombar
@@ -71,6 +85,7 @@ export function Chat({
           isMobile={isMobile}
           channel={channel}
           contractStatus={contractStatus}
+          supportedIcons={icons as SupportedFileIcons}
         />
       </div>
     </div>

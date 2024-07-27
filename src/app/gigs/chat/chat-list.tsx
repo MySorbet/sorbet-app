@@ -8,7 +8,7 @@ import { TypingIndicator } from './typing-indicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { ContractStatus, User } from '@/types';
-import { SBMessage } from '@/types/sendbird';
+import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
 import { Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MessageSquareWarning } from 'lucide-react';
@@ -19,6 +19,7 @@ interface ChatListProps {
   selectedUser: User;
   typingMembers: Member[];
   contractStatus: string;
+  supportedIcons: SupportedFileIcons;
 }
 
 export function ChatList({
@@ -26,6 +27,7 @@ export function ChatList({
   selectedUser,
   typingMembers,
   contractStatus,
+  supportedIcons,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   console.log('contract status', contractStatus);
@@ -160,6 +162,7 @@ export function ChatList({
                         fileName={message.fileData.name}
                         fileSize={message.fileData.size}
                         file={message.fileData}
+                        supportedIcons={supportedIcons}
                         color={
                           message.userId === selectedUser.id
                             ? 'bg-sorbet text-white'
