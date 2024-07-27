@@ -113,13 +113,6 @@ export default function ChatBottombar({
     }
   };
 
-  console.log(
-    'supportedIcons',
-    Object.keys(supportedIcons)
-      .map((type: string) => '.' + type)
-      .join(',')
-  );
-
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();

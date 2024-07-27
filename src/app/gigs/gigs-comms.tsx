@@ -107,7 +107,6 @@ export const GigsComms = ({
     isOpen,
     activeTab,
   });
-  if (contractData) console.log(contractData.status);
 
   // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
   // properly being updated when a user closes out of the chat

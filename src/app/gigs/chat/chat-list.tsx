@@ -30,7 +30,6 @@ export function ChatList({
   supportedIcons,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  console.log('contract status', contractStatus);
 
   React.useEffect(() => {
     if (messagesContainerRef.current) {
