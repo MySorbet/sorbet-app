@@ -21,7 +21,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { MilestoneType, OfferType } from '@/types';
+import { ContractStatus, MilestoneType, OfferType } from '@/types';
 import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
@@ -107,6 +107,7 @@ export const GigsComms = ({
     isOpen,
     activeTab,
   });
+  if (contractData) console.log(contractData.status);
 
   // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
   // properly being updated when a user closes out of the chat
@@ -208,6 +209,7 @@ export const GigsComms = ({
                   contractId={contractData?.id}
                   clientId={contractData?.clientId}
                   freelanceId={contractData?.freelanceId}
+                  contractStatus={contractData?.status}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}

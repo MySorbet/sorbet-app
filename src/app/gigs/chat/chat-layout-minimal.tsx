@@ -10,6 +10,7 @@ import {
 import { sendNotification } from '@/api/chat';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
+import { ContractStatus } from '@/types';
 import {
   NewMessageNotificationDto,
   SBFileMessage,
@@ -32,6 +33,7 @@ interface ChatLayoutProps {
   contractId: string;
   clientId: string;
   freelanceId: string;
+  contractStatus: string;
 }
 
 export function ChatLayoutMinimal({
@@ -42,6 +44,7 @@ export function ChatLayoutMinimal({
   contractId,
   clientId,
   freelanceId,
+  contractStatus,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isMobile, setIsMobile] = useState(false);
@@ -244,6 +247,7 @@ export function ChatLayoutMinimal({
       showTopbar={false}
       channel={state.currentlyJoinedChannel}
       typingMembers={state.typingMembers as Member[]}
+      contractStatus={contractStatus}
     />
   );
 }

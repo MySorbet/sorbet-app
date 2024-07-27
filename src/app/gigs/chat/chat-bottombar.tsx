@@ -28,6 +28,7 @@ interface ChatBottombarProps {
   sendMessage: (newMessage: SendMessageParams) => void;
   isMobile: boolean;
   channel: GroupChannel | undefined | null;
+  contractStatus: string;
 }
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
@@ -36,11 +37,13 @@ export default function ChatBottombar({
   sendMessage,
   isMobile,
   channel,
+  contractStatus,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const { toast } = useToast();
 
@@ -113,6 +116,15 @@ export default function ChatBottombar({
       setMessage((prev) => prev + '\n');
     }
   };
+
+  useEffect(() => {
+    if (
+      contractStatus ===
+      ('NotStarted' || 'InProgress' || 'InReview' || 'Completed' || 'Rejected')
+    )
+      setDisabled(false);
+    else setDisabled(true);
+  }, [contractStatus]);
 
   useEffect(() => {
     async function checkTypingForFiles() {
@@ -261,6 +273,7 @@ export default function ChatBottombar({
                 </div>
               ) : (
                 <Textarea
+                  disabled={disabled}
                   autoComplete='off'
                   value={message}
                   ref={inputRef}

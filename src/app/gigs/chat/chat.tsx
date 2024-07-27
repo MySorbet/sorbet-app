@@ -1,7 +1,7 @@
 import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
-import { User } from '@/types';
+import { ContractStatus, User } from '@/types';
 import { SBMessage, SendMessageParams } from '@/types/sendbird';
 import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
 import { motion } from 'framer-motion';
@@ -14,6 +14,7 @@ interface ChatProps {
   showTopbar?: boolean;
   channel: GroupChannel | undefined | null;
   typingMembers: Member[];
+  contractStatus: string;
 }
 
 export function Chat({
@@ -23,6 +24,7 @@ export function Chat({
   showTopbar = true,
   channel,
   typingMembers,
+  contractStatus,
 }: ChatProps) {
   const sendMessage = (newMessage: SendMessageParams) => {
     if (!channel) return;
@@ -61,12 +63,14 @@ export function Chat({
         messages={messages}
         selectedUser={selectedUser}
         typingMembers={typingMembers as Member[]}
+        contractStatus={contractStatus}
       />
       <div className='mt-4'>
         <ChatBottombar
           sendMessage={sendMessage}
           isMobile={isMobile}
           channel={channel}
+          contractStatus={contractStatus}
         />
       </div>
     </div>

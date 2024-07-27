@@ -85,3 +85,12 @@ export enum GigsContentType {
   Sent,
   Received,
 }
+
+export enum ContractStatus {
+  PendingApproval,
+  NotStarted,
+  InProgress,
+  InReview,
+  Completed,
+  Rejected,
+}
