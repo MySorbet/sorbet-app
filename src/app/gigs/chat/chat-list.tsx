@@ -39,7 +39,7 @@ export function ChatList({
   }, [messages, typingMembers.length]);
 
   return (
-    <div className='w-full overflow-y-hidden overflow-x-hidden h-full flex flex-col flex-grow-0'>
+    <div className='w-full overflow-y-hidden overflow-x-hidden h-[50vh] flex flex-col flex-grow-0'>
       {contractStatus === 'PendingApproval' && (
         <div className='w-full overflow-y-auto overflow-x-hidden h-full flex flex-row items-center justify-center gap-3'>
           <MessageSquareWarning className='w-10 h-10' />
