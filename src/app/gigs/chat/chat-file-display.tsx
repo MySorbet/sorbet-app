@@ -87,7 +87,7 @@ const FileDisplay = ({
         {!loading ? (
           link ? (
             <FileDisplay.Container className={color}>
-              <a href={link} className='w-auto h-fulls'>
+              <a href={link} className='w-auto h-full'>
                 <Image
                   className='object-cover h-full w-auto rounded-sm'
                   src={link}
