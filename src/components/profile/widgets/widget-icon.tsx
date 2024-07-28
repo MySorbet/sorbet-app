@@ -4,29 +4,31 @@ import { WidgetType } from '@/types';
 import Image from 'next/image';
 
 /**
- * This type allows you to passthrough any prop that a Next `<Image/>` takes
- * except for `src` and `alt` which are handled by this component.
+ * This type allows you to passthrough any prop that a Next `<Image/>` takes save for `src` which is handled by the `type` prop.
  */
 interface WidgetIconProps
   extends Omit<React.ComponentProps<typeof Image>, 'src' | 'alt'> {
-  /** The type of widget icon to render */
+  /** The type of widget icon to render. */
   type: WidgetType;
+  /** Optional alt for the image. If undefined, a generic default will be used */
+  alt?: string;
 }
 
 /**
- * Renders the the appropriate social icon for a given widget type with a NextJS `<Image/>`.
- * You may pass any prop that a Next `<Image/>` takes except for `src` and `alt`.
+ * Renders the the appropriate social icon for a given widget `type` with a NextJS `<Image/>`.
+ * - You may pass thru any prop that a Next `<Image/>` takes.
  */
 export const WidgetIcon: React.FC<WidgetIconProps> = ({
   type,
   className,
+  alt,
   ...rest
 }) => {
   return (
     <Image
       className={cn('size-[30px] mb-4', className)} // TODO: Get rid of bottom margin
       src={getSocialIconForWidget(type)}
-      alt={type}
+      alt={alt ?? 'Icon for widget'}
       width={30}
       height={30}
       {...rest}
