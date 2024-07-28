@@ -81,30 +81,18 @@ const FileDisplay = ({
     URL.revokeObjectURL(link);
   };
 
-  const handleOpenFile = async () => {
-    if (!link) {
-      toast({
-        title: `Failed to download ${file.name}`,
-        description: 'Please try again. If the issue persists, contact support',
-        variant: 'destructive',
-      });
-      return;
-    }
-    window.open(link, '_blank');
-  };
-
   return (
     <>
       <div className='flex flex-1 flex-row gap-2 '>
         {!loading ? (
           link ? (
             <FileDisplay.Container className={color}>
-              <a href={link}>
+              <a href={link} className='w-auto h-fulls'>
                 <Image
-                  className='object-cover h-auto w-auto rounded-sm'
+                  className='object-cover h-full w-auto rounded-sm'
                   src={link}
-                  width={65}
-                  height={80}
+                  width={1}
+                  height={1}
                   alt={file.name}
                 />
               </a>
@@ -126,7 +114,7 @@ const FileDisplay = ({
             <Spinner />
           </FileDisplay.Container>
         )}
-        <div className='flex flex-col gap-2 justify-center '>
+        <div className='flex flex-col gap-1 justify-center '>
           <span className='text-xs text-[#666666]'>
             {fileName} <span className=''>{formatBytes(fileSize)}</span>
           </span>
