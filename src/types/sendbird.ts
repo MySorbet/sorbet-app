@@ -33,5 +33,19 @@ export interface TextMessage {
   message: string;
 }
 
-// Union type for SendMessageParams
 export type SendMessageParams = FileMessage | TextMessage;
+
+export interface NewMessageNotificationDto {
+  reqContractId: string;
+  reqChannelId: string;
+  reqSenderId: string;
+  reqRecipientId: string;
+}
+
+export interface SupportedFileIcons {
+  pdf: JSX.Element;
+  png: JSX.Element;
+  jpeg: JSX.Element;
+}
+
+export type SupportedFileIcon = keyof SupportedFileIcons;

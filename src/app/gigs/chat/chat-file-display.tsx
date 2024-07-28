@@ -1,5 +1,6 @@
 'use client';
 
+import { formatBytes } from './sendbird';
 import { fetchFile } from '@/api/chat';
 import { Spinner } from '@/components/common';
 import {
@@ -10,22 +11,41 @@ import {
 } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { SBFileMessage } from '@/types/sendbird';
-import { Download, ExternalLink, File, Frown } from 'lucide-react';
+import {
+  SBFileMessage,
+  SupportedFileIcons,
+  SupportedFileIcon,
+} from '@/types/sendbird';
+import {
+  Download,
+  ExternalLink,
+  File,
+  Frown,
+  Image as ImageIcon,
+} from 'lucide-react';
+import Image from 'next/image';
 import { ReactNode, useEffect, useState } from 'react';
 
 interface FileDisplayProps {
   color: string;
   file: SBFileMessage;
+  fileName: string;
+  fileSize: number;
+  supportedIcons: SupportedFileIcons;
 }
 
 interface FileDisplayActionsProps {
   handleDownloadFile: () => void;
-  handleOpenFile: () => void;
   color: string;
 }
 
-const FileDisplay = ({ color, file }: FileDisplayProps) => {
+const FileDisplay = ({
+  color,
+  file,
+  fileName,
+  fileSize,
+  supportedIcons,
+}: FileDisplayProps) => {
   const [link, setLink] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
@@ -61,41 +81,49 @@ const FileDisplay = ({ color, file }: FileDisplayProps) => {
     URL.revokeObjectURL(link);
   };
 
-  const handleOpenFile = async () => {
-    if (!link) {
-      toast({
-        title: `Failed to download ${file.name}`,
-        description: 'Please try again. If the issue persists, contact support',
-        variant: 'destructive',
-      });
-      return;
-    }
-    window.open(link, '_blank');
-  };
-
   return (
     <>
-      {!loading ? (
-        link ? (
-          <FileDisplay.Container className={color}>
-            <FileDisplay.Actions
-              color={color}
-              handleOpenFile={handleOpenFile}
-              handleDownloadFile={handleDownloadFile}
-            />
-            <File className='w-10 h-10' />
-            {file.type.split('/').pop()}
-          </FileDisplay.Container>
+      <div className='flex flex-1 flex-row gap-2 '>
+        {!loading ? (
+          link ? (
+            <FileDisplay.Container className={color}>
+              <a href={link} className='w-auto h-full'>
+                <Image
+                  className='object-cover h-full w-auto rounded-sm'
+                  src={link}
+                  width={1}
+                  height={1}
+                  alt={file.name}
+                />
+              </a>
+            </FileDisplay.Container>
+          ) : (
+            <FileDisplay.Container className='bg-[#00000033]'>
+              {
+                supportedIcons[
+                  file.type.split('/').pop()?.toLowerCase() as SupportedFileIcon
+                ]
+              }
+              <p className='text-white mt-1'>
+                {file.type.split('/').pop()?.toUpperCase()}
+              </p>
+            </FileDisplay.Container>
+          )
         ) : (
-          <FileDisplay.Container>
-            <Frown className='w-10 h-10 text-white' />
+          <FileDisplay.Container className={color}>
+            <Spinner />
           </FileDisplay.Container>
-        )
-      ) : (
-        <FileDisplay.Container className={color}>
-          <Spinner />
-        </FileDisplay.Container>
-      )}
+        )}
+        <div className='flex flex-col gap-1 justify-center '>
+          <span className='text-xs text-[#666666]'>
+            {fileName} <span className=''>{formatBytes(fileSize)}</span>
+          </span>
+          <Download
+            className='w-4 h-4 text-[#666666] cursor-pointer'
+            onClick={handleDownloadFile}
+          />
+        </div>
+      </div>
     </>
   );
 };
@@ -110,7 +138,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        `flex flex-col items-center justify-center w-[80px] h-[100px] rounded-2xl px-1 gap-1`,
+        `flex flex-col items-center justify-center w-[65px] h-[80px] rounded-sm overflow-clip`,
         className
       )}
     >
@@ -119,11 +147,7 @@ const Container = ({
   );
 };
 
-const Actions = ({
-  handleDownloadFile,
-  handleOpenFile,
-  color,
-}: FileDisplayActionsProps) => {
+const Actions = ({ handleDownloadFile, color }: FileDisplayActionsProps) => {
   return (
     <div className='flex w-full justify-between'>
       <TooltipProvider delayDuration={200} skipDelayDuration={100}>
@@ -135,17 +159,6 @@ const Actions = ({
             />
           </TooltipTrigger>
           <TooltipContent>Download file</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-        <Tooltip>
-          <TooltipTrigger>
-            <ExternalLink
-              className={cn('w-4 h-4', color)}
-              onClick={handleOpenFile}
-            />
-          </TooltipTrigger>
-          <TooltipContent>Open file</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
