@@ -25,4 +25,5 @@ export { WidgetErrorFallback } from './widget-error-fallback';
 export { WidgetHeader } from './widget-header';
 export { ImageOverlay } from './image-overlay';
 export { WidgetDescription } from './widget-description';
+export { LinkedInProfileWidget } from './widget-linkedin-profile';
 export * from './util';
