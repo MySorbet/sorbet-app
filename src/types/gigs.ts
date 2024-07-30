@@ -57,6 +57,7 @@ export interface ContractType {
   offerId: string;
   client?: User;
   freelancer?: User;
+  channelId: string;
 }
 
 export interface MilestoneType {
