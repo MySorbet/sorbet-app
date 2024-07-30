@@ -5,6 +5,7 @@ import {
   getTimeDifferenceInMinutes,
 } from './sendbird';
 import { TypingIndicator } from './typing-indicator';
+import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { ContractStatus, User } from '@/types';
@@ -90,23 +91,11 @@ export function ChatList({
                 >
                   <div className='flex flex-col gap-1 items-start w-full'>
                     {index === 0 && (
-                      <div className='flex items-center gap-1 mt-5'>
-                        <Avatar className='flex justify-center items-center'>
-                          <AvatarImage
-                            src={
-                              message.avatar ? message.avatar : '/avatar.svg'
-                            }
-                            alt={message.nickname}
-                            width={6}
-                            height={6}
-                          />
-                          <AvatarFallback>{message.nickname[0]}</AvatarFallback>
-                        </Avatar>
-                        <span className='text-sm text-[#344054]'>
-                          {message.nickname}
-                        </span>
-                        <span className='text-sm text-[#666666]'>{time}</span>
-                      </div>
+                      <MessageAvatar
+                        avatar={message?.avatar}
+                        nickname={message?.nickname}
+                        time={time}
+                      />
                     )}
                     {index > 0 &&
                       getTimeDifferenceInMinutes(
@@ -121,25 +110,11 @@ export function ChatList({
                       )}
                     {index > 0 &&
                       messages[index - 1].userId !== message.userId && (
-                        <div className='flex items-center gap-1 mt-5'>
-                          <Avatar className='flex justify-center items-center'>
-                            <AvatarImage
-                              src={
-                                message.avatar ? message.avatar : '/avatar.svg'
-                              }
-                              alt={message.nickname}
-                              width={6}
-                              height={6}
-                            />
-                            <AvatarFallback>
-                              {message.nickname[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className='text-sm text-[#344054]'>
-                            {message.nickname}
-                          </span>
-                          <span className='text-sm text-[#666666]'>{time}</span>
-                        </div>
+                        <MessageAvatar
+                          avatar={message?.avatar}
+                          nickname={message?.nickname}
+                          time={time}
+                        />
                       )}
                   </div>
                   {!message.fileData?.sendbirdUrl ? (
@@ -179,28 +154,11 @@ export function ChatList({
               {messages &&
                 messages[messages.length - 1]?.userId !==
                   typingMembers[0].userId && (
-                  <div className='flex items-center gap-1 mt-5'>
-                    <Avatar className='flex justify-center items-center'>
-                      <AvatarImage
-                        src={
-                          typingMembers[0].profileUrl
-                            ? typingMembers[0].profileUrl
-                            : '/avatar.svg'
-                        }
-                        alt={typingMembers[0].nickname}
-                        width={6}
-                        height={6}
-                      />
-                      <AvatarFallback>
-                        {typingMembers[0].nickname[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className='text-base'>
-                      {typingMembers[0].nickname}
-                    </span>
-                  </div>
+                  <MessageAvatar
+                    avatar={typingMembers[0].profileUrl}
+                    nickname={typingMembers[0].nickname}
+                  />
                 )}
-
               <div className='flex items-center justify-center py-2 bg-[#D7D7D7]  ml-8 rounded-2xl mt-1 w-16'>
                 <TypingIndicator />
               </div>
