@@ -68,38 +68,6 @@ interface TabSelectorProps {
   setActiveTab: (tab: ActiveTab) => void;
 }
 
-const TabSelector: React.FC<TabSelectorProps> = ({
-  activeTab,
-  setActiveTab,
-}) => {
-  return (
-    <div className='border border-1 border-solid border-gray-100 rounded-full h-11'>
-      <Button
-        variant={`outline`}
-        className={cn(
-          'rounded-full border-none outline-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
-          `${activeTab === ActiveTab.Chat && `bg-sorbet text-white`}`
-        )}
-        onClick={() => setActiveTab(ActiveTab.Chat)}
-      >
-        <span>Chat</span>
-        <IconMessage size={15} />
-      </Button>
-      <Button
-        variant={`outline`}
-        className={cn(
-          'rounded-full border-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
-          `${activeTab === ActiveTab.Contract && `bg-sorbet text-white`}`
-        )}
-        onClick={() => setActiveTab(ActiveTab.Contract)}
-      >
-        <span>Contract</span>
-        <IconContract size={15} />
-      </Button>
-    </div>
-  );
-};
-
 export const GigsDialog = ({
   isOpen = false,
   onOpenChange,
@@ -131,20 +99,12 @@ export const GigsDialog = ({
     data: contractData,
     // error: getContractError,
     isError: isGetContractError,
+    refetch: refetchContractData,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
-
-  const refetchContractData = async () => {
-    // Assuming useGetContractForOffer has a refetch method
-    await useGetContractForOffer({
-      currentOfferId,
-      isOpen,
-      activeTab,
-    }).refetch();
-  };
 
   useEffect(() => {
     if (isGetContractError) {
@@ -172,7 +132,7 @@ export const GigsDialog = ({
         contractData.id,
         'NotStarted'
       );
-      if (response && response.data) {
+      if (response?.data) {
         if (currentOffer) {
           await updateOfferStatus(currentOffer?.id, 'Accepted');
         }
@@ -435,7 +395,7 @@ export const GigsDialog = ({
       if (index == 0 && !isFixedPrice) {
         await updateContractStatus(projectId, 'InProgress');
       }
-      const finalAmount = BigNumber(amount).multipliedBy(1.021).abs().toFixed();
+      const finalAmount = BigNumber(amount).toFixed();
       const wallet = await selector.wallet();
       return await wallet
         .signAndSendTransaction({
@@ -700,5 +660,37 @@ export const GigsDialog = ({
         </DialogContent>
       </Dialog>
     </>
+  );
+};
+
+const TabSelector: React.FC<TabSelectorProps> = ({
+  activeTab,
+  setActiveTab,
+}) => {
+  return (
+    <div className='border border-1 border-solid border-gray-100 rounded-full h-11'>
+      <Button
+        variant={`outline`}
+        className={cn(
+          'rounded-full border-none outline-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
+          activeTab === ActiveTab.Contract && 'bg-sorbet text-white'
+        )}
+        onClick={() => setActiveTab(ActiveTab.Chat)}
+      >
+        <span>Chat</span>
+        <IconMessage size={15} />
+      </Button>
+      <Button
+        variant={`outline`}
+        className={cn(
+          'rounded-full border-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
+          activeTab === ActiveTab.Contract && 'bg-sorbet text-white'
+        )}
+        onClick={() => setActiveTab(ActiveTab.Contract)}
+      >
+        <span>Contract</span>
+        <IconContract size={15} />
+      </Button>
+    </div>
   );
 };
