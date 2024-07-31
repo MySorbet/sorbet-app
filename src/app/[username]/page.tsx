@@ -6,7 +6,6 @@ import {
   ProjectFormValues,
   ProjectOfferDialog,
 } from '@/app/[username]/project-offer-dialog';
-import { GigsComms } from '@/app/gigs/gigs-dialog';
 import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';

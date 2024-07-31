@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function GigsPage() {
-  return <GigsContainer isClient />;
+  return <GigsContainer />;
 }
