@@ -7,9 +7,15 @@ import {
   loadMessages,
   timestampToTime,
 } from './sendbird';
+import { sendNotification } from '@/api/chat';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
-import { SBFileMessage, SBMessage } from '@/types/sendbird';
+import { ContractStatus } from '@/types';
+import {
+  NewMessageNotificationDto,
+  SBFileMessage,
+  SBMessage,
+} from '@/types/sendbird';
 import {
   GroupChannel,
   GroupChannelHandler,
@@ -23,7 +29,11 @@ interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
-  channelId?: string;
+  channelId: string;
+  contractId: string;
+  clientId: string;
+  freelanceId: string;
+  contractStatus: string;
 }
 
 export function ChatLayoutMinimal({
@@ -31,6 +41,10 @@ export function ChatLayoutMinimal({
   defaultCollapsed = false,
   navCollapsedSize,
   channelId,
+  contractId,
+  clientId,
+  freelanceId,
+  contractStatus,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isMobile, setIsMobile] = useState(false);
@@ -46,7 +60,50 @@ export function ChatLayoutMinimal({
   stateRef.current = state;
 
   const messageHandlers: MessageCollectionEventHandler = {
-    onMessagesAdded: (context: any, channel: any, messages: any) => {
+    // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
+    // only runs when a channel is successfully found between two users
+    onMessagesAdded: async (context, channel, messages) => {
+      // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
+      const senderId = user?.id;
+      const recipientId = user?.id === clientId ? freelanceId : clientId;
+      // a check to see if the recipient is offline or online
+      // connectionStatus is determined if there is an active connection to Sendbird
+      const sender = channel.members.find(
+        (member: any) => member.userId === senderId
+      );
+      // Recipient or sender being undefined would indicate that they are not users in our sendbird database,
+      // or there is an issue with their channel in sendbird. Both of which we would have to step in and fix manually in sendbird
+      if (!sender) {
+        console.error('Sender not found in channel members');
+        toast({
+          title: 'Authentication error',
+          description: 'Please contact support for assistance',
+          variant: 'destructive',
+        });
+        return;
+      }
+      const recipient = channel.members.find(
+        (member: any) => member.userId !== recipientId
+      );
+      if (!recipient) {
+        console.error('Recipient not found in channel members');
+        toast({
+          title: 'Authentication error',
+          description: 'Please contact support for assistance',
+          variant: 'destructive',
+        });
+        return;
+      }
+      if (recipient.connectionStatus === 'offline') {
+        const params: NewMessageNotificationDto = {
+          reqContractId: contractId,
+          reqChannelId: channelId,
+          reqSenderId: sender.userId,
+          reqRecipientId: recipient.userId,
+        };
+        sendNotification(params);
+      }
+      // Updating state to render messages
       messages.forEach((currentMessage: any) => {
         const messageToAdd: SBMessage = {
           userId: currentMessage.sender.userId,
@@ -112,52 +169,50 @@ export function ChatLayoutMinimal({
 
       initializeChannelEvents(channelHandlers);
 
-      if (channelId) {
-        const { messageCollection, channel } = await loadMessages(
-          channelId,
-          messageHandlers
-        );
+      const { messageCollection, channel } = await loadMessages(
+        channelId,
+        messageHandlers
+      );
 
-        const ts = Date.now();
-        const messageListParams: MessageListParams = {
-          prevResultSize: 100,
-          nextResultSize: 0,
-          isInclusive: true,
+      const ts = Date.now();
+      const messageListParams: MessageListParams = {
+        prevResultSize: 100,
+        nextResultSize: 0,
+        isInclusive: true,
+      };
+
+      const latestMessages = await channel.getMessagesByTimestamp(
+        ts,
+        messageListParams
+      );
+
+      const fetchedMessages = latestMessages.map((currentMessage: any) => {
+        const time = timestampToTime(currentMessage.createdAt);
+        const message: SBMessage = {
+          userId: currentMessage.sender.userId,
+          message: currentMessage.message,
+          nickname: currentMessage.sender.nickname,
+          avatar: currentMessage.sender.plainProfileUrl,
+          timestampData: time,
         };
-
-        const latestMessages = await channel.getMessagesByTimestamp(
-          ts,
-          messageListParams
-        );
-
-        const fetchedMessages = latestMessages.map((currentMessage: any) => {
-          const time = timestampToTime(currentMessage.createdAt);
-          const message: SBMessage = {
-            userId: currentMessage.sender.userId,
-            message: currentMessage.message,
-            nickname: currentMessage.sender.nickname,
-            avatar: currentMessage.sender.plainProfileUrl,
-            timestampData: time,
+        if (currentMessage.plainUrl) {
+          const fileData: SBFileMessage = {
+            name: currentMessage.name,
+            sendbirdUrl: currentMessage.plainUrl,
+            type: currentMessage.type,
+            size: currentMessage.size,
           };
-          if (currentMessage.plainUrl) {
-            const fileData: SBFileMessage = {
-              name: currentMessage.name,
-              sendbirdUrl: currentMessage.plainUrl,
-              type: currentMessage.type,
-              size: currentMessage.size,
-            };
-            message.fileData = fileData;
-          }
-          return message;
-        });
+          message.fileData = fileData;
+        }
+        return message;
+      });
 
-        updateState({
-          ...stateRef.current,
-          messageCollection: messageCollection,
-          currentlyJoinedChannel: channel,
-          messages: fetchedMessages,
-        });
-      }
+      updateState({
+        ...stateRef.current,
+        messageCollection: messageCollection,
+        currentlyJoinedChannel: channel,
+        messages: fetchedMessages,
+      });
     }
 
     initializeChat();
@@ -192,6 +247,7 @@ export function ChatLayoutMinimal({
       showTopbar={false}
       channel={state.currentlyJoinedChannel}
       typingMembers={state.typingMembers as Member[]}
+      contractStatus={contractStatus}
     />
   );
 }

@@ -10,7 +10,13 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { FileMessage, SendMessageParams, TextMessage } from '@/types/sendbird';
+import {
+  FileMessage,
+  SendMessageParams,
+  SupportedFileIcon,
+  SupportedFileIcons,
+  TextMessage,
+} from '@/types/sendbird';
 import { GroupChannel } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -28,6 +34,8 @@ interface ChatBottombarProps {
   sendMessage: (newMessage: SendMessageParams) => void;
   isMobile: boolean;
   channel: GroupChannel | undefined | null;
+  contractStatus: string;
+  supportedIcons: SupportedFileIcons;
 }
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
@@ -36,11 +44,14 @@ export default function ChatBottombar({
   sendMessage,
   isMobile,
   channel,
+  contractStatus,
+  supportedIcons,
 }: ChatBottombarProps) {
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const { toast } = useToast();
 
@@ -113,6 +124,15 @@ export default function ChatBottombar({
       setMessage((prev) => prev + '\n');
     }
   };
+
+  useEffect(() => {
+    if (
+      contractStatus ===
+      ('NotStarted' || 'InProgress' || 'InReview' || 'Completed' || 'Rejected')
+    )
+      setDisabled(false);
+    else setDisabled(true);
+  }, [contractStatus]);
 
   useEffect(() => {
     async function checkTypingForFiles() {
@@ -203,6 +223,9 @@ export default function ChatBottombar({
                 className='hidden'
                 ref={fileInputRef}
                 onChange={handleAddFile}
+                accept={Object.keys(supportedIcons)
+                  .map((type: string) => '.' + type)
+                  .join(',')}
               />
               <FileImage
                 size={20}
@@ -261,6 +284,7 @@ export default function ChatBottombar({
                 </div>
               ) : (
                 <Textarea
+                  disabled={disabled}
                   autoComplete='off'
                   value={message}
                   ref={inputRef}
