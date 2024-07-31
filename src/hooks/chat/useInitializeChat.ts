@@ -36,7 +36,7 @@ export const useInitializeChat = ({
 }: useInitializeChatProps) => {
   const { toast } = useToast();
   const [state, updateState] = useState<ChatState>({
-    currentlyJoinedChannel: null,
+    channel: null,
     messages: [],
     typingMembers: [],
     messageCollection: null,
@@ -74,6 +74,7 @@ export const useInitializeChat = ({
       const recipient = channel.members.find(
         (member: any) => member.userId !== recipientId
       );
+      console.log('recipient', recipient);
       if (!recipient) {
         console.error('Recipient not found in channel members');
         toast({
@@ -197,7 +198,7 @@ export const useInitializeChat = ({
       updateState({
         ...stateRef.current,
         messageCollection: messageCollection,
-        currentlyJoinedChannel: channel,
+        channel: channel,
         messages: fetchedMessages,
       });
     }
@@ -211,5 +212,5 @@ export const useInitializeChat = ({
     };
   }, [user, contractData.channelId]);
 
-  return [state, updateState];
+  return [state, updateState] as [ChatState, typeof updateState];
 };

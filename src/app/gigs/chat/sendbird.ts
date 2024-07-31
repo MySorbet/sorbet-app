@@ -34,7 +34,7 @@ const initializeConnection = async (userId: string) => {
 
 /**
   Terminates the connection of the current user to Sendbird servers
-*/
+ */
 const removeConnection = async () => {
   try {
     await sb.disconnect();

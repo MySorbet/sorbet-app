@@ -1,5 +1,6 @@
 import type {
   GroupChannel,
+  Member,
   MessageCollection,
 } from '@sendbird/chat/groupChannel';
 
@@ -56,8 +57,8 @@ export interface SupportedFileIcons {
 export type SupportedFileIcon = keyof SupportedFileIcons;
 
 export interface ChatState {
-  currentlyJoinedChannel: GroupChannel | null;
+  channel: GroupChannel | null;
   messages: SBMessage[];
-  typingMembers: string[];
+  typingMembers: Member[];
   messageCollection: MessageCollection | null;
 }

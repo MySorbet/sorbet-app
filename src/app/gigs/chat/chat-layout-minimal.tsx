@@ -5,6 +5,7 @@ import {
   initializeChannelEvents,
   initializeConnection,
   loadMessages,
+  sb,
   timestampToTime,
 } from './sendbird';
 import { sendNotification } from '@/api/chat';
@@ -219,6 +220,7 @@ export function ChatLayoutMinimal({
 
     return () => {
       if (timeoutId) return clearTimeout(timeoutId);
+      // return async () => await sb.disconnect();
     };
   }, [channelId, user]);
 
