@@ -7,6 +7,7 @@ import {
   updateOfferStatus,
 } from '@/api/gigs';
 import { ChatLayoutMinimal } from '@/app/gigs/chat';
+import { removeConnection } from '@/app/gigs/chat/sendbird';
 import {
   ContractFormContainer,
   ContractFormFixedPriceData,
@@ -105,6 +106,18 @@ export const GigsDialog = ({
     isOpen,
     activeTab,
   });
+
+  // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
+  // properly being updated when a user closes out of the chat
+  useEffect(() => {
+    async function disconnectSendbird() {
+      await removeConnection();
+    }
+
+    if (!isOpen) {
+      disconnectSendbird();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isGetContractError) {
@@ -652,6 +665,10 @@ export const GigsDialog = ({
                   channelId={contractData?.channelId}
                   defaultLayout={undefined}
                   navCollapsedSize={8}
+                  contractId={contractData?.id}
+                  clientId={contractData?.clientId}
+                  freelanceId={contractData?.freelanceId}
+                  contractStatus={contractData?.status}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}
