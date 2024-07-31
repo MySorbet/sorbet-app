@@ -11,11 +11,7 @@ import { GigsContentType } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
-export interface GigsContainerProps {
-  isClient?: boolean;
-}
-
-export const GigsContainer = ({ isClient = false }) => {
+export const GigsContainer = () => {
   const { user: loggedInUser } = useAuth();
   const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
   const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
