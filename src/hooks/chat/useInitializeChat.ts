@@ -50,6 +50,7 @@ export const useInitializeChat = ({
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
+      await channel.refresh()
       const senderId = user?.id;
       const recipientId =
         user?.id === contractData.clientId
@@ -72,9 +73,8 @@ export const useInitializeChat = ({
         return;
       }
       const recipient = channel.members.find(
-        (member: any) => member.userId !== recipientId
+        (member: any) => member.userId === recipientId
       );
-      console.log('recipient', recipient);
       if (!recipient) {
         console.error('Recipient not found in channel members');
         toast({
@@ -84,6 +84,9 @@ export const useInitializeChat = ({
         });
         return;
       }
+      console.log('recipient', recipient.nickname, recipient.connectionStatus);
+
+      console.log('sender', sender.nickname, sender.connectionStatus);
       if (recipient.connectionStatus === 'offline') {
         const params: NewMessageNotificationDto = {
           reqContractId: contractData.id,
@@ -210,7 +213,7 @@ export const useInitializeChat = ({
         return clearTimeout(timeoutId);
       }
     };
-  }, [user, contractData.channelId]);
+  }, [user, contractData]);
 
   return [state, updateState] as [ChatState, typeof updateState];
 };

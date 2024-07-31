@@ -53,6 +53,8 @@ const initializeChannelEvents = (channelHandler: any) => {
   sb.groupChannel.addGroupChannelHandler(key, channelHandler);
 };
 
+const fetchOnlineStatus = async (channel: GroupChannel, userId: string) => {}
+
 /**
   Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
 */
