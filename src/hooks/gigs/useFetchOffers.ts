@@ -28,8 +28,6 @@ export const useFetchOffers = (
             break;
         }
 
-        console.log(response);
-
         if (response.statusText === 'OK') {
           return response.data;
         } else {
