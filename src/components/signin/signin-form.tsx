@@ -14,7 +14,6 @@ import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
-import { useRegisterWithEmail } from '@/hooks/auth/useRegisterWithEmail';
 import { config } from '@/lib/config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
@@ -110,7 +109,6 @@ const SignInForm = () => {
 
   const { isPending: loginLoading, mutateAsync: loginWithEmail } =
     useLoginWithEmail();
-  const { mutateAsync: registerWithEmail } = useRegisterWithEmail();
   const { loading: firebaseUserLoading, user: firebaseUser } =
     useFirebaseUser();
   const [inFlight, setInFlight] = useState(false);
@@ -120,26 +118,6 @@ const SignInForm = () => {
     mutateAsync: getUserByAccountId,
   } = useGetUserByAccountId();
 
-  const handleSignOut = async () => {
-    try {
-      const wallet = await selector.wallet();
-      await wallet.signOut();
-    } catch (err) {
-      console.log('Failed to sign out');
-      console.error(err);
-    }
-  };
-  // const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user && accessToken) {
-      router.push('/');
-    }
-  }, [user, router]);
-
-  // const onSubmit = handleSubmit(async (data) => {
-  //   loginWithEmail(data.email);
-  // });
   const handleAuthCallback = useCallback(async () => {
     setInFlight(true);
     const success_url = config.loginSuccessUrl;
@@ -168,6 +146,7 @@ const SignInForm = () => {
       (key: any) => key !== publicKeyFak
     )[0];
 
+    // @ts-ignore
     const oidcToken = firebaseUser?.accessToken;
     const recoveryPk =
       oidcToken &&
@@ -220,6 +199,7 @@ const SignInForm = () => {
       .then((res) => res && res.json())
       .then((res) => {
         const failure = res['Receipts Outcome'].find(
+          // @ts-ignore
           ({ outcome: { status } }) =>
             Object.keys(status).some((k) => k === 'Failure')
         )?.outcome?.status?.Failure;
@@ -231,22 +211,26 @@ const SignInForm = () => {
 
         // Add device
         window.firestoreController.updateUser({
+          // @ts-ignore
           userUid: firebaseUser.uid,
           // User type is missing accessToken but it exists
           oidcToken,
         });
 
         // Since FAK is already added, we only add LAK
-        return window.firestoreController
-          .addDeviceCollection({
-            fakPublicKey: null,
-            lakPublicKey: public_key,
-            gateway: success_url,
-          })
-          .catch((err) => {
-            console.log('Failed to add device collection', err);
-            throw new Error('Failed to add device collection');
-          });
+        return (
+          window.firestoreController
+            .addDeviceCollection({
+              fakPublicKey: null,
+              lakPublicKey: public_key,
+              gateway: success_url,
+            })
+            // @ts-ignore
+            .catch((err) => {
+              console.log('Failed to add device collection', err);
+              throw new Error('Failed to add device collection');
+            })
+        );
       })
       .then((failure) => {
         if (failure?.ActionError?.kind?.LackBalanceForState) {
@@ -302,6 +286,7 @@ const SignInForm = () => {
       })
       .finally(() => setInFlight(false));
   }, [firebaseUser]);
+
   const addDevice = useCallback(async (data: any) => {
     setInFlight(true);
 
@@ -373,10 +358,13 @@ const SignInForm = () => {
         const firebaseAuthInvalid =
           authenticated === true &&
           !isPasskeySupported &&
+          // @ts-ignore
           firebaseUser?.email !== data.email;
         const shouldUseCurrentUser =
           authenticated === true && !firebaseAuthInvalid && isFirestoreReady;
         if (shouldUseCurrentUser) {
+          await loginWithEmail(data.email);
+          alert('successfully logged in, now redirecting');
           await handleAuthCallback();
           return;
         }
@@ -398,65 +386,33 @@ const SignInForm = () => {
   });
 
   useEffect(() => {
-    const handleWalletLogin = async () => {
+    const handleRedirectLogin = async () => {
       const urlHash = window.location.href;
       if (urlHash) {
         const params = new URLSearchParams(urlHash.split('?')[1]);
         const accountId = params.get('account_id');
         const publicKey = params.get('public_key');
-        const cleanedAccountId = accountId?.replace(
-          /\.testnet$|\.mainnet$/,
-          ''
-        );
 
         if (accountId && publicKey) {
-          router?.push(`/${cleanedAccountId}`);
-        }
-      }
-    };
-
-    handleWalletLogin();
-  }, [router]);
-
-  useEffect(() => {
-    const checkNearConnection = async () => {
-      console.log({ accounts, accountId });
-      if (accounts.length > 0) {
-        const activeAccount = accountId;
-        setActiveNearAccount(activeAccount);
-
-        if (activeAccount) {
-          const response = await getUserByAccountId(activeAccount);
-          if (response && response.data === 'failed') {
-            setAccountNotFound(true);
-            await handleSignOut();
-          }
-        }
-      }
-    };
-
-    checkNearConnection();
-  }, [selector, accountId]);
-
-  useEffect(() => {
-    const handleWalletLogin = async () => {
-      const urlHash = window.location.hash;
-      if (urlHash) {
-        const params = new URLSearchParams(urlHash.substring(1));
-        const accountId = params.get('accountId');
-        const signature = params.get('signature');
-        const publicKey = params.get('publicKey');
-
-        if (accountId && signature && publicKey) {
-          const response = await loginWithWallet(accountId);
-          if (response.status === 'success') {
-            setLoading(false);
-            router?.push('/');
+          setLoading(true);
+          const email = localStorage.getItem('emailForSignIn');
+          if (email) {
+            setLoading(true);
+            const response = await loginWithEmail(email);
+            if (response.status === 'success') {
+              router?.push('/');
+            } else {
+              toast({
+                title: 'Failed to login',
+                description: response.message,
+                variant: 'destructive',
+              });
+            }
           } else {
             toast({
-              title: 'Failed to login',
-              description: response.message,
-              variant: 'destructive',
+              title: 'Error logging in',
+              description:
+                'There was a problem receiving your email address from NEAR. Please try again',
             });
             setLoading(false);
           }
@@ -464,8 +420,63 @@ const SignInForm = () => {
       }
     };
 
-    handleWalletLogin();
+    handleRedirectLogin();
   }, [router]);
+
+  useEffect(() => {
+    if (user && accessToken) {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  // useEffect(() => {
+  //   const checkNearConnection = async () => {
+  //     console.log({ accounts, accountId });
+  //     if (accounts.length > 0) {
+  //       const activeAccount = accountId;
+  //       setActiveNearAccount(activeAccount);
+
+  //       if (activeAccount) {
+  //         const response = await getUserByAccountId(activeAccount);
+  //         if (response && response.data === 'failed') {
+  //           setAccountNotFound(true);
+  //           await handleSignOut();
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   checkNearConnection();
+  // }, [selector, accountId]);
+
+  // useEffect(() => {
+  //   const handleWalletLogin = async () => {
+  //     const urlHash = window.location.hash;
+  //     if (urlHash) {
+  //       const params = new URLSearchParams(urlHash.substring(1));
+  //       const accountId = params.get('accountId');
+  //       const signature = params.get('signature');
+  //       const publicKey = params.get('publicKey');
+
+  //       if (accountId && signature && publicKey) {
+  //         const response = await loginWithWallet(accountId);
+  //         if (response.status === 'success') {
+  //           setLoading(false);
+  //           router?.push('/');
+  //         } else {
+  //           toast({
+  //             title: 'Failed to login',
+  //             description: response.message,
+  //             variant: 'destructive',
+  //           });
+  //           setLoading(false);
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   handleWalletLogin();
+  // }, [router]);
 
   const handleWalletLogin = async (
     event: React.MouseEvent<HTMLButtonElement>
@@ -496,10 +507,6 @@ const SignInForm = () => {
         }
       }
     }
-  };
-
-  const handleSignUpClick = async () => {
-    await registerWithEmail('');
   };
 
   return (

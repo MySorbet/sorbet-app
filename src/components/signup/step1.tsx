@@ -31,12 +31,14 @@ const Step1 = () => {
     lastName: z.string().min(1, { message: 'Last name is required' }),
   });
 
-  const handleNext = () => {
+  const handleNext = (data: { firstName: string; lastName: string }) => {
     setUserData((user) => ({
       ...user,
       location,
       image,
       file,
+      firstName: data.firstName,
+      lastName: data.lastName,
     }));
     setStep(2);
   };

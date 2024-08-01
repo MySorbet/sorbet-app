@@ -91,17 +91,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     email: string
   ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
     try {
-      console.log('initiating fast auth login', config.contractId, email);
-      await selector.wallet('fast-auth-wallet').then((fastAuthWallet: any) => {
-        fastAuthWallet.signIn({
-          contractId: config.contractId,
-          email: email,
-          isRecovery: true,
-          successUrl: config.loginSuccessUrl,
-          failureUrl: config.loginFailureUrl,
-        });
-      });
-
       const response = await signInAsync({ email });
       if (response) {
         const user = response.data.user;

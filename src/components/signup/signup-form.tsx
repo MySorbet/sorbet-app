@@ -79,8 +79,6 @@ const checkIsAccountAvailable = async (
 };
 
 const schema = z.object({
-  firstName: z.string().min(1, { message: 'First name is required' }),
-  lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Invalid email format' }),
   accountId: z
     .string()
@@ -91,7 +89,6 @@ const schema = z.object({
     )
     .refine(
       async (accountId) => {
-        console.log('asdfasdfasdf');
         const isAvailable = await checkIsAccountAvailable(accountId);
         return isAvailable;
       },
@@ -112,8 +109,6 @@ const SignUpForm = () => {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
       email: '',
       accountId: '',
     },
@@ -173,14 +168,6 @@ const SignUpForm = () => {
           methodNames: methodNames || '',
         };
 
-        await signUpAsync({
-          firstName: 'Sorbet',
-          lastName: 'User',
-          email: data.email,
-          accountId: fullAccountId,
-        });
-
-        await loginWithEmail(data.email);
         setStep(1);
 
         const newSearchParams = new URLSearchParams(
@@ -229,15 +216,21 @@ const SignUpForm = () => {
     []
   );
 
-  const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
-    setUserData((user) => ({ ...user, ...values }));
+  const handleAccountCreate = async (data: {
+    email: string;
+    accountId: string;
+    firstName: string;
+    lastName: string;
+  }) => {
+    const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
     await signUpAsync({
-      ...values,
+      ...data,
+      accountId: data.accountId + suffix,
     });
-    await loginWithEmail(values.email);
-
+    await loginWithEmail(data.email);
+    await createAccount({ email: data.email, username: data.accountId });
     setStep(1);
-  });
+  };
 
   useEffect(() => {
     const storedData = localStorage.getItem('signupForm');
@@ -312,7 +305,7 @@ const SignUpForm = () => {
     <FormContainer>
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(createAccount)}>
+        <form>
           <div className='flex flex-col gap-4 p-2 min-h-[310px]'>
             <FormField
               control={form.control}
@@ -387,7 +380,12 @@ const SignUpForm = () => {
           <Button
             type='button'
             onClick={() => {
-              createAccount({ email: formsEmail, username: formsUsername });
+              handleAccountCreate({
+                email: formsEmail,
+                accountId: formsUsername,
+                firstName: 'John',
+                lastName: 'Doe',
+              });
             }}
             disabled={errors.accountId != null || !formsEmail}
             className={'w-full bg-[#573DF5] border-[#7F56D9]'}
