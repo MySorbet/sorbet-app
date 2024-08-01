@@ -28,6 +28,7 @@ const initializeConnection = async (userId: string) => {
     const user = await sb.connect(userId);
     return user;
   } catch (error: any) {
+    console.error(`Failed to connect to Sendbird: ${error}`);
     throw new Error('Failed to connect to Sendbird');
   }
 };
@@ -53,8 +54,6 @@ const initializeChannelEvents = (channelHandler: any) => {
   sb.groupChannel.addGroupChannelHandler(key, channelHandler);
 };
 
-const fetchOnlineStatus = async (channel: GroupChannel, userId: string) => {}
-
 /**
   Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
 */
@@ -66,7 +65,7 @@ const loadMessages = async (channelId: string, messageHandlers: any) => {
   const messageCollection = channel.createMessageCollection({
     filter: messageFilter,
     startingPoint: Date.now(),
-    limit: 100,
+    limit: 30,
   });
   messageCollection.setMessageCollectionHandler(messageHandlers);
 
