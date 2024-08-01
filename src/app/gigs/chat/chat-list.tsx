@@ -63,6 +63,9 @@ export function ChatList({
               const { year, month, day, hour, minute, second } =
                 message.timestampData!;
 
+              /**
+               * Renders the time 
+               */  
               const chatTime = createChatTimestamp({
                 year,
                 month,
@@ -72,13 +75,19 @@ export function ChatList({
                 second,
               });
 
-              const messageTime = convertMilitaryToRegular(hour, minute)
+              const messageTime = convertMilitaryToRegular(hour, minute);
 
+              /**
+               * Checks if the previous message was sent by the current user or the other user
+               */
               let isPreviousMessageSameUser: boolean | undefined;
               if (index > 0) {
                 isPreviousMessageSameUser =
                   messages[index - 1].userId !== message.userId;
               }
+              /**
+               * Shows the time between the current message and the previous message if the time difference is greater than an hour
+               */
               const isTimeDifferenceGreaterThanHour =
                 getTimeDifferenceInMinutes(
                   `${message?.timestampData?.hour}:${message?.timestampData?.minute}`,
