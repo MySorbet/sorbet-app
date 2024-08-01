@@ -64,8 +64,8 @@ export function ChatList({
                 message.timestampData!;
 
               /**
-               * Renders the time 
-               */  
+               * Renders the time (it's centered horizontally) in between messages when there is a large time gap between messages
+               */
               const chatTime = createChatTimestamp({
                 year,
                 month,
@@ -75,6 +75,9 @@ export function ChatList({
                 second,
               });
 
+              /**
+               * Renders time specific to when each message was sent
+               */
               const messageTime = convertMilitaryToRegular(hour, minute);
 
               /**
