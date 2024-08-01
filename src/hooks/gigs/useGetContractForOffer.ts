@@ -1,7 +1,7 @@
 import { getContractForOffer } from '@/api/gigs';
-import { ActiveTab } from '@/app/gigs/gigs-comms';
+import { ActiveTab } from '@/app/gigs/gigs-dialog';
 import { useToast } from '@/components/ui/use-toast';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 type useGetContractForOfferParams = {
   currentOfferId: string;
@@ -9,11 +9,16 @@ type useGetContractForOfferParams = {
   activeTab: ActiveTab;
 };
 
+/**
+  Fetches contract data for a given offer, wrapping API call with react-query
+  @params data - object containing currentOfferId, isOpen, and activeTab
+  @returns data of ContractType or null
+*/
 export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   const { currentOfferId, isOpen, activeTab } = data;
   const { toast } = useToast();
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ['contractForOffer', currentOfferId],
     queryFn: async () => {
       console.log('getContractOffer');
@@ -31,4 +36,6 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
     },
     enabled: isOpen && activeTab === 0,
   });
+
+  return query;
 };

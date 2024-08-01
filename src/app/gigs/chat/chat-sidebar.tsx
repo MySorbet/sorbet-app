@@ -1,6 +1,5 @@
 'use client';
 
-import { Message } from './data';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -13,11 +12,14 @@ import { cn } from '@/lib/utils';
 import { MoreHorizontal, SquarePen } from 'lucide-react';
 import Link from 'next/link';
 
+/**
+  TODO: Make sure to define the type of the messages prop
+*/
 interface ChatSidebarProps {
   isCollapsed: boolean;
   links: {
     name: string;
-    messages: Message[];
+    messages: any[];
     avatar: string;
     variant: 'grey' | 'ghost';
   }[];

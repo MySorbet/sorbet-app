@@ -25,7 +25,6 @@ export interface GetPhotoWidget extends GetItemTypeBase {}
 export interface GetGithubWidget extends GetItemTypeBase {}
 
 export interface GetTwitterWidget extends GetItemTypeBase {}
-
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -110,27 +109,48 @@ export interface SoundcloudTrackContentType {
   artist: string;
 }
 
+/** This should match sorbet-api LinkMetadata */
+export interface LinkWidgetContentType {
+  title: string;
+  description?: string;
+  iconUrl?: string;
+  heroImageUrl?: string;
+}
+
+/** This should match sorbet-api LinkedInProfileData */
+export interface LinkedInProfileWidgetContentType {
+  name: string;
+  bio: string;
+  bannerImage: string;
+  profileImage: string;
+}
+
 export enum WidgetType {
-  Default = 'Default',
-  Nfts = 'Nfts',
+  // Explicitly Supported
   Photo = 'Photo',
-  PhotoGallery = 'PhotoGallery',
-  Youtube = 'Youtube',
-  YoutubePlaylist = 'YoutubePlaylist',
+  Substack = 'Substack',
   SpotifySong = 'SpotifySong',
   SpotifyAlbum = 'SpotifyAlbum',
   SoundcloudSong = 'SoundcloudSong',
-  Github = 'Github',
   InstagramPost = 'InstagramPost',
   InstagramProfile = 'InstagramProfile',
   TwitterProfile = 'TwitterProfile',
-  Twitter = 'Twitter',
+  LinkedInProfile = 'LinkedInProfile',
+  Link = 'Link',
+
+  // Supported via type catchall
+  Youtube = 'Youtube',
+  Github = 'Github',
   Dribbble = 'Dribbble',
   Behance = 'Behance',
-  Text = 'Text',
   Medium = 'Medium',
-  Substack = 'Substack',
   Figma = 'Figma',
+
+  // Not yet supported
+  Twitter = 'Twitter',
+  Nfts = 'Nfts',
+  PhotoGallery = 'PhotoGallery',
+  Text = 'Text',
 }
 
 export enum WidgetSize {

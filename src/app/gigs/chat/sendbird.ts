@@ -5,10 +5,10 @@ import SendbirdChat, {
   SendbirdChatWith,
 } from '@sendbird/chat';
 import {
-  GroupChannelModule,
-  MessageFilter,
-  MessageCollectionInitPolicy,
   GroupChannel,
+  GroupChannelModule,
+  MessageCollectionInitPolicy,
+  MessageFilter,
 } from '@sendbird/chat/groupChannel';
 
 // Initialize the SendbirdChat module
@@ -20,25 +20,42 @@ const params: SendbirdChatParams<[GroupChannelModule]> = {
 
 const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 
-// Call when user clicks on a gig and renders chat component
+/**
+  Connects the current user to Sendbird servers
+*/
 const initializeConnection = async (userId: string) => {
   try {
     const user = await sb.connect(userId);
     return user;
-  } catch (error: any) {
-    throw new Error('Failed to connect to Sendbird');
+  } catch (error) {
+    console.log(`Unable to connect with Sendbird: ${JSON.stringify(error)}`);
   }
 };
 
-// Specifically for onTypingStatusUpdated event. Event is not accessible in MessageCollection like onMessagesAdded is.
-// Only accessible through a GroupChannelHandler
+/**
+  Terminates the connection of the current user to Sendbird servers
+*/
+const removeConnection = async () => {
+  try {
+    await sb.disconnect();
+  } catch (error: any) {
+    console.error(`Failed to disconnect from Sendbird: ${error}`);
+  }
+};
+
+/**
+  Creates a channel handler to handle specific events for a channel.
+
+  Currently only using for onTypingStatusUpdated event because it is not accessible in MessageCollection.
+*/
 const initializeChannelEvents = (channelHandler: any) => {
   const key = 'test';
   sb.groupChannel.addGroupChannelHandler(key, channelHandler);
 };
 
-// Calls to Sendbird and fetches last 100 messages for a specific channel
-// messageCollection currently unused, but may be needed later so I left it in just in case
+/**
+  Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
+*/
 const loadMessages = async (channelId: string, messageHandlers: any) => {
   const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
 
@@ -58,6 +75,9 @@ const loadMessages = async (channelId: string, messageHandlers: any) => {
   return { messageCollection, channel };
 };
 
+/**
+  Converts milliseconds to a formatted date and time object for easier display.
+*/
 const timestampToTime = (timestamp: number) => {
   // Convert milliseconds to a Date object
   const date = new Date(timestamp);
@@ -82,6 +102,11 @@ const timestampToTime = (timestamp: number) => {
   return timeObject;
 };
 
+/**
+  Converts military time to regular time with AM/PM suffix.
+  @params hour - The hour in military time, minutes - The minutes in military time
+  @returns string in regular time with AM/PM suffix
+*/
 const convertMilitaryToRegular = (
   hour: string | undefined,
   minute: string | undefined
@@ -106,6 +131,9 @@ const convertMilitaryToRegular = (
   return `${newHour}:${minute}${suffix}`;
 };
 
+/**
+  Formats bytes to a human readable format.
+*/
 const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
 
@@ -139,4 +167,5 @@ export {
   initializeChannelEvents,
   formatBytes,
   getTimeDifferenceInMinutes,
+  removeConnection,
 };
