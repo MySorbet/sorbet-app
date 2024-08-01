@@ -1,7 +1,5 @@
 'use client';
 
-import { removeConnection } from './chat/sendbird';
-import { ChatLayoutMinimal } from '@/app/gigs/chat';
 import { Chat } from '@/app/gigs/chat/chat';
 import {
   ContractContainer,
@@ -22,7 +20,7 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { useGetContractForOffer } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { ContractStatus, MilestoneType, OfferType } from '@/types';
+import { MilestoneType, OfferType } from '@/types';
 import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
@@ -109,16 +107,12 @@ export const GigsComms = ({
     activeTab,
   });
 
-
-
-  useEffect(() => {
-    if (isGetContractError) {
-      toast({
-        title: 'Unable to fetch contract information',
-        description: 'If the problem persists, please contract support',
-      });
-    }
-  }, [isGetContractError]);
+  if (isGetContractError) {
+    toast({
+      title: 'Unable to fetch contract information',
+      description: 'If the problem persists, please contract support',
+    });
+  }
 
   const renderContractView = () => {
     if (isClient) {
@@ -174,7 +168,10 @@ export const GigsComms = ({
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogOverlay className='bg-[#F3F3F4]/90' />
-        <DialogContent className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'>
+        <DialogContent
+          aria-describedby={undefined}
+          className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'
+        >
           <div className='flex justify-between px-4 py-2 h-14'>
             <DialogTitle className='text-2xl'>
               {activeTab === ActiveTab.Chat
@@ -192,7 +189,11 @@ export const GigsComms = ({
           ) : (
             <>
               {activeTab === ActiveTab.Chat && (
-                <Chat showTopbar={false} contractData={contractData} isOpen={isOpen}/>
+                <Chat
+                  showTopbar={false}
+                  contractData={contractData}
+                  isOpen={isOpen}
+                />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}
             </>
