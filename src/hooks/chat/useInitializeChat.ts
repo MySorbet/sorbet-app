@@ -49,20 +49,17 @@ export const useInitializeChat = ({
     // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
+      // Need to refresh because the channel object is not updated with the new messages
+      await channel.refresh();
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
-      await channel.refresh()
       const senderId = user?.id;
       const recipientId =
         user?.id === contractData.clientId
           ? contractData.freelanceId
           : contractData.clientId;
-      // a check to see if the recipient is offline or online
-      // connectionStatus is determined if there is an active connection to Sendbird
       const sender = channel.members.find(
         (member: any) => member.userId === senderId
       );
-      // Recipient or sender being undefined would indicate that they are not users in our sendbird database,
-      // or there is an issue with their channel in sendbird. Both of which we would have to step in and fix manually in sendbird
       if (!sender) {
         console.error('Sender not found in channel members');
         toast({
@@ -84,9 +81,6 @@ export const useInitializeChat = ({
         });
         return;
       }
-      console.log('recipient', recipient.nickname, recipient.connectionStatus);
-
-      console.log('sender', sender.nickname, sender.connectionStatus);
       if (recipient.connectionStatus === 'offline') {
         const params: NewMessageNotificationDto = {
           reqContractId: contractData.id,
