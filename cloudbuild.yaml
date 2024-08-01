@@ -1,0 +1,9 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    script: |
+      docker build -t us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production:<yyyy-mm-dd-hh-mm> .
+    automapSubstitutions: true
+images:
+  - 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production:<yyyy-mm-dd-hh-mm>'
+options:
+  logging: CLOUD_LOGGING_ONLY
