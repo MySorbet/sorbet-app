@@ -133,46 +133,76 @@ const convertMilitaryToRegular = (
 };
 
 const createChatTimestamp = ({
-  year, month, day, hour, minute, second
+  year,
+  month,
+  day,
+  hour,
+  minute,
+  second,
 }: SBMessageTimeDto) => {
+  // Parse the components to integers
+  const dayInt = parseInt(day, 10);
+  const hourInt = parseInt(hour, 10);
+  const minuteInt = parseInt(minute, 10);
+  const monthInt = parseInt(month, 10) - 1; // JavaScript months are 0-indexed
+  const secondInt = parseInt(second, 10);
+  const yearInt = parseInt(year, 10);
+
   // Create a Date object from the provided components
   const date = new Date(
-    parseInt(year, 10),
-    parseInt(month, 10) - 1, // JavaScript months are 0-indexed
-    parseInt(day, 10),
-    parseInt(hour, 10),
-    parseInt(minute, 10),
-    parseInt(second, 10)
+    yearInt,
+    monthInt,
+    dayInt,
+    hourInt,
+    minuteInt,
+    secondInt
   );
 
   // Get current date
   const now = new Date();
 
-  // Check if the date is today
-  const isToday =
-    date.getDate() === now.getDate() &&
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear();
+  // Helper function to check if two dates are the same day
+  const isSameDay = (d1: Date, d2: Date): boolean =>
+    d1.getDate() === d2.getDate() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getFullYear() === d2.getFullYear();
 
   // Format the time
   let hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12 || 12; // Convert to 12-hour format, 0 should be 12
-
   const formattedTime = `${hours}:${minutes} ${ampm}`;
 
-  // Return the formatted string
-  if (isToday) {
+  // Check if the date is today
+  if (isSameDay(date, now)) {
     return `Today ${formattedTime}`;
-  } else {
-    const formattedDate = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-    return `${formattedDate} ${formattedTime}`;
   }
+
+  // Check if the date is yesterday
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (isSameDay(date, yesterday)) {
+    return `Yesterday ${formattedTime}`;
+  }
+
+  // Check if the date is within the current week
+  const dayDifference = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  if (dayDifference < 7) {
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return `${daysOfWeek[date.getDay()]} ${formattedTime}`;
+  }
+
+  // If not today, yesterday, or within this week, return the full date
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  return `${formattedDate} ${formattedTime}`;
 };
 
 /**
