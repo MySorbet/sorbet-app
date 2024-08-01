@@ -3,26 +3,26 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
-export interface ContractFixedPriceData {
+export interface ContractFormFixedPriceData {
   projectName: string;
   totalAmount: number;
 }
 
-export interface ContractFixedPriceProps {
-  onFormSubmit: (data: ContractFixedPriceData) => void;
+export interface ContractFormFixedPriceProps {
+  onFormSubmit: (data: ContractFormFixedPriceData) => void;
   projectName?: string;
 }
 
-export const ContractFixedPrice = ({
+export const ContractFormFixedPrice = ({
   onFormSubmit,
   projectName,
-}: ContractFixedPriceProps) => {
+}: ContractFormFixedPriceProps) => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -32,7 +32,7 @@ export const ContractFixedPrice = ({
   });
 
   const onSubmit = (data: any) => {
-    const formattedData: ContractFixedPriceData = {
+    const formattedData: ContractFormFixedPriceData = {
       projectName: data.projectName,
       totalAmount: parseFloat(data.totalAmount),
     };
