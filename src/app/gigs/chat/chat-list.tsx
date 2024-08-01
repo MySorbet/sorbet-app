@@ -1,19 +1,18 @@
 import { FileDisplay } from './chat-file-display';
 import {
   convertMilitaryToRegular,
-  formatBytes,
+  createChatTimestamp,
   getTimeDifferenceInMinutes,
 } from './sendbird';
 import { TypingIndicator } from './typing-indicator';
 import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { ContractStatus, User } from '@/types';
+import { User } from '@/types';
 import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
-import { Member } from '@sendbird/chat/groupChannel';
+import type { Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MessageSquareWarning } from 'lucide-react';
-import React, { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface ChatListProps {
   messages?: SBMessage[];
@@ -32,7 +31,7 @@ export function ChatList({
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
@@ -61,10 +60,32 @@ export function ChatList({
         >
           <AnimatePresence>
             {messages?.map((message, index) => {
-              const time = convertMilitaryToRegular(
-                message?.timestampData?.hour,
-                message?.timestampData?.minute
-              );
+              const { year, month, day, hour, minute, second } =
+                message.timestampData!;
+
+              const chatTime = createChatTimestamp({
+                year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+              });
+
+              const messageTime = convertMilitaryToRegular(hour, minute)
+
+              let isPreviousMessageSameUser: boolean | undefined;
+              if (index > 0) {
+                isPreviousMessageSameUser =
+                  messages[index - 1].userId !== message.userId;
+              }
+              const isTimeDifferenceGreaterThanHour =
+                getTimeDifferenceInMinutes(
+                  `${message?.timestampData?.hour}:${message?.timestampData?.minute}`,
+                  `${messages[index - 1]?.timestampData?.hour}:${
+                    messages[index - 1]?.timestampData?.minute
+                  }`
+                ) > 60;
               return (
                 <motion.div
                   key={index}
@@ -94,28 +115,21 @@ export function ChatList({
                       <MessageAvatar
                         avatar={message?.avatar}
                         nickname={message?.nickname}
-                        time={time}
+                        time={messageTime}
                       />
                     )}
-                    {index > 0 &&
-                      getTimeDifferenceInMinutes(
-                        `${message?.timestampData?.hour}:${message?.timestampData?.minute}`,
-                        `${messages[index - 1]?.timestampData?.hour}:${
-                          messages[index - 1]?.timestampData?.minute
-                        }`
-                      ) > 60 && (
-                        <div className='flex w-full justify-center text-gray-500'>
-                          {time}
-                        </div>
-                      )}
-                    {index > 0 &&
-                      messages[index - 1].userId !== message.userId && (
-                        <MessageAvatar
-                          avatar={message?.avatar}
-                          nickname={message?.nickname}
-                          time={time}
-                        />
-                      )}
+                    {index > 0 && isTimeDifferenceGreaterThanHour && (
+                      <div className='flex w-full justify-center text-gray-500 mt-4'>
+                        {chatTime}
+                      </div>
+                    )}
+                    {index > 0 && isPreviousMessageSameUser && (
+                      <MessageAvatar
+                        avatar={message?.avatar}
+                        nickname={message?.nickname}
+                        time={messageTime}
+                      />
+                    )}
                   </div>
                   {!message.fileData?.sendbirdUrl ? (
                     <span

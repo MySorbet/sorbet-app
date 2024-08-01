@@ -129,7 +129,50 @@ const convertMilitaryToRegular = (
     suffix = 'AM';
   }
 
-  return `${newHour}:${minute}${suffix}`;
+  return `${newHour}:${minute} ${suffix}`;
+};
+
+const createChatTimestamp = ({
+  year, month, day, hour, minute, second
+}: SBMessageTimeDto) => {
+  // Create a Date object from the provided components
+  const date = new Date(
+    parseInt(year, 10),
+    parseInt(month, 10) - 1, // JavaScript months are 0-indexed
+    parseInt(day, 10),
+    parseInt(hour, 10),
+    parseInt(minute, 10),
+    parseInt(second, 10)
+  );
+
+  // Get current date
+  const now = new Date();
+
+  // Check if the date is today
+  const isToday =
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear();
+
+  // Format the time
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert to 12-hour format, 0 should be 12
+
+  const formattedTime = `${hours}:${minutes} ${ampm}`;
+
+  // Return the formatted string
+  if (isToday) {
+    return `Today ${formattedTime}`;
+  } else {
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+    return `${formattedDate} ${formattedTime}`;
+  }
 };
 
 /**
@@ -161,6 +204,7 @@ const getTimeDifferenceInMinutes = (time1: string, time2: string) => {
 
 export {
   sb,
+  createChatTimestamp,
   loadMessages,
   initializeConnection,
   timestampToTime,
