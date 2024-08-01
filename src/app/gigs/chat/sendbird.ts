@@ -132,6 +132,11 @@ const convertMilitaryToRegular = (
   return `${newHour}:${minute} ${suffix}`;
 };
 
+/**
+ * Creates a chat timestamp for when time between messages is long
+ * @param param timeData: SBMessageTimeDto
+ * @returns string. Ex: 'Today 3:00 PM' or 'Monday 1:21 AM'
+ */
 const createChatTimestamp = ({
   year,
   month,
