@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus as IconPlus, Trash2 as IconTrash } from 'lucide-react';
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 const Milestone = ({
   control,
@@ -83,13 +83,14 @@ const Milestone = ({
   );
 };
 
-export interface ContractMilestone {
+export interface ContractMilestoneMinimalProps {
   name: string;
   amount: number;
 }
+
 export interface ContractMilestonesFormData {
   projectName: string;
-  milestones: ContractMilestone[];
+  milestones: ContractMilestoneMinimalProps[];
 }
 
 export interface ContractMilestonesProps {
@@ -97,7 +98,7 @@ export interface ContractMilestonesProps {
   projectName?: string;
 }
 
-export const ContractMilestones = ({
+export const ContractFormMilestones = ({
   onFormSubmit,
   projectName,
 }: ContractMilestonesProps) => {
