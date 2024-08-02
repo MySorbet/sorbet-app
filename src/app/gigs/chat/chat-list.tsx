@@ -63,7 +63,7 @@ export function ChatList({
               'Rejected') && (
             <div
               ref={messagesContainerRef}
-              className='w-full overflow-y-auto overflow-x-hidden h-full flex flex-col '
+              className='w-full overflow-y-auto overflow-x-hidden h-full flex flex-col pb-1 '
             >
               <AnimatePresence>
                 {messages?.map((message, index) => {
