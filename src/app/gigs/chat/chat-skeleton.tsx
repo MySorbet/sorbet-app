@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 const ChatSkeleton = () => {
   return (
-    <div className='w-full overflow-y-hidden h-[50vh] overflow-x-hidden flex flex-col'>
+    <div className='w-full overflow-y-hidden h-[50vh] overflow-x-hidden flex flex-col px-2 py-3'>
       <ChatSkeleton.User />
       <ChatSkeleton.Message width={28} />
       <ChatSkeleton.Message width={20} />
