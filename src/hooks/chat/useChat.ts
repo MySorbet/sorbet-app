@@ -260,7 +260,7 @@ export const useChat = ({
     };
   }, [user, contractData]);
 
-  return [state,  loading, sendMessage] as [
+  return [state, loading, sendMessage] as [
     ChatState,
     boolean,
     typeof sendMessage
