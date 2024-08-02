@@ -5,22 +5,16 @@ import { useAuth, useUpdateOfferStatus } from '@/hooks';
 import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
 import { GigsContentType, OfferType } from '@/types';
 import { Loader } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export interface GigsBoardProps {
   gigsContentType: GigsContentType;
 }
 
 export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
-  const [isCommsOpen, setIsCommsOpen] = React.useState(false);
+  const [isCommsOpen, setIsCommsOpen] = useState(false);
   const { user: loggedInUser } = useAuth();
-  const [currentOffer, setCurrentOffer] = React.useState<OfferType | undefined>(
-    undefined
-  );
-  const [freelancerUsername, setFreelancerUsername] = useState<
-    string | undefined
-  >(undefined);
-  const [clientUsername, setClientUsername] = useState<string | undefined>(
+  const [currentOffer, setCurrentOffer] = useState<OfferType | undefined>(
     undefined
   );
 
