@@ -5,6 +5,7 @@ import {
   initializeChannelEvents,
   initializeConnection,
   loadMessages,
+  removeConnection,
   timestampToTime,
 } from '@/app/gigs/chat/sendbird';
 import { useToast } from '@/components/ui/use-toast';
@@ -14,6 +15,7 @@ import {
   NewMessageNotificationDto,
   SBFileMessage,
   SBMessage,
+  SendMessageParams,
 } from '@/types/sendbird';
 import {
   GroupChannelHandler,
@@ -27,12 +29,14 @@ interface useInitializeChatProps {
   user: User | null;
   logout: () => void;
   contractData: ContractType;
+  isOpen: boolean;
 }
 
-export const useInitializeChat = ({
+export const useChat = ({
   user,
   logout,
   contractData,
+  isOpen,
 }: useInitializeChatProps) => {
   const { toast } = useToast();
   const [state, updateState] = useState<ChatState>({
@@ -138,6 +142,49 @@ export const useInitializeChat = ({
     },
   });
 
+  const sendMessage = (newMessage: SendMessageParams) => {
+    if (!state.channel) return;
+
+    if (newMessage.type === 'file') {
+      const params = {
+        file: newMessage.message[0],
+        name: newMessage.message[0].name,
+        type: newMessage.message[0].type,
+      };
+      state.channel
+        .sendFileMessage(params)
+        .onSucceeded((fileMessageParams) => {
+          if (state.channel) {
+            state.channel.endTyping();
+          }
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
+    } else {
+      state.channel
+        .sendUserMessage({ message: newMessage.message })
+        .onSucceeded((message) => {
+          if (state.channel) {
+            state.channel.endTyping();
+          }
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    async function disconnectSendbird() {
+      await removeConnection();
+    }
+
+    if (!isOpen) {
+      disconnectSendbird();
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
     async function initializeChat() {
@@ -213,10 +260,10 @@ export const useInitializeChat = ({
     };
   }, [user, contractData]);
 
-  return [state, updateState, loading] as [
+  return [state,  loading, sendMessage] as [
     ChatState,
-    typeof updateState,
-    boolean
+    boolean,
+    typeof sendMessage
   ];
 };
 

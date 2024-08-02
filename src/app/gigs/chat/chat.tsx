@@ -1,19 +1,11 @@
 import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
-import { removeConnection } from '@/app/gigs/chat/sendbird';
 import { useAuth } from '@/hooks';
-import { useInitializeChat } from '@/hooks/chat/useInitializeChat';
-import { ContractStatus, ContractType, User } from '@/types';
-import {
-  SBMessage,
-  SendMessageParams,
-  SupportedFileIcons,
-} from '@/types/sendbird';
-import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
-import { motion } from 'framer-motion';
+import { useChat } from '@/hooks/chat/useChat';
+import { ContractType } from '@/types';
 import { File, ImageIcon } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const icons = {
   pdf: <File className='w-5 h-5 text-white' />,
@@ -32,57 +24,15 @@ interface ChatProps {
 export function Chat({ showTopbar = true, contractData, isOpen }: ChatProps) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const { user, logout } = useAuth();
-  const [state, udpateState, chatLoading] = useInitializeChat({
+  const [state, chatLoading, sendMessage] = useChat({
     user,
     logout,
     contractData,
+    isOpen,
   });
 
   // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
   // properly being updated when a user closes out of the chat
-
-  const sendMessage = (newMessage: SendMessageParams) => {
-    if (!state.channel) return;
-
-    if (newMessage.type === 'file') {
-      const params = {
-        file: newMessage.message[0],
-        name: newMessage.message[0].name,
-        type: newMessage.message[0].type,
-      };
-      state.channel
-        .sendFileMessage(params)
-        .onSucceeded((fileMessageParams) => {
-          if (state.channel) {
-            state.channel.endTyping();
-          }
-        })
-        .onFailed((error) => {
-          console.log('message failed : ', error);
-        });
-    } else {
-      state.channel
-        .sendUserMessage({ message: newMessage.message })
-        .onSucceeded((message) => {
-          if (state.channel) {
-            state.channel.endTyping();
-          }
-        })
-        .onFailed((error) => {
-          console.log('message failed : ', error);
-        });
-    }
-  };
-
-  useEffect(() => {
-    async function disconnectSendbird() {
-      await removeConnection();
-    }
-
-    if (!isOpen) {
-      disconnectSendbird();
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     const checkScreenWidth = () => {
