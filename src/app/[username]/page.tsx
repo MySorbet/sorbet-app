@@ -64,7 +64,8 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
         const userResponse = await getUserByAccountId(
           `${params.username}.${config.networkId}`
         );
-        if (userResponse.data) {
+
+        if (userResponse?.data) {
           setUser(userResponse.data as User);
         } else {
           setNotFound(false);
@@ -75,7 +76,7 @@ const UserProfile = ({ params }: { params: { username: string } }) => {
   }, [params.username, loggedInUser]);
 
   useEffect(() => {
-    console.log("object")
+    console.log('object');
   }, []);
 
   const onOfferDialogClose = (open: boolean) => {

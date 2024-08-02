@@ -1,14 +1,13 @@
+import { withTimeout } from '../utils';
+import { network, networkId } from '../utils/config';
+import { CLAIM, getUserCredentialsFrpSignature } from '../utils/mpc-service';
+import { LimitedAccessKey, NewAccountResponse } from './types';
 import { captureException } from '@sentry/react';
 import { KeyPair } from 'near-api-js';
 
-import { LimitedAccessKey, NewAccountResponse } from './types';
-import { withTimeout } from '../utils';
-import { network, networkId } from '../utils/config';
-import {
-  CLAIM, getUserCredentialsFrpSignature
-} from '../utils/mpc-service';
-
-const fetchAccountIdFromQueryApi = async (publicKey: string): Promise<string | null> => {
+const fetchAccountIdFromQueryApi = async (
+  publicKey: string
+): Promise<string | null> => {
   const query = `query AccountIdByPublicKey {
     dataplatform_near_access_keys_v1_access_keys_v1(
       where: {public_key: {_eq: "${publicKey}"}, deleted_by_receipt_id: {_is_null: true}, account_deleted_by_receipt_id: {_is_null: true}}
@@ -20,26 +19,33 @@ const fetchAccountIdFromQueryApi = async (publicKey: string): Promise<string | n
     }
   }`;
 
+  if (!network.fastAuth.queryApiUrl) {
+    throw new Error('queryApiUrl is undefined');
+  }
+
   try {
     const res = await fetch(network.fastAuth.queryApiUrl, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'x-hasura-role': 'dataplatform_near' },
-      body:    JSON.stringify({
+      body: JSON.stringify({
         query,
-        variables:     {},
+        variables: {},
         operationName: 'AccountIdByPublicKey',
       }),
     });
     if (res.ok) {
       const response = await res.json();
       if (response.data) {
-        const data = response.data.dataplatform_near_access_keys_v1_access_keys_v1[0];
+        const data =
+          response.data.dataplatform_near_access_keys_v1_access_keys_v1[0];
         return data?.account_id;
       }
     }
   } catch (e) {
     // Not tracking error here because it is possible that the public key is not on chain
-    console.log(`Fail to retrieve account id with public key ${publicKey} from queryAPI: ${e}`);
+    console.log(
+      `Fail to retrieve account id with public key ${publicKey} from queryAPI: ${e}`
+    );
   }
   return null;
 };
@@ -55,10 +61,11 @@ const KIT_WALLET_WAIT_DURATION = 10000; // 10s
 export const fetchAccountIds = async (publicKey: string): Promise<string[]> => {
   if (publicKey) {
     if (window.firestoreController) {
-      console.log("window.firestoreController", publicKey )
-      const accountId = await window.firestoreController.getAccountIdByPublicKey(publicKey);
+      console.log('window.firestoreController', publicKey);
+      const accountId =
+        await window.firestoreController.getAccountIdByPublicKey(publicKey);
       // const accountId = "davidjin.testnet";
-      console.log("window.firestoreController", accountId )
+      console.log('window.firestoreController', accountId);
       if (accountId) {
         return [accountId];
       }
@@ -74,7 +81,12 @@ export const fetchAccountIds = async (publicKey: string): Promise<string[]> => {
     }
 
     try {
-      const res = await withTimeout(fetch(`${network.fastAuth.authHelperUrl}/publicKey/${publicKey}/accounts`), KIT_WALLET_WAIT_DURATION);
+      const res = await withTimeout(
+        fetch(
+          `${network.fastAuth.authHelperUrl}/publicKey/${publicKey}/accounts`
+        ),
+        KIT_WALLET_WAIT_DURATION
+      );
       if (res) {
         const ids = await res.json();
         return ids;
@@ -102,27 +114,35 @@ export const fetchAccountIds = async (publicKey: string): Promise<string[]> => {
 export const fetchAccountIdsFromTwoKeys = async (
   keyPairA: KeyPair,
   keyPairB: KeyPair
-): Promise<{ accId: string, keyPair: KeyPair} | null> => {
-  const accountIdsFromPublicKeyA = fetchAccountIds(keyPairA.getPublicKey().toString());
-  const accountIdsFromPublicKeyB = fetchAccountIds(keyPairB.getPublicKey().toString());
+): Promise<{ accId: string; keyPair: KeyPair } | null> => {
+  const accountIdsFromPublicKeyA = fetchAccountIds(
+    keyPairA.getPublicKey().toString()
+  );
+  const accountIdsFromPublicKeyB = fetchAccountIds(
+    keyPairB.getPublicKey().toString()
+  );
 
-  const firstResult = await Promise.race([accountIdsFromPublicKeyA, accountIdsFromPublicKeyB]);
-  const firstKey = firstResult === await accountIdsFromPublicKeyA ? keyPairA : keyPairB;
+  const firstResult = await Promise.race([
+    accountIdsFromPublicKeyA,
+    accountIdsFromPublicKeyB,
+  ]);
+  const firstKey =
+    firstResult === (await accountIdsFromPublicKeyA) ? keyPairA : keyPairB;
   if (firstResult.length > 0) {
     return {
-      accId:     firstResult[0],
-      keyPair: firstKey
+      accId: firstResult[0],
+      keyPair: firstKey,
     };
   }
 
-  const secondResult = await (
-    firstResult === await accountIdsFromPublicKeyA ? accountIdsFromPublicKeyB : accountIdsFromPublicKeyA
-  );
+  const secondResult = await (firstResult === (await accountIdsFromPublicKeyA)
+    ? accountIdsFromPublicKeyB
+    : accountIdsFromPublicKeyA);
   const secondKey = firstKey === keyPairA ? keyPairB : keyPairA;
   if (secondResult.length > 0) {
     return {
-      accId:     secondResult[0],
-      keyPair: secondKey
+      accId: secondResult[0],
+      keyPair: secondKey,
     };
   }
 
@@ -151,40 +171,49 @@ export const createNEARAccount = async ({
   accessToken,
   oidcKeypair,
 }: {
-  accountId: string,
-  fullAccessKeys?: string[],
-  limitedAccessKeys?: LimitedAccessKey[],
-  accessToken: string,
-  oidcKeypair: KeyPair
+  accountId: string;
+  fullAccessKeys?: string[];
+  limitedAccessKeys?: LimitedAccessKey[];
+  accessToken: string;
+  oidcKeypair: KeyPair;
 }): Promise<NewAccountResponse> => {
-  console.log({accountId, fullAccessKeys, limitedAccessKeys, accessToken, oidcKeypair})
+  console.log({
+    accountId,
+    fullAccessKeys,
+    limitedAccessKeys,
+    accessToken,
+    oidcKeypair,
+  });
   const CLAIM_SALT = CLAIM + 2;
   const signature = getUserCredentialsFrpSignature({
-    salt:            CLAIM_SALT,
-    oidcToken:       accessToken,
+    salt: CLAIM_SALT,
+    oidcToken: accessToken,
     shouldHashToken: false,
-    keypair:         oidcKeypair,
+    keypair: oidcKeypair,
   });
 
   const data = {
-    near_account_id:        accountId,
+    near_account_id: accountId,
     create_account_options: {
-      full_access_keys:    fullAccessKeys,
+      full_access_keys: fullAccessKeys,
       limited_access_keys: limitedAccessKeys,
     },
-    oidc_token:                     accessToken,
+    oidc_token: accessToken,
     user_credentials_frp_signature: signature,
-    frp_public_key:                 oidcKeypair.getPublicKey().toString(),
+    frp_public_key: oidcKeypair.getPublicKey().toString(),
   };
 
   const options = {
-    method:  'POST',
-    mode:    'cors' as const,
-    body:    JSON.stringify(data),
+    method: 'POST',
+    mode: 'cors' as const,
+    body: JSON.stringify(data),
     headers: new Headers({ 'Content-Type': 'application/json' }),
   };
 
-  const response = await fetch(`${network.fastAuth.mpcRecoveryUrl}/new_account`, options);
+  const response = await fetch(
+    `${network.fastAuth.mpcRecoveryUrl}/new_account`,
+    options
+  );
   if (!response?.ok) {
     throw new Error('Network response was not ok');
   }

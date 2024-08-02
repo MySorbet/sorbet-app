@@ -8,10 +8,9 @@ export const signUpAsync = async ({
   lastName,
   email,
   accountId,
-  userType,
 }: SignUpWithEmailTypes) => {
   try {
-    const reqBody = { firstName, lastName, email, accountId, userType };
+    const reqBody = { firstName, lastName, email, accountId };
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
     return res;
   } catch (error: any) {

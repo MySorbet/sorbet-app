@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-
+// Import User type
 import { firebaseAuth } from '../utils/firebase';
+import { User } from 'firebase/auth';
+import { useEffect, useState } from 'react';
 
 function useFirebaseUser() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ function useFirebaseUser() {
     });
 
     return () => {
-      unsubscribe(); // Cleanup the subscription when component unmounts
+      unsubscribe();
     };
   }, []);
 
