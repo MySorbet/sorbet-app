@@ -28,7 +28,7 @@ export const useFetchOffers = (
             break;
         }
 
-        if (response.statusText === 'OK') {
+        if (response?.data) {
           return response.data;
         } else {
           toast({
