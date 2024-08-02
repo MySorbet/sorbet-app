@@ -32,7 +32,7 @@ interface ChatProps {
 export function Chat({ showTopbar = true, contractData, isOpen }: ChatProps) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const { user, logout } = useAuth();
-  const [state, udpateState] = useInitializeChat({
+  const [state, udpateState, chatLoading] = useInitializeChat({
     user,
     logout,
     contractData,
@@ -111,6 +111,7 @@ export function Chat({ showTopbar = true, contractData, isOpen }: ChatProps) {
         typingMembers={state.typingMembers}
         contractStatus={contractData.status}
         supportedIcons={icons}
+        chatLoading={chatLoading}
       />
       <div className='mt-4'>
         <ChatBottombar

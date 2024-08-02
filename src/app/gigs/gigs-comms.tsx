@@ -96,6 +96,7 @@ export const GigsComms = ({
   const [offers, setOffers] = useState([]);
   const { toast } = useToast();
 
+
   const {
     isPending: getContractPending,
     data: contractData,

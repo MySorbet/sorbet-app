@@ -41,6 +41,7 @@ export const useInitializeChat = ({
     typingMembers: [],
     messageCollection: null,
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const stateRef = useRef<any>(null);
   stateRef.current = state;
@@ -50,6 +51,7 @@ export const useInitializeChat = ({
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
       // Need to refresh because the channel object is not updated with the new messages
+      // TODO: This is a quick fix, need to look into finding a better solution
       await channel.refresh();
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
       const senderId = user?.id;
@@ -150,6 +152,7 @@ export const useInitializeChat = ({
         }, 3000);
         return;
       }
+      setLoading(true);
       await initializeConnection(user.id);
 
       initializeChannelEvents(channelHandlers);
@@ -161,7 +164,7 @@ export const useInitializeChat = ({
 
       const ts = Date.now();
       const messageListParams: MessageListParams = {
-        prevResultSize: 100,
+        prevResultSize: 20,
         nextResultSize: 0,
         isInclusive: true,
       };
@@ -189,6 +192,7 @@ export const useInitializeChat = ({
           };
           message.fileData = fileData;
         }
+        setLoading(false);
         return message;
       });
 
@@ -209,5 +213,11 @@ export const useInitializeChat = ({
     };
   }, [user, contractData]);
 
-  return [state, updateState] as [ChatState, typeof updateState];
+  return [state, updateState, loading] as [
+    ChatState,
+    typeof updateState,
+    boolean
+  ];
 };
+
+// Somehow the channel is not live updating
