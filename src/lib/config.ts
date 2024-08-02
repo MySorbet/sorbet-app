@@ -10,21 +10,7 @@ interface AppConfig {
   contractId: string;
   relayerUrl: string;
   authDomain: string;
-  defaultProfileImage?: string;
   googleMapKey?: string;
-  gcpProfileBucketName?: string;
-  dribbleClientId?: string;
-  dribbleClientSecret?: string;
-  githubClientId?: string;
-  githubClientSecret?: string;
-  instagramAppSecret?: string;
-  instagramClientToken?: string;
-  instagramBasicDisplayAppId?: string;
-  instagramBasicDisplayAppSecret?: string;
-  spotifyClientId?: string;
-  spotifyClientSecret?: string;
-  youtubeClientId?: string;
-  youtubeClientSecret?: string;
 }
 
 const appConfigSchema = z.object({
@@ -36,25 +22,6 @@ const appConfigSchema = z.object({
   relayerUrl: z.string().url(),
   authDomain: z.string().url(),
   googleMapKey: z.string().optional(),
-  defaultProfileImage: z
-    .string()
-    .optional()
-    .default(
-      'https://storage.cloud.google.com/sorbet-profile-images/default-avatar.jpeg'
-    ),
-  gcpProfileBucketName: z.string().optional(),
-  dribbleClientId: z.string().optional(),
-  dribbleClientSecret: z.string().optional(),
-  githubClientId: z.string().optional(),
-  githubClientSecret: z.string().optional(),
-  instagramAppSecret: z.string().optional(),
-  instagramClientToken: z.string().optional(),
-  instagramBasicDisplayAppId: z.string().optional(),
-  instagramBasicDisplayAppSecret: z.string().optional(),
-  spotifyClientId: z.string().optional(),
-  spotifyClientSecret: z.string().optional(),
-  youtubeClientId: z.string().optional(),
-  youtubeClientSecret: z.string().optional(),
 });
 
 dotenv.config({ path: ['.env', '.env.local'] });
@@ -66,23 +33,7 @@ export const config: AppConfig = appConfigSchema.parse({
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
-  defaultProfileImage: process.env.NEXT_DEFAULT_PROFILE_IMAGE,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
-  gcpProfileBucketName: process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
-  dribbleClientId: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_ID,
-  dribbleClientSecret: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET,
-  githubClientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-  githubClientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
-  instagramAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_APP_SECRET,
-  instagramClientToken: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN,
-  instagramBasicDisplayAppId:
-    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
-  instagramBasicDisplayAppSecret:
-    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
-  spotifyClientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
-  spotifyClientSecret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
-  youtubeClientId: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
-  youtubeClientSecret: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET,
 });
 
 export const networks: Record<NetworkId, Network> = {
