@@ -63,6 +63,8 @@ export function ChatLayoutMinimal({
     // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
+      // TODO: This is a quick fix, need to look into finding a better solution
+      await channel.refresh();
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
       const senderId = user?.id;
       const recipientId = user?.id === clientId ? freelanceId : clientId;
