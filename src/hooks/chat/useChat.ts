@@ -1,80 +1,73 @@
 'use client';
 
-import { Chat } from './chat';
+import { sendNotification } from '@/api/chat';
 import {
   initializeChannelEvents,
   initializeConnection,
   loadMessages,
+  removeConnection,
   timestampToTime,
-} from './sendbird';
-import { sendNotification } from '@/api/chat';
+} from '@/app/gigs/chat/sendbird';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
-import { ContractStatus } from '@/types';
+import { ContractType, User } from '@/types';
 import {
+  ChatState,
   NewMessageNotificationDto,
   SBFileMessage,
   SBMessage,
+  SendMessageParams,
 } from '@/types/sendbird';
 import {
-  GroupChannel,
   GroupChannelHandler,
-  Member,
-  MessageCollectionEventHandler,
+  type GroupChannel,
+  type MessageCollectionEventHandler,
 } from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-interface ChatLayoutProps {
-  defaultLayout: number[] | undefined;
-  defaultCollapsed?: boolean;
-  navCollapsedSize: number;
-  channelId: string;
-  contractId: string;
-  clientId: string;
-  freelanceId: string;
-  contractStatus: string;
+interface useInitializeChatProps {
+  user: User | null;
+  logout: () => void;
+  contractData: ContractType;
+  isOpen: boolean;
 }
 
-export function ChatLayoutMinimal({
-  defaultLayout = [320, 480],
-  defaultCollapsed = false,
-  navCollapsedSize,
-  channelId,
-  contractId,
-  clientId,
-  freelanceId,
-  contractStatus,
-}: ChatLayoutProps) {
-  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-  const [isMobile, setIsMobile] = useState(false);
-  const [state, updateState] = useState({
-    currentlyJoinedChannel: null,
+export const useChat = ({
+  user,
+  logout,
+  contractData,
+  isOpen,
+}: useInitializeChatProps) => {
+  const { toast } = useToast();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [state, updateState] = useState<ChatState>({
+    channel: null,
     messages: [],
     typingMembers: [],
     messageCollection: null,
   });
-  const { user, logout } = useAuth();
-  const { toast } = useToast();
-  const stateRef = useRef<any>();
+  console.log('useChat -> state', state);
+
+  const stateRef = useRef<any>(null);
   stateRef.current = state;
 
   const messageHandlers: MessageCollectionEventHandler = {
     // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
+      // Need to refresh because the channel object is not updated with the new messages
       // TODO: This is a quick fix, need to look into finding a better solution
       await channel.refresh();
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
       const senderId = user?.id;
-      const recipientId = user?.id === clientId ? freelanceId : clientId;
-      // a check to see if the recipient is offline or online
-      // connectionStatus is determined if there is an active connection to Sendbird
+      const recipientId =
+        user?.id === contractData.clientId
+          ? contractData.freelanceId
+          : contractData.clientId;
       const sender = channel.members.find(
         (member: any) => member.userId === senderId
       );
-      // Recipient or sender being undefined would indicate that they are not users in our sendbird database,
-      // or there is an issue with their channel in sendbird. Both of which we would have to step in and fix manually in sendbird
       if (!sender) {
         console.error('Sender not found in channel members');
         toast({
@@ -85,7 +78,7 @@ export function ChatLayoutMinimal({
         return;
       }
       const recipient = channel.members.find(
-        (member: any) => member.userId !== recipientId
+        (member: any) => member.userId === recipientId
       );
       if (!recipient) {
         console.error('Recipient not found in channel members');
@@ -98,8 +91,8 @@ export function ChatLayoutMinimal({
       }
       if (recipient.connectionStatus === 'offline') {
         const params: NewMessageNotificationDto = {
-          reqContractId: contractId,
-          reqChannelId: channelId,
+          reqContractId: contractData.id,
+          reqChannelId: contractData.channelId,
           reqSenderId: sender.userId,
           reqRecipientId: recipient.userId,
         };
@@ -151,11 +144,57 @@ export function ChatLayoutMinimal({
     },
   });
 
+  const sendMessage = (newMessage: SendMessageParams) => {
+    if (!state.channel) return;
+
+    if (newMessage.type === 'file') {
+      const params = {
+        file: newMessage.message[0],
+        name: newMessage.message[0].name,
+        type: newMessage.message[0].type,
+      };
+      state.channel
+        .sendFileMessage(params)
+        .onSucceeded((fileMessageParams) => {
+          if (state.channel) {
+            state.channel.endTyping();
+          }
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+        });
+    } else {
+      state.channel
+        .sendUserMessage({ message: newMessage.message })
+        .onSucceeded((message) => {
+          if (state.channel) {
+            state.channel.endTyping();
+          }
+        })
+        .onFailed((error) => {
+          console.log('message failed : ', error);
+          setError('Failed to send message');
+        });
+    }
+  };
+
+  useEffect(() => {
+    async function disconnectSendbird() {
+      await removeConnection();
+    }
+
+    if (!isOpen) {
+      disconnectSendbird();
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
     async function initializeChat() {
+      if (!contractData.channelId) {
+        return;
+      }
       if (!user) {
-        // handle unauthenticated user
         toast({
           title: 'You are not authenticated',
           description: 'Redirecting to login page',
@@ -166,13 +205,13 @@ export function ChatLayoutMinimal({
         }, 3000);
         return;
       }
-
+      setLoading(true);
       await initializeConnection(user.id);
 
       initializeChannelEvents(channelHandlers);
 
       const { messageCollection, channel } = await loadMessages(
-        channelId,
+        contractData.channelId,
         messageHandlers
       );
 
@@ -187,6 +226,8 @@ export function ChatLayoutMinimal({
         ts,
         messageListParams
       );
+
+      console.log('latestMessages', latestMessages);
 
       const fetchedMessages = latestMessages.map((currentMessage: any) => {
         const time = timestampToTime(currentMessage.createdAt);
@@ -206,13 +247,14 @@ export function ChatLayoutMinimal({
           };
           message.fileData = fileData;
         }
+        setLoading(false);
         return message;
       });
 
       updateState({
         ...stateRef.current,
         messageCollection: messageCollection,
-        currentlyJoinedChannel: channel,
+        channel: channel,
         messages: fetchedMessages,
       });
     }
@@ -220,36 +262,18 @@ export function ChatLayoutMinimal({
     initializeChat();
 
     return () => {
-      if (timeoutId) return clearTimeout(timeoutId);
+      if (timeoutId) {
+        return clearTimeout(timeoutId);
+      }
     };
-  }, [channelId, user]);
+  }, [user, contractData]);
 
-  useEffect(() => {
-    const checkScreenWidth = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+  return [state, loading, error, sendMessage] as [
+    ChatState,
+    boolean,
+    string | null,
+    typeof sendMessage
+  ];
+};
 
-    // Initial check
-    checkScreenWidth();
-
-    // Event listener for screen width changes
-    window.addEventListener('resize', checkScreenWidth);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', checkScreenWidth);
-    };
-  }, []);
-
-  return (
-    <Chat
-      messages={state.messages}
-      selectedUser={user!}
-      isMobile={isMobile}
-      showTopbar={false}
-      channel={state.currentlyJoinedChannel}
-      typingMembers={state.typingMembers as Member[]}
-      contractStatus={contractStatus}
-    />
-  );
-}
+// Somehow the channel is not live updating

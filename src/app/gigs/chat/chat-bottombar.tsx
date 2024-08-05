@@ -55,6 +55,8 @@ export default function ChatBottombar({
 
   const { toast } = useToast();
 
+  //TODO: Refactor funcs that use send message to use optimistic updates
+
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };

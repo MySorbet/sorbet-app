@@ -23,6 +23,9 @@ const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 /**
   Connects the current user to Sendbird servers
 */
+/**
+  Connects the current user to Sendbird servers
+*/
 const initializeConnection = async (userId: string) => {
   try {
     const user = await sb.connect(userId);
@@ -34,7 +37,7 @@ const initializeConnection = async (userId: string) => {
 
 /**
   Terminates the connection of the current user to Sendbird servers
-*/
+ */
 const removeConnection = async () => {
   try {
     await sb.disconnect();
@@ -56,6 +59,9 @@ const initializeChannelEvents = (channelHandler: any) => {
 /**
   Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
 */
+/**
+  Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
+*/
 const loadMessages = async (channelId: string, messageHandlers: any) => {
   const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
 
@@ -64,7 +70,7 @@ const loadMessages = async (channelId: string, messageHandlers: any) => {
   const messageCollection = channel.createMessageCollection({
     filter: messageFilter,
     startingPoint: Date.now(),
-    limit: 100,
+    limit: 30,
   });
   messageCollection.setMessageCollectionHandler(messageHandlers);
 
@@ -75,6 +81,9 @@ const loadMessages = async (channelId: string, messageHandlers: any) => {
   return { messageCollection, channel };
 };
 
+/**
+  Converts milliseconds to a formatted date and time object for easier display.
+*/
 /**
   Converts milliseconds to a formatted date and time object for easier display.
 */
@@ -107,6 +116,11 @@ const timestampToTime = (timestamp: number) => {
   @params hour - The hour in military time, minutes - The minutes in military time
   @returns string in regular time with AM/PM suffix
 */
+/**
+  Converts military time to regular time with AM/PM suffix.
+  @params hour - The hour in military time, minutes - The minutes in military time
+  @returns string in regular time with AM/PM suffix
+*/
 const convertMilitaryToRegular = (
   hour: string | undefined,
   minute: string | undefined
@@ -128,7 +142,85 @@ const convertMilitaryToRegular = (
     suffix = 'AM';
   }
 
-  return `${newHour}:${minute}${suffix}`;
+  return `${newHour}:${minute} ${suffix}`;
+};
+
+/**
+ * Creates a chat timestamp for when time between messages is long
+ * @param param timeData: SBMessageTimeDto
+ * @returns string. Ex: 'Today 3:00 PM' or 'Monday 1:21 AM'
+ */
+const createChatTimestamp = ({
+  year,
+  month,
+  day,
+  hour,
+  minute,
+  second,
+}: SBMessageTimeDto) => {
+  // Parse the components to integers
+  const dayInt = parseInt(day, 10);
+  const hourInt = parseInt(hour, 10);
+  const minuteInt = parseInt(minute, 10);
+  const monthInt = parseInt(month, 10) - 1; // JavaScript months are 0-indexed
+  const secondInt = parseInt(second, 10);
+  const yearInt = parseInt(year, 10);
+
+  // Create a Date object from the provided components
+  const date = new Date(
+    yearInt,
+    monthInt,
+    dayInt,
+    hourInt,
+    minuteInt,
+    secondInt
+  );
+
+  // Get current date
+  const now = new Date();
+
+  // Helper function to check if two dates are the same day
+  const isSameDay = (d1: Date, d2: Date): boolean =>
+    d1.getDate() === d2.getDate() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getFullYear() === d2.getFullYear();
+
+  // Format the time
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert to 12-hour format, 0 should be 12
+  const formattedTime = `${hours}:${minutes} ${ampm}`;
+
+  // Check if the date is today
+  if (isSameDay(date, now)) {
+    return `Today ${formattedTime}`;
+  }
+
+  // Check if the date is yesterday
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (isSameDay(date, yesterday)) {
+    return `Yesterday ${formattedTime}`;
+  }
+
+  // Check if the date is within the current week
+  const dayDifference = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  if (dayDifference < 7) {
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return `${daysOfWeek[date.getDay()]} ${formattedTime}`;
+  }
+
+  // If not today, yesterday, or within this week, return the full date
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+  return `${formattedDate} ${formattedTime}`;
 };
 
 /**
@@ -160,6 +252,7 @@ const getTimeDifferenceInMinutes = (time1: string, time2: string) => {
 
 export {
   sb,
+  createChatTimestamp,
   loadMessages,
   initializeConnection,
   timestampToTime,
