@@ -172,6 +172,7 @@ export const useChat = ({
         })
         .onFailed((error) => {
           console.log('message failed : ', error);
+          setError('Failed to send message');
         });
     }
   };
@@ -189,6 +190,9 @@ export const useChat = ({
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
     async function initializeChat() {
+      if (!contractData.channelId) {
+        return;
+      }
       if (!user) {
         toast({
           title: 'You are not authenticated',
@@ -261,7 +265,7 @@ export const useChat = ({
     };
   }, [user, contractData]);
 
-  return [state, loading,error, sendMessage] as [
+  return [state, loading, error, sendMessage] as [
     ChatState,
     boolean,
     string | null,
