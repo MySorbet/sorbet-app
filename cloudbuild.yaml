@@ -4,7 +4,7 @@ steps:
       docker build -t us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production:$_TAG .
     automapSubstitutions: true
 substitutions:
-  _TAG: '${BRANCH_NAME}-${BUILD_ID}'
+  _TAG: '${BRANCH_NAME//\//-}-${BUILD_ID}'
 images:
   - 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production:${_TAG}'
 options:
