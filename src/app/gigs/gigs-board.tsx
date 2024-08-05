@@ -1,6 +1,6 @@
 import { GigsColumn } from './gigs-column';
 import { GigsCard } from '@/app/gigs/gigs-card';
-import { GigsComms } from '@/app/gigs/gigs-comms';
+import { GigsDialog } from '@/app/gigs/gigs-dialog';
 import { useAuth, useUpdateOfferStatus } from '@/hooks';
 import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
 import { GigsContentType, OfferType } from '@/types';
@@ -59,7 +59,7 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <GigsComms
+        <GigsDialog
           isOpen={isCommsOpen}
           onOpenChange={onGigsCommsOpenChange}
           isClient={gigsContentType === GigsContentType.Sent}

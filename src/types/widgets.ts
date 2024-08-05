@@ -117,6 +117,14 @@ export interface LinkWidgetContentType {
   heroImageUrl?: string;
 }
 
+/** This should match sorbet-api LinkedInProfileData */
+export interface LinkedInProfileWidgetContentType {
+  name: string;
+  bio: string;
+  bannerImage: string;
+  profileImage: string;
+}
+
 export enum WidgetType {
   // Explicitly Supported
   Photo = 'Photo',
@@ -127,6 +135,7 @@ export enum WidgetType {
   InstagramPost = 'InstagramPost',
   InstagramProfile = 'InstagramProfile',
   TwitterProfile = 'TwitterProfile',
+  LinkedInProfile = 'LinkedInProfile',
   Link = 'Link',
 
   // Supported via type catchall

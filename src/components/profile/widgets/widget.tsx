@@ -15,6 +15,7 @@ import {
   TwitterWidget,
   YouTubeWidget,
   PhotoWidget,
+  LinkedInProfileWidget,
 } from '@/components/profile';
 import { WidgetErrorFallback } from '@/components/profile/widgets';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ import {
   FigmaWidgetContentType,
   GithubWidgetContentType,
   InstagramWidgetContentType,
+  LinkedInProfileWidgetContentType,
   LinkWidgetContentType,
   MediumArticleContentType,
   PhotoWidgetContentType,
@@ -203,6 +205,30 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <LinkWidget
             content={content as LinkWidgetContentType}
+            size={widgetSize}
+          />
+        );
+        break;
+
+      case WidgetType.LinkedInProfile:
+        // For now, just say the name is their handle
+        // TODO: Remove this once real linked in data is available
+        let handle;
+        try {
+          const segments = new URL(redirectUrl ?? '').pathname.split('/');
+          handle = segments.pop() || segments.pop(); // Handle potential trailing slash
+        } catch (e) {
+          console.error('Failed to get LinkedIn handle from URL: ', e);
+        }
+
+        setWidgetContent(
+          <LinkedInProfileWidget
+            content={
+              {
+                ...content,
+                name: handle,
+              } as LinkedInProfileWidgetContentType
+            }
             size={widgetSize}
           />
         );

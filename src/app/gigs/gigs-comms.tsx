@@ -2,7 +2,7 @@
 
 import { Chat } from '@/app/gigs/chat/chat';
 import {
-  ContractContainer,
+  ContractFormContainer,
   ContractNotFound,
   ContractOverview,
   ContractPendingFreelancer,
@@ -204,3 +204,4 @@ export const GigsComms = ({
     </>
   );
 };
+

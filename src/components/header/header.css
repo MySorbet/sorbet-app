@@ -1,0 +1,5 @@
+.header-width {
+  width: calc(100% - 32px);
+  top: 16px;
+  margin-inline: 16px;
+}

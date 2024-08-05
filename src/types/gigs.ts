@@ -95,4 +95,4 @@ const ContractStatuses = [
   'Completed',
   'Rejected',
 ] as const;
-type ContractStatus = (typeof ContractStatuses)[number];
+export type ContractStatus = (typeof ContractStatuses)[number];

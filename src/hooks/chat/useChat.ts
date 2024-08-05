@@ -47,6 +47,7 @@ export const useChat = ({
     typingMembers: [],
     messageCollection: null,
   });
+  console.log('useChat -> state', state);
 
   const stateRef = useRef<any>(null);
   stateRef.current = state;
@@ -225,6 +226,8 @@ export const useChat = ({
         ts,
         messageListParams
       );
+
+      console.log('latestMessages', latestMessages);
 
       const fetchedMessages = latestMessages.map((currentMessage: any) => {
         const time = timestampToTime(currentMessage.createdAt);

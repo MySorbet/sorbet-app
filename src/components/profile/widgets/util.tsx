@@ -26,6 +26,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Substack]: 'substack.png',
     [WidgetType.Figma]: 'figma.png',
     [WidgetType.Twitter]: 'twitter.png',
+    [WidgetType.LinkedInProfile]: 'linkedIn.png',
   };
 
   return `/images/social/${iconMap[widgetType] || 'default.png'}`;
@@ -94,6 +95,12 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
       }
     }
 
+    // LinkedIn profiles
+    // TODO: Include or exclude posts
+    if (platform.toLowerCase() === 'linkedin') {
+      return WidgetType.LinkedInProfile;
+    }
+
     // The rest of the platforms are supported by manipulating the string
     if (
       ['figma', 'medium', 'behance', 'dribbble', 'github', 'youtube'].includes(
@@ -156,6 +163,8 @@ export function validateUrl(url: string) {
       /^https?:\/\/(www\.)?medium\.com\/@?[a-zA-Z0-9-]+(\/[a-zA-Z0-9-]+)?$/;
   } else if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
     regex = /^(https?:\/\/)?(www\.)?(twitter|x)\.com\/[a-zA-Z0-9_]+\/?$/;
+  } else if (hostname.includes('linkedin.com')) {
+    regex = /^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_]+\/?$/;
   }
   // TODO: Support figma
   else {

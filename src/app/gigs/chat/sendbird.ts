@@ -5,10 +5,10 @@ import SendbirdChat, {
   SendbirdChatWith,
 } from '@sendbird/chat';
 import {
-  GroupChannelModule,
-  MessageFilter,
-  MessageCollectionInitPolicy,
   GroupChannel,
+  GroupChannelModule,
+  MessageCollectionInitPolicy,
+  MessageFilter,
 } from '@sendbird/chat/groupChannel';
 
 // Initialize the SendbirdChat module
@@ -23,13 +23,15 @@ const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
 /**
   Connects the current user to Sendbird servers
 */
+/**
+  Connects the current user to Sendbird servers
+*/
 const initializeConnection = async (userId: string) => {
   try {
     const user = await sb.connect(userId);
     return user;
-  } catch (error: any) {
-    console.error(`Failed to connect to Sendbird: ${error}`);
-    throw new Error('Failed to connect to Sendbird');
+  } catch (error) {
+    console.log(`Unable to connect with Sendbird: ${JSON.stringify(error)}`);
   }
 };
 
@@ -57,6 +59,9 @@ const initializeChannelEvents = (channelHandler: any) => {
 /**
   Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
 */
+/**
+  Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
+*/
 const loadMessages = async (channelId: string, messageHandlers: any) => {
   const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
 
@@ -76,6 +81,9 @@ const loadMessages = async (channelId: string, messageHandlers: any) => {
   return { messageCollection, channel };
 };
 
+/**
+  Converts milliseconds to a formatted date and time object for easier display.
+*/
 /**
   Converts milliseconds to a formatted date and time object for easier display.
 */
@@ -103,6 +111,11 @@ const timestampToTime = (timestamp: number) => {
   return timeObject;
 };
 
+/**
+  Converts military time to regular time with AM/PM suffix.
+  @params hour - The hour in military time, minutes - The minutes in military time
+  @returns string in regular time with AM/PM suffix
+*/
 /**
   Converts military time to regular time with AM/PM suffix.
   @params hour - The hour in military time, minutes - The minutes in military time
