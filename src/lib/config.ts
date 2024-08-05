@@ -4,7 +4,7 @@ import { z } from 'zod';
 // Zod schema for the app configuration
 const appConfigSchema = z.object({
   nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
-  devApiUrl: z.string().url().optional().default('http://localhost:6200'),
+  sorbetApiUrl: z.string().url().optional().default('http://localhost:6200'),
   showLogger: z.preprocess((val) => val === 'true', z.boolean()).default(false),
   networkId: z.enum(NetworkIds).optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
@@ -19,7 +19,7 @@ type AppConfig = z.infer<typeof appConfigSchema>;
 // Type safe parse of our environment variables into a config object
 export const config: AppConfig = appConfigSchema.parse({
   nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV,
-  devApiUrl: process.env.NEXT_PUBLIC_DEV_API_URL,
+  sorbetApiUrl: process.env.NEXT_PUBLIC_SORBET_API_URL,
   showLogger: process.env.NEXT_PUBLIC_SHOW_LOGGER === 'true',
   networkId: process.env.NEXT_PUBLIC_NETWORK_ID,
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
