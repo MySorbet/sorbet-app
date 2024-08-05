@@ -1,17 +1,5 @@
 import type { Network, NetworkId } from '@/types/network';
-import dotenv from 'dotenv';
 import { z } from 'zod';
-
-interface AppConfig {
-  nodeEnv: 'development' | 'production' | 'test';
-  devApiUrl: string;
-  showLogger: boolean;
-  networkId: string;
-  contractId: string;
-  relayerUrl: string;
-  authDomain: string;
-  googleMapKey?: string;
-}
 
 const appConfigSchema = z.object({
   nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
@@ -24,7 +12,8 @@ const appConfigSchema = z.object({
   googleMapKey: z.string().optional(),
 });
 
-dotenv.config({ path: ['.env', '.env.local'] });
+type AppConfig = z.infer<typeof appConfigSchema>;
+
 export const config: AppConfig = appConfigSchema.parse({
   nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV,
   devApiUrl: process.env.NEXT_PUBLIC_DEV_API_URL,
