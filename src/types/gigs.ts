@@ -87,11 +87,12 @@ export enum GigsContentType {
   Received,
 }
 
-export enum ContractStatus {
-  PendingApproval,
-  NotStarted,
-  InProgress,
-  InReview,
-  Completed,
-  Rejected,
-}
+const ContractStatuses = [
+  'PendingApproval',
+  'NotStarted',
+  'InProgress',
+  'InReview',
+  'Completed',
+  'Rejected',
+] as const;
+type ContractStatus = (typeof ContractStatuses)[number];
