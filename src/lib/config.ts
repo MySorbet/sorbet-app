@@ -1,19 +1,22 @@
-import type { Network, NetworkId } from '@/types/network';
+import { NetworkIds, type NetworkId, type Network } from '@/types/network';
 import { z } from 'zod';
 
+// Zod schema for the app configuration
 const appConfigSchema = z.object({
   nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
   devApiUrl: z.string().url().optional().default('http://localhost:6200'),
   showLogger: z.preprocess((val) => val === 'true', z.boolean()).default(false),
-  networkId: z.string().optional().default('testnet'),
+  networkId: z.enum(NetworkIds).optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
   authDomain: z.string().url(),
   googleMapKey: z.string().optional(),
+  sendbirdAppId: z.string(),
 });
-
+// Infer TS type from the Zod schema
 type AppConfig = z.infer<typeof appConfigSchema>;
 
+// Type safe parse of our environment variables into a config object
 export const config: AppConfig = appConfigSchema.parse({
   nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV,
   devApiUrl: process.env.NEXT_PUBLIC_DEV_API_URL,
@@ -23,8 +26,10 @@ export const config: AppConfig = appConfigSchema.parse({
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
+  sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
 });
 
+// Networks require more information than just the networkId
 export const networks: Record<NetworkId, Network> = {
   mainnet: {
     networkId: 'mainnet',
@@ -71,8 +76,5 @@ export const networks: Record<NetworkId, Network> = {
   },
 };
 
-export const CONSTANTS = {
-  SendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
-};
-
-export const currentNetwork = networks[config.networkId as NetworkId];
+// The current network is determined by the networkId in the config after parsing the environment variables
+export const currentNetwork = networks[config.networkId];
