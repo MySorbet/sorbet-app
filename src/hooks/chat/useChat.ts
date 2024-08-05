@@ -216,7 +216,7 @@ export const useChat = ({
 
       const ts = Date.now();
       const messageListParams: MessageListParams = {
-        prevResultSize: 20,
+        prevResultSize: 100,
         nextResultSize: 0,
         isInclusive: true,
       };
