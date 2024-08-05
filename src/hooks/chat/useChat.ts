@@ -39,13 +39,14 @@ export const useChat = ({
   isOpen,
 }: useInitializeChatProps) => {
   const { toast } = useToast();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [state, updateState] = useState<ChatState>({
     channel: null,
     messages: [],
     typingMembers: [],
     messageCollection: null,
   });
-  const [loading, setLoading] = useState<boolean>(false);
 
   const stateRef = useRef<any>(null);
   stateRef.current = state;
@@ -260,9 +261,10 @@ export const useChat = ({
     };
   }, [user, contractData]);
 
-  return [state, loading, sendMessage] as [
+  return [state, loading,error, sendMessage] as [
     ChatState,
     boolean,
+    string | null,
     typeof sendMessage
   ];
 };

@@ -24,7 +24,7 @@ interface ChatProps {
 export function Chat({ showTopbar = true, contractData, isOpen }: ChatProps) {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const { user, logout } = useAuth();
-  const [state, chatLoading, sendMessage] = useChat({
+  const [state, chatLoading, error, sendMessage] = useChat({
     user,
     logout,
     contractData,
