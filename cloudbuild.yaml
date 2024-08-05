@@ -6,6 +6,6 @@ steps:
 substitutions:
   _TAG: '$BRANCH_NAME-$BUILD_ID'
 images:
-  - 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production:$_TAG'
+  - 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production:${_TAG}'
 options:
   logging: CLOUD_LOGGING_ONLY
