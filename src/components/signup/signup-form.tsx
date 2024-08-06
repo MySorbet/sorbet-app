@@ -20,12 +20,11 @@ import {
   useLoginWithEmail,
   useSignUpAsync,
 } from '@/hooks';
-import { config } from '@/lib/config';
-import { network } from '@/utils/config';
+import { config, network } from '@/lib/config';
 import {
   accountAddressPatternNoSubAccount,
   getEmailId,
-} from '@/utils/form-validation';
+} from '@/utils/fastAuth/form-validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import * as near_api_js_1 from 'near-api-js';
@@ -143,7 +142,6 @@ const SignUpForm = () => {
         .toString();
       const methodNames = '';
       const contract_id = config.contractId;
-
       try {
         const fullAccountId = `${data.username}.${network.fastAuth.accountIdSuffix}`;
         const { accountId } = await handleCreateAccount({
@@ -167,8 +165,6 @@ const SignUpForm = () => {
           contract_id: contract_id || '',
           methodNames: methodNames || '',
         };
-
-        setStep(1);
 
         const newSearchParams = new URLSearchParams(
           Object.entries(searchParameters)
@@ -223,23 +219,13 @@ const SignUpForm = () => {
     lastName: string;
   }) => {
     const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
-    const handleAccountCreate = async (data: {
-      email: string;
-      accountId: string;
-      firstName: string;
-      lastName: string;
-    }) => {
-      const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
-      await signUpAsync({
-        ...data,
-        accountId: data.accountId + suffix,
-      });
-      await loginWithEmail(data.email);
-      await createAccount({ email: data.email, username: data.accountId });
-      await loginWithEmail(data.email);
-      await createAccount({ email: data.email, username: data.accountId });
-      setStep(1);
-    };
+    await signUpAsync({
+      ...data,
+      accountId: data.accountId + suffix,
+    });
+    await loginWithEmail(data.email);
+    await createAccount({ email: data.email, username: data.accountId });
+    setStep(1);
   };
 
   useEffect(() => {
@@ -396,6 +382,10 @@ const SignUpForm = () => {
                 firstName: 'John',
                 lastName: 'Doe',
               });
+              // createAccount({
+              //   email: formsEmail,
+              //   username: formsUsername,
+              // });
             }}
             // disabled={errors.accountId != null || !formsEmail}
             disabled={!isValid || !usernameAvailable}

@@ -1,4 +1,5 @@
 import type { Network, NetworkId } from '@/types/network';
+import environment from '@/utils/fastAuth/environment';
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
@@ -27,8 +28,9 @@ interface AppConfig {
   youtubeClientSecret?: string;
   loginSuccessUrl?: string;
   loginFailureUrl?: string;
-  signUpSuccessUrl?: string,
-  signUpFailureUrl?: string,
+  signUpSuccessUrl?: string;
+  signUpFailureUrl?: string;
+  nearMaxAllowances?: string;
 }
 
 const appConfigSchema = z.object({
@@ -63,6 +65,7 @@ const appConfigSchema = z.object({
   loginFailureUrl: z.string().optional(),
   signUpSuccessUrl: z.string().optional(),
   signUpFailureUrl: z.string().optional(),
+  nearMaxAllowances: z.string().optional(),
 });
 
 dotenv.config({ path: ['.env', '.env.local'] });
@@ -95,6 +98,7 @@ export const config: AppConfig = appConfigSchema.parse({
   loginFailureUrl: process.env.NEXT_PUBLIC_LOGIN_FAILED_URL,
   signUpSuccessUrl: process.env.NEXT_PUBLIC_SIGNUP_SUCCESS_URL,
   signUpFailureUrl: process.env.NEXT_PUBLIC_SIGNUP_FAILED_URL,
+  nearMaxAllowances: process.env.NEXT_PUBLIC_NEAR_MAX_ALLOWANCE,
 });
 
 export const networks: Record<NetworkId, Network> = {
@@ -104,11 +108,13 @@ export const networks: Record<NetworkId, Network> = {
     nodeUrl: 'https://rpc.mainnet.near.org',
     walletUrl: 'https://wallet.near.org',
     helperUrl: 'https://helper.mainnet.near.org',
+    relayerUrl: config.relayerUrl,
     fastAuth: {
       mpcRecoveryUrl:
         'https://mpc-recovery-leader-mainnet-cg7nolnlpa-ue.a.run.app',
       authHelperUrl: 'https://api.kitwallet.app',
       accountIdSuffix: 'near',
+      queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyDhxTQVeoWdnbpYTocBAABbLULGf6H5khQ',
         authDomain: 'near-fastauth-prod.firebaseapp.com',
@@ -126,10 +132,12 @@ export const networks: Record<NetworkId, Network> = {
     nodeUrl: 'https://rpc.testnet.near.org',
     walletUrl: 'https://wallet.testnet.near.org',
     helperUrl: 'https://helper.testnet.near.org',
+    relayerUrl: config.relayerUrl,
     fastAuth: {
       mpcRecoveryUrl: 'https://mpc-recovery-7tk2cmmtcq-ue.a.run.app',
       authHelperUrl: 'https://testnet-api.kitwallet.app',
       accountIdSuffix: 'testnet',
+      queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyCmD88ExxK3vc7p3qkMvgFfdkyrWa2w2dg',
         authDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
@@ -147,4 +155,6 @@ export const CONSTANTS = {
   SendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
 };
 
-export const currentNetwork = networks[config.networkId as NetworkId];
+export const networkId: NetworkId = config.networkId as NetworkId;
+export const network = networks[config.networkId as NetworkId];
+export const basePath = environment.REACT_APP_BASE_PATH;

@@ -3,9 +3,10 @@
 import { getFastAuthState } from '../../hooks/useFastAuthState';
 import useFirebaseUser from '../../hooks/useFirebaseUser';
 import { decodeIfTruthy, inIframe } from '../../utils';
-import { basePath } from '../../utils/config';
-import { NEAR_MAX_ALLOWANCE } from '../../utils/constants';
-import { checkFirestoreReady, firebaseAuth } from '../../utils/firebase';
+import {
+  checkFirestoreReady,
+  firebaseAuth,
+} from '../../utils/fastAuth/firebase';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -14,7 +15,7 @@ import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
-import { config } from '@/lib/config';
+import { basePath, config } from '@/lib/config';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
 import { captureException } from '@sentry/react';
@@ -193,7 +194,7 @@ const SignInForm = () => {
       .signAndSendAddKey({
         contractId: contract_id,
         methodNames,
-        allowance: new BN(NEAR_MAX_ALLOWANCE),
+        allowance: new BN(config.nearMaxAllowances ?? '0'),
         publicKey: public_key,
       })
       .then((res) => res && res.json())

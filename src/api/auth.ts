@@ -1,4 +1,4 @@
-import { currentNetwork } from '@/lib/config';
+import { network } from '@/lib/config';
 import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
 import { API_URL } from '@/utils';
 import axios from 'axios';
@@ -77,7 +77,7 @@ export const checkIsAccountAvailable = async (username: string) => {
   try {
     if (!username) return;
 
-    const response = await fetch(currentNetwork.nodeUrl, {
+    const response = await fetch(network.nodeUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export const checkIsAccountAvailable = async (username: string) => {
         params: {
           request_type: 'view_account',
           finality: 'final',
-          account_id: `${username}.${currentNetwork.fastAuth.accountIdSuffix}`,
+          account_id: `${username}.${network.fastAuth.accountIdSuffix}`,
         },
       }),
     });

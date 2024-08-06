@@ -1,5 +1,5 @@
 // Import User type
-import { firebaseAuth } from '../utils/firebase';
+import { firebaseAuth } from '../utils/fastAuth/firebase';
 import { User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 

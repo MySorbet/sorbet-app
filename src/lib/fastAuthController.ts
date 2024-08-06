@@ -1,14 +1,13 @@
 import { fetchAccountIds } from '../api/fastAuthUtils';
 import { deleteOidcKeyPairOnLocalStorage } from '../utils';
-import { network } from '../utils/config';
-import { firebaseAuth } from '../utils/firebase';
+import { firebaseAuth } from '../utils/fastAuth/firebase';
 import {
   CLAIM,
   getSignRequestFrpSignature,
   getUserCredentialsFrpSignature,
   verifyMpcSignature,
-} from '../utils/mpc-service';
-import { networks } from './config';
+} from '../utils/fastAuth/mpc-service';
+import { network, networks } from './config';
 import type { NetworkId } from '@/types/network';
 import { Account, Connection } from '@near-js/accounts';
 import {

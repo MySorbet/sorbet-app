@@ -7,10 +7,12 @@ type ProductionNetwork = {
   nodeUrl: string;
   walletUrl: string;
   helperUrl: string;
+  relayerUrl: string;
   fastAuth: {
     mpcRecoveryUrl: string;
     authHelperUrl: string; // TODO refactor: review by fastauth team
     accountIdSuffix: string;
+    queryApiUrl: string;
     firebase: {
       apiKey: string;
       authDomain: string;
