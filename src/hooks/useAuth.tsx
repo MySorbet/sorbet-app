@@ -10,9 +10,9 @@ import {
   ReactNode,
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
 } from 'react';
 
 const AuthContext = createContext({
@@ -63,38 +63,60 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [reduxUser, setUser]);
 
-  const loginWithEmail = async (email: string) => {
-    // try {
-    //   console.log('initiating fast auth login');
-    //   selector.wallet('fast-auth-wallet').then((fastAuthWallet: any) => {
-    //     fastAuthWallet.signIn({
-    //       contractId: config.contractId,
-    //       email: email,
-    //       isRecovery: true,
-    //     });
-    //   });
-    //   return 'Login successful';
-    // } catch (error) {
-    //   return 'Login failed';
-    // }
-    const response = await signInAsync({ email });
-    if (response) {
-      const user = response.data.user;
-      const token = response.data.access_token;
-      setUser(user);
-      setAccessToken(token);
-      dispatch(updateUserData(user));
-      dispatch(setOpenSidebar(false));
+  const registerWithEmail = async (email: string) => {
+    try {
+      console.log('initiating fast auth sign up');
+      selector.wallet('fast-auth-wallet').then((fastAuthWallet: any) => {
+        fastAuthWallet.signIn({
+          contractId: config.contractId,
+          email: email,
+          isRecovery: false,
+          successUrl: config.signUpSuccessUrl,
+          failureUrl: config.signUpFailureUrl,
+        });
+      });
       return {
-        ...response,
         status: 'success',
-        message: 'Login successful',
-        data: response.data,
+        message: 'register successful',
       };
-    } else {
+    } catch (error) {
       return {
         status: 'failed',
-        message: 'Failed to login. Server threw an error',
+        message: 'register failed',
+      };
+    }
+  };
+
+  const loginWithEmail = async (
+    email: string
+  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
+    try {
+      const response = await signInAsync({ email });
+      if (response) {
+        const user = response.data.user;
+        const token = response.data.access_token;
+        setUser(user);
+        setAccessToken(token);
+        dispatch(updateUserData(user));
+        dispatch(setOpenSidebar(false));
+
+        return {
+          status: 'success',
+          message: 'Login successful',
+          data: response.data,
+        };
+      } else {
+        return {
+          status: 'failed',
+          message: 'Failed to login. Server threw an error',
+          error: {},
+        };
+      }
+    } catch (error) {
+      return {
+        status: 'failed',
+        message: 'Login failed',
+        error: error,
       };
     }
   };
@@ -172,6 +194,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       accessToken,
       loginWithEmail,
       loginWithWallet,
+      registerWithEmail,
       logout,
       appLoading,
       checkAuth,

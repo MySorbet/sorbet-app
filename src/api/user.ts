@@ -37,9 +37,7 @@ export const getUserByAccountId = async (accountId: string) => {
     );
     return response;
   } catch (error: any) {
-    throw new Error(
-      `Failed to get user by account id: ${error.response.data.message}`
-    );
+    console.log(`Failed to get user by account id: ${JSON.stringify(error)}`);
   }
 };
 

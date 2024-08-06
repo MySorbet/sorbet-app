@@ -1,16 +1,11 @@
 import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
-import { ContractStatus, User } from '@/types';
-import {
-  SBMessage,
-  SendMessageParams,
-  SupportedFileIcons,
-} from '@/types/sendbird';
-import { GroupChannel, Member } from '@sendbird/chat/groupChannel';
-import { motion } from 'framer-motion';
+import { useAuth } from '@/hooks';
+import { useChat } from '@/hooks/chat/useChat';
+import { ContractType } from '@/types';
 import { File, ImageIcon } from 'lucide-react';
-import React, { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 
 const icons = {
   pdf: <File className='w-5 h-5 text-white' />,
@@ -21,71 +16,60 @@ const icons = {
 type SupportedFileIcon = keyof typeof icons;
 
 interface ChatProps {
-  messages: SBMessage[];
-  selectedUser: User;
-  isMobile: boolean;
   showTopbar?: boolean;
-  channel: GroupChannel | undefined | null;
-  typingMembers: Member[];
-  contractStatus: string;
+  contractData: ContractType;
+  isOpen: boolean;
 }
 
-export function Chat({
-  messages,
-  selectedUser,
-  isMobile,
-  showTopbar = true,
-  channel,
-  typingMembers,
-  contractStatus,
-}: ChatProps) {
-  const sendMessage = (newMessage: SendMessageParams) => {
-    if (!channel) return;
+export function Chat({ showTopbar = true, contractData, isOpen }: ChatProps) {
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const { user, logout } = useAuth();
+  const [state, chatLoading, error, sendMessage] = useChat({
+    user,
+    logout,
+    contractData,
+    isOpen,
+  });
 
-    if (newMessage.type === 'file') {
-      const params = {
-        file: newMessage.message[0],
-        name: newMessage.message[0].name,
-        type: newMessage.message[0].type,
-      };
-      channel
-        .sendFileMessage(params)
-        .onSucceeded((fileMessageParams) => {
-          channel.endTyping();
-        })
-        .onFailed((error) => {
-          console.log('message failed : ', error);
-        });
-    } else {
-      channel
-        .sendUserMessage({ message: newMessage.message })
-        .onSucceeded((message) => {
-          channel.endTyping();
-        })
-        .onFailed((error) => {
-          console.log('message failed : ', error);
-        });
-    }
-  };
+  // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
+  // properly being updated when a user closes out of the chat
+
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Initial check
+    checkScreenWidth();
+
+    // Event listener for screen width changes
+    window.addEventListener('resize', checkScreenWidth);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', checkScreenWidth);
+    };
+  }, []);
 
   return (
     <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl '>
-      {showTopbar && <ChatTopbar selectedUser={selectedUser} />}
+      {showTopbar && <ChatTopbar selectedUser={user} />}
 
       <ChatList
-        messages={messages}
-        selectedUser={selectedUser}
-        typingMembers={typingMembers as Member[]}
-        contractStatus={contractStatus}
-        supportedIcons={icons as SupportedFileIcons}
+        messages={state.messages}
+        selectedUser={user!}
+        typingMembers={state.typingMembers}
+        contractStatus={contractData.status}
+        supportedIcons={icons}
+        chatLoading={chatLoading}
       />
       <div className='mt-4'>
         <ChatBottombar
           sendMessage={sendMessage}
           isMobile={isMobile}
-          channel={channel}
-          contractStatus={contractStatus}
-          supportedIcons={icons as SupportedFileIcons}
+          channel={state.channel}
+          contractStatus={contractData.status}
+          supportedIcons={icons}
         />
       </div>
     </div>

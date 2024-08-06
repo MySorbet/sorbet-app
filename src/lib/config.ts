@@ -1,4 +1,5 @@
 import { NetworkIds, type NetworkId, type Network } from '@/types/network';
+import environment from '@/utils/fastAuth/environment';
 import { z } from 'zod';
 
 // Zod schema for the app configuration
@@ -9,9 +10,14 @@ const appConfigSchema = z.object({
   networkId: z.enum(NetworkIds).optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
-  authDomain: z.string().url(),
+  fastAuthDomain: z.string().url(),
   googleMapKey: z.string().optional(),
   sendbirdAppId: z.string(),
+  loginSuccessUrl: z.string().optional(),
+  loginFailureUrl: z.string().optional(),
+  signUpSuccessUrl: z.string().optional(),
+  signUpFailureUrl: z.string().optional(),
+  nearMaxAllowances: z.string().optional(),
 });
 // Infer TS type from the Zod schema
 type AppConfig = z.infer<typeof appConfigSchema>;
@@ -24,9 +30,14 @@ export const config: AppConfig = appConfigSchema.parse({
   networkId: process.env.NEXT_PUBLIC_NETWORK_ID,
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
-  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  fastAuthDomain: process.env.NEXT_PUBLIC_FAST_AUTH_DOMAIN,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
   sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
+  loginSuccessUrl: process.env.NEXT_PUBLIC_LOGIN_SUCCESS_URL,
+  loginFailureUrl: process.env.NEXT_PUBLIC_LOGIN_FAILED_URL,
+  signUpSuccessUrl: process.env.NEXT_PUBLIC_SIGNUP_SUCCESS_URL,
+  signUpFailureUrl: process.env.NEXT_PUBLIC_SIGNUP_FAILED_URL,
+  nearMaxAllowances: process.env.NEXT_PUBLIC_NEAR_MAX_ALLOWANCE,
 });
 
 // Networks require more information than just the networkId
@@ -37,14 +48,16 @@ export const networks: Record<NetworkId, Network> = {
     nodeUrl: 'https://rpc.mainnet.near.org',
     walletUrl: 'https://wallet.near.org',
     helperUrl: 'https://helper.mainnet.near.org',
+    relayerUrl: config.relayerUrl,
     fastAuth: {
       mpcRecoveryUrl:
         'https://mpc-recovery-leader-mainnet-cg7nolnlpa-ue.a.run.app',
       authHelperUrl: 'https://api.kitwallet.app',
       accountIdSuffix: 'near',
+      queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyDhxTQVeoWdnbpYTocBAABbLULGf6H5khQ',
-        authDomain: 'near-fastauth-prod.firebaseapp.com',
+        fastAuthDomain: 'near-fastauth-prod.firebaseapp.com',
         projectId: 'near-fastauth-prod',
         storageBucket: 'near-fastauth-prod.appspot.com',
         messagingSenderId: '829449955812',
@@ -59,13 +72,15 @@ export const networks: Record<NetworkId, Network> = {
     nodeUrl: 'https://rpc.testnet.near.org',
     walletUrl: 'https://wallet.testnet.near.org',
     helperUrl: 'https://helper.testnet.near.org',
+    relayerUrl: config.relayerUrl,
     fastAuth: {
       mpcRecoveryUrl: 'https://mpc-recovery-7tk2cmmtcq-ue.a.run.app',
       authHelperUrl: 'https://testnet-api.kitwallet.app',
       accountIdSuffix: 'testnet',
+      queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyCmD88ExxK3vc7p3qkMvgFfdkyrWa2w2dg',
-        authDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
+        fastAuthDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
         projectId: 'my-fastauth-issuer-ea4c0',
         storageBucket: 'my-fastauth-issuer-ea4c0.appspot.com',
         messagingSenderId: '505357561486',
@@ -77,4 +92,8 @@ export const networks: Record<NetworkId, Network> = {
 };
 
 // The current network is determined by the networkId in the config after parsing the environment variables
-export const currentNetwork = networks[config.networkId];
+export const networkId: NetworkId = config.networkId as NetworkId;
+export const network = networks[config.networkId];
+
+// Base path comes from the fastAuth environment which holds a number of environment vars not mentioned in the app config
+export const basePath = environment.REACT_APP_BASE_PATH;

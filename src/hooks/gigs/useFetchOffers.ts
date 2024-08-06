@@ -28,16 +28,13 @@ export const useFetchOffers = (
             break;
         }
 
-        if (response.data && response.statusText === 'OK') {
+        if (response?.data) {
           return response.data;
         } else {
           toast({
             title: 'Failed to fetch offers',
             description: 'Try again. If this issue persists, contact support.',
           });
-          throw new Error(
-            'Fetching offers failed. Server returned a failed response.'
-          );
         }
       }
     },

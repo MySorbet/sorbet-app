@@ -12,25 +12,95 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { UserSignUpContext, UserSignUpContextType } from './signup-container';
-import { Loading, useWalletSelector } from '@/components/common';
-import { useSignUpAsync, useLoginWithEmail } from '@/hooks';
+import { useWalletSelector } from '@/components/common';
+import { handleCreateAccount } from '@/components/signin/signin-form';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  useCheckIsAccountAvailable,
+  useLoginWithEmail,
+  useSignUpAsync,
+} from '@/hooks';
+import { config, network } from '@/lib/config';
+import {
+  accountAddressPatternNoSubAccount,
+  getEmailId,
+} from '@/utils/fastAuth/form-validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
+import * as near_api_js_1 from 'near-api-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
+const checkIsAccountAvailable = async (
+  desiredUsername: string
+): Promise<boolean> => {
+  try {
+    const response = await fetch(network.nodeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 'dontcare',
+        method: 'query',
+        params: {
+          request_type: 'view_account',
+          finality: 'final',
+          account_id: `${desiredUsername}.${network.fastAuth.accountIdSuffix}`,
+        },
+      }),
+    });
+    const data = await response.json();
+    if (data?.error?.cause?.name === 'UNKNOWN_ACCOUNT') {
+      return true;
+    }
+
+    if (data?.result?.code_hash) {
+      return false;
+    }
+
+    return false;
+  } catch (error: any) {
+    const { toast } = useToast();
+
+    toast({
+      title: 'ERROR',
+      description: error.message,
+      variant: 'destructive',
+    });
+    return false;
+  }
+};
+
 const schema = z.object({
-  firstName: z.string().min(1, { message: 'First name is required' }),
-  lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Invalid email format' }),
-  accountId: z.string().min(1, { message: 'Account ID is required' }),
+  accountId: z
+    .string()
+    .min(1, { message: 'Account ID is required' })
+    .regex(
+      accountAddressPatternNoSubAccount,
+      'Accounts must be lowercase and may contain - or _, but they may not begin or end with a special character or have two consecutive special characters.'
+    )
+    .refine(
+      async (accountId) => {
+        const isAvailable = await checkIsAccountAvailable(accountId);
+        return isAvailable;
+      },
+      (accountId) => ({
+        message: `${accountId}.${network.fastAuth.accountIdSuffix} is taken, try something else.`,
+        path: ['accountId'],
+      })
+    ),
 });
 
 const SignUpForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setUserData, setStep } = useContext(
     UserSignUpContext
   ) as UserSignUpContextType;
@@ -38,14 +108,15 @@ const SignUpForm = () => {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
       email: '',
       accountId: '',
     },
     mode: 'all',
   });
   const formValues = form.watch();
+  const formsEmail = form.watch('email');
+  const formsUsername = form.watch('accountId');
+
   const { isValid, touchedFields, errors } = useFormState({
     control: form.control,
   });
@@ -53,17 +124,109 @@ const SignUpForm = () => {
   const { mutateAsync: loginWithEmail } = useLoginWithEmail();
   const { isPending: signUpPending, mutateAsync: signUpAsync } =
     useSignUpAsync();
+  const {
+    isPending: checkAccountPending,
+    mutateAsync: checkIsAccountAvailable,
+    isError: checkAccountError,
+  } = useCheckIsAccountAvailable();
+  const [inFlight, setInFlight] = useState(false);
+  const { toast } = useToast();
 
-  const onSubmit = form.handleSubmit(async (values: z.infer<typeof schema>) => {
-    setUserData((user) => ({ ...user, ...values }));
+  const createAccount = useCallback(
+    async (data: { email: string; username: string }) => {
+      setInFlight(true);
+      const success_url = config.signUpSuccessUrl;
+      const failure_url = config.signUpFailureUrl;
+      const public_key = near_api_js_1.KeyPair.fromRandom('ed25519')
+        .getPublicKey()
+        .toString();
+      const methodNames = '';
+      const contract_id = config.contractId;
+      try {
+        const fullAccountId = `${data.username}.${network.fastAuth.accountIdSuffix}`;
+        const { accountId } = await handleCreateAccount({
+          accountId: fullAccountId,
+          email: data.email,
+          isRecovery: false,
+          success_url,
+          failure_url,
+          public_key,
+          contract_id,
+          methodNames,
+        });
+
+        const searchParameters = {
+          accountId,
+          email: data.email,
+          isRecovery: 'false',
+          success_url: success_url || '',
+          failure_url: failure_url || '',
+          public_key_lak: public_key || '',
+          contract_id: contract_id || '',
+          methodNames: methodNames || '',
+        };
+
+        const newSearchParams = new URLSearchParams(
+          Object.entries(searchParameters)
+            .filter(([_, v]) => v !== null)
+            .map(([k, v]) => [k, v as string])
+        );
+
+        window.parent.postMessage(
+          {
+            type: 'method',
+            method: 'query',
+            id: 1234,
+            params: {
+              request_type: 'complete_authentication',
+            },
+          },
+          '*'
+        );
+        window.open(
+          `${config.fastAuthDomain}/verify-email?${newSearchParams.toString()}`,
+          '_parent'
+        );
+      } catch (error: any) {
+        console.log('error', error);
+
+        window.parent.postMessage(
+          {
+            type: 'CreateAccountError',
+            message:
+              typeof error?.message === 'string'
+                ? error.message
+                : 'Something went wrong',
+          },
+          '*'
+        );
+        toast({
+          title: 'ERROR',
+          description: error.message,
+          variant: 'destructive',
+        });
+      } finally {
+        setInFlight(false);
+      }
+    },
+    []
+  );
+
+  const handleAccountCreate = async (data: {
+    email: string;
+    accountId: string;
+    firstName: string;
+    lastName: string;
+  }) => {
+    const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
     await signUpAsync({
-      ...values,
-      userType: 'FREELANCER',
+      ...data,
+      accountId: data.accountId + suffix,
     });
-    await loginWithEmail(values.email);
-
+    await loginWithEmail(data.email);
+    await createAccount({ email: data.email, username: data.accountId });
     setStep(1);
-  });
+  };
 
   useEffect(() => {
     const storedData = localStorage.getItem('signupForm');
@@ -89,6 +252,26 @@ const SignUpForm = () => {
       localStorage.setItem('signupForm', JSON.stringify(dataToStore));
     }
   }, [formValues, isValid]);
+
+  useEffect(() => {
+    console.log({ formsEmail });
+    if (formsEmail?.split('@').length > 1) {
+      form.setValue('accountId', getEmailId(formsEmail), {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setUsernameAvailable(true);
+    }
+    // Should only trigger when email changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formsEmail, form.setValue]);
+
+  useEffect(() => {
+    const usernameParam = searchParams.get('account_id');
+    if (usernameParam) {
+      setStep(1);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (accounts.length > 0) {
@@ -118,70 +301,8 @@ const SignUpForm = () => {
     <FormContainer>
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
-        <form onSubmit={onSubmit}>
+        <form>
           <div className='flex flex-col gap-4 p-2 min-h-[310px]'>
-            <div className='flex flex-row gap-6'>
-              <FormField
-                control={form.control}
-                name='firstName'
-                render={({ field }) => {
-                  return (
-                    <FormItem className='space-y-[6px]'>
-                      <FormLabel className='text-sm text-[#344054]'>
-                        First name
-                      </FormLabel>
-                      <FormControl>
-                        <div className='relative'>
-                          <Input
-                            {...form.register('firstName')}
-                            placeholder='First name'
-                            {...field}
-                            className={
-                              !!errors.firstName
-                                ? 'border-red-500 ring-red-500'
-                                : ''
-                            }
-                          />
-                          {errors.firstName && (
-                            <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                          )}
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  );
-                }}
-              />
-              <FormField
-                control={form.control}
-                name='lastName'
-                render={({ field }) => {
-                  return (
-                    <FormItem className='space-y-[6px]'>
-                      <FormLabel className='text-sm text-[#344054]'>
-                        Last name
-                      </FormLabel>
-                      <FormControl>
-                        <div className='relative'>
-                          <Input
-                            {...form.register('lastName')}
-                            placeholder='Last name'
-                            {...field}
-                            className={
-                              !!errors.lastName
-                                ? 'border-red-500 ring-red-500'
-                                : ''
-                            }
-                          />
-                          {errors.lastName && (
-                            <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                          )}
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
             <FormField
               control={form.control}
               name='email'
@@ -217,71 +338,6 @@ const SignUpForm = () => {
                 );
               }}
             />
-            {/* <FormField
-              control={form.control}
-              name='accountId'
-              render={({ field }) => {
-                const handleChange = async (e: any) => {
-                  field.onChange(e);
-                  const value = e.target.value;
-                  const available = await checkIsAccountAvailable(value);
-                  setUsernameAvailable(available);
-                };
-                return (
-                  <FormItem className='w-full flex flex-col gap-[6px] space-y-0'>
-                    <FormLabel className='text-sm text-[#344054]'>
-                      Account ID
-                    </FormLabel>
-                    <FormControl>
-                      <div className='flex flex-row w-full'>
-                        <div className='relative w-full'>
-                          <Input
-                            {...form.register('accountId')}
-                            placeholder='user-name'
-                            className={
-                              !!errors.accountId
-                                ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
-                                : 'rounded-l-md rounded-r-none'
-                            }
-                            {...field}
-                            onChange={(e) => handleChange(e)}
-                          />
-                          {checkAccountPending ? (
-                            <Loader className='h-4 w-4 absolute right-4 top-3' />
-                          ) : touchedFields.accountId ? (
-                            checkAccountError ||
-                            errors.accountId ||
-                            !usernameAvailable ? (
-                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
-                            ) : (
-                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
-                            )
-                          ) : null}
-                        </div>
-                        <div className='h-10 flex items-center justify-center rounded-l-none rounded-r-md border text-base px-4 py-[10px] text-[#344054] hover:cursor-default'>
-                          .near
-                        </div>
-                      </div>
-                    </FormControl>
-                    {touchedFields.accountId ? (
-                      !usernameAvailable ? (
-                        <FormMessage className='text-[#D92D20] text-sm'>
-                          {field.value}.near is taken, try something else
-                        </FormMessage>
-                      ) : (
-                        <FormMessage className='text-[#2DD920] text-sm'>
-                          Account ID is available
-                        </FormMessage>
-                      )
-                    ) : (
-                      <FormMessage className='text-[#475467] text-sm'>
-                        Customize your own username
-                      </FormMessage>
-                    )}
-                  </FormItem>
-                );
-              }}
-            /> */}
             <FormField
               control={form.control}
               name='accountId'
@@ -303,56 +359,51 @@ const SignUpForm = () => {
                                 : 'rounded-l-md rounded-r-none'
                             }
                             {...field}
-                            value={
-                              accounts.length > 0 ? accounts[0].accountId : ''
+                            suffix={
+                              config.networkId == 'testnet'
+                                ? '.testnet'
+                                : '.mainnet'
                             }
-                            readOnly
                           />
+                          {checkAccountPending ? (
+                            <Loader className='h-4 w-4 absolute right-4 top-3' />
+                          ) : touchedFields.accountId ? (
+                            checkAccountError ||
+                            errors.accountId ||
+                            !usernameAvailable ? (
+                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                            ) : (
+                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
+                            )
+                          ) : null}
                         </div>
-                        {/* <div className='h-10 flex items-center justify-center rounded-l-none rounded-r-md border text-base px-4 py-[10px] text-[#344054] hover:cursor-default'>
-                          .near
-                        </div> */}
-                        {accounts.length > 0 ? (
-                          <Button
-                            className='ml-2 rounded-lg bg-sorbet px-4 py-1 text-sm text-white'
-                            onClick={handleWalletSignout}
-                          >
-                            Disconnect Wallet
-                          </Button>
-                        ) : (
-                          <Button
-                            className='ml-2 rounded-lg bg-sorbet px-4 py-1 text-sm text-white'
-                            onClick={handleWalletLogin}
-                          >
-                            Connect Wallet
-                          </Button>
-                        )}
                       </div>
                     </FormControl>
-                    {/* {touchedFields.accountId ? (
-                      !usernameAvailable ? (
-                        <FormMessage className='text-[#D92D20] text-sm'>
-                          {field.value}.near is taken, try something else
-                        </FormMessage>
-                      ) : (
-                        <FormMessage className='text-[#2DD920] text-sm'>
-                          Account ID is available
-                        </FormMessage>
-                      )
-                    ) : (
-                      <FormMessage className='text-[#475467] text-sm'>
-                        Customize your own username
-                      </FormMessage>
-                    )} */}
                   </FormItem>
                 );
               }}
             />
           </div>
           <Button
-            type='submit'
-            // disabled={!isValid || !usernameAvailable}
-            disabled={!isValid}
+            type='button'
+            onClick={() => {
+              // @Humza added this code-this logic is wrong, we have to register user name and mail info on signup step1 page after successful creating wallet account.
+              // handleAccountCreate({
+              //   email: formsEmail,
+              //   accountId: formsUsername,
+              //   firstName: 'John',
+              //   lastName: 'Doe',
+              // });
+
+              // Original code - this logic is fine.
+              createAccount({
+                email: formsEmail,
+                username: formsUsername,
+              });
+            }}
+            // disabled={errors.accountId != null || !formsEmail}
+            disabled={!isValid || !usernameAvailable}
+            // disabled={!isValid}
             className={'w-full bg-[#573DF5] border-[#7F56D9]'}
           >
             {signUpPending ? <Loader /> : 'Continue'}

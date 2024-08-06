@@ -1,3 +1,9 @@
+import type {
+  GroupChannel,
+  Member,
+  MessageCollection,
+} from '@sendbird/chat/groupChannel';
+
 export interface SBMessageTimeDto {
   year: string;
   month: string;
@@ -49,3 +55,10 @@ export interface SupportedFileIcons {
 }
 
 export type SupportedFileIcon = keyof SupportedFileIcons;
+
+export interface ChatState {
+  channel: GroupChannel | null;
+  messages: SBMessage[];
+  typingMembers: Member[];
+  messageCollection: MessageCollection | null;
+}

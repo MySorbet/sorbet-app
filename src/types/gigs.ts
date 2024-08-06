@@ -57,6 +57,7 @@ export interface ContractType {
   offerId: string;
   client?: User;
   freelancer?: User;
+  channelId: string;
 }
 
 export interface MilestoneType {
@@ -86,11 +87,12 @@ export enum GigsContentType {
   Received,
 }
 
-export enum ContractStatus {
-  PendingApproval,
-  NotStarted,
-  InProgress,
-  InReview,
-  Completed,
-  Rejected,
-}
+const ContractStatuses = [
+  'PendingApproval',
+  'NotStarted',
+  'InProgress',
+  'InReview',
+  'Completed',
+  'Rejected',
+] as const;
+export type ContractStatus = (typeof ContractStatuses)[number];
