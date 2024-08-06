@@ -1,7 +1,7 @@
 import { fetchAccountIdsFromTwoKeys } from '../api/fastAuthApi';
-import { setAccountIdToController } from '../lib/fastAuthController';
 import { checkFirestoreReady, firebaseAuth } from '../utils/fastAuth/firebase';
 import { networkId } from '@/lib/config';
+import { setAccountIdToController } from '@/utils/fastAuth';
 import { getKeys, isPassKeyAvailable } from '@near-js/biometric-ed25519/lib';
 import { KeyPairEd25519 } from '@near-js/crypto';
 import { captureException } from '@sentry/react';
