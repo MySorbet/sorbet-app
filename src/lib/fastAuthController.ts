@@ -1,5 +1,4 @@
 import { fetchAccountIds } from '../api/fastAuthApi';
-import { deleteOidcKeyPairOnLocalStorage } from '../utils';
 import { firebaseAuth } from '../utils/fastAuth/firebase';
 import {
   CLAIM,
@@ -9,6 +8,7 @@ import {
 } from '../utils/fastAuth/mpc-service';
 import { network, networks } from './config';
 import type { NetworkId } from '@/types/network';
+import { deleteOidcKeyPairOnLocalStorage } from '@/utils/fastAuth';
 import { Account, Connection } from '@near-js/accounts';
 import {
   createKey,

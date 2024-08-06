@@ -1,9 +1,9 @@
-import { withTimeout } from '../utils';
 import {
   CLAIM,
   getUserCredentialsFrpSignature,
 } from '../utils/fastAuth/mpc-service';
 import { network, networkId } from '@/lib/config';
+import { withTimeout } from '@/utils/fastAuth';
 import { captureException } from '@sentry/react';
 import { KeyPair } from 'near-api-js';
 
