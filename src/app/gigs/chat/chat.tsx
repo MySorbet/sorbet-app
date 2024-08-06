@@ -3,7 +3,7 @@ import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
 import { useAuth } from '@/hooks';
 import { useChat } from '@/hooks/chat/useChat';
-import { ContractType } from '@/types';
+import { ContractType, PrismaOfferType } from '@/types';
 import { File, ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +17,7 @@ type SupportedFileIcon = keyof typeof icons;
 
 interface ChatProps {
   showTopbar?: boolean;
-  contractData: ContractType;
+  contractData: ContractType | PrismaOfferType;
   isOpen: boolean;
 }
 

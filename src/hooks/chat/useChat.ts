@@ -9,7 +9,7 @@ import {
   timestampToTime,
 } from '@/app/gigs/chat/sendbird';
 import { useToast } from '@/components/ui/use-toast';
-import { ContractType, User } from '@/types';
+import { ContractType, PrismaOfferType, User } from '@/types';
 import {
   ChatState,
   NewMessageNotificationDto,
@@ -28,7 +28,7 @@ import { useEffect, useRef, useState } from 'react';
 interface useInitializeChatProps {
   user: User | null;
   logout: () => void;
-  contractData: ContractType;
+  contractData: ContractType | PrismaOfferType;
   isOpen: boolean;
 }
 
@@ -246,9 +246,10 @@ export const useChat = ({
           };
           message.fileData = fileData;
         }
-        setLoading(false);
         return message;
       });
+      console.log('loading complete');
+      setLoading(false);
 
       updateState({
         ...stateRef.current,
