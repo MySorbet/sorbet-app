@@ -49,9 +49,8 @@ node_modules/
 next-env.d.ts
 
 # next-sitemap
-robots.txt
-sitemap.xml
-sitemap-*.xml
+**/public/*.xml
+**/public/*.txt
 
 # Next.js build output
 .next
