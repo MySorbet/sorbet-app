@@ -1,7 +1,7 @@
 import { getContractForOffer } from '@/api/gigs';
-import { ActiveTab } from '@/app/gigs/gigs-comms';
+import { ActiveTab } from '@/app/gigs/gigs-dialog';
 import { useToast } from '@/components/ui/use-toast';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 type useGetContractForOfferParams = {
   currentOfferId: string;
