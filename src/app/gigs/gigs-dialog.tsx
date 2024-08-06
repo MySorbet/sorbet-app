@@ -107,26 +107,14 @@ export const GigsDialog = ({
     activeTab,
   });
 
-  // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
-  // properly being updated when a user closes out of the chat
-  useEffect(() => {
-    async function disconnectSendbird() {
-      await removeConnection();
-    }
+  
 
-    if (!isOpen) {
-      disconnectSendbird();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isGetContractError) {
-      toast({
-        title: 'Unable to fetch contract information',
-        description: 'If the problem persists, please contract support',
-      });
-    }
-  }, [isGetContractError]);
+  if (isGetContractError) {
+    toast({
+      title: 'Unable to fetch contract information',
+      description: 'If the problem persists, please contract support',
+    });
+  }
 
   useEffect(() => {
     if (
@@ -643,7 +631,10 @@ export const GigsDialog = ({
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogOverlay className='bg-[#F3F3F4]/90' />
-        <DialogContent className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'>
+        <DialogContent
+          className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'
+          aria-describedby={undefined}
+        >
           <div className='flex justify-between px-4 py-2 h-14'>
             <DialogTitle className='text-2xl'>
               {activeTab === ActiveTab.Chat
