@@ -65,7 +65,7 @@ export const WalletSelectorContextProvider: React.FC<{
         setupFinerWallet(),
         setupFastAuthWallet({
           relayerUrl: config.relayerUrl,
-          walletUrl: config.authDomain
+          walletUrl: config.fastAuthDomain,
         }),
       ],
     });

@@ -15,7 +15,7 @@ type ProductionNetwork = {
     queryApiUrl: string;
     firebase: {
       apiKey: string;
-      authDomain: string;
+      fastAuthDomain: string;
       projectId: string;
       storageBucket: string;
       messagingSenderId: string;

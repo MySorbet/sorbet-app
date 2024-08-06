@@ -10,7 +10,7 @@ interface AppConfig {
   networkId: string;
   contractId: string;
   relayerUrl: string;
-  authDomain: string;
+  fastAuthDomain: string;
   defaultProfileImage?: string;
   googleMapKey?: string;
   gcpProfileBucketName?: string;
@@ -40,7 +40,7 @@ const appConfigSchema = z.object({
   networkId: z.string().optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
-  authDomain: z.string().url(),
+  fastAuthDomain: z.string().url(),
   googleMapKey: z.string().optional(),
   defaultProfileImage: z
     .string()
@@ -76,7 +76,7 @@ export const config: AppConfig = appConfigSchema.parse({
   networkId: process.env.NEXT_PUBLIC_NETWORK_ID,
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
-  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  fastAuthDomain: process.env.NEXT_PUBLIC_FAST_AUTH_DOMAIN,
   defaultProfileImage: process.env.NEXT_DEFAULT_PROFILE_IMAGE,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
   gcpProfileBucketName: process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
@@ -117,7 +117,7 @@ export const networks: Record<NetworkId, Network> = {
       queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyDhxTQVeoWdnbpYTocBAABbLULGf6H5khQ',
-        authDomain: 'near-fastauth-prod.firebaseapp.com',
+        fastAuthDomain: 'near-fastauth-prod.firebaseapp.com',
         projectId: 'near-fastauth-prod',
         storageBucket: 'near-fastauth-prod.appspot.com',
         messagingSenderId: '829449955812',
@@ -140,7 +140,7 @@ export const networks: Record<NetworkId, Network> = {
       queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyCmD88ExxK3vc7p3qkMvgFfdkyrWa2w2dg',
-        authDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
+        fastAuthDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
         projectId: 'my-fastauth-issuer-ea4c0',
         storageBucket: 'my-fastauth-issuer-ea4c0.appspot.com',
         messagingSenderId: '505357561486',

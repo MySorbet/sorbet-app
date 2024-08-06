@@ -184,7 +184,7 @@ const SignUpForm = () => {
           '*'
         );
         window.open(
-          `https://sorbet-fast-auth-c3tiwq6mya-uc.a.run.app/verify-email?${newSearchParams.toString()}`,
+          `${config.fastAuthDomain}/verify-email?${newSearchParams.toString()}`,
           '_parent'
         );
       } catch (error: any) {

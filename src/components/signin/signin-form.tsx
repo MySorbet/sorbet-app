@@ -72,7 +72,7 @@ export const handleCreateAccount = async ({
 
   await sendSignInLinkToEmail(firebaseAuth, email, {
     url: encodeURI(
-      `https://sorbet-fast-auth-c3tiwq6mya-uc.a.run.app/auth-callback?${searchParams.toString()}`
+      `${config.fastAuthDomain}/auth-callback?${searchParams.toString()}`
     ),
     handleCodeInApp: true,
   });
