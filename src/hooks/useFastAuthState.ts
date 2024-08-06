@@ -1,4 +1,4 @@
-import { fetchAccountIdsFromTwoKeys } from '../api/fastAuthUtils';
+import { fetchAccountIdsFromTwoKeys } from '../api/fastAuthApi';
 import { setAccountIdToController } from '../lib/fastAuthController';
 import { checkFirestoreReady, firebaseAuth } from '../utils/fastAuth/firebase';
 import { networkId } from '@/lib/config';

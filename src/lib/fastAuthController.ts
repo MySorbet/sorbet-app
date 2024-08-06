@@ -1,4 +1,4 @@
-import { fetchAccountIds } from '../api/fastAuthUtils';
+import { fetchAccountIds } from '../api/fastAuthApi';
 import { deleteOidcKeyPairOnLocalStorage } from '../utils';
 import { firebaseAuth } from '../utils/fastAuth/firebase';
 import {
