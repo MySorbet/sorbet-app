@@ -365,6 +365,17 @@ const SignUpForm = () => {
                                 : '.mainnet'
                             }
                           />
+                          {checkAccountPending ? (
+                            <Loader className='h-4 w-4 absolute right-4 top-3' />
+                          ) : touchedFields.accountId ? (
+                            checkAccountError ||
+                            errors.accountId ||
+                            !usernameAvailable ? (
+                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                            ) : (
+                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
+                            )
+                          ) : null}
                         </div>
                       </div>
                     </FormControl>
@@ -376,16 +387,19 @@ const SignUpForm = () => {
           <Button
             type='button'
             onClick={() => {
-              handleAccountCreate({
-                email: formsEmail,
-                accountId: formsUsername,
-                firstName: 'John',
-                lastName: 'Doe',
-              });
-              // createAccount({
+              // @Humza added this code-this logic is wrong, we have to register user name and mail info on signup step1 page after successful creating wallet account.
+              // handleAccountCreate({
               //   email: formsEmail,
-              //   username: formsUsername,
+              //   accountId: formsUsername,
+              //   firstName: 'John',
+              //   lastName: 'Doe',
               // });
+
+              // Original code - this logic is fine.
+              createAccount({
+                email: formsEmail,
+                username: formsUsername,
+              });
             }}
             // disabled={errors.accountId != null || !formsEmail}
             disabled={!isValid || !usernameAvailable}
