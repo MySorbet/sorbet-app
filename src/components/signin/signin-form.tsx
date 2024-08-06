@@ -197,8 +197,8 @@ const SignInForm = () => {
         allowance: new BN(config.nearMaxAllowances ?? '0'),
         publicKey: public_key,
       })
-      .then((res) => res && res.json())
-      .then((res) => {
+      .then((res: any) => res && res.json())
+      .then((res: any) => {
         const failure = res['Receipts Outcome'].find(
           // @ts-ignore
           ({ outcome: { status } }) =>
@@ -233,7 +233,7 @@ const SignInForm = () => {
             })
         );
       })
-      .then((failure) => {
+      .then((failure: any) => {
         if (failure?.ActionError?.kind?.LackBalanceForState) {
           window.location.href = `/devices?${searchParams.toString()}`;
         } else {
@@ -266,7 +266,7 @@ const SignInForm = () => {
           }
         }
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.log('error', error);
         captureException(error);
         window.parent.postMessage(
