@@ -196,3 +196,16 @@ export const createOffer = async (body: CreateOfferType) => {
     throw new Error(`Failed to create offer: ${error.response.data.message}`);
   }
 };
+
+export const getOfferById = async (offerId: string) => {
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(`${API_URL}/offers/${offerId}`, reqHeader);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get offer by id: ${error.response.data.message}`
+    );
+  }
+};
