@@ -32,6 +32,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ID } from '@/constant/constant';
 import { useAuth, useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
+import { useGetOffer } from '@/hooks/gigs/useGetOffer';
 import { toYoctoNEAR } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 import {
@@ -107,7 +108,10 @@ export const GigsDialog = ({
     activeTab,
   });
 
-  
+  const { isPending: getOffersPending, data: offerData } = useGetOffer(
+    currentOfferId,
+    contractData
+  );
 
   if (isGetContractError) {
     toast({
@@ -654,7 +658,7 @@ export const GigsDialog = ({
               {activeTab === ActiveTab.Chat && (
                 <Chat
                   showTopbar={false}
-                  contractData={contractData}
+                  contractData={contractData || offerData}
                   isOpen={isOpen}
                 />
               )}
