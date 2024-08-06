@@ -128,12 +128,11 @@ export default function ChatBottombar({
   };
 
   useEffect(() => {
-    if (
-      contractStatus ===
-      ('NotStarted' || 'InProgress' || 'InReview' || 'Completed' || 'Rejected')
-    )
+    if (contractStatus === 'Completed') {
+      setDisabled(true);
+    } else {
       setDisabled(false);
-    else setDisabled(true);
+    }
   }, [contractStatus]);
 
   useEffect(() => {
