@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import FirestoreController from '../lib/firestoreController';
 import FastAuthController from '@/utils/fastAuth';
+import FirestoreController from '@/utils/fastAuth';
 
 export {};
 

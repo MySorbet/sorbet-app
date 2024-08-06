@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start:dev": "PORT=6100 next dev",
-    "build": "next build",
+    "build": "env-cmd -f .env.production next build",
     "start:prod": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && yarn format",
