@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   sorbet-frontend-production:
     platform: linux/amd64
