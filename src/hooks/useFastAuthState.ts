@@ -70,7 +70,7 @@ export const getFastAuthState = async (): Promise<AuthState> => {
   return false;
 };
 
-export const useAuthState = (): { authenticated: AuthState } => {
+export const useFastAuthState = (): { authenticated: AuthState } => {
   const [authenticated, setAuthenticated] = useState<AuthState>('loading');
   const [query] = useSearchParams();
   const email = query.get('email');
