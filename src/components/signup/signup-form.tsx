@@ -1,11 +1,5 @@
 'use client';
 
-import { openToast } from '../../lib/Toast';
-import { network } from '../../utils/config';
-import {
-  accountAddressPatternNoSubAccount,
-  getEmailId,
-} from '../../utils/form-validation';
 import { FormContainer } from '../signin';
 import { Button } from '../ui/button';
 import {
@@ -27,6 +21,11 @@ import {
   useSignUpAsync,
 } from '@/hooks';
 import { config } from '@/lib/config';
+import { network } from '@/utils/config';
+import {
+  accountAddressPatternNoSubAccount,
+  getEmailId,
+} from '@/utils/form-validation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
 import * as near_api_js_1 from 'near-api-js';
@@ -68,12 +67,13 @@ const checkIsAccountAvailable = async (
 
     return false;
   } catch (error: any) {
-    console.log(error);
-    openToast({
-      title: error.message,
-      type: 'ERROR',
-    });
+    const { toast } = useToast();
 
+    toast({
+      title: 'ERROR',
+      description: error.message,
+      variant: 'destructive',
+    });
     return false;
   }
 };
@@ -223,13 +223,23 @@ const SignUpForm = () => {
     lastName: string;
   }) => {
     const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
-    await signUpAsync({
-      ...data,
-      accountId: data.accountId + suffix,
-    });
-    await loginWithEmail(data.email);
-    await createAccount({ email: data.email, username: data.accountId });
-    setStep(1);
+    const handleAccountCreate = async (data: {
+      email: string;
+      accountId: string;
+      firstName: string;
+      lastName: string;
+    }) => {
+      const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
+      await signUpAsync({
+        ...data,
+        accountId: data.accountId + suffix,
+      });
+      await loginWithEmail(data.email);
+      await createAccount({ email: data.email, username: data.accountId });
+      await loginWithEmail(data.email);
+      await createAccount({ email: data.email, username: data.accountId });
+      setStep(1);
+    };
   };
 
   useEffect(() => {
@@ -387,7 +397,9 @@ const SignUpForm = () => {
                 lastName: 'Doe',
               });
             }}
-            disabled={errors.accountId != null || !formsEmail}
+            // disabled={errors.accountId != null || !formsEmail}
+            disabled={!isValid || !usernameAvailable}
+            // disabled={!isValid}
             className={'w-full bg-[#573DF5] border-[#7F56D9]'}
           >
             {signUpPending ? <Loader /> : 'Continue'}

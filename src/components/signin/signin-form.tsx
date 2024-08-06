@@ -1,6 +1,6 @@
 'use client';
 
-import { getAuthState } from '../../hooks/useAuthState';
+import { getFastAuthState } from '../../hooks/useFastAuthState';
 import useFirebaseUser from '../../hooks/useFirebaseUser';
 import { decodeIfTruthy, inIframe } from '../../utils';
 import { basePath } from '../../utils/config';
@@ -353,7 +353,7 @@ const SignInForm = () => {
     try {
       const isPasskeySupported = await isPassKeyAvailable();
       if (!isPasskeySupported) {
-        const authenticated = await getAuthState();
+        const authenticated = await getFastAuthState();
         const isFirestoreReady = await checkFirestoreReady();
         const firebaseAuthInvalid =
           authenticated === true &&

@@ -1,14 +1,33 @@
-import { Account, Connection } from '@near-js/accounts';
-import { createKey, getKeys, isPassKeyAvailable } from '@near-js/biometric-ed25519';
+import { fetchAccountIds } from '../api/fastAuthUtils';
+import { deleteOidcKeyPairOnLocalStorage } from '../utils';
+import { network } from '../utils/config';
+import { firebaseAuth } from '../utils/firebase';
 import {
-  KeyPair, KeyPairEd25519, KeyType, PublicKey
-} from '@near-js/crypto';
+  CLAIM,
+  getSignRequestFrpSignature,
+  getUserCredentialsFrpSignature,
+  verifyMpcSignature,
+} from '../utils/mpc-service';
+import { networks } from './config';
+import type { NetworkId } from '@/types/network';
+import { Account, Connection } from '@near-js/accounts';
+import {
+  createKey,
+  getKeys,
+  isPassKeyAvailable,
+} from '@near-js/biometric-ed25519';
+import { KeyPair, KeyPairEd25519, KeyType, PublicKey } from '@near-js/crypto';
 import { InMemoryKeyStore } from '@near-js/keystores';
 import {
-  SCHEMA, actionCreators, encodeSignedDelegate, buildDelegateAction, Signature, SignedDelegate,
+  SCHEMA,
+  actionCreators,
+  encodeSignedDelegate,
+  buildDelegateAction,
+  Signature,
+  SignedDelegate,
   signTransaction,
   SignedTransaction,
-  Action
+  Action,
 } from '@near-js/transactions';
 import { captureException } from '@sentry/react';
 import BN from 'bn.js';
@@ -17,25 +36,11 @@ import { sha256 } from 'js-sha256';
 import { keyStores } from 'near-api-js';
 import { TypedError } from 'near-api-js/lib/utils/errors';
 
-import networkParams from './networkParams';
-import { fetchAccountIds } from '../api';
-import { deleteOidcKeyPairOnLocalStorage } from '../utils';
-import { network } from '../utils/config';
-import { firebaseAuth } from '../utils/firebase';
-import {
-  CLAIM, getSignRequestFrpSignature, getUserCredentialsFrpSignature, verifyMpcSignature,
-} from '../utils/mpc-service';
-
 type NetworkConfig = {
   networkId: string;
   nodeUrl: string;
   walletUrl: string;
   helperUrl: string;
-};
-type Config = {
-  mainnet: NetworkConfig;
-  testnet: NetworkConfig;
-  localnet: NetworkConfig;
 };
 
 const { addKey, functionCallAccessKey } = actionCreators;
@@ -50,8 +55,14 @@ class FastAuthController {
 
   private connection: Connection;
 
-  constructor({ accountId, networkId }: {accountId: string, networkId: keyof Config}) {
-    const config = networkParams[networkId];
+  constructor({
+    accountId,
+    networkId,
+  }: {
+    accountId: string;
+    networkId: NetworkId;
+  }) {
+    const config = networks[networkId];
     if (!config) {
       throw new Error(`Invalid networkId ${networkId}`);
     }
@@ -62,7 +73,7 @@ class FastAuthController {
     this.connection = Connection.fromConfig({
       networkId,
       provider: { type: 'JsonRpcProvider', args: { url: config.nodeUrl } },
-      signer:   { type: 'InMemorySigner', keyStore: this.keyStore },
+      signer: { type: 'InMemorySigner', keyStore: this.keyStore },
     });
 
     this.networkId = networkId;
@@ -81,13 +92,19 @@ class FastAuthController {
   }
 
   async getCorrectAccessKey(firstKeyPair: any, secondKeyPair: any) {
-    const firstPublicKeyB58 = `ed25519:${baseEncode((firstKeyPair.getPublicKey().data))}`;
-    const secondPublicKeyB58 = `ed25519:${baseEncode((secondKeyPair.getPublicKey().data))}`;
+    const firstPublicKeyB58 = `ed25519:${baseEncode(
+      firstKeyPair.getPublicKey().data
+    )}`;
+    const secondPublicKeyB58 = `ed25519:${baseEncode(
+      secondKeyPair.getPublicKey().data
+    )}`;
 
     if (this.accountId) {
       const account = new Account(this.connection, this.accountId);
       const accessKeys = await account.getAccessKeys();
-      const accessKey = accessKeys.find((key) => key.public_key === firstPublicKeyB58 || secondPublicKeyB58);
+      const accessKey = accessKeys.find(
+        (key) => key.public_key === firstPublicKeyB58 || secondPublicKeyB58
+      );
       if (!accessKey) {
         throw new Error('No access key found');
       } else if (accessKey.public_key === firstPublicKeyB58) {
@@ -113,12 +130,18 @@ class FastAuthController {
 
   private async getBiometricKey() {
     const [firstKeyPair, secondKeyPair] = await getKeys(this.accountId);
-    const privKeyStr = await this.getCorrectAccessKey(firstKeyPair, secondKeyPair);
+    const privKeyStr = await this.getCorrectAccessKey(
+      firstKeyPair,
+      secondKeyPair
+    );
     return new KeyPairEd25519(privKeyStr.split(':')[1]);
   }
 
   async getKey(key?: string) {
-    const keypair = await this.keyStore.getKey(this.networkId, key || this.accountId);
+    const keypair = await this.keyStore.getKey(
+      this.networkId,
+      key || this.accountId
+    );
     return keypair;
   }
 
@@ -143,13 +166,16 @@ class FastAuthController {
   }
 
   async findInKeyStores(key: any) {
-    const keypair = await this.getKey(key) || await this.getLocalStoreKey(key);
+    const keypair =
+      (await this.getKey(key)) || (await this.getLocalStoreKey(key));
     return keypair;
   }
 
   assertValidSigner(signerId: any) {
     if (signerId && signerId !== this.accountId) {
-      throw new Error(`Cannot sign transactions for ${signerId} while signed in as ${this.accountId}`);
+      throw new Error(
+        `Cannot sign transactions for ${signerId} while signed in as ${this.accountId}`
+      );
     }
   }
 
@@ -169,9 +195,9 @@ class FastAuthController {
   async fetchNonce({ accountId, publicKey }: any) {
     const rawAccessKey = await this.connection.provider.query({
       request_type: 'view_access_key',
-      account_id:   accountId,
-      public_key:   publicKey,
-      finality:     'optimistic',
+      account_id: accountId,
+      public_key: publicKey,
+      finality: 'optimistic',
     });
     // @ts-ignore
     const nonce = rawAccessKey?.nonce;
@@ -220,9 +246,15 @@ class FastAuthController {
     return signedDelegate;
   }
 
-  async signTransaction({ receiverId, actions, signerId }:
-    { receiverId: string; actions: Action[]; signerId: string }):
-   Promise<[Uint8Array, SignedTransaction]> {
+  async signTransaction({
+    receiverId,
+    actions,
+    signerId,
+  }: {
+    receiverId: string;
+    actions: Action[];
+    signerId: string;
+  }): Promise<[Uint8Array, SignedTransaction]> {
     this.assertValidSigner(signerId);
     const account = new Account(this.connection, this.accountId);
 
@@ -258,15 +290,23 @@ class FastAuthController {
   }
 
   async signMessage(payload: Uint8Array): Promise<{
-    accountId: string,
-    signature: Uint8Array,
-    publicKey: string,
+    accountId: string;
+    signature: Uint8Array;
+    publicKey: string;
   }> {
-    const signature = await this.connection.signer.signMessage(payload, this.accountId, this.networkId);
+    const signature = await this.connection.signer.signMessage(
+      payload,
+      this.accountId,
+      this.networkId
+    );
 
     const account = new Account(this.connection, this.accountId);
     const accessKeys = await account.getAccessKeys();
-    const isFullAccessKey = accessKeys.some((key) => key.public_key === signature.publicKey.toString() && key.access_key.permission === 'FullAccess');
+    const isFullAccessKey = accessKeys.some(
+      (key) =>
+        key.public_key === signature.publicKey.toString() &&
+        key.access_key.permission === 'FullAccess'
+    );
 
     if (!isFullAccessKey) {
       throw new Error('The public key used to sign is not a full access key');
@@ -280,30 +320,44 @@ class FastAuthController {
   }
 
   async signAndSendDelegateAction({ receiverId, actions }: any) {
-    const signedDelegate = await this.signDelegateAction({ receiverId, actions, signerId: this.accountId });
+    const signedDelegate = await this.signDelegateAction({
+      receiverId,
+      actions,
+      signerId: this.accountId,
+    });
     return fetch(network.relayerUrl, {
-      method:  'POST',
-      mode:    'cors',
-      body:    JSON.stringify(Array.from(encodeSignedDelegate(signedDelegate))),
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(Array.from(encodeSignedDelegate(signedDelegate))),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     }).catch((err) => {
       console.log('Unable to sign and send delegate action', err);
-      captureException(`Unable to sign and send delegate action, ${err.toString()}`);
+      captureException(
+        `Unable to sign and send delegate action, ${err.toString()}`
+      );
     });
   }
 
   async signAndSendAddKey({
-    contractId, methodNames, allowance, publicKey,
+    contractId,
+    methodNames,
+    allowance,
+    publicKey,
   }: any) {
     return this.signAndSendDelegateAction({
       receiverId: this.accountId,
-      actions:    [
-        addKey(PublicKey.from(publicKey), functionCallAccessKey(contractId, methodNames || [], allowance))
-      ]
+      actions: [
+        addKey(
+          PublicKey.from(publicKey),
+          functionCallAccessKey(contractId, methodNames || [], allowance)
+        ),
+      ],
     });
   }
 
-  async getAllAccessKeysExceptRecoveryKey(odicToken: string): Promise<string[]> {
+  async getAllAccessKeysExceptRecoveryKey(
+    odicToken: string
+  ): Promise<string[]> {
     const account = new Account(this.connection, this.accountId);
     const accessKeys = await account.getAccessKeys();
     const recoveryKey = await this.getUserCredential(odicToken);
@@ -315,17 +369,25 @@ class FastAuthController {
   // This call need to be called after new oidc token is generated
   async claimOidcToken(oidcToken: string): Promise<{ mpc_signature: string }> {
     let keypair = await this.getKey(`oidc_keypair_${oidcToken}`);
-console.log({keypair})
+    console.log({ keypair });
     if (!keypair) {
       keypair = KeyPair.fromRandom('ED25519');
-      await this.keyStore.setKey(this.networkId, `oidc_keypair_${oidcToken}`, keypair);
+      await this.keyStore.setKey(
+        this.networkId,
+        `oidc_keypair_${oidcToken}`,
+        keypair
+      );
       // Delete old oidc keypair
       deleteOidcKeyPairOnLocalStorage();
-      await this.localStore.setKey(this.networkId, `oidc_keypair_${oidcToken}`, keypair);
+      await this.localStore.setKey(
+        this.networkId,
+        `oidc_keypair_${oidcToken}`,
+        keypair
+      );
     }
 
     const signature = getUserCredentialsFrpSignature({
-      salt:            CLAIM + 0,
+      salt: CLAIM + 0,
       oidcToken,
       shouldHashToken: true,
       keypair,
@@ -333,25 +395,28 @@ console.log({keypair})
 
     const data = {
       oidc_token_hash: sha256(oidcToken),
-      frp_signature:   signature,
-      frp_public_key:  keypair.getPublicKey().toString(),
+      frp_signature: signature,
+      frp_public_key: keypair.getPublicKey().toString(),
     };
 
     // https://github.com/near/mpc-recovery#claim-oidc-id-token-ownership
     try {
-      const response = await fetch(`${network.fastAuth.mpcRecoveryUrl}/claim_oidc`, {
-        method:  'POST',
-        mode:    'cors' as const,
-        body:    JSON.stringify(data),
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-      });
+      const response = await fetch(
+        `${network.fastAuth.mpcRecoveryUrl}/claim_oidc`,
+        {
+          method: 'POST',
+          mode: 'cors' as const,
+          body: JSON.stringify(data),
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Unable to claim OIDC token');
       }
 
       const res: {
-        type: string,
+        type: string;
         mpc_signature: string;
       } = await response.json();
 
@@ -370,41 +435,45 @@ console.log({keypair})
   async getUserCredential(oidcToken: any) {
     // @ts-ignore
     const GET_USER_SALT = CLAIM + 2;
-    const keypair = await this.getKey(`oidc_keypair_${oidcToken}`) || await this.getLocalStoreKey(`oidc_keypair_${oidcToken}`);
+    const keypair =
+      (await this.getKey(`oidc_keypair_${oidcToken}`)) ||
+      (await this.getLocalStoreKey(`oidc_keypair_${oidcToken}`));
 
     if (!keypair) {
       throw new Error('Unable to get oidc keypair');
     }
 
     const signature = getUserCredentialsFrpSignature({
-      salt:            GET_USER_SALT,
+      salt: GET_USER_SALT,
       oidcToken,
       shouldHashToken: false,
       keypair,
     });
 
     const data = {
-      oidc_token:     oidcToken,
-      frp_signature:  signature,
+      oidc_token: oidcToken,
+      frp_signature: signature,
       frp_public_key: keypair.getPublicKey().toString(),
     };
 
     // https://github.com/near/mpc-recovery#user-credentials
     return fetch(`${network.fastAuth.mpcRecoveryUrl}/user_credentials`, {
-      method:  'POST',
-      mode:    'cors' as const,
-      body:    JSON.stringify(data),
+      method: 'POST',
+      mode: 'cors' as const,
+      body: JSON.stringify(data),
       headers: new Headers({ 'Content-Type': 'application/json' }),
-    }).then(async (response) => {
-      if (!response.ok) {
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Unable to get user credential');
+        }
+        const res = await response.json();
+        return res.recovery_pk;
+      })
+      .catch((err) => {
+        console.log(err);
         throw new Error('Unable to get user credential');
-      }
-      const res = await response.json();
-      return res.recovery_pk;
-    }).catch((err) => {
-      console.log(err);
-      throw new Error('Unable to get user credential');
-    });
+      });
   }
 
   async getBlock() {
@@ -422,64 +491,70 @@ console.log({keypair})
       accountId,
       recoveryPK,
       actions,
-    })
+    });
     const GET_SIGNATURE_SALT = CLAIM + 3;
     const GET_USER_SALT = CLAIM + 2;
-    const localKey = await this.getKey(`oidc_keypair_${oidcToken}`) || await this.getLocalStoreKey(`oidc_keypair_${oidcToken}`);
+    const localKey =
+      (await this.getKey(`oidc_keypair_${oidcToken}`)) ||
+      (await this.getLocalStoreKey(`oidc_keypair_${oidcToken}`));
 
     const { header } = await this.getBlock();
     const delegateAction = buildDelegateAction({
       actions,
       maxBlockHeight: new BN(header.height).add(new BN(60)),
-      nonce:          await this.fetchNonce({ accountId, publicKey: recoveryPK }),
-      publicKey:      PublicKey.from(recoveryPK),
-      receiverId:     accountId,
-      senderId:       accountId,
+      nonce: await this.fetchNonce({ accountId, publicKey: recoveryPK }),
+      publicKey: PublicKey.from(recoveryPK),
+      receiverId: accountId,
+      senderId: accountId,
     });
-    const encodedDelegateAction = Buffer.from(serialize(SCHEMA, delegateAction)).toString('base64');
+    const encodedDelegateAction = Buffer.from(
+      serialize(SCHEMA, delegateAction)
+    ).toString('base64');
     const userCredentialsFrpSignature = getUserCredentialsFrpSignature({
-      salt:            GET_USER_SALT,
+      salt: GET_USER_SALT,
       oidcToken,
       shouldHashToken: false,
-      keypair:         localKey,
+      keypair: localKey,
     });
     const signRequestFrpSignature = getSignRequestFrpSignature({
-      salt:    GET_SIGNATURE_SALT,
+      salt: GET_SIGNATURE_SALT,
       oidcToken,
       keypair: localKey,
       delegateAction,
     });
 
     const payload = {
-      delegate_action:                encodedDelegateAction,
-      oidc_token:                     oidcToken,
-      frp_signature:                  signRequestFrpSignature,
+      delegate_action: encodedDelegateAction,
+      oidc_token: oidcToken,
+      frp_signature: signRequestFrpSignature,
       user_credentials_frp_signature: userCredentialsFrpSignature,
-      frp_public_key:                 localKey.getPublicKey().toString(),
+      frp_public_key: localKey.getPublicKey().toString(),
     };
 
     // https://github.com/near/mpc-recovery#sign
     return fetch(`${network.fastAuth.mpcRecoveryUrl}/sign`, {
-      method:  'POST',
-      mode:    'cors' as const,
-      body:    JSON.stringify(payload),
+      method: 'POST',
+      mode: 'cors' as const,
+      body: JSON.stringify(payload),
       headers: new Headers({ 'Content-Type': 'application/json' }),
-    }).then(async (response) => {
-      if (!response.ok) {
-        throw new Error('Unable to get signature');
-      }
-      const res = await response.json();
-      return res.signature;
-    }).then((signature) => {
-      const signatureObj = new Signature({
-        keyType: KeyType.ED25519,
-        data:    Buffer.from(signature, 'hex'),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Unable to get signature');
+        }
+        const res = await response.json();
+        return res.signature;
+      })
+      .then((signature) => {
+        const signatureObj = new Signature({
+          keyType: KeyType.ED25519,
+          data: Buffer.from(signature, 'hex'),
+        });
+        return new SignedDelegate({
+          delegateAction,
+          signature: signatureObj,
+        });
       });
-      return new SignedDelegate({
-        delegateAction,
-        signature: signatureObj,
-      });
-    });
   }
 
   async signAndSendActionsWithRecoveryKey({
@@ -500,13 +575,15 @@ console.log({keypair})
     });
     const encodedSignedDelegate = encodeSignedDelegate(signedDelegate);
     return fetch(network.relayerUrl, {
-      method:  'POST',
-      mode:    'cors',
-      body:    JSON.stringify(Array.from(encodedSignedDelegate)),
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(Array.from(encodedSignedDelegate)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     }).catch((err) => {
       console.log('Unable to sign and send action with recovery key', err);
-      captureException(`Unable to sign and send action with recovery key, ${err.toString()}`);
+      captureException(
+        `Unable to sign and send action with recovery key, ${err.toString()}`
+      );
     });
   }
 
@@ -516,10 +593,13 @@ console.log({keypair})
    * @param oidcToken - The OIDC token used for account recovery.
    * @returns A promise that resolves to an object containing the account ID and recovery public key, or undefined if no account IDs are found.
    */
-  async recoverAccountWithOIDCToken(oidcToken: string): Promise<undefined | {
-    accountId: string;
-    recoveryPK: string;
-  }> {
+  async recoverAccountWithOIDCToken(oidcToken: string): Promise<
+    | undefined
+    | {
+        accountId: string;
+        recoveryPK: string;
+      }
+  > {
     try {
       const recoveryPK = await this.getUserCredential(oidcToken);
       const accountIds = await fetchAccountIds(recoveryPK);
@@ -527,7 +607,7 @@ console.log({keypair})
       if (accountIds.length > 0) {
         return {
           accountId: accountIds[0],
-          recoveryPK
+          recoveryPK,
         };
       }
 
@@ -544,16 +624,19 @@ console.log({keypair})
 
 export default FastAuthController;
 
-export const setAccountIdToController = ({ accountId, networkId }: { accountId: string; networkId: keyof Config }) => {
+export const setAccountIdToController = ({
+  accountId,
+  networkId,
+}: {
+  accountId: string;
+  networkId: NetworkId;
+}) => {
   if (window.fastAuthController) {
     window.fastAuthController.setAccountId(accountId);
   } else {
     window.fastAuthController = new FastAuthController({
       accountId,
-      networkId
+      networkId,
     });
   }
 };
-
-
-

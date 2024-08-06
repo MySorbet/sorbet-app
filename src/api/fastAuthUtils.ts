@@ -1,7 +1,7 @@
 import { withTimeout } from '../utils';
 import { network, networkId } from '../utils/config';
 import { CLAIM, getUserCredentialsFrpSignature } from '../utils/mpc-service';
-import { LimitedAccessKey, NewAccountResponse } from './types';
+import { LimitedAccessKey, NewAccountResponse } from './fastAuthTypes';
 import { captureException } from '@sentry/react';
 import { KeyPair } from 'near-api-js';
 

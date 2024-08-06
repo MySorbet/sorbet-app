@@ -1,17 +1,16 @@
+import { fetchAccountIdsFromTwoKeys } from '../api/fastAuthUtils';
+import { setAccountIdToController } from '../lib/fastAuthController';
+import { networkId } from '../utils/config';
+import { checkFirestoreReady, firebaseAuth } from '../utils/firebase';
 import { getKeys, isPassKeyAvailable } from '@near-js/biometric-ed25519/lib';
 import { KeyPairEd25519 } from '@near-js/crypto';
 import { captureException } from '@sentry/react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom/dist';
 
-import { fetchAccountIdsFromTwoKeys } from '../api';
-import { setAccountIdToController } from '../lib/controller';
-import { networkId } from '../utils/config';
-import { checkFirestoreReady, firebaseAuth } from '../utils/firebase';
+type AuthState = 'loading' | boolean | Error;
 
-type AuthState = 'loading' | boolean | Error
-
-export const getAuthState = async (): Promise<AuthState> => {
+export const getFastAuthState = async (): Promise<AuthState> => {
   try {
     const controllerState = await window.fastAuthController.isSignedIn();
     const isFirestoreReady = await checkFirestoreReady();
@@ -19,11 +18,12 @@ export const getAuthState = async (): Promise<AuthState> => {
 
     if (controllerState === true) {
       return true;
-    } if (isPasskeySupported) {
+    }
+    if (isPasskeySupported) {
       const keypairs = await getKeys('dontcare');
       const accountInfo = await fetchAccountIdsFromTwoKeys(
         keypairs[0],
-        keypairs[1],
+        keypairs[1]
       );
 
       if (!accountInfo?.accId) {
@@ -35,20 +35,28 @@ export const getAuthState = async (): Promise<AuthState> => {
         networkId,
       });
 
-      await window.fastAuthController.setKey(new KeyPairEd25519(accountInfo.keyPair?.toString()?.split(':')[1]));
+      await window.fastAuthController.setKey(
+        new KeyPairEd25519(accountInfo.keyPair?.toString()?.split(':')[1])
+      );
       return true;
-    } if (isFirestoreReady && firebaseAuth.currentUser) {
+    }
+    if (isFirestoreReady && firebaseAuth.currentUser) {
       const oidcToken = await firebaseAuth.currentUser.getIdToken();
-      const localStoreKey = await window.fastAuthController.getLocalStoreKey(`oidc_keypair_${oidcToken}`);
+      const localStoreKey = await window.fastAuthController.getLocalStoreKey(
+        `oidc_keypair_${oidcToken}`
+      );
 
       if (localStoreKey) {
-        const account = await window.fastAuthController.recoverAccountWithOIDCToken(oidcToken);
+        const account =
+          await window.fastAuthController.recoverAccountWithOIDCToken(
+            oidcToken
+          );
 
         if (!account) return false;
 
         setAccountIdToController({
           accountId: account?.accountId,
-          networkId
+          networkId,
         });
 
         return true;
@@ -62,14 +70,14 @@ export const getAuthState = async (): Promise<AuthState> => {
   return false;
 };
 
-export const useAuthState = (): {authenticated: AuthState} => {
+export const useAuthState = (): { authenticated: AuthState } => {
   const [authenticated, setAuthenticated] = useState<AuthState>('loading');
   const [query] = useSearchParams();
   const email = query.get('email');
 
   useEffect(() => {
     const handleAuthState = async () => {
-      setAuthenticated(await getAuthState());
+      setAuthenticated(await getFastAuthState());
     };
 
     handleAuthState();

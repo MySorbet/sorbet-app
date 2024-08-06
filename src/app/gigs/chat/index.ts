@@ -1,1 +1,1 @@
-export * from './chat-layout-minimal';
+export * from './chat';

@@ -6,7 +6,7 @@ import {
   updateMilestoneStatus,
   updateOfferStatus,
 } from '@/api/gigs';
-import { ChatLayoutMinimal } from '@/app/gigs/chat';
+import { Chat } from '@/app/gigs/chat';
 import { removeConnection } from '@/app/gigs/chat/sendbird';
 import {
   ContractFormContainer,
@@ -661,14 +661,10 @@ export const GigsDialog = ({
           ) : (
             <>
               {activeTab === ActiveTab.Chat && (
-                <ChatLayoutMinimal
-                  channelId={contractData?.channelId}
-                  defaultLayout={undefined}
-                  navCollapsedSize={8}
-                  contractId={contractData?.id}
-                  clientId={contractData?.clientId}
-                  freelanceId={contractData?.freelanceId}
-                  contractStatus={contractData?.status}
+                <Chat
+                  showTopbar={false}
+                  contractData={contractData}
+                  isOpen={isOpen}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}
