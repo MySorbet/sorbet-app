@@ -4,7 +4,9 @@ import { getAuth } from 'firebase/auth';
 
 import { network } from './config';
 
-const errorCodeMessageMap = {
+const errorCodeMessageMap : {
+  [key: string]: string;
+} = {
   'auth/invalid-action-code': 'This link is malformed, expired or has already been used. Please request a new one.',
   // Add more error code-message mappings as needed
 };

@@ -10,10 +10,9 @@ import {
   SignedTransaction,
   Action
 } from '@near-js/transactions';
-import { baseDecode } from '@near-js/utils';
 import { captureException } from '@sentry/react';
 import BN from 'bn.js';
-import { baseEncode, serialize } from 'borsh';
+import { baseEncode, serialize, baseDecode } from 'borsh';
 import { sha256 } from 'js-sha256';
 import { keyStores } from 'near-api-js';
 import { TypedError } from 'near-api-js/lib/utils/errors';
@@ -27,6 +26,18 @@ import {
   CLAIM, getSignRequestFrpSignature, getUserCredentialsFrpSignature, verifyMpcSignature,
 } from '../utils/mpc-service';
 
+type NetworkConfig = {
+  networkId: string;
+  nodeUrl: string;
+  walletUrl: string;
+  helperUrl: string;
+};
+type Config = {
+  mainnet: NetworkConfig;
+  testnet: NetworkConfig;
+  localnet: NetworkConfig;
+};
+
 const { addKey, functionCallAccessKey } = actionCreators;
 class FastAuthController {
   private accountId: string;
@@ -39,7 +50,7 @@ class FastAuthController {
 
   private connection: Connection;
 
-  constructor({ accountId, networkId }) {
+  constructor({ accountId, networkId }: {accountId: string, networkId: keyof Config}) {
     const config = networkParams[networkId];
     if (!config) {
       throw new Error(`Invalid networkId ${networkId}`);
@@ -50,7 +61,7 @@ class FastAuthController {
 
     this.connection = Connection.fromConfig({
       networkId,
-      provider: { type: 'JsonRpcProvider', args: { url: config.nodeUrl, headers: config.headers } },
+      provider: { type: 'JsonRpcProvider', args: { url: config.nodeUrl } },
       signer:   { type: 'InMemorySigner', keyStore: this.keyStore },
     });
 
@@ -58,7 +69,7 @@ class FastAuthController {
     this.accountId = accountId;
   }
 
-  setAccountId = (accountId) => {
+  setAccountId = (accountId: any) => {
     this.accountId = accountId;
   };
 
@@ -69,7 +80,7 @@ class FastAuthController {
     return keyPair;
   }
 
-  async getCorrectAccessKey(firstKeyPair, secondKeyPair) {
+  async getCorrectAccessKey(firstKeyPair: any, secondKeyPair: any) {
     const firstPublicKeyB58 = `ed25519:${baseEncode((firstKeyPair.getPublicKey().data))}`;
     const secondPublicKeyB58 = `ed25519:${baseEncode((secondKeyPair.getPublicKey().data))}`;
 
@@ -111,7 +122,7 @@ class FastAuthController {
     return keypair;
   }
 
-  async setKey(keyPair) {
+  async setKey(keyPair: any) {
     return this.keyStore.setKey(this.networkId, this.accountId, keyPair);
   }
 
@@ -127,16 +138,16 @@ class FastAuthController {
     return !!(await this.getKey());
   }
 
-  async getLocalStoreKey(accountId) {
+  async getLocalStoreKey(accountId: any) {
     return this.localStore.getKey(this.networkId, accountId);
   }
 
-  async findInKeyStores(key) {
+  async findInKeyStores(key: any) {
     const keypair = await this.getKey(key) || await this.getLocalStoreKey(key);
     return keypair;
   }
 
-  assertValidSigner(signerId) {
+  assertValidSigner(signerId: any) {
     if (signerId && signerId !== this.accountId) {
       throw new Error(`Cannot sign transactions for ${signerId} while signed in as ${this.accountId}`);
     }
@@ -155,7 +166,7 @@ class FastAuthController {
     return keyPair.getPublicKey().toString();
   }
 
-  async fetchNonce({ accountId, publicKey }) {
+  async fetchNonce({ accountId, publicKey }: any) {
     const rawAccessKey = await this.connection.provider.query({
       request_type: 'view_access_key',
       account_id:   accountId,
@@ -179,7 +190,7 @@ class FastAuthController {
     return [];
   }
 
-  async signDelegateAction({ receiverId, actions, signerId }) {
+  async signDelegateAction({ receiverId, actions, signerId }: any) {
     this.assertValidSigner(signerId);
     let signedDelegate;
     try {
@@ -192,7 +203,7 @@ class FastAuthController {
       });
     } catch {
       // fallback, non webAuthN supported browser
-      const oidcToken = await firebaseAuth.currentUser.getIdToken();
+      const oidcToken = await firebaseAuth?.currentUser?.getIdToken();
       const recoveryPK = await this.getUserCredential(oidcToken);
       // make sure to handle failure, (eg token expired) if fail, redirect to failure_url
       signedDelegate = await this.createSignedDelegateWithRecoveryKey({
@@ -268,7 +279,7 @@ class FastAuthController {
     };
   }
 
-  async signAndSendDelegateAction({ receiverId, actions }) {
+  async signAndSendDelegateAction({ receiverId, actions }: any) {
     const signedDelegate = await this.signDelegateAction({ receiverId, actions, signerId: this.accountId });
     return fetch(network.relayerUrl, {
       method:  'POST',
@@ -283,7 +294,7 @@ class FastAuthController {
 
   async signAndSendAddKey({
     contractId, methodNames, allowance, publicKey,
-  }) {
+  }: any) {
     return this.signAndSendDelegateAction({
       receiverId: this.accountId,
       actions:    [
@@ -356,7 +367,7 @@ console.log({keypair})
     }
   }
 
-  async getUserCredential(oidcToken) {
+  async getUserCredential(oidcToken: any) {
     // @ts-ignore
     const GET_USER_SALT = CLAIM + 2;
     const keypair = await this.getKey(`oidc_keypair_${oidcToken}`) || await this.getLocalStoreKey(`oidc_keypair_${oidcToken}`);
@@ -405,7 +416,7 @@ console.log({keypair})
     accountId,
     recoveryPK,
     actions,
-  }) {
+  }: any) {
     console.log({
       oidcToken,
       accountId,
@@ -476,7 +487,7 @@ console.log({keypair})
     accountId,
     recoveryPK,
     actions,
-  }) {
+  }: any) {
     const signedDelegate = await this.createSignedDelegateWithRecoveryKey({
       oidcToken,
       accountId,
@@ -533,7 +544,7 @@ console.log({keypair})
 
 export default FastAuthController;
 
-export const setAccountIdToController = ({ accountId, networkId }: { accountId: string; networkId: string }) => {
+export const setAccountIdToController = ({ accountId, networkId }: { accountId: string; networkId: keyof Config }) => {
   if (window.fastAuthController) {
     window.fastAuthController.setAccountId(accountId);
   } else {
@@ -543,3 +554,6 @@ export const setAccountIdToController = ({ accountId, networkId }: { accountId: 
     });
   }
 };
+
+
+
