@@ -34,6 +34,22 @@ export interface OfferType {
   creator?: User;
 }
 
+export interface PrismaOfferType {
+  id: string;
+  projectName: string;
+  description: string;
+  projectStart: 'Immediately' | 'Flexible';
+  status: 'Pending' | 'Accepted' | 'Rejected' | 'Completed';
+  budget: number;
+  clientId: string;
+  freelancerId: string;
+  creator: User;
+  recipient: User;
+  createdAt: string;
+  updatedAt: string;
+  channelId: string;
+}
+
 export enum ContractMilestoneStatus {
   FundingPending = 'FundingPending',
   Active = 'Active',
@@ -50,7 +66,7 @@ export interface ContractType {
   expectedEndDate: string;
   contractType: string;
   status: string;
-  freelanceId: string;
+  freelancerId: string;
   clientId: string;
   dateCreated: string;
   dateUpdated: string;
