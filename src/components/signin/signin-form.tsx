@@ -1,5 +1,11 @@
 'use client';
 
+import { getFastAuthState } from '../../hooks/useFastAuthState';
+import useFirebaseUser from '../../hooks/useFirebaseUser';
+import {
+  checkFirestoreReady,
+  firebaseAuth,
+} from '../../utils/fastAuth/firebase';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -7,20 +13,74 @@ import { FormContainer } from './form-container';
 import { Loading } from '@/components/common';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks';
-import { useLoginWithEmail, useGetUserByAccountId } from '@/hooks';
+import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
+import { basePath, config } from '@/lib/config';
+import { decodeIfTruthy, inIframe } from '@/utils/fastAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
+import { captureException } from '@sentry/react';
+import BN from 'bn.js';
 import { randomBytes } from 'crypto';
+import { sendSignInLinkToEmail } from 'firebase/auth';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
+import * as near_api_js_1 from 'near-api-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 const schema = z.object({
   email: z.string().email({ message: 'Invalid email format' }),
 });
+
+interface CreateAccountParams {
+  accountId: string | null;
+  email: string;
+  isRecovery: boolean;
+  success_url?: string;
+  failure_url?: string;
+  public_key?: string;
+  contract_id?: string;
+  methodNames?: string;
+}
+
+export const handleCreateAccount = async ({
+  accountId,
+  email,
+  isRecovery,
+  success_url,
+  failure_url,
+  public_key,
+  contract_id,
+  methodNames,
+}: CreateAccountParams) => {
+  const searchParams = new URLSearchParams(
+    Object.entries({
+      ...(accountId ? { accountId } : {}),
+      ...(isRecovery ? { isRecovery: 'true' } : {}),
+      ...(success_url ? { success_url } : {}),
+      ...(failure_url ? { failure_url } : {}),
+      ...(public_key ? { public_key_lak: public_key } : {}),
+      ...(contract_id ? { contract_id } : {}),
+      ...(methodNames ? { methodNames } : {}),
+    }).reduce((acc, [key, value]) => {
+      if (value !== undefined) acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>)
+  );
+
+  await sendSignInLinkToEmail(firebaseAuth, email, {
+    url: encodeURI(
+      `${config.fastAuthDomain}/auth-callback?${searchParams.toString()}`
+    ),
+    handleCodeInApp: true,
+  });
+  window.localStorage.setItem('emailForSignIn', email);
+  return {
+    accountId,
+  };
+};
 
 const SignInForm = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -37,6 +97,9 @@ const SignInForm = () => {
     null
   );
   const [accountNotFound, setAccountNotFound] = useState<boolean>(false);
+
+  const [isProcessingAuth, setIsProcessingAuth] = useState(false);
+
   const { user, accessToken, loginWithWallet } = useAuth();
   const {
     modal: nearModal,
@@ -47,74 +110,310 @@ const SignInForm = () => {
 
   const { isPending: loginLoading, mutateAsync: loginWithEmail } =
     useLoginWithEmail();
+  const { loading: firebaseUserLoading, user: firebaseUser } =
+    useFirebaseUser();
+  const [inFlight, setInFlight] = useState(false);
 
   const {
     isPending: isGetUserAccountLoading,
     mutateAsync: getUserByAccountId,
   } = useGetUserByAccountId();
 
-  const handleSignOut = async () => {
-    try {
-      const wallet = await selector.wallet();
-      await wallet.signOut();
-    } catch (err) {
-      console.log('Failed to sign out');
-      console.error(err);
-    }
-  };
+  const handleAuthCallback = useCallback(async () => {
+    setInFlight(true);
+    const success_url = config.loginSuccessUrl;
+    const public_key = near_api_js_1.KeyPair.fromRandom('ed25519')
+      .getPublicKey()
+      .toString();
+    const searchParams = new URLSearchParams(window.location.search);
+    const methodNames = decodeIfTruthy(searchParams.get('methodNames'));
+    const contract_id = config.contractId;
 
-  useEffect(() => {
-    if (user && accessToken) {
-      router.push('/');
+    const isPasskeySupported = await isPassKeyAvailable();
+    if (!public_key || !contract_id) {
+      window.location.replace(
+        success_url || window.location.origin + (basePath ? `/${basePath}` : '')
+      );
+      return;
     }
-  }, [user, router]);
+    const publicKeyFak = isPasskeySupported
+      ? await window.fastAuthController.getPublicKey()
+      : '';
+    const existingDevice =
+      isPasskeySupported && firebaseUser
+        ? await window.firestoreController.getDeviceCollection(publicKeyFak)
+        : null;
+    const existingDeviceLakKey = existingDevice?.publicKeys?.filter(
+      (key: any) => key !== publicKeyFak
+    )[0];
+
+    // @ts-ignore
+    const oidcToken = firebaseUser?.accessToken;
+    const recoveryPk =
+      oidcToken &&
+      (await window.fastAuthController
+        .getUserCredential(oidcToken)
+        .catch(() => false));
+    const allKeys = [public_key, publicKeyFak].concat(recoveryPk || []);
+    // if given lak key is already attached to webAuthN public key, no need to add it again
+    const noNeedToAddKey = existingDeviceLakKey === public_key;
+
+    if (noNeedToAddKey) {
+      window.parent.postMessage(
+        {
+          type: 'method',
+          method: 'query',
+          id: 1234,
+          params: {
+            request_type: 'complete_authentication',
+            publicKey: public_key,
+            allKeys: allKeys.join(','),
+            accountId: (window as any).fastAuthController.getAccountId(),
+          },
+        },
+        '*'
+      );
+      if (!inIframe()) {
+        const parsedUrl = new URL(
+          success_url ||
+            window.location.origin + (basePath ? `/${basePath}` : '')
+        );
+        parsedUrl.searchParams.set(
+          'account_id',
+          (window as any).fastAuthController.getAccountId()
+        );
+        parsedUrl.searchParams.set('public_key', public_key);
+        parsedUrl.searchParams.set('all_keys', allKeys.join(','));
+        window.location.replace(parsedUrl.href);
+      }
+      setInFlight(false);
+      return;
+    }
+
+    window.fastAuthController
+      .signAndSendAddKey({
+        contractId: contract_id,
+        methodNames,
+        allowance: new BN(config.nearMaxAllowances ?? '0'),
+        publicKey: public_key,
+      })
+      .then((res: any) => res && res.json())
+      .then((res: any) => {
+        const failure = res['Receipts Outcome'].find(
+          // @ts-ignore
+          ({ outcome: { status } }) =>
+            Object.keys(status).some((k) => k === 'Failure')
+        )?.outcome?.status?.Failure;
+        if (failure) {
+          return failure;
+        }
+
+        if (!firebaseUser) return null;
+
+        // Add device
+        window.firestoreController.updateUser({
+          // @ts-ignore
+          userUid: firebaseUser.uid,
+          // User type is missing accessToken but it exists
+          oidcToken,
+        });
+
+        // Since FAK is already added, we only add LAK
+        return (
+          window.firestoreController
+            .addDeviceCollection({
+              fakPublicKey: null,
+              lakPublicKey: public_key,
+              gateway: success_url,
+            })
+            // @ts-ignore
+            .catch((err) => {
+              console.log('Failed to add device collection', err);
+              throw new Error('Failed to add device collection');
+            })
+        );
+      })
+      .then((failure: any) => {
+        if (failure?.ActionError?.kind?.LackBalanceForState) {
+          window.location.href = `/devices?${searchParams.toString()}`;
+        } else {
+          window.parent.postMessage(
+            {
+              type: 'method',
+              method: 'query',
+              id: 1234,
+              params: {
+                request_type: 'complete_authentication',
+                publicKey: public_key,
+                allKeys: allKeys.join(','),
+                accountId: (window as any).fastAuthController.getAccountId(),
+              },
+            },
+            '*'
+          );
+          if (!inIframe()) {
+            const parsedUrl = new URL(
+              success_url ||
+                window.location.origin + (basePath ? `/${basePath}` : '')
+            );
+            parsedUrl.searchParams.set(
+              'account_id',
+              (window as any).fastAuthController.getAccountId()
+            );
+            parsedUrl.searchParams.set('public_key', public_key);
+            parsedUrl.searchParams.set('all_keys', allKeys.join(','));
+            window.location.replace(parsedUrl.href);
+          }
+        }
+      })
+      .catch((error: any) => {
+        console.log('error', error);
+        captureException(error);
+        window.parent.postMessage(
+          {
+            type: 'AddDeviceError',
+            message:
+              typeof error?.message === 'string'
+                ? error.message
+                : 'Something went wrong',
+          },
+          '*'
+        );
+        toast({
+          title: 'ERROR',
+          description: error.message,
+          variant: 'destructive',
+        });
+      })
+      .finally(() => setInFlight(false));
+  }, [firebaseUser]);
+
+  const addDevice = useCallback(async (data: any) => {
+    setInFlight(true);
+
+    // if different user is logged in, sign out
+    await firebaseAuth.signOut();
+
+    const success_url = config.loginSuccessUrl;
+    const failure_url = config.loginFailureUrl;
+    const public_key = near_api_js_1.KeyPair.fromRandom('ed25519')
+      .getPublicKey()
+      .toString();
+    const methodNames = '';
+    const contract_id = config.contractId;
+
+    try {
+      await handleCreateAccount({
+        accountId: null,
+        email: data.email,
+        isRecovery: true,
+        success_url,
+        failure_url,
+        public_key,
+        contract_id,
+        methodNames,
+      });
+
+      const paramsObject = {
+        email: data.email,
+        isRecovery: 'true',
+        ...(data.success_url ? { success_url } : {}),
+        ...(data.failure_url ? { failure_url } : {}),
+        ...(data.public_key ? { public_key_lak: public_key } : {}),
+        ...(data.contract_id ? { contract_id } : {}),
+        ...(data.methodNames ? { methodNames } : {}),
+      };
+      const newSearchParams = new URLSearchParams(paramsObject);
+
+      window.location.href = `https://sorbet-fast-auth-c3tiwq6mya-uc.a.run.app/verify-email?${newSearchParams.toString()}`;
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage =
+        typeof error?.message === 'string'
+          ? error.message
+          : 'Something went wrong';
+      window.parent.postMessage(
+        {
+          type: 'addDeviceError',
+          message: errorMessage,
+        },
+        '*'
+      );
+      toast({
+        title: 'ERROR',
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    } finally {
+      setInFlight(false);
+    }
+  }, []);
 
   const onSubmit = handleSubmit(async (data) => {
-    toast({
-      title: 'Try login with wallet',
-      description:
-        'Email login is not active yet. You can use the Connect Wallet option to login for now.',
-    });
+    setIsProcessingAuth(true);
+    try {
+      const isPasskeySupported = await isPassKeyAvailable();
+      if (!isPasskeySupported) {
+        const authenticated = await getFastAuthState();
+        const isFirestoreReady = await checkFirestoreReady();
+        const firebaseAuthInvalid =
+          authenticated === true &&
+          !isPasskeySupported &&
+          // @ts-ignore
+          firebaseUser?.email !== data.email;
+        const shouldUseCurrentUser =
+          authenticated === true && !firebaseAuthInvalid && isFirestoreReady;
+        if (shouldUseCurrentUser) {
+          await loginWithEmail(data.email);
+          alert('successfully logged in, now redirecting');
+          await handleAuthCallback();
+          return;
+        }
+      }
+
+      await addDevice({ email: data.email });
+    } catch (e: any) {
+      console.error('Error occurred during form submission:', e);
+      // Display error to the user
+
+      toast({
+        title: 'ERROR',
+        description: 'An error occurred. Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessingAuth(false);
+    }
   });
 
   useEffect(() => {
-    const checkNearConnection = async () => {
-      if (accounts.length > 0) {
-        const activeAccount = accountId;
-        setActiveNearAccount(activeAccount);
-
-        if (activeAccount) {
-          const response = await getUserByAccountId(activeAccount);
-          if (response.data === 'failed') {
-            setAccountNotFound(true);
-            await handleSignOut();
-          }
-        }
-      }
-    };
-
-    checkNearConnection();
-  }, [selector, accountId]);
-
-  useEffect(() => {
-    const handleWalletLogin = async () => {
-      const urlHash = window.location.hash;
+    const handleRedirectLogin = async () => {
+      const urlHash = window.location.href;
       if (urlHash) {
-        const params = new URLSearchParams(urlHash.substring(1));
-        const accountId = params.get('accountId');
-        const signature = params.get('signature');
-        const publicKey = params.get('publicKey');
-        setLoading(true);
+        const params = new URLSearchParams(urlHash.split('?')[1]);
+        const accountId = params.get('account_id');
+        const publicKey = params.get('public_key');
 
-        if (accountId && signature && publicKey) {
-          const response = await loginWithWallet(accountId);
-          if (response.status === 'success') {
-            router?.push('/');
+        if (accountId && publicKey) {
+          setLoading(true);
+          const email = localStorage.getItem('emailForSignIn');
+          if (email) {
+            setLoading(true);
+            const response = await loginWithEmail(email);
+            if (response.status === 'success') {
+              router?.push('/');
+            } else {
+              toast({
+                title: 'Failed to login',
+                description: response.message,
+                variant: 'destructive',
+              });
+            }
           } else {
             toast({
-              title: 'Failed to login',
-              description: response.message,
-              variant: 'destructive',
+              title: 'Error logging in',
+              description:
+                'There was a problem receiving your email address from NEAR. Please try again',
             });
             setLoading(false);
           }
@@ -122,8 +421,63 @@ const SignInForm = () => {
       }
     };
 
-    handleWalletLogin();
+    handleRedirectLogin();
   }, [router]);
+
+  useEffect(() => {
+    if (user && accessToken) {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  // useEffect(() => {
+  //   const checkNearConnection = async () => {
+  //     console.log({ accounts, accountId });
+  //     if (accounts.length > 0) {
+  //       const activeAccount = accountId;
+  //       setActiveNearAccount(activeAccount);
+
+  //       if (activeAccount) {
+  //         const response = await getUserByAccountId(activeAccount);
+  //         if (response && response.data === 'failed') {
+  //           setAccountNotFound(true);
+  //           await handleSignOut();
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   checkNearConnection();
+  // }, [selector, accountId]);
+
+  // useEffect(() => {
+  //   const handleWalletLogin = async () => {
+  //     const urlHash = window.location.hash;
+  //     if (urlHash) {
+  //       const params = new URLSearchParams(urlHash.substring(1));
+  //       const accountId = params.get('accountId');
+  //       const signature = params.get('signature');
+  //       const publicKey = params.get('publicKey');
+
+  //       if (accountId && signature && publicKey) {
+  //         const response = await loginWithWallet(accountId);
+  //         if (response.status === 'success') {
+  //           setLoading(false);
+  //           router?.push('/');
+  //         } else {
+  //           toast({
+  //             title: 'Failed to login',
+  //             description: response.message,
+  //             variant: 'destructive',
+  //           });
+  //           setLoading(false);
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   handleWalletLogin();
+  // }, [router]);
 
   const handleWalletLogin = async (
     event: React.MouseEvent<HTMLButtonElement>
@@ -226,14 +580,8 @@ const SignInForm = () => {
                   className='group-hover:stroke-white'
                 />
               </svg>
-              {accounts.length > 0 ? 'Sign message to login' : 'Connect Wallet'}
+              Connect Wallet
             </Button>
-            {accounts.length > 0 && (
-              <div>
-                Wallet Detected:
-                <span className='font-bold text-sorbet'> {accountId}</span>
-              </div>
-            )}
           </div>
           <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
             Don't have an account?{' '}
@@ -251,15 +599,3 @@ const SignInForm = () => {
 };
 
 export { SignInForm };
-// box-shadow: 0px 20px 60px 0px #20202026;
-
-/*
-<div>
-  <p className='text-[#3B3A40] text-xs leading-[18px]'>
-    Don't have an account?{' '}
-    <strong className='text-xs leading-[18px] text-[#6230EC]'>
-      Sign up
-    </strong>
-  </p>
-</div>
-*/
