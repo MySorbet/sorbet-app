@@ -2,7 +2,6 @@
 
 import { getFastAuthState } from '../../hooks/useFastAuthState';
 import useFirebaseUser from '../../hooks/useFirebaseUser';
-import { decodeIfTruthy, inIframe } from '../../utils';
 import {
   checkFirestoreReady,
   firebaseAuth,
@@ -16,6 +15,7 @@ import { useWalletSelector } from '@/components/common/near-wallet/walletSelecto
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
 import { basePath, config } from '@/lib/config';
+import { decodeIfTruthy, inIframe } from '@/utils/fastAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
 import { captureException } from '@sentry/react';
