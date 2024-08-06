@@ -1,2 +1,2 @@
 export { Header } from './header';
-// TODO: Are the reset of the components needed?
+// TODO: Are the rest of the components needed?
