@@ -47,7 +47,6 @@ export const useChat = ({
     typingMembers: [],
     messageCollection: null,
   });
-  console.log('useChat -> state', state);
 
   const stateRef = useRef<any>(null);
   stateRef.current = state;
@@ -63,7 +62,7 @@ export const useChat = ({
       const senderId = user?.id;
       const recipientId =
         user?.id === contractData.clientId
-          ? contractData.freelanceId
+          ? contractData.freelancerId
           : contractData.clientId;
       const sender = channel.members.find(
         (member: any) => member.userId === senderId
