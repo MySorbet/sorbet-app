@@ -42,7 +42,7 @@ export interface TextMessage {
 export type SendMessageParams = FileMessage | TextMessage;
 
 export interface NewMessageNotificationDto {
-  reqContractId: string;
+  reqOfferId: string
   reqChannelId: string;
   reqSenderId: string;
   reqRecipientId: string;
