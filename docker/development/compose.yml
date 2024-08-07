@@ -1,0 +1,7 @@
+services:
+  sorbet-frontend-development:
+    platform: linux/amd64
+    build:
+      context: ../../
+      dockerfile: docker/development/Dockerfile
+    image: sorbet-frontend-development:1.0.0
