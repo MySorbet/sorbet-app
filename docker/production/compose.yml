@@ -1,5 +1,7 @@
 services:
   sorbet-frontend-production:
     platform: linux/amd64
-    build: .
+    build:
+      context: ../../
+      dockerfile: docker/production/Dockerfile
     image: sorbet-frontend-production:1.0.0
