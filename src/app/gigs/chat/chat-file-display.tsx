@@ -1,6 +1,6 @@
 'use client';
 
-import { formatBytes } from './sendbird';
+import { formatBytes } from '@/app/gigs/chat/sendbird-utils';
 import { fetchFile } from '@/api/chat';
 import { Spinner } from '@/components/common';
 import {

@@ -7,7 +7,6 @@ import {
   updateOfferStatus,
 } from '@/api/gigs';
 import { Chat } from '@/app/gigs/chat';
-import { removeConnection } from '@/app/gigs/chat/sendbird';
 import {
   ContractFormContainer,
   ContractFormFixedPriceData,
@@ -107,11 +106,6 @@ export const GigsDialog = ({
     isOpen,
     activeTab,
   });
-
-  const { isPending: getOffersPending, data: offerData } = useGetOffer(
-    currentOfferId,
-    contractData
-  );
 
   if (isGetContractError) {
     toast({
@@ -658,8 +652,9 @@ export const GigsDialog = ({
               {activeTab === ActiveTab.Chat && (
                 <Chat
                   showTopbar={false}
-                  contractData={contractData || offerData}
                   isOpen={isOpen}
+                  currentOfferId={currentOfferId}
+                  contractStatus={contractData.status}
                 />
               )}
               {activeTab === ActiveTab.Contract && renderContractView()}

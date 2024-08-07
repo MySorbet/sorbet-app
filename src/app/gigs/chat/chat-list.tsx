@@ -1,12 +1,12 @@
 import { FileDisplay } from './chat-file-display';
+import { TypingIndicator } from './typing-indicator';
+import { ChatSkeleton } from '@/app/gigs/chat/chat-skeleton';
+import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
 import {
   convertMilitaryToRegular,
   createChatTimestamp,
   getTimeDifferenceInMinutes,
-} from './sendbird';
-import { TypingIndicator } from './typing-indicator';
-import { ChatSkeleton } from '@/app/gigs/chat/chat-skeleton';
-import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
+} from '@/app/gigs/chat/sendbird-utils';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
@@ -19,7 +19,6 @@ interface ChatListProps {
   messages: SBMessage[];
   selectedUser: User;
   typingMembers: Member[];
-  contractStatus: string;
   supportedIcons: SupportedFileIcons;
   chatLoading: boolean;
 }
@@ -28,7 +27,6 @@ export function ChatList({
   messages,
   selectedUser,
   typingMembers,
-  contractStatus,
   supportedIcons,
   chatLoading = true,
 }: ChatListProps) {

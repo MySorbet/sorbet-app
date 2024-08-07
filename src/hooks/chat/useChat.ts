@@ -1,15 +1,10 @@
 'use client';
 
 import { sendNotification } from '@/api/chat';
-import {
-  initializeChannelEvents,
-  initializeConnection,
-  loadMessages,
-  removeConnection,
-  timestampToTime,
-} from '@/app/gigs/chat/sendbird';
+import { timestampToTime } from '@/app/gigs/chat/sendbird-utils';
 import { useToast } from '@/components/ui/use-toast';
-import { ContractType, PrismaOfferType, User } from '@/types';
+import { useSendbird } from '@/hooks/chat/useSendbird';
+import { PrismaOfferType, User } from '@/types';
 import {
   ChatState,
   NewMessageNotificationDto,
@@ -28,15 +23,15 @@ import { useEffect, useRef, useState } from 'react';
 interface useInitializeChatProps {
   user: User | null;
   logout: () => void;
-  contractData: ContractType | PrismaOfferType;
   isOpen: boolean;
+  offerData: PrismaOfferType | undefined;
 }
 
 export const useChat = ({
   user,
   logout,
-  contractData,
   isOpen,
+  offerData,
 }: useInitializeChatProps) => {
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +42,7 @@ export const useChat = ({
     typingMembers: [],
     messageCollection: null,
   });
+  const { data: Sendbird, isPending: SendbirdPending } = useSendbird();
 
   const stateRef = useRef<any>(null);
   stateRef.current = state;
@@ -55,15 +51,18 @@ export const useChat = ({
     // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
+      if (!offerData) {
+        return;
+      }
       // Need to refresh because the channel object is not updated with the new messages
       // TODO: This is a quick fix, need to look into finding a better solution
       await channel.refresh();
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
       const senderId = user?.id;
       const recipientId =
-        user?.id === contractData.clientId
-          ? contractData.freelancerId
-          : contractData.clientId;
+        user?.id === offerData.clientId
+          ? offerData.freelancerId
+          : offerData.clientId;
       const sender = channel.members.find(
         (member: any) => member.userId === senderId
       );
@@ -90,11 +89,12 @@ export const useChat = ({
       }
       if (recipient.connectionStatus === 'offline') {
         const params: NewMessageNotificationDto = {
-          reqContractId: contractData.id,
-          reqChannelId: contractData.channelId,
+          reqOfferId: offerData.id,
+          reqChannelId: offerData.channelId,
           reqSenderId: sender.userId,
           reqRecipientId: recipient.userId,
         };
+        console.log('params', params);
         sendNotification(params);
       }
       // Updating state to render messages
@@ -144,7 +144,9 @@ export const useChat = ({
   });
 
   const sendMessage = (newMessage: SendMessageParams) => {
-    if (!state.channel) return;
+    if (!state.channel) {
+      return;
+    }
 
     if (newMessage.type === 'file') {
       const params = {
@@ -179,7 +181,7 @@ export const useChat = ({
 
   useEffect(() => {
     async function disconnectSendbird() {
-      await removeConnection();
+      await Sendbird?.removeConnection();
     }
 
     if (!isOpen) {
@@ -190,7 +192,7 @@ export const useChat = ({
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
     async function initializeChat() {
-      if (!contractData.channelId) {
+      if (!offerData) {
         return;
       }
       if (!user) {
@@ -205,14 +207,22 @@ export const useChat = ({
         return;
       }
       setLoading(true);
-      await initializeConnection(user.id);
+      await Sendbird?.initializeConnection(user.id);
 
-      initializeChannelEvents(channelHandlers);
+      Sendbird?.initializeChannelEvents(channelHandlers);
 
-      const { messageCollection, channel } = await loadMessages(
-        contractData.channelId,
+      const response = await Sendbird?.loadMessages(
+        offerData.channelId,
         messageHandlers
       );
+
+      if (!response) {
+        setLoading(false);
+        console.error('Failed to load messages');
+        return;
+      }
+
+      const { messageCollection, channel } = response;
 
       const ts = Date.now();
       const messageListParams: MessageListParams = {
@@ -225,8 +235,6 @@ export const useChat = ({
         ts,
         messageListParams
       );
-
-      console.log('latestMessages', latestMessages);
 
       const fetchedMessages = latestMessages.map((currentMessage: any) => {
         const time = timestampToTime(currentMessage.createdAt);
@@ -248,7 +256,6 @@ export const useChat = ({
         }
         return message;
       });
-      console.log('loading complete');
       setLoading(false);
 
       updateState({
@@ -266,7 +273,7 @@ export const useChat = ({
         return clearTimeout(timeoutId);
       }
     };
-  }, [user, contractData]);
+  }, [user, offerData]);
 
   return [state, loading, error, sendMessage] as [
     ChatState,
