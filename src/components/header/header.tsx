@@ -1,6 +1,8 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
+import menuImage from '/public/images/menu.svg';
+import logoImage from '/public/svg/logo.svg';
 import { Notifications } from '@/components/header/notifications';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
@@ -27,7 +29,7 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
       <div className='flex w-full justify-between container mx-auto py-4'>
         <div className='flex gap-6'>
           <Link href='/'>
-            <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
+            <Image src={logoImage} alt='logo' width={44} height={44} />
           </Link>
         </div>
         {!isPublic && (
@@ -35,8 +37,8 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
             <div className='flex flex-row align-center gap-2 items-center'>
               <Notifications />
               <div>
-                <img
-                  src='/images/menu.svg'
+                <Image
+                  src={menuImage}
                   alt='menu'
                   className='cursor-pointer p-[10px]'
                   onClick={() => dispatch(setOpenSidebar(true))}
