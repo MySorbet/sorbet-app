@@ -42,7 +42,7 @@ export const useChat = ({
     typingMembers: [],
     messageCollection: null,
   });
-  const { data: Sendbird, isPending: SendbirdPending } = useSendbird();
+  const Sendbird = useSendbird();
 
   const stateRef = useRef<any>(null);
   stateRef.current = state;

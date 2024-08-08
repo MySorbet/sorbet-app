@@ -12,10 +12,9 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 export const useSendbird = () => {
-  return useQuery({
+  const { data: sb } = useQuery({
     queryKey: ['sendbird'],
     queryFn: async () => {
-      let sb: SendbirdChatWith<GroupChannelModule[]> | null;
       try {
         const params: SendbirdChatParams<[GroupChannelModule]> = {
           appId: CONSTANTS.SendbirdAppId as string,
@@ -23,58 +22,60 @@ export const useSendbird = () => {
           modules: [new GroupChannelModule()],
         };
 
-        sb = SendbirdChat.init(params);
+        const sb = SendbirdChat.init(params);
+        return sb;
       } catch (error: any) {
-        throw new Error(`Failed to initialize Sendbird: ${error}`);
+        console.error('Error initializing sendbird', error);
       }
-      const initializeConnection = async (userId: string) => {
-        try {
-          const user = await sb.connect(userId);
-          return user;
-        } catch (error) {
-          console.log(
-            `Unable to connect with Sendbird: ${JSON.stringify(error)}`
-          );
-        }
-      };
-      const removeConnection = async () => {
-        try {
-          await sb.disconnect();
-        } catch (error: any) {
-          console.error(`Failed to disconnect from Sendbird: ${error}`);
-        }
-      };
-      const initializeChannelEvents = (channelHandler: any) => {
-        const key = 'test';
-        sb.groupChannel.addGroupChannelHandler(key, channelHandler);
-      };
-      const loadMessages = async (channelId: string, messageHandlers: any) => {
-        const channel: GroupChannel = await sb.groupChannel.getChannel(
-          channelId
-        );
-
-        const messageFilter = new MessageFilter();
-
-        const messageCollection = channel.createMessageCollection({
-          filter: messageFilter,
-          startingPoint: Date.now(),
-          limit: 30,
-        });
-        messageCollection.setMessageCollectionHandler(messageHandlers);
-
-        messageCollection.initialize(
-          MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API
-        );
-
-        return { messageCollection, channel };
-      };
-
-      return {
-        initializeConnection,
-        removeConnection,
-        initializeChannelEvents,
-        loadMessages,
-      };
     },
   });
+
+  if (!sb) {
+    return null;
+  }
+
+  const initializeConnection = async (userId: string) => {
+    try {
+      const user = await sb.connect(userId);
+      return user;
+    } catch (error) {
+      console.log(`Unable to connect with Sendbird: ${JSON.stringify(error)}`);
+    }
+  };
+  const removeConnection = async () => {
+    try {
+      await sb.disconnect();
+    } catch (error: any) {
+      console.error(`Failed to disconnect from Sendbird: ${error}`);
+    }
+  };
+  const initializeChannelEvents = (channelHandler: any) => {
+    const key = 'test';
+    sb.groupChannel.addGroupChannelHandler(key, channelHandler);
+  };
+  const loadMessages = async (channelId: string, messageHandlers: any) => {
+    const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
+
+    const messageFilter = new MessageFilter();
+
+    const messageCollection = channel.createMessageCollection({
+      filter: messageFilter,
+      startingPoint: Date.now(),
+      limit: 30,
+    });
+    messageCollection.setMessageCollectionHandler(messageHandlers);
+
+    messageCollection.initialize(
+      MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API
+    );
+
+    return { messageCollection, channel };
+  };
+
+  return {
+    initializeConnection,
+    removeConnection,
+    initializeChannelEvents,
+    loadMessages,
+  }
 };
