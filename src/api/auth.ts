@@ -9,7 +9,7 @@ export const signUp = async ({ email, accountId }: SignUpWithEmailTypes) => {
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(`Failed to sign up: ${error.response.data.message}`);
+    throw new Error(`Failed to sign up: ${error.response?.data?.message}`);
   }
 };
 
