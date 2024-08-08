@@ -34,7 +34,7 @@ export const UserSignUpContext = createContext<UserSignUpContextType | null>(
 
 const SignUpContainer = () => {
   const [userData, setUserData] = useState<UserSignUp>({
-    // useSignUpAsync
+    // useSignUp
     firstName: '',
     lastName: '',
     email: '',
