@@ -1,10 +1,10 @@
 {
-  "name": "ts-nextjs-tailwind-starter",
+  "name": "sorbet-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start:dev": "PORT=6100 next dev",
-    "build": "env-cmd -f .env.production next build",
+    "build": "next build",
     "start:prod": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && yarn format",
@@ -15,7 +15,12 @@
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
-    "prepare": "husky install"
+    "docker:build:prod": "docker compose -f docker/production/compose.yml build",
+    "docker:start:prod": "docker compose -f docker/production/compose.yml up -d",
+    "docker:stop:prod": "docker compose -f docker/production/compose.yml down",
+    "docker:build:dev": "docker compose -f docker/development/compose.yml build",
+    "docker:start:dev": "docker compose -f docker/development/compose.yml up -d",
+    "docker:stop:dev": "docker compose -f docker/development/compose.yml down"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
@@ -93,11 +98,9 @@
     "cookies-next": "^4.1.0",
     "date-fns": "^3.3.1",
     "dompurify": "^3.0.9",
-    "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.0.0",
     "emoji-mart": "^5.6.0",
     "encoding": "^0.1.13",
-    "env-cmd": "^10.1.0",
     "firebase": "^10.12.3",
     "fontfaceobserver": "^2.3.0",
     "framer-motion": "^11.0.14",
@@ -171,7 +174,6 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^7.0.4",
     "ieee754": "^1.2.1",
     "jest": "^27.5.1",
     "lint-staged": "^12.5.0",

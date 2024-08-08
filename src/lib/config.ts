@@ -1,99 +1,38 @@
-import type { Network, NetworkId } from '@/types/network';
+import { NetworkIds, type NetworkId, type Network } from '@/types/network';
 import environment from '@/utils/fastAuth/environment';
-import dotenv from 'dotenv';
 import { z } from 'zod';
 
-interface AppConfig {
-  nodeEnv: 'development' | 'production' | 'test';
-  devApiUrl: string;
-  showLogger: boolean;
-  networkId: string;
-  contractId: string;
-  relayerUrl: string;
-  fastAuthDomain: string;
-  defaultProfileImage?: string;
-  googleMapKey?: string;
-  gcpProfileBucketName?: string;
-  dribbleClientId?: string;
-  dribbleClientSecret?: string;
-  githubClientId?: string;
-  githubClientSecret?: string;
-  instagramAppSecret?: string;
-  instagramClientToken?: string;
-  instagramBasicDisplayAppId?: string;
-  instagramBasicDisplayAppSecret?: string;
-  spotifyClientId?: string;
-  spotifyClientSecret?: string;
-  youtubeClientId?: string;
-  youtubeClientSecret?: string;
-  loginSuccessUrl?: string;
-  loginFailureUrl?: string;
-  signUpSuccessUrl?: string;
-  signUpFailureUrl?: string;
-  nearMaxAllowances?: string;
-}
-
+// Zod schema for the app configuration
 const appConfigSchema = z.object({
   nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
-  devApiUrl: z.string().url().optional().default('http://localhost:6200'),
+  sorbetApiUrl: z.string().url().optional().default('http://localhost:6200'),
   showLogger: z.preprocess((val) => val === 'true', z.boolean()).default(false),
-  networkId: z.string().optional().default('testnet'),
+  networkId: z.enum(NetworkIds).optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
   fastAuthDomain: z.string().url(),
   googleMapKey: z.string().optional(),
-  defaultProfileImage: z
-    .string()
-    .optional()
-    .default(
-      'https://storage.cloud.google.com/sorbet-profile-images/default-avatar.jpeg'
-    ),
-  gcpProfileBucketName: z.string().optional(),
-  dribbleClientId: z.string().optional(),
-  dribbleClientSecret: z.string().optional(),
-  githubClientId: z.string().optional(),
-  githubClientSecret: z.string().optional(),
-  instagramAppSecret: z.string().optional(),
-  instagramClientToken: z.string().optional(),
-  instagramBasicDisplayAppId: z.string().optional(),
-  instagramBasicDisplayAppSecret: z.string().optional(),
-  spotifyClientId: z.string().optional(),
-  spotifyClientSecret: z.string().optional(),
-  youtubeClientId: z.string().optional(),
-  youtubeClientSecret: z.string().optional(),
+  sendbirdAppId: z.string(),
   loginSuccessUrl: z.string().optional(),
   loginFailureUrl: z.string().optional(),
   signUpSuccessUrl: z.string().optional(),
   signUpFailureUrl: z.string().optional(),
   nearMaxAllowances: z.string().optional(),
 });
+// Infer TS type from the Zod schema
+type AppConfig = z.infer<typeof appConfigSchema>;
 
-dotenv.config({ path: ['.env', '.env.local'] });
+// Type safe parse of our environment variables into a config object
 export const config: AppConfig = appConfigSchema.parse({
   nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV,
-  devApiUrl: process.env.NEXT_PUBLIC_DEV_API_URL,
+  sorbetApiUrl: process.env.NEXT_PUBLIC_SORBET_API_URL,
   showLogger: process.env.NEXT_PUBLIC_SHOW_LOGGER === 'true',
   networkId: process.env.NEXT_PUBLIC_NETWORK_ID,
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
   fastAuthDomain: process.env.NEXT_PUBLIC_FAST_AUTH_DOMAIN,
-  defaultProfileImage: process.env.NEXT_DEFAULT_PROFILE_IMAGE,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
-  gcpProfileBucketName: process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
-  dribbleClientId: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_ID,
-  dribbleClientSecret: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET,
-  githubClientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-  githubClientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
-  instagramAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_APP_SECRET,
-  instagramClientToken: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN,
-  instagramBasicDisplayAppId:
-    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
-  instagramBasicDisplayAppSecret:
-    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
-  spotifyClientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
-  spotifyClientSecret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
-  youtubeClientId: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
-  youtubeClientSecret: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET,
+  sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
   loginSuccessUrl: process.env.NEXT_PUBLIC_LOGIN_SUCCESS_URL,
   loginFailureUrl: process.env.NEXT_PUBLIC_LOGIN_FAILED_URL,
   signUpSuccessUrl: process.env.NEXT_PUBLIC_SIGNUP_SUCCESS_URL,
@@ -101,6 +40,7 @@ export const config: AppConfig = appConfigSchema.parse({
   nearMaxAllowances: process.env.NEXT_PUBLIC_NEAR_MAX_ALLOWANCE,
 });
 
+// Networks require more information than just the networkId
 export const networks: Record<NetworkId, Network> = {
   mainnet: {
     networkId: 'mainnet',
@@ -151,10 +91,9 @@ export const networks: Record<NetworkId, Network> = {
   },
 };
 
-export const CONSTANTS = {
-  SendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
-};
+// The current network is determined by the networkId in the config after parsing the environment variables
+export const networkId = config.networkId;
+export const network = networks[config.networkId];
 
-export const networkId: NetworkId = config.networkId as NetworkId;
-export const network = networks[config.networkId as NetworkId];
+// Base path comes from the fastAuth environment which holds a number of environment vars not mentioned in the app config
 export const basePath = environment.REACT_APP_BASE_PATH;

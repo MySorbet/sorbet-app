@@ -1,8 +1,8 @@
-export type NetworkId = ProductionNetwork['networkId'];
-export type Network = ProductionNetwork;
+export const NetworkIds = ['testnet', 'mainnet'] as const;
+export type NetworkId = (typeof NetworkIds)[number];
 
-type ProductionNetwork = {
-  networkId: 'testnet' | 'mainnet';
+export type Network = {
+  networkId: NetworkId;
   viewAccountId: string;
   nodeUrl: string;
   walletUrl: string;

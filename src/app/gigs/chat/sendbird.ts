@@ -1,4 +1,4 @@
-import { CONSTANTS } from '@/lib/config';
+import { config } from '@/lib/config';
 import { SBMessageTimeDto } from '@/types/sendbird';
 import SendbirdChat, {
   SendbirdChatParams,
@@ -13,7 +13,7 @@ import {
 
 // Initialize the SendbirdChat module
 const params: SendbirdChatParams<[GroupChannelModule]> = {
-  appId: CONSTANTS.SendbirdAppId as string,
+  appId: config.sendbirdAppId,
   localCacheEnabled: true,
   modules: [new GroupChannelModule()],
 };

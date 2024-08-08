@@ -2,7 +2,8 @@
 
 import { config } from '@/lib/config';
 
-export const API_URL = config.devApiUrl;
+// TODO: remove this abstraction
+export const API_URL = config.sorbetApiUrl;
 
 export const validateToken = (headers?: any, includeAuth: boolean = false) => {
   let reqHeader = { headers };
