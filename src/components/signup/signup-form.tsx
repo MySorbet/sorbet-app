@@ -18,7 +18,7 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   useCheckIsAccountAvailable,
   useLoginWithEmail,
-  useSignUpAsync,
+  useSignUp,
 } from '@/hooks';
 import { config, network } from '@/lib/config';
 import {
@@ -122,8 +122,7 @@ const SignUpForm = () => {
   });
   const { modal: nearModal, accounts, selector } = useWalletSelector();
   const { mutateAsync: loginWithEmail } = useLoginWithEmail();
-  const { isPending: signUpPending, mutateAsync: signUpAsync } =
-    useSignUpAsync();
+  const { isPending: signUpPending, mutateAsync: signUp } = useSignUp();
   const {
     isPending: checkAccountPending,
     mutateAsync: checkIsAccountAvailable,
@@ -212,22 +211,8 @@ const SignUpForm = () => {
     []
   );
 
-  const handleAccountCreate = async (data: {
-    email: string;
-    accountId: string;
-    firstName: string;
-    lastName: string;
-  }) => {
-    const suffix = config.networkId == 'testnet' ? '.testnet' : '.mainnet';
-    await signUpAsync({
-      ...data,
-      accountId: data.accountId + suffix,
-    });
-    await loginWithEmail(data.email);
-    await createAccount({ email: data.email, username: data.accountId });
-    setStep(1);
-  };
-
+  // Effect to read stored local storage data and sync the form
+  // TODO: Maybe this is no longer needed
   useEffect(() => {
     const storedData = localStorage.getItem('signupForm');
     if (storedData) {
@@ -242,6 +227,8 @@ const SignUpForm = () => {
     }
   }, [router, form.reset]);
 
+  // Effect to persist form data in local storage
+  // TODO: Maybe this is no longer needed
   useEffect(() => {
     if (isValid) {
       const timestamp = new Date().getTime();
@@ -253,6 +240,7 @@ const SignUpForm = () => {
     }
   }, [formValues, isValid]);
 
+  // Effect to sync form accountId with first part of email
   useEffect(() => {
     console.log({ formsEmail });
     if (formsEmail?.split('@').length > 1) {
@@ -266,11 +254,33 @@ const SignUpForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formsEmail, form.setValue]);
 
+  // If the signup page is visited, and search params contain account_id
+  // a fastauth account has been created and we are ready to
+  // create a user in the sorbet db and move through the rest of the steps to update their info
   useEffect(() => {
-    const usernameParam = searchParams.get('account_id');
-    if (usernameParam) {
-      setStep(1);
-    }
+    (async () => {
+      const accountId = searchParams.get('account_id');
+      if (accountId) {
+        setStep(1);
+        // Fastauth user created.
+        const email = localStorage.getItem('emailForSignIn');
+        if (email) {
+          console.log('creating sorbet user');
+          // Creates the user in sorbet db and then logs them in in (gets and stores jwt)
+          await signUp({
+            email,
+            accountId,
+          });
+          await loginWithEmail(email);
+
+          // TODO: If these fail, we probably want to delete the fastauth user
+        } else {
+          console.error(
+            'Tried to sign up user to sorbet, but no email in localstorage'
+          );
+        }
+      }
+    })();
   }, [searchParams]);
 
   useEffect(() => {

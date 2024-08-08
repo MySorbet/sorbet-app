@@ -1,5 +1,5 @@
 import { useLocalStorage } from './useLocalStorage';
-import { fetchUserDetails, signInAsync, signInWithWallet } from '@/api/auth';
+import { fetchUserDetails, signIn, signInWithWallet } from '@/api/auth';
 import { getBalances } from '@/api/user';
 import { useWalletSelector } from '@/components/common';
 import { config } from '@/lib/config';
@@ -87,11 +87,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /** Attempts to sign into sorbet, storing the access token and user if successful  */
   const loginWithEmail = async (
     email: string
   ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
     try {
-      const response = await signInAsync({ email });
+      const response = await signIn({ email });
       if (response) {
         const user = response.data.user;
         const token = response.data.access_token;

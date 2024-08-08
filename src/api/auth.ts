@@ -1,16 +1,11 @@
 import { network } from '@/lib/config';
-import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
 import { API_URL } from '@/utils';
 import axios from 'axios';
 
-export const signUpAsync = async ({
-  firstName,
-  lastName,
-  email,
-  accountId,
-}: SignUpWithEmailTypes) => {
+/** Signs an email & accountID (near wallet) up to sorbet */
+export const signUp = async ({ email, accountId }: SignUpWithEmailTypes) => {
   try {
-    const reqBody = { firstName, lastName, email, accountId };
+    const reqBody = { email, accountId };
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
     return res;
   } catch (error: any) {
@@ -18,7 +13,8 @@ export const signUpAsync = async ({
   }
 };
 
-export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
+/** Signs an email in. This means asking the API if this user exists, and getting a JWT back if so. */
+export const signIn = async ({ email }: SignInWithEmailTypes) => {
   try {
     const reqBody = { email };
     const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
@@ -110,3 +106,14 @@ export const checkIsAccountAvailable = async (username: string) => {
     );
   }
 };
+
+// Types
+
+export interface SignUpWithEmailTypes {
+  email: string;
+  accountId: string;
+}
+
+export interface SignInWithEmailTypes {
+  email: string;
+}

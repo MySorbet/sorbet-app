@@ -1,13 +1,12 @@
-import { signUpAsync } from '@/api/auth';
+import { signUp, type SignUpWithEmailTypes } from '@/api/auth';
 import { useToast } from '@/components/ui/use-toast';
-import { SignUpWithEmailTypes } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 
-export const useSignUpAsync = () => {
+export const useSignUp = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (data: SignUpWithEmailTypes) => await signUpAsync(data),
+    mutationFn: async (data: SignUpWithEmailTypes) => await signUp(data),
     onError: (error) =>
       toast({
         title: 'Unable to create user account',

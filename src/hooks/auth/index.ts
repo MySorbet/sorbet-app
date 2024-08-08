@@ -1,11 +1,11 @@
 import { useCheckIsAccountAvailable } from './useCheckIsAccountAvailable';
 import { useGetUserByAccountId } from './useGetUserByAccountId';
 import { useLoginWithEmail } from './useLoginWithEmail';
-import { useSignUpAsync } from './useSignUpAsync';
+import { useSignUp } from './useSignUp';
 
 export {
   useCheckIsAccountAvailable,
   useLoginWithEmail,
-  useSignUpAsync,
+  useSignUp,
   useGetUserByAccountId,
 };
