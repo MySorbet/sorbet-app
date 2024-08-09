@@ -20,11 +20,11 @@ import {
 import { MessageListParams } from '@sendbird/chat/message';
 import { useEffect, useRef, useState } from 'react';
 
-interface useInitializeChatProps {
+interface useChatProps {
   user: User | null;
   logout: () => void;
   isOpen: boolean;
-  offerData: PrismaOfferType | undefined;
+  offerData: PrismaOfferType | undefined; 
 }
 
 export const useChat = ({
@@ -32,7 +32,7 @@ export const useChat = ({
   logout,
   isOpen,
   offerData,
-}: useInitializeChatProps) => {
+}: useChatProps) => {
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
