@@ -66,7 +66,7 @@ export interface ContractType {
   expectedEndDate: string;
   contractType: string;
   status: string;
-  freelancerId: string;
+  freelanceId: string;
   clientId: string;
   dateCreated: string;
   dateUpdated: string;
