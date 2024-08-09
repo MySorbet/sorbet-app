@@ -14,7 +14,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
     [WidgetType.Youtube]: 'youtube.png',
     [WidgetType.SpotifySong]: 'spotify.png',
     [WidgetType.SpotifyAlbum]: 'spotify.png',
-    [WidgetType.SoundcloudSong]: 'soundcloud.png',
+    [WidgetType.SoundcloudSong]: 'soundCloud.png',
     [WidgetType.Github]: 'github.png',
     [WidgetType.InstagramPost]: 'instagram.png',
     [WidgetType.InstagramProfile]: 'instagram.png',
