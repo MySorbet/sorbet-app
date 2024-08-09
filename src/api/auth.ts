@@ -1,25 +1,20 @@
-import { currentNetwork } from '@/lib/config';
-import { SignInWithEmailTypes, SignUpWithEmailTypes } from '@/types/auth';
+import { network } from '@/lib/config';
 import { API_URL } from '@/utils';
 import axios from 'axios';
 
-export const signUpAsync = async ({
-  firstName,
-  lastName,
-  email,
-  accountId,
-  userType,
-}: SignUpWithEmailTypes) => {
+/** Signs an email & accountID (near wallet) up to sorbet */
+export const signUp = async ({ email, accountId }: SignUpWithEmailTypes) => {
   try {
-    const reqBody = { firstName, lastName, email, accountId, userType };
+    const reqBody = { email, accountId };
     const res = await axios.post(`${API_URL}/auth/signup/email`, reqBody);
     return res;
   } catch (error: any) {
-    throw new Error(`Failed to sign up: ${error.response.data.message}`);
+    throw new Error(`Failed to sign up: ${error.response?.data?.message}`);
   }
 };
 
-export const signInAsync = async ({ email }: SignInWithEmailTypes) => {
+/** Signs an email in. This means asking the API if this user exists, and getting a JWT back if so. */
+export const signIn = async ({ email }: SignInWithEmailTypes) => {
   try {
     const reqBody = { email };
     const res = await axios.post(`${API_URL}/auth/signin/email`, reqBody);
@@ -78,7 +73,7 @@ export const checkIsAccountAvailable = async (username: string) => {
   try {
     if (!username) return;
 
-    const response = await fetch(currentNetwork.nodeUrl, {
+    const response = await fetch(network.nodeUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -90,7 +85,7 @@ export const checkIsAccountAvailable = async (username: string) => {
         params: {
           request_type: 'view_account',
           finality: 'final',
-          account_id: `${username}.${currentNetwork.fastAuth.accountIdSuffix}`,
+          account_id: `${username}.${network.fastAuth.accountIdSuffix}`,
         },
       }),
     });
@@ -111,3 +106,14 @@ export const checkIsAccountAvailable = async (username: string) => {
     );
   }
 };
+
+// Types
+
+export interface SignUpWithEmailTypes {
+  email: string;
+  accountId: string;
+}
+
+export interface SignInWithEmailTypes {
+  email: string;
+}

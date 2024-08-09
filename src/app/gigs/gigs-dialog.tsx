@@ -28,10 +28,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
-import { CONTRACT_ID } from '@/constant/constant';
 import { useAuth, useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
-import { useGetOffer } from '@/hooks/gigs/useGetOffer';
+import { config } from '@/lib/config';
 import { toYoctoNEAR } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 import {
@@ -192,7 +191,7 @@ export const GigsDialog = ({
       await wallet
         .signAndSendTransaction({
           signerId: accounts[0].accountId,
-          receiverId: CONTRACT_ID,
+          receiverId: config.contractId,
           actions: [
             {
               type: 'FunctionCall',
@@ -229,7 +228,7 @@ export const GigsDialog = ({
       const transactions: Array<Transaction> = [];
       transactions.push({
         signerId: accounts[0].accountId,
-        receiverId: CONTRACT_ID,
+        receiverId: config.contractId,
         actions: [
           {
             type: 'FunctionCall',
@@ -251,7 +250,7 @@ export const GigsDialog = ({
           (milestone: ContractMilestoneMinimalProps, index: number) => {
             transactions.push({
               signerId: accounts[0].accountId,
-              receiverId: CONTRACT_ID,
+              receiverId: config.contractId,
               actions: [
                 {
                   type: 'FunctionCall',
@@ -274,7 +273,7 @@ export const GigsDialog = ({
       } else {
         transactions.push({
           signerId: accounts[0].accountId,
-          receiverId: CONTRACT_ID,
+          receiverId: config.contractId,
           actions: [
             {
               type: 'FunctionCall',
@@ -399,7 +398,7 @@ export const GigsDialog = ({
       return await wallet
         .signAndSendTransaction({
           signerId: accounts[0].accountId,
-          receiverId: CONTRACT_ID,
+          receiverId: config.contractId,
           actions: [
             {
               type: 'FunctionCall',
@@ -511,7 +510,7 @@ export const GigsDialog = ({
       await wallet
         .signAndSendTransaction({
           signerId: accounts[0].accountId,
-          receiverId: CONTRACT_ID,
+          receiverId: config.contractId,
           actions: [
             {
               type: 'FunctionCall',

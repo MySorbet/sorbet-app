@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import './header.css';
 import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
-import { LOCAL_KEY } from '@/constant/constant';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset } from '@/redux/userSlice';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -20,7 +19,7 @@ export const UserHeader = ({ popModal }: any) => {
   const logout = async () => {
     dispatch(reset());
     if (userData?.email) {
-      localStorage.removeItem(LOCAL_KEY);
+      localStorage.removeItem('userId');
       router.push('/signin');
     } else {
       const wallet = await selector.wallet();

@@ -1,5 +1,4 @@
 import { Loading } from '@/components/common';
-import { CONTRACT_ID } from '@/constant/constant';
 import { config } from '@/lib/config';
 import { NetworkId } from '@/types/network';
 import { setupCoin98Wallet } from '@near-wallet-selector/coin98-wallet';
@@ -63,14 +62,14 @@ export const WalletSelectorContextProvider: React.FC<{
         setupNarwallets(),
         setupCoin98Wallet(),
         setupFinerWallet(),
-        // setupFastAuthWallet({
-        //   relayerUrl: config.relayerUrl,
-        //   walletUrl: config.authDomain,
-        // }),
+        setupFastAuthWallet({
+          relayerUrl: config.relayerUrl,
+          walletUrl: config.fastAuthDomain,
+        }),
       ],
     });
     const _modal = setupModal(_selector, {
-      contractId: CONTRACT_ID,
+      contractId: config.contractId,
     });
     const state = _selector.store.getState();
     setAccounts(state.accounts);

@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
+import { Menu } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -26,26 +28,17 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
       <div className='flex w-full justify-between container mx-auto py-4'>
         <div className='flex gap-6'>
           <Link href='/'>
-            <img
-              src='https://i.imgur.com/CbbXxed.png'
-              alt='logo'
-              width={44}
-              height={44}
-            />
+            <Image src={'/svg/logo.svg'} alt='logo' width={44} height={44} />
           </Link>
         </div>
         {!isPublic && (
           <div className='flex items-center justify-end gap-4'>
             <div className='flex flex-row align-center gap-2 items-center'>
               <Notifications />
-              <div>
-                <img
-                  src='/images/menu.svg'
-                  alt='menu'
-                  className='cursor-pointer p-[10px]'
-                  onClick={() => dispatch(setOpenSidebar(true))}
-                />
-              </div>
+              <Menu
+                className='cursor-pointer'
+                onClick={() => dispatch(setOpenSidebar(true))}
+              />
             </div>
           </div>
         )}

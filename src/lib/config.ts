@@ -1,90 +1,46 @@
-import type { Network, NetworkId } from '@/types/network';
-import dotenv from 'dotenv';
+import { NetworkIds, type NetworkId, type Network } from '@/types/network';
+import environment from '@/utils/fastAuth/environment';
 import { z } from 'zod';
 
-interface AppConfig {
-  nodeEnv: 'development' | 'production' | 'test';
-  devApiUrl: string;
-  showLogger: boolean;
-  networkId: string;
-  contractId: string;
-  relayerUrl: string;
-  authDomain: string;
-  defaultProfileImage?: string;
-  googleMapKey?: string;
-  gcpProfileBucketName?: string;
-  dribbleClientId?: string;
-  dribbleClientSecret?: string;
-  githubClientId?: string;
-  githubClientSecret?: string;
-  instagramAppSecret?: string;
-  instagramClientToken?: string;
-  instagramBasicDisplayAppId?: string;
-  instagramBasicDisplayAppSecret?: string;
-  spotifyClientId?: string;
-  spotifyClientSecret?: string;
-  youtubeClientId?: string;
-  youtubeClientSecret?: string;
-}
-
+// Zod schema for the app configuration
 const appConfigSchema = z.object({
   nodeEnv: z.enum(['development', 'production', 'test']).default('development'),
-  devApiUrl: z.string().url().optional().default('http://localhost:6200'),
+  sorbetApiUrl: z.string().url().optional().default('http://localhost:6200'),
   showLogger: z.preprocess((val) => val === 'true', z.boolean()).default(false),
-  networkId: z.string().optional().default('testnet'),
+  networkId: z.enum(NetworkIds).optional().default('testnet'),
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
-  authDomain: z.string().url(),
+  fastAuthDomain: z.string().url(),
   googleMapKey: z.string().optional(),
-  defaultProfileImage: z
-    .string()
-    .optional()
-    .default(
-      'https://storage.cloud.google.com/sorbet-profile-images/default-avatar.jpeg'
-    ),
-  gcpProfileBucketName: z.string().optional(),
-  dribbleClientId: z.string().optional(),
-  dribbleClientSecret: z.string().optional(),
-  githubClientId: z.string().optional(),
-  githubClientSecret: z.string().optional(),
-  instagramAppSecret: z.string().optional(),
-  instagramClientToken: z.string().optional(),
-  instagramBasicDisplayAppId: z.string().optional(),
-  instagramBasicDisplayAppSecret: z.string().optional(),
-  spotifyClientId: z.string().optional(),
-  spotifyClientSecret: z.string().optional(),
-  youtubeClientId: z.string().optional(),
-  youtubeClientSecret: z.string().optional(),
+  sendbirdAppId: z.string(),
+  loginSuccessUrl: z.string().optional(),
+  loginFailureUrl: z.string().optional(),
+  signUpSuccessUrl: z.string().optional(),
+  signUpFailureUrl: z.string().optional(),
+  nearMaxAllowances: z.string().optional(),
 });
+// Infer TS type from the Zod schema
+type AppConfig = z.infer<typeof appConfigSchema>;
 
-dotenv.config({ path: ['.env', '.env.local'] });
+// Type safe parse of our environment variables into a config object
 export const config: AppConfig = appConfigSchema.parse({
   nodeEnv: process.env.NEXT_PUBLIC_NODE_ENV,
-  devApiUrl: process.env.NEXT_PUBLIC_DEV_API_URL,
+  sorbetApiUrl: process.env.NEXT_PUBLIC_SORBET_API_URL,
   showLogger: process.env.NEXT_PUBLIC_SHOW_LOGGER === 'true',
   networkId: process.env.NEXT_PUBLIC_NETWORK_ID,
   contractId: process.env.NEXT_PUBLIC_CONTRACT_ID,
   relayerUrl: process.env.NEXT_PUBLIC_RELAYER_URL,
-  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
-  defaultProfileImage: process.env.NEXT_DEFAULT_PROFILE_IMAGE,
+  fastAuthDomain: process.env.NEXT_PUBLIC_FAST_AUTH_DOMAIN,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
-  gcpProfileBucketName: process.env.NEXT_PUBLIC_GCP_PROFILE_BUCKET_NAME,
-  dribbleClientId: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_ID,
-  dribbleClientSecret: process.env.NEXT_PUBLIC_DRIBBLE_CLIENT_SECRET,
-  githubClientId: process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID,
-  githubClientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET,
-  instagramAppSecret: process.env.NEXT_PUBLIC_INSTAGRAM_APP_SECRET,
-  instagramClientToken: process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_TOKEN,
-  instagramBasicDisplayAppId:
-    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_ID,
-  instagramBasicDisplayAppSecret:
-    process.env.NEXT_PUBLIC_INSTAGRAM_BASIC_DISPLAY_APP_SECRET,
-  spotifyClientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID,
-  spotifyClientSecret: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET,
-  youtubeClientId: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID,
-  youtubeClientSecret: process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_SECRET,
+  sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
+  loginSuccessUrl: process.env.NEXT_PUBLIC_LOGIN_SUCCESS_URL,
+  loginFailureUrl: process.env.NEXT_PUBLIC_LOGIN_FAILED_URL,
+  signUpSuccessUrl: process.env.NEXT_PUBLIC_SIGNUP_SUCCESS_URL,
+  signUpFailureUrl: process.env.NEXT_PUBLIC_SIGNUP_FAILED_URL,
+  nearMaxAllowances: process.env.NEXT_PUBLIC_NEAR_MAX_ALLOWANCE,
 });
 
+// Networks require more information than just the networkId
 export const networks: Record<NetworkId, Network> = {
   mainnet: {
     networkId: 'mainnet',
@@ -92,14 +48,16 @@ export const networks: Record<NetworkId, Network> = {
     nodeUrl: 'https://rpc.mainnet.near.org',
     walletUrl: 'https://wallet.near.org',
     helperUrl: 'https://helper.mainnet.near.org',
+    relayerUrl: config.relayerUrl,
     fastAuth: {
       mpcRecoveryUrl:
         'https://mpc-recovery-leader-mainnet-cg7nolnlpa-ue.a.run.app',
       authHelperUrl: 'https://api.kitwallet.app',
       accountIdSuffix: 'near',
+      queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyDhxTQVeoWdnbpYTocBAABbLULGf6H5khQ',
-        authDomain: 'near-fastauth-prod.firebaseapp.com',
+        fastAuthDomain: 'near-fastauth-prod.firebaseapp.com',
         projectId: 'near-fastauth-prod',
         storageBucket: 'near-fastauth-prod.appspot.com',
         messagingSenderId: '829449955812',
@@ -114,13 +72,15 @@ export const networks: Record<NetworkId, Network> = {
     nodeUrl: 'https://rpc.testnet.near.org',
     walletUrl: 'https://wallet.testnet.near.org',
     helperUrl: 'https://helper.testnet.near.org',
+    relayerUrl: config.relayerUrl,
     fastAuth: {
       mpcRecoveryUrl: 'https://mpc-recovery-7tk2cmmtcq-ue.a.run.app',
       authHelperUrl: 'https://testnet-api.kitwallet.app',
       accountIdSuffix: 'testnet',
+      queryApiUrl: 'https://near-queryapi.api.pagoda.co/v1/graphql',
       firebase: {
         apiKey: 'AIzaSyCmD88ExxK3vc7p3qkMvgFfdkyrWa2w2dg',
-        authDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
+        fastAuthDomain: 'my-fastauth-issuer-ea4c0.firebaseapp.com',
         projectId: 'my-fastauth-issuer-ea4c0',
         storageBucket: 'my-fastauth-issuer-ea4c0.appspot.com',
         messagingSenderId: '505357561486',
@@ -131,8 +91,9 @@ export const networks: Record<NetworkId, Network> = {
   },
 };
 
-export const CONSTANTS = {
-  SendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
-};
+// The current network is determined by the networkId in the config after parsing the environment variables
+export const networkId = config.networkId;
+export const network = networks[config.networkId];
 
-export const currentNetwork = networks[config.networkId as NetworkId];
+// Base path comes from the fastAuth environment which holds a number of environment vars not mentioned in the app config
+export const basePath = environment.REACT_APP_BASE_PATH;

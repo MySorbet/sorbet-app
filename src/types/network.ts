@@ -1,19 +1,21 @@
-export type NetworkId = ProductionNetwork['networkId'];
-export type Network = ProductionNetwork;
+export const NetworkIds = ['testnet', 'mainnet'] as const;
+export type NetworkId = (typeof NetworkIds)[number];
 
-type ProductionNetwork = {
-  networkId: 'testnet' | 'mainnet';
+export type Network = {
+  networkId: NetworkId;
   viewAccountId: string;
   nodeUrl: string;
   walletUrl: string;
   helperUrl: string;
+  relayerUrl: string;
   fastAuth: {
     mpcRecoveryUrl: string;
     authHelperUrl: string; // TODO refactor: review by fastauth team
     accountIdSuffix: string;
+    queryApiUrl: string;
     firebase: {
       apiKey: string;
-      authDomain: string;
+      fastAuthDomain: string;
       projectId: string;
       storageBucket: string;
       messagingSenderId: string;
