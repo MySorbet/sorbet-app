@@ -45,7 +45,7 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface GigsDialogProps {
   isOpen?: boolean;

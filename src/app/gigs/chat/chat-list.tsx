@@ -12,7 +12,6 @@ import { User } from '@/types';
 import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
 import type { Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MessageSquareWarning } from 'lucide-react';
 import { useRef, useEffect } from 'react';
 
 interface ChatListProps {

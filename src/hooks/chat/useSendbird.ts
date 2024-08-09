@@ -1,4 +1,4 @@
-import { CONSTANTS } from '@/lib/config';
+import { config } from '@/lib/config';
 import SendbirdChat, {
   SendbirdChatParams,
   SendbirdChatWith,
@@ -17,7 +17,7 @@ export const useSendbird = () => {
     queryFn: async () => {
       try {
         const params: SendbirdChatParams<[GroupChannelModule]> = {
-          appId: CONSTANTS.SendbirdAppId as string,
+          appId: config.sendbirdAppId as string,
           localCacheEnabled: true,
           modules: [new GroupChannelModule()],
         };
@@ -77,5 +77,5 @@ export const useSendbird = () => {
     removeConnection,
     initializeChannelEvents,
     loadMessages,
-  }
+  };
 };

@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks';
 import { useChat } from '@/hooks/chat/useChat';
 import { useGetOffer } from '@/hooks/gigs/useGetOffer';
 import { File, ImageIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 const icons = {
   pdf: <File className='w-5 h-5 text-white' />,

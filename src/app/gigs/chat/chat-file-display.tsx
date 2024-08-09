@@ -18,10 +18,6 @@ import {
 } from '@/types/sendbird';
 import {
   Download,
-  ExternalLink,
-  File,
-  Frown,
-  Image as ImageIcon,
 } from 'lucide-react';
 import Image from 'next/image';
 import { ReactNode, useEffect, useState } from 'react';
