@@ -203,9 +203,12 @@ export const getOfferById = async (offerId: string) => {
   try {
     const res = await axios.get(`${API_URL}/offers/${offerId}`, reqHeader);
     return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get offer by id: ${error.response.data.message}`
-    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Axios error: failed to get offer by id: ${error.response?.data.error}`
+      );
+    }
+    throw new Error(`Non-axios error: failed to get offer by id ${error}`);
   }
 };
