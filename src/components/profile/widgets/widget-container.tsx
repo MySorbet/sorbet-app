@@ -88,15 +88,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       i: widget.id,
       x: widget.layout.x,
       y: widget.layout.y,
-      w: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].w,
-      h: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].h,
-      type: WidgetType[widget.type as keyof typeof WidgetType],
+      w: WidgetDimensions[widget.size as WidgetSize].w,
+      h: WidgetDimensions[widget.size as WidgetSize].h,
+      type: widget.type as WidgetType,
       content: widget.content,
       static: !editMode,
       isResizable: false,
       isDraggable: editMode,
       redirectUrl: widget.redirectUrl,
-      size: WidgetSize[widget.size as keyof typeof WidgetSize],
+      size: widget.size as WidgetSize,
     }));
   }, [userId, editMode, userWidgetData]);
 
@@ -138,7 +138,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       const type = parseWidgetTypeFromUrl(url);
 
       // We're attempting to add a photo widget
-      if (type === WidgetType.Photo && image && image !== undefined) {
+      if (type === 'Photo' && image && image !== undefined) {
         const imageFormData = new FormData();
         imageFormData.append('file', image);
         imageFormData.append('fileType', 'image');
@@ -175,15 +175,15 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         i: widget.id,
         x: (layout.length * 2) % cols,
         y: 0,
-        w: WidgetDimensions[WidgetSize.A].w,
-        h: WidgetDimensions[WidgetSize.A].h,
+        w: WidgetDimensions.A.w,
+        h: WidgetDimensions.A.h,
         type: type,
         content: widget.content,
         static: !editMode,
         isResizable: false,
         isDraggable: editMode,
         loading: false,
-        size: WidgetSize.A,
+        size: 'A',
       };
 
       setLayout((prevLayout) => {
@@ -248,7 +248,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         payload.push({
           id: item.i,
           layout: { h: item.h, w: item.w, x: item.x, y: item.y },
-          size: WidgetSize[item.size].toString(),
+          size: item.size,
         })
       );
       updateWidgetsBulk(payload);

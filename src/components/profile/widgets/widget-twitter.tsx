@@ -6,7 +6,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { TwitterWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { TwitterWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
 
 interface TwitterWidgetProps {
@@ -26,11 +26,11 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   const { name, handle, bio, bannerImage, profileImage } = content;
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.TwitterProfile} className='mb-0' />
+            <WidgetIcon type={'TwitterProfile'} className='mb-0' />
             <FollowButton handle={handle} />
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
@@ -39,11 +39,11 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
-    case WidgetSize.B:
+    case 'B':
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.TwitterProfile} className='m-0' />
+            <WidgetIcon type={'TwitterProfile'} className='m-0' />
             <FollowButton handle={handle} />
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
@@ -51,11 +51,11 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
-    case WidgetSize.C:
+    case 'C':
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.TwitterProfile} className='m-0' />
+            <WidgetIcon type={'TwitterProfile'} className='m-0' />
             <FollowButton handle={handle} />
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
@@ -65,11 +65,11 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           </div>
         </WidgetLayout>
       );
-    case WidgetSize.D:
+    case 'D':
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.TwitterProfile} className='m-0' />
+            <WidgetIcon type={'TwitterProfile'} className='m-0' />
             <FollowButton handle={handle} />
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />

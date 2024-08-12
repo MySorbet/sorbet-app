@@ -125,53 +125,45 @@ export interface LinkedInProfileWidgetContentType {
   profileImage: string;
 }
 
-export enum WidgetType {
+export type WidgetType =
   // Explicitly Supported
-  Photo = 'Photo',
-  Substack = 'Substack',
-  SpotifySong = 'SpotifySong',
-  SpotifyAlbum = 'SpotifyAlbum',
-  SoundcloudSong = 'SoundcloudSong',
-  InstagramPost = 'InstagramPost',
-  InstagramProfile = 'InstagramProfile',
-  TwitterProfile = 'TwitterProfile',
-  LinkedInProfile = 'LinkedInProfile',
-  Link = 'Link',
+  | 'Photo'
+  | 'Substack'
+  | 'SpotifySong'
+  | 'SpotifyAlbum'
+  | 'SoundcloudSong'
+  | 'InstagramPost'
+  | 'InstagramProfile'
+  | 'TwitterProfile'
+  | 'LinkedInProfile'
+  | 'Link'
 
   // Supported via type catchall
-  Youtube = 'Youtube',
-  Github = 'Github',
-  Dribbble = 'Dribbble',
-  Behance = 'Behance',
-  Medium = 'Medium',
-  Figma = 'Figma',
+  | 'Youtube'
+  | 'Github'
+  | 'Dribbble'
+  | 'Behance'
+  | 'Medium'
+  | 'Figma'
 
   // Not yet supported
-  Twitter = 'Twitter',
-  Nfts = 'Nfts',
-  PhotoGallery = 'PhotoGallery',
-  Text = 'Text',
-}
+  | 'Twitter'
+  | 'Nfts'
+  | 'PhotoGallery'
+  | 'Text';
 
-export enum WidgetSize {
-  A,
-  B,
-  C,
-  D,
-}
+export type WidgetSize = 'A' | 'B' | 'C' | 'D';
 
-export const WidgetDimensions: {
-  [key in WidgetSize]: { w: number; h: number };
-} = {
-  [WidgetSize.A]: { w: 2, h: 2 },
-  [WidgetSize.B]: { w: 4, h: 4 },
-  [WidgetSize.C]: { w: 4, h: 2 },
-  [WidgetSize.D]: { w: 2, h: 4 },
+export const WidgetDimensions: Record<WidgetSize, { w: number; h: number }> = {
+  A: { w: 2, h: 2 },
+  B: { w: 4, h: 4 },
+  C: { w: 4, h: 2 },
+  D: { w: 2, h: 4 },
 };
 
 export const getWidgetDimensions = ({
   breakpoint = 'lg',
-  size = WidgetSize.A,
+  size = 'A',
 }: { breakpoint?: string; size?: WidgetSize } = {}) => {
   const dimensions = WidgetDimensions[size];
   let adjustedDimensions = { ...dimensions };
@@ -194,7 +186,7 @@ export interface UpdateWidgetsBulkDto {
 
 export interface WidgetDto {
   id: string;
-  type: string;
+  type: string; // TODO: Should be a WidgetType
   size: string;
   content: any;
   redirectUrl?: string;

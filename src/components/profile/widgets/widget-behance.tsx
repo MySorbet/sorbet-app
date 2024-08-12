@@ -3,7 +3,7 @@ import {
   ImageOverlay,
   WidgetDescription,
 } from '@/components/profile/widgets';
-import { BehanceWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { BehanceWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
 
 interface BehanceWidgetType {
@@ -17,12 +17,12 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
 }) => {
   let widgetLayout;
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-16'>
-              <WidgetIcon type={WidgetType.Behance} />
+              <WidgetIcon type={'Behance'} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -42,11 +42,11 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.B:
+    case 'B':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={WidgetType.Behance} className='m-0' />
+            <WidgetIcon type={'Behance'} className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -63,11 +63,11 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.C:
+    case 'C':
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetIcon type={WidgetType.Behance} />
+            <WidgetIcon type={'Behance'} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
@@ -83,10 +83,10 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.D:
+    case 'D':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={WidgetType.Behance} className='m-0' />
+          <WidgetIcon type={'Behance'} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>

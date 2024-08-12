@@ -28,46 +28,46 @@ export const getWidgetContent = async ({
   type: WidgetType;
 }) => {
   switch (type) {
-    case WidgetType.Dribbble:
+    case 'Dribbble':
       return getDribbleShot({ url });
 
-    case WidgetType.Behance:
+    case 'Behance':
       return getBehanceItem({ url });
 
-    case WidgetType.Medium:
+    case 'Medium':
       return getMediumArticleMetadata({ url });
 
-    case WidgetType.Youtube:
+    case 'Youtube':
       return getYouTubeVideoMetadata({ url });
 
-    case WidgetType.Substack:
+    case 'Substack':
       return getSubstackMetadata({ url });
 
-    case WidgetType.SpotifyAlbum:
+    case 'SpotifyAlbum':
       return getSpotifyAlbumDetails({ url });
 
-    case WidgetType.SpotifySong:
+    case 'SpotifySong':
       return getSpotifySongDetails({ url });
 
-    case WidgetType.SoundcloudSong:
+    case 'SoundcloudSong':
       return getSoundcloudTrackDetails({ url });
 
-    case WidgetType.InstagramProfile:
+    case 'InstagramProfile':
       return getInstagramProfileMetadata({ url });
 
-    case WidgetType.Photo:
+    case 'Photo':
       return getPhotoWidget({ url });
 
-    case WidgetType.Github:
+    case 'Github':
       return getGithubProfile({ url });
 
-    case WidgetType.TwitterProfile:
+    case 'TwitterProfile':
       return getTwitterProfile({ url });
 
-    case WidgetType.LinkedInProfile:
+    case 'LinkedInProfile':
       return getLinkedInProfile({ url });
 
-    case WidgetType.Link:
+    case 'Link':
       return getLinkData({ url });
   }
 };
@@ -129,7 +129,7 @@ export const updateWidgetsBulk = async (
 export const updateWidget = async (
   widgetId: string,
   widgetLayout: ExtendedWidgetLayout,
-  widgetSize?: number
+  widgetSize?: WidgetSize
 ) => {
   let payload: any = {
     type: widgetLayout.type,
@@ -143,8 +143,7 @@ export const updateWidget = async (
   };
 
   if (widgetSize) {
-    const widgetSizeAsString = WidgetSize[widgetSize];
-    payload = { ...payload, size: widgetSizeAsString };
+    payload = { ...payload, size: widgetSize };
   }
 
   const reqHeader = validateToken({}, true);

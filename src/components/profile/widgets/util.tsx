@@ -7,29 +7,30 @@ import { WidgetType } from '@/types';
  * @returns The path to the social icon image to be used as `src`
  */
 export const getSocialIconForWidget = (widgetType: WidgetType): string => {
-  const iconMap: { [key in WidgetType]?: string } = {
-    [WidgetType.Nfts]: 'nft.png',
-    [WidgetType.Photo]: 'default.png',
-    [WidgetType.PhotoGallery]: 'gallery.png',
-    [WidgetType.Youtube]: 'youtube.png',
-    [WidgetType.SpotifySong]: 'spotify.png',
-    [WidgetType.SpotifyAlbum]: 'spotify.png',
-    [WidgetType.SoundcloudSong]: 'soundCloud.png',
-    [WidgetType.Github]: 'github.png',
-    [WidgetType.InstagramPost]: 'instagram.png',
-    [WidgetType.InstagramProfile]: 'instagram.png',
-    [WidgetType.TwitterProfile]: 'twitter.png',
-    [WidgetType.Dribbble]: 'dribbble.png',
-    [WidgetType.Behance]: 'behance.png',
-    [WidgetType.Text]: 'text.png',
-    [WidgetType.Medium]: 'medium.png',
-    [WidgetType.Substack]: 'substack.png',
-    [WidgetType.Figma]: 'figma.png',
-    [WidgetType.Twitter]: 'twitter.png',
-    [WidgetType.LinkedInProfile]: 'linkedIn.png',
+  const iconMap: Record<WidgetType, string> = {
+    Nfts: 'nft.png',
+    Photo: 'default.png',
+    PhotoGallery: 'gallery.png',
+    Youtube: 'youtube.png',
+    SpotifySong: 'spotify.png',
+    SpotifyAlbum: 'spotify.png',
+    SoundcloudSong: 'soundCloud.png',
+    Github: 'github.png',
+    InstagramPost: 'instagram.png',
+    InstagramProfile: 'instagram.png',
+    TwitterProfile: 'twitter.png',
+    Dribbble: 'dribbble.png',
+    Behance: 'behance.png',
+    Text: 'text.png',
+    Medium: 'medium.png',
+    Substack: 'substack.png',
+    Figma: 'figma.png',
+    Twitter: 'twitter.png',
+    LinkedInProfile: 'linkedIn.png',
+    Link: 'default.png',
   };
 
-  return `/images/social/${iconMap[widgetType] || 'default.png'}`;
+  return `/images/social/${iconMap[widgetType]}`;
 };
 
 /**
@@ -49,36 +50,36 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
 
     // If the URL is from a GCP storage bucket, this is a photo widget
     if (hostname.endsWith('storage.googleapis.com')) {
-      return WidgetType.Photo;
+      return 'Photo';
     }
 
     // Substack posts only
     // TODO: Exclude profiles here and callout in UI
     if (platform.toLowerCase() === 'substack' && pathname.includes('/p/')) {
-      return WidgetType.Substack;
+      return 'Substack';
     }
 
     // Spotify songs and albums
     if (platform.toLowerCase() === 'spotify') {
       if (pathname.includes('/album/')) {
-        return WidgetType.SpotifyAlbum;
+        return 'SpotifyAlbum';
       } else if (pathname.includes('/track/')) {
-        return WidgetType.SpotifySong;
+        return 'SpotifySong';
       }
     }
 
     // Soundcloud songs
     // TODO: Exclude profiles here and callout in UI
     if (platform.toLowerCase() === 'soundcloud') {
-      return WidgetType.SoundcloudSong;
+      return 'SoundcloudSong';
     }
 
     // Instagram posts and profiles
     if (platform.toLowerCase() === 'instagram') {
       if (pathname.includes('/p/')) {
-        return WidgetType.InstagramPost;
+        return 'InstagramPost';
       } else {
-        return WidgetType.InstagramProfile;
+        return 'InstagramProfile';
       }
     }
 
@@ -89,16 +90,16 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
       platform.toLowerCase() === 'x'
     ) {
       if (pathname.includes('/status/')) {
-        return WidgetType.Twitter;
+        return 'Twitter';
       } else {
-        return WidgetType.TwitterProfile;
+        return 'TwitterProfile';
       }
     }
 
     // LinkedIn profiles
     // TODO: Include or exclude posts
     if (platform.toLowerCase() === 'linkedin') {
-      return WidgetType.LinkedInProfile;
+      return 'LinkedInProfile';
     }
 
     // The rest of the platforms are supported by manipulating the string
@@ -107,15 +108,13 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
         platform.toLowerCase()
       )
     ) {
-      return WidgetType[
-        (platform.charAt(0).toUpperCase() +
-          platform.slice(1)) as keyof typeof WidgetType
-      ];
+      return (platform.charAt(0).toUpperCase() +
+        platform.slice(1)) as WidgetType;
     }
 
     // If you get here, it's a generic link
     console.log('Typed as Generic link: ', url);
-    return WidgetType.Link;
+    return 'Link';
   } catch (error) {
     throw new Error('Error parsing URL:' + error);
   }
