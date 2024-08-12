@@ -1,5 +1,5 @@
 import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { SubstackWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { SubstackWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
 
 interface SubstackWidgetType {
@@ -12,7 +12,6 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
   size,
 }) => {
   let widgetLayout;
-  const currentType = WidgetType.Substack;
 
   const localHeader = (
     <>
@@ -27,7 +26,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-8'>
-              <WidgetIcon type={currentType} />
+              <WidgetIcon type={'Substack'} />
             </div>
             <div className='w-90'>{localHeader}</div>
           </div>
@@ -46,7 +45,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={currentType} className='m-0' />
+            <WidgetIcon type={'Substack'} className='m-0' />
           </div>
           <div>{localHeader}</div>
           <div className='h-full w-full relative rounded-xl overflow-hidden'>
@@ -64,7 +63,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetIcon type={currentType} />
+            <WidgetIcon type={'Substack'} />
             {localHeader}
           </div>
           <div className={`relative rounded-xl overflow-hidden w-3/5`}>
@@ -82,7 +81,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
     case WidgetSize.D:
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={currentType} className='m-0' />
+          <WidgetIcon type={'Substack'} className='m-0' />
           <div>{localHeader}</div>
           <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
             <img

@@ -90,7 +90,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       y: widget.layout.y,
       w: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].w,
       h: WidgetDimensions[WidgetSize[widget.size as keyof typeof WidgetSize]].h,
-      type: WidgetType[widget.type as keyof typeof WidgetType],
+      type: widget.type as WidgetType,
       content: widget.content,
       static: !editMode,
       isResizable: false,
@@ -138,7 +138,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       const type = parseWidgetTypeFromUrl(url);
 
       // We're attempting to add a photo widget
-      if (type === WidgetType.Photo && image && image !== undefined) {
+      if (type === 'Photo' && image && image !== undefined) {
         const imageFormData = new FormData();
         imageFormData.append('file', image);
         imageFormData.append('fileType', 'image');

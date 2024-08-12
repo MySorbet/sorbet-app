@@ -1,10 +1,6 @@
 import { WidgetHeader, ImageOverlay, WidgetIcon } from '@/components';
 import { cn } from '@/lib/utils';
-import {
-  LinkedInProfileWidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { LinkedInProfileWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
 
 // TODO: This could be shared type WidgetProps<LinkedInProfileWidgetContentType>
@@ -26,7 +22,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.LinkedInProfile} className='mb-0' />
+            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <BannerImage src={bannerImage} />
@@ -36,7 +32,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.LinkedInProfile} className='mb-0' />
+            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <BannerImage src={bannerImage} />
@@ -46,7 +42,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.LinkedInProfile} className='mb-0' />
+            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <div className='flex flex-row gap-3 justify-end h-full'>
@@ -58,7 +54,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={WidgetType.LinkedInProfile} className='mb-0' />
+            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <BannerImage src={bannerImage} />

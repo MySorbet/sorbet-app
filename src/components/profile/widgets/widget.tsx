@@ -87,7 +87,7 @@ export const Widget: React.FC<WidgetProps> = ({
 
   useEffect(() => {
     switch (type) {
-      case WidgetType.Dribbble:
+      case 'Dribbble':
         setWidgetContent(
           <DribbbleWidget
             content={content as DribbbleWidgetContentType}
@@ -95,7 +95,7 @@ export const Widget: React.FC<WidgetProps> = ({
           />
         );
         break;
-      case WidgetType.Behance:
+      case 'Behance':
         setWidgetContent(
           <BehanceWidget
             content={content as BehanceWidgetContentType}
@@ -103,7 +103,7 @@ export const Widget: React.FC<WidgetProps> = ({
           />
         );
         break;
-      case WidgetType.Medium:
+      case 'Medium':
         setWidgetContent(
           <MediumWidget
             content={content as MediumArticleContentType}
@@ -111,7 +111,7 @@ export const Widget: React.FC<WidgetProps> = ({
           />
         );
         break;
-      case WidgetType.Youtube:
+      case 'Youtube':
         setWidgetContent(
           <YouTubeWidget
             content={content as YoutubeWidgetContentType}
@@ -120,7 +120,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Substack:
+      case 'Substack':
         setWidgetContent(
           <SubstackWidget
             content={content as SubstackWidgetContentType}
@@ -129,7 +129,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.SpotifyAlbum:
+      case 'SpotifyAlbum':
         setWidgetContent(
           <SpotifyAlbumWidget
             content={content as SpotifyWidgetContentType}
@@ -138,7 +138,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.SpotifySong:
+      case 'SpotifySong':
         setWidgetContent(
           <SpotifySongWidget
             content={content as SpotifyWidgetContentType}
@@ -147,7 +147,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.SoundcloudSong:
+      case 'SoundcloudSong':
         setWidgetContent(
           <SoundcloudWidget
             content={content as SoundcloudTrackContentType}
@@ -156,7 +156,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.InstagramProfile:
+      case 'InstagramProfile':
         setWidgetContent(
           <InstagramWidget
             content={content as InstagramWidgetContentType}
@@ -165,7 +165,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Github:
+      case 'Github':
         setWidgetContent(
           <GithubWidget
             content={content as GithubWidgetContentType}
@@ -174,7 +174,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Figma:
+      case 'Figma':
         setWidgetContent(
           <FigmaWidget
             content={content as FigmaWidgetContentType}
@@ -183,7 +183,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.TwitterProfile:
+      case 'TwitterProfile':
         setWidgetContent(
           <TwitterWidget
             content={content as TwitterWidgetContentType}
@@ -192,7 +192,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Photo:
+      case 'Photo':
         setWidgetContent(
           <PhotoWidget
             content={content as PhotoWidgetContentType}
@@ -201,7 +201,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.Link:
+      case 'Link':
         setWidgetContent(
           <LinkWidget
             content={content as LinkWidgetContentType}
@@ -210,7 +210,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case WidgetType.LinkedInProfile:
+      case 'LinkedInProfile':
         // For now, just say the name is their handle
         // TODO: Remove this once real linked in data is available
         let handle;
@@ -255,7 +255,7 @@ export const Widget: React.FC<WidgetProps> = ({
       <div
         className={cn(
           'bg-white flex flex-col rounded-3xl w-full drop-shadow-md h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out',
-          type !== WidgetType.Photo && 'p-4'
+          type !== 'Photo' && 'p-4'
         )}
         key={identifier}
         onMouseEnter={() => editMode && setShowResizeWidget(true)}

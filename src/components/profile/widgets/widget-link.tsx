@@ -1,6 +1,6 @@
 import { WidgetHeader, ImageOverlay } from '@/components/profile/widgets/';
 import { cn } from '@/lib/utils';
-import { LinkWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { LinkWidgetContentType, WidgetSize } from '@/types';
 import { Link } from 'lucide-react';
 import React from 'react';
 

@@ -1,5 +1,5 @@
 import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { SpotifyWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { SpotifyWidgetContentType, WidgetSize } from '@/types';
 import { Play } from 'lucide-react';
 import React, { useEffect } from 'react';
 
@@ -17,7 +17,6 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
   }, [size]);
 
   let widgetLayout;
-  const currentType = WidgetType.SpotifySong;
 
   const localHeader = (
     <>
@@ -31,7 +30,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2 '>
           <div className='flex justify-between'>
-            <WidgetIcon type={currentType} className='m-0' />
+            <WidgetIcon type={'SpotifySong'} className='m-0' />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
@@ -53,7 +52,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={currentType} className='m-0' />
+            <WidgetIcon type={'SpotifySong'} className='m-0' />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
@@ -76,7 +75,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
         <div className='h-full flex flex-row gap-2'>
           <div className='w-1/5 h-full'>
             <div className='flex flex-col gap-1 h-full'>
-              <WidgetIcon type={currentType} />
+              <WidgetIcon type={'SpotifySong'} />
               <div>{localHeader}</div>
               <div className='mt-auto'>
                 <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg mt-auto'>
@@ -101,7 +100,7 @@ export const SpotifySongWidget: React.FC<SpotifyWidgetType> = ({
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={currentType} className='m-0' />
+            <WidgetIcon type={'SpotifySong'} className='m-0' />
             <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
               <Play size={16} />
               Play
