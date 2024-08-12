@@ -129,7 +129,7 @@ export const updateWidgetsBulk = async (
 export const updateWidget = async (
   widgetId: string,
   widgetLayout: ExtendedWidgetLayout,
-  widgetSize?: number
+  widgetSize?: WidgetSize
 ) => {
   let payload: any = {
     type: widgetLayout.type,
@@ -143,8 +143,7 @@ export const updateWidget = async (
   };
 
   if (widgetSize) {
-    const widgetSizeAsString = WidgetSize[widgetSize];
-    payload = { ...payload, size: widgetSizeAsString };
+    payload = { ...payload, size: widgetSize };
   }
 
   const reqHeader = validateToken({}, true);

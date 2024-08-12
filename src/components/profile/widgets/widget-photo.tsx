@@ -14,7 +14,7 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content, size }) => {
         src={content.image}
         alt='Photo content'
         className={`relative w-full h-full object-cover ${
-          size === WidgetSize.C || size === WidgetSize.D ? '' : 'object-contain'
+          size === 'C' || size === 'D' ? '' : 'object-contain'
         }`}
       />
       <ImageOverlay />

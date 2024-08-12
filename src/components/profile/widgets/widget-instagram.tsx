@@ -48,7 +48,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
   );
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
@@ -64,7 +64,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.B:
+    case 'B':
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/6 flex flex-col gap-2'>
@@ -80,7 +80,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.C:
+    case 'C':
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-1/2 h-full'>
@@ -98,7 +98,7 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.D:
+    case 'D':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>

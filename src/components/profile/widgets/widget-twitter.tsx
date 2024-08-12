@@ -26,7 +26,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   const { name, handle, bio, bannerImage, profileImage } = content;
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -39,7 +39,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
-    case WidgetSize.B:
+    case 'B':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -51,7 +51,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
-    case WidgetSize.C:
+    case 'C':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -65,7 +65,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           </div>
         </WidgetLayout>
       );
-    case WidgetSize.D:
+    case 'D':
       return (
         <WidgetLayout>
           <WidgetHeader>

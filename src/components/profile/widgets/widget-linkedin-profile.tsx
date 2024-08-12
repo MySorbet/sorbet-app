@@ -18,7 +18,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
   const { name, bio, profileImage, bannerImage } = content;
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -28,7 +28,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
           <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
-    case WidgetSize.B:
+    case 'B':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -38,7 +38,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
           <BannerImage src={bannerImage} />
         </WidgetLayout>
       );
-    case WidgetSize.C:
+    case 'C':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -50,7 +50,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
           </div>
         </WidgetLayout>
       );
-    case WidgetSize.D:
+    case 'D':
       return (
         <WidgetLayout>
           <WidgetHeader>

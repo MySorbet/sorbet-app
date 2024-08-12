@@ -26,7 +26,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   );
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2 '>
           <div className='flex justify-between'>
@@ -48,7 +48,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.B:
+    case 'B':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>
@@ -69,7 +69,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.C:
+    case 'C':
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-1/5 h-full'>
@@ -95,7 +95,7 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.D:
+    case 'D':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex justify-between'>

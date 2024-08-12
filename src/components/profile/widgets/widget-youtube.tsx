@@ -25,7 +25,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
   );
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
@@ -45,7 +45,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.B:
+    case 'B':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
@@ -63,7 +63,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.C:
+    case 'C':
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
@@ -82,7 +82,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
         </div>
       );
       break;
-    case WidgetSize.D:
+    case 'D':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <WidgetIcon type={'Youtube'} className='m-0' />

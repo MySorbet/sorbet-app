@@ -152,25 +152,18 @@ export type WidgetType =
   | 'PhotoGallery'
   | 'Text';
 
-export enum WidgetSize {
-  A,
-  B,
-  C,
-  D,
-}
+export type WidgetSize = 'A' | 'B' | 'C' | 'D';
 
-export const WidgetDimensions: {
-  [key in WidgetSize]: { w: number; h: number };
-} = {
-  [WidgetSize.A]: { w: 2, h: 2 },
-  [WidgetSize.B]: { w: 4, h: 4 },
-  [WidgetSize.C]: { w: 4, h: 2 },
-  [WidgetSize.D]: { w: 2, h: 4 },
+export const WidgetDimensions: Record<WidgetSize, { w: number; h: number }> = {
+  A: { w: 2, h: 2 },
+  B: { w: 4, h: 4 },
+  C: { w: 4, h: 2 },
+  D: { w: 2, h: 4 },
 };
 
 export const getWidgetDimensions = ({
   breakpoint = 'lg',
-  size = WidgetSize.A,
+  size = 'A',
 }: { breakpoint?: string; size?: WidgetSize } = {}) => {
   const dimensions = WidgetDimensions[size];
   let adjustedDimensions = { ...dimensions };

@@ -63,7 +63,7 @@ export const Widget: React.FC<WidgetProps> = ({
   loading,
   content,
   redirectUrl,
-  initialSize = WidgetSize.A,
+  initialSize = 'A',
   handleResize,
   handleRemove,
 }) => {
