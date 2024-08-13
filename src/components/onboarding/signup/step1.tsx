@@ -74,12 +74,12 @@ const Step1 = () => {
         <form onSubmit={form.handleSubmit(handleNext)}>
           <div className='flex h-full flex-col gap-6'>
             <div className='flex w-full items-center justify-between'>
-              <h1 className='text-2xl font-semibold'>Image</h1>
+              <h1 className='text-2xl font-semibold'>Bio</h1>
               <p className='text-sm font-medium text-[#344054]'>Step 1 of 3</p>
             </div>
             <div className='flex flex-1 flex-col gap-10'>
               <div className='flex h-[76px] w-full items-center gap-4 py-2'>
-                <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F] drop-shadow-xl'>
+                <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F]'>
                   <AvatarImage src={image} />
                   <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
                     <User className='h-9 w-9 text-[#667085]' />
