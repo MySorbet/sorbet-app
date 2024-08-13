@@ -17,18 +17,23 @@ type SupportedFileIcon = keyof typeof icons;
 interface ChatProps {
   showTopbar?: boolean;
   isOpen: boolean;
-  currentOfferId: string;
+  offerId: string;
   contractStatus: string;
 }
 
-export function Chat({ showTopbar = true, isOpen, currentOfferId, contractStatus = '' }: ChatProps) {
+export function Chat({
+  showTopbar = true,
+  isOpen,
+  offerId,
+  contractStatus = '',
+}: ChatProps) {
   const { user, logout } = useAuth();
-  const { data: offerData } = useGetOffer(currentOfferId);
+  const { data: offer } = useGetOffer(offerId);
   const [state, chatLoading, error, sendMessage] = useChat({
     user,
     logout,
     isOpen,
-    offerData,
+    offer,
   });
 
   return (
