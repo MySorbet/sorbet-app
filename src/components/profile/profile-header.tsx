@@ -1,13 +1,14 @@
+import { SquareArrowOutUpRight } from 'lucide-react';
+import React from 'react';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/popover';
 import { User } from '@/types';
-import { SquareArrowOutUpRight } from 'lucide-react';
-import React from 'react';
 
 interface ProfileHeaderProps {
   canEdit: boolean;
@@ -33,16 +34,14 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   return (
     <>
       <div className='flex justify-center'>
-        <Avatar className={`h-20 w-20`}>
+        <Avatar className='h-20 w-20'>
           <AvatarImage
-            src={
-              !user.profileImage || user.profileImage === ''
-                ? `/avatar.svg`
-                : user.profileImage
-            }
+            src={user.profileImage || '/avatar.svg'}
             alt={user.accountId}
           />
-          <AvatarFallback>{user.accountId}</AvatarFallback>
+          <AvatarFallback className='text-2xl font-semibold'>
+            {user.accountId.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
       </div>
       <div className='flex justify-center'>

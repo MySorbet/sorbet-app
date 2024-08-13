@@ -81,7 +81,8 @@ export const handleCreateAccount = async ({
   };
 };
 
-const SignInForm = () => {
+/** Simple sign in form which calls out to fastauth */
+export const SignIn = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const { register, handleSubmit, control } = useForm({
     resolver: zodResolver(schema),
@@ -591,5 +592,3 @@ const SignInForm = () => {
     </FormContainer>
   );
 };
-
-export { SignInForm };

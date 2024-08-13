@@ -26,11 +26,12 @@ const AvatarImage = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AvatarPrimitive.Image
     ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
+    className={cn("aspect-square h-full w-full object-cover", className)}
     {...props}
   />
 ))
 AvatarImage.displayName = AvatarPrimitive.Image.displayName
+// Added object-cover to the className prop to ensure the image fills the container and maintains its aspect ratio.
 
 const AvatarFallback = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,

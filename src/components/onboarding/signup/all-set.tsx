@@ -1,20 +1,22 @@
 'use client';
 
-import { FormContainer } from '../signin';
-import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
+
+import { FormContainer } from '../form-container';
 import { PasteLinkDemo } from './paste-link-demo';
 import { SocialsDemo } from './socials-demo';
 import { WidgetResizeDemo } from './widget-resize-demo';
-import { useRouter } from 'next/navigation';
 
 const AllSet = () => {
   const router = useRouter();
 
   return (
     <FormContainer>
-      <div className='flex flex-col gap-6 h-full'>
-        <h1 className='font-semibold text-2xl'>Your profile is ready 🎉</h1>
-        <div className='flex flex-col bg-[#F0EBF9] h-full py-4 px-3 rounded-xl gap-4'>
+      <div className='flex h-full flex-col gap-6'>
+        <h1 className='text-2xl font-semibold'>Your profile is ready 🎉</h1>
+        <div className='flex h-full flex-col gap-4 rounded-xl bg-[#F0EBF9] px-3 py-4'>
           <p className='text-sm font-medium text-[#344054]'>
             Start by adding widgets using the textbox at the bottom of the page
           </p>
@@ -30,7 +32,7 @@ const AllSet = () => {
           <WidgetResizeDemo />
         </div>
         <Button
-          className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
+          className='w-full border border-[#7F56D9] bg-[#573DF5] text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
           onClick={() => router.push('/')}
         >
           Edit My Profile

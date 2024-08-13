@@ -2,8 +2,8 @@ const listItemStyles = 'flex text-lg font-medium items-center w-[186px] gap-3';
 
 const AuthHero = () => {
   return (
-    <div className='w-[436px] h-[498-px] flex flex-col gap-10 px-0 py-6'>
-      <div className='flex items-center gap-2 w-28 text-base'>
+    <div className='flex h-[498-px] w-[436px] flex-col gap-10 px-0 py-6'>
+      <div className='flex w-28 items-center gap-2 text-base'>
         <svg
           width='37.22'
           height='37.22'
@@ -39,7 +39,7 @@ const AuthHero = () => {
             fill='#D3EC30'
           />
         </svg>
-        <div className='text-[#573DF5] font-semibold'>SORBET</div>
+        <div className='font-semibold text-[#573DF5]'>SORBET</div>
       </div>
       <div className='flex flex-col gap-6'>
         <div className='text-4xl font-semibold leading-[44px]'>
@@ -79,7 +79,7 @@ const AuthHero = () => {
               strokeLinejoin='round'
             />
           </svg>
-          0% free
+          0% Freelancer fee
         </li>
         <li className={listItemStyles}>
           <svg

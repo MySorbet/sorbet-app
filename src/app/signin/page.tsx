@@ -1,7 +1,14 @@
-import { SignInContainer } from '@/components/signin';
+'use client';
+// TODO: Remove use client and fix trickle down errors
+
+import { OnboardingShell, SignIn } from '@/components/onboarding';
 
 const SignInPage = () => {
-  return <SignInContainer />;
+  return (
+    <OnboardingShell>
+      <SignIn />
+    </OnboardingShell>
+  );
 };
 
 export default SignInPage;

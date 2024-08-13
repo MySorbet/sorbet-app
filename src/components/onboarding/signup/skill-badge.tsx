@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
 import { X } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -19,9 +19,9 @@ const SkillBadge = ({ skill, setSkills }: SkillBadgeProps) => {
   return (
     <Badge
       color='blue'
-      className='flex items-center grow-0 gap-[3px] h-6 rounded-[6px] bg-white border border-[#D0D5DD] py-[2px] pl-1 pr-[5px] hover:bg-white'
+      className='flex h-6 grow-0 items-center gap-[3px] rounded-[6px] border border-[#D0D5DD] bg-white py-[2px] pl-1 pr-[5px] hover:bg-white'
     >
-      <p className='text-[#344054] text-sm'>{skill}</p>
+      <p className='text-sm text-[#344054]'>{skill}</p>
       <button onClick={handleRemoveSkill}>
         <X className='h-3 w-3 text-[#98A2B3]' />
       </button>
