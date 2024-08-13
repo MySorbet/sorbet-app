@@ -1,7 +1,8 @@
-import { NewMessageNotificationDto } from '@/types/sendbird';
-import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
 import * as blobUtil from 'blob-util';
+
+import { NewMessageNotificationDto } from '@/types/sendbird';
+import { API_URL, withAuthHeader } from '@/utils';
 
 /**
   Fetches the files stored in Sendbird with proper api tokens in the backend and returns the blob url
@@ -15,13 +16,12 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
     return sendbirdUrl;
   }
   const reqBody = { url: sendbirdUrl };
-  const reqHeaders = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${API_URL}/images/sendbird`,
       reqBody,
-      reqHeaders
+      withAuthHeader()
     );
     const binary = response.data.binString;
     const buffer = blobUtil.binaryStringToArrayBuffer(binary);
@@ -41,10 +41,8 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
   send a notification to the recipient.
 */
 export async function sendNotification(reqBody: NewMessageNotificationDto) {
-  const reqHeaders = validateToken({}, true);
-
   try {
-    await axios.post(`${API_URL}/chat`, reqBody, reqHeaders);
+    await axios.post(`${API_URL}/chat`, reqBody, withAuthHeader());
   } catch (error: any) {
     // Message goes thru to sendbird, but notification fails in backend
     console.error(

@@ -1,10 +1,13 @@
 'use client';
 
-import { FormContainer } from '../signin';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { UserSignUpContext, UserSignUpContextType } from './signup-container';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CircleAlert, MapPin, User } from 'lucide-react';
+import { useContext, useState } from 'react';
+import { useForm, useFormState } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,11 +15,10 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, MapPin, User } from 'lucide-react';
-import { useContext, useState } from 'react';
-import { useForm, useFormState } from 'react-hook-form';
-import { z } from 'zod';
+import { Input } from '@/components/ui/input';
+
+import { FormContainer } from '../signin';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 
 const Step1 = () => {
   const { userData, setUserData, setStep } = useContext(
@@ -70,17 +72,17 @@ const Step1 = () => {
     <FormContainer>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleNext)}>
-          <div className='flex flex-col gap-6 h-full'>
-            <div className='flex w-full justify-between items-center'>
-              <h1 className='font-semibold text-2xl'>Image</h1>
-              <p className='font-medium text-sm text-[#344054]'>Step 1 of 3</p>
+          <div className='flex h-full flex-col gap-6'>
+            <div className='flex w-full items-center justify-between'>
+              <h1 className='text-2xl font-semibold'>Image</h1>
+              <p className='text-sm font-medium text-[#344054]'>Step 1 of 3</p>
             </div>
-            <div className='flex flex-col flex-1 gap-10'>
-              <div className='h-[76px] flex w-full py-2 gap-4 items-center'>
-                <Avatar className='w-[60px] h-[60px] drop-shadow-xl shadow-[#1018280F] border-[1.2px] border-[#00000014]'>
+            <div className='flex flex-1 flex-col gap-10'>
+              <div className='flex h-[76px] w-full items-center gap-4 py-2'>
+                <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F] drop-shadow-xl'>
                   <AvatarImage src={image} />
-                  <AvatarFallback className='w-[60px] h-[60px] bg-[#F2F4F7] '>
-                    <User className='text-[#667085] w-9 h-9' />
+                  <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
+                    <User className='h-9 w-9 text-[#667085]' />
                   </AvatarFallback>
                 </Avatar>
                 <label
@@ -115,13 +117,13 @@ const Step1 = () => {
                               placeholder='First name'
                               {...field}
                               className={
-                                !!errors.firstName
+                                errors.firstName
                                   ? 'border-red-500 ring-red-500'
                                   : ''
                               }
                             />
                             {errors.firstName && (
-                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                              <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
                             )}
                           </div>
                         </FormControl>
@@ -145,13 +147,13 @@ const Step1 = () => {
                               placeholder='Last name'
                               {...field}
                               className={
-                                !!errors.lastName
+                                errors.lastName
                                   ? 'border-red-500 ring-red-500'
                                   : ''
                               }
                             />
                             {errors.lastName && (
-                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                              <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
                             )}
                           </div>
                         </FormControl>
@@ -171,13 +173,13 @@ const Step1 = () => {
                     onChange={(e) => setLocation(e.target.value)}
                     defaultValue={userData.location}
                   />
-                  <MapPin className='absolute h-5 w-5 text-[#667085] top-[10px] left-3' />
+                  <MapPin className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
                 </div>
               </div>
             </div>
             <Button
               type='submit'
-              className='bg-[#573DF5] border-[#7F56D9] text-[#FFFFFF] shadow-sm shadow-[#1018280D] w-full'
+              className='w-full border-[#7F56D9] bg-[#573DF5] text-[#FFFFFF] shadow-sm shadow-[#1018280D]'
               // onClick={handleNext}
             >
               Next

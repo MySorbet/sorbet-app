@@ -1,3 +1,6 @@
+import { HelpCircle, TriangleAlert } from 'lucide-react';
+import React from 'react';
+
 import { ContractMilestone } from '@/app/gigs/contract';
 import { Spinner } from '@/components/common';
 import {
@@ -13,8 +16,6 @@ import {
   MilestoneType,
   OfferType,
 } from '@/types';
-import { HelpCircle, TriangleAlert } from 'lucide-react';
-import React from 'react';
 
 export interface ContractOverviewProps {
   contract: ContractType;
@@ -88,26 +89,26 @@ export const ContractOverview = ({
   };
 
   return (
-    <div className='contract-container p-4 bg-gray-100 rounded-2xl flex flex-col items-center w-full h-full'>
+    <div className='contract-container flex h-full w-full flex-col items-center rounded-2xl bg-gray-100 p-4'>
       <AlertDialog
         open={isRejectDialogOpen}
         onOpenChange={setIsRejectDialogOpen}
       >
         <AlertDialogContent>
-          <div className='flex flex-col gap-4 justify-center items-center align-center'>
+          <div className='align-center flex flex-col items-center justify-center gap-4'>
             <div>
               <TriangleAlert
-                className='w-24 h-24'
+                className='h-24 w-24'
                 strokeWidth={1}
-                stroke={`#595C5A`}
+                stroke='#595C5A'
               />
             </div>
             <div className='text-3xl font-semibold'>Reject contract?</div>
-            <div className='px-8 text-lg text-center'>
+            <div className='px-8 text-center text-lg'>
               Confirm if you would like to reject this contract. The freelancer
               will be notified.
             </div>
-            <div className='flex flex-row gap-2 w-full mt-12'>
+            <div className='mt-12 flex w-full flex-row gap-2'>
               <AlertDialogCancel className='w-full' onClick={cancelReject}>
                 Cancel
               </AlertDialogCancel>
@@ -122,14 +123,14 @@ export const ContractOverview = ({
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className='flex flex-row w-full justify-between items-start'>
+      <div className='flex w-full flex-row items-start justify-between'>
         {isLoading && (
-          <div className='absolute inset-0 bg-black bg-opacity-25 flex justify-center items-center'>
+          <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-25'>
             <Spinner />
           </div>
         )}
         <div className='flex flex-col gap-1'>
-          <h2 className='font-medium text-2xl'>
+          <h2 className='text-2xl font-medium'>
             {contractApproved ? 'Contract Approved' : 'Review Contract'}
           </h2>
           <p className='md:w-[80%]'>
@@ -140,11 +141,11 @@ export const ContractOverview = ({
               : 'Review and approve contract before funding milestones'}
           </p>
         </div>
-        <div className='flex align-center items-center justify-end h-full cursor-pointer'>
-          <HelpCircle className='w-6 h-6' stroke='#667085' />
+        <div className='align-center flex h-full cursor-pointer items-center justify-end'>
+          <HelpCircle className='h-6 w-6' stroke='#667085' />
         </div>
       </div>
-      <div className='flex flex-col gap-3 mt-6 w-full'>
+      <div className='mt-6 flex w-full flex-col gap-3'>
         {milestones && milestones.length > 0 ? (
           <>
             {milestones.map((milestone: MilestoneType, index: number) => (
@@ -154,6 +155,7 @@ export const ContractOverview = ({
                 title={milestone.name}
                 amount={milestone.amount}
                 index={index}
+                key={index}
                 projectId={contract.id}
                 isClient={isClient}
                 milestoneId={milestone.id}
@@ -186,7 +188,7 @@ export const ContractOverview = ({
           <ContractMilestone
             isApproved={contractApproved}
             status={mapContractStatusToMilestoneStatus(contract.status)}
-            title={`Fixed Price Contract`}
+            title='Fixed Price Contract'
             amount={contract.totalAmount}
             index={0}
             projectId={contract.id}
@@ -221,16 +223,16 @@ export const ContractOverview = ({
       <div className='w-full'>
         {!contractApproved ? (
           <>
-            <div className='flex gap-2 mt-4 w-full'>
+            <div className='mt-4 flex w-full gap-2'>
               <Button
                 onClick={handleReject}
-                className='w-full md:w-1/6 lg:w-2/12 bg-red-600 text-white'
+                className='w-full bg-red-600 text-white md:w-1/6 lg:w-2/12'
               >
                 Reject
               </Button>
               <Button
                 onClick={handleApprove}
-                className='w-full md:w-5/6 lg:w-10/12 bg-sorbet text-white hover:bg-sorbet/70'
+                className='bg-sorbet hover:bg-sorbet/70 w-full text-white md:w-5/6 lg:w-10/12'
               >
                 Approve
               </Button>
@@ -238,10 +240,10 @@ export const ContractOverview = ({
           </>
         ) : (
           !isClient && (
-            <div className='flex gap-2 mt-4 w-full'>
+            <div className='mt-4 flex w-full gap-2'>
               <Button
                 onClick={finishContract}
-                className='w-full md:w-1/6 lg:w-2/12 bg-sorbet text-white'
+                className='bg-sorbet w-full text-white md:w-1/6 lg:w-2/12'
                 disabled={offer?.status === 'Completed'}
               >
                 Finish Contract

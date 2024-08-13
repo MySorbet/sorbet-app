@@ -4,27 +4,18 @@ export interface GetItemTypeBase {
   url: string;
 }
 
-export interface GetDribbleShotType extends GetItemTypeBase {}
+export type GetDribbleShotType = GetItemTypeBase;
+export type GetBehanceItemType = GetItemTypeBase;
+export type GetMediumArticleType = GetItemTypeBase;
+export type GetYouTubeVideoType = GetItemTypeBase;
+export type GetSubstackArticleType = GetItemTypeBase;
+export type GetSpotifyType = GetItemTypeBase;
+export type GetSoundcloudType = GetItemTypeBase;
+export type GetInstagramType = GetItemTypeBase;
+export type GetPhotoWidget = GetItemTypeBase;
+export type GetGithubWidget = GetItemTypeBase;
+export type GetTwitterWidget = GetItemTypeBase;
 
-export interface GetBehanceItemType extends GetItemTypeBase {}
-
-export interface GetMediumArticleType extends GetItemTypeBase {}
-
-export interface GetYouTubeVideoType extends GetItemTypeBase {}
-
-export interface GetSubstackArticleType extends GetItemTypeBase {}
-
-export interface GetSpotifyType extends GetItemTypeBase {}
-
-export interface GetSoundcloudType extends GetItemTypeBase {}
-
-export interface GetInstagramType extends GetItemTypeBase {}
-
-export interface GetPhotoWidget extends GetItemTypeBase {}
-
-export interface GetGithubWidget extends GetItemTypeBase {}
-
-export interface GetTwitterWidget extends GetItemTypeBase {}
 export interface Widget {
   id: string;
   type: WidgetType;
@@ -166,7 +157,7 @@ export const getWidgetDimensions = ({
   size = 'A',
 }: { breakpoint?: string; size?: WidgetSize } = {}) => {
   const dimensions = WidgetDimensions[size];
-  let adjustedDimensions = { ...dimensions };
+  const adjustedDimensions = { ...dimensions };
   return adjustedDimensions;
 };
 

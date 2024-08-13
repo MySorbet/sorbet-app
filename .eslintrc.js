@@ -13,27 +13,23 @@ module.exports = {
     'prettier',
   ],
   rules: {
-    "import/order": ["error", {
-      "alphabetize": {
-        "order": "asc",
-        "caseInsensitive": true
-      }
-    }],
-    'no-unused-vars': 'off',
+    'no-unused-vars': 'warn',
     'no-console': 'warn',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'react/no-unescaped-entities': 'off',
+    'no-useless-escape': 'warn',
 
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+
+    'react/no-unescaped-entities': 'off',
     'react/display-name': 'off',
     'react/jsx-curly-brace-presence': [
       'warn',
       { props: 'never', children: 'never' },
     ],
 
-    //#region  //*=========== Unused Import ===========
-    '@typescript-eslint/no-unused-vars': 'off',
+    '@next/next/no-img-element': 'off',
+
     'unused-imports/no-unused-imports': 'warn',
-    "@next/next/no-img-element": "off",
     'unused-imports/no-unused-vars': [
       'warn',
       {
@@ -43,17 +39,15 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
-    //#endregion  //*======== Unused Import ===========
 
-    //#region  //*=========== Import Sort ===========
-    
-   "simple-import-sort/imports": "off",
-   "simple-import-sort/exports": "off",
-   "import/order": "any"
-    //#endregion  //*======== Import Sort ===========
+    'simple-import-sort/imports': 'warn',
+    'simple-import-sort/exports': 'warn',
   },
   globals: {
     React: true,
     JSX: true,
   },
+
+  // We don't want to touch shadcn for now
+  ignorePatterns: ['src/components/ui/*'],
 };

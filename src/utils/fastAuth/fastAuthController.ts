@@ -198,7 +198,7 @@ class FastAuthController {
       public_key: publicKey,
       finality: 'optimistic',
     });
-    // @ts-ignore
+    // @ts-expect-error ts-2339
     const nonce = rawAccessKey?.nonce;
     return new BN(nonce).add(new BN(1));
   }
@@ -432,7 +432,6 @@ class FastAuthController {
   }
 
   async getUserCredential(oidcToken: any) {
-    // @ts-ignore
     const GET_USER_SALT = CLAIM + 2;
     const keypair =
       (await this.getKey(`oidc_keypair_${oidcToken}`)) ||

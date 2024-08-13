@@ -1,13 +1,13 @@
-import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
 
+import { API_URL, withAuthHeader } from '@/utils';
+
 export const uploadProfileImageAsync = async (data: FormData) => {
-  const reqHeader = validateToken({}, true);
   try {
     const response = await axios.post(
       `${API_URL}/images/upload`,
       data,
-      reqHeader
+      withAuthHeader()
     );
 
     return response;
@@ -19,13 +19,11 @@ export const uploadProfileImageAsync = async (data: FormData) => {
 };
 
 export const uploadWidgetsImageAsync = async (data: FormData) => {
-  const reqHeader = validateToken({}, true);
-
   try {
     const response = await axios.post(
       `${API_URL}/images/widgets`,
       data,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {

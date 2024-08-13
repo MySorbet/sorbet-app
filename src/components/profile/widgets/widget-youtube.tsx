@@ -1,6 +1,7 @@
-import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { WidgetSize, YoutubeWidgetContentType } from '@/types';
 import React, { useEffect } from 'react';
+
+import { ImageOverlay, WidgetIcon } from '@/components/profile/widgets';
+import { WidgetSize, YoutubeWidgetContentType } from '@/types';
 
 interface YouTubeWidgetType {
   content: YoutubeWidgetContentType;
@@ -27,18 +28,18 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
   switch (size) {
     case 'A':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-1/4'>
-              <WidgetIcon type={'Youtube'} />
+              <WidgetIcon type='Youtube' />
             </div>
             <div>{localHeader}</div>
           </div>
-          <div className='flex-grow relative rounded-xl overflow-hidden'>
+          <div className='relative flex-grow overflow-hidden rounded-xl'>
             <img
               src={content.thumbnail}
               alt='Medium content'
-              className='absolute inset-0 w-full h-full object-cover'
+              className='absolute inset-0 h-full w-full object-cover'
             />
             <ImageOverlay />
           </div>
@@ -47,16 +48,16 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
       break;
     case 'B':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div>
-            <WidgetIcon type={'Youtube'} className='m-0' />
+            <WidgetIcon type='Youtube' className='m-0' />
           </div>
           <div>{localHeader}</div>
-          <div className='h-full w-full relative rounded-xl overflow-hidden'>
+          <div className='relative h-full w-full overflow-hidden rounded-xl'>
             <img
               src={content.thumbnail}
               alt='Medium content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
             />
             <ImageOverlay />
           </div>
@@ -65,16 +66,16 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
       break;
     case 'C':
       widgetLayout = (
-        <div className='h-full flex flex-row gap-2'>
+        <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetIcon type={'Youtube'} />
+            <WidgetIcon type='Youtube' />
             {localHeader}
           </div>
-          <div className={`relative rounded-xl overflow-hidden w-3/5`}>
+          <div className='relative w-3/5 overflow-hidden rounded-xl'>
             <img
               src={content.thumbnail}
               alt='Medium content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
               style={{ objectFit: 'cover' }}
             />
             <ImageOverlay />
@@ -84,14 +85,14 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
       break;
     case 'D':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={'Youtube'} className='m-0' />
+        <div className='flex h-full flex-col gap-2'>
+          <WidgetIcon type='Youtube' className='m-0' />
           <div>{localHeader}</div>
-          <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
+          <div className='relative h-full w-full overflow-hidden rounded-xl'>
             <img
               src={content.thumbnail}
               alt='Medium content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
               style={{ objectFit: 'cover' }}
             />
             <ImageOverlay />

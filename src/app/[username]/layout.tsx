@@ -1,10 +1,8 @@
+import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
-//@ts-ignore
-export const metadata = () => {
-  return {
-    title: `Sorbet | Profile`,
-  };
+export const metadata: Metadata = {
+  title: `Sorbet | Profile`,
 };
 
 export default function ClientLayout({ children }: { children: ReactNode }) {

@@ -36,3 +36,6 @@ yarn-error.log*
 
 # changelog
 CHANGELOG.md
+
+# We don't want to touch shadcn for now
+src/components/ui/
