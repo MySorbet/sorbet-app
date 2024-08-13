@@ -17,7 +17,7 @@ export const useSendbird = () => {
     queryFn: async () => {
       try {
         const params: SendbirdChatParams<[GroupChannelModule]> = {
-          appId: config.sendbirdAppId as string,
+          appId: config.sendbirdAppId!,
           localCacheEnabled: true,
           modules: [new GroupChannelModule()],
         };
