@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { config } from '@/lib/config';
 import {
   ExtendedWidgetLayout,
@@ -17,8 +19,7 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { validateToken } from '@/utils';
-import axios from 'axios';
+import { withAuthHeader } from '@/utils';
 
 export const getWidgetContent = async ({
   url,
@@ -73,12 +74,10 @@ export const getWidgetContent = async ({
 };
 
 export const getWidgetsByUsername = async (username: string) => {
-  const reqHeader = validateToken({}, true);
-
   try {
     const res = await axios.get(
       `${config.sorbetApiUrl}/widgets/username/${username}`,
-      reqHeader
+      withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -90,12 +89,10 @@ export const getWidgetsByUsername = async (username: string) => {
 
 export const getWidgetsForUser = async (userId: string) => {
   if (userId !== null) {
-    const reqHeader = validateToken({}, true);
-
     try {
       const response = await axios.get(
         `${config.sorbetApiUrl}/widgets/user/${userId}`,
-        reqHeader
+        withAuthHeader()
       );
       return response.data;
     } catch (error: any) {
@@ -111,12 +108,11 @@ export const getWidgetsForUser = async (userId: string) => {
 export const updateWidgetsBulk = async (
   widgetLayouts: UpdateWidgetsBulkDto[]
 ) => {
-  const reqHeader = validateToken({}, true);
   try {
     const response = await axios.patch(
       `${config.sorbetApiUrl}/widgets/bulk-update`,
       widgetLayouts,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -146,13 +142,11 @@ export const updateWidget = async (
     payload = { ...payload, size: widgetSize };
   }
 
-  const reqHeader = validateToken({}, true);
-
   try {
     const res = await axios.patch(
       `${config.sorbetApiUrl}/widgets/${widgetId}`,
       payload,
-      reqHeader
+      withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -161,12 +155,10 @@ export const updateWidget = async (
 };
 
 export const deleteWidget = async (id: string) => {
-  const reqHeader = validateToken({}, true);
-
   try {
     const response = await axios.delete(
       `${config.sorbetApiUrl}/widgets/${id}`,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -176,13 +168,12 @@ export const deleteWidget = async (id: string) => {
 
 export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
   const body: GetDribbleShotType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/dribbble`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -194,13 +185,12 @@ export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
 
 export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
   const body: GetBehanceItemType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = axios.post(
       `${config.sorbetApiUrl}/widgets/behance`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -214,13 +204,12 @@ export const getMediumArticleMetadata = async ({
   url,
 }: GetMediumArticleType) => {
   const body: GetMediumArticleType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/medium`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -232,13 +221,12 @@ export const getMediumArticleMetadata = async ({
 
 export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
   const body: GetYouTubeVideoType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/youtube`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -250,13 +238,12 @@ export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
 
 export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
   const body: GetSubstackArticleType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/substack`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -268,13 +255,12 @@ export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
 
 export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/spotify/album`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -286,13 +272,12 @@ export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
 
 export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
   const body: GetSpotifyType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/spotify/song`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -304,13 +289,12 @@ export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
 
 export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
   const body: GetSoundcloudType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/soundcloud`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -324,13 +308,12 @@ export const getInstagramProfileMetadata = async ({
   url,
 }: GetInstagramType) => {
   const body: GetInstagramType = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/instagram`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -342,13 +325,12 @@ export const getInstagramProfileMetadata = async ({
 
 export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
   const body: GetPhotoWidget = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/photo`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -360,13 +342,12 @@ export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
 
 export const getGithubProfile = async ({ url }: GetGithubWidget) => {
   const body: GetGithubWidget = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/github`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -378,13 +359,12 @@ export const getGithubProfile = async ({ url }: GetGithubWidget) => {
 
 export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
   const body: GetTwitterWidget = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/twitter`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -396,13 +376,12 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
 
 export const getLinkedInProfile = async ({ url }: GetItemTypeBase) => {
   const body: GetItemTypeBase = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/linkedin`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -414,13 +393,12 @@ export const getLinkedInProfile = async ({ url }: GetItemTypeBase) => {
 
 export const getLinkData = async ({ url }: GetItemTypeBase) => {
   const body: GetItemTypeBase = { url };
-  const reqHeader = validateToken({}, true);
 
   try {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/link`,
       body,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {

@@ -1,12 +1,18 @@
+import { Trash2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+
 import { Spinner } from '@/components/common';
 import {
   BehanceWidget,
-  LinkWidget,
   DribbbleWidget,
   FigmaWidget,
   GithubWidget,
   InstagramWidget,
+  LinkedInProfileWidget,
+  LinkWidget,
   MediumWidget,
+  PhotoWidget,
   ResizeWidget,
   SoundcloudWidget,
   SpotifyAlbumWidget,
@@ -14,8 +20,6 @@ import {
   SubstackWidget,
   TwitterWidget,
   YouTubeWidget,
-  PhotoWidget,
-  LinkedInProfileWidget,
 } from '@/components/profile';
 import { WidgetErrorFallback } from '@/components/profile/widgets';
 import { Button } from '@/components/ui/button';
@@ -38,9 +42,6 @@ import {
   WidgetType,
   YoutubeWidgetContentType,
 } from '@/types';
-import { Trash2 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 interface WidgetProps {
   identifier: string;
@@ -210,7 +211,7 @@ export const Widget: React.FC<WidgetProps> = ({
         );
         break;
 
-      case 'LinkedInProfile':
+      case 'LinkedInProfile': {
         // For now, just say the name is their handle
         // TODO: Remove this once real linked in data is available
         let handle;
@@ -233,6 +234,7 @@ export const Widget: React.FC<WidgetProps> = ({
           />
         );
         break;
+      }
 
       default:
         setWidgetContent(<>Unsupported widget type</>);
@@ -248,13 +250,13 @@ export const Widget: React.FC<WidgetProps> = ({
       }}
     >
       {loading && (
-        <div className='flex justify-center align-center items-center bg-gray-300 opacity-70 h-full w-full absolute z-50 rounded-3xl drop-shadow-md'>
+        <div className='align-center absolute z-50 flex h-full w-full items-center justify-center rounded-3xl bg-gray-300 opacity-70 drop-shadow-md'>
           <Spinner />
         </div>
       )}
       <div
         className={cn(
-          'bg-white flex flex-col rounded-3xl w-full drop-shadow-md h-full relative cursor-pointer z-10 transition-height duration-1500 ease-in-out',
+          'transition-height duration-1500 relative z-10 flex h-full w-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md ease-in-out',
           type !== 'Photo' && 'p-4'
         )}
         key={identifier}
@@ -264,7 +266,7 @@ export const Widget: React.FC<WidgetProps> = ({
       >
         {widgetContent}
         <div
-          className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-6 transition-opacity duration-300 ${
+          className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 transform transition-opacity duration-300 ${
             showResizeWidget ? 'opacity-100' : 'opacity-0'
           }`}
         >
@@ -273,7 +275,7 @@ export const Widget: React.FC<WidgetProps> = ({
             <Button
               variant='outline'
               size='icon'
-              className='rounded-full bg-gray-800 text-white border-gray-800 hover:bg-gray-800 hover:text-white'
+              className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
               onClick={(e) => {
                 e.stopPropagation();
                 handleRemove(identifier);

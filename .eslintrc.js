@@ -13,13 +13,7 @@ module.exports = {
     'prettier',
   ],
   rules: {
-    "import/order": ["error", {
-      "alphabetize": {
-        "order": "asc",
-        "caseInsensitive": true
-      }
-    }],
-    'no-unused-vars': 'off',
+    'no-unused-vars': 'warn',
     'no-console': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'react/no-unescaped-entities': 'off',
@@ -29,11 +23,12 @@ module.exports = {
       'warn',
       { props: 'never', children: 'never' },
     ],
+    'no-useless-escape': 'warn',
 
     //#region  //*=========== Unused Import ===========
     '@typescript-eslint/no-unused-vars': 'off',
     'unused-imports/no-unused-imports': 'warn',
-    "@next/next/no-img-element": "off",
+    '@next/next/no-img-element': 'off',
     'unused-imports/no-unused-vars': [
       'warn',
       {
@@ -46,14 +41,13 @@ module.exports = {
     //#endregion  //*======== Unused Import ===========
 
     //#region  //*=========== Import Sort ===========
-    
-   "simple-import-sort/imports": "off",
-   "simple-import-sort/exports": "off",
-   "import/order": "any"
+    'simple-import-sort/imports': 'warn',
+    'simple-import-sort/exports': 'warn',
     //#endregion  //*======== Import Sort ===========
   },
   globals: {
     React: true,
     JSX: true,
   },
+  ignorePatterns: ['src/components/ui/*'],
 };

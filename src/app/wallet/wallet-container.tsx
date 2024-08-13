@@ -1,5 +1,9 @@
 'use client';
 
+import { MoveDown, Send } from 'lucide-react';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+
 import { getOverview } from '@/api/user';
 import Container from '@/app/container';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
@@ -12,9 +16,6 @@ import { Header } from '@/components/header';
 import { useAuth } from '@/hooks';
 import { useAppSelector } from '@/redux/hook';
 import { Balances, Transaction, Transactions } from '@/types/transactions';
-import { MoveDown, Send } from 'lucide-react';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 
 export const WalletContainer = () => {
   const { user } = useAuth();
@@ -33,7 +34,7 @@ export const WalletContainer = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchTransactions = async (last_days: number = 30) => {
+  const fetchTransactions = async (last_days = 30) => {
     if (user) {
       setLoading(true);
       const response = await getOverview(last_days);
@@ -59,7 +60,7 @@ export const WalletContainer = () => {
       <Header />
       {user && <Sidebar show={toggleOpenSidebar} userInfo={user} />}
       <div className='container my-16'>
-        <div className='flex flex-col lg:flex-row gap-6'>
+        <div className='flex flex-col gap-6 lg:flex-row'>
           <div className='lg:w-8/12'>
             <WalletBalance
               balance={(balances.usdc + balances.nearUsd).toLocaleString()}
@@ -69,7 +70,7 @@ export const WalletContainer = () => {
             <CreditCardForm />
           </div>
         </div>
-        <div className='flex justify-between mt-12 mb-6'>
+        <div className='mb-6 mt-12 flex justify-between'>
           <div className='text-2xl font-semibold'>Money Movements</div>
           <div>
             <SelectDuration
@@ -78,7 +79,7 @@ export const WalletContainer = () => {
             />
           </div>
         </div>
-        <div className='flex flex-col lg:flex-row gap-6'>
+        <div className='flex flex-col gap-6 lg:flex-row'>
           <div className='lg:w-1/2'>
             <FundsFlow
               isLoading={loading}
@@ -116,11 +117,11 @@ export const WalletContainer = () => {
             />
           </div>
         </div>
-        <div className='flex flex-col mt-12'>
-          <div className='flex justify-between items-center mb-6'>
+        <div className='mt-12 flex flex-col'>
+          <div className='mb-6 flex items-center justify-between'>
             <div className='text-2xl font-semibold'>Recent Transactions</div>
             <Link href='/wallet/all'>
-              <div className='text-right font-semibold text-sm cursor-pointer text-sorbet'>
+              <div className='text-sorbet cursor-pointer text-right text-sm font-semibold'>
                 View all
               </div>
             </Link>

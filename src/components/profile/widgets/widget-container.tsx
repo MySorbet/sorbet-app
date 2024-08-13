@@ -1,6 +1,10 @@
-import { Spinner } from '../../common';
-import styles from './react-grid-layout-custom.module.css';
-import { Widget } from './widget';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+
+import { motion } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import RGL, { Layout, WidthProvider } from 'react-grid-layout';
+
 import { NoWidgetsContent } from '@/components';
 import { AddWidgets } from '@/components/profile/widgets';
 import { DesktopOnlyAlert } from '@/components/profile/widgets';
@@ -22,11 +26,10 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { motion } from 'framer-motion';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import RGL, { Layout, WidthProvider } from 'react-grid-layout';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
+
+import { Spinner } from '../../common';
+import styles from './react-grid-layout-custom.module.css';
+import { Widget } from './widget';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -52,7 +55,9 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   rowHeight = 120,
   editMode,
   userId,
-  onLayoutChange = () => {},
+  onLayoutChange = () => {
+    /** noop */
+  },
 }) => {
   const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
   const [initialLayout, setInitialLayout] = useState<ExtendedWidgetLayout[]>(
@@ -243,7 +248,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const persistWidgetsLayoutOnChange = (items?: ExtendedWidgetLayout[]) => {
     const itemsToUse = items && items.length > 0 ? items : layout;
     if (itemsToUse.length > 0 && editMode) {
-      let payload: UpdateWidgetsBulkDto[] = [];
+      const payload: UpdateWidgetsBulkDto[] = [];
       itemsToUse.map((item) =>
         payload.push({
           id: item.i,
@@ -390,7 +395,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
   if (isUserWidgetPending)
     return (
-      <div className='w-full h-full flex items-center justify-center'>
+      <div className='flex h-full w-full items-center justify-center'>
         <Spinner />
       </div>
     );
@@ -415,7 +420,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
         </ReactGridLayout>
 
         {editMode && (
-          <div className='fixed bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-6 z-30'>
+          <div className='fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
             <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
           </div>
         )}

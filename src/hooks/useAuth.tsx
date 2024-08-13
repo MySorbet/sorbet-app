@@ -1,4 +1,12 @@
-import { useLocalStorage } from './useLocalStorage';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+
 import { fetchUserDetails, signIn, signInWithWallet } from '@/api/auth';
 import { getBalances } from '@/api/user';
 import { useWalletSelector } from '@/components/common';
@@ -6,14 +14,8 @@ import { config } from '@/lib/config';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset, setOpenSidebar, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+
+import { useLocalStorage } from './useLocalStorage';
 
 const AuthContext = createContext({
   user: null as User | null,
@@ -34,7 +36,9 @@ const AuthContext = createContext({
   }> => {
     return { status: '', message: '', error: {}, data: {} };
   },
-  logout: () => {},
+  logout: () => {
+    /* noop */
+  },
   checkAuth: async (): Promise<User | null> => {
     return null;
   },

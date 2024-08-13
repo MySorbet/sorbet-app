@@ -1,21 +1,5 @@
 'use client';
 
-import { getFastAuthState } from '../../hooks/useFastAuthState';
-import useFirebaseUser from '../../hooks/useFirebaseUser';
-import {
-  checkFirestoreReady,
-  firebaseAuth,
-} from '../../utils/fastAuth/firebase';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { FormContainer } from './form-container';
-import { Loading } from '@/components/common';
-import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
-import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
-import { basePath, config } from '@/lib/config';
-import { decodeIfTruthy, inIframe } from '@/utils/fastAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
 import { captureException } from '@sentry/react';
@@ -29,6 +13,21 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
+
+import { Loading } from '@/components/common';
+import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth, useGetUserByAccountId, useLoginWithEmail } from '@/hooks';
+import { getFastAuthState } from '@/hooks/useFastAuthState';
+import useFirebaseUser from '@/hooks/useFirebaseUser';
+import { basePath, config } from '@/lib/config';
+import { decodeIfTruthy, inIframe } from '@/utils/fastAuth';
+import { checkFirestoreReady, firebaseAuth } from '@/utils/fastAuth/firebase';
+
+import { FormContainer } from './form-container';
 
 const schema = z.object({
   email: z.string().email({ message: 'Invalid email format' }),
@@ -147,7 +146,7 @@ const SignInForm = () => {
       (key: any) => key !== publicKeyFak
     )[0];
 
-    // @ts-ignore
+    // @ts-expect-error Property 'accessToken' does not exist on type 'User'
     const oidcToken = firebaseUser?.accessToken;
     const recoveryPk =
       oidcToken &&
@@ -200,7 +199,7 @@ const SignInForm = () => {
       .then((res: any) => res && res.json())
       .then((res: any) => {
         const failure = res['Receipts Outcome'].find(
-          // @ts-ignore
+          // @ts-expect-error ts-7031 status is any
           ({ outcome: { status } }) =>
             Object.keys(status).some((k) => k === 'Failure')
         )?.outcome?.status?.Failure;
@@ -212,26 +211,22 @@ const SignInForm = () => {
 
         // Add device
         window.firestoreController.updateUser({
-          // @ts-ignore
           userUid: firebaseUser.uid,
           // User type is missing accessToken but it exists
           oidcToken,
         });
 
         // Since FAK is already added, we only add LAK
-        return (
-          window.firestoreController
-            .addDeviceCollection({
-              fakPublicKey: null,
-              lakPublicKey: public_key,
-              gateway: success_url,
-            })
-            // @ts-ignore
-            .catch((err) => {
-              console.log('Failed to add device collection', err);
-              throw new Error('Failed to add device collection');
-            })
-        );
+        return window.firestoreController
+          .addDeviceCollection({
+            fakPublicKey: null,
+            lakPublicKey: public_key,
+            gateway: success_url,
+          })
+          .catch((err: any) => {
+            console.log('Failed to add device collection', err);
+            throw new Error('Failed to add device collection');
+          });
       })
       .then((failure: any) => {
         if (failure?.ActionError?.kind?.LackBalanceForState) {
@@ -359,7 +354,6 @@ const SignInForm = () => {
         const firebaseAuthInvalid =
           authenticated === true &&
           !isPasskeySupported &&
-          // @ts-ignore
           firebaseUser?.email !== data.email;
         const shouldUseCurrentUser =
           authenticated === true && !firebaseAuthInvalid && isFirestoreReady;
@@ -517,9 +511,9 @@ const SignInForm = () => {
       <form
         onSubmit={onSubmit}
         id='signin-form'
-        className='px-0 py-2 gap-4 flex flex-col justify-between flex-1'
+        className='flex flex-1 flex-col justify-between gap-4 px-0 py-2'
       >
-        <div className='flex flex-col gap-[6px] h-28 '>
+        <div className='flex h-28 flex-col gap-[6px] '>
           <Label htmlFor='email'>Email</Label>
           <div className='relative'>
             <Input
@@ -533,13 +527,13 @@ const SignInForm = () => {
               })}
             />
             {isValidating && (
-              <Loader className='h-4 w-4  absolute right-4 top-3' />
+              <Loader className='absolute right-4  top-3 h-4 w-4' />
             )}
             {touchedFields.email ? (
               isValid ? (
-                <CircleCheck className='h-4 w-4 text-[#079455] absolute right-4 top-3' />
+                <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#079455]' />
               ) : (
-                <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
               )
             ) : null}
           </div>
@@ -547,13 +541,13 @@ const SignInForm = () => {
             <p className='text-sm text-red-500'>Invalid email format</p>
           )}
         </div>
-        <div className='flex flex-col h-full justify-between'>
+        <div className='flex h-full flex-col justify-between'>
           <div
             id='button-container'
-            className='flex flex-col gap-3 items-center'
+            className='flex flex-col items-center gap-3'
           >
             <Button
-              className={'w-full bg-[#573DF5] border-[#7F56D9] text-base'}
+              className='w-full border-[#7F56D9] bg-[#573DF5] text-base'
               disabled={!isValid}
               type='submit'
             >
@@ -561,7 +555,7 @@ const SignInForm = () => {
             </Button>
             <p className='text-sm font-medium'>Or</p>
             <Button
-              className='bg-[#FFFFFF] border border-[#D6BBFB] text-[#573DF5] w-full gap-[6px] text-base font-semibold p-[10px] group hover:bg-[#573DF5] hover:text-white'
+              className='group w-full gap-[6px] border border-[#D6BBFB] bg-[#FFFFFF] p-[10px] text-base font-semibold text-[#573DF5] hover:bg-[#573DF5] hover:text-white'
               onClick={handleWalletLogin}
             >
               <svg
@@ -583,11 +577,11 @@ const SignInForm = () => {
               Connect Wallet
             </Button>
           </div>
-          <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
+          <p className='text-center text-xs leading-[18px] text-[#3B3A40]'>
             Don't have an account?{' '}
             <Link
-              className='text-xs leading-[18px] text-[#6230EC] font-bold'
-              href={'/signup'}
+              className='text-xs font-bold leading-[18px] text-[#6230EC]'
+              href='/signup'
             >
               Sign up
             </Link>

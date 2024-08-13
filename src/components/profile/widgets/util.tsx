@@ -45,7 +45,7 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     const hostname = urlObj.hostname;
     const pathname = urlObj.pathname;
     const domainParts = hostname.split('.');
-    let platform =
+    const platform =
       domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname;
 
     // If the URL is from a GCP storage bucket, this is a photo widget

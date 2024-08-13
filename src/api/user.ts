@@ -1,6 +1,7 @@
-import { User } from '@/types';
-import { API_URL, validateToken } from '@/utils';
 import axios from 'axios';
+
+import { User } from '@/types';
+import { API_URL, withAuthHeader } from '@/utils';
 
 // [POST] /api/auth/signup
 export const getUserFromUserId = async (userId: string) => {
@@ -15,12 +16,10 @@ export const getUserFromUserId = async (userId: string) => {
 };
 
 export const deleteProfileImageAsync = async (userId: string) => {
-  const reqHeader = validateToken({}, true);
-
   try {
     const res = await axios.delete(
       `${API_URL}/images/delete/${userId}`,
-      reqHeader
+      withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -55,13 +54,11 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
 };
 
 export const updateUser = async (userToUpdate: User, userId: string) => {
-  const reqHeader = validateToken({}, true);
-
   try {
     const response = await axios.patch(
       `${API_URL}/users/${userId}`,
       userToUpdate,
-      reqHeader
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -70,12 +67,10 @@ export const updateUser = async (userToUpdate: User, userId: string) => {
 };
 
 export const getBalances = async (userId: string) => {
-  const reqHeader = validateToken({}, true);
-
   try {
     const res = await axios.get(
       `${API_URL}/users/${userId}/balances`,
-      reqHeader
+      withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -83,13 +78,11 @@ export const getBalances = async (userId: string) => {
   }
 };
 
-export const getOverview = async (last_days: number = 30) => {
-  const reqHeader = validateToken({}, true);
-
+export const getOverview = async (last_days = 30) => {
   try {
     const res = await axios.get(
       `${API_URL}/transactions/overview?last_days=${last_days}`,
-      reqHeader
+      withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -98,13 +91,12 @@ export const getOverview = async (last_days: number = 30) => {
 };
 
 export const getTransactions = async (
-  page: number = 1,
-  limit: number = 20,
-  order: string = 'desc',
+  page = 1,
+  limit = 20,
+  order = 'desc',
   after_date?: string,
   before_date?: string
 ) => {
-  const reqHeader = validateToken({}, true);
   const queryParams = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
@@ -122,7 +114,7 @@ export const getTransactions = async (
   try {
     const res = await axios.get(
       `${API_URL}/transactions?${queryParams.toString()}`,
-      reqHeader
+      withAuthHeader()
     );
     return res;
   } catch (error: any) {

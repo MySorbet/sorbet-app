@@ -1,7 +1,18 @@
 'use client';
 
-import { FormContainer } from '../signin';
-import { Button } from '../ui/button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
+import * as near_api_js_1 from 'near-api-js';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { useForm, useFormState } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Button } from '@/components//ui/button';
+import { useWalletSelector } from '@/components/common';
+import { handleCreateAccount } from '@/components/signin/signin-form';
 import {
   Form,
   FormControl,
@@ -9,11 +20,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { UserSignUpContext, UserSignUpContextType } from './signup-container';
-import { useWalletSelector } from '@/components/common';
-import { handleCreateAccount } from '@/components/signin/signin-form';
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useCheckIsAccountAvailable,
@@ -25,15 +33,9 @@ import {
   accountAddressPatternNoSubAccount,
   getEmailId,
 } from '@/utils/fastAuth/form-validation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
-import * as near_api_js_1 from 'near-api-js';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { useForm, useFormState } from 'react-hook-form';
-import { z } from 'zod';
+
+import { FormContainer } from '../signin';
+import { UserSignUpContext, UserSignUpContextType } from './signup-container';
 
 const checkIsAccountAvailable = async (
   desiredUsername: string
@@ -66,13 +68,7 @@ const checkIsAccountAvailable = async (
 
     return false;
   } catch (error: any) {
-    const { toast } = useToast();
-
-    toast({
-      title: 'ERROR',
-      description: error.message,
-      variant: 'destructive',
-    });
+    console.error('Error checking account availability', error);
     return false;
   }
 };
@@ -312,13 +308,13 @@ const SignUpForm = () => {
       <h1 className='text-2xl font-semibold'>Sign Up</h1>
       <Form {...form}>
         <form>
-          <div className='flex flex-col gap-4 p-2 min-h-[310px]'>
+          <div className='flex min-h-[310px] flex-col gap-4 p-2'>
             <FormField
               control={form.control}
               name='email'
               render={({ field }) => {
                 return (
-                  <FormItem className='w-full flex flex-col gap-[6px] space-y-0'>
+                  <FormItem className='flex w-full flex-col gap-[6px] space-y-0'>
                     <FormLabel className='m-0 p-0 text-sm text-[#344054]'>
                       Email
                     </FormLabel>
@@ -329,16 +325,16 @@ const SignUpForm = () => {
                           placeholder='your@email.com'
                           {...field}
                           className={
-                            !!errors.email
-                              ? 'border-red-500 ring-red-500 m-0'
+                            errors.email
+                              ? 'm-0 border-red-500 ring-red-500'
                               : 'm-0'
                           }
                         />
                         {touchedFields.email ? (
                           errors.email ? (
-                            <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                            <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
                           ) : (
-                            <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
+                            <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#2DD920]' />
                           )
                         ) : null}
                       </div>
@@ -353,19 +349,19 @@ const SignUpForm = () => {
               name='accountId'
               render={({ field }) => {
                 return (
-                  <FormItem className='w-full flex flex-col gap-[6px] space-y-0'>
+                  <FormItem className='flex w-full flex-col gap-[6px] space-y-0'>
                     <FormLabel className='text-sm text-[#344054]'>
                       NEAR Wallet
                     </FormLabel>
                     <FormControl>
-                      <div className='flex flex-row w-full'>
+                      <div className='flex w-full flex-row'>
                         <div className='relative w-full'>
                           <Input
                             {...form.register('accountId')}
                             placeholder='Your near account id'
                             className={
-                              !!errors.accountId
-                                ? 'border-red-500 ring-red-500 rounded-l-md rounded-r-none'
+                              errors.accountId
+                                ? 'rounded-l-md rounded-r-none border-red-500 ring-red-500'
                                 : 'rounded-l-md rounded-r-none'
                             }
                             {...field}
@@ -376,14 +372,14 @@ const SignUpForm = () => {
                             }
                           />
                           {checkAccountPending ? (
-                            <Loader className='h-4 w-4 absolute right-4 top-3' />
+                            <Loader className='absolute right-4 top-3 h-4 w-4' />
                           ) : touchedFields.accountId ? (
                             checkAccountError ||
                             errors.accountId ||
                             !usernameAvailable ? (
-                              <CircleAlert className='h-4 w-4 text-[#D92D20] absolute right-4 top-3' />
+                              <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
                             ) : (
-                              <CircleCheck className='h-4 w-4 text-[#2DD920] absolute right-4 top-3' />
+                              <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#2DD920]' />
                             )
                           ) : null}
                         </div>
@@ -414,17 +410,17 @@ const SignUpForm = () => {
             // disabled={errors.accountId != null || !formsEmail}
             disabled={!isValid || !usernameAvailable}
             // disabled={!isValid}
-            className={'w-full bg-[#573DF5] border-[#7F56D9]'}
+            className='w-full border-[#7F56D9] bg-[#573DF5]'
           >
             {signUpPending ? <Loader /> : 'Continue'}
           </Button>
         </form>
       </Form>
-      <p className='text-[#3B3A40] text-xs leading-[18px] text-center'>
+      <p className='text-center text-xs leading-[18px] text-[#3B3A40]'>
         Already have an account?{' '}
         <Link
-          className='text-xs leading-[18px] text-[#6230EC] font-bold'
-          href={'/signin'}
+          className='text-xs font-bold leading-[18px] text-[#6230EC]'
+          href='/signin'
         >
           Sign in
         </Link>
