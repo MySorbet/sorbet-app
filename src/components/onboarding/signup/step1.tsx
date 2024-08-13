@@ -78,7 +78,7 @@ const Step1 = () => {
             <div className='flex flex-1 flex-col gap-10'>
               <div className='flex h-[76px] w-full items-center gap-4 py-2'>
                 <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F]'>
-                  <AvatarImage src={image} className='object-cover' />
+                  <AvatarImage src={image} />
                   <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
                     <User className='h-9 w-9 text-[#667085]' />
                   </AvatarFallback>
