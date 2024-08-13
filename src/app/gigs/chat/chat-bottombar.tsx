@@ -128,12 +128,12 @@ export default function ChatBottombar({
   };
 
   useEffect(() => {
-    if (
-      contractStatus ===
-      ('NotStarted' || 'InProgress' || 'InReview' || 'Completed' || 'Rejected')
-    )
+    //TODO: Figure out when chat becomes read only and sync the input with that disabled state
+    if (contractStatus === 'Completed') {
+      setDisabled(true);
+    } else {
       setDisabled(false);
-    else setDisabled(true);
+    }
   }, [contractStatus]);
 
   useEffect(() => {

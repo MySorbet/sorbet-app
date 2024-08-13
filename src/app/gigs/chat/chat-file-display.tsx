@@ -1,6 +1,6 @@
 'use client';
 
-import { formatBytes } from './sendbird';
+import { formatBytes } from '@/app/gigs/chat/sendbird-utils';
 import { fetchFile } from '@/api/chat';
 import { Spinner } from '@/components/common';
 import {
@@ -18,10 +18,6 @@ import {
 } from '@/types/sendbird';
 import {
   Download,
-  ExternalLink,
-  File,
-  Frown,
-  Image as ImageIcon,
 } from 'lucide-react';
 import Image from 'next/image';
 import { ReactNode, useEffect, useState } from 'react';
