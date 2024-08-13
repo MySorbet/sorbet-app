@@ -1,6 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverTrigger } from '@/components/ui/popover';
 import { User } from '@/types';
+import { PopoverArrow, PopoverContent } from '@radix-ui/react-popover';
 import { SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
@@ -19,6 +21,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onHireMeClick,
   disableHireMe = false,
 }) => {
+  const handleUrlToClipboard = () => () => {
+    const username = user.accountId.split('.')[0];
+    const url = `${window.location.origin}/${username}`;
+    navigator.clipboard.writeText(window.location.href);
+  };
+
   return (
     <>
       <div className='flex justify-center'>
@@ -86,13 +94,21 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               Hire Me
             </Button> // Added onClick event for Hire Me button
           )}
-          <a
-            href='#'
-            className='text-[#573DF5] flex flex-row align-center gap-1 items-center'
-          >
-            <SquareArrowOutUpRight size={16} />
-            <span>Share</span>
-          </a>
+          <Popover>
+            <PopoverTrigger>
+              <Button
+                className='text-[#573DF5] flex flex-row align-center gap-1 items-center bg-inherit hover:bg-inherit'
+                onClick={handleUrlToClipboard()}
+              >
+                <SquareArrowOutUpRight size={16} />
+                <span>Share</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='bg-gray-900 p-2 text-white text-sm rounded-md'>
+              <PopoverArrow className='w-4 h-2' />
+              Url copied to clipboard!
+            </PopoverContent>
+          </Popover>
         </div>
       )}
     </>
