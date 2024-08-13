@@ -112,3 +112,6 @@ const ContractStatuses = [
   'Rejected',
 ] as const;
 export type ContractStatus = (typeof ContractStatuses)[number];
+
+const Tabs = ['Chat', 'Contract'] as const;
+export type ActiveTab = (typeof Tabs)[number];
