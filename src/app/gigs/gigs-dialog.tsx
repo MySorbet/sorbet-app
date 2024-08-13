@@ -1,5 +1,5 @@
 'use client';
-import { ActiveTab } from "@/types";
+
 import {
   createContract,
   updateContractStatus,
@@ -33,6 +33,7 @@ import { useLocalStorage } from '@/hooks';
 import { config } from '@/lib/config';
 import { toYoctoNEAR } from '@/lib/helper';
 import { cn } from '@/lib/utils';
+import { ActiveTab } from '@/types';
 import {
   ContractType,
   CreateContractType,
@@ -644,7 +645,15 @@ export const GigsDialog = ({
               contractStatus={'Approved'}
             />
           )}
-          {activeTab === 'Contract' && renderContractView()}
+          {activeTab === 'Contract' ? (
+            getContractPending ? (
+              <div className='flex w-full h-full items-center justify-center'>
+                <Spinner />
+              </div>
+            ) : (
+              renderContractView()
+            )
+          ) : null}
         </DialogContent>
       </Dialog>
     </>
