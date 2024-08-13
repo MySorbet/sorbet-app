@@ -198,10 +198,11 @@ export const createOffer = async (body: CreateOfferType) => {
 };
 
 export const getOfferById = async (offerId: string) => {
-  const reqHeader = validateToken({}, true);
-
   try {
-    const res = await axios.get(`${API_URL}/offers/${offerId}`, reqHeader);
+    const res = await axios.get(
+      `${API_URL}/offers/${offerId}`,
+      withAuthHeader()
+    );
     return res;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
