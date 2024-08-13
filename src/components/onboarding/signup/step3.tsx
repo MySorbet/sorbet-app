@@ -1,14 +1,16 @@
 'use client';
 
-import { FormContainer } from '../signin';
-import { Button } from '../ui/button';
-import { UserSignUpContext, UserSignUpContextType } from './signup-container';
-import { SkillBadge } from './skill-badge';
-import { useUpdateUser, useUploadProfileImage, useAuth } from '@/hooks';
+import { Loader, Search } from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { useAuth, useUpdateUser, useUploadProfileImage } from '@/hooks';
 import { useAppSelector } from '@/redux/hook';
 import { User } from '@/types';
-import { Search, Loader } from 'lucide-react';
-import { useState, useContext, useEffect } from 'react';
+
+import { FormContainer } from '../form-container';
+import { UserSignUpContext, UserSignUpContextType } from './signup';
+import { SkillBadge } from './skill-badge';
 
 const Step3 = () => {
   const { userData, setUserData, setStep } = useContext(
@@ -79,26 +81,26 @@ const Step3 = () => {
 
   return (
     <FormContainer>
-      <div className='flex flex-col gap-6 h-full'>
-        <div className='flex w-full justify-between items-center'>
-          <h1 className='font-semibold text-2xl'>Skills</h1>
-          <p className='font-medium text-sm text-[#344054]'>Step 3 of 3</p>
+      <div className='flex h-full flex-col gap-6'>
+        <div className='flex w-full items-center justify-between'>
+          <h1 className='text-2xl font-semibold'>Skills</h1>
+          <p className='text-sm font-medium text-[#344054]'>Step 3 of 3</p>
         </div>
-        <div className='flex flex-col flex-1 gap-2'>
-          <h1 className="text-sm font-medium text-[#344054]'">
+        <div className='flex flex-1 flex-col gap-2'>
+          <h1 className="text-[#344054]' text-sm font-medium">
             Add your skills
           </h1>
           <div
             className={
-              'skills-container flex border border-[#D0D5DD] shadow-sm shadow-[#1018280D] w-full rounded-[8px] gap-1  ' +
-              (skills.length > 0 ? 'pt-[10px] px-[14px]' : 'px-[14px]')
+              'skills-container flex w-full gap-1 rounded-[8px] border border-[#D0D5DD] shadow-sm shadow-[#1018280D]  ' +
+              (skills.length > 0 ? 'px-[14px] pt-[10px]' : 'px-[14px]')
             }
           >
             <div className='flex h-full items-center'>
               <Search className='h-5 w-5 text-[#667085]' />
             </div>
             <div className='flex flex-col'>
-              <div className='skills flex gap-[3px] flex-wrap w-full '>
+              <div className='skills flex w-full flex-wrap gap-[3px] '>
                 {skills.map((current) => (
                   <SkillBadge
                     key={current}
@@ -107,10 +109,10 @@ const Step3 = () => {
                   />
                 ))}
               </div>
-              <div className='flex items-center w-full '>
+              <div className='flex w-full items-center '>
                 <input
                   value={skill}
-                  className='border-none bg-inherit focus:outline-none p-0 pl-1 text-sm h-11 '
+                  className='h-11 border-none bg-inherit p-0 pl-1 text-sm focus:outline-none '
                   placeholder='Add skills here'
                   onKeyDown={(e) => handleKeyDown(e)}
                   onChange={(e) => setSkill(e.target.value)}
@@ -118,17 +120,17 @@ const Step3 = () => {
               </div>
             </div>
           </div>
-          <h3 className="text-sm font-normal text-[#344054]'">Max 5 skills</h3>
+          <h3 className="text-[#344054]' text-sm font-normal">Max 5 skills</h3>
         </div>
         <div className='flex gap-3'>
           <Button
-            className='bg-[#FFFFFF] hover:bg-gray-300 border border-[#D0D5DD] shadow-sm shadow-[#1018280D] text-[#344054] font-semibold text-base'
+            className='border border-[#D0D5DD] bg-[#FFFFFF] text-base font-semibold text-[#344054] shadow-sm shadow-[#1018280D] hover:bg-gray-300'
             onClick={() => setStep(2)}
           >
             Back
           </Button>
           <Button
-            className='w-full text-white bg-[#573DF5] border border-[#7F56D9] shadow-sm shadow-[#1018280D] font-semibold text-base'
+            className='w-full border border-[#7F56D9] bg-[#573DF5] text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
             onClick={handleCreateProfile}
           >
             {updatePending || uploadPending ? <Loader /> : 'Create Profile'}

@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { FormContainer } from '../signin';
-import { UserSignUpContext, UserSignUpContextType } from './signup-container';
+import { FormContainer } from '../form-container';
+import { UserSignUpContext, UserSignUpContextType } from './signup';
 
 const Step1 = () => {
   const { userData, setUserData, setStep } = useContext(

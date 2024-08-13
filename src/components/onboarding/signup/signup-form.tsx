@@ -10,9 +10,8 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components//ui/button';
 import { useWalletSelector } from '@/components/common';
-import { handleCreateAccount } from '@/components/signin/signin-form';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -34,8 +33,9 @@ import {
   getEmailId,
 } from '@/utils/fastAuth/form-validation';
 
-import { FormContainer } from '../signin';
-import { UserSignUpContext, UserSignUpContextType } from './signup-container';
+import { FormContainer } from '../form-container';
+import { handleCreateAccount } from '../signin';
+import { UserSignUpContext, UserSignUpContextType } from './signup';
 
 const checkIsAccountAvailable = async (
   desiredUsername: string
