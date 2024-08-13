@@ -120,10 +120,13 @@ export const getContractForOffer = async (offerId: string) => {
       reqHeader
     );
     return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to contract for offer: ${error.response.data.message}`
-    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Failed to contract for offer: ${error.response?.data.message}`
+      );
+    }
+    throw new Error(`Request getContractForOffer failed: ${error}`);
   }
 };
 
