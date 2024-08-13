@@ -1,86 +1,4 @@
-import { config } from '@/lib/config';
 import { SBMessageTimeDto } from '@/types/sendbird';
-import SendbirdChat, {
-  SendbirdChatParams,
-  SendbirdChatWith,
-} from '@sendbird/chat';
-import {
-  GroupChannel,
-  GroupChannelModule,
-  MessageCollectionInitPolicy,
-  MessageFilter,
-} from '@sendbird/chat/groupChannel';
-
-// Initialize the SendbirdChat module
-const params: SendbirdChatParams<[GroupChannelModule]> = {
-  appId: config.sendbirdAppId,
-  localCacheEnabled: true,
-  modules: [new GroupChannelModule()],
-};
-
-const sb: SendbirdChatWith<GroupChannelModule[]> = SendbirdChat.init(params);
-
-/**
-  Connects the current user to Sendbird servers
-*/
-/**
-  Connects the current user to Sendbird servers
-*/
-const initializeConnection = async (userId: string) => {
-  try {
-    const user = await sb.connect(userId);
-    return user;
-  } catch (error) {
-    console.log(`Unable to connect with Sendbird: ${JSON.stringify(error)}`);
-  }
-};
-
-/**
-  Terminates the connection of the current user to Sendbird servers
- */
-const removeConnection = async () => {
-  try {
-    await sb.disconnect();
-  } catch (error: any) {
-    console.error(`Failed to disconnect from Sendbird: ${error}`);
-  }
-};
-
-/**
-  Creates a channel handler to handle specific events for a channel.
-
-  Currently only using for onTypingStatusUpdated event because it is not accessible in MessageCollection.
-*/
-const initializeChannelEvents = (channelHandler: any) => {
-  const key = 'test';
-  sb.groupChannel.addGroupChannelHandler(key, channelHandler);
-};
-
-/**
-  Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
-*/
-/**
-  Fetches last 100 messages for a specific channel from Sendbird and initializes a message collection.
-*/
-const loadMessages = async (channelId: string, messageHandlers: any) => {
-  const channel: GroupChannel = await sb.groupChannel.getChannel(channelId);
-
-  const messageFilter = new MessageFilter();
-
-  const messageCollection = channel.createMessageCollection({
-    filter: messageFilter,
-    startingPoint: Date.now(),
-    limit: 30,
-  });
-  messageCollection.setMessageCollectionHandler(messageHandlers);
-
-  messageCollection.initialize(
-    MessageCollectionInitPolicy.CACHE_AND_REPLACE_BY_API
-  );
-
-  return { messageCollection, channel };
-};
-
 /**
   Converts milliseconds to a formatted date and time object for easier display.
 */
@@ -251,14 +169,9 @@ const getTimeDifferenceInMinutes = (time1: string, time2: string) => {
 };
 
 export {
-  sb,
   createChatTimestamp,
-  loadMessages,
-  initializeConnection,
   timestampToTime,
   convertMilitaryToRegular,
-  initializeChannelEvents,
   formatBytes,
   getTimeDifferenceInMinutes,
-  removeConnection,
 };

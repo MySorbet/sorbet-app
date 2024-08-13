@@ -34,6 +34,22 @@ export interface OfferType {
   creator?: User;
 }
 
+export interface PrismaOfferType {
+  id: string;
+  projectName: string;
+  description: string;
+  projectStart: 'Immediately' | 'Flexible';
+  status: 'Pending' | 'Accepted' | 'Rejected' | 'Completed';
+  budget: number;
+  clientId: string;
+  freelancerId: string;
+  creator: User;
+  recipient: User;
+  createdAt: string;
+  updatedAt: string;
+  channelId: string;
+}
+
 export enum ContractMilestoneStatus {
   FundingPending = 'FundingPending',
   Active = 'Active',
@@ -96,3 +112,6 @@ const ContractStatuses = [
   'Rejected',
 ] as const;
 export type ContractStatus = (typeof ContractStatuses)[number];
+
+const Tabs = ['Chat', 'Contract'] as const;
+export type ActiveTab = (typeof Tabs)[number];

@@ -1,6 +1,6 @@
 import { getContractForOffer } from '@/api/gigs';
-import { ActiveTab } from '@/app/gigs/gigs-dialog';
 import { useToast } from '@/components/ui/use-toast';
+import { ActiveTab } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
 type useGetContractForOfferParams = {
@@ -23,8 +23,12 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
     queryFn: async () => {
       const response = await getContractForOffer(currentOfferId);
 
-      if (response && response.data) {
-        return response.data;
+      if (response) {
+        if (response.data === '') {
+          return null;
+        } else {
+          return response.data;
+        }
       } else {
         toast({
           title: 'Unable to fetch contract information',
@@ -34,7 +38,7 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
       }
     },
     // Query function will only run when the isOpen and activeTab are true and the activeTab is the Contract tab
-    enabled: isOpen && activeTab === ActiveTab.Contract,
+    enabled: isOpen && activeTab === 'Contract',
   });
 
   return query;

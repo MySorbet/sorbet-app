@@ -120,10 +120,13 @@ export const getContractForOffer = async (offerId: string) => {
       reqHeader
     );
     return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to contract for offer: ${error.response.data.message}`
-    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Failed to contract for offer: ${error.response?.data.message}`
+      );
+    }
+    throw new Error(`Request getContractForOffer failed: ${error}`);
   }
 };
 
@@ -194,5 +197,21 @@ export const createOffer = async (body: CreateOfferType) => {
     return res;
   } catch (error: any) {
     throw new Error(`Failed to create offer: ${error.response.data.message}`);
+  }
+};
+
+export const getOfferById = async (offerId: string) => {
+  const reqHeader = validateToken({}, true);
+
+  try {
+    const res = await axios.get(`${API_URL}/offers/${offerId}`, reqHeader);
+    return res;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Axios error: failed to get offer by id: ${error.response?.data.error}`
+      );
+    }
+    throw new Error(`Non-axios error: failed to get offer by id ${error}`);
   }
 };

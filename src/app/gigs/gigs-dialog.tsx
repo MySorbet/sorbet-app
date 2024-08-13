@@ -7,7 +7,6 @@ import {
   updateOfferStatus,
 } from '@/api/gigs';
 import { Chat } from '@/app/gigs/chat';
-import { removeConnection } from '@/app/gigs/chat/sendbird';
 import {
   ContractFormContainer,
   ContractFormFixedPriceData,
@@ -34,6 +33,7 @@ import { useLocalStorage } from '@/hooks';
 import { config } from '@/lib/config';
 import { toYoctoNEAR } from '@/lib/helper';
 import { cn } from '@/lib/utils';
+import { ActiveTab } from '@/types';
 import {
   ContractType,
   CreateContractType,
@@ -46,10 +46,10 @@ import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface GigsDialogProps {
-  isOpen?: boolean;
+  isOpen: boolean;
   isClient?: boolean;
   chatParticipantName?: string;
   currentOfferId?: string;
@@ -57,11 +57,6 @@ export interface GigsDialogProps {
   onOpenChange: (open: boolean) => void;
   handleRejectOffer?: () => void;
   afterContractSubmitted?: () => void;
-}
-
-export enum ActiveTab {
-  Chat,
-  Contract,
 }
 
 interface TabSelectorProps {
@@ -79,7 +74,7 @@ export const GigsDialog = ({
   currentOfferId = '',
   handleRejectOffer,
 }: GigsDialogProps) => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>(ActiveTab.Chat);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('Chat');
   const [offers, setOffers] = useState([]);
   const [tab, setTab] = useState<string>('milestones');
   const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
@@ -107,26 +102,12 @@ export const GigsDialog = ({
     activeTab,
   });
 
-  // This effect is mainly to disconnect from Sendbird so that when a new message is added, the connectionStatus property is
-  // properly being updated when a user closes out of the chat
-  useEffect(() => {
-    async function disconnectSendbird() {
-      await removeConnection();
-    }
-
-    if (!isOpen) {
-      disconnectSendbird();
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isGetContractError) {
-      toast({
-        title: 'Unable to fetch contract information',
-        description: 'If the problem persists, please contract support',
-      });
-    }
-  }, [isGetContractError]);
+  if (isGetContractError) {
+    toast({
+      title: 'Unable to fetch contract information',
+      description: 'If the problem persists, please contract support',
+    });
+  }
 
   useEffect(() => {
     if (
@@ -643,33 +624,36 @@ export const GigsDialog = ({
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogOverlay className='bg-[#F3F3F4]/90' />
-        <DialogContent className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'>
-          <div className='flex justify-between px-4 py-2 h-14'>
-            <DialogTitle className='text-2xl'>
-              {activeTab === ActiveTab.Chat
-                ? chatParticipantName !== ''
-                  ? `Chat with ${chatParticipantName}`
-                  : `Chat`
-                : `Contract`}
-            </DialogTitle>
+        <DialogContent
+          className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'
+          aria-describedby={undefined}
+        >
+          <DialogTitle className='text-2xl flex justify-between px-4 py-2 h-14'>
+            {activeTab === 'Chat'
+              ? chatParticipantName !== ''
+                ? `Chat with ${chatParticipantName}`
+                : `Chat`
+              : `Contract`}
             <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
-          </div>
-          {getContractPending ? (
-            <div className='flex justify-center items-center h-full'>
-              <Spinner />
-            </div>
-          ) : (
-            <>
-              {activeTab === ActiveTab.Chat && (
-                <Chat
-                  showTopbar={false}
-                  contractData={contractData}
-                  isOpen={isOpen}
-                />
-              )}
-              {activeTab === ActiveTab.Contract && renderContractView()}
-            </>
+          </DialogTitle>
+
+          {activeTab === 'Chat' && (
+            <Chat
+              showTopbar={false}
+              isOpen={isOpen}
+              offerId={currentOfferId}
+              contractStatus={'Approved'}
+            />
           )}
+          {activeTab === 'Contract' ? (
+            getContractPending ? (
+              <div className='flex w-full h-full items-center justify-center'>
+                <Spinner />
+              </div>
+            ) : (
+              renderContractView()
+            )
+          ) : null}
         </DialogContent>
       </Dialog>
     </>
@@ -686,9 +670,9 @@ const TabSelector: React.FC<TabSelectorProps> = ({
         variant={`outline`}
         className={cn(
           'rounded-full border-none outline-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
-          activeTab === ActiveTab.Contract && 'bg-sorbet text-white'
+          activeTab === 'Chat' && 'bg-sorbet text-white'
         )}
-        onClick={() => setActiveTab(ActiveTab.Chat)}
+        onClick={() => setActiveTab('Chat')}
       >
         <span>Chat</span>
         <IconMessage size={15} />
@@ -697,9 +681,9 @@ const TabSelector: React.FC<TabSelectorProps> = ({
         variant={`outline`}
         className={cn(
           'rounded-full border-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
-          activeTab === ActiveTab.Contract && 'bg-sorbet text-white'
+          activeTab === 'Contract' && 'bg-sorbet text-white'
         )}
-        onClick={() => setActiveTab(ActiveTab.Contract)}
+        onClick={() => setActiveTab('Contract')}
       >
         <span>Contract</span>
         <IconContract size={15} />
