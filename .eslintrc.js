@@ -49,5 +49,7 @@ module.exports = {
     React: true,
     JSX: true,
   },
+
+  // We don't want to touch shadcn for now
   ignorePatterns: ['src/components/ui/*'],
 };
