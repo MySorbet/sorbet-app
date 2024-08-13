@@ -27,7 +27,7 @@ export function ChatList({
   selectedUser,
   typingMembers,
   supportedIcons,
-  chatLoading = true,
+  chatLoading,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
