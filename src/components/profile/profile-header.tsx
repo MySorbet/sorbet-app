@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { User } from '@/types';
-import { PopoverArrow, PopoverContent } from '@radix-ui/react-popover';
 import { SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
@@ -104,9 +103,12 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 <span>Share</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className='bg-gray-900 p-2 text-white text-sm rounded-md'>
-              <PopoverArrow className='w-4 h-2' />
-              Url copied to clipboard!
+            <PopoverContent
+              className='h-fit w-fit p-2 text-sm'
+              side='top'
+              sideOffset={0}
+            >
+              Link copied!
             </PopoverContent>
           </Popover>
         </div>
