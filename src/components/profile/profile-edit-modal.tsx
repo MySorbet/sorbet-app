@@ -1,4 +1,12 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader } from 'lucide-react';
+import { useState } from 'react';
+import { Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { InputLocation, InputSkills } from '@/components/profile';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,16 +17,10 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
-  useUploadProfileImage,
   useUpdateUser,
+  useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader } from 'lucide-react';
-import { useState } from 'react';
-import { Controller } from 'react-hook-form';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -172,15 +174,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         </DialogHeader>
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
-            {image && image != '' ? (
-              <img
-                src={image}
-                alt='avatar'
-                className='border-primary-default h-20 w-20 rounded-full border-2'
+            <Avatar className='border-primary-default h-20 w-20 border-2'>
+              <AvatarImage
+                src={image || '/avatar.svg'}
+                alt='new profile image'
               />
-            ) : (
-              <img src='/avatar.svg' alt='avatar' width={80} height={80} />
-            )}
+              <AvatarFallback className='text-2xl font-semibold'>
+                {user.accountId.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <label
               htmlFor='profileImage'
               className='flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
@@ -221,7 +223,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     First name
                   </label>
                   <Input
-                    className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] mt-1 focus:ring-0 focus:outline-none'
+                    className='mt-1 w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] focus:outline-none focus:ring-0'
                     placeholder='Your first name'
                     {...register('firstName', {
                       required: 'First name is required',
@@ -229,7 +231,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     defaultValue={user?.firstName}
                   />
                   {errors.firstName && (
-                    <p className='text-xs text-red-500 mt-1'>
+                    <p className='mt-1 text-xs text-red-500'>
                       {errors.firstName.message}
                     </p>
                   )}
@@ -240,7 +242,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   </label>
 
                   <Input
-                    className='w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] mt-1 focus:ring-0 focus:outline-none'
+                    className='mt-1 w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] focus:outline-none focus:ring-0'
                     placeholder='Your last name'
                     {...register('lastName', {
                       required: 'Last name is required',
@@ -248,7 +250,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     defaultValue={user?.lastName}
                   />
                   {errors.lastName && (
-                    <p className='text-xs text-red-500 mt-1'>
+                    <p className='mt-1 text-xs text-red-500'>
                       {errors.lastName.message}
                     </p>
                   )}
@@ -274,7 +276,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   )}
                 />
                 {errors.city && (
-                  <p className='text-xs text-red-500 mt-1'>
+                  <p className='mt-1 text-xs text-red-500'>
                     {errors.city.message}
                   </p>
                 )}
@@ -284,7 +286,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   Create a short Bio
                 </label>
                 <textarea
-                  className='w-full rounded-lg border border-1 p-3 border-[#D0D5DD] text-base font-normal text-[#667085] mt-1 focus:outline-none'
+                  className='border-1 mt-1 w-full rounded-lg border border-[#D0D5DD] p-3 text-base font-normal text-[#667085] focus:outline-none'
                   placeholder='A few words about yourself'
                   rows={4}
                   {...register('bio', { required: 'Bio is required' })}
@@ -294,7 +296,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   Max 100 characters
                 </label>
                 {errors.bio && (
-                  <p className='text-xs text-red-500 mt-1'>
+                  <p className='mt-1 text-xs text-red-500'>
                     {errors.bio.message}
                   </p>
                 )}
@@ -314,7 +316,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   )}
                 />
                 {errors.tags && (
-                  <p className='text-xs text-red-500 mt-1'>
+                  <p className='mt-1 text-xs text-red-500'>
                     {errors.tags.message}
                   </p>
                 )}
@@ -322,7 +324,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               <div className='w-full'>
                 <Button
                   type='submit'
-                  className='w-full bg-sorbet'
+                  className='bg-sorbet w-full'
                   disabled={
                     updateProfilePending ||
                     deleteProfileImagePending ||
