@@ -1,6 +1,6 @@
 import { WidgetHeader, ImageOverlay } from '@/components/profile/widgets/';
 import { cn } from '@/lib/utils';
-import { LinkWidgetContentType, WidgetSize, WidgetType } from '@/types';
+import { LinkWidgetContentType, WidgetSize } from '@/types';
 import { Link } from 'lucide-react';
 import React from 'react';
 
@@ -18,7 +18,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
   const { title, iconUrl, heroImageUrl } = content;
 
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -28,7 +28,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
           <BannerImage src={heroImageUrl} />
         </WidgetLayout>
       );
-    case WidgetSize.B:
+    case 'B':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -38,7 +38,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
           <BannerImage src={heroImageUrl} />
         </WidgetLayout>
       );
-    case WidgetSize.C:
+    case 'C':
       return (
         <WidgetLayout>
           <WidgetHeader>
@@ -50,7 +50,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
           </div>
         </WidgetLayout>
       );
-    case WidgetSize.D:
+    case 'D':
       return (
         <WidgetLayout>
           <WidgetHeader>

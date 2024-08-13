@@ -1,5 +1,5 @@
 import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { MediumArticleContentType, WidgetSize, WidgetType } from '@/types';
+import { MediumArticleContentType, WidgetSize } from '@/types';
 import React, { useEffect } from 'react';
 
 interface MediumWidgetType {
@@ -14,12 +14,12 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
 
   let widgetLayout;
   switch (size) {
-    case WidgetSize.A:
+    case 'A':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-1/4'>
-              <WidgetIcon type={WidgetType.Medium} />
+              <WidgetIcon type={'Medium'} />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -37,11 +37,11 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
         </div>
       );
       break;
-    case WidgetSize.B:
+    case 'B':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
           <div>
-            <WidgetIcon type={WidgetType.Medium} className='m-0' />
+            <WidgetIcon type={'Medium'} className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -58,11 +58,11 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
         </div>
       );
       break;
-    case WidgetSize.C:
+    case 'C':
       widgetLayout = (
         <div className='h-full flex flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetIcon type={WidgetType.Medium} />
+            <WidgetIcon type={'Medium'} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
@@ -78,10 +78,10 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
         </div>
       );
       break;
-    case WidgetSize.D:
+    case 'D':
       widgetLayout = (
         <div className='h-full flex flex-col gap-2'>
-          <WidgetIcon type={WidgetType.Medium} className='m-0' />
+          <WidgetIcon type={'Medium'} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
