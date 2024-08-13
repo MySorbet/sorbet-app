@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, MapPin, User } from 'lucide-react';
-import { useContext, useState } from 'react';
+import { ChangeEventHandler, useContext, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -16,6 +16,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 import { FormContainer } from '../form-container';
 import { UserSignUpContext, UserSignUpContextType } from './signup';
@@ -33,7 +34,7 @@ const Step1 = () => {
     lastName: z.string().min(1, { message: 'Last name is required' }),
   });
 
-  const handleNext = (data: { firstName: string; lastName: string }) => {
+  const handleSubmit = (data: { firstName: string; lastName: string }) => {
     setUserData((user) => ({
       ...user,
       location,
@@ -45,14 +46,11 @@ const Step1 = () => {
     setStep(2);
   };
 
-  const handleFileChange = (e: any) => {
-    setFile(
-      e.target.files && e.target.files.length > 0
-        ? e.target.files[0]
-        : undefined
-    );
-    const i = e.target.files[0];
-    setImage(URL.createObjectURL(i));
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFile(file);
+    setImage(URL.createObjectURL(file));
   };
 
   const form = useForm<z.infer<typeof schema>>({
@@ -64,14 +62,14 @@ const Step1 = () => {
     mode: 'all',
   });
 
-  const { isValid, touchedFields, errors } = useFormState({
+  const { errors } = useFormState({
     control: form.control,
   });
 
   return (
     <FormContainer>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleNext)}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className='flex h-full flex-col gap-6'>
             <div className='flex w-full items-center justify-between'>
               <h1 className='text-2xl font-semibold'>Bio</h1>
@@ -80,7 +78,7 @@ const Step1 = () => {
             <div className='flex flex-1 flex-col gap-10'>
               <div className='flex h-[76px] w-full items-center gap-4 py-2'>
                 <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F]'>
-                  <AvatarImage src={image} />
+                  <AvatarImage src={image} className='object-cover' />
                   <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
                     <User className='h-9 w-9 text-[#667085]' />
                   </AvatarFallback>
@@ -116,11 +114,10 @@ const Step1 = () => {
                               {...form.register('firstName')}
                               placeholder='First name'
                               {...field}
-                              className={
-                                errors.firstName
-                                  ? 'border-red-500 ring-red-500'
-                                  : ''
-                              }
+                              className={cn(
+                                errors.firstName &&
+                                  'border-red-500 ring-red-500'
+                              )}
                             />
                             {errors.firstName && (
                               <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
@@ -146,11 +143,9 @@ const Step1 = () => {
                               {...form.register('lastName')}
                               placeholder='Last name'
                               {...field}
-                              className={
-                                errors.lastName
-                                  ? 'border-red-500 ring-red-500'
-                                  : ''
-                              }
+                              className={cn(
+                                errors.lastName && 'border-red-500 ring-red-500'
+                              )}
                             />
                             {errors.lastName && (
                               <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
@@ -180,7 +175,6 @@ const Step1 = () => {
             <Button
               type='submit'
               className='w-full border-[#7F56D9] bg-[#573DF5] text-[#FFFFFF] shadow-sm shadow-[#1018280D]'
-              // onClick={handleNext}
             >
               Next
             </Button>
