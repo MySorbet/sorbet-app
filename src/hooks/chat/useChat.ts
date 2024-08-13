@@ -18,21 +18,17 @@ import {
   type MessageCollectionEventHandler,
 } from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
+import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface useChatProps {
   user: User | null;
   logout: () => void;
   isOpen: boolean;
-  offerData: PrismaOfferType | undefined; 
+  offer: PrismaOfferType | undefined;
 }
 
-export const useChat = ({
-  user,
-  logout,
-  isOpen,
-  offerData,
-}: useChatProps) => {
+export const useChat = ({ user, logout, isOpen, offer }: useChatProps) => {
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,7 +47,7 @@ export const useChat = ({
     // Channel will always be defined whenever this event is triggered bc it is triggered thru sendbird and
     // only runs when a channel is successfully found between two users
     onMessagesAdded: async (context, channel, messages) => {
-      if (!offerData) {
+      if (!offer) {
         return;
       }
       // Need to refresh because the channel object is not updated with the new messages
@@ -60,9 +56,7 @@ export const useChat = ({
       // The user will always be the sender, we are just trying to get the id of the recipient so we can check online status
       const senderId = user?.id;
       const recipientId =
-        user?.id === offerData.clientId
-          ? offerData.freelancerId
-          : offerData.clientId;
+        user?.id === offer.clientId ? offer.freelancerId : offer.clientId;
       const sender = channel.members.find(
         (member: any) => member.userId === senderId
       );
@@ -89,12 +83,11 @@ export const useChat = ({
       }
       if (recipient.connectionStatus === 'offline') {
         const params: NewMessageNotificationDto = {
-          reqOfferId: offerData.id,
-          reqChannelId: offerData.channelId,
+          reqOfferId: offer.id,
+          reqChannelId: offer.channelId,
           reqSenderId: sender.userId,
           reqRecipientId: recipient.userId,
         };
-        console.log('params', params);
         sendNotification(params);
       }
       // Updating state to render messages
@@ -163,6 +156,7 @@ export const useChat = ({
         })
         .onFailed((error) => {
           console.log('message failed : ', error);
+          setError('Failed to send message');
         });
     } else {
       state.channel
@@ -181,7 +175,12 @@ export const useChat = ({
 
   useEffect(() => {
     async function disconnectSendbird() {
-      await Sendbird?.removeConnection();
+      if (!Sendbird) {
+        console.error('Sendbird not initialized');
+        setError('Sendbird not initialized');
+        return;
+      }
+      await Sendbird.removeConnection();
     }
 
     if (!isOpen) {
@@ -192,7 +191,8 @@ export const useChat = ({
   useEffect(() => {
     let timeoutId: NodeJS.Timeout | undefined;
     async function initializeChat() {
-      if (!offerData) {
+      if (!offer) {
+        setError('Offer not found');
         return;
       }
       if (!user) {
@@ -206,13 +206,17 @@ export const useChat = ({
         }, 3000);
         return;
       }
+      if (!Sendbird) {
+        setError('Sendbird not initialized');
+        return;
+      }
       setLoading(true);
-      await Sendbird?.initializeConnection(user.id);
+      await Sendbird.initializeConnection(user.id);
 
-      Sendbird?.initializeChannelEvents(channelHandlers);
+      Sendbird.initializeChannelEvents(channelHandlers);
 
-      const response = await Sendbird?.loadMessages(
-        offerData.channelId,
+      const response = await Sendbird.loadMessages(
+        offer.channelId,
         messageHandlers
       );
 
@@ -273,7 +277,7 @@ export const useChat = ({
         return clearTimeout(timeoutId);
       }
     };
-  }, [user, offerData]);
+  }, [user, offer]);
 
   return [state, loading, error, sendMessage] as [
     ChatState,
