@@ -15,20 +15,21 @@ module.exports = {
   rules: {
     'no-unused-vars': 'warn',
     'no-console': 'warn',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'react/no-unescaped-entities': 'off',
+    'no-useless-escape': 'warn',
 
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+
+    'react/no-unescaped-entities': 'off',
     'react/display-name': 'off',
     'react/jsx-curly-brace-presence': [
       'warn',
       { props: 'never', children: 'never' },
     ],
-    'no-useless-escape': 'warn',
 
-    //#region  //*=========== Unused Import ===========
-    '@typescript-eslint/no-unused-vars': 'off',
-    'unused-imports/no-unused-imports': 'warn',
     '@next/next/no-img-element': 'off',
+
+    'unused-imports/no-unused-imports': 'warn',
     'unused-imports/no-unused-vars': [
       'warn',
       {
@@ -38,12 +39,9 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
-    //#endregion  //*======== Unused Import ===========
 
-    //#region  //*=========== Import Sort ===========
     'simple-import-sort/imports': 'warn',
     'simple-import-sort/exports': 'warn',
-    //#endregion  //*======== Import Sort ===========
   },
   globals: {
     React: true,
