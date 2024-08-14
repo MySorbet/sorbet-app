@@ -425,6 +425,7 @@ export const SignIn = () => {
     }
   }, [user, router]);
 
+  // Check if the wallet selector has an account and check if there is a sorbet account for them
   // useEffect(() => {
   //   const checkNearConnection = async () => {
   //     console.log({ accounts, accountId });
@@ -445,34 +446,35 @@ export const SignIn = () => {
   //   checkNearConnection();
   // }, [selector, accountId]);
 
-  // useEffect(() => {
-  //   const handleWalletLogin = async () => {
-  //     const urlHash = window.location.hash;
-  //     if (urlHash) {
-  //       const params = new URLSearchParams(urlHash.substring(1));
-  //       const accountId = params.get('accountId');
-  //       const signature = params.get('signature');
-  //       const publicKey = params.get('publicKey');
+  // Check if the wallet selector has an account and log into sorbet with it?
+  useEffect(() => {
+    const handleWalletLogin = async () => {
+      const urlHash = window.location.hash;
+      if (urlHash) {
+        const params = new URLSearchParams(urlHash.substring(1));
+        const accountId = params.get('accountId');
+        const signature = params.get('signature');
+        const publicKey = params.get('publicKey');
 
-  //       if (accountId && signature && publicKey) {
-  //         const response = await loginWithWallet(accountId);
-  //         if (response.status === 'success') {
-  //           setLoading(false);
-  //           router?.push('/');
-  //         } else {
-  //           toast({
-  //             title: 'Failed to login',
-  //             description: response.message,
-  //             variant: 'destructive',
-  //           });
-  //           setLoading(false);
-  //         }
-  //       }
-  //     }
-  //   };
+        if (accountId && signature && publicKey) {
+          const response = await loginWithWallet(accountId);
+          if (response.status === 'success') {
+            setLoading(false);
+            router?.push('/');
+          } else {
+            toast({
+              title: 'Failed to login',
+              description: response.message,
+              variant: 'destructive',
+            });
+            setLoading(false);
+          }
+        }
+      }
+    };
 
-  //   handleWalletLogin();
-  // }, [router]);
+    handleWalletLogin();
+  }, [router]);
 
   const handleWalletLogin = async (
     event: React.MouseEvent<HTMLButtonElement>
