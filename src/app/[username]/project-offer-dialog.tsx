@@ -1,25 +1,25 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
-  DialogDescription,
   DialogOverlay,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Select,
+  SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectContent,
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
 
 const projectSchema = z.object({
   projectName: z
@@ -90,9 +90,9 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
           Message {name && <span>{name}</span>}
         </DialogTitle>
         {formSubmitted && (
-          <div className='w-full flex flex-col justify-center items-center align-center'>
-            <div className='w-full text-center my-24 flex flex-col gap-2 justify-center items-center align-center'>
-              <div className='text-6xl text-center'>🎉</div>
+          <div className='align-center flex w-full flex-col items-center justify-center'>
+            <div className='align-center my-24 flex w-full flex-col items-center justify-center gap-2 text-center'>
+              <div className='text-center text-6xl'>🎉</div>
               <div className='text-3xl font-medium'>Your message was sent</div>
               <div className='text-lg'>
                 You will receive a notification when the freelancer replies
@@ -101,7 +101,7 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
 
             <div className='w-full'>
               <Button
-                className='w-full bg-sorbet'
+                className='bg-sorbet w-full'
                 onClick={() => onClose(false)}
               >
                 Back to profile
@@ -111,10 +111,10 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
         )}
         {!formSubmitted && (
           <form onSubmit={handleSubmit(onFormSubmit)}>
-            <div className='flex flex-col gap-2 my-6'>
-              <Label className='text-[#344054] text-medium'>Project name</Label>
+            <div className='my-6 flex flex-col gap-2'>
+              <Label className='text-medium text-[#344054]'>Project name</Label>
               <Input {...register('projectName')} placeholder='Project Name' />
-              <span className='text-sm text-light text-[#344054]'>
+              <span className='text-light text-sm text-[#344054]'>
                 Max. 30 characters
               </span>
               {errors.projectName && (
@@ -123,8 +123,8 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
                 </span>
               )}
             </div>
-            <div className='flex flex-col gap-2 my-6'>
-              <Label className='text-[#344054] text-medium'>
+            <div className='my-6 flex flex-col gap-2'>
+              <Label className='text-medium text-[#344054]'>
                 Describe your project
               </Label>
               <Textarea
@@ -132,7 +132,7 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
                 placeholder='Description'
                 rows={8}
               />
-              <span className='text-sm text-light text-[#344054]'>
+              <span className='text-light text-sm text-[#344054]'>
                 Max. 100 characters
               </span>
               {errors.description && (
@@ -141,7 +141,7 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
                 </span>
               )}
             </div>
-            <div className='flex flex-col gap-2 my-6'>
+            <div className='my-6 flex flex-col gap-2'>
               <Label>Project starting</Label>
               <Controller
                 name='projectStarting'
@@ -159,7 +159,7 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
                 )}
               />
             </div>
-            <div className='flex flex-col gap-2 my-6'>
+            <div className='my-6 flex flex-col gap-2'>
               <Label>Budget</Label>
               <Input
                 type='text'
@@ -171,7 +171,7 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
                 <span className='text-red-500'>{errors.budget.message}</span>
               )}
             </div>
-            <Button type='submit' className='w-full bg-sorbet'>
+            <Button type='submit' className='bg-sorbet w-full'>
               Send message
             </Button>
           </form>

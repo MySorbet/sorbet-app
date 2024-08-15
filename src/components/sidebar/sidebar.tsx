@@ -1,10 +1,4 @@
-import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
-import { useAuth } from '@/hooks';
-import { useAppDispatch } from '@/redux/hook';
-import { setOpenSidebar } from '@/redux/userSlice';
-import type { User } from '@/types';
 import {
-  ArrowLeftRight,
   CircleArrowRight,
   LayoutGrid,
   LogOut,
@@ -14,6 +8,11 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
+import { useAuth } from '@/hooks';
+import { useAppDispatch } from '@/redux/hook';
+import { setOpenSidebar } from '@/redux/userSlice';
+import type { User } from '@/types';
 
 interface SidebarProps {
   show: boolean;
@@ -28,15 +27,15 @@ const SidebarHeaderOption: React.FC<{
 }> = ({ label, icon, comingSoon, onClick }) => {
   return (
     <div
-      className='bg-[#FEFEFE] rounded-xl border border-1 border-gray-200 p-3 cursor-pointer hover:bg-gray-100 relative'
+      className='border-1 relative cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
       onClick={onClick}
     >
       {comingSoon && (
-        <div className='absolute top-0 right-0 transform rotate-45 translate-x-1/4 -translate-y-1/4 bg-sorbet px-1 py-1 text-xs text-white rounded-xl font-semibold'>
+        <div className='bg-sorbet absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 rotate-45 transform rounded-xl px-1 py-1 text-xs font-semibold text-white'>
           Soon
         </div>
       )}
-      <div className='flex flex-col gap-1 justify-center items-center text-sorbet font-semibold'>
+      <div className='text-sorbet flex flex-col items-center justify-center gap-1 font-semibold'>
         <div>{icon}</div>
         <div className='text-sm'>{label}</div>
       </div>
@@ -48,13 +47,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, logout } = useAuth();
-  const { modal: nearModal, selector } = useWalletSelector();
-
-  const handleRedirect = (event: any, url: string) => {
-    event.preventDefault();
-    handleSidebarClose();
-    router.push(url);
-  };
 
   const handleLogout = async () => {
     logout();
@@ -76,13 +68,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
 
   return (
     <div
-      className={`fixed lg:left-0 z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 ${
+      className={`fixed z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 lg:left-0 ${
         show ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
       }`}
       onClick={() => dispatch(setOpenSidebar(false))}
     >
       <div
-        className={`right-0 z-40 lg:m-6 flex lg:h-[calc(100%-48px)] w-full h-full lg:w-[420px] flex-col items-start justify-between gap-6 overflow-y-auto lg:rounded-[32px] bg-[#F9FAFB] p-8 text-black ${
+        className={`right-0 z-40 flex h-full w-full flex-col items-start justify-between gap-6 overflow-y-auto bg-[#F9FAFB] p-8 text-black lg:m-6 lg:h-[calc(100%-48px)] lg:w-[420px] lg:rounded-[32px] ${
           show ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
@@ -98,12 +90,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                     <img
                       src={userInfo?.profileImage}
                       alt='logo'
-                      className='rounded-full w-14 h-14'
+                      className='h-14 w-14 rounded-full'
                     />
                   ) : (
                     <img
                       src='/avatar.svg'
-                      className='rounded-full w-14 h-14'
+                      className='h-14 w-14 rounded-full'
                       alt='logo'
                     />
                   )}
@@ -131,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   </Link>
                 </div>
                 <div className='col-span-1'>
-                  <Link href={`/gigs`}>
+                  <Link href='/gigs'>
                     <SidebarHeaderOption
                       label='Gigs'
                       icon={<LayoutGrid />}
@@ -149,9 +141,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   </Link>
                 </div>
               </div>
-              <div className='bg-white p-5 flex flex-col rounded-xl mt-3'>
-                <div className='text-gray-600 font-light'>Balances</div>
-                <div className='flex flex-col gap-3 mt-6'>
+              <div className='mt-3 flex flex-col rounded-xl bg-white p-5'>
+                <div className='font-light text-gray-600'>Balances</div>
+                <div className='mt-6 flex flex-col gap-3'>
                   <div className='flex justify-between'>
                     <div className='flex flex-row gap-2'>
                       <Image
@@ -187,15 +179,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
             </div>
           </div>
 
-          <div className='flex flex-col gap-6 font-medium cursor-pointer text-xl'>
-            <div className='flex flex-row gap-2 items-center'>
-              <div>
-                <ArrowLeftRight />
-              </div>
-              <div>Switch Wallet</div>
-            </div>
+          <div className='flex cursor-pointer flex-col gap-6 text-xl font-medium'>
             <div
-              className='flex flex-row gap-2 items-center'
+              className='flex flex-row items-center gap-2'
               onClick={() => handleLogout()}
             >
               <div>

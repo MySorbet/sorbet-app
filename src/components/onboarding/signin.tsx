@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isPassKeyAvailable } from '@near-js/biometric-ed25519';
 import { captureException } from '@sentry/react';
+import { Wallet03 } from '@untitled-ui/icons-react';
 import BN from 'bn.js';
 import { randomBytes } from 'crypto';
 import { sendSignInLinkToEmail } from 'firebase/auth';
@@ -425,6 +426,7 @@ export const SignIn = () => {
     }
   }, [user, router]);
 
+  // Check if the wallet selector has an account and check if there is a sorbet account for them
   // useEffect(() => {
   //   const checkNearConnection = async () => {
   //     console.log({ accounts, accountId });
@@ -445,34 +447,35 @@ export const SignIn = () => {
   //   checkNearConnection();
   // }, [selector, accountId]);
 
-  // useEffect(() => {
-  //   const handleWalletLogin = async () => {
-  //     const urlHash = window.location.hash;
-  //     if (urlHash) {
-  //       const params = new URLSearchParams(urlHash.substring(1));
-  //       const accountId = params.get('accountId');
-  //       const signature = params.get('signature');
-  //       const publicKey = params.get('publicKey');
+  // Check if the wallet selector has an account and log into sorbet with it?
+  useEffect(() => {
+    const handleWalletLogin = async () => {
+      const urlHash = window.location.hash;
+      if (urlHash) {
+        const params = new URLSearchParams(urlHash.substring(1));
+        const accountId = params.get('accountId');
+        const signature = params.get('signature');
+        const publicKey = params.get('publicKey');
 
-  //       if (accountId && signature && publicKey) {
-  //         const response = await loginWithWallet(accountId);
-  //         if (response.status === 'success') {
-  //           setLoading(false);
-  //           router?.push('/');
-  //         } else {
-  //           toast({
-  //             title: 'Failed to login',
-  //             description: response.message,
-  //             variant: 'destructive',
-  //           });
-  //           setLoading(false);
-  //         }
-  //       }
-  //     }
-  //   };
+        if (accountId && signature && publicKey) {
+          const response = await loginWithWallet(accountId);
+          if (response.status === 'success') {
+            setLoading(false);
+            router?.push('/');
+          } else {
+            toast({
+              title: 'Failed to login',
+              description: response.message,
+              variant: 'destructive',
+            });
+            setLoading(false);
+          }
+        }
+      }
+    };
 
-  //   handleWalletLogin();
-  // }, [router]);
+    handleWalletLogin();
+  }, [router]);
 
   const handleWalletLogin = async (
     event: React.MouseEvent<HTMLButtonElement>
@@ -559,22 +562,7 @@ export const SignIn = () => {
               className='group w-full gap-[6px] border border-[#D6BBFB] bg-[#FFFFFF] p-[10px] text-base font-semibold text-[#573DF5] hover:bg-[#573DF5] hover:text-white'
               onClick={handleWalletLogin}
             >
-              <svg
-                width='21'
-                height='20'
-                viewBox='0 0 21 20'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M14.25 11.6667H14.2583M3 4.16667V15.8333C3 16.7538 3.74619 17.5 4.66667 17.5H16.3333C17.2538 17.5 18 16.7538 18 15.8333V7.5C18 6.57953 17.2538 5.83333 16.3333 5.83333L4.66667 5.83333C3.74619 5.83333 3 5.08714 3 4.16667ZM3 4.16667C3 3.24619 3.74619 2.5 4.66667 2.5H14.6667M14.6667 11.6667C14.6667 11.8968 14.4801 12.0833 14.25 12.0833C14.0199 12.0833 13.8333 11.8968 13.8333 11.6667C13.8333 11.4365 14.0199 11.25 14.25 11.25C14.4801 11.25 14.6667 11.4365 14.6667 11.6667Z'
-                  stroke='#573DF5'
-                  strokeWidth='1.66667'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  className='group-hover:stroke-white'
-                />
-              </svg>
+              <Wallet03 className='size-5' />
               Connect Wallet
             </Button>
           </div>

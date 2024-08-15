@@ -1,64 +1,79 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
-import { Notifications } from '@/components/header/notifications';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks';
-import { useAppDispatch } from '@/redux/hook';
-import { setOpenSidebar } from '@/redux/userSlice';
-import { Menu } from 'lucide-react';
+import { ChevronDown, User01 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-interface HeaderProps {
-  isPublic?: boolean;
-}
+import { Notifications } from '@/components/notifications';
+import { Sidebar } from '@/components/sidebar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
+import { setOpenSidebar } from '@/redux/userSlice';
 
-export const Header = ({ isPublic = false }: HeaderProps) => {
+/** Header for all pages */
+export const Header = () => {
   const { user } = useAuth();
+  const profileImage = user?.profileImage;
 
   const dispatch = useAppDispatch();
-
-  const router = useRouter();
+  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
 
   return (
     <div className='bg-[#F2F3F7]'>
-      <div className='flex w-full justify-between container mx-auto py-4'>
+      <div className='container mx-auto flex w-full justify-between py-4'>
         <div className='flex gap-6'>
           <Link href='/'>
-            <Image src={'/svg/logo.svg'} alt='logo' width={44} height={44} />
+            <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
           </Link>
         </div>
-        {!isPublic && (
+        {user && (
           <div className='flex items-center justify-end gap-4'>
-            <div className='flex flex-row align-center gap-2 items-center'>
+            <div className='align-center flex flex-row items-center gap-2'>
               <Notifications />
-              <Menu
-                className='cursor-pointer'
+              <div
+                className='group flex cursor-pointer flex-row items-center'
                 onClick={() => dispatch(setOpenSidebar(true))}
-              />
+              >
+                <Avatar className='border-primary-default size-10 border-2'>
+                  <AvatarImage src={profileImage} alt='profile image' />
+                  <AvatarFallback>
+                    <User01 className='text-muted-foreground' />
+                  </AvatarFallback>
+                </Avatar>
+                <ChevronDown className='transition ease-out group-hover:translate-y-1' />
+                <Sidebar show={toggleOpenSidebar} userInfo={user} />
+              </div>
             </div>
           </div>
         )}
-        {isPublic && !user && (
-          <div className='flex items-center justify-end gap-4'>
-            <Button
-              onClick={() => router.push('/signup')}
-              className='font-semibold text-sm text-[#344054] leading-5 py-[10px] px-[14px] bg-white border border-[#D0D5DD] hover:bg-gray-100'
-            >
-              Claim my Sorbet
-            </Button>
-            <Button
-              onClick={() => router.push('/signin')}
-              className='font-semibold text-sm text-white leading-5 py-[10px] px-[14px] bg-sorbet border border-[#7F56D9] hover:bg-[#523BDF]'
-            >
-              Login
-            </Button>
-          </div>
-        )}
+        {!user && <LoggedOutCTA />}
       </div>
+    </div>
+  );
+};
+
+/** Two CTA buttons if viewing a profile logged out. Sign up or sign in. */
+const LoggedOutCTA = () => {
+  const router = useRouter();
+
+  return (
+    <div className='flex items-center justify-end gap-4'>
+      <Button
+        onClick={() => router.push('/signup')}
+        className='border border-[#D0D5DD] bg-white px-[14px] py-[10px] text-sm font-semibold leading-5 text-[#344054] hover:bg-gray-100'
+      >
+        Claim my Sorbet
+      </Button>
+      <Button
+        onClick={() => router.push('/signin')}
+        className='bg-sorbet border border-[#7F56D9] px-[14px] py-[10px] text-sm font-semibold leading-5 text-white hover:bg-[#523BDF]'
+      >
+        Login
+      </Button>
     </div>
   );
 };
