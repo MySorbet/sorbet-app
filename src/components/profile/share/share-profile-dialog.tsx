@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { SetStateAction, useState, Dispatch } from 'react';
 
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
@@ -25,21 +25,45 @@ type Screen = (typeof screenOptions)[number];
 
 interface ShareProfileModalProps {
   trigger: React.ReactNode;
-  username: string
+  username: string;
 }
 
-export const ShareProfileDialog = ({ trigger }: ShareProfileModalProps) => {
+export interface ViewProps {
+  username: string;
+  setActive: Dispatch<SetStateAction<Screen>>;
+  handleUrlToClipboard?: () => void;
+}
+
+export const ShareProfileDialog = ({
+  trigger,
+  username,
+}: ShareProfileModalProps) => {
   const [active, setActive] = useState<Screen>('ShareYourProfile');
+
+  const handleUrlToClipboard = () => () => {
+    const url = `${window.location.origin}/${username}`;
+    navigator.clipboard.writeText(url);
+  };
 
   return (
     <Dialog>
       <DialogTrigger>{trigger}</DialogTrigger>
-      {active === 'ShareYourProfile' && <ShareYourProfile />}
-      {active === 'AddToSocials' && <AddToSocials />}
-      {active === 'ShareMyProfileTo' && <ShareMyProfile />}
-      {active === 'ShareOnSocials' && <ShareOnSocials />}
-      {active === 'Instagram' && <Instagram />}
-      {active === 'X' && <XTwitter />}
+      {active === 'ShareYourProfile' && (
+        <ShareYourProfile username={username} setActive={setActive} />
+      )}
+      {active === 'AddToSocials' && (
+        <AddToSocials username={username} setActive={setActive} />
+      )}
+      {active === 'ShareMyProfileTo' && (
+        <ShareMyProfile username={username} setActive={setActive} />
+      )}
+      {active === 'ShareOnSocials' && (
+        <ShareOnSocials username={username} setActive={setActive} handleUrlToClipboard={handleUrlToClipboard}/>
+      )}
+      {active === 'Instagram' && (
+        <Instagram username={username} setActive={setActive} />
+      )}
+      {active === 'X' && <XTwitter username={username} setActive={setActive} />}
     </Dialog>
   );
 };

@@ -1,15 +1,21 @@
 import { Download } from 'lucide-react';
 import { Body, Container, Header, Option, QRCode } from '../reusables';
 
+import { ViewProps } from '../share-profile-dialog';
+import { Button } from '@/components/ui/button';
 
-
-export const ShareOnSocials = () => {
+export const ShareOnSocials = ({
+  username,
+  setActive,
+  handleUrlToClipboard,
+}: ViewProps) => {
   return (
     <Container gap='6'>
       <Header
         title='Share on socials'
         description='Your unique Sorbet QR code that will direct people to your Sorbet profile when scanned'
         canGoBack={true}
+        navigateToPrevious={() => setActive('ShareYourProfile')}
       />
       <Body>
         <div className='h-[184px] w-[184px] bg-black' />
@@ -24,7 +30,11 @@ export const ShareOnSocials = () => {
           </div>
         </div>
       </Body>
-      <QRCode username='valvalrez' />
+
+      <QRCode
+        username={username!}
+        handleUrlToClipboard={handleUrlToClipboard!}
+      />
     </Container>
   );
 };
