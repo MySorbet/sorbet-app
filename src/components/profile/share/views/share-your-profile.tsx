@@ -37,7 +37,10 @@ export const ShareYourProfile = ({
           className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
           onClick={handleUrlToClipboard}
         >
-          <QRCode username={username!} />
+          <QRCode
+            username={username!}
+            handleUrlToClipboard={handleUrlToClipboard!}
+          />
         </Button>
       </Body>
     </Container>

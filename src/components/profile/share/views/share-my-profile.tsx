@@ -18,10 +18,15 @@ export const ShareMyProfile = ({
       />
       <Body>
         <div className='flex flex-col gap-6'>
-          <Option asset={<div>T</div>} title='X' />
+          <a href='https://www.x.com/intent/tweet' target='_blank' rel="noopener noreferrer">
+            <Option asset={<div>T</div>} title='X' />
+          </a>
           <Option asset={<div>I</div>} title='Instagram' />
         </div>
-        <QRCode username={username!} handleUrlToClipboard={handleUrlToClipboard!} />
+        <QRCode
+          username={username!}
+          handleUrlToClipboard={handleUrlToClipboard!}
+        />
       </Body>
     </Container>
   );

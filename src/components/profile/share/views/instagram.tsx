@@ -1,7 +1,11 @@
 import { Body, Container, Header, Option, QRCode } from '../reusables';
-import { ViewProps } from "../share-profile-dialog";
+import { ViewProps } from '../share-profile-dialog';
 
-export const Instagram = ({username, setActive, handleUrlToClipboard}: ViewProps) => {
+export const Instagram = ({
+  username,
+  setActive,
+  handleUrlToClipboard,
+}: ViewProps) => {
   return (
     <Container gap='6'>
       <Header
@@ -13,10 +17,12 @@ export const Instagram = ({username, setActive, handleUrlToClipboard}: ViewProps
       <Body>
         <div className='h-[186px] w-full bg-black' />
         <QRCode
-        username={username!}
-        handleUrlToClipboard={handleUrlToClipboard!}
-      />
-        <Option asset={<div>I</div>} title='Go to my instagram' />
+          username={username!}
+          handleUrlToClipboard={handleUrlToClipboard!}
+        />
+        <a href='https://www.instagram.com' target="_blank" rel='noopener noreferrer'>
+          <Option asset={<div>I</div>} title='Go to my instagram' />
+        </a>
       </Body>
     </Container>
   );

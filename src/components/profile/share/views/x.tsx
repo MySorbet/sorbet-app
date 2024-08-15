@@ -20,7 +20,13 @@ export const XTwitter = ({
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
         />
-        <Option asset={<div>X</div>} title='Go to my X' />
+        <a
+          href='https://www.x.com/settings/profile'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          <Option asset={<div>X</div>} title='Go to my X' />
+        </a>
       </Body>
     </Container>
   );
