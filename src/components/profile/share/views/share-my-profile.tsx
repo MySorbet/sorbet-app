@@ -21,6 +21,7 @@ export const ShareMyProfile = ({
           <a href='https://www.x.com/intent/tweet' target='_blank' rel="noopener noreferrer">
             <Option asset={<div>T</div>} title='X' />
           </a>
+          // TODO: figure out how we want to share to Instagram. Story? Post?
           <Option asset={<div>I</div>} title='Instagram' />
         </div>
         <QRCode
