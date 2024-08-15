@@ -1,13 +1,14 @@
+import { type FC, useState } from 'react';
+
 import {
-  ProfileHeader,
   ProfileEditModal,
+  ProfileHeader,
   WidgetContainer,
 } from '@/components/profile';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
-import React, { useState } from 'react';
 
-export const Profile: React.FC<{
+export const Profile: FC<{
   user: User;
   canEdit?: boolean;
   onHireMeClick?: () => void;
