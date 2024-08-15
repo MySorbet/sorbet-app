@@ -5,5 +5,15 @@ import { Option } from './share-option';
 import { QRCode } from './share-qrcode';
 import { TwitterIcon } from './twitter-icon';
 import { InstagramIcon } from './instagram-icon';
+import { DemoImage } from './demo-image';
 
-export { Body, Container, Header, Option, QRCode, TwitterIcon, InstagramIcon };
+export {
+  Body,
+  Container,
+  Header,
+  Option,
+  QRCode,
+  TwitterIcon,
+  InstagramIcon,
+  DemoImage,
+};

@@ -6,10 +6,10 @@ import {
   QRCode,
   TwitterIcon,
   InstagramIcon,
+  DemoImage,
 } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
-import Image from 'next/image'
-import SorbetBackground from '@/../public/SorbetBackground.png'
+import SorbetBackground from '@/../public/SorbetBackground.png';
 
 export const AddToSocials = ({ username, setActive }: ViewProps) => {
   return (
@@ -21,7 +21,7 @@ export const AddToSocials = ({ username, setActive }: ViewProps) => {
         navigateToPrevious={() => setActive('ShareYourProfile')}
       />
       <Body>
-      <Image src={SorbetBackground} height={186} width={368} alt="Sorbet" className='object-cover w-auto rounded-3xl'/>
+        <DemoImage src={SorbetBackground} alt='Sorbet' />
         <div className='flex flex-col gap-6'>
           <Option
             asset={<TwitterIcon />}

@@ -5,6 +5,7 @@ import {
   InstagramIcon,
   Option,
   QRCode,
+  DemoImage,
 } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
 import Image from 'next/image';
@@ -24,13 +25,7 @@ export const Instagram = ({
         navigateToPrevious={() => setActive('AddToSocials')}
       />
       <Body>
-        <Image
-          src={ShareInstagram}
-          height={186}
-          width={368}
-          alt='Instragram demo'
-          className='w-auto rounded-3xl object-cover'
-        />
+        <DemoImage src={ShareInstagram} alt='Share Sorbet to Instagram' />
         <QRCode
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
