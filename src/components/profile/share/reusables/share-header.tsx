@@ -1,6 +1,6 @@
 import { ChevronLeft, X } from 'lucide-react';
 
-import { DialogClose, DialogHeader } from '@/components/ui/dialog';
+import { DialogClose, DialogTitle } from '@/components/ui/dialog';
 
 export const Header = ({
   title,
@@ -12,13 +12,13 @@ export const Header = ({
   canGoBack?: boolean;
 }) => {
   return (
-    <DialogHeader className='flex flex-col items-center gap-3 px-[9px]'>
-      <DialogClose className='fixed right-6 top-6'>
+    <DialogTitle className='flex flex-col items-center gap-3 px-[9px]'>
+      <DialogClose className='fixed right-6 top-5'>
         <X className='h-6 w-6 text-[#98A2B3]' />
       </DialogClose>
       {canGoBack && (
         <ChevronLeft
-          className='fixed left-6 top-6 h-6 w-6 text-[#98A2B3]'
+          className='fixed left-6 top-5 h-6 w-6 text-[#98A2B3]'
           style={{ margin: 0 }}
         />
       )}
@@ -26,6 +26,6 @@ export const Header = ({
       <span className='text-center text-base font-medium text-[#344054]'>
         {description}
       </span>
-    </DialogHeader>
+    </DialogTitle>
   );
 };
