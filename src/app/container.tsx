@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { FC, PropsWithChildren, useEffect } from 'react';
+import { type FC, PropsWithChildren, useEffect } from 'react';
 
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
