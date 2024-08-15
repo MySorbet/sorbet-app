@@ -16,16 +16,16 @@ export const Header = ({
 }) => {
   return (
     <DialogTitle className='flex flex-col items-center gap-3 px-[9px]'>
-      <DialogClose className='fixed right-6 top-5'>
-        <X className='h-6 w-6 text-[#98A2B3]' />
+      <DialogClose className='group fixed right-6 top-5'>
+        <X className='h-6 w-6 text-[#98A2B3] ease-out group-hover:scale-105' />
       </DialogClose>
       {canGoBack && (
         <Button
-          className='fixed left-6 top-5 m-0 h-6 border-none bg-transparent p-0 hover:bg-transparent'
+          className='group fixed left-6 top-5 m-0 h-6 border-none bg-transparent p-0 hover:bg-transparent'
           onClick={navigateToPrevious}
         >
           <ChevronLeft
-            className=' h-6 w-6 text-[#98A2B3]'
+            className=' h-6 w-6 text-[#98A2B3] ease-out group-hover:scale-105'
             style={{ margin: 0 }}
           />
         </Button>

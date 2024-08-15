@@ -29,10 +29,10 @@ export const ShareLink = ({
       <Popover>
         <PopoverTrigger>
           <Button
-            className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
+            className='group m-0 border-none bg-transparent p-0 hover:bg-transparent'
             onClick={handleUrlToClipboard}
           >
-            <Copy className='h-8 w-8 text-black' />
+            <Copy className='h-8 w-8 text-black ease-out group-hover:scale-105 ' />
           </Button>
         </PopoverTrigger>
         <PopoverContent

@@ -3,9 +3,9 @@ import { QRCode } from 'react-qrcode-logo';
 
 import { Button } from '@/components/ui/button';
 
+import SorbetLogo from '../../../../../public/images/logo.png';
 import { Body, Container, Header, ShareLink } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
-import SorbetLogo from '../../../../../public/images/logo.png';
 
 interface ShareOnSocialsProps extends ViewProps {
   handleUrlToClipboard: () => void;
