@@ -1,14 +1,15 @@
+import SorbetBackground from '@/../public/SorbetBackground.png';
+
 import {
   Body,
   Container,
+  DemoImage,
   Header,
+  InstagramIcon,
   Option,
   TwitterIcon,
-  InstagramIcon,
-  DemoImage,
 } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
-import SorbetBackground from '@/../public/SorbetBackground.png';
 
 export const AddToSocials = ({ username, setActive }: ViewProps) => {
   return (
