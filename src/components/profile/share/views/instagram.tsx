@@ -20,7 +20,7 @@ export const Instagram = ({
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
         />
-        <a href='https://www.instagram.com' target="_blank" rel='noopener noreferrer'>
+        <a href='https://www.instagram.com/accounts/edit/' target="_blank" rel='noopener noreferrer'>
           <Option asset={<div>I</div>} title='Go to my instagram' />
         </a>
       </Body>
