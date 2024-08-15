@@ -6,24 +6,22 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import { Sidebar } from '@/components/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
-import { useAppDispatch } from '@/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 
 import { Notifications } from './notifications';
 
-interface HeaderProps {
-  isPublic?: boolean;
-}
-
 /** Header for all pages */
-export const Header = ({ isPublic = false }: HeaderProps) => {
+export const Header = () => {
   const { user } = useAuth();
   const profileImage = user?.profileImage;
 
   const dispatch = useAppDispatch();
+  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
 
   return (
     <div className='bg-[#F2F3F7]'>
@@ -33,7 +31,7 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
             <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
           </Link>
         </div>
-        {!isPublic && (
+        {user && (
           <div className='flex items-center justify-end gap-4'>
             <div className='align-center flex flex-row items-center gap-2'>
               <Notifications />
@@ -48,11 +46,12 @@ export const Header = ({ isPublic = false }: HeaderProps) => {
                   </AvatarFallback>
                 </Avatar>
                 <ChevronDown />
+                <Sidebar show={toggleOpenSidebar} userInfo={user} />
               </div>
             </div>
           </div>
         )}
-        {isPublic && !user && <LoggedOutCTA />}
+        {!user && <LoggedOutCTA />}
       </div>
     </div>
   );

@@ -1,19 +1,18 @@
 'use client';
 
-import Container from '@/app/container';
-import { GigsBoard } from '@/app/gigs/gigs-board';
-import { Header, Sidebar } from '@/components';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useLocalStorage } from '@/hooks';
-import { useAppSelector } from '@/redux/hook';
-import { GigsContentType } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
+import Container from '@/app/container';
+import { GigsBoard } from '@/app/gigs/gigs-board';
+import { Header } from '@/components';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/use-toast';
+import { useAuth, useLocalStorage } from '@/hooks';
+import { GigsContentType } from '@/types';
+
 export const GigsContainer = () => {
   const { user: loggedInUser } = useAuth();
-  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
   const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
     'lastChainOp',
     ''
@@ -90,24 +89,21 @@ export const GigsContainer = () => {
     <Container>
       <Header />
       {loggedInUser && (
-        <>
-          <Sidebar show={toggleOpenSidebar} userInfo={loggedInUser} />
-          <div className='flex justify-center items-center w-[100%]'>
-            <Tabs defaultValue='received' className='w-[100%]'>
-              <TabsList className='flex justify-center mb-8'>
-                <TabsTrigger value='received'>Offers Received</TabsTrigger>
-                <TabsTrigger value='sent'>Offers Sent</TabsTrigger>
-              </TabsList>
-              <TabsContent value='sent'>
-                <GigsBoard gigsContentType={GigsContentType.Sent} />
-              </TabsContent>
+        <div className='flex w-[100%] items-center justify-center'>
+          <Tabs defaultValue='received' className='w-[100%]'>
+            <TabsList className='mb-8 flex justify-center'>
+              <TabsTrigger value='received'>Offers Received</TabsTrigger>
+              <TabsTrigger value='sent'>Offers Sent</TabsTrigger>
+            </TabsList>
+            <TabsContent value='sent'>
+              <GigsBoard gigsContentType={GigsContentType.Sent} />
+            </TabsContent>
 
-              <TabsContent value='received'>
-                <GigsBoard gigsContentType={GigsContentType.Received} />
-              </TabsContent>
-            </Tabs>
-          </div>
-        </>
+            <TabsContent value='received'>
+              <GigsBoard gigsContentType={GigsContentType.Received} />
+            </TabsContent>
+          </Tabs>
+        </div>
       )}
     </Container>
   );

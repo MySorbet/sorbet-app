@@ -11,15 +11,12 @@ import { CreditCardForm } from '@/app/wallet/credit-card';
 import { FundsFlow } from '@/app/wallet/funds-flow';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
-import { Sidebar } from '@/components';
 import { Header } from '@/components/header';
 import { useAuth } from '@/hooks';
-import { useAppSelector } from '@/redux/hook';
 import { Balances, Transaction, Transactions } from '@/types/transactions';
 
 export const WalletContainer = () => {
   const { user } = useAuth();
-  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
   const [transactions, setTransactions] = useState<Transactions>({
     money_in: [],
     money_out: [],
@@ -58,7 +55,6 @@ export const WalletContainer = () => {
   return (
     <Container>
       <Header />
-      {user && <Sidebar show={toggleOpenSidebar} userInfo={user} />}
       <div className='container my-16'>
         <div className='flex flex-col gap-6 lg:flex-row'>
           <div className='lg:w-8/12'>

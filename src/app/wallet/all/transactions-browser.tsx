@@ -1,23 +1,22 @@
 'use client';
 
-import TransactionsTable, { TableTransaction } from './transactions-table';
-import { getTransactions } from '@/api/user';
-import Container from '@/app/container';
-import { Sidebar } from '@/components';
-import { PageTitle } from '@/components/common';
-import { Header } from '@/components/header';
-import { useAuth } from '@/hooks';
-import { useAppSelector } from '@/redux/hook';
-import { Transaction } from '@/types/transactions';
 import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight, MoveLeft } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
+import { getTransactions } from '@/api/user';
+import Container from '@/app/container';
+import { PageTitle } from '@/components/common';
+import { Header } from '@/components/header';
+import { useAuth } from '@/hooks';
+import { Transaction } from '@/types/transactions';
+
+import TransactionsTable, { TableTransaction } from './transactions-table';
+
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();
-  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [searchValue, setSearchValue] = useState<string>('');
   const [transactionsData, setTransactionsData] = useState<TableTransaction[]>(
@@ -118,50 +117,47 @@ export const TransactionsBrowser: React.FC = () => {
       <Header />
       <PageTitle title='Transactions' />
       {user && (
-        <>
-          <Sidebar show={toggleOpenSidebar} userInfo={user} />
-          <div className='container my-16'>
-            <div className='mb-6 text-sorbet'>
-              <Link
-                href='/wallet'
-                className='flex gap-1 items-center font-semibold'
+        <div className='container my-16'>
+          <div className='text-sorbet mb-6'>
+            <Link
+              href='/wallet'
+              className='flex items-center gap-1 font-semibold'
+            >
+              <MoveLeft size={20} />
+              Go Back
+            </Link>
+          </div>
+          <div className='mb-6 flex items-center justify-between'>
+            <div className='text-2xl font-medium'> All Transactions</div>
+            <div className='flex flex-row gap-4'>
+              <div
+                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-1 ${
+                  !hasPrevPage && 'cursor-not-allowed opacity-50'
+                }`}
+                onClick={handlePrevPage}
               >
-                <MoveLeft size={20} />
-                Go Back
-              </Link>
-            </div>
-            <div className='flex justify-between items-center mb-6'>
-              <div className='text-2xl font-medium'> All Transactions</div>
-              <div className='flex flex-row gap-4'>
-                <div
-                  className={`cursor-pointer flex justify-center items-center rounded-full bg-white w-12 h-12 p-1 ${
-                    !hasPrevPage && 'opacity-50 cursor-not-allowed'
-                  }`}
-                  onClick={handlePrevPage}
-                >
-                  <ChevronLeft size={20} />
-                </div>
-                <div
-                  className={`cursor-pointer flex justify-center items-center rounded-full bg-white w-12 h-12 p-1 ${
-                    !hasNextPage && 'opacity-50 cursor-not-allowed'
-                  }`}
-                  onClick={handleNextPage}
-                >
-                  <ChevronRight size={20} />
-                </div>
+                <ChevronLeft size={20} />
+              </div>
+              <div
+                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-1 ${
+                  !hasNextPage && 'cursor-not-allowed opacity-50'
+                }`}
+                onClick={handleNextPage}
+              >
+                <ChevronRight size={20} />
               </div>
             </div>
-            <TransactionsTable
-              transactions={filteredTransactions}
-              searchValue={searchValue}
-              dateRange={dateRange}
-              isLoading={isLoading}
-              onSearchChange={setSearchValue}
-              onDateRangeChange={setDateRange}
-              onClearAll={handleClearAll}
-            />
           </div>
-        </>
+          <TransactionsTable
+            transactions={filteredTransactions}
+            searchValue={searchValue}
+            dateRange={dateRange}
+            isLoading={isLoading}
+            onSearchChange={setSearchValue}
+            onDateRangeChange={setDateRange}
+            onClearAll={handleClearAll}
+          />
+        </div>
       )}
     </Container>
   );

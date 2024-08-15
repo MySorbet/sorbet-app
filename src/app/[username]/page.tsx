@@ -19,6 +19,8 @@ import { config } from '@/lib/config';
 import { User } from '@/types';
 import { ensureValidAccountId } from '@/utils/user';
 
+import Container from '../container';
+
 const ProfilePage = ({ params }: { params: { username: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
   const { user } = useAuth();
@@ -60,8 +62,8 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   return (
-    <>
-      <Header isPublic />
+    <Container>
+      <Header />
       {!isPending && freelancer && (
         <>
           <Profile
@@ -81,7 +83,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         </>
       )}
       {isError && <ClaimYourProfile username={freelancerUsername} />}
-    </>
+    </Container>
   );
 };
 
