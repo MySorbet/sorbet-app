@@ -17,17 +17,14 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { config } from '@/lib/config';
 import { User } from '@/types';
-import { ensureValidAccountId } from '@/utils/user';
+import { withSuffix } from '@/utils/user';
 
-import Container from '../container';
-
-const ProfilePage = ({ params }: { params: { username: string } }) => {
+const ProfilePage = ({ params }: { params: { freelancerHandle: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const freelancerUsername = params.username;
-
+  // Mutation to be called when an offer is sent from the logged in user to the freelancer
   const mutation = useMutation({
     mutationFn: (projectFormValues: ProjectFormValues) => {
       if (!user) throw new Error('User not found');
@@ -36,8 +33,8 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         description: projectFormValues.description,
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
-        clientUsername: ensureValidAccountId(user.accountId),
-        freelancerUsername: ensureValidAccountId(freelancerUsername),
+        clientUsername: withSuffix(user.accountId),
+        freelancerUsername: withSuffix(params.freelancerHandle),
       });
     },
     onError: () => {
@@ -48,17 +45,21 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
     },
   });
 
+  // Query to get the freelancer's profile via the handle in the url
   const {
     isPending,
     isError,
     data: freelancerResponse,
   } = useQuery({
     queryKey: ['freelancer'],
-    queryFn: () => getUserByAccountId(`${params.username}.${config.networkId}`),
+    queryFn: () =>
+      getUserByAccountId(`${params.freelancerHandle}.${config.networkId}`),
   });
 
+  // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data as User;
-  const disableHireMe = freelancerUsername === user?.accountId.split('.')[0];
+  const disableHireMe =
+    params.freelancerHandle === user?.accountId.split('.')[0];
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   return (
@@ -82,7 +83,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
           />
         </>
       )}
-      {isError && <ClaimYourProfile username={freelancerUsername} />}
+      {isError && <ClaimYourProfile username={params.freelancerHandle} />}
     </>
   );
 };
