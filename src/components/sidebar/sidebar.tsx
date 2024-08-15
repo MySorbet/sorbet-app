@@ -9,7 +9,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { useWalletSelector } from '@/components/common/near-wallet/walletSelectorContext';
 import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
@@ -48,13 +47,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, logout } = useAuth();
-  const { modal: nearModal, selector } = useWalletSelector();
-
-  const handleRedirect = (event: any, url: string) => {
-    event.preventDefault();
-    handleSidebarClose();
-    router.push(url);
-  };
 
   const handleLogout = async () => {
     logout();
@@ -131,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   </Link>
                 </div>
                 <div className='col-span-1'>
-                  <Link href={`/gigs`}>
+                  <Link href='/gigs'>
                     <SidebarHeaderOption
                       label='Gigs'
                       icon={<LayoutGrid />}

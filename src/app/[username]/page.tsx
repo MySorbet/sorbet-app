@@ -1,5 +1,8 @@
 'use client';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+
 import { createOffer } from '@/api/gigs';
 import { getUserByAccountId } from '@/api/user';
 import {
@@ -14,122 +17,96 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { config } from '@/lib/config';
 import { User } from '@/types';
-import { ensureValidAccountId } from '@/utils/user';
-import { useEffect, useState } from 'react';
+import { withSuffix } from '@/utils/user';
 
-const UserProfile = ({ params }: { params: { username: string } }) => {
-  const [user, setUser] = useState<User | undefined>(undefined);
-  const [notFound, setNotFound] = useState<boolean | undefined>(undefined);
+const ProfilePage = ({ params }: { params: { username: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
-  const [offerSent, setOfferSent] = useState<boolean>(false);
-  const [freelancerUsername, setFreelancerUsername] = useState<
-    string | undefined
-  >(undefined);
-  const [clientUsername, setClientUsername] = useState<string | undefined>(
-    undefined
-  );
-  const { user: loggedInUser } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
 
-  const onOfferSubmit = async (data: ProjectFormValues) => {
-    if (clientUsername && freelancerUsername) {
-      const response = await createOffer({
-        projectName: data.projectName,
-        description: data.description,
-        projectStart: data.projectStarting,
-        budget: data.budget,
-        clientUsername: ensureValidAccountId(clientUsername),
-        freelancerUsername: ensureValidAccountId(freelancerUsername),
+  // Mutation to be called when an offer is sent from the logged in user to the freelancer
+  const mutation = useMutation({
+    mutationFn: (projectFormValues: ProjectFormValues) => {
+      if (!user) throw new Error('User not found');
+      return createOffer({
+        projectName: projectFormValues.projectName,
+        description: projectFormValues.description,
+        projectStart: projectFormValues.projectStarting,
+        budget: projectFormValues.budget,
+        clientUsername: withSuffix(user.accountId),
+        freelancerUsername: withSuffix(params.username),
       });
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong',
+        description: 'We were unable to send your offer. Please try again',
+      });
+    },
+  });
 
-      if (response && response.data) {
-        setOfferSent(true);
-        return;
-      } else {
-        toast({
-          title: 'Something went wrong',
-          description: 'We were unable to send your offer. Please try again',
-        });
-        return;
-      }
-    }
-  };
+  // Query to get the freelancer's profile via the handle in the url
+  const {
+    isPending,
+    isError,
+    data: freelancerResponse,
+  } = useQuery({
+    queryKey: ['freelancer'],
+    queryFn: () => getUserByAccountId(`${params.username}.${config.networkId}`),
+  });
 
-  useEffect(() => {
-    setFreelancerUsername(params.username);
-    setClientUsername(loggedInUser ? loggedInUser.accountId : undefined);
-
-    const fetchUser = async () => {
-      if (params.username.length > 0) {
-        const userResponse = await getUserByAccountId(
-          `${params.username}.${config.networkId}`
-        );
-
-        if (userResponse?.data) {
-          setUser(userResponse.data as User);
-        } else {
-          setNotFound(false);
-        }
-      }
-    };
-    fetchUser();
-  }, [params.username, loggedInUser]);
-
-  useEffect(() => {
-    console.log('object');
-  }, []);
-
-  const onOfferDialogClose = (open: boolean) => {
-    setOfferDialogOpen(open);
-  };
+  // Alias some vars for easy access in JSX
+  const freelancer = freelancerResponse?.data as User;
+  const disableHireMe = params.username === user?.accountId.split('.')[0];
+  const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   return (
     <>
-      {!notFound && <Header isPublic />}
-      {user && (
+      <Header />
+      {!isPending && freelancer && (
         <>
           <Profile
-            user={user}
+            user={freelancer}
             canEdit={false}
             onHireMeClick={() => setOfferDialogOpen(true)}
-            disableHireMe={
-              !clientUsername || freelancerUsername === clientUsername
-            }
+            disableHireMe={disableHireMe}
           />
-          <UserSocialPreview title={`${user.firstName} ${user.lastName}`} />
+          <UserSocialPreview title={freelancerFullName} />
           <ProjectOfferDialog
             isOpen={isOfferDialogOpen}
-            onClose={onOfferDialogClose}
-            onSubmit={onOfferSubmit}
-            name={`${user.firstName} ${user.lastName}`}
-            formSubmitted={offerSent}
+            onClose={(open) => setOfferDialogOpen(open)}
+            onSubmit={mutation.mutate}
+            name={freelancerFullName}
+            formSubmitted={mutation.isSuccess}
           />
         </>
       )}
-      {notFound && (
-        <div className='container mt-4 w-full h-[100vh]'>
-          <div className='flex flex-col gap-10 w-full h-full justify-center items-center align-center'>
-            <div>
-              <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
-            </div>
-            <div>
-              <div className='bg-gray-100 p-6 border border-1 border-gray-200 text-4xl justify-center flex rounded-xl'>
-                <span className='text-gray-500'>mysorbet.xyz/</span>
-                <span>{params.username}</span>
-              </div>
-              <div className='mt-4 text-center'>
-                The handle is available for you to build your internet presence
-                today!
-              </div>
-            </div>
-            <Button size={`lg`} className='bg-sorbet text-xl'>
-              Claim Handle Today
-            </Button>
-          </div>
-        </div>
-      )}
+      {isError && <ClaimYourProfile username={params.username} />}
     </>
   );
 };
 
-export default UserProfile;
+export default ProfilePage;
+
+/** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
+const ClaimYourProfile = (props: { username: string }) => {
+  return (
+    <div className='align-center container flex size-full flex-col items-center justify-center gap-10'>
+      <div>
+        <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
+      </div>
+      <div>
+        <div className='border-1 flex justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl'>
+          <span className='text-gray-500'>mysorbet.xyz/</span>
+          <span>{props.username}</span>
+        </div>
+        <div className='mt-4 text-center'>
+          The handle is available for you to build your internet presence today!
+        </div>
+      </div>
+      <Button size='lg' className='bg-sorbet text-xl'>
+        Claim Handle Today
+      </Button>
+    </div>
+  );
+};

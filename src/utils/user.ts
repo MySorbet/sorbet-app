@@ -1,14 +1,14 @@
 import { config } from '@/lib/config';
 
 /**
- * Ensures the username is in the format with a '.testnet' suffix.
- * @param username The username to evaluate and adjust.
- * @returns The adjusted username with '.testnet' suffix if not already present.
+ * Ensures the handle is in the format with a '.testnet' suffix.
+ * @param handle The handle to evaluate and adjust.
+ * @returns The adjusted handle with '.testnet' suffix if not already present.
  */
-export function ensureValidAccountId(username: string): string {
+export function withSuffix(handle: string): string {
   const suffix = `.${config.networkId}`;
-  if (!username.endsWith(suffix)) {
-    return `${username}${suffix}`;
+  if (!handle.endsWith(suffix)) {
+    return `${handle}${suffix}`;
   }
-  return username;
+  return handle;
 }
