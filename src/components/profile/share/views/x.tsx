@@ -3,9 +3,9 @@ import {
   Container,
   Header,
   Option,
-  QRCode,
+  ShareLink,
   TwitterIcon,
-  DemoImage
+  DemoImage,
 } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
 import ShareTwitter from '@/../public/ShareTwitter.png';
@@ -25,8 +25,8 @@ export const XTwitter = ({
         navigateToPrevious={() => setActive('AddToSocials')}
       />
       <Body>
-        <DemoImage src={ShareTwitter} alt='Share Sorbet to X'/>
-        <QRCode
+        <DemoImage src={ShareTwitter} alt='Share Sorbet to X' />
+        <ShareLink
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
         />

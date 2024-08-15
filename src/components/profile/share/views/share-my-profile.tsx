@@ -3,7 +3,7 @@ import {
   Container,
   Header,
   Option,
-  QRCode,
+  ShareLink,
   TwitterIcon,
   InstagramIcon,
 } from '../reusables';
@@ -38,7 +38,7 @@ export const ShareMyProfile = ({
             socialIcon={true}
           />
         </div>
-        <QRCode
+        <ShareLink
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
         />

@@ -9,7 +9,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-export const QRCode = ({
+export const ShareLink = ({
   username,
   handleUrlToClipboard,
 }: {

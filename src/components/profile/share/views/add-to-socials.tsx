@@ -3,7 +3,6 @@ import {
   Container,
   Header,
   Option,
-  QRCode,
   TwitterIcon,
   InstagramIcon,
   DemoImage,
@@ -15,7 +14,7 @@ export const AddToSocials = ({ username, setActive }: ViewProps) => {
   return (
     <Container gap='6'>
       <Header
-        title='Add to socials'
+        title='Add Sorbet to your socials'
         description='Add your Sorbet URL to your social profiles'
         canGoBack={true}
         navigateToPrevious={() => setActive('ShareYourProfile')}

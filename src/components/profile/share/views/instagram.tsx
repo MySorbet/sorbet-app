@@ -4,7 +4,7 @@ import {
   Header,
   InstagramIcon,
   Option,
-  QRCode,
+  ShareLink,
   DemoImage,
 } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
@@ -26,7 +26,7 @@ export const Instagram = ({
       />
       <Body>
         <DemoImage src={ShareInstagram} alt='Share Sorbet to Instagram' />
-        <QRCode
+        <ShareLink
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
         />

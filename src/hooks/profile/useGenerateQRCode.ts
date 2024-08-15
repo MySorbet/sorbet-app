@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-export const useGenerateQRCode = ({ url }: { url: string }) => {
+export const useGenerateQRCode = (url: string) => {
   return useQuery({
     queryKey: ['qr-code', url],
     queryFn: async () => {

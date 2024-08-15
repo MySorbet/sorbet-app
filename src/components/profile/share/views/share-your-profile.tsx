@@ -1,6 +1,6 @@
 import { Plus, Send, Share } from 'lucide-react';
 
-import { Body, Container, Header, Option, QRCode } from '../reusables';
+import { Body, Container, Header, Option, ShareLink } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
 import { Button } from '@/components/ui/button';
 
@@ -29,7 +29,7 @@ export const ShareYourProfile = ({
           />
           <Option
             asset={<Share className='h-8 w-8 font-light text-black' />}
-            title='Share my profile link'
+            title='My Sorbet QR code'
             navigate={() => setActive('ShareOnSocials')}
           />
         </div>
@@ -37,7 +37,7 @@ export const ShareYourProfile = ({
           className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
           onClick={handleUrlToClipboard}
         >
-          <QRCode
+          <ShareLink
             username={username!}
             handleUrlToClipboard={handleUrlToClipboard!}
           />
