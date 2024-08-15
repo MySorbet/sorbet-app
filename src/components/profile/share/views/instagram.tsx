@@ -1,5 +1,14 @@
-import { Body, Container, Header, Option, QRCode } from '../reusables';
+import {
+  Body,
+  Container,
+  Header,
+  InstagramIcon,
+  Option,
+  QRCode,
+} from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
+import Image from 'next/image';
+import ShareInstagram from '@/../public/ShareInstagram.png';
 
 export const Instagram = ({
   username,
@@ -15,13 +24,27 @@ export const Instagram = ({
         navigateToPrevious={() => setActive('AddToSocials')}
       />
       <Body>
-        <div className='h-[186px] w-full bg-black' />
+        <Image
+          src={ShareInstagram}
+          height={186}
+          width={368}
+          alt='Instragram demo'
+          className='w-auto rounded-3xl object-cover'
+        />
         <QRCode
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
         />
-        <a href='https://www.instagram.com/accounts/edit/' target="_blank" rel='noopener noreferrer'>
-          <Option asset={<div>I</div>} title='Go to my instagram' />
+        <a
+          href='https://www.instagram.com/accounts/edit/'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          <Option
+            asset={<InstagramIcon />}
+            title='Go to my instagram'
+            socialIcon={true}
+          />
         </a>
       </Body>
     </Container>

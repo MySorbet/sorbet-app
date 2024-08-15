@@ -1,5 +1,14 @@
-import { Body, Container, Header, Option, QRCode } from '../reusables';
+import {
+  Body,
+  Container,
+  Header,
+  Option,
+  QRCode,
+  TwitterIcon,
+} from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
+import ShareTwitter from '@/../public/ShareTwitter.png';
+import Image from 'next/image';
 
 export const XTwitter = ({
   username,
@@ -15,7 +24,13 @@ export const XTwitter = ({
         navigateToPrevious={() => setActive('AddToSocials')}
       />
       <Body>
-        <div className='h-[186px] w-full bg-black' />
+        <Image
+          src={ShareTwitter}
+          height={186}
+          width={368}
+          alt='Sorbet'
+          className='w-auto rounded-3xl object-cover'
+        />
         <QRCode
           username={username!}
           handleUrlToClipboard={handleUrlToClipboard!}
@@ -25,7 +40,11 @@ export const XTwitter = ({
           target='_blank'
           rel='noopener noreferrer'
         >
-          <Option asset={<div>X</div>} title='Go to my X' />
+          <Option
+            asset={<TwitterIcon />}
+            title='Go to my X'
+            socialIcon={true}
+          />
         </a>
       </Body>
     </Container>

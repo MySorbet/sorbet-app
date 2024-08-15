@@ -1,7 +1,13 @@
-import { Button } from '@/components/ui/button';
-import { Body, Container, Header, Option, QRCode } from '../reusables';
+import {
+  Body,
+  Container,
+  Header,
+  Option,
+  QRCode,
+  TwitterIcon,
+  InstagramIcon,
+} from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
-import { Popover } from '@/components/ui/popover';
 
 export const ShareMyProfile = ({
   username,
@@ -18,11 +24,19 @@ export const ShareMyProfile = ({
       />
       <Body>
         <div className='flex flex-col gap-6'>
-          <a href='https://www.x.com/intent/tweet' target='_blank' rel="noopener noreferrer">
-            <Option asset={<div>T</div>} title='X' />
+          <a
+            href='https://www.x.com/intent/tweet'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Option asset={<TwitterIcon />} title='X' socialIcon={true} />
           </a>
-          // TODO: figure out how we want to share to Instagram. Story? Post?
-          <Option asset={<div>I</div>} title='Instagram' />
+          {/* // TODO: figure out how we want to share to Instagram. Story? Post? */}
+          <Option
+            asset={<InstagramIcon />}
+            title='Instagram'
+            socialIcon={true}
+          />
         </div>
         <QRCode
           username={username!}
