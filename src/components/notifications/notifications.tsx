@@ -1,5 +1,5 @@
 import './notifications.css';
-import { NotificationToasts } from '@/components/notifications';
+
 import {
   KnockFeedProvider,
   NotificationFeedPopover,
@@ -7,26 +7,26 @@ import {
 } from '@knocklabs/react';
 import React, { useRef, useState } from 'react';
 
+import { NotificationToasts } from '@/components/notifications';
+
 export const Notifications = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const notifButtonRef = useRef(null);
+  const buttonRef = useRef(null);
 
   return (
     <div className='cursor-pointer'>
       <KnockFeedProvider
         feedId={process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID || ''}
       >
-        <>
-          <NotificationIconButton
-            ref={notifButtonRef}
-            onClick={(e) => setIsVisible(!isVisible)}
-          />
-          <NotificationFeedPopover
-            buttonRef={notifButtonRef}
-            isVisible={isVisible}
-            onClose={() => setIsVisible(false)}
-          />
-        </>
+        <NotificationIconButton
+          ref={buttonRef}
+          onClick={() => setIsVisible(!isVisible)}
+        />
+        <NotificationFeedPopover
+          buttonRef={buttonRef}
+          isVisible={isVisible}
+          onClose={() => setIsVisible(false)}
+        />
         <NotificationToasts />
       </KnockFeedProvider>
     </div>

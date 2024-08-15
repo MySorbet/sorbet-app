@@ -6,14 +6,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import { Notifications } from '@/components/notifications';
 import { Sidebar } from '@/components/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
-
-import { Notifications } from './notifications';
 
 /** Header for all pages */
 export const Header = () => {
