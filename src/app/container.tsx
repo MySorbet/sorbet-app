@@ -1,16 +1,12 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { FC, PropsWithChildren, useEffect } from 'react';
+
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
-import { KnockFeedProvider, KnockProvider } from '@knocklabs/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-interface Props {
-  children: any;
-}
-
-const Container: React.FC<Props> = ({ children }) => {
+const Container: FC<PropsWithChildren> = ({ children }) => {
   const { user, accessToken, checkAuth, appLoading, logout } = useAuth();
   const router = useRouter();
 
@@ -37,14 +33,7 @@ const Container: React.FC<Props> = ({ children }) => {
   if (appLoading) {
     return <Loading />;
   } else if (user && accessToken) {
-    return (
-      <KnockProvider
-        apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY || ''}
-        userId={user.id}
-      >
-        {children}
-      </KnockProvider>
-    );
+    return <>{children}</>;
   } else {
     return <Loading />;
   }

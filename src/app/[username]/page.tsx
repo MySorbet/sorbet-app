@@ -62,7 +62,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   return (
-    <Container>
+    <>
       <Header />
       {!isPending && freelancer && (
         <>
@@ -83,7 +83,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         </>
       )}
       {isError && <ClaimYourProfile username={freelancerUsername} />}
-    </Container>
+    </>
   );
 };
 
