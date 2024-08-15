@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 import SorbetBackground from '@/../public/SorbetBackground.png';
 
 import {
@@ -9,9 +11,13 @@ import {
   Option,
   TwitterIcon,
 } from '../reusables';
-import { ViewProps } from '../share-profile-dialog';
+import { Screen } from '../share-profile-dialog';
 
-export const AddToSocials = ({ username, setActive }: ViewProps) => {
+interface AddToSocialsProps {
+  setActive: Dispatch<SetStateAction<Screen>>;
+}
+
+export const AddToSocials = ({ setActive }: AddToSocialsProps) => {
   return (
     <Container gap='6'>
       <Header

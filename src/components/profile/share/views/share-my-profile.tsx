@@ -8,11 +8,15 @@ import {
 } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
 
+interface ShareMyProfileProps extends ViewProps {
+  handleUrlToClipboard: () => void;
+}
+
 export const ShareMyProfile = ({
   username,
   setActive,
   handleUrlToClipboard,
-}: ViewProps) => {
+}: ShareMyProfileProps) => {
   const url = `${window.location.origin}/${username}`;
 
   return (
@@ -34,8 +38,8 @@ export const ShareMyProfile = ({
           </a>
         </div>
         <ShareLink
-          username={username!}
-          handleUrlToClipboard={handleUrlToClipboard!}
+          username={username}
+          handleUrlToClipboard={handleUrlToClipboard}
         />
       </Body>
     </Container>

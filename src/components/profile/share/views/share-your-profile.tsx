@@ -1,14 +1,19 @@
 import { Plus, Send, Share } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+
 import { Body, Container, Header, Option, ShareLink } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
-import { Button } from '@/components/ui/button';
+
+interface ShareYourProfileProps extends ViewProps {
+  handleUrlToClipboard: () => void;
+}
 
 export const ShareYourProfile = ({
   username,
   setActive,
   handleUrlToClipboard,
-}: ViewProps) => {
+}: ShareYourProfileProps) => {
   return (
     <Container gap='6'>
       <Header
@@ -38,8 +43,8 @@ export const ShareYourProfile = ({
           onClick={handleUrlToClipboard}
         >
           <ShareLink
-            username={username!}
-            handleUrlToClipboard={handleUrlToClipboard!}
+            username={username}
+            handleUrlToClipboard={handleUrlToClipboard}
           />
         </Button>
       </Body>

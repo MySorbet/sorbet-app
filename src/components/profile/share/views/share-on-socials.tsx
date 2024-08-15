@@ -1,20 +1,22 @@
 import { Download } from 'lucide-react';
-import Image from 'next/image';
+import { QRCode } from 'react-qrcode-logo';
 
 import { Button } from '@/components/ui/button';
-import { useGenerateQRCode } from '@/hooks';
 
 import { Body, Container, Header, ShareLink } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
+import SorbetLogo from '../../../../../public/images/logo.png';
+
+interface ShareOnSocialsProps extends ViewProps {
+  handleUrlToClipboard: () => void;
+}
 
 export const ShareOnSocials = ({
   username,
   setActive,
   handleUrlToClipboard,
-}: ViewProps) => {
+}: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
-  const { data: fetchedQRCode, isPending: isQRCodePending } =
-    useGenerateQRCode(url);
 
   return (
     <Container gap='6'>
@@ -26,31 +28,33 @@ export const ShareOnSocials = ({
       />
       <Body>
         <div className='flex w-full items-center justify-center'>
-          {isQRCodePending && <div>Loading...</div>}
-          {fetchedQRCode && (
-            <Image
-              src={URL.createObjectURL(fetchedQRCode)}
-              alt={`${username}'s Sorbet QR code`}
-              height={250}
-              width={250}
-            />
-          )}
+          <QRCode
+            value={url}
+            size={250}
+            logoImage='../../../../../public/images/logo.png'
+            logoHeight={24}
+            logoWidth={24}
+          />
         </div>
         <div className='flex flex-col gap-4'>
-          <Button className='m-0 flex items-center justify-between border-none bg-transparent p-0 hover:bg-transparent'>
-            <span className='text-base'>Download PNG</span>
-            <Download className='h-6 w-6' />
-          </Button>
-          <Button className='m-0 flex items-center justify-between border-none bg-transparent p-0 hover:bg-transparent'>
-            <span className='text-base'>Download SVG</span>
-            <Download className='h-6 w-6' />
-          </Button>
+          <div className='m-0 flex items-center justify-between '>
+            <span className='text-base text-black'>Download PNG</span>
+            <Button className='m-0 border-none bg-transparent p-0 hover:bg-transparent'>
+              <Download className='h-6 w-6 text-black ease-out hover:scale-105' />
+            </Button>
+          </div>
+          <div className='m-0 flex items-center justify-between '>
+            <span className='text-base text-black'>Download SVG</span>
+            <Button className='m-0 border-none bg-transparent p-0 hover:bg-transparent'>
+              <Download className='h-6 w-6 text-black ease-out hover:scale-105' />
+            </Button>
+          </div>
         </div>
       </Body>
 
       <ShareLink
-        username={username!}
-        handleUrlToClipboard={handleUrlToClipboard!}
+        username={username}
+        handleUrlToClipboard={handleUrlToClipboard}
       />
     </Container>
   );

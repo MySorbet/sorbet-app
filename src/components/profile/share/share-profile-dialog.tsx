@@ -1,6 +1,6 @@
 'use client';
 
-import { SetStateAction, useState, Dispatch } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
@@ -21,7 +21,7 @@ const screenOptions = [
   'Instagram',
   'X',
 ] as const;
-type Screen = (typeof screenOptions)[number];
+export type Screen = (typeof screenOptions)[number];
 
 interface ShareProfileModalProps {
   trigger: React.ReactNode;
@@ -49,16 +49,28 @@ export const ShareProfileDialog = ({
     <Dialog>
       <DialogTrigger>{trigger}</DialogTrigger>
       {active === 'ShareYourProfile' && (
-        <ShareYourProfile username={username} setActive={setActive} />
+        <ShareYourProfile
+          username={username}
+          setActive={setActive}
+          handleUrlToClipboard={handleUrlToClipboard}
+        />
       )}
       {active === 'AddToSocials' && (
-        <AddToSocials username={username} setActive={setActive} />
+        <AddToSocials  setActive={setActive} />
       )}
       {active === 'ShareMyProfileTo' && (
-        <ShareMyProfile username={username} setActive={setActive} />
+        <ShareMyProfile
+          username={username}
+          setActive={setActive}
+          handleUrlToClipboard={handleUrlToClipboard}
+        />
       )}
       {active === 'ShareOnSocials' && (
-        <ShareOnSocials username={username} setActive={setActive} handleUrlToClipboard={handleUrlToClipboard}/>
+        <ShareOnSocials
+          username={username}
+          setActive={setActive}
+          handleUrlToClipboard={handleUrlToClipboard}
+        />
       )}
       {active === 'Instagram' && (
         <Instagram username={username} setActive={setActive} />
