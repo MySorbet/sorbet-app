@@ -20,7 +20,7 @@ export const ShareMyProfile = ({
   const url = `${window.location.origin}/${username}`;
 
   return (
-    <Container gap='6'>
+    <Container >
       <Header
         title='Share my profile'
         description='Get noticed by adding your Sorbet URL to your social channels'

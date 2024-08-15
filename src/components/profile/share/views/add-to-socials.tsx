@@ -19,7 +19,7 @@ interface AddToSocialsProps {
 
 export const AddToSocials = ({ setActive }: AddToSocialsProps) => {
   return (
-    <Container gap='6'>
+    <Container>
       <Header
         title='Add Sorbet to your socials'
         description='Add your Sorbet URL to your social profiles'

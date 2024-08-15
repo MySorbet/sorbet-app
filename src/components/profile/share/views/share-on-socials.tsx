@@ -62,7 +62,7 @@ export const ShareOnSocials = ({
   };
 
   return (
-    <Container gap='6'>
+    <Container>
       <Header
         title='Share on socials'
         description='Your unique Sorbet QR code that will direct people to your Sorbet profile when scanned'

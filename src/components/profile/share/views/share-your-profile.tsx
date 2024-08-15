@@ -15,7 +15,7 @@ export const ShareYourProfile = ({
   handleUrlToClipboard,
 }: ShareYourProfileProps) => {
   return (
-    <Container gap='6'>
+    <Container>
       <Header
         title='Share your profile'
         description='Showcase your skills globally - share your Sorbet profile on all your channels.'
