@@ -35,7 +35,7 @@ export const Header = () => {
             <div className='align-center flex flex-row items-center gap-2'>
               <Notifications />
               <div
-                className='flex cursor-pointer flex-row items-center'
+                className='group flex cursor-pointer flex-row items-center'
                 onClick={() => dispatch(setOpenSidebar(true))}
               >
                 <Avatar className='border-primary-default size-10 border-2'>
@@ -44,7 +44,7 @@ export const Header = () => {
                     <User01 className='text-muted-foreground' />
                   </AvatarFallback>
                 </Avatar>
-                <ChevronDown />
+                <ChevronDown className='transition ease-out group-hover:translate-y-1' />
                 <Sidebar show={toggleOpenSidebar} userInfo={user} />
               </div>
             </div>
