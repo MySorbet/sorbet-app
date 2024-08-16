@@ -1,4 +1,4 @@
-import { Copy } from 'lucide-react';
+import { Copy05 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 
 import Logo from '@/../public/images/logo.png';
@@ -32,7 +32,7 @@ export const ShareLink = ({
             className='group m-0 border-none bg-transparent p-0 hover:bg-transparent'
             onClick={handleUrlToClipboard}
           >
-            <Copy className='h-8 w-8 text-black ease-out group-hover:scale-105 ' />
+            <Copy05 className='h-7 w-7 text-black ease-out group-hover:scale-105 ' />
           </Button>
         </PopoverTrigger>
         <PopoverContent

@@ -1,4 +1,4 @@
-import { ChevronLeft, X } from 'lucide-react';
+import { ChevronLeft, X } from '@untitled-ui/icons-react';
 
 import { DialogClose, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,7 @@ export const Header = ({
   return (
     <DialogTitle className='flex flex-col items-center gap-3 px-[9px]'>
       <DialogClose className='group fixed right-6 top-5'>
-        <X className='h-6 w-6 text-[#98A2B3] ease-out group-hover:scale-105' />
+        <X className='h-6 w-6 text-[#98A2B3] ease-out group-hover:scale-110' />
       </DialogClose>
       {canGoBack && (
         <Button
@@ -25,7 +25,7 @@ export const Header = ({
           onClick={navigateToPrevious}
         >
           <ChevronLeft
-            className=' h-6 w-6 text-[#98A2B3] ease-out group-hover:scale-105'
+            className=' h-6 w-6 text-[#98A2B3] ease-out group-hover:scale-110'
             style={{ margin: 0 }}
           />
         </Button>

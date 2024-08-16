@@ -1,9 +1,8 @@
-import { Download } from 'lucide-react';
+import { Download01 } from "@untitled-ui/icons-react";
 import { QRCode } from 'react-qrcode-logo';
 
 import { Button } from '@/components/ui/button';
 
-import SorbetLogo from '../../../../../public/images/logo.png';
 import { Body, Container, Header, ShareLink } from '../reusables';
 import { ViewProps } from '../share-profile-dialog';
 import { useToast } from '@/components/ui/use-toast';
@@ -88,7 +87,7 @@ export const ShareOnSocials = ({
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
               onClick={handleDownloadPng}
             >
-              <Download className='h-6 w-6 text-black ease-out hover:scale-105' />
+              <Download01 className='h-6 w-6 text-black ease-out hover:scale-105' />
             </Button>
           </div>
           <div className='m-0 flex items-center justify-between '>
@@ -97,7 +96,7 @@ export const ShareOnSocials = ({
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
               onClick={handleDownloadSvg}
             >
-              <Download className='h-6 w-6 text-black ease-out hover:scale-105' />
+              <Download01 className='h-6 w-6 text-black ease-out hover:scale-105' />
             </Button>
           </div>
         </div>

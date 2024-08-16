@@ -1,4 +1,4 @@
-import { Plus, Send, Share } from 'lucide-react';
+import { Plus , Send01, Share01} from "@untitled-ui/icons-react";
 
 import { Button } from '@/components/ui/button';
 
@@ -28,12 +28,12 @@ export const ShareYourProfile = ({
             navigate={() => setActive('AddToSocials')}
           />
           <Option
-            asset={<Send className='h-8 w-8 font-light text-black' />}
+            asset={<Send01 className='h-8 w-8 font-light text-black' />}
             title='Share my profile to...'
             navigate={() => setActive('ShareMyProfileTo')}
           />
           <Option
-            asset={<Share className='h-8 w-8 font-light text-black' />}
+            asset={<Share01 className='h-8 w-8 font-light text-black' />}
             title='My Sorbet QR code'
             navigate={() => setActive('ShareOnSocials')}
           />
