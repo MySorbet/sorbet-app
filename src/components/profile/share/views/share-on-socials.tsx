@@ -1,11 +1,13 @@
 import { Download01 } from '@untitled-ui/icons-react';
-import { QRCode } from 'react-qrcode-logo';
 
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 import { Body, Container, Header, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
+import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
+import { Spinner } from '@/components/common';
+import Image from 'next/image';
 
 type ShareOnSocialsProps = ViewProps;
 
@@ -17,44 +19,36 @@ export const ShareOnSocials = ({
   const { toast } = useToast();
   const url = `${window.location.origin}/${username}`;
 
+  const {
+    svgURL,
+    pngURL,
+    isPending: isQRCodeUrlsPending,
+  } = useGenerateQRCode(url);
+
   const handleDownloadPng = () => {
-    const canvas = document.getElementById('qrcode') as HTMLCanvasElement;
-    const dataURL = canvas.toDataURL('image/png');
+    if (!pngURL) {
+      return;
+    }
+
     const a = document.createElement('a');
-    a.href = dataURL;
+    a.href = pngURL;
     a.download = `${username}-sorbet-qrcode.png`;
     a.click();
     a.remove();
+    URL.revokeObjectURL(pngURL);
   };
 
-  // TODO - Implement SVG download. Currently not working.
   const handleDownloadSvg = () => {
-    const svgElement = document.getElementById('qrcode') as SVGElement | null;
-
-    if (!svgElement) {
-      toast({
-        title: 'Oops!',
-        description: 'Failed to download SVG, please try again',
-        variant: 'destructive',
-      });
-      return; // Exit if the SVG element doesn't exist
+    if (!svgURL) {
+      return;
     }
 
-    const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(svgElement);
-
-    const svgBlob = new Blob([svgString], {
-      type: 'image/svg+xml;charset=utf-8',
-    });
-
     const a = document.createElement('a');
-    const url = URL.createObjectURL(svgBlob);
-    a.href = url;
+    a.href = svgURL;
     a.download = `${username}-sorbet-qrcode.svg`;
     a.click();
-
-    URL.revokeObjectURL(url);
     a.remove();
+    URL.revokeObjectURL(svgURL);
   };
 
   return (
@@ -66,16 +60,20 @@ export const ShareOnSocials = ({
         navigateToPrevious={() => setActive('ShareYourProfile')}
       />
       <Body>
-        <div className='flex w-full items-center justify-center'>
-          <QRCode
-            id='qrcode'
-            value={url}
-            size={250}
-            // TODO - Correctly render the logo in the qr code
-            logoImage='../../../../../public/images/logo.png'
-            logoHeight={24}
-            logoWidth={24}
-          />
+        <div className='flex min-h-[256px] w-full items-center justify-center'>
+          {isQRCodeUrlsPending ? (
+            <Spinner />
+          ) : (
+            pngURL && (
+              <Image
+                src={pngURL}
+                alt='QR Code'
+                id='qrcode'
+                width={256}
+                height={256}
+              />
+            )
+          )}
         </div>
         <div className='flex flex-col gap-4'>
           <div className='m-0 flex items-center justify-between '>
