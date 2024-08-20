@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
-import { useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -37,7 +37,7 @@ type FormData = z.infer<typeof schema>;
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
-  handleModalVisible: (open: boolean) => void;
+  handleModalVisible: (open: boolean) => Dispatch<SetStateAction<typeof open>>;
   user: User;
 }
 
@@ -127,7 +127,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
-  const fileChange = (e: any) => {
+  const fileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
     setFile(
       e.target.files && e.target.files.length > 0
         ? e.target.files[0]
@@ -305,7 +306,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Controller
                   name='tags'
                   control={control}
-                  render={({ field }) => (
+                  render={() => (
                     <InputSkills
                       placeholder='Skill (ex: Developer)'
                       handleTagsChange={(tags) => {
