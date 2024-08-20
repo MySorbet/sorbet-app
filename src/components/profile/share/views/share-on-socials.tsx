@@ -1,13 +1,15 @@
-import { Download01 } from '@untitled-ui/icons-react';
+'use client';
 
+import { CheckCircle,Download01 } from '@untitled-ui/icons-react';
+import Image from 'next/image';
+import { useState } from 'react';
+
+import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 
 import { Body, Container, Header, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
-import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
-import { Spinner } from '@/components/common';
-import Image from 'next/image';
 
 type ShareOnSocialsProps = ViewProps;
 
@@ -16,8 +18,10 @@ export const ShareOnSocials = ({
   setActive,
   handleUrlToClipboard,
 }: ShareOnSocialsProps) => {
-  const { toast } = useToast();
   const url = `${window.location.origin}/${username}`;
+
+  const [isPngCopied, setIsPngCopied] = useState(false);
+  const [isSvgCopied, setIsSvgCopied] = useState(false);
 
   const {
     svgURL,
@@ -80,18 +84,34 @@ export const ShareOnSocials = ({
             <span className='text-base text-black'>Download PNG</span>
             <Button
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-              onClick={handleDownloadPng}
+              onClick={() => {
+                setIsPngCopied(true);
+                handleDownloadPng();
+              }}
+              disabled={isPngCopied}
             >
-              <Download01 className='h-6 w-6 text-black ease-out hover:scale-105' />
+              {isPngCopied ? (
+                <CheckCircle className='h-6 w-6 text-green-500' />
+              ) : (
+                <Download01 className='h-6 w-6 text-black ease-out hover:scale-105' />
+              )}
             </Button>
           </div>
           <div className='m-0 flex items-center justify-between '>
             <span className='text-base text-black'>Download SVG</span>
             <Button
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-              onClick={handleDownloadSvg}
+              onClick={() => {
+                setIsSvgCopied(true);
+                handleDownloadSvg();
+              }}
+              disabled={isSvgCopied}
             >
-              <Download01 className='h-6 w-6 text-black ease-out hover:scale-105' />
+              {isSvgCopied ? (
+                <CheckCircle className='h-6 w-6 text-green-500' />
+              ) : (
+                <Download01 className='h-6 w-6 text-black ease-out hover:scale-105' />
+              )}
             </Button>
           </div>
         </div>
