@@ -4,7 +4,6 @@ import SorbetBackground from '@/../public/SorbetBackground.png';
 
 import {
   Body,
-  Container,
   DemoImage,
   Header,
   InstagramIcon,
@@ -19,7 +18,7 @@ interface AddToSocialsProps {
 
 export const AddToSocials = ({ setActive }: AddToSocialsProps) => {
   return (
-    <Container>
+    <>
       <Header
         title='Add Sorbet to your socials'
         description='Add your Sorbet URL to your social profiles'
@@ -43,6 +42,6 @@ export const AddToSocials = ({ setActive }: AddToSocialsProps) => {
           />
         </div>
       </Body>
-    </Container>
+    </>
   );
 };

@@ -2,7 +2,6 @@ import ShareTwitter from '@/../public/ShareTwitter.png';
 
 import {
   Body,
-  Container,
   DemoImage,
   Header,
   Option,
@@ -19,7 +18,7 @@ export const XTwitter = ({
   handleUrlToClipboard,
 }: TwitterProps) => {
   return (
-    <Container>
+    <>
       <Header
         title='X'
         description='Add Sorbet to your X profile. Simply copy your Sorbet URL, go to your profile, click on Edit Profile, and paste your Sorbet URL into the Website field.'
@@ -44,6 +43,6 @@ export const XTwitter = ({
           />
         </a>
       </Body>
-    </Container>
+    </>
   );
 };

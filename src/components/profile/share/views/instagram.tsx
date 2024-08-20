@@ -2,7 +2,6 @@ import ShareInstagram from '@/../public/ShareInstagram.png';
 
 import {
   Body,
-  Container,
   DemoImage,
   Header,
   InstagramIcon,
@@ -19,7 +18,7 @@ export const Instagram = ({
   handleUrlToClipboard,
 }: InstagramProps) => {
   return (
-    <Container>
+    <>
       <Header
         title='Instagram'
         description='Add Sorbet to your Instagram profile. Simply copy your Sorbet URL, go to your profile, click on Edit Profile, and paste your Sorbet URL into the Website field.'
@@ -44,6 +43,6 @@ export const Instagram = ({
           />
         </a>
       </Body>
-    </Container>
+    </>
   );
 };

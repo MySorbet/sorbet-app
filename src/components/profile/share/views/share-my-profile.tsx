@@ -1,6 +1,5 @@
 import {
   Body,
-  Container,
   Header,
   Option,
   ShareLink,
@@ -18,7 +17,7 @@ export const ShareMyProfileTo = ({
   const url = `${window.location.origin}/${username}`;
 
   return (
-    <Container>
+    <>
       <Header
         title='Share my profile'
         description='Get noticed by adding your Sorbet URL to your social channels'
@@ -40,6 +39,6 @@ export const ShareMyProfileTo = ({
           handleUrlToClipboard={handleUrlToClipboard}
         />
       </Body>
-    </Container>
+    </>
   );
 };

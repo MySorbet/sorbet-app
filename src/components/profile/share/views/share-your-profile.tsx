@@ -2,7 +2,7 @@ import { Plus, Send01, Share01 } from '@untitled-ui/icons-react';
 
 import { Button } from '@/components/ui/button';
 
-import { Body, Container, Header, Option, ShareLink } from '../components';
+import { Body, Header, Option, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
 
 type ShareYourProfileProps = ViewProps;
@@ -13,7 +13,7 @@ export const ShareYourProfile = ({
   handleUrlToClipboard,
 }: ShareYourProfileProps) => {
   return (
-    <Container>
+    <>
       <Header
         title='Share your profile'
         description='Showcase your skills globally - share your Sorbet profile on all your channels.'
@@ -46,6 +46,6 @@ export const ShareYourProfile = ({
           />
         </Button>
       </Body>
-    </Container>
+    </>
   );
 };
