@@ -8,7 +8,7 @@ import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 
-import { Body, Container, Header, ShareLink } from '../components';
+import { Body, Header, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
 
 type ShareOnSocialsProps = ViewProps;
@@ -56,7 +56,7 @@ export const ShareOnSocials = ({
   };
 
   return (
-    <Container>
+    <>
       <Header
         title='Share on socials'
         description='Your unique Sorbet QR code that will direct people to your Sorbet profile when scanned'
@@ -121,6 +121,6 @@ export const ShareOnSocials = ({
         username={username}
         handleUrlToClipboard={handleUrlToClipboard}
       />
-    </Container>
+    </>
   );
 };
