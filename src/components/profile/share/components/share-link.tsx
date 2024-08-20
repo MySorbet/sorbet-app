@@ -6,11 +6,6 @@ import { useState } from 'react';
 
 import Logo from '@/../public/images/logo.png';
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 
 export const ShareLink = ({
   username,
@@ -31,31 +26,21 @@ export const ShareLink = ({
             : `mysorbet.xyz/${username}`}
         </p>
       </div>
-      <Popover>
-        <PopoverTrigger>
-          <Button
-            className='group m-0 border-none bg-transparent p-0 hover:bg-transparent'
-            onClick={() => {
-              setIsCopied(true);
-              handleUrlToClipboard();
-            }}
-            disabled={isCopied}
-          >
-            {isCopied ? (
-              <CheckCircle className='h-6 w-6 text-green-500' />
-            ) : (
-              <Copy05 className='h-6 w-6 text-[#101828] ease-out group-hover:scale-105 ' />
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className='h-fit w-fit p-2 text-sm'
-          side='bottom'
-          sideOffset={0}
-        >
-          Link copied!
-        </PopoverContent>
-      </Popover>
+
+      <Button
+        className='group m-0 border-none bg-transparent p-0 hover:bg-transparent'
+        onClick={() => {
+          setIsCopied(true);
+          handleUrlToClipboard();
+        }}
+        disabled={isCopied}
+      >
+        {isCopied ? (
+          <CheckCircle className='h-6 w-6 text-green-500' />
+        ) : (
+          <Copy05 className='h-6 w-6 text-[#101828] ease-out group-hover:scale-105 ' />
+        )}
+      </Button>
     </div>
   );
 };
