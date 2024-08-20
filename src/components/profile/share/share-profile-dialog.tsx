@@ -3,7 +3,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
 
 import {
   AddToSocials,
@@ -49,53 +48,50 @@ export const ShareProfileDialog = ({
   return (
     <Dialog>
       <DialogTrigger>{trigger}</DialogTrigger>
-        <DialogContent
-          className={cn(
-            'flex w-[400px] flex-col items-center rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl',
-            `gap-6`
-          )}
-          customDialogClose='hidden'
-          aria-describedby='Share your profile!'
-        >
-          {activeView === 'ShareYourProfile' && (
-            <ShareYourProfile
-              username={username}
-              setActive={setActive}
-              handleUrlToClipboard={handleUrlToClipboard}
-            />
-          )}
-          {activeView === 'AddToSocials' && (
-            <AddToSocials setActive={setActive} />
-          )}
-          {activeView === 'ShareMyProfileTo' && (
-            <ShareMyProfileTo
-              username={username}
-              setActive={setActive}
-              handleUrlToClipboard={handleUrlToClipboard}
-            />
-          )}
-          {activeView === 'ShareOnSocials' && (
-            <ShareOnSocials
-              username={username}
-              setActive={setActive}
-              handleUrlToClipboard={handleUrlToClipboard}
-            />
-          )}
-          {activeView === 'Instagram' && (
-            <Instagram
-              username={username}
-              setActive={setActive}
-              handleUrlToClipboard={handleUrlToClipboard}
-            />
-          )}
-          {activeView === 'X' && (
-            <XTwitter
-              username={username}
-              setActive={setActive}
-              handleUrlToClipboard={handleUrlToClipboard}
-            />
-          )}
-        </DialogContent>
+      <DialogContent
+        className='flex w-[400px] flex-col items-center gap-6 rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl'
+        customDialogClose='hidden'
+        aria-describedby='Share your profile!'
+      >
+        {activeView === 'ShareYourProfile' && (
+          <ShareYourProfile
+            username={username}
+            setActive={setActive}
+            handleUrlToClipboard={handleUrlToClipboard}
+          />
+        )}
+        {activeView === 'AddToSocials' && (
+          <AddToSocials setActive={setActive} />
+        )}
+        {activeView === 'ShareMyProfileTo' && (
+          <ShareMyProfileTo
+            username={username}
+            setActive={setActive}
+            handleUrlToClipboard={handleUrlToClipboard}
+          />
+        )}
+        {activeView === 'ShareOnSocials' && (
+          <ShareOnSocials
+            username={username}
+            setActive={setActive}
+            handleUrlToClipboard={handleUrlToClipboard}
+          />
+        )}
+        {activeView === 'Instagram' && (
+          <Instagram
+            username={username}
+            setActive={setActive}
+            handleUrlToClipboard={handleUrlToClipboard}
+          />
+        )}
+        {activeView === 'X' && (
+          <XTwitter
+            username={username}
+            setActive={setActive}
+            handleUrlToClipboard={handleUrlToClipboard}
+          />
+        )}
+      </DialogContent>
     </Dialog>
   );
 };
