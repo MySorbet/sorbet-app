@@ -1,21 +1,23 @@
+import ShareTwitter from '@/../public/ShareTwitter.png';
+
 import {
   Body,
   Container,
+  DemoImage,
   Header,
   Option,
   ShareLink,
   TwitterIcon,
-  DemoImage,
-} from '../reusables';
+} from '../components';
 import { ViewProps } from '../share-profile-dialog';
-import ShareTwitter from '@/../public/ShareTwitter.png';
-import Image from 'next/image';
+
+type TwitterProps = ViewProps;
 
 export const XTwitter = ({
   username,
   setActive,
   handleUrlToClipboard,
-}: ViewProps) => {
+}: TwitterProps) => {
   return (
     <Container>
       <Header
@@ -27,8 +29,8 @@ export const XTwitter = ({
       <Body className='pt-0'>
         <DemoImage src={ShareTwitter} alt='Share Sorbet to X' />
         <ShareLink
-          username={username!}
-          handleUrlToClipboard={handleUrlToClipboard!}
+          username={username}
+          handleUrlToClipboard={handleUrlToClipboard}
         />
         <a
           href='https://www.x.com/settings/profile'

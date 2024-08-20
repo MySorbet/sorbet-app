@@ -1,5 +1,6 @@
-import Instagram from '@/../public/images/social/instagram.png';
 import Image from 'next/image';
+
+import Instagram from '@/../public/images/social/instagram.png';
 
 export const InstagramIcon = () => {
   return (

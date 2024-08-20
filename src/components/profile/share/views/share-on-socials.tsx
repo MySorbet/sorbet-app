@@ -1,15 +1,13 @@
-import { Download01 } from "@untitled-ui/icons-react";
+import { Download01 } from '@untitled-ui/icons-react';
 import { QRCode } from 'react-qrcode-logo';
 
 import { Button } from '@/components/ui/button';
-
-import { Body, Container, Header, ShareLink } from '../reusables';
-import { ViewProps } from '../share-profile-dialog';
 import { useToast } from '@/components/ui/use-toast';
 
-interface ShareOnSocialsProps extends ViewProps {
-  handleUrlToClipboard: () => void;
-}
+import { Body, Container, Header, ShareLink } from '../components';
+import { ViewProps } from '../share-profile-dialog';
+
+type ShareOnSocialsProps = ViewProps;
 
 export const ShareOnSocials = ({
   username,
@@ -18,7 +16,6 @@ export const ShareOnSocials = ({
 }: ShareOnSocialsProps) => {
   const { toast } = useToast();
   const url = `${window.location.origin}/${username}`;
-  console.log(url);
 
   const handleDownloadPng = () => {
     const canvas = document.getElementById('qrcode') as HTMLCanvasElement;

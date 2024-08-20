@@ -2,19 +2,17 @@
 
 import { Dispatch, SetStateAction, useState } from 'react';
 
-import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
-
-import { motion } from 'framer-motion';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 import {
   AddToSocials,
   Instagram,
-  ShareMyProfile,
+  ShareMyProfileTo,
   ShareOnSocials,
   ShareYourProfile,
   XTwitter,
 } from './views/index';
-import { cn } from '@/lib/utils';
 
 const screenOptions = [
   'ShareYourProfile',
@@ -24,7 +22,7 @@ const screenOptions = [
   'Instagram',
   'X',
 ] as const;
-export type Screen = (typeof screenOptions)[number];
+export type View = (typeof screenOptions)[number];
 
 interface ShareProfileModalProps {
   trigger: React.ReactNode;
@@ -33,17 +31,17 @@ interface ShareProfileModalProps {
 
 export interface ViewProps {
   username: string;
-  setActive: Dispatch<SetStateAction<Screen>>;
-  handleUrlToClipboard?: () => void;
+  setActive: Dispatch<SetStateAction<View>>;
+  handleUrlToClipboard: () => void;
 }
 
 export const ShareProfileDialog = ({
   trigger,
   username,
 }: ShareProfileModalProps) => {
-  const [active, setActive] = useState<Screen>('ShareYourProfile');
+  const [activeView, setActive] = useState<View>('ShareYourProfile');
 
-  const handleUrlToClipboard = () => () => {
+  const handleUrlToClipboard = () => {
     const url = `${window.location.origin}/${username}`;
     navigator.clipboard.writeText(url);
   };
@@ -51,45 +49,53 @@ export const ShareProfileDialog = ({
   return (
     <Dialog>
       <DialogTrigger>{trigger}</DialogTrigger>
-      <motion.div layout='size'>
         <DialogContent
           className={cn(
-            'flex  w-[400px] flex-col items-center rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl',
+            'flex w-[400px] flex-col items-center rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl',
             `gap-6`
           )}
           customDialogClose='hidden'
-          aria-description='Share your profile!'
+          aria-describedby='Share your profile!'
         >
-          {active === 'ShareYourProfile' && (
+          {activeView === 'ShareYourProfile' && (
             <ShareYourProfile
               username={username}
               setActive={setActive}
               handleUrlToClipboard={handleUrlToClipboard}
             />
           )}
-          {active === 'AddToSocials' && <AddToSocials setActive={setActive} />}
-          {active === 'ShareMyProfileTo' && (
-            <ShareMyProfile
+          {activeView === 'AddToSocials' && (
+            <AddToSocials setActive={setActive} />
+          )}
+          {activeView === 'ShareMyProfileTo' && (
+            <ShareMyProfileTo
               username={username}
               setActive={setActive}
               handleUrlToClipboard={handleUrlToClipboard}
             />
           )}
-          {active === 'ShareOnSocials' && (
+          {activeView === 'ShareOnSocials' && (
             <ShareOnSocials
               username={username}
               setActive={setActive}
               handleUrlToClipboard={handleUrlToClipboard}
             />
           )}
-          {active === 'Instagram' && (
-            <Instagram username={username} setActive={setActive} />
+          {activeView === 'Instagram' && (
+            <Instagram
+              username={username}
+              setActive={setActive}
+              handleUrlToClipboard={handleUrlToClipboard}
+            />
           )}
-          {active === 'X' && (
-            <XTwitter username={username} setActive={setActive} />
+          {activeView === 'X' && (
+            <XTwitter
+              username={username}
+              setActive={setActive}
+              handleUrlToClipboard={handleUrlToClipboard}
+            />
           )}
         </DialogContent>
-      </motion.div>
     </Dialog>
   );
 };

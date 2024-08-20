@@ -1,7 +1,7 @@
 import { ChevronLeft, X } from '@untitled-ui/icons-react';
 
-import { DialogClose, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { DialogClose, DialogTitle } from '@/components/ui/dialog';
 
 export const Header = ({
   title,

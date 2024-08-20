@@ -5,22 +5,20 @@ import {
   Option,
   ShareLink,
   TwitterIcon,
-} from '../reusables';
+} from '../components';
 import { ViewProps } from '../share-profile-dialog';
 
-interface ShareMyProfileProps extends ViewProps {
-  handleUrlToClipboard: () => void;
-}
+type ShareMyProfileToProps = ViewProps;
 
-export const ShareMyProfile = ({
+export const ShareMyProfileTo = ({
   username,
   setActive,
   handleUrlToClipboard,
-}: ShareMyProfileProps) => {
+}: ShareMyProfileToProps) => {
   const url = `${window.location.origin}/${username}`;
 
   return (
-    <Container >
+    <Container>
       <Header
         title='Share my profile'
         description='Get noticed by adding your Sorbet URL to your social channels'

@@ -1,21 +1,23 @@
+import ShareInstagram from '@/../public/ShareInstagram.png';
+
 import {
   Body,
   Container,
+  DemoImage,
   Header,
   InstagramIcon,
   Option,
   ShareLink,
-  DemoImage,
-} from '../reusables';
+} from '../components';
 import { ViewProps } from '../share-profile-dialog';
-import Image from 'next/image';
-import ShareInstagram from '@/../public/ShareInstagram.png';
+
+type InstagramProps = ViewProps;
 
 export const Instagram = ({
   username,
   setActive,
   handleUrlToClipboard,
-}: ViewProps) => {
+}: InstagramProps) => {
   return (
     <Container>
       <Header
@@ -27,8 +29,8 @@ export const Instagram = ({
       <Body className='pt-0'>
         <DemoImage src={ShareInstagram} alt='Share Sorbet to Instagram' />
         <ShareLink
-          username={username!}
-          handleUrlToClipboard={handleUrlToClipboard!}
+          username={username}
+          handleUrlToClipboard={handleUrlToClipboard}
         />
         <a
           href='https://www.instagram.com/accounts/edit/'

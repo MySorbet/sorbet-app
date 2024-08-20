@@ -10,11 +10,11 @@ import {
   InstagramIcon,
   Option,
   TwitterIcon,
-} from '../reusables';
-import { Screen } from '../share-profile-dialog';
+} from '../components';
+import { View } from '../share-profile-dialog';
 
 interface AddToSocialsProps {
-  setActive: Dispatch<SetStateAction<Screen>>;
+  setActive: Dispatch<SetStateAction<View>>;
 }
 
 export const AddToSocials = ({ setActive }: AddToSocialsProps) => {

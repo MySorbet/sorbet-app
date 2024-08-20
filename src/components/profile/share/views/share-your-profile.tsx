@@ -1,13 +1,11 @@
-import { Plus , Send01, Share01} from "@untitled-ui/icons-react";
+import { Plus, Send01, Share01 } from '@untitled-ui/icons-react';
 
 import { Button } from '@/components/ui/button';
 
-import { Body, Container, Header, Option, ShareLink } from '../reusables';
+import { Body, Container, Header, Option, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
 
-interface ShareYourProfileProps extends ViewProps {
-  handleUrlToClipboard: () => void;
-}
+type ShareYourProfileProps = ViewProps;
 
 export const ShareYourProfile = ({
   username,
@@ -23,17 +21,17 @@ export const ShareYourProfile = ({
       <Body>
         <div className='flex flex-col gap-6'>
           <Option
-            asset={<Plus className='h-8 w-8 font-light text-black' />}
+            asset={<Plus className='size-7 text-black' />}
             title='Add to my social'
             navigate={() => setActive('AddToSocials')}
           />
           <Option
-            asset={<Send01 className='h-8 w-8 font-light text-black' />}
+            asset={<Send01 className='size-7 text-black' />}
             title='Share my profile to...'
             navigate={() => setActive('ShareMyProfileTo')}
           />
           <Option
-            asset={<Share01 className='h-8 w-8 font-light text-black' />}
+            asset={<Share01 className='size-7 text-black' />}
             title='My Sorbet QR code'
             navigate={() => setActive('ShareOnSocials')}
           />

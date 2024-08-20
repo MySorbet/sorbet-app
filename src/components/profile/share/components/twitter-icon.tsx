@@ -1,5 +1,6 @@
-import Twitter from '@/../public/images/social/twitter.png';
 import Image from "next/image";
+
+import Twitter from '@/../public/images/social/twitter.png';
 
 export const TwitterIcon = () => {
   return (
