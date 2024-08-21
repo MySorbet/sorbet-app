@@ -1,13 +1,9 @@
 import { SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
+import { ShareProfileDialog } from '@/components/profile/share/share-profile-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { User } from '@/types';
 
 interface ProfileHeaderProps {
@@ -96,8 +92,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               Hire Me
             </Button> // Added onClick event for Hire Me button
           )}
-          <Popover>
-            <PopoverTrigger>
+          <ShareProfileDialog
+            trigger={
               <Button
                 className='align-center flex flex-row items-center gap-1 bg-inherit text-[#573DF5] hover:bg-inherit'
                 onClick={handleUrlToClipboard()}
@@ -105,15 +101,9 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 <SquareArrowOutUpRight size={16} />
                 <span>Share</span>
               </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className='h-fit w-fit p-2 text-sm'
-              side='top'
-              sideOffset={0}
-            >
-              Link copied!
-            </PopoverContent>
-          </Popover>
+            }
+            username={user.accountId.split('.')[0]}
+          />
         </div>
       )}
     </>
