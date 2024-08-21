@@ -10,7 +10,6 @@ export interface User {
   profileBannerImage: string;
   tags: string[];
   tempLocation: string;
-  role: string;
   city: string;
   balance?: {
     usdc: number;

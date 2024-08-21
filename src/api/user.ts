@@ -40,6 +40,17 @@ export const getUserByAccountId = async (accountId: string) => {
   }
 };
 
+export const getUserByEmail = async (email: string) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/users/getUserByEmail/${email}`
+    );
+    return response;
+  } catch (error: any) {
+    console.log(`Failed to get user by email: ${JSON.stringify(error)}`);
+  }
+};
+
 export const getUsersBySearch = async (skills: string[], location: string) => {
   const reqBody = { skills, location };
 

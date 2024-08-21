@@ -19,10 +19,10 @@ export const InputLocation: React.FC<LocationProps> = ({
   const [place, setPlace] = useState<any>();
 
   return (
-    <div className='flex flex-row gap-4 bg-white w-full mt-1'>
+    <div className='mt-1 flex w-full flex-row gap-4 bg-white'>
       <div
         className={cn(
-          'flex items-center border border-2 border-gray-200 px-2 rounded-xl flex-grow '
+          'flex flex-grow items-center rounded-xl border border-2 border-gray-200 px-2 '
         )}
       >
         <div>
@@ -33,7 +33,7 @@ export const InputLocation: React.FC<LocationProps> = ({
           onPlaceSelected={(place) => onPlaceSelected(place)}
           onChange={(e) => onInputChange(e)}
           defaultValue={defaultValue}
-          className={`h-full w-full p-[10px] text-base font-normal text-[#667085] outline-none z-50`}
+          className={`z-50 h-full w-full p-[10px] text-base font-normal text-[#667085] outline-none`}
           options={{
             types: ['(cities)'],
           }}

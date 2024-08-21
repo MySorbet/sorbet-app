@@ -5,38 +5,36 @@ import { type FC, PropsWithChildren, useEffect } from 'react';
 
 import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
+import { getAccessToken, usePrivy } from '@privy-io/react-auth';
 
 const Container: FC<PropsWithChildren> = ({ children }) => {
-  const { user, accessToken, checkAuth, appLoading, logout } = useAuth();
+  // const { user, accessToken, checkAuth, appLoading, logout } = useAuth();
+
+  const { ready, authenticated, user, logout } = usePrivy();
+
   const router = useRouter();
 
   useEffect(() => {
-    const checkUserAndFetchDetails = async () => {
-      if (!user && !window.location.pathname.includes('signup')) {
-        router.push('/signin');
-      } else {
-        if (accessToken) {
-          const user = await checkAuth();
-          if (!user) {
-            logout();
-            router.push('/signin');
-          }
-        } else {
-          router.push('/signin');
-        }
-      }
-    };
+    if (ready && !authenticated) {
+      router.push('/');
+    }
+  }, [ready, authenticated, router]);
 
-    checkUserAndFetchDetails();
-  }, [router, accessToken]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (accessToken) {
+  //       const user = await checkAuth();
+  //       if (!user) {
+  //         logout();
+  //         router.push('/signin');
+  //       }
+  //     } else {
+  //       router.push('/signin');
+  //     }
+  //   })();
+  // }, [router, accessToken]);
 
-  if (appLoading) {
-    return <Loading />;
-  } else if (user && accessToken) {
-    return <>{children}</>;
-  } else {
-    return <Loading />;
-  }
+  return <>{children}</>;
 };
 
 export default Container;
