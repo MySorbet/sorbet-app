@@ -40,6 +40,7 @@ export const Profile: FC<{
               editModalVisible={showEditModal}
               handleModalVisible={handleProfileModalVisible}
               user={user}
+              showEditModal={showEditModal}
             />
           </>
         )}

@@ -1,11 +1,5 @@
 import { Library } from '@googlemaps/js-api-loader';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  StandaloneSearchBox,
-  StandaloneSearchBoxProps,
-  useJsApiLoader,
-  useLoadScript,
-} from '@react-google-maps/api';
 import { Loader } from 'lucide-react';
 import {
   ChangeEvent,
@@ -19,7 +13,7 @@ import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputLocation, InputSkills } from '@/components/profile';
+import { InputSkills } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,10 +25,17 @@ import {
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
+  useGooglePlacesApi,
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
+import {
+  Command,
+  CommandGroup,
+  CommandList,
+  CommandItem,
+} from '@/components/ui/command';
 
 const libs: Library[] = ['places'];
 
@@ -53,35 +54,22 @@ type FormData = z.infer<typeof schema>;
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
-  handleModalVisible: (open: boolean) => Dispatch<SetStateAction<typeof open>>;
+  handleModalVisible: (open: boolean) => void;
   user: User;
+  showEditModal: boolean;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
   handleModalVisible,
   user,
+  showEditModal,
 }) => {
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
   );
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
-
-  const {
-    isPending: uploadProfileImagePending,
-    mutateAsync: uploadProfileImageAsync,
-    isError: uploadProfileImageError,
-  } = useUploadProfileImage();
-
-  const {
-    isPending: deleteProfileImagePending,
-    mutateAsync: deleteProfileImageAsync,
-    isError: deleteProfileImageError,
-  } = useDeleteProfileImage();
-
-  const { isPending: updateProfilePending, mutate: updateProfile } =
-    useUpdateUser();
 
   const {
     register,
@@ -100,38 +88,27 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     },
   });
 
-  const [predictions, setPredictions] = useState<any[]>([]);
-  const autocompleteRef = useRef<google.maps.places.AutocompleteService | null>(
-    null
-  );
+  const {
+    predictions,
+    setPredictions,
+    handleLocationInputChange,
+    handleLocationKeyDown,
+  } = useGooglePlacesApi(showEditModal);
 
-  const { isLoaded } = useLoadScript({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY as string,
-    libraries: libs,
-  });
+  const {
+    isPending: uploadProfileImagePending,
+    mutateAsync: uploadProfileImageAsync,
+    isError: uploadProfileImageError,
+  } = useUploadProfileImage();
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!autocompleteRef.current || !autocompleteRef) {
-      console.log('creating new autocomplete service');
-      autocompleteRef.current = new google.maps.places.AutocompleteService();
-      console.log('autocompleteRef.current', autocompleteRef.current);
-    }
+  const {
+    isPending: deleteProfileImagePending,
+    mutateAsync: deleteProfileImageAsync,
+    isError: deleteProfileImageError,
+  } = useDeleteProfileImage();
 
-    autocompleteRef.current.getPlacePredictions(
-      { input: e.target.value, types: ['(cities)'] },
-      (
-        predictions: google.maps.places.AutocompletePrediction[] | null,
-        status: google.maps.places.PlacesServiceStatus
-      ) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          setPredictions(predictions || []);
-        }
-      }
-    );
-  };
-
-  console.log(isLoaded);
+  const { isPending: updateProfilePending, mutate: updateProfile } =
+    useUpdateUser();
 
   const onSubmit = async (data: FormData) => {
     let userToUpdate: User = { ...user };
@@ -217,7 +194,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             : ''
         }
       >
-        {' '}
         <DialogHeader className='text-2xl font-semibold'>
           Edit Profile
         </DialogHeader>
@@ -278,6 +254,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       required: 'First name is required',
                     })}
                     defaultValue={user?.firstName}
+                    onKeyDown={(e) => handleLocationKeyDown(e)}
                   />
                   {errors.firstName && (
                     <p className='mt-1 text-xs text-red-500'>
@@ -313,28 +290,45 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='city'
                   control={control}
                   render={({ field }) => (
-                    <>
-                      <Input
-                        type='text'
-                        onChange={handleInputChange}
-                        placeholder='Type a location'
-                      />
-                      {predictions.length > 0 && (
-                        <ul>
-                          {predictions.map((prediction) => (
-                            <li
-                              key={prediction.place_id}
-                              onClick={() => {
-                                setPredictions([]);
-                                field.onChange(prediction.description);
-                              }}
-                            >
-                              {prediction.description}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </>
+                    <Command>
+                      <div className='relative'>
+                        <Input
+                          type='text'
+                          placeholder='Type a location'
+                          {...register('city', {
+                            required: 'Location is required',
+                          })}
+                          onChange={handleLocationInputChange}
+                          autoComplete='off'
+                          onKeyDown={(e) => handleLocationKeyDown(e)}
+                        />
+                        <CommandList
+                          className={
+                            predictions.length
+                              ? 'absoulte border border-gray-200 bg-white text-black drop-shadow-xl'
+                              : 'hidden'
+                          }
+                        >
+                          <CommandGroup>
+                            {predictions.map((prediction) => (
+                              <CommandItem
+                                key={prediction.place_id}
+                                value={prediction.description}
+                                onSelect={() => {
+                                  setValue('city', prediction.description);
+                                  setPredictions([]);
+                                }}
+                                className='text-black'
+                              >
+                                <p className='text-black'>
+                                  {prediction.description}
+                                </p>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </div>
+                    </Command>
                   )}
                 />
                 {errors.city && (
