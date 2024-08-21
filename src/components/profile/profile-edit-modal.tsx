@@ -158,7 +158,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
-      <DialogOverlay className='bg-black/80' />
       <DialogContent
         className={
           updateProfilePending ||
