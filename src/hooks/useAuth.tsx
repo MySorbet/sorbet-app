@@ -13,6 +13,7 @@ import { reset, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 
 import { useLocalStorage } from './useLocalStorage';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface AuthContextType {
   user: User | null;
@@ -35,10 +36,16 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  // We store a copy of the user in local storage so we don't have to fetch it every time
   const [user, setUser] = useLocalStorage<User | null>('user', null);
-  const dispatch = useAppDispatch();
-  const reduxUser = useAppSelector((state) => state.userReducer.user);
 
+  // And one in redux to make it globally available
+  const reduxUser = useAppSelector((state) => state.userReducer.user);
+  const dispatch = useAppDispatch();
+
+  const { logout: logoutPrivy } = usePrivy();
+
+  // We sync the user from redux to local storage
   useEffect(() => {
     if (
       reduxUser &&
@@ -65,8 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (sorbetUser) {
           const user = sorbetUser.data;
           dispatch(updateUserData(user));
-          console.log('USER');
-          console.log(user);
           return {
             status: 'success',
             message: 'Login successful',
@@ -118,13 +123,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   //   }
   // };
 
+  const logout = useCallback(() => {
+    logoutPrivy();
+    dispatch(reset());
+  }, [dispatch]);
+
   const value = useMemo(
     () => ({
       user,
       loginWithEmail,
-      logout: () => dispatch(reset()),
+      logout,
     }),
-    [dispatch, loginWithEmail, user]
+    [loginWithEmail, logout, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

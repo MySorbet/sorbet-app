@@ -15,16 +15,20 @@ import { FormContainer } from './form-container';
 export const PrivyLogin = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const { loginWithEmail } = useAuth();
-
   const router = useRouter();
+
   const { login } = useLogin({
     onComplete: async (user, isNew, wasAlreadyAuthed) => {
       console.log(wasAlreadyAuthed);
+
+      // Rather than use email, we should use did
       if (user.email === undefined) {
         console.error('No email found in user object');
         return;
       }
+
       // Fetch user from sorbet
+      setLoading(true);
       const sorbetUser = await loginWithEmail(user.email.address);
       console.log(sorbetUser);
       router.replace(`/${sorbetUser.data.accountId.split('.')[0]}`);
