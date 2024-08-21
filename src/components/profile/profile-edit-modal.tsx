@@ -1,6 +1,20 @@
+import { Library } from '@googlemaps/js-api-loader';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  StandaloneSearchBox,
+  StandaloneSearchBoxProps,
+  useJsApiLoader,
+  useLoadScript,
+} from '@react-google-maps/api';
 import { Loader } from 'lucide-react';
-import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import {
+  ChangeEvent,
+  Dispatch,
+  Ref,
+  SetStateAction,
+  useRef,
+  useState,
+} from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,6 +35,8 @@ import {
   useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
+
+const libs: Library[] = ['places'];
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -83,6 +99,39 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
+
+  const [predictions, setPredictions] = useState<any[]>([]);
+  const autocompleteRef = useRef<google.maps.places.AutocompleteService | null>(
+    null
+  );
+
+  const { isLoaded } = useLoadScript({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY as string,
+    libraries: libs,
+  });
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!autocompleteRef.current || !autocompleteRef) {
+      console.log('creating new autocomplete service');
+      autocompleteRef.current = new google.maps.places.AutocompleteService();
+      console.log('autocompleteRef.current', autocompleteRef.current);
+    }
+
+    autocompleteRef.current.getPlacePredictions(
+      { input: e.target.value, types: ['(cities)'] },
+      (
+        predictions: google.maps.places.AutocompletePrediction[] | null,
+        status: google.maps.places.PlacesServiceStatus
+      ) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          setPredictions(predictions || []);
+        }
+      }
+    );
+  };
+
+  console.log(isLoaded);
 
   const onSubmit = async (data: FormData) => {
     let userToUpdate: User = { ...user };
@@ -265,15 +314,28 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='city'
                   control={control}
                   render={({ field }) => (
-                    <InputLocation
-                      onInputChange={(e) => {
-                        field.onChange(e);
-                      }}
-                      onPlaceSelected={(place) =>
-                        setValue('city', place?.formatted_address)
-                      }
-                      defaultValue={user && user.city ? user.city : ''}
-                    />
+                    <>
+                      <Input
+                        type='text'
+                        onChange={handleInputChange}
+                        placeholder='Type a location'
+                      />
+                      {predictions.length > 0 && (
+                        <ul>
+                          {predictions.map((prediction) => (
+                            <li
+                              key={prediction.place_id}
+                              onClick={() => {
+                                setPredictions([]);
+                                field.onChange(prediction.description);
+                              }}
+                            >
+                              {prediction.description}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
                   )}
                 />
                 {errors.city && (
