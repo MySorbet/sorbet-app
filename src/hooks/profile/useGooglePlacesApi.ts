@@ -1,6 +1,6 @@
 import { Library } from '@googlemaps/js-api-loader';
 import { useLoadScript } from '@react-google-maps/api';
-import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 
 import { config } from '@/lib/config';
 
@@ -20,7 +20,7 @@ export const useGooglePlacesApi = () => {
    */
   const { loadError } = useLoadScript({
     id: 'sorbet-google-map-script',
-    googleMapsApiKey: config.googleMapKey || '',
+    googleMapsApiKey: config.googleMapKey,
     libraries: libs,
   });
 
@@ -54,15 +54,11 @@ export const useGooglePlacesApi = () => {
   /**
    * Clear predictions when the edit modal is closed so it doesnt appear when the user opens the modal again
    */
-  const clearPredictions = useCallback(() => {
-    setPredictions([]);
-  }, []);
 
   return {
     predictions,
     setPredictions,
     handleLocationInputChange,
     loadError,
-    clearPredictions,
   };
 };

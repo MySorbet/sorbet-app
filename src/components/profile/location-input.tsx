@@ -1,5 +1,5 @@
 import { MarkerPin02 } from '@untitled-ui/icons-react';
-import { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
 import {
@@ -9,6 +9,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
+import { useGooglePlacesApi } from '@/hooks';
 
 interface LocationInputProps {
   register?: UseFormRegister<{
@@ -18,8 +19,6 @@ interface LocationInputProps {
     bio: string;
     tags: string[];
   }>;
-  handleLocationInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  predictions: google.maps.places.AutocompletePrediction[];
   setValue: UseFormSetValue<{
     city: string;
     firstName: string;
@@ -27,18 +26,12 @@ interface LocationInputProps {
     bio: string;
     tags: string[];
   }>;
-  setPredictions: Dispatch<
-    SetStateAction<google.maps.places.AutocompletePrediction[]>
-  >;
 }
 
-export const LocationInput = ({
-  register,
-  handleLocationInputChange,
-  predictions,
-  setValue,
-  setPredictions,
-}: LocationInputProps) => {
+export const LocationInput = ({ register, setValue }: LocationInputProps) => {
+  const { predictions, setPredictions, handleLocationInputChange } =
+    useGooglePlacesApi();
+
   return (
     <div className='relative'>
       <Command>
@@ -52,7 +45,7 @@ export const LocationInput = ({
               }))}
             onChange={(e) => handleLocationInputChange(e)}
             autoComplete='off'
-            className='pl-10'
+            className='pl-10 focus:outline-none focus:ring-0'
           />
           <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
         </div>

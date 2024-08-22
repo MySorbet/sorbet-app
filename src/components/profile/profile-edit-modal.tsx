@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
-  useGooglePlacesApi,
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
@@ -35,14 +34,12 @@ interface ProfileEditModalProps {
   editModalVisible: boolean;
   handleModalVisible: (open: boolean) => void;
   user: User;
-  showEditModal: boolean;
 }
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
   handleModalVisible,
   user,
-  showEditModal,
 }) => {
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
@@ -66,14 +63,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
-
-  const {
-    predictions,
-    setPredictions,
-    handleLocationInputChange,
-    loadError,
-    clearPredictions,
-  } = useGooglePlacesApi();
 
   const {
     isPending: uploadProfileImagePending,
@@ -162,16 +151,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setSkills(skills);
     setValue('tags', skills);
   };
-
-  if (loadError) {
-    console.error('Failed to load Google Maps API');
-  }
-
-  useEffect(() => {
-    if (!showEditModal) {
-      clearPredictions();
-    }
-  }, [showEditModal, clearPredictions]);
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
@@ -279,13 +258,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='city'
                   control={control}
                   render={({ field }) => (
-                    <LocationInput
-                      register={register}
-                      setValue={setValue}
-                      predictions={predictions}
-                      handleLocationInputChange={handleLocationInputChange}
-                      setPredictions={setPredictions}
-                    />
+                    <LocationInput register={register} setValue={setValue} />
                   )}
                 />
                 {errors.city && (
