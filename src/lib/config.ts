@@ -1,6 +1,7 @@
-import { NetworkIds, type NetworkId, type Network } from '@/types/network';
-import environment from '@/utils/fastAuth/environment';
 import { z } from 'zod';
+
+import { type Network,type NetworkId, NetworkIds } from '@/types/network';
+import environment from '@/utils/fastAuth/environment';
 
 // Zod schema for the app configuration
 const appConfigSchema = z.object({
