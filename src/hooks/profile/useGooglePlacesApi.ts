@@ -12,12 +12,20 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
     null
   );
 
+  /**
+   * Load the Google Maps API script
+   * Extracting error state to only log the error. We still want users to be able to fill out the field, so we don't want to throw.
+   */
   const { loadError } = useLoadScript({
     id: 'sorbet-google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY as string,
     libraries: libs,
   });
 
+  /**
+   * Handler that calls Google Places API to get predictions based on the input value
+   * Only cities are allowed at the moment. Can easily be changed to allow other types of places.
+   */
   const handleLocationInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) {
       setPredictions([]);
@@ -42,6 +50,9 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
     );
   };
 
+  /**
+   * For when a user presses enter, we want to clear the predictions so the flow of moving on to the next field is smooth
+   */
   const handleLocationKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -49,6 +60,9 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
     }
   };
 
+  /**
+   * Clear predictions when the edit modal is closed so it doesnt appear when the user opens the modal again
+   */
   useEffect(() => {
     if (!showEditModal) {
       setPredictions([]);
