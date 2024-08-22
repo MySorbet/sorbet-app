@@ -1,21 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
-import {
-  ChangeEvent,
-  useState,
-} from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { MarkerPin02 } from '@untitled-ui/icons-react';
 
 import { InputSkills } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
@@ -289,16 +283,21 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   render={({ field }) => (
                     <div className='relative'>
                       <Command>
-                        <Input
-                          type='text'
-                          placeholder='Type a location'
-                          {...register('city', {
-                            required: 'Location is required',
-                          })}
-                          onChange={handleLocationInputChange}
-                          autoComplete='off'
-                          onKeyDown={(e) => handleLocationKeyDown(e)}
-                        />
+                        <div className='relative'>
+                          <Input
+                            type='text'
+                            placeholder='Type a location'
+                            {...register('city', {
+                              required: 'Location is required',
+                            })}
+                            onChange={handleLocationInputChange}
+                            autoComplete='off'
+                            onKeyDown={(e) => handleLocationKeyDown(e)}
+                            className='pl-10'
+                          />
+                          <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
+                        </div>
+
                         <CommandList
                           className={
                             predictions.length
