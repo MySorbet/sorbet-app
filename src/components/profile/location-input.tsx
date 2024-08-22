@@ -37,6 +37,7 @@ export const LocationInput = ({ register, setValue }: LocationInputProps) => {
       <Command>
         <div className='relative'>
           <Input
+            id='location-input'
             type='text'
             placeholder='Type a location'
             {...(register &&
@@ -46,6 +47,7 @@ export const LocationInput = ({ register, setValue }: LocationInputProps) => {
             onChange={(e) => handleLocationInputChange(e)}
             autoComplete='off'
             className='pl-10 focus:outline-none focus:ring-0'
+            onBlur={() => setPredictions([])}
           />
           <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
         </div>
