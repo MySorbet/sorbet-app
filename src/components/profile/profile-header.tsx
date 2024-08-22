@@ -1,11 +1,10 @@
-import { SquareArrowOutUpRight } from 'lucide-react';
+import { MarkerPin03, Share06 } from '@untitled-ui/icons-react';
 import React from 'react';
 
 import { ShareProfileDialog } from '@/components/profile/share/share-profile-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
-import { MarkerPin03, Share06 } from '@untitled-ui/icons-react';
 
 interface ProfileHeaderProps {
   canEdit: boolean;
@@ -30,8 +29,9 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   return (
     <>
+      {/* Avatar start */}
       <div className='flex justify-center'>
-        <Avatar className='h-20 w-20'>
+        <Avatar className='h-[100px] w-[100px]'>
           <AvatarImage
             src={user.profileImage || '/avatar.svg'}
             alt={user.accountId}
@@ -41,27 +41,44 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </AvatarFallback>
         </Avatar>
       </div>
+      {/* Avatar end */}
+      {/* Name start */}
       <div className='flex justify-center'>
         {user.firstName && user.lastName && (
-          <h1 className='text-2xl font-semibold'>{`${user.firstName} ${user.lastName}`}</h1>
+          <h1 className='text-2xl font-bold text-[#101828]'>{`${user.firstName} ${user.lastName}`}</h1>
         )}
       </div>
+      {/* Name end */}
+      {/* City start */}
+      <div className='flex items-center gap-1'>
+        <MarkerPin03 className='h-4 w-4 text-[#667085]' />
+        <span className='text-xs leading-[18px] text-[#667085]'>
+          {user.city}
+        </span>
+      </div>
+      {/* City end */}
+      {/* Bio start */}
       <div className='flex justify-center'>
-        <div className='lg:w-5/12'>
-          <h1 className='text-center text-3xl font-semibold'>{user.bio}</h1>
+        <div className='lg:w-7/12'>
+          <h1 className='text-center text-4xl font-bold leading-[44px]'>
+            {user.bio}
+          </h1>
         </div>
       </div>
-      <div className='grid grid-cols-2 justify-center gap-2 md:flex md:flex-row lg:flex lg:grid-cols-none lg:flex-row'>
+      {/* Bio end */}
+      {/* Tags start */}
+      <div className='grid grid-cols-2 justify-center gap-1 md:flex md:flex-row lg:flex lg:grid-cols-none lg:flex-row'>
         {user.tags &&
           user.tags.map((tag: string) => (
             <span
-              className='border-1 rounded-full border border-gray-400 px-2 py-1 text-center text-xs'
+              className='rounded-full border-[1.5px] border-[#D0D5DD] px-2 py-[2px] text-xs font-medium leading-[18px] text-[#344054]'
               key={tag}
             >
               {tag}
             </span>
           ))}
       </div>
+      {/* Tags end */}
       <div>
         {(!user.firstName || !user.lastName || !user.bio) && canEdit && (
           <div className='flex w-full justify-center'>
@@ -74,15 +91,16 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </div>
         )}
       </div>
+      {/* CTAs start */}
       {user && (
         <div className='flex flex-row items-center justify-center gap-6'>
           {canEdit ? (
             <Button
               variant='outline'
-              className='px-5'
+              className='rounded-lg border-[#D0D5DD] px-4 py-[10px] drop-shadow-sm'
               onClick={() => onEditClick()}
             >
-              <span className='text-base'>Edit Profile</span>
+              <span className='text-base text-[#344054]'>Edit Profile</span>
             </Button>
           ) : (
             <Button
@@ -91,7 +109,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               disabled={disableHireMe}
             >
               Hire Me
-            </Button> // Added onClick event for Hire Me button
+            </Button>
           )}
           <ShareProfileDialog
             trigger={
@@ -107,6 +125,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           />
         </div>
       )}
+      {/* CTAs end */}
     </>
   );
 };
