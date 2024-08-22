@@ -12,7 +12,7 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
     null
   );
 
-  const { isLoaded } = useLoadScript({
+  const { loadError } = useLoadScript({
     id: 'sorbet-google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY as string,
     libraries: libs,
@@ -60,5 +60,6 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
     setPredictions,
     handleLocationInputChange,
     handleLocationKeyDown,
+    loadError
   };
 };

@@ -36,8 +36,7 @@ import {
   CommandList,
   CommandItem,
 } from '@/components/ui/command';
-
-const libs: Library[] = ['places'];
+import { useToast } from '@/components/ui/use-toast';
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -71,6 +70,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
+  const { toast } = useToast();
+
   const {
     register,
     handleSubmit,
@@ -93,6 +94,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setPredictions,
     handleLocationInputChange,
     handleLocationKeyDown,
+    loadError,
   } = useGooglePlacesApi(showEditModal);
 
   const {
@@ -182,6 +184,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setSkills(skills);
     setValue('tags', skills);
   };
+
+  if (loadError) {
+    console.error('Failed to load Google Maps API');
+  }
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
@@ -305,7 +311,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         <CommandList
                           className={
                             predictions.length
-                              ? 'absolute top-10 z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
+                              ? // TODO: Update the styling here. Kind of flaky in that we are moving the list down with fixed values.
+                                'absolute top-10 z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
                               : 'hidden'
                           }
                         >
