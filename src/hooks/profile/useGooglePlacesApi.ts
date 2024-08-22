@@ -1,6 +1,6 @@
 import { Library } from '@googlemaps/js-api-loader';
 import { useLoadScript } from '@react-google-maps/api';
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 
 const libs: Library[] = ['places', 'core', 'maps', 'marker'];
 
