@@ -12,7 +12,7 @@ const appConfigSchema = z.object({
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
   fastAuthDomain: z.string().url(),
-  googleMapKey: z.string().optional(),
+  googleMapKey: z.string(),
   sendbirdAppId: z.string(),
   loginSuccessUrl: z.string().optional(),
   loginFailureUrl: z.string().optional(),
