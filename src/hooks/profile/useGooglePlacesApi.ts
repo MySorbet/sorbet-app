@@ -1,12 +1,14 @@
 import { Library } from '@googlemaps/js-api-loader';
 import { useLoadScript } from '@react-google-maps/api';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
+
+import { config } from '@/lib/config';
 
 const libs: Library[] = ['places', 'core', 'maps', 'marker'];
 
-export const useGooglePlacesApi = (showEditModal: boolean) => {
+export const useGooglePlacesApi = () => {
   const [predictions, setPredictions] = useState<
-    google.maps.places.AutocompletePrediction[] | []
+    google.maps.places.AutocompletePrediction[]
   >([]);
   const autocompleteRef = useRef<google.maps.places.AutocompleteService | null>(
     null
@@ -18,7 +20,7 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
    */
   const { loadError } = useLoadScript({
     id: 'sorbet-google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY as string,
+    googleMapsApiKey: config.googleMapKey || '',
     libraries: libs,
   });
 
@@ -32,7 +34,7 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
       return;
     }
 
-    if (!autocompleteRef.current || !autocompleteRef) {
+    if (!autocompleteRef.current) {
       autocompleteRef.current = new google.maps.places.AutocompleteService();
     }
 
@@ -52,16 +54,15 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
   /**
    * Clear predictions when the edit modal is closed so it doesnt appear when the user opens the modal again
    */
-  useEffect(() => {
-    if (!showEditModal) {
-      setPredictions([]);
-    }
-  }, [showEditModal]);
+  const clearPredictions = useCallback(() => {
+    setPredictions([]);
+  }, []);
 
   return {
     predictions,
     setPredictions,
     handleLocationInputChange,
     loadError,
+    clearPredictions,
   };
 };

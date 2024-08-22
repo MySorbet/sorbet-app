@@ -1,20 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MarkerPin02 } from '@untitled-ui/icons-react';
 import { Loader } from 'lucide-react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputSkills } from '@/components/profile';
+import { InputSkills, LocationInput } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
@@ -79,7 +72,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setPredictions,
     handleLocationInputChange,
     loadError,
-  } = useGooglePlacesApi(showEditModal);
+    clearPredictions,
+  } = useGooglePlacesApi();
 
   const {
     isPending: uploadProfileImagePending,
@@ -172,6 +166,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   if (loadError) {
     console.error('Failed to load Google Maps API');
   }
+
+  useEffect(() => {
+    if (!showEditModal) {
+      clearPredictions();
+    }
+  }, [showEditModal, clearPredictions]);
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
@@ -279,48 +279,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='city'
                   control={control}
                   render={({ field }) => (
-                    <div className='relative'>
-                      <Command>
-                        <div className='relative'>
-                          <Input
-                            type='text'
-                            placeholder='Type a location'
-                            {...register('city', {
-                              required: 'Location is required',
-                            })}
-                            onChange={handleLocationInputChange}
-                            autoComplete='off'
-                            className='pl-10'
-                          />
-                          <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
-                        </div>
-
-                        <CommandList
-                          className={
-                            predictions.length
-                              ? // TODO: Update the styling here. Kind of flaky in that we are moving the list down with fixed values.
-                                'absolute top-10 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
-                              : 'hidden'
-                          }
-                        >
-                          <CommandGroup>
-                            {predictions.map((prediction) => (
-                              <CommandItem
-                                key={prediction.place_id}
-                                value={prediction.description}
-                                onSelect={() => {
-                                  setValue('city', prediction.description);
-                                  setPredictions([]);
-                                }}
-                                className=' text-black'
-                              >
-                                {prediction.description}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </div>
+                    <LocationInput
+                      register={register}
+                      setValue={setValue}
+                      predictions={predictions}
+                      handleLocationInputChange={handleLocationInputChange}
+                      setPredictions={setPredictions}
+                    />
                   )}
                 />
                 {errors.city && (
