@@ -26,7 +26,7 @@ export const Profile: FC<{
 
   return (
     <div className='container mx-auto py-4'>
-      <div className='flex flex-col gap-2'>
+      <div className='flex flex-col gap-4'>
         {user && (
           <>
             <ProfileHeader
