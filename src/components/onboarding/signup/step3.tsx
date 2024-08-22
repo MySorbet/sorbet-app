@@ -73,7 +73,7 @@ const Step3 = () => {
   };
   useEffect(() => {
     setSkills(userData.skills);
-  }, []);
+  }, [userData.skills]);
 
   useEffect(() => {
     setUser(authUser || reduxUser);

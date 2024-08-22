@@ -1,19 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputLocation, InputSkills } from '@/components/profile';
+import { InputSkills, LocationInput } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogOverlay,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
@@ -53,21 +48,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const {
-    isPending: uploadProfileImagePending,
-    mutateAsync: uploadProfileImageAsync,
-    isError: uploadProfileImageError,
-  } = useUploadProfileImage();
-
-  const {
-    isPending: deleteProfileImagePending,
-    mutateAsync: deleteProfileImageAsync,
-    isError: deleteProfileImageError,
-  } = useDeleteProfileImage();
-
-  const { isPending: updateProfilePending, mutate: updateProfile } =
-    useUpdateUser();
-
-  const {
     register,
     handleSubmit,
     formState: { errors },
@@ -83,6 +63,21 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
+
+  const {
+    isPending: uploadProfileImagePending,
+    mutateAsync: uploadProfileImageAsync,
+    isError: uploadProfileImageError,
+  } = useUploadProfileImage();
+
+  const {
+    isPending: deleteProfileImagePending,
+    mutateAsync: deleteProfileImageAsync,
+    isError: deleteProfileImageError,
+  } = useDeleteProfileImage();
+
+  const { isPending: updateProfilePending, mutate: updateProfile } =
+    useUpdateUser();
 
   const onSubmit = async (data: FormData) => {
     let userToUpdate: User = { ...user };
@@ -127,7 +122,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
-  const fileChange = (e: any) => {
+  const fileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
     setFile(
       e.target.files && e.target.files.length > 0
         ? e.target.files[0]
@@ -167,7 +163,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             : ''
         }
       >
-        {' '}
         <DialogHeader className='text-2xl font-semibold'>
           Edit Profile
         </DialogHeader>
@@ -262,16 +257,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Controller
                   name='city'
                   control={control}
-                  render={({ field }) => (
-                    <InputLocation
-                      onInputChange={(e) => {
-                        field.onChange(e);
-                      }}
-                      onPlaceSelected={(place) =>
-                        setValue('city', place?.formatted_address)
-                      }
-                      defaultValue={user && user.city ? user.city : ''}
-                    />
+                  render={() => (
+                    <LocationInput register={register} setValue={setValue} />
                   )}
                 />
                 {errors.city && (
@@ -304,7 +291,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Controller
                   name='tags'
                   control={control}
-                  render={({ field }) => (
+                  render={() => (
                     <InputSkills
                       placeholder='Skill (ex: Developer)'
                       handleTagsChange={(tags) => {
