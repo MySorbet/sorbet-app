@@ -83,7 +83,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         )}
       </div>
       {user && (
-        <div className='mt-4 flex flex-row items-center justify-center gap-6'>
+        <div className='flex flex-row items-center justify-center gap-6'>
           {canEdit ? (
             <Button
               variant='outline'
