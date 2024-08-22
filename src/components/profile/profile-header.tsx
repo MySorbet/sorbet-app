@@ -5,6 +5,7 @@ import { ShareProfileDialog } from '@/components/profile/share/share-profile-dia
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
+import { MarkerPin03 } from '@untitled-ui/icons-react';
 
 interface ProfileHeaderProps {
   canEdit: boolean;
@@ -45,6 +46,14 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <h1 className='text-2xl font-semibold'>{`${user.firstName} ${user.lastName}`}</h1>
         )}
       </div>
+      {user.city && (
+        <div className='flex items-center justify-center'>
+          <div className='flex gap-2'>
+            <MarkerPin03 className='h-4 w-4' />
+            <span className='text-xs text-[#667085]'>{user.city}</span>
+          </div>
+        </div>
+      )}
       <div className='flex justify-center'>
         <div className='lg:w-5/12'>
           <h1 className='text-center text-3xl font-semibold'>{user.bio}</h1>
