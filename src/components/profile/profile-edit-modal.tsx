@@ -1,12 +1,7 @@
-import { Library } from '@googlemaps/js-api-loader';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader } from 'lucide-react';
 import {
   ChangeEvent,
-  Dispatch,
-  Ref,
-  SetStateAction,
-  useRef,
   useState,
 } from 'react';
 import { Controller } from 'react-hook-form';
@@ -20,7 +15,6 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogOverlay,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
@@ -36,7 +30,6 @@ import {
   CommandList,
   CommandItem,
 } from '@/components/ui/command';
-import { useToast } from '@/components/ui/use-toast';
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -69,8 +62,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   );
   const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
-
-  const { toast } = useToast();
 
   const {
     register,
