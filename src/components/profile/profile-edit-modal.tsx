@@ -1,14 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { MarkerPin02 } from '@untitled-ui/icons-react';
 import { Loader } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { MarkerPin02 } from '@untitled-ui/icons-react';
 
 import { InputSkills } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,12 +24,6 @@ import {
   useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
-import {
-  Command,
-  CommandGroup,
-  CommandList,
-  CommandItem,
-} from '@/components/ui/command';
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -78,7 +78,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     predictions,
     setPredictions,
     handleLocationInputChange,
-    handleLocationKeyDown,
     loadError,
   } = useGooglePlacesApi(showEditModal);
 
@@ -245,7 +244,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       required: 'First name is required',
                     })}
                     defaultValue={user?.firstName}
-                    onKeyDown={(e) => handleLocationKeyDown(e)}
                   />
                   {errors.firstName && (
                     <p className='mt-1 text-xs text-red-500'>
@@ -292,7 +290,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                             })}
                             onChange={handleLocationInputChange}
                             autoComplete='off'
-                            onKeyDown={(e) => handleLocationKeyDown(e)}
                             className='pl-10'
                           />
                           <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
@@ -302,7 +299,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                           className={
                             predictions.length
                               ? // TODO: Update the styling here. Kind of flaky in that we are moving the list down with fixed values.
-                                'absolute top-10 z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
+                                'absolute top-10 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
                               : 'hidden'
                           }
                         >
@@ -317,9 +314,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                                 }}
                                 className=' text-black'
                               >
-                                <p className='text-black'>
-                                  {prediction.description}
-                                </p>
+                                {prediction.description}
                               </CommandItem>
                             ))}
                           </CommandGroup>

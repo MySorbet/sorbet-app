@@ -42,22 +42,11 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
         predictions: google.maps.places.AutocompletePrediction[] | null,
         status: google.maps.places.PlacesServiceStatus
       ) => {
-        console.log(predictions);
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           setPredictions(predictions || []);
         }
       }
     );
-  };
-
-  /**
-   * For when a user presses enter, we want to clear the predictions so the flow of moving on to the next field is smooth
-   */
-  const handleLocationKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      setPredictions([]);
-    }
   };
 
   /**
@@ -73,7 +62,6 @@ export const useGooglePlacesApi = (showEditModal: boolean) => {
     predictions,
     setPredictions,
     handleLocationInputChange,
-    handleLocationKeyDown,
-    loadError
+    loadError,
   };
 };
