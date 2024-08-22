@@ -290,8 +290,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='city'
                   control={control}
                   render={({ field }) => (
-                    <Command>
-                      <div className='relative'>
+                    <div className='relative'>
+                      <Command>
                         <Input
                           type='text'
                           placeholder='Type a location'
@@ -305,7 +305,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         <CommandList
                           className={
                             predictions.length
-                              ? 'absoulte border border-gray-200 bg-white text-black drop-shadow-xl'
+                              ? 'absolute top-10 z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
                               : 'hidden'
                           }
                         >
@@ -318,7 +318,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                                   setValue('city', prediction.description);
                                   setPredictions([]);
                                 }}
-                                className='text-black'
+                                className=' text-black'
                               >
                                 <p className='text-black'>
                                   {prediction.description}
@@ -327,8 +327,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                             ))}
                           </CommandGroup>
                         </CommandList>
-                      </div>
-                    </Command>
+                      </Command>
+                    </div>
                   )}
                 />
                 {errors.city && (
