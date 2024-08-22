@@ -28,7 +28,7 @@ import {
 import { config, network } from '@/lib/config';
 import { FormContainer } from '../form-container';
 import { handleCreateAccount } from '../signin';
-import { UserSignUpContext, UserSignUpContextType } from './signup';
+import { useUserSignUp } from './signup';
 
 const checkIsAccountAvailable = async (
   desiredUsername: string
@@ -86,9 +86,7 @@ const schema = z.object({
 const SignUpForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setUserData, setStep } = useContext(
-    UserSignUpContext
-  ) as UserSignUpContextType;
+  const { setUserData, setStep } = useUserSignUp();
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),

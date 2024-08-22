@@ -7,7 +7,7 @@ import {
   useMemo,
 } from 'react';
 
-import { getUserByEmail } from '@/api/user';
+import { getUserByEmail, getUserByPrivyId } from '@/api/user';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
@@ -15,25 +15,21 @@ import { User } from '@/types';
 import { useLocalStorage } from './useLocalStorage';
 import { usePrivy } from '@privy-io/react-auth';
 
+type LoginResult = {
+  status: string;
+  message: string;
+  error?: any;
+  data?: any;
+};
+
 interface AuthContextType {
   user: User | null;
-  loginWithEmail: (
-    email: string
-  ) => Promise<{ status: string; message: string; error?: any; data?: any }>;
+  loginWithEmail: (email: string) => Promise<LoginResult>;
+  loginWithPrivyId: (id: string) => Promise<LoginResult>;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  loginWithEmail: async (email) => {
-    return {
-      status: '',
-      message: '',
-    };
-  },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
@@ -59,23 +55,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   /** Attempts to sign into sorbet, storing the access token and user if successful  */
   const loginWithEmail = useCallback(
-    async (
-      email: string
-    ): Promise<{
-      status: string;
-      message: string;
-      error?: any;
-      data?: any;
-    }> => {
+    async (email: string): Promise<LoginResult> => {
       try {
-        const sorbetUser = await getUserByEmail(email);
-        if (sorbetUser) {
-          const user = sorbetUser.data;
-          dispatch(updateUserData(user));
+        const response = await getUserByEmail(email);
+        if (response) {
+          const sorbetUser = response.data;
+          dispatch(updateUserData(sorbetUser));
           return {
             status: 'success',
             message: 'Login successful',
-            data: sorbetUser.data,
+            data: response.data,
+          };
+        } else {
+          return {
+            status: 'failed',
+            message: 'Failed to login. Server threw an error',
+            error: {},
+          };
+        }
+      } catch (error) {
+        return {
+          status: 'failed',
+          message: 'Login failed',
+          error: error,
+        };
+      }
+    },
+    [dispatch]
+  );
+
+  /** Attempts to sign into sorbet, storing the access token and user if successful  */
+  const loginWithPrivyId = useCallback(
+    async (id: string): Promise<LoginResult> => {
+      try {
+        const response = await getUserByPrivyId(id);
+        if (response) {
+          const sorbetUser = response.data;
+          dispatch(updateUserData(sorbetUser));
+          return {
+            status: 'success',
+            message: 'Login successful',
+            data: response.data,
           };
         } else {
           return {
@@ -132,6 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       user,
       loginWithEmail,
+      loginWithPrivyId,
       logout,
     }),
     [loginWithEmail, logout, user]
@@ -140,6 +161,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+/** Use this hook to get access to the currently logged in sorbet user and methods to log them in and out */
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return ctx;
 };
+
+export default AuthProvider;

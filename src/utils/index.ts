@@ -3,6 +3,7 @@
 import { AxiosRequestConfig } from 'axios';
 
 import { config } from '@/lib/config';
+import { getAccessToken } from '@privy-io/react-auth';
 
 // TODO: remove this abstraction
 export const API_URL = config.sorbetApiUrl;
@@ -14,12 +15,12 @@ export const API_URL = config.sorbetApiUrl;
  * In case there is no original config, {} is returned.
  *
  * @example
- * const response = await axios.get('/api/endpoint', withAuthHeader());
+ * const response = await axios.get('/api/endpoint', await withAuthHeader());
  */
-export const withAuthHeader = (
+export const withAuthHeader = async (
   config: AxiosRequestConfig = {}
-): AxiosRequestConfig => {
-  const accessToken = localStorage.getItem('access_token');
+): Promise<AxiosRequestConfig> => {
+  const accessToken = await getAccessToken();
   if (accessToken) {
     return {
       ...config,

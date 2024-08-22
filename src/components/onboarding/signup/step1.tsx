@@ -19,12 +19,10 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 import { FormContainer } from '../form-container';
-import { UserSignUpContext, UserSignUpContextType } from './signup';
+import { useUserSignUp } from './signup';
 
 const Step1 = () => {
-  const { userData, setUserData, setStep } = useContext(
-    UserSignUpContext
-  ) as UserSignUpContextType;
+  const { userData, setUserData, setStep } = useUserSignUp();
   const [image, setImage] = useState<string | undefined>('');
   const [file, setFile] = useState<File | undefined>(undefined);
   const [location, setLocation] = useState<string>('');
@@ -32,9 +30,14 @@ const Step1 = () => {
   const schema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
+    handle: z.string().min(1, { message: 'Handle is required' }),
   });
 
-  const handleSubmit = (data: { firstName: string; lastName: string }) => {
+  const handleSubmit = (data: {
+    firstName: string;
+    lastName: string;
+    handle: string;
+  }) => {
     setUserData((user) => ({
       ...user,
       location,
@@ -42,6 +45,8 @@ const Step1 = () => {
       file,
       firstName: data.firstName,
       lastName: data.lastName,
+      accountId: data.handle,
+      // TODO: Add handle to user
     }));
     setStep(2);
   };
@@ -70,13 +75,13 @@ const Step1 = () => {
     <FormContainer>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <div className='flex h-full flex-col gap-6'>
+          <div className='flex h-full flex-col gap-5'>
             <div className='flex w-full items-center justify-between'>
               <h1 className='text-2xl font-semibold'>Bio</h1>
               <p className='text-sm font-medium text-[#344054]'>Step 1 of 3</p>
             </div>
-            <div className='flex flex-1 flex-col gap-10'>
-              <div className='flex h-[76px] w-full items-center gap-4 py-2'>
+            <div className='flex flex-1 flex-col gap-6'>
+              <div className='flex h-[76px] w-full items-center gap-4'>
                 <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F]'>
                   <AvatarImage src={image} />
                   <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
@@ -98,6 +103,34 @@ const Step1 = () => {
                   />
                 </label>
               </div>
+              <FormField
+                control={form.control}
+                name='handle'
+                render={({ field }) => {
+                  return (
+                    <FormItem className='space-y-[6px]'>
+                      <FormLabel className='text-sm text-[#344054]'>
+                        Handle
+                      </FormLabel>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            {...form.register('handle')}
+                            placeholder='Handle'
+                            {...field}
+                            className={cn(
+                              errors.handle && 'border-red-500 ring-red-500'
+                            )}
+                          />
+                          {errors.handle && (
+                            <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
+                          )}
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
               <div className='flex flex-row gap-6'>
                 <FormField
                   control={form.control}

@@ -13,6 +13,18 @@ export const signUp = async ({ email, accountId }: SignUpWithEmailTypes) => {
   }
 };
 
+export const signUpWithPrivyId = async ({ id }: { id: string }) => {
+  try {
+    const reqBody = { id };
+    const res = await axios.post(`${API_URL}/auth/signup/privy`, reqBody);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to sign up with privy id: ${error.response.data.message}`
+    );
+  }
+};
+
 /** Signs an email in. This means asking the API if this user exists, and getting a JWT back if so. */
 export const signIn = async ({ email }: SignInWithEmailTypes) => {
   try {

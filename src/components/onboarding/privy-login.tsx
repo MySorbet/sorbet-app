@@ -1,37 +1,66 @@
 'use client';
 
-import { useLogin } from '@privy-io/react-auth';
-import { Loader } from 'lucide-react';
+import { useLogin, usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { signUpWithPrivyId } from '@/api/auth';
 import { Loading } from '@/components/common';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
+import { useAppDispatch } from '@/redux/hook';
+import { updateUserData } from '@/redux/userSlice';
+import { User } from '@/types';
 
 import { FormContainer } from './form-container';
 
 /** Simple sign in form which calls out to privy */
 export const PrivyLogin = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const { loginWithEmail } = useAuth();
+  const { loginWithPrivyId } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
+  const { logout } = usePrivy();
+  const dispatch = useAppDispatch();
 
   const { login } = useLogin({
-    onComplete: async (user, isNew, wasAlreadyAuthed) => {
-      console.log(wasAlreadyAuthed);
+    onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
+      console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
 
-      // Rather than use email, we should use did
-      if (user.email === undefined) {
-        console.error('No email found in user object');
+      // This is a signup so create a user in the sorbet db, put it in redux and redirect to signup
+      if (isNewUser) {
+        console.log(
+          'This is a new user. Creating a sorbet user and redirecting to signup'
+        );
+        const newUser = await signUpWithPrivyId({ id: user.id });
+        // TODO: Maybe we should give them a temp handle so that they can see their profile in case handle update fails?
+        dispatch(updateUserData(newUser.data as unknown as User));
+        console.log(newUser.data);
+        router.replace('/signup');
         return;
       }
 
       // Fetch user from sorbet
       setLoading(true);
-      const sorbetUser = await loginWithEmail(user.email.address);
-      console.log(sorbetUser);
-      router.replace(`/${sorbetUser.data.accountId.split('.')[0]}`);
+      const loginResult = await loginWithPrivyId(user.id);
+
+      if (loginResult.error) {
+        await logout();
+        setLoading(false);
+        toast({
+          title: 'Error',
+          description: `Error logging in: ${loginResult.error?.message}`,
+          variant: 'destructive',
+        });
+        return;
+      }
+      console.log(loginResult);
+      const sorbetUser = loginResult.data;
+
+      // Unfortunately, we have to split the account id for now to get the handle;
+      const handle = sorbetUser.accountId.split('.')[0];
+      router.replace(`/${handle}`);
     },
   });
 

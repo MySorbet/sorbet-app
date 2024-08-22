@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { User } from '@/types';
 import { API_URL, withAuthHeader } from '@/utils';
@@ -19,7 +19,7 @@ export const deleteProfileImageAsync = async (userId: string) => {
   try {
     const res = await axios.delete(
       `${API_URL}/images/delete/${userId}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -37,6 +37,22 @@ export const getUserByAccountId = async (accountId: string) => {
     return response;
   } catch (error: any) {
     console.log(`Failed to get user by account id: ${JSON.stringify(error)}`);
+  }
+};
+
+/** Get a user from the db by their privy id */
+export const getUserByPrivyId = async (id: string) => {
+  try {
+    const response = await axios.get(`${API_URL}/users/privy/${id}`);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to get user by privy id: ${error.response?.data.message}`
+      );
+    } else {
+    }
+    throw new Error(`Failed to get user by account id: ${error}`);
   }
 };
 
@@ -69,7 +85,7 @@ export const updateUser = async (userToUpdate: User, userId: string) => {
     const response = await axios.patch(
       `${API_URL}/users/${userId}`,
       userToUpdate,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -81,7 +97,7 @@ export const getBalances = async (userId: string) => {
   try {
     const res = await axios.get(
       `${API_URL}/users/${userId}/balances`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -93,7 +109,7 @@ export const getOverview = async (last_days = 30) => {
   try {
     const res = await axios.get(
       `${API_URL}/transactions/overview?last_days=${last_days}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -125,7 +141,7 @@ export const getTransactions = async (
   try {
     const res = await axios.get(
       `${API_URL}/transactions?${queryParams.toString()}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
