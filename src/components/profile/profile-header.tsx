@@ -5,6 +5,7 @@ import { ShareProfileDialog } from '@/components/profile/share/share-profile-dia
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
+import { MarkerPin03, Share06 } from '@untitled-ui/icons-react';
 
 interface ProfileHeaderProps {
   canEdit: boolean;
@@ -81,11 +82,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               className='px-5'
               onClick={() => onEditClick()}
             >
-              <span>Edit Profile</span>
+              <span className='text-base'>Edit Profile</span>
             </Button>
           ) : (
             <Button
-              className='bg-[#573DF5] px-5'
+              className='bg-[#573DF5] px-5 text-base'
               onClick={onHireMeClick}
               disabled={disableHireMe}
             >
@@ -95,11 +96,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <ShareProfileDialog
             trigger={
               <Button
-                className='align-center flex flex-row items-center gap-1 bg-inherit text-[#573DF5] hover:bg-inherit'
+                className='align-center flex flex-row items-center gap-2 bg-inherit text-[#573DF5] hover:bg-inherit'
                 onClick={handleUrlToClipboard()}
               >
-                <SquareArrowOutUpRight size={16} />
-                <span>Share</span>
+                <Share06 className='h-5 w-5' />
+                <span className='text-base'>Share</span>
               </Button>
             }
             username={user.accountId.split('.')[0]}
