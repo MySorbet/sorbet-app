@@ -62,7 +62,12 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
 
   return (
     <>
-      {!isError && (
+      {isError ? (
+        <ClaimYourProfile
+          username={params.username}
+          handleClaimMyProfile={handleClaimMyProfile}
+        />
+      ) : (
         <>
           <Header />
           {!isPending && freelancer && (
@@ -85,7 +90,10 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
           )}
         </>
       )}
+<<<<<<< HEAD
       {isError && <ClaimYourProfile username={params.username} />}
+=======
+>>>>>>> cf7c5bd (Refactor: adds ternary rendering for 'isError' condition)
     </>
   );
 };
