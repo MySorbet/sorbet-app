@@ -1,11 +1,11 @@
 'use client';
 
 import { useLogin, usePrivy } from '@privy-io/react-auth';
+import { Loading02 } from '@untitled-ui/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { signUpWithPrivyId } from '@/api/auth';
-import { Loading } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks';
@@ -66,11 +66,15 @@ export const PrivyLogin = () => {
 
   return (
     <FormContainer>
-      {isLoading && <Loading />}
-      <h1 className='text-2xl font-semibold'>Sign In</h1>
-      <Button className='bg-sorbet' onClick={login}>
-        Log in
-      </Button>
+      <div className='flex size-full items-center justify-center'>
+        <Button className='bg-sorbet' onClick={login} disabled={isLoading}>
+          {isLoading ? (
+            <Loading02 className='animate animate-spin' />
+          ) : (
+            'Log in or sign up'
+          )}
+        </Button>
+      </div>
     </FormContainer>
   );
 };

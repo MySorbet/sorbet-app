@@ -116,7 +116,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       };
 
       updateProfile(userToUpdate);
-
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
@@ -170,10 +169,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
             <Avatar className='border-primary-default h-20 w-20 border-2'>
-              <AvatarImage
-                src={image || '/avatar.svg'}
-                alt='new profile image'
-              />
+              <AvatarImage src={image} alt='new profile image' />
               <AvatarFallback>
                 <User01 className='text-muted-foreground' />
               </AvatarFallback>

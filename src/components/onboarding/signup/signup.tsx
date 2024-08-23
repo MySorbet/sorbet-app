@@ -17,7 +17,7 @@ type UserSignUp = {
   email: string;
   firstName: string;
   lastName: string;
-  accountId: string;
+  handle: string;
   image: string | undefined;
   file: File | undefined;
   location: string;
@@ -42,7 +42,7 @@ const initialUserSignUp: UserSignUp = {
   firstName: '',
   lastName: '',
   email: '',
-  accountId: '',
+  handle: '',
   // useUploadProfileImageAsync
   image: '',
   file: undefined,
