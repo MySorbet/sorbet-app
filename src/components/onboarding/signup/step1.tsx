@@ -6,6 +6,7 @@ import { ChangeEventHandler, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
+import { LocationInput } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -182,6 +183,24 @@ const Step1 = () => {
                   }}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name='location'
+                render={() => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <LocationInput
+                          name='location'
+                          register={form.register}
+                          setValue={form.setValue}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
             </div>
             <Button
               type='submit'
