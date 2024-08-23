@@ -1,6 +1,7 @@
-import { NetworkIds, type NetworkId, type Network } from '@/types/network';
-import environment from '@/utils/fastAuth/environment';
 import { z } from 'zod';
+
+import { type Network,type NetworkId, NetworkIds } from '@/types/network';
+import environment from '@/utils/fastAuth/environment';
 
 // Zod schema for the app configuration
 const appConfigSchema = z.object({
@@ -11,7 +12,7 @@ const appConfigSchema = z.object({
   contractId: z.string().optional().default('sorbet.testnet'),
   relayerUrl: z.string().url(),
   fastAuthDomain: z.string().url(),
-  googleMapKey: z.string().optional(),
+  googleMapKey: z.string(),
   sendbirdAppId: z.string(),
   loginSuccessUrl: z.string().optional(),
   loginFailureUrl: z.string().optional(),
