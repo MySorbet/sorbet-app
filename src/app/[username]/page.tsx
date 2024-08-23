@@ -130,7 +130,7 @@ const ClaimYourProfile = (props: {
         className='bg-sorbet text-xl'
         onClick={props.handleClaimMyProfile}
       >
-        Claim Handle Now
+        Claim This Handle
       </Button>
     </div>
   );
