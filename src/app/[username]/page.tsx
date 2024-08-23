@@ -112,7 +112,7 @@ const ClaimYourProfile = (props: {
   handleClaimMyProfile: () => void;
 }) => {
   return (
-    <div className='align-center container mt-32 flex size-full flex-col items-center justify-center gap-10'>
+    <div className='align-center container mt-40 flex size-full flex-col items-center justify-center gap-10'>
       <div>
         <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
       </div>
@@ -121,13 +121,13 @@ const ClaimYourProfile = (props: {
           <span className='text-gray-500'>mysorbet.io/</span>
           <span>{props.username}</span>
         </div>
-        <div className='mt-4 text-center text-3xl'>
+        <div className='mt-4 text-center text-2xl'>
           The handle is available for you to build your internet presence today!
         </div>
       </div>
       <Button
         size='lg'
-        className='bg-sorbet text-xl'
+        className='bg-sorbet hover:bg-sorbet-dark animate-pulse text-xl hover:animate-none'
         onClick={props.handleClaimMyProfile}
       >
         Claim This Handle
