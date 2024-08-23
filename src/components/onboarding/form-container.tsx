@@ -1,5 +1,3 @@
-'use client';
-
 import { FC, PropsWithChildren } from 'react';
 
 const FormContainer: FC<PropsWithChildren> = ({ children }) => {
