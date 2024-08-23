@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, MapPin, User } from 'lucide-react';
-import { ChangeEventHandler, useContext, useState } from 'react';
+import { CircleAlert, User } from 'lucide-react';
+import { ChangeEventHandler, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -22,31 +22,39 @@ import { FormContainer } from '../form-container';
 import { useUserSignUp } from './signup';
 
 const Step1 = () => {
-  const { userData, setUserData, setStep } = useUserSignUp();
+  const { setUserData, setStep } = useUserSignUp();
   const [image, setImage] = useState<string | undefined>('');
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [location, setLocation] = useState<string>('');
 
-  const schema = z.object({
+  const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
     handle: z.string().min(1, { message: 'Handle is required' }),
+    location: z.string().optional(),
   });
 
-  const handleSubmit = (data: {
-    firstName: string;
-    lastName: string;
-    handle: string;
-  }) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    // Need default values because the form is a controlled component
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      handle: '',
+      location: '',
+    },
+    mode: 'all',
+  });
+
+  const { errors } = useFormState({
+    control: form.control,
+  });
+
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
     setUserData((user) => ({
       ...user,
-      location,
+      ...values,
       image,
       file,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      accountId: data.handle,
-      // TODO: Add handle to user
     }));
     setStep(2);
   };
@@ -58,30 +66,17 @@ const Step1 = () => {
     setImage(URL.createObjectURL(file));
   };
 
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-    },
-    mode: 'all',
-  });
-
-  const { errors } = useFormState({
-    control: form.control,
-  });
-
   return (
     <FormContainer>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <div className='flex h-full flex-col gap-5'>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className='h-full'>
+          <div className='flex h-full flex-col justify-between gap-5'>
             <div className='flex w-full items-center justify-between'>
               <h1 className='text-2xl font-semibold'>Bio</h1>
               <p className='text-sm font-medium text-[#344054]'>Step 1 of 3</p>
             </div>
             <div className='flex flex-1 flex-col gap-6'>
-              <div className='flex h-[76px] w-full items-center gap-4'>
+              <div className='flex w-full items-center gap-4'>
                 <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F]'>
                   <AvatarImage src={image} />
                   <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
@@ -110,7 +105,7 @@ const Step1 = () => {
                   return (
                     <FormItem className='space-y-[6px]'>
                       <FormLabel className='text-sm text-[#344054]'>
-                        Handle
+                        Handle *
                       </FormLabel>
                       <FormControl>
                         <div className='relative'>
@@ -189,20 +184,6 @@ const Step1 = () => {
                     );
                   }}
                 />
-              </div>
-              <div className='flex flex-col gap-[6px]'>
-                <h1 className='text-sm text-[#344054]'>
-                  Where are you located?
-                </h1>
-                <div className='relative'>
-                  <Input
-                    placeholder='Enter location'
-                    className='pl-10'
-                    onChange={(e) => setLocation(e.target.value)}
-                    defaultValue={userData.location}
-                  />
-                  <MapPin className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
-                </div>
               </div>
             </div>
             <Button
