@@ -259,7 +259,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='city'
                   control={control}
                   render={() => (
-                    <LocationInput register={register} setValue={setValue} />
+                    <LocationInput
+                      register={register}
+                      setValue={setValue}
+                      name='city'
+                    />
                   )}
                 />
                 {errors.city && (
