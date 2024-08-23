@@ -8,6 +8,7 @@ import { AxiosRequestConfig } from 'axios';
  * In case there is no original config, {} is returned.
  *
  * The auth token is privy issued and fetched from local storage. Privy will refresh it before returning if need be.
+ * Important: you must not invoke this before `PrivyProvider` has rendered. [Learn more](https://arc.net/l/quote/jxrgxaua)
  *
  * @example
  * const response = await axios.get('/api/endpoint', await withAuthHeader());
