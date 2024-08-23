@@ -43,7 +43,7 @@ export const getUserByAccountId = async (accountId: string) => {
 /** Get a user from the db by their privy id */
 export const getUserByPrivyId = async (id: string) => {
   try {
-    const response = await axios.get(`${API_URL}/users/privy/${id}`);
+    const response = await axios.get<User>(`${API_URL}/users/privy/${id}`);
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -51,8 +51,8 @@ export const getUserByPrivyId = async (id: string) => {
         `Failed to get user by privy id: ${error.response?.data.message}`
       );
     } else {
+      throw new Error(`Failed to get user by account id: ${error}`);
     }
-    throw new Error(`Failed to get user by account id: ${error}`);
   }
 };
 

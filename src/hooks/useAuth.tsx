@@ -1,3 +1,4 @@
+import { usePrivy } from '@privy-io/react-auth';
 import {
   createContext,
   ReactNode,
@@ -13,14 +14,19 @@ import { reset, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 
 import { useLocalStorage } from './useLocalStorage';
-import { usePrivy } from '@privy-io/react-auth';
 
-type LoginResult = {
-  status: string;
+type LoginResultFailed = {
+  status: 'failed';
   message: string;
   error?: any;
-  data?: any;
 };
+type LoginResultSuccess = {
+  status: 'success';
+  message: string;
+  data: User;
+};
+
+type LoginResult = LoginResultFailed | LoginResultSuccess;
 
 interface AuthContextType {
   user: User | null;
@@ -70,7 +76,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return {
             status: 'failed',
             message: 'Failed to login. Server threw an error',
-            error: {},
           };
         }
       } catch (error) {
@@ -84,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [dispatch]
   );
 
-  /** Attempts to sign into sorbet, storing the access token and user if successful  */
+  /** Find a user by privy id in the sorbet db, storing the access token and user if successful  */
   const loginWithPrivyId = useCallback(
     async (id: string): Promise<LoginResult> => {
       try {
@@ -101,7 +106,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return {
             status: 'failed',
             message: 'Failed to login. Server threw an error',
-            error: {},
           };
         }
       } catch (error) {
@@ -146,7 +150,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(() => {
     logoutPrivy();
     dispatch(reset());
-  }, [dispatch]);
+  }, [dispatch, logoutPrivy]);
 
   const value = useMemo(
     () => ({
@@ -155,7 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loginWithPrivyId,
       logout,
     }),
-    [loginWithEmail, logout, user]
+    [loginWithEmail, loginWithPrivyId, logout, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -45,7 +45,8 @@ export const PrivyLogin = () => {
       setLoading(true);
       const loginResult = await loginWithPrivyId(user.id);
 
-      if (loginResult.error) {
+      // If the login fails, log out and show an error
+      if (loginResult.status === 'failed') {
         await logout();
         setLoading(false);
         toast({
@@ -55,12 +56,11 @@ export const PrivyLogin = () => {
         });
         return;
       }
+
+      // If you get here, the login was successful and you have a sorbet user. Route to their profile
       console.log(loginResult);
       const sorbetUser = loginResult.data;
-
-      // Unfortunately, we have to split the account id for now to get the handle;
-      const handle = sorbetUser.accountId.split('.')[0];
-      router.replace(`/${handle}`);
+      router.replace(`/${sorbetUser.handle}`);
     },
   });
 

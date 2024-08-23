@@ -9,7 +9,6 @@ import {
 } from 'react';
 
 import { AllSet } from './all-set';
-import { SignUpForm } from './signup-form';
 import { Step1 } from './step1';
 import { Step2 } from './step2';
 import { Step3 } from './step3';
@@ -57,12 +56,10 @@ const initialUserSignUp: UserSignUp = {
 const SignUp = () => {
   const [userData, setUserData] = useState<UserSignUp>(initialUserSignUp);
   const [step, setStep] = useState<number>(1);
-  // TODO: Remove step 0
   return (
     <UserSignUpContext.Provider
       value={{ userData, setUserData, step, setStep }}
     >
-      {step == 0 && <SignUpForm />}
       {step == 1 && <Step1 />}
       {step == 2 && <Step2 />}
       {step == 3 && <Step3 />}

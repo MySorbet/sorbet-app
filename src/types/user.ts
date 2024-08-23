@@ -3,6 +3,8 @@ export interface User {
   firstName: string;
   lastName: string;
   accountId: string;
+  privyId: string | null;
+  handle: string | null;
   email: string;
   bio: string;
   title: string;
