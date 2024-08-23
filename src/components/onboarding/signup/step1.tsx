@@ -22,7 +22,7 @@ import { FormContainer } from '../form-container';
 import { useUserSignUp } from './signup';
 
 const Step1 = () => {
-  const { setUserData, setStep } = useUserSignUp();
+  const { userData, setUserData, setStep } = useUserSignUp();
   const [image, setImage] = useState<string | undefined>('');
   const [file, setFile] = useState<File | undefined>(undefined);
 
@@ -37,10 +37,7 @@ const Step1 = () => {
     resolver: zodResolver(formSchema),
     // Need default values because the form is a controlled component
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      handle: '',
-      location: '',
+      ...userData,
     },
     mode: 'all',
   });

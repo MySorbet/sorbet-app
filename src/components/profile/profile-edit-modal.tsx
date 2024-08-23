@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { User01 } from '@untitled-ui/icons-react';
 import { Loader } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -173,8 +174,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 src={image || '/avatar.svg'}
                 alt='new profile image'
               />
-              <AvatarFallback className='text-2xl font-semibold'>
-                {user.accountId.slice(0, 2).toUpperCase()}
+              <AvatarFallback>
+                <User01 className='text-muted-foreground' />
               </AvatarFallback>
             </Avatar>
             <label
