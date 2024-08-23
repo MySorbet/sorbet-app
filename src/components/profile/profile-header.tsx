@@ -1,3 +1,4 @@
+import { User01 } from '@untitled-ui/icons-react';
 import { SquareArrowOutUpRight } from 'lucide-react';
 import React from 'react';
 
@@ -21,9 +22,13 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onHireMeClick,
   disableHireMe = false,
 }) => {
+  const handle = user.handle;
+  if (!handle) {
+    throw new Error('User handle is required');
+  }
+
   const handleUrlToClipboard = () => () => {
-    const username = user.accountId.split('.')[0];
-    const url = `${window.location.origin}/${username}`;
+    const url = `${window.location.origin}/${handle}`;
     navigator.clipboard.writeText(url);
   };
 
@@ -35,8 +40,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             src={user.profileImage || '/avatar.svg'}
             alt={user.accountId}
           />
-          <AvatarFallback className='text-2xl font-semibold'>
-            {user.accountId.slice(0, 2).toUpperCase()}
+          <AvatarFallback>
+            <User01 className='text-muted-foreground' />
           </AvatarFallback>
         </Avatar>
       </div>
@@ -102,7 +107,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 <span>Share</span>
               </Button>
             }
-            username={user.accountId.split('.')[0]}
+            username={handle}
           />
         </div>
       )}

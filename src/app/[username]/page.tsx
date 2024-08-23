@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
-import { getUserByAccountId } from '@/api/user';
+import { getUserByHandle } from '@/api/user';
 import {
   ProjectFormValues,
   ProjectOfferDialog,
@@ -15,9 +15,6 @@ import { Profile } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { config } from '@/lib/config';
-import { User } from '@/types';
-import { withSuffix } from '@/utils/user';
 
 const ProfilePage = ({ params }: { params: { username: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
@@ -33,8 +30,11 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         description: projectFormValues.description,
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
-        clientUsername: withSuffix(user.accountId),
-        freelancerUsername: withSuffix(params.username),
+        // TODO: This will be broken until createOffer uses their handle
+        // clientUsername: withSuffix(user.accountId),
+        // freelancerUsername: withSuffix(params.username),
+        clientUsername: user.handle ?? '',
+        freelancerUsername: params.username,
       });
     },
     onError: () => {
@@ -52,13 +52,13 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
     data: freelancerResponse,
   } = useQuery({
     queryKey: ['freelancer'],
-    queryFn: () => getUserByAccountId(`${params.username}.${config.networkId}`),
+    queryFn: () => getUserByHandle(`${params.username}`),
   });
 
   // Alias some vars for easy access in JSX
-  const freelancer = freelancerResponse?.data as User;
-  console.log('user', user);
-  const disableHireMe = params.username === user?.accountId.split('.')[0];
+  const freelancer = freelancerResponse?.data;
+  console.log('Freelancer: ', user);
+  const isMyProfile = params.username === user?.handle;
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   return (
@@ -68,9 +68,9 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         <>
           <Profile
             user={freelancer}
-            canEdit={false}
+            canEdit={isMyProfile}
             onHireMeClick={() => setOfferDialogOpen(true)}
-            disableHireMe={disableHireMe}
+            disableHireMe={isMyProfile}
           />
           <UserSocialPreview title={freelancerFullName} />
           <ProjectOfferDialog

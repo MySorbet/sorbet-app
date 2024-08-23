@@ -40,6 +40,21 @@ export const getUserByAccountId = async (accountId: string) => {
   }
 };
 
+export const getUserByHandle = async (handle: string) => {
+  try {
+    const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to get user by handle: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(`Failed to get user by handle: ${error}`);
+    }
+  }
+};
+
 /** Get a user from the db by their privy id */
 export const getUserByPrivyId = async (id: string) => {
   try {

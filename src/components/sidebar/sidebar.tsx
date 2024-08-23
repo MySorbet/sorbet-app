@@ -12,11 +12,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
-import type { User } from '@/types';
 
 interface SidebarProps {
   show: boolean;
-  userInfo: User;
 }
 
 const SidebarHeaderOption: React.FC<{
@@ -43,10 +41,14 @@ const SidebarHeaderOption: React.FC<{
   );
 };
 
-export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, logout } = useAuth();
+
+  if (!user) {
+    throw new Error('User not found');
+  }
 
   const handleLogout = async () => {
     logout();
@@ -55,15 +57,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
 
   const handleSidebarClose = () => {
     dispatch(setOpenSidebar(false));
-  };
-
-  const accountIdToUsername = (accountId: string | undefined) => {
-    if (!accountId) {
-      return '';
-    }
-
-    const parts = accountId.split('.');
-    return parts.length < 2 ? accountId : parts[0];
   };
 
   return (
@@ -86,9 +79,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
             <div className='flex w-full flex-row items-center justify-between'>
               <div className='flex flex-row items-center justify-between gap-2'>
                 <div>
-                  {userInfo?.profileImage ? (
+                  {user.profileImage ? (
                     <img
-                      src={userInfo?.profileImage}
+                      src={user.profileImage}
                       alt='logo'
                       className='h-14 w-14 rounded-full'
                     />
@@ -102,9 +95,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                 </div>
                 <div className='flex flex-col'>
                   <div className='text-base font-bold '>
-                    {`${userInfo.firstName} ${userInfo.lastName}`}
+                    {`${user.firstName} ${user.lastName}`}
                   </div>
-                  <div className='text-base'>{userInfo?.accountId}</div>
+                  <div className='text-base'>{user.handle}</div>
                 </div>
               </div>
               <div className='cursor-pointer' onClick={handleSidebarClose}>
@@ -132,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                   </Link>
                 </div>
                 <div className='col-span-1'>
-                  <Link href={`/${accountIdToUsername(user?.accountId)}`}>
+                  <Link href={`/${user.handle}`}>
                     <SidebarHeaderOption
                       label='Profile'
                       icon={<CircleArrowRight />}
@@ -153,11 +146,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                         height={20}
                       />
                       <div>
-                        {user?.balance?.usdc.toLocaleString() || `0`} USDC
+                        {user.balance?.usdc.toLocaleString() || `0`} USDC
                       </div>
                     </div>
                     <div className='text-gray-600'>
-                      ${user?.balance?.usdc.toLocaleString() || `0`}
+                      ${user.balance?.usdc.toLocaleString() || `0`}
                     </div>
                   </div>
                   <div className='flex justify-between'>
@@ -168,10 +161,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ show, userInfo }) => {
                         width={17}
                         height={17}
                       />
-                      <div>{user?.balance?.near || `0`} NEAR</div>
+                      <div>{user.balance?.near || `0`} NEAR</div>
                     </div>
                     <div className='text-gray-600'>
-                      ${user?.balance?.nearUsd || `0`}
+                      ${user.balance?.nearUsd || `0`}
                     </div>
                   </div>
                 </div>

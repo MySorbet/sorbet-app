@@ -48,15 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { logout: logoutPrivy } = usePrivy();
 
   // We sync the user from redux to local storage
+  // TODO: seems like we also need to sync the user from local storage to redux when the pae is refreshed
   useEffect(() => {
-    if (
-      reduxUser &&
-      reduxUser.firstName &&
-      reduxUser.lastName &&
-      reduxUser.id
-    ) {
-      setUser(reduxUser);
-    }
+    setUser(reduxUser);
   }, [reduxUser, setUser]);
 
   /** Attempts to sign into sorbet, storing the access token and user if successful  */
@@ -96,6 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const response = await getUserByPrivyId(id);
         if (response) {
           const sorbetUser = response.data;
+          console.log('sorbetUser: ', sorbetUser);
           dispatch(updateUserData(sorbetUser));
           return {
             status: 'success',
