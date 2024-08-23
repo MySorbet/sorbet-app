@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
+import { useUserSignUp } from '@/components/onboarding/signup/signup';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useUserSignUp } from '@/components/onboarding/signup/signup';
 
 import { FormContainer } from '../form-container';
 

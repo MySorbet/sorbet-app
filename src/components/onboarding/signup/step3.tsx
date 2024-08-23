@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader, Search } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser, useUploadProfileImage } from '@/hooks';
