@@ -108,8 +108,17 @@ const ClaimYourProfile = (props: { username: string }) => {
           The handle is available for you to build your internet presence today!
         </div>
       </div>
+<<<<<<< HEAD
       <Button size='lg' className='bg-sorbet text-xl'>
         Claim Handle Today
+=======
+      <Button
+        size='lg'
+        className='bg-sorbet text-xl'
+        onClick={props.handleClaimMyProfile}
+      >
+        Claim This Handle
+>>>>>>> b16c956 (Minor: changes CTA wording)
       </Button>
     </div>
   );
