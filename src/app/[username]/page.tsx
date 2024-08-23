@@ -95,7 +95,11 @@ export default ProfilePage;
 /** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
 const ClaimYourProfile = (props: { username: string }) => {
   return (
+<<<<<<< HEAD
     <div className='align-center container flex size-full flex-col items-center justify-center gap-10'>
+=======
+    <div className='align-center container mt-40 flex size-full flex-col items-center justify-center gap-10'>
+>>>>>>> b54dc85 (Feature: adds pulse to CTA. Definitely not permanent, just playing around with some stuff until the design is created)
       <div>
         <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
       </div>
@@ -104,7 +108,11 @@ const ClaimYourProfile = (props: { username: string }) => {
           <span className='text-gray-500'>mysorbet.xyz/</span>
           <span>{props.username}</span>
         </div>
+<<<<<<< HEAD
         <div className='mt-4 text-center'>
+=======
+        <div className='mt-4 text-center text-2xl'>
+>>>>>>> b54dc85 (Feature: adds pulse to CTA. Definitely not permanent, just playing around with some stuff until the design is created)
           The handle is available for you to build your internet presence today!
         </div>
       </div>
@@ -114,7 +122,7 @@ const ClaimYourProfile = (props: { username: string }) => {
 =======
       <Button
         size='lg'
-        className='bg-sorbet text-xl'
+        className='bg-sorbet hover:bg-sorbet-dark animate-pulse text-xl hover:animate-none'
         onClick={props.handleClaimMyProfile}
       >
         Claim This Handle
