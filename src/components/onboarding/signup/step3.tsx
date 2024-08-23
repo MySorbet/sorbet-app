@@ -65,7 +65,7 @@ const Step3 = () => {
         bio: userData.bio,
       };
 
-      updateUser(userToUpdate);
+      await updateUser(userToUpdate);
       setStep(4);
     }
   };
