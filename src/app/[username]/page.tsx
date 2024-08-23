@@ -71,23 +71,27 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
 
   return (
     <>
-      <Header />
-      {!isPending && freelancer && (
+      {!isError && (
         <>
-          <Profile
-            user={freelancer}
-            canEdit={false}
-            onHireMeClick={() => setOfferDialogOpen(true)}
-            disableHireMe={disableHireMe}
-          />
-          <UserSocialPreview title={freelancerFullName} />
-          <ProjectOfferDialog
-            isOpen={isOfferDialogOpen}
-            onClose={(open) => setOfferDialogOpen(open)}
-            onSubmit={mutation.mutate}
-            name={freelancerFullName}
-            formSubmitted={mutation.isSuccess}
-          />
+          <Header />
+          {!isPending && freelancer && (
+            <>
+              <Profile
+                user={freelancer}
+                canEdit={false}
+                onHireMeClick={() => setOfferDialogOpen(true)}
+                disableHireMe={disableHireMe}
+              />
+              <UserSocialPreview title={freelancerFullName} />
+              <ProjectOfferDialog
+                isOpen={isOfferDialogOpen}
+                onClose={(open) => setOfferDialogOpen(open)}
+                onSubmit={mutation.mutate}
+                name={freelancerFullName}
+                formSubmitted={mutation.isSuccess}
+              />
+            </>
+          )}
         </>
       )}
       {isError && (
