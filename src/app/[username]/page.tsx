@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
@@ -21,8 +22,9 @@ import { withSuffix } from '@/utils/user';
 
 const ProfilePage = ({ params }: { params: { username: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
 
   // Mutation to be called when an offer is sent from the logged in user to the freelancer
   const mutation = useMutation({
@@ -60,6 +62,13 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
   const disableHireMe = params.username === user?.accountId.split('.')[0];
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
+  const handleClaimMyProfile = () => {
+    if (user) {
+      logout();
+    }
+    router.push('/signin');
+  };
+
   return (
     <>
       <Header />
@@ -81,7 +90,12 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
           />
         </>
       )}
-      {isError && <ClaimYourProfile username={params.username} />}
+      {isError && (
+        <ClaimYourProfile
+          username={params.username}
+          handleClaimMyProfile={handleClaimMyProfile}
+        />
+      )}
     </>
   );
 };
@@ -89,23 +103,30 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
 export default ProfilePage;
 
 /** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
-const ClaimYourProfile = (props: { username: string }) => {
+const ClaimYourProfile = (props: {
+  username: string;
+  handleClaimMyProfile: () => void;
+}) => {
   return (
-    <div className='align-center container flex size-full flex-col items-center justify-center gap-10'>
+    <div className='align-center container mt-32 flex size-full flex-col items-center justify-center gap-10'>
       <div>
         <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
       </div>
       <div>
-        <div className='border-1 flex justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl'>
-          <span className='text-gray-500'>mysorbet.xyz/</span>
+        <div className='border-1 flex grow-0 justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl'>
+          <span className='text-gray-500'>mysorbet.io/</span>
           <span>{props.username}</span>
         </div>
-        <div className='mt-4 text-center'>
+        <div className='mt-4 text-center text-3xl'>
           The handle is available for you to build your internet presence today!
         </div>
       </div>
-      <Button size='lg' className='bg-sorbet text-xl'>
-        Claim Handle Today
+      <Button
+        size='lg'
+        className='bg-sorbet text-xl'
+        onClick={props.handleClaimMyProfile}
+      >
+        Claim Handle Now
       </Button>
     </div>
   );
