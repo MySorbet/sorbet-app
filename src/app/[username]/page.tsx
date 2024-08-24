@@ -60,6 +60,13 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
   const disableHireMe = params.username === user?.accountId.split('.')[0];
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
+<<<<<<< HEAD
+=======
+  const handleClaimMyProfile = () => {
+    router.push('/signin');
+  };
+
+>>>>>>> 6ddee53 (Refactor: removes logout functionality)
   return (
     <>
       {isError ? (
