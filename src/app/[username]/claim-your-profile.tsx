@@ -5,6 +5,7 @@ interface ClaimYourProfileProps {
   handleClaimMyProfile: () => void;
 }
 
+/** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
 export const ClaimYourProfile = ({
   handle,
   handleClaimMyProfile,

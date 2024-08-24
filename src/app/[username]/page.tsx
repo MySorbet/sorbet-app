@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
 import { getUserByAccountId } from '@/api/user';
+import { ClaimYourProfile } from '@/app/[username]/claim-your-profile';
 import {
   ProjectFormValues,
   ProjectOfferDialog,
@@ -12,14 +13,13 @@ import {
 import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { config } from '@/lib/config';
 import { User } from '@/types';
 import { withSuffix } from '@/utils/user';
 
-const ProfilePage = ({ params }: { params: { username: string } }) => {
+const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -34,7 +34,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
         clientUsername: withSuffix(user.accountId),
-        freelancerUsername: withSuffix(params.username),
+        freelancerUsername: withSuffix(params.handle),
       });
     },
     onError: () => {
@@ -52,12 +52,12 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
     data: freelancerResponse,
   } = useQuery({
     queryKey: ['freelancer'],
-    queryFn: () => getUserByAccountId(`${params.username}.${config.networkId}`),
+    queryFn: () => getUserByAccountId(`${params.handle}.${config.networkId}`),
   });
 
   // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data as User;
-  const disableHireMe = params.username === user?.accountId.split('.')[0];
+  const disableHireMe = params.handle === user?.accountId.split('.')[0];
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
 <<<<<<< HEAD
@@ -71,7 +71,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
     <>
       {isError ? (
         <ClaimYourProfile
-          username={params.username}
+          handle={params.handle}
           handleClaimMyProfile={handleClaimMyProfile}
         />
       ) : (
@@ -106,6 +106,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
 };
 
 export default ProfilePage;
+<<<<<<< HEAD
 
 /** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
 const ClaimYourProfile = (props: { username: string }) => {
@@ -146,3 +147,5 @@ const ClaimYourProfile = (props: { username: string }) => {
     </div>
   );
 };
+=======
+>>>>>>> 9147cfa (Minor: changes 'username' to 'handle')
