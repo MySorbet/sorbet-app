@@ -59,6 +59,7 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
 
   // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data as User;
+  console.log('user', user);
   const disableHireMe = params.username === user?.accountId.split('.')[0];
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 

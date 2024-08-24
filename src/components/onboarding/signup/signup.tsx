@@ -1,9 +1,14 @@
 'use client';
 
-import { createContext, Dispatch, SetStateAction, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react';
 
 import { AllSet } from './all-set';
-import { SignUpForm } from './signup-form';
 import { Step1 } from './step1';
 import { Step2 } from './step2';
 import { Step3 } from './step3';
@@ -30,6 +35,7 @@ export type UserSignUpContextType = {
 export const UserSignUpContext = createContext<UserSignUpContextType | null>(
   null
 );
+UserSignUpContext.displayName = 'UserSignUpContext';
 
 const initialUserSignUp: UserSignUp = {
   // useSignUp
@@ -49,12 +55,11 @@ const initialUserSignUp: UserSignUp = {
 /** Component hosting all 4 steps of the signup experience. Facilitates moving though steps via context. */
 const SignUp = () => {
   const [userData, setUserData] = useState<UserSignUp>(initialUserSignUp);
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(1);
   return (
     <UserSignUpContext.Provider
       value={{ userData, setUserData, step, setStep }}
     >
-      {step == 0 && <SignUpForm />}
       {step == 1 && <Step1 />}
       {step == 2 && <Step2 />}
       {step == 3 && <Step3 />}
@@ -64,3 +69,12 @@ const SignUp = () => {
 };
 
 export { SignUp };
+
+/** Use this hook throughout the user sign up experience to get and set user info and step */
+export const useUserSignUp = () => {
+  const ctx = useContext(UserSignUpContext);
+  if (!ctx) {
+    throw new Error('useUserSignUp must be used within a UserSignUpContext');
+  }
+  return ctx;
+};

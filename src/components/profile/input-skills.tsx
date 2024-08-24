@@ -25,11 +25,11 @@ export const InputSkills: React.FC<InputSkillsProps> = ({
   }, [tags]);
 
   return (
-    <div className='w-full flex flex-col gap-2 items-start'>
+    <div className='flex w-full flex-col items-start gap-2'>
       <label className='text-sm font-medium text-[#344054]'>
         Add your skills
       </label>
-      <span className='text-sm text-gray-600 italic'>
+      <span className='text-sm italic text-gray-600'>
         <i>Type in a skill and press enter to select</i>
       </span>
       <InputTags

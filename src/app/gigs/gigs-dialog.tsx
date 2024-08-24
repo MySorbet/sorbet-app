@@ -40,7 +40,6 @@ import {
   MilestoneType,
   OfferType,
 } from '@/types';
-import { Transaction } from '@near-wallet-selector/core';
 import BigNumber from 'bignumber.js';
 import {
   FileCheck2 as IconContract,
@@ -625,10 +624,10 @@ export const GigsDialog = ({
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogOverlay className='bg-[#F3F3F4]/90' />
         <DialogContent
-          className='flex flex-col md:h-[75vh] max-w-[900px] rounded-2xl'
+          className='flex max-w-[900px] flex-col rounded-2xl md:h-[75vh]'
           aria-describedby={undefined}
         >
-          <DialogTitle className='text-2xl flex justify-between px-4 py-2 h-14'>
+          <DialogTitle className='flex h-14 justify-between px-4 py-2 text-2xl'>
             {activeTab === 'Chat'
               ? chatParticipantName !== ''
                 ? `Chat with ${chatParticipantName}`
@@ -647,7 +646,7 @@ export const GigsDialog = ({
           )}
           {activeTab === 'Contract' ? (
             getContractPending ? (
-              <div className='flex w-full h-full items-center justify-center'>
+              <div className='flex h-full w-full items-center justify-center'>
                 <Spinner />
               </div>
             ) : (
@@ -665,11 +664,11 @@ const TabSelector: React.FC<TabSelectorProps> = ({
   setActiveTab,
 }) => {
   return (
-    <div className='border border-1 border-solid border-gray-100 rounded-full h-11'>
+    <div className='border-1 h-11 rounded-full border border-solid border-gray-100'>
       <Button
         variant={`outline`}
         className={cn(
-          'rounded-full border-none outline-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
+          'active:ouline-none hover:bg-sorbet gap-2 rounded-full border-none outline-none hover:text-white focus:outline-none',
           activeTab === 'Chat' && 'bg-sorbet text-white'
         )}
         onClick={() => setActiveTab('Chat')}
@@ -680,7 +679,7 @@ const TabSelector: React.FC<TabSelectorProps> = ({
       <Button
         variant={`outline`}
         className={cn(
-          'rounded-full border-none gap-2 active:ouline-none focus:outline-none hover:bg-sorbet hover:text-white',
+          'active:ouline-none hover:bg-sorbet gap-2 rounded-full border-none hover:text-white focus:outline-none',
           activeTab === 'Contract' && 'bg-sorbet text-white'
         )}
         onClick={() => setActiveTab('Contract')}

@@ -77,9 +77,9 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
 
   return (
-    <div className={`hidden md:block lg:w-[480px] isolate ${panelClass}`}>
+    <div className={`isolate hidden md:block lg:w-[480px] ${panelClass}`}>
       {error && (
-        <div className='animate-in slide-in-from-bottom-8 mb-2 z-0'>
+        <div className='animate-in slide-in-from-bottom-8 z-0 mb-2'>
           <InvalidAlert
             handleAlertVisible={(status: boolean) => {
               showError(status);
@@ -97,7 +97,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       )}
 
       {errorInvalidImage && (
-        <div className={'animate-in slide-in-from-bottom-8 mb-2 z-0'}>
+        <div className={'animate-in slide-in-from-bottom-8 z-0 mb-2'}>
           <InvalidAlert
             handleAlertVisible={(show: boolean) => showErrorInvalidImage(show)}
             title='Error uploading file'
@@ -110,11 +110,11 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         </div>
       )}
       <div
-        className={`flex flex-row gap-2 lg:gap-4 bg-white p-2 lg:p-4 rounded-2xl w-full drop-shadow-xl z-10 ${panelClass}`}
+        className={`z-10 flex w-full flex-row gap-2 rounded-2xl bg-white p-2 drop-shadow-xl lg:gap-4 lg:p-4 ${panelClass}`}
       >
         <div
           className={cn(
-            'flex items-center border-2 lg:py-2 lg:px-3 py-1 px-2 rounded-2xl flex-grow',
+            'flex flex-grow items-center rounded-2xl border-2 px-2 py-1 lg:px-3 lg:py-2',
             error ? 'border-red-500' : 'border-gray-300'
           )}
         >
@@ -126,11 +126,11 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               e.preventDefault();
               handleUrlSubmit();
             }}
-            className='w-full flex items-center flex-grow justify-between'
+            className='flex w-full flex-grow items-center justify-between'
           >
             <input
               type='text'
-              className='outline-none flex-1'
+              className='flex-1 outline-none'
               placeholder='paste link'
               onChange={handleUrlChange}
               value={url}
@@ -138,13 +138,13 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             />
             <button
               type='submit'
-              className='cursor-pointer flex-none bg-[#573DF5] text-white px-4 text-xs lg:text-sm py-1 rounded-lg'
+              className='flex-none cursor-pointer rounded-lg bg-[#573DF5] px-4 py-1 text-xs text-white lg:text-sm'
               disabled={loading}
             >
               {loading ? <Spinner size='small' /> : <span>Add</span>}
             </button>
           </form>
-          <div className='ml-2 text-gray-500 cursor-pointer'>
+          <div className='ml-2 cursor-pointer text-gray-500'>
             <Popover>
               <PopoverTrigger asChild>
                 <CircleHelp size={20} />
@@ -154,7 +154,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                   You can post a link from the following supported platforms and
                   click <b>Add</b>. The following platforms are supported:
                 </p>
-                <p className='font-semibold mt-2'>
+                <p className='mt-2 font-semibold'>
                   Dribbble, Behance, Spotify, Instagram, Soundcloud, YouTube,
                   Medium, Substack
                 </p>
@@ -167,7 +167,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <label
-                className={`cursor-pointer flex hover:text-sorbet align-center justify-center items-center ${panelClass} ${
+                className={`hover:text-sorbet align-center flex cursor-pointer items-center justify-center ${panelClass} ${
                   loading ? 'opacity-50' : ''
                 }`}
               >
