@@ -5,11 +5,10 @@ import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
 import { getUserByAccountId } from '@/api/user';
-import { ClaimYourProfile } from '@/app/[username]/claim-your-profile';
 import {
   ProjectFormValues,
   ProjectOfferDialog,
-} from '@/app/[username]/project-offer-dialog';
+} from '@/app/[handle]/project-offer-dialog';
 import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
@@ -18,6 +17,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { config } from '@/lib/config';
 import { User } from '@/types';
 import { withSuffix } from '@/utils/user';
+
+import { ClaimYourProfile } from './claim-your-profile';
 
 const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
