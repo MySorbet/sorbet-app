@@ -1,60 +1,53 @@
+import { usePrivy } from '@privy-io/react-auth';
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 
-import { fetchUserDetails, signIn, signInWithWallet } from '@/api/auth';
-import { getBalances } from '@/api/user';
-import { useWalletSelector } from '@/components/common';
-import { config } from '@/lib/config';
+import { getUserByEmail, getUserByPrivyId } from '@/api/user';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { reset, setOpenSidebar, updateUserData } from '@/redux/userSlice';
+import { reset, updateUserData } from '@/redux/userSlice';
 import { User } from '@/types';
 
 import { useLocalStorage } from './useLocalStorage';
 
-const AuthContext = createContext({
-  user: null as User | null,
-  accessToken: null as string | null,
-  appLoading: false as boolean,
-  loginWithEmail: async (
-    email: string
-  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
-    return { status: '', message: '', error: {}, data: {} };
-  },
-  loginWithWallet: async (
-    accountId: string
-  ): Promise<{
-    status: string;
-    message: string;
-    error?: any;
-    data?: any;
-  }> => {
-    return { status: '', message: '', error: {}, data: {} };
-  },
-  logout: () => {
-    /* noop */
-  },
-  checkAuth: async (): Promise<User | null> => {
-    return null;
-  },
-});
+type LoginResultFailed = {
+  status: 'failed';
+  message: string;
+  error?: any;
+};
+type LoginResultSuccess = {
+  status: 'success';
+  message: string;
+  data: User;
+};
+
+type LoginResult = LoginResultFailed | LoginResultSuccess;
+
+interface AuthContextType {
+  user: User | null;
+  loginWithEmail: (email: string) => Promise<LoginResult>;
+  loginWithPrivyId: (id: string) => Promise<LoginResult>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  // We store a copy of the user in local storage so we don't have to fetch it every time
   const [user, setUser] = useLocalStorage<User | null>('user', null);
-  const [appLoading, setAppLoading] = useState(true);
-  const [accessToken, setAccessToken] = useLocalStorage<string | null>(
-    'access_token',
-    null
-  );
-  const dispatch = useAppDispatch();
-  const { modal: nearModal, selector } = useWalletSelector();
-  const reduxUser = useAppSelector((state) => state.userReducer.user);
 
+  // And one in redux to make it globally available
+  const reduxUser = useAppSelector((state) => state.userReducer.user);
+  const dispatch = useAppDispatch();
+
+  const { logout: logoutPrivy } = usePrivy();
+
+  // We sync the user from redux to local storage
   useEffect(() => {
     if (
       reduxUser &&
@@ -63,153 +56,122 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       reduxUser.id
     ) {
       setUser(reduxUser);
-      setAppLoading(false);
     }
   }, [reduxUser, setUser]);
 
-  const registerWithEmail = async (email: string) => {
-    try {
-      console.log('initiating fast auth sign up');
-      selector.wallet('fast-auth-wallet').then((fastAuthWallet: any) => {
-        fastAuthWallet.signIn({
-          contractId: config.contractId,
-          email: email,
-          isRecovery: false,
-          successUrl: config.signUpSuccessUrl,
-          failureUrl: config.signUpFailureUrl,
-        });
-      });
-      return {
-        status: 'success',
-        message: 'register successful',
-      };
-    } catch (error) {
-      return {
-        status: 'failed',
-        message: 'register failed',
-      };
-    }
-  };
-
   /** Attempts to sign into sorbet, storing the access token and user if successful  */
-  const loginWithEmail = async (
-    email: string
-  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
-    try {
-      const response = await signIn({ email });
-      if (response) {
-        const user = response.data.user;
-        const token = response.data.access_token;
-        setUser(user);
-        setAccessToken(token);
-        dispatch(updateUserData(user));
-        dispatch(setOpenSidebar(false));
-
-        return {
-          status: 'success',
-          message: 'Login successful',
-          data: response.data,
-        };
-      } else {
+  const loginWithEmail = useCallback(
+    async (email: string): Promise<LoginResult> => {
+      try {
+        const response = await getUserByEmail(email);
+        if (response) {
+          const sorbetUser = response.data;
+          dispatch(updateUserData(sorbetUser));
+          return {
+            status: 'success',
+            message: 'Login successful',
+            data: response.data,
+          };
+        } else {
+          return {
+            status: 'failed',
+            message: 'Failed to login. Server threw an error',
+          };
+        }
+      } catch (error) {
         return {
           status: 'failed',
-          message: 'Failed to login. Server threw an error',
-          error: {},
+          message: 'Login failed',
+          error: error,
         };
       }
-    } catch (error) {
-      return {
-        status: 'failed',
-        message: 'Login failed',
-        error: error,
-      };
-    }
-  };
+    },
+    [dispatch]
+  );
 
-  const loginWithWallet = async (accountId: string) => {
-    try {
-      const response = await signInWithWallet(accountId);
-      console.log('wallet sign in res', response);
-      if (response.data) {
-        const user = response.data.user;
-        const token = response.data.access_token;
-        setUser(user);
-        setAccessToken(token);
-        dispatch(updateUserData(user));
-        dispatch(setOpenSidebar(false));
+  /** Find a user by privy id in the sorbet db, storing the access token and user if successful  */
+  const loginWithPrivyId = useCallback(
+    async (id: string): Promise<LoginResult> => {
+      try {
+        const response = await getUserByPrivyId(id);
+        if (response) {
+          const sorbetUser = response.data;
+          dispatch(updateUserData(sorbetUser));
+          return {
+            status: 'success',
+            message: 'Login successful',
+            data: response.data,
+          };
+        } else {
+          return {
+            status: 'failed',
+            message: 'Failed to login. Server threw an error',
+          };
+        }
+      } catch (error) {
         return {
-          ...response,
-          status: 'success',
-          message: 'Login successful',
-          data: response.data,
-        };
-      } else {
-        return {
-          ...response,
           status: 'failed',
-          message: 'Failed to sign in with wallet',
+          message: 'Login failed',
+          error: error,
         };
       }
-    } catch (error) {
-      console.log('wallet sign in catch', error);
-      return { status: 'failed', message: 'Login failed', error: error };
-    } finally {
-      setAppLoading(false);
-    }
-  };
+    },
+    [dispatch]
+  );
 
-  const checkAuth = async () => {
-    if (!accessToken) {
-      return null;
-    }
+  // const checkAuth = async () => {
+  //   if (!accessToken) {
+  //     return null;
+  //   }
 
-    setAppLoading(true);
+  //   setAppLoading(true);
 
-    try {
-      const response = await fetchUserDetails(accessToken as string);
-      const authenticatedUser = response.data as User;
+  //   try {
+  //     const response = await fetchUserDetails(accessToken as string);
+  //     const authenticatedUser = response.data as User;
 
-      const balanceResponse = await getBalances(authenticatedUser.id);
-      if (balanceResponse && balanceResponse.data) {
-        setUser({ ...authenticatedUser, balance: balanceResponse.data });
-      } else {
-        setUser(authenticatedUser);
-      }
+  //     const balanceResponse = await getBalances(authenticatedUser.id);
+  //     if (balanceResponse && balanceResponse.data) {
+  //       setUser({ ...authenticatedUser, balance: balanceResponse.data });
+  //     } else {
+  //       setUser(authenticatedUser);
+  //     }
 
-      dispatch(updateUserData(authenticatedUser));
+  //     dispatch(updateUserData(authenticatedUser));
 
-      return authenticatedUser;
-    } catch (error) {
-      return null;
-    } finally {
-      setAppLoading(false);
-    }
-  };
+  //     return authenticatedUser;
+  //   } catch (error) {
+  //     return null;
+  //   } finally {
+  //     setAppLoading(false);
+  //   }
+  // };
 
-  const logout = () => {
-    setUser(null);
-    setAccessToken(null);
-    setAppLoading(false);
+  const logout = useCallback(() => {
+    logoutPrivy();
     dispatch(reset());
-  };
+  }, [dispatch, logoutPrivy]);
 
   const value = useMemo(
     () => ({
       user,
-      accessToken,
       loginWithEmail,
-      loginWithWallet,
-      registerWithEmail,
+      loginWithPrivyId,
       logout,
-      appLoading,
-      checkAuth,
     }),
-    [user, accessToken, appLoading]
+    [loginWithEmail, loginWithPrivyId, logout, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+/** Use this hook to get access to the currently logged in sorbet user and methods to log them in and out */
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return ctx;
 };
+
+export default AuthProvider;

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-import { type Network,type NetworkId, NetworkIds } from '@/types/network';
-import environment from '@/utils/fastAuth/environment';
+import { type Network, type NetworkId, NetworkIds } from '@/types/network';
 
 // Zod schema for the app configuration
 const appConfigSchema = z.object({
@@ -95,6 +94,3 @@ export const networks: Record<NetworkId, Network> = {
 // The current network is determined by the networkId in the config after parsing the environment variables
 export const networkId = config.networkId;
 export const network = networks[config.networkId];
-
-// Base path comes from the fastAuth environment which holds a number of environment vars not mentioned in the app config
-export const basePath = environment.REACT_APP_BASE_PATH;

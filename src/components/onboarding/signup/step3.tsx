@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader, Search } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser, useUploadProfileImage } from '@/hooks';
@@ -9,13 +9,11 @@ import { useAppSelector } from '@/redux/hook';
 import { User } from '@/types';
 
 import { FormContainer } from '../form-container';
-import { UserSignUpContext, UserSignUpContextType } from './signup';
+import { useUserSignUp } from './signup';
 import { SkillBadge } from './skill-badge';
 
 const Step3 = () => {
-  const { userData, setUserData, setStep } = useContext(
-    UserSignUpContext
-  ) as UserSignUpContextType;
+  const { userData, setUserData, setStep } = useUserSignUp();
   const [skill, setSkill] = useState<string>('');
   const [skills, setSkills] = useState<string[]>([]);
   const { user: authUser } = useAuth();

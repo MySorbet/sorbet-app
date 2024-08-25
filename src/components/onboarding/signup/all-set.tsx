@@ -8,9 +8,11 @@ import { FormContainer } from '../form-container';
 import { PasteLinkDemo } from './paste-link-demo';
 import { SocialsDemo } from './socials-demo';
 import { WidgetResizeDemo } from './widget-resize-demo';
+import { useUserSignUp } from '@/components/onboarding/signup/signup';
 
 const AllSet = () => {
   const router = useRouter();
+  const { userData } = useUserSignUp();
 
   return (
     <FormContainer>
@@ -33,7 +35,7 @@ const AllSet = () => {
         </div>
         <Button
           className='w-full border border-[#7F56D9] bg-[#573DF5] text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
-          onClick={() => router.push('/')}
+          onClick={() => router.push(`/${userData.accountId}`)}
         >
           Edit My Profile
         </Button>

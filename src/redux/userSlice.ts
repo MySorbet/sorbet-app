@@ -4,16 +4,12 @@ import type { User } from '@/types';
 
 type userState = {
   user: User;
-  users: User[];
-  role: string;
   toggleOpenSidebar: boolean;
   toggleProfileEdit: boolean;
 };
 
 const initialState: userState = {
   user: {} as User,
-  users: [],
-  role: 'freelancer',
   toggleOpenSidebar: false,
   toggleProfileEdit: false,
 };
@@ -23,15 +19,8 @@ export const user = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-
     updateUserData: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
-    },
-    setUsers: (state, action: PayloadAction<User[]>) => {
-      state.users = action.payload;
-    },
-    setRole: (state, action: PayloadAction<string>) => {
-      state.role = action.payload;
     },
     setOpenSidebar: (state, action: PayloadAction<boolean>) => {
       state.toggleOpenSidebar = action.payload;
@@ -42,5 +31,6 @@ export const user = createSlice({
   },
 });
 
-export const { updateUserData, setUsers, setRole, reset, setOpenSidebar, setProfileEdit } = user.actions;
+export const { updateUserData, reset, setOpenSidebar, setProfileEdit } =
+  user.actions;
 export default user.reducer;
