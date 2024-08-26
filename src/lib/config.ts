@@ -13,11 +13,6 @@ const appConfigSchema = z.object({
   fastAuthDomain: z.string().url(),
   googleMapKey: z.string(),
   sendbirdAppId: z.string(),
-  loginSuccessUrl: z.string().optional(),
-  loginFailureUrl: z.string().optional(),
-  signUpSuccessUrl: z.string().optional(),
-  signUpFailureUrl: z.string().optional(),
-  nearMaxAllowances: z.string().optional(),
 });
 // Infer TS type from the Zod schema
 type AppConfig = z.infer<typeof appConfigSchema>;
@@ -33,11 +28,6 @@ export const config: AppConfig = appConfigSchema.parse({
   fastAuthDomain: process.env.NEXT_PUBLIC_FAST_AUTH_DOMAIN,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
   sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
-  loginSuccessUrl: process.env.NEXT_PUBLIC_LOGIN_SUCCESS_URL,
-  loginFailureUrl: process.env.NEXT_PUBLIC_LOGIN_FAILED_URL,
-  signUpSuccessUrl: process.env.NEXT_PUBLIC_SIGNUP_SUCCESS_URL,
-  signUpFailureUrl: process.env.NEXT_PUBLIC_SIGNUP_FAILED_URL,
-  nearMaxAllowances: process.env.NEXT_PUBLIC_NEAR_MAX_ALLOWANCE,
 });
 
 // Networks require more information than just the networkId
