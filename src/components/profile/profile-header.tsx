@@ -1,5 +1,4 @@
-import { MarkerPin03, Share06} from '@untitled-ui/icons-react';
-import Image from 'next/image';
+import { MarkerPin03, Share06, User01 } from '@untitled-ui/icons-react';
 import React from 'react';
 
 import { ShareProfileDialog } from '@/components/profile/share/share-profile-dialog';
@@ -34,13 +33,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <div className='flex justify-center'>
           <Avatar className='h-[100px] w-[100px]'>
             <AvatarImage src={user.profileImage} alt={user.accountId} />
-            <AvatarFallback>
-              <Image
-                src='/avatar.svg'
-                width={100}
-                height={100}
-                alt='Fallback user image'
-              />
+            <AvatarFallback className='border-primary-default border-2'>
+              <User01 className='h-12 w-12 text-gray-500' />
             </AvatarFallback>
           </Avatar>
         </div>
