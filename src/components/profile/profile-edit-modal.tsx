@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { User01 } from '@untitled-ui/icons-react';
 import { Loader } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -15,6 +16,7 @@ import {
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
+import { cn } from '@/lib/utils';
 import type { User } from '@/types';
 
 const schema = z.object({
@@ -155,13 +157,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogContent
-        className={
-          updateProfilePending ||
-          deleteProfileImagePending ||
-          uploadProfileImagePending
-            ? 'opacity-50'
-            : ''
-        }
+        // className={
+        //   updateProfilePending ||
+        //   deleteProfileImagePending ||
+        //   uploadProfileImagePending
+        //     ? 'opacity-50'
+        //     : ''
+        // }
+        className={cn('sm:rounded-[32px]')}
       >
         <DialogHeader className='text-2xl font-semibold'>
           Edit Profile
@@ -169,12 +172,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
             <Avatar className='border-primary-default h-20 w-20 border-2'>
-              <AvatarImage
-                src={image || '/avatar.svg'}
-                alt='new profile image'
-              />
-              <AvatarFallback className='text-2xl font-semibold'>
-                {user.accountId.slice(0, 2).toUpperCase()}
+              <AvatarImage src={image} alt='new profile image' />
+              <AvatarFallback className='bg-white'>
+                <User01 className='text-muted-foreground h-10 w-10' />
               </AvatarFallback>
             </Avatar>
             <label
