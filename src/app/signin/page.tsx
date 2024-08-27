@@ -1,12 +1,13 @@
 'use client';
 // TODO: Remove use client and fix trickle down errors
 
-import { OnboardingShell, SignIn } from '@/components/onboarding';
+import { OnboardingShell } from '@/components/onboarding';
+import { PrivyLogin } from '@/components/onboarding/privy-login';
 
 const SignInPage = () => {
   return (
     <OnboardingShell>
-      <SignIn />
+      <PrivyLogin />
     </OnboardingShell>
   );
 };

@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
   }
 
   const handleLogout = async () => {
-    logout();
+    await logout();
     router.push('/');
   };
 

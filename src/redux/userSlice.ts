@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { User } from '@/types';
+import type { User, UserWithId } from '@/types';
 
 type userState = {
-  user: User;
+  user: UserWithId;
   toggleOpenSidebar: boolean;
   toggleProfileEdit: boolean;
 };
@@ -19,7 +19,7 @@ export const user = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
-    updateUserData: (state, action: PayloadAction<User>) => {
+    updateUserData: (state, action: PayloadAction<UserWithId>) => {
       state.user = action.payload;
     },
     setOpenSidebar: (state, action: PayloadAction<boolean>) => {

@@ -51,7 +51,7 @@ const Step3 = () => {
       imageFormData.append('file', userData.file);
       imageFormData.append('fileType', 'image');
       imageFormData.append('destination', 'profile');
-      imageFormData.append('oldImageUrl', user?.profileImage);
+      imageFormData.append('oldImageUrl', user?.profileImage ?? '');
       imageFormData.append('userId', user?.id);
 
       await uploadProfileImage({

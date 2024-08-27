@@ -1,14 +1,9 @@
 'use client';
 
-import { OnboardingShell } from '@/components';
-import { PrivyLogin } from '@/components/onboarding/privy-login';
+import Splash from '@/app/splash';
 
 const Home = () => {
-  return (
-    <OnboardingShell>
-      <PrivyLogin />
-    </OnboardingShell>
-  );
+  return <Splash />;
 };
 
 export default Home;

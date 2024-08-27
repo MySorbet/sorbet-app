@@ -14,7 +14,6 @@ import { Step2 } from './step2';
 import { Step3 } from './step3';
 
 type UserSignUp = {
-  email: string;
   firstName: string;
   lastName: string;
   handle: string;
@@ -41,7 +40,6 @@ const initialUserSignUp: UserSignUp = {
   // useSignUp
   firstName: '',
   lastName: '',
-  email: '',
   handle: '',
   // useUploadProfileImageAsync
   image: '',
