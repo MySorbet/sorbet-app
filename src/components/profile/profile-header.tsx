@@ -56,7 +56,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               </span>
             </div>
             <div className='flex justify-center'>
-              <div className='lg:w-7/12'>
+              <div className='max-w-prose'>
                 <h1 className='text-center text-4xl font-bold leading-[44px]'>
                   {user.bio}
                 </h1>
