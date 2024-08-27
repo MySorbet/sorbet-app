@@ -53,11 +53,11 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
 }) => {
   const {
     register,
-  handleSubmit,
+    handleSubmit,
     control,
     setValue,
     watch,
-    formState: { errors},
+    formState: { errors, isValid },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     mode: 'onChange', // This will enable re-validation on every change

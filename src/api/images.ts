@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { API_URL, withAuthHeader } from '@/utils';
 
@@ -7,18 +7,14 @@ export const uploadProfileImageAsync = async (data: FormData) => {
     const response = await axios.post(
       `${API_URL}/images/upload`,
       data,
-      await withAuthHeader()
+      withAuthHeader()
     );
 
     return response;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(
-        `Failed to upload profile image: ${error.response?.data.message}`
-      );
-    } else {
-      throw new Error(`Failed to upload profile image: ${error}`);
-    }
+  } catch (error: any) {
+    throw new Error(
+      `Failed to upload profile image: ${error.response.data.message}`
+    );
   }
 };
 
@@ -27,7 +23,7 @@ export const uploadWidgetsImageAsync = async (data: FormData) => {
     const response = await axios.post(
       `${API_URL}/images/widgets`,
       data,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {

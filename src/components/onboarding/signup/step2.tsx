@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
-import { useUserSignUp } from '@/components/onboarding/signup/signup';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
 import { FormContainer } from '../form-container';
+import { UserSignUpContext, UserSignUpContextType } from './signup';
 
 const Step2 = () => {
-  const { setUserData, setStep, userData } = useUserSignUp();
+  const { setUserData, setStep, userData } = useContext(
+    UserSignUpContext
+  ) as UserSignUpContextType;
   const [bio, setBio] = useState<string>('');
 
   const handleNext = () => {

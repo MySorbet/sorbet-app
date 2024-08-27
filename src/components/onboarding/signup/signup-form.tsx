@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, Loader } from 'lucide-react';
+import * as near_api_js_1 from 'near-api-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -9,6 +10,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useWalletSelector } from '@/components/common';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -26,9 +28,14 @@ import {
   useSignUp,
 } from '@/hooks';
 import { config, network } from '@/lib/config';
+import {
+  accountAddressPatternNoSubAccount,
+  getEmailId,
+} from '@/utils/fastAuth/form-validation';
+
 import { FormContainer } from '../form-container';
 import { handleCreateAccount } from '../signin';
-import { useUserSignUp } from './signup';
+import { UserSignUpContext, UserSignUpContextType } from './signup';
 
 const checkIsAccountAvailable = async (
   desiredUsername: string
@@ -71,6 +78,10 @@ const schema = z.object({
   accountId: z
     .string()
     .min(1, { message: 'Account ID is required' })
+    .regex(
+      accountAddressPatternNoSubAccount,
+      'Accounts must be lowercase and may contain - or _, but they may not begin or end with a special character or have two consecutive special characters.'
+    )
     .refine(
       async (accountId) => {
         const isAvailable = await checkIsAccountAvailable(accountId);
@@ -86,7 +97,9 @@ const schema = z.object({
 const SignUpForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setUserData, setStep } = useUserSignUp();
+  const { setUserData, setStep } = useContext(
+    UserSignUpContext
+  ) as UserSignUpContextType;
   const [usernameAvailable, setUsernameAvailable] = useState<boolean>(false);
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -103,7 +116,7 @@ const SignUpForm = () => {
   const { isValid, touchedFields, errors } = useFormState({
     control: form.control,
   });
-  // const { modal: nearModal, accounts, selector } = useWalletSelector();
+  const { modal: nearModal, accounts, selector } = useWalletSelector();
   const { mutateAsync: loginWithEmail } = useLoginWithEmail();
   const { isPending: signUpPending, mutateAsync: signUp } = useSignUp();
   const {

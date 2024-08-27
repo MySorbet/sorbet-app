@@ -1,7 +1,35 @@
+'use client';
+
+import { AxiosRequestConfig } from 'axios';
+
 import { config } from '@/lib/config';
 
 // TODO: remove this abstraction
 export const API_URL = config.sorbetApiUrl;
 
-export * from './user';
-export * from './withAuthHeader';
+/** Adds an "Authorization: Bearer: xyz " header to an optionally provided given axios config.
+ * If no config is provided, a new one is created with the Authorization header.
+ *
+ * If an error occurs getting the token, the error is logged and the original config is returned.
+ * In case there is no original config, {} is returned.
+ *
+ * @example
+ * const response = await axios.get('/api/endpoint', withAuthHeader());
+ */
+export const withAuthHeader = (
+  config: AxiosRequestConfig = {}
+): AxiosRequestConfig => {
+  const accessToken = localStorage.getItem('access_token');
+  if (accessToken) {
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        Authorization: `Bearer ${accessToken.replace(/['"]+/g, '')}`,
+      },
+    };
+  } else {
+    console.error('No access token found in local storage');
+    return config;
+  }
+};

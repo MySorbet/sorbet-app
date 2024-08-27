@@ -77,7 +77,7 @@ export const getWidgetsByUsername = async (username: string) => {
   try {
     const res = await axios.get(
       `${config.sorbetApiUrl}/widgets/username/${username}`,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -92,7 +92,7 @@ export const getWidgetsForUser = async (userId: string) => {
     try {
       const response = await axios.get(
         `${config.sorbetApiUrl}/widgets/user/${userId}`,
-        await withAuthHeader()
+        withAuthHeader()
       );
       return response.data;
     } catch (error: any) {
@@ -112,7 +112,7 @@ export const updateWidgetsBulk = async (
     const response = await axios.patch(
       `${config.sorbetApiUrl}/widgets/bulk-update`,
       widgetLayouts,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -146,7 +146,7 @@ export const updateWidget = async (
     const res = await axios.patch(
       `${config.sorbetApiUrl}/widgets/${widgetId}`,
       payload,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -158,7 +158,7 @@ export const deleteWidget = async (id: string) => {
   try {
     const response = await axios.delete(
       `${config.sorbetApiUrl}/widgets/${id}`,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -173,7 +173,7 @@ export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/dribbble`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -190,7 +190,7 @@ export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
     const response = axios.post(
       `${config.sorbetApiUrl}/widgets/behance`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -209,7 +209,7 @@ export const getMediumArticleMetadata = async ({
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/medium`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -226,7 +226,7 @@ export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/youtube`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -243,7 +243,7 @@ export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/substack`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -260,7 +260,7 @@ export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/spotify/album`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -277,7 +277,7 @@ export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/spotify/song`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -294,7 +294,7 @@ export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/soundcloud`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -313,7 +313,7 @@ export const getInstagramProfileMetadata = async ({
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/instagram`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -330,7 +330,7 @@ export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/photo`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -347,7 +347,7 @@ export const getGithubProfile = async ({ url }: GetGithubWidget) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/github`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -364,7 +364,7 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/twitter`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -381,7 +381,7 @@ export const getLinkedInProfile = async ({ url }: GetItemTypeBase) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/linkedin`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -398,7 +398,7 @@ export const getLinkData = async ({ url }: GetItemTypeBase) => {
     const response = await axios.post(
       `${config.sorbetApiUrl}/widgets/link`,
       body,
-      await withAuthHeader()
+      withAuthHeader()
     );
     return response;
   } catch (error: any) {
