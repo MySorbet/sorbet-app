@@ -30,7 +30,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   return (
     <>
       <div className='flex flex-col items-center gap-2'>
-        {/* Avatar start */}
         <div className='flex justify-center'>
           <Avatar className='h-[100px] w-[100px]'>
             <AvatarImage
@@ -42,25 +41,19 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             </AvatarFallback>
           </Avatar>
         </div>
-        {/* Avatar end */}
         <div>
-          {/* Name start */}
           <div className='flex justify-center'>
             {user.firstName && user.lastName && (
               <h1 className='text-2xl font-bold text-[#101828]'>{`${user.firstName} ${user.lastName}`}</h1>
             )}
           </div>
-          {/* Name end */}
           <div className='flex flex-col items-center gap-1'>
-            {/* City start */}
             <div className='flex items-center gap-1'>
               <MarkerPin03 className='h-4 w-4 text-[#667085]' />
               <span className='text-xs leading-[18px] text-[#667085]'>
                 {user.city}
               </span>
             </div>
-            {/* City end */}
-            {/* Bio start */}
             <div className='flex justify-center'>
               <div className='lg:w-7/12'>
                 <h1 className='text-center text-4xl font-bold leading-[44px]'>
@@ -68,8 +61,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 </h1>
               </div>
             </div>
-            {/* Bio end */}
-            {/* Tags start */}
             <div className='grid grid-cols-2 justify-center gap-1 md:flex md:flex-row lg:flex lg:grid-cols-none lg:flex-row'>
               {user.tags &&
                 user.tags.map((tag: string) => (
@@ -81,7 +72,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                   </span>
                 ))}
             </div>
-            {/* Tags end */}
           </div>
         </div>
       </div>
@@ -97,7 +87,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           </div>
         )}
       </div>
-      {/* CTAs start */}
       {user && (
         <div className='flex flex-row items-center justify-center gap-6'>
           {canEdit ? (
@@ -131,7 +120,6 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           />
         </div>
       )}
-      {/* CTAs end */}
     </>
   );
 };
