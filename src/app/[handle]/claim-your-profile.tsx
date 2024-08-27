@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import ShinyButton from '@/components/common/shiny-button';
 import { BlurredLogos } from '@/components/onboarding/blurred-logos';
 
@@ -6,7 +8,7 @@ interface ClaimYourProfileProps {
   handleClaimMyProfile: () => void;
 }
 
-/** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
+/** Component to display a "Claim your profile CTA when visiting a profile that does not exist" */
 export const ClaimYourProfile = ({
   handle,
   handleClaimMyProfile,
@@ -17,7 +19,7 @@ export const ClaimYourProfile = ({
         <BlurredLogos />
       </div>
       <div>
-        <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
+        <Image src='/svg/logo.svg' alt='logo' width={100} height={100} />
       </div>
       <div>
         <div className='border-1 flex grow-0 justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl drop-shadow-xl'>
