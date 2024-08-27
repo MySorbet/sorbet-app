@@ -6,7 +6,8 @@ import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputSkills, LocationInput } from '@/components/profile';
+import { LocationInput } from '@/components/profile';
+import TagInput from '@/components/syntax-ui/tag-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
@@ -55,6 +56,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     formState: { errors },
     control,
     setValue,
+    getValues,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -149,8 +151,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
-  const handleSkillChange = (skills: string[]) => {
-    setSkills(skills);
+  const handleSkillChange = (newSkills: string[]) => {
+    setSkills(newSkills);
     setValue('tags', skills);
   };
 
@@ -289,15 +291,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </div>
               <div className='item w-full'>
                 <Controller
+                  {...register('tags')}
                   name='tags'
                   control={control}
                   render={() => (
-                    <InputSkills
-                      placeholder='Skill (ex: Developer)'
-                      handleTagsChange={(tags) => {
-                        handleSkillChange(tags);
-                      }}
-                      initialTags={user?.tags}
+                    <TagInput
+                      initialKeywords={skills}
+                      onKeywordsChange={handleSkillChange}
+                      unique
                     />
                   )}
                 />
