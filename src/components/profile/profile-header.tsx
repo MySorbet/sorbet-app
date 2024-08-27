@@ -1,4 +1,4 @@
-import { SquareArrowOutUpRight } from 'lucide-react';
+import { MarkerPin03, Share06, User01 } from '@untitled-ui/icons-react';
 import React from 'react';
 
 import { ShareProfileDialog } from '@/components/profile/share/share-profile-dialog';
@@ -29,37 +29,48 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   return (
     <>
-      <div className='flex justify-center'>
-        <Avatar className='h-20 w-20'>
-          <AvatarImage
-            src={user.profileImage || '/avatar.svg'}
-            alt={user.accountId}
-          />
-          <AvatarFallback className='text-2xl font-semibold'>
-            {user.accountId.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </div>
-      <div className='flex justify-center'>
-        {user.firstName && user.lastName && (
-          <h1 className='text-2xl font-semibold'>{`${user.firstName} ${user.lastName}`}</h1>
-        )}
-      </div>
-      <div className='flex justify-center'>
-        <div className='lg:w-5/12'>
-          <h1 className='text-center text-3xl font-semibold'>{user.bio}</h1>
+      <div className='flex flex-col items-center gap-2'>
+        <div className='flex justify-center'>
+          <Avatar className='h-[100px] w-[100px]'>
+            <AvatarImage src={user.profileImage} alt={user.accountId} />
+            <AvatarFallback className='border-primary-default border-2'>
+              <User01 className='h-12 w-12 text-muted-foreground' />
+            </AvatarFallback>
+          </Avatar>
         </div>
-      </div>
-      <div className='grid grid-cols-2 justify-center gap-2 md:flex md:flex-row lg:flex lg:grid-cols-none lg:flex-row'>
-        {user.tags &&
-          user.tags.map((tag: string) => (
-            <span
-              className='border-1 rounded-full border border-gray-400 px-2 py-1 text-center text-xs'
-              key={tag}
-            >
-              {tag}
-            </span>
-          ))}
+        <div>
+          <div className='flex justify-center'>
+            {user.firstName && user.lastName && (
+              <h1 className='text-2xl font-bold text-[#101828]'>{`${user.firstName} ${user.lastName}`}</h1>
+            )}
+          </div>
+          <div className='flex flex-col items-center gap-1'>
+            <div className='flex items-center gap-1'>
+              <MarkerPin03 className='h-4 w-4 text-[#667085]' />
+              <span className='text-xs leading-[18px] text-[#667085]'>
+                {user.city}
+              </span>
+            </div>
+            <div className='flex justify-center'>
+              <div className='lg:w-7/12'>
+                <h1 className='text-center text-4xl font-bold leading-[44px]'>
+                  {user.bio}
+                </h1>
+              </div>
+            </div>
+            <div className='grid grid-cols-2 justify-center gap-1 md:flex md:flex-row lg:flex lg:grid-cols-none lg:flex-row'>
+              {user.tags &&
+                user.tags.map((tag: string) => (
+                  <span
+                    className='rounded-full border-[1.5px] border-[#D0D5DD] px-2 py-[2px] text-xs font-medium leading-[18px] text-[#344054]'
+                    key={tag}
+                  >
+                    {tag}
+                  </span>
+                ))}
+            </div>
+          </div>
+        </div>
       </div>
       <div>
         {(!user.firstName || !user.lastName || !user.bio) && canEdit && (
@@ -74,32 +85,32 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         )}
       </div>
       {user && (
-        <div className='mt-4 flex flex-row items-center justify-center gap-6'>
+        <div className='flex flex-row items-center justify-center gap-6'>
           {canEdit ? (
             <Button
               variant='outline'
-              className='px-5'
+              className='rounded-lg border-[#D0D5DD] px-4 py-[10px] drop-shadow-sm'
               onClick={() => onEditClick()}
             >
-              <span>Edit Profile</span>
+              <span className='text-base text-[#344054]'>Edit Profile</span>
             </Button>
           ) : (
             <Button
-              className='bg-[#573DF5] px-5'
+              className='bg-[#573DF5] px-5 text-base'
               onClick={onHireMeClick}
               disabled={disableHireMe}
             >
               Hire Me
-            </Button> // Added onClick event for Hire Me button
+            </Button>
           )}
           <ShareProfileDialog
             trigger={
               <Button
-                className='align-center flex flex-row items-center gap-1 bg-inherit text-[#573DF5] hover:bg-inherit'
+                className='align-center flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
                 onClick={handleUrlToClipboard()}
               >
-                <SquareArrowOutUpRight size={16} />
-                <span>Share</span>
+                <Share06 className='h-5 w-5' />
+                <span className='text-base'>Share</span>
               </Button>
             }
             username={user.accountId.split('.')[0]}
