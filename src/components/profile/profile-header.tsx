@@ -34,7 +34,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <Avatar className='h-[100px] w-[100px]'>
             <AvatarImage src={user.profileImage} alt={user.accountId} />
             <AvatarFallback className='border-primary-default border-2'>
-              <User01 className='h-12 w-12 text-gray-500' />
+              <User01 className='h-12 w-12 text-muted-foreground' />
             </AvatarFallback>
           </Avatar>
         </div>
