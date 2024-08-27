@@ -27,7 +27,7 @@ export const Profile: FC<{
   return (
     <div className='container mx-auto py-4'>
       {user && (
-        <div className='flex flex-col items-center gap-6 py-6'>
+        <div className='flex flex-col items-center gap-4 py-6'>
           <ProfileHeader
             user={user}
             onEditClick={handleProfileEdit}
