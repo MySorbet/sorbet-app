@@ -141,6 +141,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       router.replace(`/${sorbetUser.handle}`);
     },
     onError: (error) => {
+      // Ignore the user exiting the auth flow
+      if (error === 'exited_auth_flow') {
+        return;
+      }
       toast({
         title: 'Error',
         description: `Error logging in: ${error}`,
