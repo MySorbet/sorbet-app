@@ -1,4 +1,5 @@
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
+import { cn } from '@/lib/utils';
 import { SearchLg, X } from '@untitled-ui/icons-react';
 import React, { useState } from 'react';
 
@@ -15,6 +16,8 @@ const TagInput = ({
 }: KeywordsInputProps) => {
   const [keywords, setKeywords] = useState<string[]>(initialKeywords);
   const [inputValue, setInputValue] = useState<string>('');
+
+  const isMaxSkills = keywords.length >= 5;
 
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -41,7 +44,11 @@ const TagInput = ({
   const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
     const paste = event.clipboardData.getData('text');
-    const keywordsToAdd = paste
+    const allwords = paste.split(', ').map((word) => word.trim());
+    const newallwords = allwords.slice(0, 5);
+    const strippedArr = newallwords.join(', ');
+
+    const keywordsToAdd = strippedArr
       .split(/[\n\t,]+/)
       .map((keyword) => keyword.trim())
       .filter(Boolean);
@@ -99,9 +106,12 @@ const TagInput = ({
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}
           onBlur={(e) => handleBlur(e)}
-          className='my-1 flex-1 text-sm outline-none'
+          className={cn(
+            isMaxSkills && 'cursor-not-allowed bg-inherit',
+            'my-1 flex-1 text-sm outline-none'
+          )}
           placeholder='Type skill and press Enter...'
-          disabled={keywords.length >= 5}
+          disabled={isMaxSkills}
         />
       </div>
     </div>

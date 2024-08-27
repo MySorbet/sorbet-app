@@ -307,7 +307,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         unique
                         {...register('tags')}
                       />
-                      <p className='text-sm font-normal text-[#475467]'>
+                      <p
+                        className={cn(
+                          'text-sm font-normal text-[#475467]',
+                          skills.length >= 5 && 'text-green-500'
+                        )}
+                      >
                         Max 5 skills
                       </p>
                     </div>
