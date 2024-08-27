@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
@@ -24,6 +25,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
 
   // Mutation to be called when an offer is sent from the logged in user to the freelancer
   const mutation = useMutation({
@@ -61,13 +63,10 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const disableHireMe = params.handle === user?.accountId.split('.')[0];
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
-<<<<<<< HEAD
-=======
   const handleClaimMyProfile = () => {
     router.push('/signin');
   };
 
->>>>>>> 6ddee53 (Refactor: removes logout functionality)
   return (
     <>
       {isError ? (
@@ -98,55 +97,8 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
           )}
         </>
       )}
-<<<<<<< HEAD
-      {isError && <ClaimYourProfile username={params.username} />}
-=======
->>>>>>> cf7c5bd (Refactor: adds ternary rendering for 'isError' condition)
     </>
   );
 };
 
 export default ProfilePage;
-<<<<<<< HEAD
-
-/** Local component to display a "Claim your profile CTA when visiting a profile that does not exist" */
-const ClaimYourProfile = (props: { username: string }) => {
-  return (
-<<<<<<< HEAD
-    <div className='align-center container flex size-full flex-col items-center justify-center gap-10'>
-=======
-    <div className='align-center container mt-40 flex size-full flex-col items-center justify-center gap-10'>
->>>>>>> b54dc85 (Feature: adds pulse to CTA. Definitely not permanent, just playing around with some stuff until the design is created)
-      <div>
-        <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
-      </div>
-      <div>
-        <div className='border-1 flex justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl'>
-          <span className='text-gray-500'>mysorbet.xyz/</span>
-          <span>{props.username}</span>
-        </div>
-<<<<<<< HEAD
-        <div className='mt-4 text-center'>
-=======
-        <div className='mt-4 text-center text-2xl'>
->>>>>>> b54dc85 (Feature: adds pulse to CTA. Definitely not permanent, just playing around with some stuff until the design is created)
-          The handle is available for you to build your internet presence today!
-        </div>
-      </div>
-<<<<<<< HEAD
-      <Button size='lg' className='bg-sorbet text-xl'>
-        Claim Handle Today
-=======
-      <Button
-        size='lg'
-        className='bg-sorbet hover:bg-sorbet-dark animate-pulse text-xl hover:animate-none'
-        onClick={props.handleClaimMyProfile}
-      >
-        Claim This Handle
->>>>>>> b16c956 (Minor: changes CTA wording)
-      </Button>
-    </div>
-  );
-};
-=======
->>>>>>> 9147cfa (Minor: changes 'username' to 'handle')

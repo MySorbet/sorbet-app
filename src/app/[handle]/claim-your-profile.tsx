@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import ShinyButton from '@/components/common/shiny-button';
+import { BlurredLogos } from '@/components/onboarding/blurred-logos';
 
 interface ClaimYourProfileProps {
   handle: string;
@@ -12,25 +13,26 @@ export const ClaimYourProfile = ({
 }: ClaimYourProfileProps) => {
   return (
     <div className='align-center container mt-40 flex size-full flex-col items-center justify-center gap-10'>
+      <div className='fixed -left-36 top-40 -z-10'>
+        <BlurredLogos />
+      </div>
       <div>
         <img src='/svg/logo.svg' alt='logo' width={100} height={100} />
       </div>
       <div>
-        <div className='border-1 flex grow-0 justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl'>
+        <div className='border-1 flex grow-0 justify-center rounded-xl border border-gray-200 bg-gray-100 p-6 text-4xl drop-shadow-xl'>
           <span className='text-gray-500'>mysorbet.io/</span>
           <span>{handle}</span>
         </div>
         <div className='mt-4 text-center text-2xl'>
-          The handle is available for you to build your internet presence today!
+          This handle is available for you to build your internet presence today!
         </div>
       </div>
-      <Button
-        size='lg'
-        className='bg-sorbet hover:bg-sorbet-dark animate-pulse text-xl hover:animate-none'
+      <ShinyButton
+        text='Claim This Handle'
         onClick={handleClaimMyProfile}
-      >
-        Claim This Handle
-      </Button>
+        className='bg-sorbet'
+      />
     </div>
   );
 };
