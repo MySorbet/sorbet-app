@@ -1,15 +1,15 @@
-import { X } from '@untitled-ui/icons-react';
+import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
+import { SearchLg, X } from '@untitled-ui/icons-react';
 import React, { useState } from 'react';
 
 interface KeywordsInputProps {
-  newKeyword?: string;
-  initialKeywords?: string[];
+  initialKeywords: string[];
   onKeywordsChange: (keywords: string[]) => void;
   unique: boolean;
 }
 
 const TagInput = ({
-  initialKeywords = [],
+  initialKeywords,
   onKeywordsChange,
   unique = false,
 }: KeywordsInputProps) => {
@@ -79,18 +79,18 @@ const TagInput = ({
   return (
     <div className='flex w-full flex-wrap items-center rounded-lg border p-2'>
       <div
-        className='flex w-full flex-wrap overflow-y-auto'
+        className='flex w-full flex-wrap items-center gap-2 overflow-y-auto'
         style={{ maxHeight: '300px' }}
       >
-        {keywords.map((keyword, index) => (
-          <button
+        <SearchLg className='h-5 w-5 text-[#667085]' />
+
+        {initialKeywords.map((keyword, index) => (
+          <SkillBadge
             key={index}
-            onClick={() => removeKeyword(index)}
-            className='m-1 flex items-center rounded-full bg-orange-500 px-2 py-1 text-xs text-white'
-          >
-            {keyword}
-            <X className='ml-2 h-3 w-3 cursor-pointer' />
-          </button>
+            skill={keyword}
+            setSkills={setKeywords}
+            removeSkill={() => removeKeyword(index)}
+          />
         ))}
         <input
           type='text'
@@ -100,7 +100,8 @@ const TagInput = ({
           onPaste={handlePaste}
           onBlur={(e) => handleBlur(e)}
           className='my-1 flex-1 text-sm outline-none'
-          placeholder='Type keyword and press Enter...'
+          placeholder='Type skill and press Enter...'
+          disabled={keywords.length >= 5}
         />
       </div>
     </div>

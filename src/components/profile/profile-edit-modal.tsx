@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User01 } from '@untitled-ui/icons-react';
+import { User01, X } from '@untitled-ui/icons-react';
 import { Loader } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -28,7 +28,7 @@ const schema = z.object({
     .max(100, 'Bio must be at most 100 characters')
     .min(5, 'Bio must be at least 5 characters'),
   city: z.string().min(1, 'Location is required'),
-  tags: z.array(z.string()).min(1, 'At least one skill is required'),
+  tags: z.array(z.string()),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -47,7 +47,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
   );
-  const [skills, setSkills] = useState<string[]>([]);
+  const [skills, setSkills] = useState<string[]>(user?.tags || []);
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const {
@@ -56,7 +56,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     formState: { errors },
     control,
     setValue,
-    getValues,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -159,17 +159,19 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogContent
-        // className={
-        //   updateProfilePending ||
-        //   deleteProfileImagePending ||
-        //   uploadProfileImagePending
-        //     ? 'opacity-50'
-        //     : ''
-        // }
-        className={cn('sm:rounded-[32px]')}
+        className={cn(
+          'sm:rounded-[32px]',
+          updateProfilePending || deleteProfileImagePending,
+          uploadProfileImagePending && 'opacity-50'
+        )}
+        customDialogClose='hidden'
       >
-        <DialogHeader className='text-2xl font-semibold'>
-          Edit Profile
+        <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
+          <p>Edit Profile</p>
+          <X
+            className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
+            onClick={() => handleModalVisible(false)}
+          />
         </DialogHeader>
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
@@ -295,11 +297,20 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='tags'
                   control={control}
                   render={() => (
-                    <TagInput
-                      initialKeywords={skills}
-                      onKeywordsChange={handleSkillChange}
-                      unique
-                    />
+                    <div className='flex flex-col gap-2'>
+                      <label className='text-sm font-medium text-[#344054]'>
+                        Add your skills
+                      </label>
+                      <TagInput
+                        initialKeywords={skills}
+                        onKeywordsChange={handleSkillChange}
+                        unique
+                        {...register('tags')}
+                      />
+                      <p className='text-sm font-normal text-[#475467]'>
+                        Max 5 skills
+                      </p>
+                    </div>
                   )}
                 />
                 {errors.tags && (
