@@ -67,6 +67,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     },
   });
 
+  const isMaxSkills = skills.length >= 5;
+
   const {
     isPending: uploadProfileImagePending,
     mutateAsync: uploadProfileImageAsync,
@@ -296,17 +298,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   name='tags'
                   control={control}
                   render={() => (
-                    <div className='flex flex-col gap-2'>
-                      <label className='text-sm font-medium text-[#344054]'>
-                        Add your skills
-                      </label>
-                      <SkillInput
-                        initialSkills={skills}
-                        onSkillsChange={handleSkillChange}
-                        unique
-                        {...register('tags')}
-                      />
-                    </div>
+                    <SkillInput
+                      initialSkills={skills}
+                      onSkillsChange={handleSkillChange}
+                      unique
+                      {...register('tags')}
+                    />
                   )}
                 />
                 {errors.tags && (

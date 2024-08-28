@@ -76,21 +76,11 @@ const Step3 = () => {
           <h1 className='text-2xl font-semibold'>Skills</h1>
           <p className='text-sm font-medium text-[#344054]'>Step 3 of 3</p>
         </div>
-        <div className='flex flex-1 flex-col gap-2'>
-          <h1 className="text-[#344054]' text-sm font-medium">
-            Add your skills
-          </h1>
-          <SkillInput
-            initialSkills={userData.skills}
-            onSkillsChange={handleSkillChange}
-            unique
-          />
-          {isMaxSkills && (
-            <h3 className="text-[#344054]' text-sm font-normal">
-              Max 5 skills
-            </h3>
-          )}
-        </div>
+        <SkillInput
+          initialSkills={userData.skills}
+          onSkillsChange={handleSkillChange}
+          unique
+        />
         <div className='flex gap-3'>
           <Button
             className='border border-[#D0D5DD] bg-[#FFFFFF] text-base font-semibold text-[#344054] shadow-sm shadow-[#1018280D] hover:bg-gray-300'

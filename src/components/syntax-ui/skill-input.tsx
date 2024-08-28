@@ -5,6 +5,8 @@ import { MouseEvent, useState } from 'react';
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
 import { cn } from '@/lib/utils';
 
+const MaxNumOfSkills = 5
+
 interface SkillInputProps {
   initialSkills: string[];
   onSkillsChange: (skill: string[]) => void;
@@ -16,6 +18,7 @@ interface SkillInputProps {
  * @param initialSkills - string[]
  * @param onSkillsChange - (skills: string[]) => void
  * @param unique - boolean - if true, only unique tags will be added
+ * https://syntaxui.com/components/input
  */
 const SkillInput = ({
   initialSkills,
@@ -25,7 +28,7 @@ const SkillInput = ({
   const [skills, setSkills] = useState<string[]>(initialSkills);
   const [inputValue, setInputValue] = useState<string>('');
 
-  const isMaxSkills = skills.length >= 5;
+  const isMaxSkills = skills.length >= MaxNumOfSkills;
 
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -102,45 +105,53 @@ const SkillInput = ({
   };
 
   return (
-    <div className='flex w-full flex-wrap items-center rounded-lg border p-2'>
-      <div
-        className='flex w-full flex-wrap items-center gap-2 overflow-y-auto'
-        style={{ maxHeight: '300px' }}
-      >
-        <SearchLg className='h-5 w-5 text-[#667085]' />
-        <AnimatePresence>
-          {initialSkills.map((keyword, index) => (
-            <motion.div
-              key={index}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.1 }}
-            >
-              <SkillBadge
+    <div className='flex flex-col gap-2'>
+      <label className='text-sm font-medium text-[#344054]'>
+        Add your skills
+      </label>
+      <div className='flex w-full flex-wrap items-center rounded-lg border p-2'>
+        <div
+          className='flex w-full flex-wrap items-center gap-2 overflow-y-auto'
+          style={{ maxHeight: '300px' }}
+        >
+          <SearchLg className='h-5 w-5 text-[#667085]' />
+          <AnimatePresence>
+            {initialSkills.map((keyword, index) => (
+              <motion.div
                 key={index}
-                skill={keyword}
-                removeSkill={(event) => removeKeyword(event, index)}
-              />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        {!isMaxSkills && (
-          <input
-            type='text'
-            value={inputValue}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            onBlur={(e) => handleBlur(e)}
-            className={cn(
-              isMaxSkills && 'cursor-not-allowed',
-              'my-1 flex-1 bg-transparent text-sm outline-none'
-            )}
-            placeholder='Enter your skills (max 5)'
-          />
-        )}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                transition={{ duration: 0.1 }}
+              >
+                <SkillBadge
+                  key={index}
+                  skill={keyword}
+                  removeSkill={(event) => removeKeyword(event, index)}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          {!isMaxSkills && (
+            <input
+              type='text'
+              value={inputValue}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              onBlur={(e) => handleBlur(e)}
+              className={cn(
+                isMaxSkills && 'cursor-not-allowed',
+                'my-1 flex-1 bg-transparent text-sm outline-none'
+              )}
+              placeholder='Enter your skills (max 5)'
+            />
+          )}
+        </div>
       </div>
+      {isMaxSkills && (
+        <p className='text-sm font-normal text-[#475467]'>Max 5 skills</p>
+      )}
     </div>
   );
 };
