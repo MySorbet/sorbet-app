@@ -8,7 +8,10 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
+import { Spinner } from '@/components/common';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
@@ -50,8 +53,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
     throw new Error('User not found');
   }
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     await logout();
+    setIsLoggingOut(false);
     router.push('/');
   };
 
@@ -172,17 +178,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
             </div>
           </div>
 
-          <div className='flex cursor-pointer flex-col gap-6 text-xl font-medium'>
-            <div
-              className='flex flex-row items-center gap-2'
-              onClick={() => handleLogout()}
-            >
-              <div>
-                <LogOut />
-              </div>
-              <div>Logout</div>
+          <Button
+            onClick={handleLogout}
+            variant='ghost'
+            className='w-fit text-lg font-semibold'
+            disabled={isLoggingOut}
+          >
+            <div className='mr-2'>
+              {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
             </div>
-          </div>
+            {isLoggingOut ? 'Logging out' : 'Logout'}
+          </Button>
         </div>
       </div>
     </div>
