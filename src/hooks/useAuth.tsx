@@ -59,43 +59,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // We sync the user from redux to local storage and vice versa
   useEffect(() => {
-    const isUserEmpty = !reduxUser || Object.keys(reduxUser).length === 0;
-    if (isUserEmpty) {
-      setUser(null);
-      return;
+    // If redux user is empty, we need to fetch the user from local storage
+    if (!reduxUser || Object.keys(reduxUser).length === 0) {
+      user && dispatch(updateUserData(user));
+    } else {
+      setUser(reduxUser);
     }
-    setUser(reduxUser);
-  }, [reduxUser, setUser]);
-
-  /** Attempts to sign into sorbet, storing the access token and user if successful  */
-  const loginWithEmail = useCallback(
-    async (email: string): Promise<LoginResult> => {
-      try {
-        const response = await getUserByEmail(email);
-        if (response) {
-          const sorbetUser = response.data;
-          dispatch(updateUserData(sorbetUser));
-          return {
-            status: 'success',
-            message: 'Login successful',
-            data: response.data,
-          };
-        } else {
-          return {
-            status: 'failed',
-            message: 'Failed to login. Server threw an error',
-          };
-        }
-      } catch (error) {
-        return {
-          status: 'failed',
-          message: 'Login failed',
-          error: error,
-        };
-      }
-    },
-    [dispatch]
-  );
+  }, [dispatch, reduxUser, setUser, user]);
 
   /** Find a user by privy id in the sorbet db, storing the access token and user if successful  */
   const loginWithPrivyId = useCallback(

@@ -4,6 +4,7 @@ import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { Provider } from 'react-redux';
+import { base, baseSepolia } from 'viem/chains';
 
 import { Toaster } from '@/components/ui/toaster';
 // TODO: figure out how to use this without dynamic import
@@ -20,6 +21,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         embeddedWallets: {
           createOnLogin: 'all-users',
         },
+        defaultChain: baseSepolia,
       }}
     >
       <Provider store={store}>
