@@ -50,6 +50,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // We sync the user from redux to local storage
   // TODO: seems like we also need to sync the user from local storage to redux when the pae is refreshed
   useEffect(() => {
+    const isUserEmpty = !reduxUser || Object.keys(reduxUser).length === 0;
+    if (isUserEmpty) {
+      setUser(null);
+      return;
+    }
     setUser(reduxUser);
   }, [reduxUser, setUser]);
 

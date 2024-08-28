@@ -14,6 +14,7 @@ export interface GigsBoardProps {
 export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
   const [isCommsOpen, setIsCommsOpen] = useState(false);
   const { user: loggedInUser } = useAuth();
+  console.log('loggedInUser: ', loggedInUser);
   const [currentOffer, setCurrentOffer] = useState<OfferType | undefined>(
     undefined
   );
@@ -23,6 +24,7 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
     gigsContentType,
     ''
   );
+  console.log('offers: ', offers);
 
   const pendingOffers = offers?.filter(
     (offer: OfferType) => offer.status === 'Pending'
@@ -57,8 +59,8 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
   };
 
   return (
-    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+    <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
         <GigsDialog
           isOpen={isCommsOpen}
           onOpenChange={onGigsCommsOpenChange}

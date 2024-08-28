@@ -13,18 +13,15 @@ export const useFetchOffers = (
   return useQuery({
     queryKey: ['offers'],
     queryFn: async () => {
-      if (loggedInUser?.accountId) {
+      if (loggedInUser?.id) {
         let response: any;
 
         switch (gigsContentType) {
           case GigsContentType.Sent:
-            response = await getClientOffers(loggedInUser?.accountId, status);
+            response = await getClientOffers(loggedInUser?.id, status);
             break;
           case GigsContentType.Received:
-            response = await getFreelancerOffers(
-              loggedInUser?.accountId,
-              status
-            );
+            response = await getFreelancerOffers(loggedInUser?.id, status);
             break;
         }
 

@@ -244,7 +244,7 @@ export const ContractOverview = ({
               <Button
                 onClick={finishContract}
                 className='bg-sorbet w-full text-white md:w-1/6 lg:w-2/12'
-                disabled={offer?.status === 'Completed'}
+                // disabled={offer?.status === 'Completed'}
               >
                 Finish Contract
               </Button>

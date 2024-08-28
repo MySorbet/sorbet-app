@@ -1,10 +1,13 @@
 'use client';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Loading02 } from '@untitled-ui/icons-react';
+import { useLogin, usePrivy } from '@privy-io/react-auth';
 import { createOffer } from '@/api/gigs';
 import { getUserByHandle } from '@/api/user';
+import { signUpWithPrivyId } from '@/api/auth';
 import {
   ProjectFormValues,
   ProjectOfferDialog,
@@ -15,15 +18,83 @@ import { Profile } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useAppDispatch } from '@/redux/hook';
+import { updateUserData } from '@/redux/userSlice';
+import { User } from '@/types';
 
 const ProfilePage = ({ params }: { params: { username: string } }) => {
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, loginWithPrivyId } = useAuth();
+  const router = useRouter();
+  const { ready, user: privy_user, logout } = usePrivy();
+  const dispatch = useAppDispatch();
   const { toast } = useToast();
+
+  const { login } = useLogin({
+    onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
+      console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
+
+      // Fetch user from sorbet
+      setLoading(true);
+      const loginResult = await loginWithPrivyId(user.id);
+      if (isNewUser) {
+        console.log(
+          'This is a new user. Creating a sorbet user and redirecting to signup'
+        );
+        const newUser = await signUpWithPrivyId({ id: user.id });
+        // TODO: Maybe we should give them a temp handle so that they can see their profile in case handle update fails?
+        dispatch(updateUserData(newUser.data as unknown as User));
+        console.log(newUser.data);
+        router.replace('/signup');
+        return;
+      }
+      // If the login fails, log out and show an error
+      if (loginResult.status === 'failed') {
+        await logout();
+        setLoading(false);
+        toast({
+          title: 'Error',
+          description: `Error logging in: ${loginResult.error?.message}`,
+          variant: 'destructive',
+        });
+        return;
+      }
+      setLoading(false);
+      // If you get here, the login was successful and you have a sorbet user. Route to their profile
+      console.log(loginResult);
+    },
+    onError: (error) => {
+      console.log('error', error);
+      setLoading(false);
+      // Any logic you'd like to execute after a user exits the login flow or there is an error
+    },
+  });
+
+  useEffect(() => {
+    // Simulate an async operation that updates the status after some time
+    const fetchData = async () => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 10000);
+    };
+
+    fetchData();
+  }, []);
+  // useEffect(() => {
+  //   if (privy_user) {
+  //     console.log('privy_user1', privy_user);
+  //     login();
+  //     setLoading(false);
+  //   }
+  // }, [privy_user]);
+
+  // console.log('login', login);
 
   // Mutation to be called when an offer is sent from the logged in user to the freelancer
   const mutation = useMutation({
     mutationFn: (projectFormValues: ProjectFormValues) => {
+      console.log('user', user);
       if (!user) throw new Error('User not found');
       return createOffer({
         projectName: projectFormValues.projectName,
@@ -34,10 +105,18 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
         // clientUsername: withSuffix(user.accountId),
         // freelancerUsername: withSuffix(params.username),
         clientUsername: user.handle ?? '',
+        // clientUsername: user.privyId ?? '',
         freelancerUsername: params.username,
       });
     },
-    onError: () => {
+    onError: (err) => {
+      if (err?.message === 'User not found') {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to send an offer',
+        });
+        return;
+      }
       toast({
         title: 'Something went wrong',
         description: 'We were unable to send your offer. Please try again',
@@ -63,23 +142,31 @@ const ProfilePage = ({ params }: { params: { username: string } }) => {
 
   return (
     <>
-      <Header />
-      {!isPending && freelancer && (
+      {isLoading ? (
+        <div className='flex h-screen w-full items-center justify-center'>
+          <Loading02 className='animate t h-16 w-16 animate-spin' />
+        </div>
+      ) : (
         <>
-          <Profile
-            user={freelancer}
-            canEdit={isMyProfile}
-            onHireMeClick={() => setOfferDialogOpen(true)}
-            disableHireMe={isMyProfile}
-          />
-          <UserSocialPreview title={freelancerFullName} />
-          <ProjectOfferDialog
-            isOpen={isOfferDialogOpen}
-            onClose={(open) => setOfferDialogOpen(open)}
-            onSubmit={mutation.mutate}
-            name={freelancerFullName}
-            formSubmitted={mutation.isSuccess}
-          />
+          <Header />
+          {!isPending && freelancer && (
+            <>
+              <Profile
+                user={freelancer}
+                canEdit={isMyProfile}
+                onHireMeClick={() => setOfferDialogOpen(true)}
+                disableHireMe={isMyProfile}
+              />
+              <UserSocialPreview title={freelancerFullName} />
+              <ProjectOfferDialog
+                isOpen={isOfferDialogOpen}
+                onClose={(open) => setOfferDialogOpen(open)}
+                onSubmit={mutation.mutate}
+                name={freelancerFullName}
+                formSubmitted={mutation.isSuccess}
+              />
+            </>
+          )}
         </>
       )}
       {isError && <ClaimYourProfile username={params.username} />}

@@ -6,6 +6,7 @@ import '@/styles/globals.css';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
+import { base, baseSepolia } from 'viem/chains';
 
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/useAuth';
@@ -30,6 +31,7 @@ export default function RootLayout({
             embeddedWallets: {
               createOnLogin: 'all-users',
             },
+            defaultChain: baseSepolia,
           }}
         >
           <Provider store={store}>
