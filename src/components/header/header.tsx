@@ -63,7 +63,7 @@ const LoggedOutCTA = () => {
   return (
     <div className='flex items-center justify-end gap-4'>
       <Button
-        onClick={() => router.push('/signup')}
+        onClick={() => router.push('/signin')}
         className='border border-[#D0D5DD] bg-white px-[14px] py-[10px] text-sm font-semibold leading-5 text-[#344054] hover:bg-gray-100'
       >
         Claim my Sorbet

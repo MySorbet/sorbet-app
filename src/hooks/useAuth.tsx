@@ -1,4 +1,7 @@
-import { usePrivy } from '@privy-io/react-auth';
+'use client';
+
+import { useLogin, usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
@@ -6,12 +9,15 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 
-import { getUserByEmail, getUserByPrivyId } from '@/api/user';
+import { signUpWithPrivyId } from '@/api/auth';
+import { getUserByPrivyId } from '@/api/user';
+import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset, updateUserData } from '@/redux/userSlice';
-import { User } from '@/types';
+import { User, UserWithId } from '@/types';
 
 import { useLocalStorage } from './useLocalStorage';
 
@@ -20,6 +26,7 @@ type LoginResultFailed = {
   message: string;
   error?: any;
 };
+
 type LoginResultSuccess = {
   status: 'success';
   message: string;
@@ -29,26 +36,28 @@ type LoginResultSuccess = {
 type LoginResult = LoginResultFailed | LoginResultSuccess;
 
 interface AuthContextType {
-  user: User | null;
-  loginWithEmail: (email: string) => Promise<LoginResult>;
-  loginWithPrivyId: (id: string) => Promise<LoginResult>;
+  user: UserWithId | null;
   logout: () => void;
+  login: ReturnType<typeof useLogin>['login'];
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
-  const [user, setUser] = useLocalStorage<User | null>('user', null);
+  const [user, setUser] = useLocalStorage<UserWithId | null>('user', null);
+  const [loading, setLoading] = useState(false);
 
   // And one in redux to make it globally available
   const reduxUser = useAppSelector((state) => state.userReducer.user);
   const dispatch = useAppDispatch();
 
   const { logout: logoutPrivy } = usePrivy();
+  const router = useRouter();
+  const { toast } = useToast();
 
-  // We sync the user from redux to local storage
-  // TODO: seems like we also need to sync the user from local storage to redux when the pae is refreshed
+  // We sync the user from redux to local storage and vice versa
   useEffect(() => {
     const isUserEmpty = !reduxUser || Object.keys(reduxUser).length === 0;
     if (isUserEmpty) {
@@ -119,47 +128,78 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [dispatch]
   );
 
-  // const checkAuth = async () => {
-  //   if (!accessToken) {
-  //     return null;
-  //   }
+  const { login } = useLogin({
+    onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
+      console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
 
-  //   setAppLoading(true);
+      // This is a signup so create a user in the sorbet db, put it in redux and redirect to signup
+      if (isNewUser) {
+        console.log(
+          'This is a new user. Creating a sorbet user and redirecting to signup'
+        );
+        setLoading(true);
+        const signUpResponse = await signUpWithPrivyId({ id: user.id });
+        // TODO: What if this fails? We have a privy user but no sorbet
+        // TODO: Maybe we should give them a temp handle so that they can see their profile in case handle update fails?
+        dispatch(updateUserData(signUpResponse.data));
+        console.log(signUpResponse.data);
+        setLoading(false);
+        router.replace('/signup');
+        return;
+      }
 
-  //   try {
-  //     const response = await fetchUserDetails(accessToken as string);
-  //     const authenticatedUser = response.data as User;
+      // Fetch user from sorbet
+      setLoading(true);
+      const loginResult = await loginWithPrivyId(user.id);
 
-  //     const balanceResponse = await getBalances(authenticatedUser.id);
-  //     if (balanceResponse && balanceResponse.data) {
-  //       setUser({ ...authenticatedUser, balance: balanceResponse.data });
-  //     } else {
-  //       setUser(authenticatedUser);
-  //     }
+      // If the login fails, log out and show an error
+      if (loginResult.status === 'failed') {
+        await logout();
+        setLoading(false);
+        toast({
+          title: 'Error',
+          description: `Error logging in: ${loginResult.error?.message}`,
+          variant: 'destructive',
+        });
+        return;
+      }
 
-  //     dispatch(updateUserData(authenticatedUser));
+      // If you get here, the login was successful and you have a sorbet user. Route to their profile
+      console.log(loginResult);
+      const sorbetUser = loginResult.data;
+      setLoading(false);
+      router.replace(`/${sorbetUser.handle}`);
+    },
+    onError: (error) => {
+      // Ignore the user exiting the auth flow
+      if (error === 'exited_auth_flow') {
+        return;
+      }
+      toast({
+        title: 'Error',
+        description: `Error logging in: ${error}`,
+        variant: 'destructive',
+      });
+    },
+  });
 
-  //     return authenticatedUser;
-  //   } catch (error) {
-  //     return null;
-  //   } finally {
-  //     setAppLoading(false);
-  //   }
-  // };
+  // TODO: Fetch balances
 
-  const logout = useCallback(() => {
-    logoutPrivy();
+  const logout = useCallback(async () => {
+    await logoutPrivy();
+    setUser(null);
     dispatch(reset());
-  }, [dispatch, logoutPrivy]);
+    setLoading(false);
+  }, [dispatch, logoutPrivy, setUser]);
 
   const value = useMemo(
     () => ({
       user,
-      loginWithEmail,
-      loginWithPrivyId,
+      loading,
+      login,
       logout,
     }),
-    [loginWithEmail, loginWithPrivyId, logout, user]
+    [user, loading, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

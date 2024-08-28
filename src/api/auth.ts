@@ -1,4 +1,5 @@
 import { network } from '@/lib/config';
+import { User } from '@/types';
 import { API_URL } from '@/utils';
 import axios from 'axios';
 
@@ -16,7 +17,10 @@ export const signUp = async ({ email, accountId }: SignUpWithEmailTypes) => {
 export const signUpWithPrivyId = async ({ id }: { id: string }) => {
   try {
     const reqBody = { id };
-    const res = await axios.post(`${API_URL}/auth/signup/privy`, reqBody);
+    const res = await axios.post<Pick<User, 'id' | 'privyId'>>(
+      `${API_URL}/auth/signup/privy`,
+      reqBody
+    );
     return res;
   } catch (error: any) {
     throw new Error(

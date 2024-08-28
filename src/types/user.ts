@@ -19,3 +19,6 @@ export interface User {
     nearUsd: number;
   };
 }
+
+/** Type to capture the fact that a user can have an id but not the rest of the user object */
+export type UserWithId = Partial<User> & Pick<User, 'id'>;

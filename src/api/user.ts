@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import { User } from '@/types';
+import { User, UserWithId } from '@/types';
 import { API_URL, withAuthHeader } from '@/utils';
 
 // [POST] /api/auth/signup
@@ -95,7 +95,7 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
   }
 };
 
-export const updateUser = async (userToUpdate: User, userId: string) => {
+export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   try {
     const response = await axios.patch(
       `${API_URL}/users/${userId}`,
