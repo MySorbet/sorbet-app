@@ -22,9 +22,14 @@ const TagInput = ({
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (
-      (event.key === 'Enter' || event.key === ',') &&
-      inputValue.trim() !== ''
+      event.key === 'Enter' ||
+      event.key === ',' ||
+      (event.key === 'Tab' && inputValue.trim() !== '')
     ) {
+      if (inputValue.trim() === '' || isMaxSkills) {
+        event.preventDefault();
+        return;
+      }
       event.preventDefault();
       const newKeywords = unique
         ? [...new Set([...keywords, inputValue.trim()])]
@@ -110,8 +115,7 @@ const TagInput = ({
             isMaxSkills && 'cursor-not-allowed bg-inherit',
             'my-1 flex-1 text-sm outline-none'
           )}
-          placeholder='Type skill and press Enter...'
-          disabled={isMaxSkills}
+          placeholder={`Enter your skills here`}
         />
       </div>
     </div>

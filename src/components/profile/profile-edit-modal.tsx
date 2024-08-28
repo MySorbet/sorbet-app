@@ -309,8 +309,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       />
                       <p
                         className={cn(
-                          'text-sm font-normal text-[#475467]',
-                          skills.length >= 5 && 'text-green-500'
+                          skills.length < 5 && 'hidden',
+                          'text-sm font-normal text-[#475467]'
                         )}
                       >
                         Max 5 skills
