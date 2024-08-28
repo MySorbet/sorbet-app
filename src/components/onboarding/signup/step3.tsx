@@ -3,7 +3,7 @@
 import { Loader } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 
-import TagInput from '@/components/syntax-ui/tag-input';
+import SkillInput from '@/components/syntax-ui/skill-input';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser, useUploadProfileImage } from '@/hooks';
 import { useAppSelector } from '@/redux/hook';
@@ -19,6 +19,9 @@ const Step3 = () => {
   const { user: authUser } = useAuth();
   const reduxUser = useAppSelector((state) => state.userReducer.user);
   const [user, setUser] = useState(authUser || reduxUser);
+
+  const isMaxSkills = userData.skills.length >= 5;
+
   const { isPending: uploadPending, mutateAsync: uploadProfileImage } =
     useUploadProfileImage();
   const { isPending: updatePending, mutate: updateUser } = useUpdateUser();
@@ -77,12 +80,16 @@ const Step3 = () => {
           <h1 className="text-[#344054]' text-sm font-medium">
             Add your skills
           </h1>
-          <TagInput
+          <SkillInput
             initialSkills={userData.skills}
             onSkillsChange={handleSkillChange}
             unique
           />
-          <h3 className="text-[#344054]' text-sm font-normal">Max 5 skills</h3>
+          {isMaxSkills && (
+            <h3 className="text-[#344054]' text-sm font-normal">
+              Max 5 skills
+            </h3>
+          )}
         </div>
         <div className='flex gap-3'>
           <Button

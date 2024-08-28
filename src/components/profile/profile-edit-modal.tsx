@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { LocationInput } from '@/components/profile';
-import TagInput from '@/components/syntax-ui/tag-input';
+import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
@@ -295,25 +295,17 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   {...register('tags')}
                   name='tags'
                   control={control}
-                  render={(field) => (
+                  render={() => (
                     <div className='flex flex-col gap-2'>
                       <label className='text-sm font-medium text-[#344054]'>
                         Add your skills
                       </label>
-                      <TagInput
+                      <SkillInput
                         initialSkills={skills}
                         onSkillsChange={handleSkillChange}
                         unique
                         {...register('tags')}
                       />
-                      <p
-                        className={cn(
-                          skills.length < 5 && 'hidden',
-                          'text-sm font-normal text-[#475467]'
-                        )}
-                      >
-                        Max 5 skills
-                      </p>
                     </div>
                   )}
                 />

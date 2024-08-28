@@ -5,27 +5,27 @@ import { MouseEvent, useState } from 'react';
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
 import { cn } from '@/lib/utils';
 
-interface KeywordsInputProps {
+interface SkillInputProps {
   initialSkills: string[];
-  onSkillsChange: (keywords: string[]) => void;
+  onSkillsChange: (skill: string[]) => void;
   unique: boolean;
 }
 
 /**
  * Takes in tag state and a function to update the state for the 'onChange' event
  * @param initialSkills - string[]
- * @param onSkillsChange - (keywords: string[]) => void
+ * @param onSkillsChange - (skills: string[]) => void
  * @param unique - boolean - if true, only unique tags will be added
  */
-const TagInput = ({
+const SkillInput = ({
   initialSkills,
   onSkillsChange,
   unique = false,
-}: KeywordsInputProps) => {
-  const [keywords, setKeywords] = useState<string[]>(initialSkills);
+}: SkillInputProps) => {
+  const [skills, setSkills] = useState<string[]>(initialSkills);
   const [inputValue, setInputValue] = useState<string>('');
 
-  const isMaxSkills = keywords.length >= 5;
+  const isMaxSkills = skills.length >= 5;
 
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -40,21 +40,21 @@ const TagInput = ({
         return;
       }
       event.preventDefault();
-      const newKeywords = unique
-        ? [...new Set([...keywords, inputValue.trim()])]
-        : [...keywords, inputValue.trim()];
-      setKeywords(newKeywords);
-      onSkillsChange(newKeywords);
+      const newSkills = unique
+        ? [...new Set([...skills, inputValue.trim()])]
+        : [...skills, inputValue.trim()];
+      setSkills(newSkills);
+      onSkillsChange(newSkills);
       setInputValue('');
     } else if (event.key === 'Backspace' && inputValue === '') {
       event.preventDefault();
-      const newKeywords = keywords.slice(0, -1);
-      setKeywords(newKeywords);
-      onSkillsChange(newKeywords);
+      const newSkills = skills.slice(0, -1);
+      setSkills(newSkills);
+      onSkillsChange(newSkills);
     }
   };
 
-  // Handles pasting keywords separated by commas, new lines, or tabs
+  // Handles pasting skills separated by commas, new lines, or tabs
   const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
     const paste = event.clipboardData.getData('text');
@@ -67,11 +67,11 @@ const TagInput = ({
       .map((keyword) => keyword.trim())
       .filter(Boolean);
     if (keywordsToAdd.length) {
-      const newKeywords = unique
-        ? [...new Set([...keywords, ...keywordsToAdd])]
-        : [...keywords, ...keywordsToAdd];
-      setKeywords(newKeywords);
-      onSkillsChange(newKeywords);
+      const newSkills = unique
+        ? [...new Set([...skills, ...keywordsToAdd])]
+        : [...skills, ...keywordsToAdd];
+      setSkills(newSkills);
+      onSkillsChange(newSkills);
       setInputValue('');
     }
   };
@@ -83,9 +83,9 @@ const TagInput = ({
   // Adds the keyword when the input loses focus, if there's a keyword to add
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     if (inputValue.trim() !== '' && event.relatedTarget?.tagName !== 'BUTTON') {
-      const newKeywords = [...keywords, inputValue.trim()];
-      setKeywords(newKeywords);
-      onSkillsChange(newKeywords);
+      const newSkills = [...skills, inputValue.trim()];
+      setSkills(newSkills);
+      onSkillsChange(newSkills);
       setInputValue('');
     }
   };
@@ -95,10 +95,10 @@ const TagInput = ({
     event: MouseEvent<HTMLButtonElement>,
     indexToRemove: number
   ) => {
-    const newKeywords = keywords.filter((_, index) => index !== indexToRemove);
+    const newSkills = skills.filter((_, index) => index !== indexToRemove);
     event.preventDefault();
-    setKeywords(newKeywords);
-    onSkillsChange(newKeywords);
+    setSkills(newSkills);
+    onSkillsChange(newSkills);
   };
 
   return (
@@ -120,7 +120,6 @@ const TagInput = ({
               <SkillBadge
                 key={index}
                 skill={keyword}
-                setSkills={setKeywords}
                 removeSkill={(event) => removeKeyword(event, index)}
               />
             </motion.div>
@@ -146,4 +145,4 @@ const TagInput = ({
   );
 };
 
-export default TagInput;
+export default SkillInput;
