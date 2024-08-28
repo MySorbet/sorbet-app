@@ -1,17 +1,19 @@
 'use client';
 
-import { Badge } from '../../ui/badge';
 import { X } from 'lucide-react';
-import { Dispatch, SetStateAction } from 'react';
+import {  Dispatch, MouseEventHandler, SetStateAction } from 'react';
+
+import { Badge } from '../../ui/badge';
 
 type SkillBadgeProps = {
   skill: string;
   setSkills: Dispatch<SetStateAction<string[]>>;
-  removeSkill?: () => void;
+  removeSkill?: MouseEventHandler<HTMLButtonElement>
 };
 
 const SkillBadge = ({ skill, setSkills, removeSkill }: SkillBadgeProps) => {
   const handleRemoveSkill = () => {
+
     setSkills((skills) => {
       return skills.filter((s) => s !== skill);
     });

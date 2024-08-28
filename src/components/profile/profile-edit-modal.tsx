@@ -56,7 +56,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     formState: { errors },
     control,
     setValue,
-    watch,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -296,14 +295,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   {...register('tags')}
                   name='tags'
                   control={control}
-                  render={() => (
+                  render={(field) => (
                     <div className='flex flex-col gap-2'>
                       <label className='text-sm font-medium text-[#344054]'>
                         Add your skills
                       </label>
                       <TagInput
-                        initialKeywords={skills}
-                        onKeywordsChange={handleSkillChange}
+                        initialSkills={skills}
+                        onSkillsChange={handleSkillChange}
                         unique
                         {...register('tags')}
                       />

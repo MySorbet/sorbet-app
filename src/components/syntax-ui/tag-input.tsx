@@ -1,20 +1,28 @@
+import { SearchLg } from '@untitled-ui/icons-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { MouseEvent, useState } from 'react';
+
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
 import { cn } from '@/lib/utils';
-import { SearchLg, X } from '@untitled-ui/icons-react';
-import React, { useState } from 'react';
 
 interface KeywordsInputProps {
-  initialKeywords: string[];
-  onKeywordsChange: (keywords: string[]) => void;
+  initialSkills: string[];
+  onSkillsChange: (keywords: string[]) => void;
   unique: boolean;
 }
 
+/**
+ * Takes in tag state and a function to update the state for the 'onChange' event
+ * @param initialSkills - string[]
+ * @param onSkillsChange - (keywords: string[]) => void
+ * @param unique - boolean - if true, only unique tags will be added
+ */
 const TagInput = ({
-  initialKeywords,
-  onKeywordsChange,
+  initialSkills,
+  onSkillsChange,
   unique = false,
 }: KeywordsInputProps) => {
-  const [keywords, setKeywords] = useState<string[]>(initialKeywords);
+  const [keywords, setKeywords] = useState<string[]>(initialSkills);
   const [inputValue, setInputValue] = useState<string>('');
 
   const isMaxSkills = keywords.length >= 5;
@@ -28,6 +36,7 @@ const TagInput = ({
     ) {
       if (inputValue.trim() === '' || isMaxSkills) {
         event.preventDefault();
+
         return;
       }
       event.preventDefault();
@@ -35,13 +44,13 @@ const TagInput = ({
         ? [...new Set([...keywords, inputValue.trim()])]
         : [...keywords, inputValue.trim()];
       setKeywords(newKeywords);
-      onKeywordsChange(newKeywords);
+      onSkillsChange(newKeywords);
       setInputValue('');
     } else if (event.key === 'Backspace' && inputValue === '') {
       event.preventDefault();
       const newKeywords = keywords.slice(0, -1);
       setKeywords(newKeywords);
-      onKeywordsChange(newKeywords);
+      onSkillsChange(newKeywords);
     }
   };
 
@@ -62,7 +71,7 @@ const TagInput = ({
         ? [...new Set([...keywords, ...keywordsToAdd])]
         : [...keywords, ...keywordsToAdd];
       setKeywords(newKeywords);
-      onKeywordsChange(newKeywords);
+      onSkillsChange(newKeywords);
       setInputValue('');
     }
   };
@@ -76,16 +85,20 @@ const TagInput = ({
     if (inputValue.trim() !== '' && event.relatedTarget?.tagName !== 'BUTTON') {
       const newKeywords = [...keywords, inputValue.trim()];
       setKeywords(newKeywords);
-      onKeywordsChange(newKeywords);
+      onSkillsChange(newKeywords);
       setInputValue('');
     }
   };
 
   // Removes a keyword from the list
-  const removeKeyword = (indexToRemove: number) => {
+  const removeKeyword = (
+    event: MouseEvent<HTMLButtonElement>,
+    indexToRemove: number
+  ) => {
     const newKeywords = keywords.filter((_, index) => index !== indexToRemove);
+    event.preventDefault();
     setKeywords(newKeywords);
-    onKeywordsChange(newKeywords);
+    onSkillsChange(newKeywords);
   };
 
   return (
@@ -95,28 +108,39 @@ const TagInput = ({
         style={{ maxHeight: '300px' }}
       >
         <SearchLg className='h-5 w-5 text-[#667085]' />
-
-        {initialKeywords.map((keyword, index) => (
-          <SkillBadge
-            key={index}
-            skill={keyword}
-            setSkills={setKeywords}
-            removeSkill={() => removeKeyword(index)}
+        <AnimatePresence>
+          {initialSkills.map((keyword, index) => (
+            <motion.div
+              key={index}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.1 }}
+            >
+              <SkillBadge
+                key={index}
+                skill={keyword}
+                setSkills={setKeywords}
+                removeSkill={(event) => removeKeyword(event, index)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        {!isMaxSkills && (
+          <input
+            type='text'
+            value={inputValue}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onBlur={(e) => handleBlur(e)}
+            className={cn(
+              isMaxSkills && 'cursor-not-allowed bg-inherit',
+              'my-1 flex-1 text-sm outline-none'
+            )}
+            placeholder='Enter your skills (max 5)'
           />
-        ))}
-        <input
-          type='text'
-          value={inputValue}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onPaste={handlePaste}
-          onBlur={(e) => handleBlur(e)}
-          className={cn(
-            isMaxSkills && 'cursor-not-allowed bg-inherit',
-            'my-1 flex-1 text-sm outline-none'
-          )}
-          placeholder={`Enter your skills here`}
-        />
+        )}
       </div>
     </div>
   );
