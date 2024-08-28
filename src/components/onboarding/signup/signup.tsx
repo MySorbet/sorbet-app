@@ -49,7 +49,7 @@ const initialUserSignUp: UserSignUp = {
 /** Component hosting all 4 steps of the signup experience. Facilitates moving though steps via context. */
 const SignUp = () => {
   const [userData, setUserData] = useState<UserSignUp>(initialUserSignUp);
-  const [step, setStep] = useState<number>(3);
+  const [step, setStep] = useState<number>(0);
   return (
     <UserSignUpContext.Provider
       value={{ userData, setUserData, step, setStep }}
