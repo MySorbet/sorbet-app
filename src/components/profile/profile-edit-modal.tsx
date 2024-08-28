@@ -47,7 +47,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
   );
-  const [skills, setSkills] = useState<string[]>(user?.tags || []);
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const {
@@ -66,8 +65,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
-
-  const isMaxSkills = skills.length >= 5;
 
   const {
     isPending: uploadProfileImagePending,
@@ -115,7 +112,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         firstName: data.firstName,
         lastName: data.lastName,
         city: data.city,
-        tags: skills,
+        tags: data.tags,
         bio: data.bio,
       };
 
@@ -153,8 +150,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   const handleSkillChange = (newSkills: string[]) => {
-    setSkills(newSkills);
-    setValue('tags', skills);
+    setValue('tags', newSkills);
   };
 
   return (
@@ -299,7 +295,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   control={control}
                   render={() => (
                     <SkillInput
-                      initialSkills={skills}
+                      initialSkills={user?.tags || []}
                       onSkillsChange={handleSkillChange}
                       unique
                       {...register('tags')}

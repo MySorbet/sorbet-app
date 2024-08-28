@@ -5,7 +5,7 @@ import { MouseEvent, useState } from 'react';
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
 import { cn } from '@/lib/utils';
 
-const MaxNumOfSkills = 5
+const MaxNumOfSkills = 5;
 
 interface SkillInputProps {
   initialSkills: string[];
@@ -132,21 +132,19 @@ const SkillInput = ({
               </motion.div>
             ))}
           </AnimatePresence>
-          {!isMaxSkills && (
-            <input
-              type='text'
-              value={inputValue}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              onPaste={handlePaste}
-              onBlur={(e) => handleBlur(e)}
-              className={cn(
-                isMaxSkills && 'cursor-not-allowed',
-                'my-1 flex-1 bg-transparent text-sm outline-none'
-              )}
-              placeholder='Enter your skills (max 5)'
-            />
-          )}
+          <input
+            type='text'
+            value={inputValue}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onBlur={(e) => handleBlur(e)}
+            className={cn(
+              isMaxSkills && 'cursor-not-allowed',
+              'my-1 flex-1 bg-transparent text-sm outline-none'
+            )}
+            placeholder='Enter your skills (max 5)'
+          />
         </div>
       </div>
       {isMaxSkills && (
