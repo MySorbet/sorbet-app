@@ -135,8 +135,8 @@ const TagInput = ({
             onPaste={handlePaste}
             onBlur={(e) => handleBlur(e)}
             className={cn(
-              isMaxSkills && 'cursor-not-allowed bg-inherit',
-              'my-1 flex-1 text-sm outline-none'
+              isMaxSkills && 'cursor-not-allowed',
+              'my-1 flex-1 bg-transparent text-sm outline-none'
             )}
             placeholder='Enter your skills (max 5)'
           />
