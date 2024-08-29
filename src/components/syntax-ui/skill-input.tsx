@@ -1,5 +1,5 @@
 import { SearchLg } from '@untitled-ui/icons-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useAnimate } from 'framer-motion';
 import { MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
@@ -27,6 +27,7 @@ const SkillInput = ({
 }: SkillInputProps) => {
   const [skills, setSkills] = useState<string[]>(initialSkills);
   const [inputValue, setInputValue] = useState<string>('');
+  const [scope, animate] = useAnimate();
 
   const isMaxSkills = skills.length >= MaxNumOfSkills;
 
@@ -80,8 +81,12 @@ const SkillInput = ({
   };
 
   // Updates the inputValue state as the user types
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+    if (isMaxSkills) {
+      await animate(scope.current, { x: 20, y: 5, scale: 1.1 });
+      await animate(scope.current, { x: 0, y: 0, scale: 1 });
+    }
   };
   // Adds the keyword when the input loses focus, if there's a keyword to add
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -98,7 +103,6 @@ const SkillInput = ({
     event: MouseEvent<HTMLButtonElement>,
     indexToRemove: number
   ) => {
-    console.log('removing skill ');
     const newSkills = skills.filter((_, index) => index !== indexToRemove);
     event.preventDefault();
     setSkills(newSkills);
@@ -149,7 +153,9 @@ const SkillInput = ({
         </div>
       </div>
       {isMaxSkills && (
-        <p className='text-sm font-normal text-[#475467]'>Max 5 skills</p>
+        <p ref={scope} className='text-sm font-normal text-[#475467]'>
+          Max 5 skills
+        </p>
       )}
     </div>
   );
