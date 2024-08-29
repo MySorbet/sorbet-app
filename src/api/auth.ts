@@ -1,7 +1,8 @@
+import axios from 'axios';
+
 import { network } from '@/lib/config';
 import { User } from '@/types';
 import { API_URL } from '@/utils';
-import axios from 'axios';
 
 /** Signs an email & accountID (near wallet) up to sorbet */
 export const signUp = async ({ email, accountId }: SignUpWithEmailTypes) => {

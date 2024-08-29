@@ -59,17 +59,20 @@ export const Header = () => {
 /** Two CTA buttons if viewing a profile logged out. Sign up or sign in. */
 const LoggedOutCTA = () => {
   const router = useRouter();
+  const handleClick = () => {
+    router.push('/signin');
+  };
 
   return (
     <div className='flex items-center justify-end gap-4'>
       <Button
-        onClick={() => router.push('/signin')}
+        onClick={handleClick}
         className='border border-[#D0D5DD] bg-white px-[14px] py-[10px] text-sm font-semibold leading-5 text-[#344054] hover:bg-gray-100'
       >
         Claim my Sorbet
       </Button>
       <Button
-        onClick={() => router.push('/signin')}
+        onClick={handleClick}
         className='bg-sorbet border border-[#7F56D9] px-[14px] py-[10px] text-sm font-semibold leading-5 text-white hover:bg-[#523BDF]'
       >
         Login

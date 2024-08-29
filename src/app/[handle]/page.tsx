@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
-import { getUserByAccountId, getUserByHandle } from '@/api/user';
+import { getUserByHandle } from '@/api/user';
 import {
   ProjectFormValues,
   ProjectOfferDialog,
@@ -15,8 +15,6 @@ import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { config } from '@/lib/config';
-import { User } from '@/types';
 
 import { ClaimYourProfile } from './claim-your-profile';
 
@@ -62,7 +60,6 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
 
   // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data;
-  console.log('Freelancer: ', user);
   const isMyProfile = params.handle === user?.handle;
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
