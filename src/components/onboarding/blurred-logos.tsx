@@ -1,8 +1,7 @@
-'use client';
-
-const BlurredLogos = () => {
+const BlurredLogos = ({ className }: { className?: string }) => {
   return (
     <svg
+      className={className}
       width='4737'
       height='574'
       viewBox='0 0 4737 574'

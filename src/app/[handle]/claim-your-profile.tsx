@@ -16,7 +16,7 @@ export const ClaimYourProfile = ({
   return (
     <div className='align-center container mt-40 flex size-full flex-col items-center justify-center gap-10'>
       <div className='fixed -left-36 top-40 -z-10'>
-        <BlurredLogos />
+        <BlurredLogos className='opacity-60' />
       </div>
       <div>
         <Image src='/svg/logo.svg' alt='logo' width={100} height={100} />
@@ -27,7 +27,8 @@ export const ClaimYourProfile = ({
           <span>{handle}</span>
         </div>
         <div className='mt-4 text-center text-2xl'>
-          This handle is available for you to build your internet presence today!
+          This handle is available for you to build your internet presence
+          today!
         </div>
       </div>
       <ShinyButton
