@@ -137,10 +137,10 @@ export const ContractCompleted = ({
         )}
         <div className='flex flex-col gap-1'>
           <h2 className='text-2xl font-medium'>Contract Completed</h2>
-          <p className='md:w-[80%]'>
-            <h4 className='text-2xl font-medium'>{offer?.projectName}</h4>
+          <div className='md:w-[80%]'>
+            <h3 className='text-2xl font-medium'>{offer?.projectName}</h3>
             <p>{offer?.projectDescription}</p>
-          </p>
+          </div>
         </div>
         <div className='align-center flex h-full cursor-pointer items-center justify-end'>
           <HelpCircle className='h-6 w-6' stroke='#667085' />
