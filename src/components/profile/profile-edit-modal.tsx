@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { User01, X } from '@untitled-ui/icons-react';
 import { Loader } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputSkills, LocationInput } from '@/components/profile';
+import { LocationInput } from '@/components/profile';
+import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
@@ -15,6 +17,7 @@ import {
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
+import { cn } from '@/lib/utils';
 import type { User } from '@/types';
 
 const schema = z.object({
@@ -25,7 +28,7 @@ const schema = z.object({
     .max(100, 'Bio must be at most 100 characters')
     .min(5, 'Bio must be at least 5 characters'),
   city: z.string().min(1, 'Location is required'),
-  tags: z.array(z.string()).min(1, 'At least one skill is required'),
+  tags: z.array(z.string()),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -44,7 +47,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [image, setImage] = useState<string | undefined>(
     user?.profileImage || undefined
   );
-  const [skills, setSkills] = useState<string[]>([]);
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const {
@@ -79,7 +81,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const { isPending: updateProfilePending, mutate: updateProfile } =
     useUpdateUser();
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (formData: FormData) => {
     let userToUpdate: User = { ...user };
 
     if (user?.id && user?.profileImage != null && image === undefined) {
@@ -107,11 +109,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     if (user) {
       userToUpdate = {
         ...userToUpdate,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        city: data.city,
-        tags: skills,
-        bio: data.bio,
+        ...formData,
       };
 
       updateProfile(userToUpdate);
@@ -147,34 +145,33 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     }
   };
 
-  const handleSkillChange = (skills: string[]) => {
-    setSkills(skills);
-    setValue('tags', skills);
+  const handleSkillChange = (newSkills: string[]) => {
+    setValue('tags', newSkills);
   };
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogContent
-        className={
-          updateProfilePending ||
-          deleteProfileImagePending ||
-          uploadProfileImagePending
-            ? 'opacity-50'
-            : ''
-        }
+        className={cn(
+          'sm:rounded-[32px]',
+          updateProfilePending || deleteProfileImagePending,
+          uploadProfileImagePending && 'opacity-50'
+        )}
+        customDialogClose='hidden'
       >
-        <DialogHeader className='text-2xl font-semibold'>
-          Edit Profile
+        <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
+          <p>Edit Profile</p>
+          <X
+            className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
+            onClick={() => handleModalVisible(false)}
+          />
         </DialogHeader>
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
             <Avatar className='border-primary-default h-20 w-20 border-2'>
-              <AvatarImage
-                src={image || '/avatar.svg'}
-                alt='new profile image'
-              />
-              <AvatarFallback className='text-2xl font-semibold'>
-                {user.accountId.slice(0, 2).toUpperCase()}
+              <AvatarImage src={image} alt='new profile image' />
+              <AvatarFallback className='bg-white'>
+                <User01 className='text-muted-foreground h-10 w-10' />
               </AvatarFallback>
             </Avatar>
             <label
@@ -289,15 +286,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </div>
               <div className='item w-full'>
                 <Controller
+                  {...register('tags')}
                   name='tags'
                   control={control}
                   render={() => (
-                    <InputSkills
-                      placeholder='Skill (ex: Developer)'
-                      handleTagsChange={(tags) => {
-                        handleSkillChange(tags);
-                      }}
-                      initialTags={user?.tags}
+                    <SkillInput
+                      initialSkills={user?.tags || []}
+                      onSkillsChange={handleSkillChange}
+                      unique
+                      {...register('tags')}
                     />
                   )}
                 />

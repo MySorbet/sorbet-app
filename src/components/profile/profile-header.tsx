@@ -34,7 +34,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <Avatar className='h-[100px] w-[100px]'>
             <AvatarImage src={user.profileImage} alt={user.accountId} />
             <AvatarFallback className='border-primary-default border-2'>
-              <User01 className='h-12 w-12 text-muted-foreground' />
+              <User01 className='text-muted-foreground h-12 w-12' />
             </AvatarFallback>
           </Avatar>
         </div>
@@ -106,10 +106,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <ShareProfileDialog
             trigger={
               <Button
-                className='align-center flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
+                className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
                 onClick={handleUrlToClipboard()}
               >
-                <Share06 className='h-5 w-5' />
+                <Share06 className='h-5 w-5 transition ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[-0.5px] group-hover:rotate-6' />
                 <span className='text-base'>Share</span>
               </Button>
             }
