@@ -16,13 +16,23 @@ import {
   ContractOverview,
   ContractPendingFreelancer,
   ContractPendingOffer,
+  ContractCompleted,
   ContractRejected,
 } from '@/app/gigs/contract';
 // import { useWalletSelector } from '@/components/common';
-import { encodeFunctionData } from 'viem';
-import { ethers } from 'ethers';
+import {
+  encodeFunctionData,
+  parseUnits,
+  formatUnits,
+  hexToBigInt,
+  EIP1193Provider,
+} from 'viem';
 import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
-import { useWallets, getEmbeddedConnectedWallet } from '@privy-io/react-auth';
+import {
+  useWallets,
+  getEmbeddedConnectedWallet,
+  ConnectedWallet,
+} from '@privy-io/react-auth';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -132,9 +142,9 @@ export const GigsDialog = ({
         'NotStarted'
       );
       if (response?.data) {
-        if (currentOffer) {
-          await updateOfferStatus(currentOffer?.id, 'Accepted');
-        }
+        // if (currentOffer) {
+        //   await updateOfferStatus(currentOffer?.id, 'Accepted');
+        // }
         setContractApproved(true);
         toast({
           title: 'Contract approved',
@@ -174,6 +184,7 @@ export const GigsDialog = ({
         });
       }
     }
+    await refetchContractData();
     setIsLoading(false);
   };
 
@@ -182,186 +193,14 @@ export const GigsDialog = ({
   };
 
   const finishContract = async () => {
-    const response = await updateContractStatus(contractData.id, 'Completed');
-    if (response.status && response.data) {
-      setLastChainOp('end_project');
-      if (currentOffer) {
-        await updateOfferStatus(currentOffer?.id, 'Completed');
-      }
-      // const wallet = wallets[0]; // Replace this with your desired wallet
-      // const provider = await wallet.getEthereumProvider();
-      // const data = encodeFunctionData({
-      //   abi: abi,
-      //   functionName: 'end_project',
-      //   args: [contractData.id],
-      // });
-      // // const contractInterface = new ethers.Interface(abi);
-      // // const data = contractInterface.encodeFunctionData("end_project", [0]);
-      // const transactionRequest = {
-      //   to: '0xeB46D095618010dd3f84c32865800703EAC83512',
-      //   data: data,
-      //   value: 0,
-      // };
-      // try {
-      //   const transactionHash = await provider.request({
-      //     method: 'eth_sendTransaction',
-      //     params: [transactionRequest],
-      //   });
-      // } catch (err) {
-      //   toast({
-      //     title: 'Transaction Failed',
-      //     description: 'Failed to end project on the BASE blockchain.',
-      //     variant: 'destructive',
-      //   });
-      //   console.error('Failed to fund milestone', err);
-      //   throw err;
-      // }
-      try {
-        const wallet = wallets[0];
-        console.log(wallets);
-        const provider = await wallet.getEthereumProvider();
-        const data = encodeFunctionData({
-          abi: CONTRACT_ABI,
-          functionName: 'create_project',
-          args: ['0x1223f6fB23AaB92EA97E21d3428A736BF6B7b01d'],
-        });
-        const transactionRequest = {
-          from: wallet.address,
-          to: '0xeB46D095618010dd3f84c32865800703EAC83512',
-          data: data,
-          value: 0,
-        };
-        const transactionHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [transactionRequest],
-        });
-      } catch (err) {
-        toast({
-          title: 'Transaction Failed',
-          description: 'Failed to end project on the Base blockchain.',
-          variant: 'destructive',
-        });
-        console.error('Failed to fund milestone', err);
-        throw err;
-      }
-
-      // const wallet = await selector.wallet();
-      // await wallet
-      //   .signAndSendTransaction({
-      //     signerId: accounts[0].accountId,
-      //     receiverId: config.contractId,
-      //     actions: [
-      //       {
-      //         type: 'FunctionCall',
-      //         params: {
-      //           methodName: 'end_project',
-      //           args: {
-      //             project_id: contractData.id,
-      //           },
-      //           gas: '300000000000000',
-      //           deposit: toYoctoNEAR('0'),
-      //         },
-      //       },
-      //     ],
-      //   })
-      //   .catch((err) => {
-      //     toast({
-      //       title: 'Transaction Failed',
-      //       description: 'Failed to end project on the NEAR blockchain.',
-      //       variant: 'destructive',
-      //     });
-      //     console.error('Failed to fund milestone', err);
-      //     throw err;
-      //   });
+    setLastChainOp('end_project');
+    if (currentOffer) {
+      await updateOfferStatus(currentOffer?.id, 'Completed');
     }
-  };
-
-  const createOnchainContract = async (
-    contract: ContractType,
-    clientAccountId: string,
-    milestones?: ContractMilestoneMinimalProps[]
-  ) => {
-    // if (accounts.length > 0) {
-    //   setLastChainOp('create_project');
-    //   const transactions: Array<Transaction> = [];
-    //   transactions.push({
-    //     signerId: accounts[0].accountId,
-    //     receiverId: config.contractId,
-    //     actions: [
-    //       {
-    //         type: 'FunctionCall',
-    //         params: {
-    //           methodName: 'create_project',
-    //           args: {
-    //             project_id: contract.id,
-    //             client_id: clientAccountId,
-    //           },
-    //           gas: '300000000000000', // gas amount
-    //           deposit: '0', // No deposit needed for this function call
-    //         },
-    //       },
-    //     ],
-    //   });
-    //   if (milestones) {
-    //     milestones.forEach(
-    //       (milestone: ContractMilestoneMinimalProps, index: number) => {
-    //         transactions.push({
-    //           signerId: accounts[0].accountId,
-    //           receiverId: config.contractId,
-    //           actions: [
-    //             {
-    //               type: 'FunctionCall',
-    //               params: {
-    //                 methodName: 'add_schedule',
-    //                 args: {
-    //                   project_id: contract.id,
-    //                   short_code: `m${index + 1}`,
-    //                   description: milestone.name,
-    //                   value: toYoctoNEAR(milestone.amount.toFixed()),
-    //                 },
-    //                 gas: '300000000000000', // gas amount
-    //                 deposit: '100000000000000000000000', // 0.1 NEAR deposit
-    //               },
-    //             },
-    //           ],
-    //         });
-    //       }
-    //     );
-    //   } else {
-    //     transactions.push({
-    //       signerId: accounts[0].accountId,
-    //       receiverId: config.contractId,
-    //       actions: [
-    //         {
-    //           type: 'FunctionCall',
-    //           params: {
-    //             methodName: 'add_schedule',
-    //             args: {
-    //               project_id: contract.id,
-    //               short_code: `m0`,
-    //               description: contract.name,
-    //               value: toYoctoNEAR(contract.totalAmount.toFixed()),
-    //             },
-    //             gas: '300000000000000', // gas amount
-    //             deposit: '100000000000000000000000', // 0.1 NEAR deposit
-    //           },
-    //         },
-    //       ],
-    //     });
-    //   }
-    //   const wallet = await selector.wallet();
-    //   return await wallet
-    //     .signAndSendTransactions({ transactions })
-    //     .catch((err) => {
-    //       toast({
-    //         title: 'Transaction Failed',
-    //         description: 'Failed to create project on the NEAR blockchain.',
-    //         variant: 'destructive',
-    //       });
-    //       console.error('Failed to create project', err);
-    //       throw err;
-    //     });
-    // }
+    toast({
+      title: 'Contract completed',
+      description: 'The contract has been completed',
+    });
   };
 
   const onMilestonesFormSubmit = async (
@@ -384,11 +223,6 @@ export const GigsDialog = ({
 
       const response = await createContract(reqBody);
       if (response && response.data) {
-        await createOnchainContract(
-          response.data,
-          currentOffer.username,
-          formData.milestones
-        );
         setIsFormSubmitted(true);
         if (afterContractSubmitted) {
           afterContractSubmitted();
@@ -410,13 +244,15 @@ export const GigsDialog = ({
         name: formData.projectName,
         totalAmount: formData.totalAmount,
         contractType: 'FixedPrice',
+        milestones: [
+          { name: formData.projectName, amount: formData.totalAmount },
+        ],
         offerId: currentOffer.id,
         clientUsername: currentOffer.username,
       };
 
       const response = await createContract(reqBody);
       if (response && response.data) {
-        await createOnchainContract(response.data, currentOffer.username);
         setIsFormSubmitted(true);
         if (afterContractSubmitted) {
           afterContractSubmitted();
@@ -430,154 +266,110 @@ export const GigsDialog = ({
     }
   };
 
-  const onMilestoneFunded = async (
-    projectId: string,
-    scheduleId: string,
-    amount: number,
-    milestoneId: string,
-    isFixedPrice: boolean,
-    index: number
-  ) => {
-    try {
-      const wallet = wallets[0];
-      console.log(wallets);
-      const provider = await wallet.getEthereumProvider();
-      const data = encodeFunctionData({
-        abi: CONTRACT_ABI,
-        functionName: 'fund_schedule',
-        args: [BigInt(projectId), BigInt(scheduleId)],
-      });
-      const transactionRequest = {
-        from: wallet.address,
-        to: '0xeB46D095618010dd3f84c32865800703EAC83512',
-        data: data,
-        value: 0,
-      };
-      const transactionHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [transactionRequest],
-      });
-    } catch (err) {
-      toast({
-        title: 'Transaction Failed',
-        description: 'Failed to end project on the Base blockchain.',
-        variant: 'destructive',
-      });
-      console.error('Failed to fund milestone', err);
-      throw err;
-    }
-    // if (accounts.length > 0) {
-    //   setLastChainOp('fund_schedule');
-    //   if (!isFixedPrice) {
-    //     await updateMilestoneStatus(milestoneId, 'Active');
-    //   } else {
-    //     await updateContractStatus(projectId, 'InProgress');
-    //   }
-    //   if (index == 0 && !isFixedPrice) {
-    //     await updateContractStatus(projectId, 'InProgress');
-    //   }
-    //   const finalAmount = BigNumber(amount).toFixed();
-    //   const wallet = await selector.wallet();
-    //   return await wallet
-    //     .signAndSendTransaction({
-    //       signerId: accounts[0].accountId,
-    //       receiverId: config.contractId,
-    //       actions: [
-    //         {
-    //           type: 'FunctionCall',
-    //           params: {
-    //             methodName: 'fund_schedule',
-    //             args: {
-    //               project_id: projectId,
-    //               schedule_id: scheduleId,
-    //             },
-    //             gas: '300000000000000',
-    //             deposit: toYoctoNEAR(finalAmount),
-    //           },
-    //         },
-    //       ],
-    //     })
-    //     .catch((err) => {
-    //       toast({
-    //         title: 'Transaction Failed',
-    //         description: 'Failed to fund milestone on the NEAR blockchain.',
-    //         variant: 'destructive',
-    //       });
-    //       console.error('Failed to fund milestone', err);
-    //       throw err;
-    //     });
-    // } else {
-    //   toast({
-    //     title: 'Unable to fund milestone',
-    //     description: 'No connected wallet was detected. Please try again.',
-    //   });
-    // }
-  };
-
   const handleMilestoneFunding = async (
     projectId: string,
     scheduleId: string,
     amount: number,
     milestoneId: string,
-    isFixedPrice: boolean,
     index: number
   ) => {
-    // if (accounts.length > 0) {
-    //   if (user?.balance?.near && user?.balance?.near >= amount) {
-    //     setLastChainOp('fund_schedule');
-    //     await onMilestoneFunded(
-    //       projectId,
-    //       scheduleId,
-    //       amount,
-    //       milestoneId,
-    //       isFixedPrice,
-    //       index
-    //     );
-    //   } else {
-    //     toast({
-    //       title: 'Insufficient balance',
-    //       description: `You need at least ${amount} NEAR to perform this action. Only ${user?.balance?.usdc} NEAR was detected`,
-    //     });
-    //   }
-    // } else {
-    //   toast({
-    //     title: 'Something went wrong',
-    //     description: 'Your NEAR wallet was not detected. Please try again',
-    //     variant: 'destructive',
-    //   });
-    // }
-
     try {
-      const wallet =
-        wallets.find((wallet) => wallet.connectorType != 'embedded') ||
-        wallets.find((wallet) => wallet.connectorType === 'embedded');
-      if (!wallet) {
-        throw new Error('No wallet found!');
+      const wallet = getEmbeddedConnectedWallet(wallets);
+      if (wallet) {
+        setLastChainOp('fund_schedule');
+        const provider = await wallet.getEthereumProvider();
+        console.log(wallet);
+        const balanceOfData = encodeFunctionData({
+          abi: TOKEN_ABI,
+          functionName: 'balanceOf',
+          args: [wallet.address],
+        });
+
+        // Call the contract to get the balance
+        const balanceResult = await provider.request({
+          method: 'eth_call',
+          params: [
+            {
+              to: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // USDC contract address
+              data: balanceOfData,
+            },
+          ],
+        });
+
+        amount = 0.01;
+
+        if (hexToBigInt(balanceResult) < parseUnits(amount.toString(), 6)) {
+          toast({
+            title: 'Insufficient balance',
+            description: `You need at least ${amount} USDC to perform this action. Only ${formatUnits(
+              hexToBigInt(balanceResult),
+              6
+            )} USDC was detected`,
+          });
+          return;
+        }
+
+        const approve_data = encodeFunctionData({
+          abi: TOKEN_ABI,
+          functionName: 'approve',
+          args: [
+            '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
+            parseUnits(amount.toString(), 6),
+          ],
+        });
+
+        const transactionapproveRequest = {
+          from: wallet.address,
+          to: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // usdc address
+          data: approve_data,
+        };
+        const transactionapproveHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [transactionapproveRequest],
+        });
+
+        console.log('transactionapproveHash', transactionapproveHash);
+
+        const data = encodeFunctionData({
+          abi: CONTRACT_ABI,
+          functionName: 'fundMilestone',
+          args: [
+            projectId,
+            milestoneId,
+            '0xeB46D095618010dd3f84c32865800703EAC83512',
+            parseUnits(amount.toString(), 6),
+          ],
+        });
+        const transactionRequest = {
+          from: wallet.address,
+          to: '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
+          data: data,
+        };
+        const transactionHash = await provider.request({
+          method: 'eth_sendTransaction',
+          params: [transactionRequest],
+        });
+        console.log('transactionHash', transactionHash);
+
+        // this code needs to be run on backend web3 event listener
+        await updateMilestoneStatus(milestoneId, 'Active');
+        await updateContractStatus(projectId, 'InProgress');
+
+        toast({
+          title: 'Transaction Successful',
+          description: 'Milestone funded successfully ',
+        });
+      } else {
+        toast({
+          title: 'Something went wrong',
+          description: 'Your Privy wallet was not detected. Please try again',
+          variant: 'destructive',
+        });
       }
-
-      // const wallet = wallets[0];
-      console.log('wallet', wallet);
-
-      const provider = await wallet.getEthereumProvider();
-      const data = encodeFunctionData({
-        abi: CONTRACT_ABI,
-        functionName: 'create_project',
-        args: ['0xeB46D095618010dd3f84c32865800703EAC83512'],
-      });
-      const transactionRequest = {
-        from: wallet.address,
-        to: '0xeB46D095618010dd3f84c32865800703EAC83512',
-        data: data,
-        value: 0,
-      };
-      const transactionHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [transactionRequest],
-      });
     } catch (err) {
       toast({
         title: 'Transaction Failed',
-        description: 'Failed to end project on the BASE blockchain.',
+        description: 'Failed to Fund Milestone. Please try again',
         variant: 'destructive',
       });
       console.error('Failed to fund milestone', err);
@@ -589,12 +381,12 @@ export const GigsDialog = ({
 
   const handleMilestoneSubmission = async (
     projectId: string,
-    milestoneId: string,
-    isFixedPrice: boolean
+    milestoneId: string
   ) => {
-    const response = !isFixedPrice
-      ? await updateMilestoneStatus(milestoneId, 'InReview')
-      : await updateContractStatus(projectId, 'InReview');
+    // const response = !isFixedPrice
+    //   ? await updateMilestoneStatus(milestoneId, 'InReview')
+    //   : await updateContractStatus(projectId, 'InReview');
+    const response = await updateMilestoneStatus(milestoneId, 'InReview');
     if (response && response.data) {
       toast({
         title: 'Milestone submitted',
@@ -614,63 +406,117 @@ export const GigsDialog = ({
   const handleMilestoneApprove = async (
     projectId: string,
     milestoneId: string,
-    isFixedPrice: boolean,
     offerId?: string,
     index?: number
   ) => {
-    const response = !isFixedPrice
-      ? await updateMilestoneStatus(milestoneId, 'Approved')
-      : await updateContractStatus(projectId, 'Completed');
-    // if (response && response.data) {
-    //   setLastChainOp('approve_schedule');
-    //   if (isFixedPrice && offerId) {
-    //     await updateOfferStatus(offerId, 'Completed');
-    //   }
-    //   const wallet = await selector.wallet();
-    //   await wallet
-    //     .signAndSendTransaction({
-    //       signerId: accounts[0].accountId,
-    //       receiverId: config.contractId,
-    //       actions: [
-    //         {
-    //           type: 'FunctionCall',
-    //           params: {
-    //             methodName: 'approve_schedule',
-    //             args: {
-    //               project_id: projectId.toString(),
-    //               schedule_id: index?.toString(),
-    //             },
-    //             gas: '300000000000000',
-    //             deposit: toYoctoNEAR('0'),
-    //           },
-    //         },
-    //       ],
-    //     })
-    //     .catch((err) => {
-    //       toast({
-    //         title: 'Transaction Failed',
-    //         description: 'Failed to approve milestone on the NEAR blockchain.',
-    //         variant: 'destructive',
-    //       });
-    //       console.error('Failed to fund milestone', err);
-    //       throw err;
-    //     });
-    // } else {
-    //   toast({
-    //     title: 'Something went wrong',
-    //     description: 'Unable to approve milestone, please try again',
-    //     variant: 'destructive',
-    //   });
-    // }
+    try {
+      const wallet = getEmbeddedConnectedWallet(wallets);
+      if (wallet) {
+        setLastChainOp('approve_schedule');
+        const transactionHash = await sendTransaction(
+          wallet,
+          '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
+          CONTRACT_ABI,
+          'releaseMilestone',
+          [projectId, milestoneId]
+        );
+
+        console.log('transactionHash', transactionHash);
+
+        // still backend process
+        await updateMilestoneStatus(milestoneId, 'Approved');
+        await updateContractStatus(projectId, 'Completed');
+
+        toast({
+          title: 'Transaction Successful',
+          description: 'Milestone released successfully ',
+        });
+      } else {
+        toast({
+          title: 'Something went wrong',
+          description: 'Your Privy wallet was not detected. Please try again',
+          variant: 'destructive',
+        });
+      }
+    } catch (err) {
+      toast({
+        title: 'Transaction Failed',
+        description: 'Failed to Release Milestone. Please try again',
+        variant: 'destructive',
+      });
+      console.error('Failed to release milestone', err);
+      throw err;
+    }
 
     await refetchContractData();
   };
 
+  async function sendTransaction(
+    wallet: ConnectedWallet,
+    contractAddress: string,
+    abi: any[],
+    functionName: string,
+    args: any[]
+  ): Promise<`0x${string}`> {
+    const provider = await wallet.getEthereumProvider();
+    // Encode the function data
+    const data = encodeFunctionData({
+      abi: abi,
+      functionName: functionName,
+      args: args,
+    });
+
+    // Create the transaction request
+    const transactionRequest = {
+      from: wallet.address as `0x${string}`,
+      to: contractAddress as `0x${string}`,
+      data: data,
+      value: '0x0' as `0x${string}`,
+    };
+
+    try {
+      // Send the transaction
+      const transactionHash = await provider.request({
+        method: 'eth_sendTransaction',
+        params: [transactionRequest],
+      });
+
+      return transactionHash;
+    } catch (error) {
+      console.error('Error sending transaction:', error);
+      throw error;
+    }
+  }
+
   const renderContractView = () => {
     if (isClient) {
-      if (contractData) {
+      if (contractData && currentOffer) {
         if (contractData.status === 'Rejected') {
           return <ContractRejected isClient={isClient} />;
+        } else if (
+          contractData.status === 'Completed' &&
+          currentOffer.status === 'Completed'
+        ) {
+          return (
+            <ContractCompleted
+              contract={contractData}
+              isClient={isClient}
+              milestones={contractData.milestones as MilestoneType[]}
+              offer={currentOffer}
+              contractApproved={contractApproved}
+              isRejectDialogOpen={isRejectDialogOpen}
+              setIsRejectDialogOpen={() => setIsRejectDialogOpen(false)}
+              isLoading={isLoading}
+              handleApprove={handleApprove}
+              handleReject={handleReject}
+              confirmReject={confirmReject}
+              cancelReject={cancelReject}
+              finishContract={finishContract}
+              handleMilestoneApprove={handleMilestoneApprove}
+              handleMilestoneSubmission={handleMilestoneSubmission}
+              handleMilestoneFunding={handleMilestoneFunding}
+            />
+          );
         } else {
           return (
             <ContractOverview
@@ -701,11 +547,35 @@ export const GigsDialog = ({
         }
       }
     } else {
-      if (contractData) {
+      if (contractData && currentOffer) {
         if (contractData.status === 'PendingApproval') {
           return <ContractPendingFreelancer />;
         } else if (contractData.status === 'Rejected') {
           return <ContractRejected isClient={isClient} />;
+        } else if (
+          contractData.status === 'Completed' &&
+          currentOffer.status === 'Completed'
+        ) {
+          return (
+            <ContractCompleted
+              contract={contractData}
+              isClient={isClient}
+              milestones={contractData.milestones as MilestoneType[]}
+              offer={currentOffer}
+              contractApproved={contractApproved}
+              isRejectDialogOpen={isRejectDialogOpen}
+              setIsRejectDialogOpen={() => setIsRejectDialogOpen(false)}
+              isLoading={isLoading}
+              handleApprove={handleApprove}
+              handleReject={handleReject}
+              confirmReject={confirmReject}
+              cancelReject={cancelReject}
+              finishContract={finishContract}
+              handleMilestoneApprove={handleMilestoneApprove}
+              handleMilestoneSubmission={handleMilestoneSubmission}
+              handleMilestoneFunding={handleMilestoneFunding}
+            />
+          );
         } else {
           return (
             <ContractOverview

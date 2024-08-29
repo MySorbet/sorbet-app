@@ -15,7 +15,6 @@ export interface ContractMilestoneProps {
   index: number;
   projectId: string;
   isClient: boolean;
-  isFixedPrice?: boolean;
   handleMilestoneFunding: () => void;
   handleMilestoneSubmission: () => void;
   handleMilestoneApprove: () => void;
@@ -30,7 +29,6 @@ export const ContractMilestone = ({
   index,
   isClient,
   milestoneId,
-  isFixedPrice = false,
   handleMilestoneFunding,
   handleMilestoneSubmission,
   handleMilestoneApprove,
@@ -55,44 +53,44 @@ export const ContractMilestone = ({
   return (
     <Card
       className={`w-full p-4 ${
-        isCompleted ? 'opacity-60 cursor-not-allowed' : ''
+        isCompleted ? 'cursor-not-allowed opacity-60' : ''
       } ${isApproved ? 'min-h-32' : ''}`}
       tabIndex={isCompleted ? -1 : 0}
       key={`milestone-${index}`}
     >
       <div
-        className={`flex flex-row justify-between h-full ${
+        className={`flex h-full flex-row justify-between ${
           isCompleted ? 'pointer-events-none' : ''
         }`}
       >
         <div className='flex justify-start'>
           <div className='flex flex-row gap-3'>
             {status === ContractMilestoneStatus.FundingPending && (
-              <div className='rounded-full border border-gray-300 p-2 w-8 h-8'>
+              <div className='h-8 w-8 rounded-full border border-gray-300 p-2'>
                 <Lock size={14} strokeWidth={3} stroke='#667085' />
               </div>
             )}
             {status === ContractMilestoneStatus.Approved && (
-              <div className='bg-[#F3F3F9] rounded-full border border-[#E5E4F8] p-2 w-8 h-8'>
+              <div className='h-8 w-8 rounded-full border border-[#E5E4F8] bg-[#F3F3F9] p-2'>
                 <Check size={16} strokeWidth={4} stroke='#AA91EF' />{' '}
               </div>
             )}
             {(status === ContractMilestoneStatus.Active ||
               status === ContractMilestoneStatus.InReview) && (
-              <div className='bg-[#F4F3FF] rounded-full border border-[#D9D6FE] p-2 w-8 h-8'>
+              <div className='h-8 w-8 rounded-full border border-[#D9D6FE] bg-[#F4F3FF] p-2'>
                 <Zap size={16} strokeWidth={4} stroke='#7A5AF8' />{' '}
               </div>
             )}
 
             <div className='flex flex-col gap-1'>
               <h2 className='font-medium'>{title}</h2>
-              <p className='font-medium text-sm'>${amount.toLocaleString()}</p>
+              <p className='text-sm font-medium'>${amount.toLocaleString()}</p>
             </div>
           </div>
         </div>
 
-        <div className='flex flex-col justify-end h-full'>
-          <div className='flex flex-col justify-between text-right h-full'>
+        <div className='flex h-full flex-col justify-end'>
+          <div className='flex h-full flex-col justify-between text-right'>
             <div>
               <Badge
                 variant={
@@ -106,7 +104,7 @@ export const ContractMilestone = ({
             </div>
             <div>
               {isClient && status === ContractMilestoneStatus.Active && (
-                <h2 className='text-center text-gray-400 font-medium'>
+                <h2 className='text-center font-medium text-gray-400'>
                   Funded
                 </h2>
               )}
@@ -117,9 +115,9 @@ export const ContractMilestone = ({
                       <>
                         <Button
                           variant='default'
-                          className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
+                          className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
                             fundingButtonDisabled &&
-                            `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
+                            `bg-sorbet/30 text-sorbet disabled text-[#B39DEE]`
                           }`}
                           size={`sm`}
                           onClick={handleMilestoneFunding}
@@ -133,9 +131,9 @@ export const ContractMilestone = ({
                     <>
                       <Button
                         variant='default'
-                        className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
+                        className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
                           fundingButtonDisabled &&
-                          `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
+                          `bg-sorbet/30 text-sorbet disabled text-[#B39DEE]`
                         }`}
                         size={`sm`}
                         onClick={handleMilestoneApprove}
@@ -154,9 +152,9 @@ export const ContractMilestone = ({
                       <>
                         <Button
                           variant='default'
-                          className={`bg-sorbet rounded-xl hover:bg-sorbet/70 ${
+                          className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
                             status === ContractMilestoneStatus.InReview &&
-                            `bg-sorbet/30 text-[#B39DEE] text-sorbet disabled`
+                            `bg-sorbet/30 text-sorbet disabled text-[#B39DEE]`
                           }`}
                           size={`sm`}
                           onClick={handleMilestoneSubmission}
