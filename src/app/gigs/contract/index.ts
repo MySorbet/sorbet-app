@@ -7,3 +7,4 @@ export * from './contract-not-found';
 export * from './contract-pending-offer';
 export * from './contract-pending-freelancer';
 export * from './contract-rejected';
+export * from './contract-completed';

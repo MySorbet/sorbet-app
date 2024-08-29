@@ -17,7 +17,7 @@ import {
   OfferType,
 } from '@/types';
 
-export interface ContractOverviewProps {
+export interface ContractCompletedProps {
   contract: ContractType;
   milestones?: MilestoneType[];
   isClient: boolean;
@@ -50,7 +50,7 @@ export interface ContractOverviewProps {
   ) => Promise<void>;
 }
 
-export const ContractOverview = ({
+export const ContractCompleted = ({
   contract,
   milestones,
   isClient,
@@ -67,7 +67,7 @@ export const ContractOverview = ({
   handleMilestoneFunding,
   handleMilestoneSubmission,
   handleMilestoneApprove,
-}: ContractOverviewProps) => {
+}: ContractCompletedProps) => {
   const mapContractStatusToMilestoneStatus = (status: string) => {
     switch (status) {
       case 'NotStarted':
@@ -136,15 +136,10 @@ export const ContractOverview = ({
           </div>
         )}
         <div className='flex flex-col gap-1'>
-          <h2 className='text-2xl font-medium'>
-            {contractApproved ? 'Contract Approved' : 'Review Contract'}
-          </h2>
+          <h2 className='text-2xl font-medium'>Contract Completed</h2>
           <p className='md:w-[80%]'>
-            {contractApproved
-              ? isClient
-                ? 'Get started funding milestones. The freelancer will be notified once you’ve added funds.'
-                : 'Submit your design once a milestone is complete. You’ll an receive instant payment once approved by the client.'
-              : 'Review and approve contract before funding milestones'}
+            <h4 className='text-2xl font-medium'>{offer?.projectName}</h4>
+            <p>{offer?.projectDescription}</p>
           </p>
         </div>
         <div className='align-center flex h-full cursor-pointer items-center justify-end'>
@@ -193,43 +188,6 @@ export const ContractOverview = ({
           </>
         ) : (
           <></>
-        )}
-      </div>
-      <div className='w-full'>
-        {!contractApproved ? (
-          <>
-            <div className='mt-4 flex w-full gap-2'>
-              <Button
-                onClick={handleReject}
-                className='w-full bg-red-600 text-white md:w-1/6 lg:w-2/12'
-              >
-                Reject
-              </Button>
-              <Button
-                onClick={handleApprove}
-                className='bg-sorbet hover:bg-sorbet/70 w-full text-white md:w-5/6 lg:w-10/12'
-              >
-                Approve
-              </Button>
-            </div>
-          </>
-        ) : (
-          !isClient && (
-            <div className='mt-4 flex w-full gap-2'>
-              <Button
-                onClick={finishContract}
-                className='bg-sorbet w-full text-white md:w-1/6 lg:w-2/12'
-                disabled={
-                  !(
-                    contract?.status === 'Completed' &&
-                    offer?.status === 'Accepted'
-                  )
-                }
-              >
-                Finish Contract
-              </Button>
-            </div>
-          )
         )}
       </div>
     </div>
