@@ -81,7 +81,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const { isPending: updateProfilePending, mutate: updateProfile } =
     useUpdateUser();
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (formData: FormData) => {
     let userToUpdate: User = { ...user };
 
     if (user?.id && user?.profileImage != null && image === undefined) {
@@ -109,11 +109,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     if (user) {
       userToUpdate = {
         ...userToUpdate,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        city: data.city,
-        tags: data.tags,
-        bio: data.bio,
+        ...formData,
       };
 
       updateProfile(userToUpdate);

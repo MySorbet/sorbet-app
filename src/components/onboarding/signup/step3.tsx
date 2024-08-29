@@ -20,8 +20,6 @@ const Step3 = () => {
   const reduxUser = useAppSelector((state) => state.userReducer.user);
   const [user, setUser] = useState(authUser || reduxUser);
 
-  const isMaxSkills = userData.skills.length >= 5;
-
   const { isPending: uploadPending, mutateAsync: uploadProfileImage } =
     useUploadProfileImage();
   const { isPending: updatePending, mutate: updateUser } = useUpdateUser();

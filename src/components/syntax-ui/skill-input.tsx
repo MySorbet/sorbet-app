@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useAnimate } from 'framer-motion';
 import { MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
-import { cn } from '@/lib/utils';
 
 const MaxNumOfSkills = 5;
 
@@ -132,7 +131,7 @@ const SkillInput = ({
                 <SkillBadge
                   key={index}
                   skill={keyword}
-                  removeSkill={(event) => removeKeyword(event, index)}
+                  onRemove={(event) => removeKeyword(event, index)}
                 />
               </motion.div>
             ))}
