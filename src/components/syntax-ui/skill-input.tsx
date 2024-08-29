@@ -144,10 +144,7 @@ const SkillInput = ({
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
             onBlur={(e) => handleBlur(e)}
-            className={cn(
-              isMaxSkills && 'cursor-not-allowed',
-              'my-1 flex-1 bg-transparent text-sm outline-none'
-            )}
+            className='my-1 flex-1 bg-transparent text-sm outline-none'
             placeholder='Enter your skills (max 5)'
           />
         </div>
