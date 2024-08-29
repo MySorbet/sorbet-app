@@ -98,6 +98,7 @@ const SkillInput = ({
     event: MouseEvent<HTMLButtonElement>,
     indexToRemove: number
   ) => {
+    console.log('removing skill ');
     const newSkills = skills.filter((_, index) => index !== indexToRemove);
     event.preventDefault();
     setSkills(newSkills);
@@ -116,7 +117,7 @@ const SkillInput = ({
         >
           <SearchLg className='h-5 w-5 text-[#667085]' />
           <AnimatePresence>
-            {initialSkills.map((keyword, index) => (
+            {skills.map((keyword, index) => (
               <motion.div
                 key={index}
                 initial={{ scale: 0.8, opacity: 0 }}
