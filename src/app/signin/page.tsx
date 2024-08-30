@@ -13,8 +13,8 @@ const SignInPage = () => {
       <Image
         src={HeroBlob}
         alt='an abstract blob illustration'
-        width={834}
-        height={782}
+        width={2720}
+        height={2843}
         className='select-none drop-shadow-xl'
         draggable='false'
       />

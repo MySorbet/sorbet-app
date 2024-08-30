@@ -12,6 +12,7 @@ interface ProfileHeaderProps {
   onEditClick: () => void;
   onHireMeClick?: () => void;
   disableHireMe?: boolean;
+  hideShare?: boolean;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -20,6 +21,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onEditClick,
   onHireMeClick,
   disableHireMe = false,
+  hideShare = false,
 }) => {
   const handle = user.handle;
   if (!handle) {
@@ -36,7 +38,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <div className='flex flex-col items-center gap-2'>
         <div className='flex justify-center'>
           <Avatar className='size-24'>
-            <AvatarImage src={user.profileImage} alt={user.accountId} />
+            <AvatarImage src={user.profileImage} alt={handle} />
             <AvatarFallback className='border-primary-default border-2'>
               <User01 className='text-muted-foreground h-12 w-12' />
             </AvatarFallback>
@@ -107,18 +109,20 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               Hire Me
             </Button>
           )}
-          <ShareProfileDialog
-            trigger={
-              <Button
-                className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
-                onClick={handleUrlToClipboard()}
-              >
-                <Share06 className='h-5 w-5 transition ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[-0.5px] group-hover:rotate-6' />
-                <span className='text-base'>Share</span>
-              </Button>
-            }
-            username={handle}
-          />
+          {!hideShare && (
+            <ShareProfileDialog
+              trigger={
+                <Button
+                  className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
+                  onClick={handleUrlToClipboard()}
+                >
+                  <Share06 className='h-5 w-5 transition ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[-0.5px] group-hover:rotate-6' />
+                  <span className='text-base'>Share</span>
+                </Button>
+              }
+              username={handle}
+            />
+          )}
         </div>
       )}
     </>

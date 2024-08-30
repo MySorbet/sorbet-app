@@ -1,17 +1,6 @@
-import { ConfirmDialog } from './confirm-dialog';
-import { InputTags } from './input-tags';
-import { Loading } from './loading/Loading';
-import { default as ToggleAvailable } from './near-wallet/toggleAvailable';
-import { PageTitle } from './page-title';
-import { Spinner } from './spinner';
-import { UserSocialPreview } from './user-social-preview';
-
-export {
-  ConfirmDialog,
-  InputTags,
-  Loading,
-  PageTitle,
-  Spinner,
-  ToggleAvailable,
-  UserSocialPreview,
-};
+export { ConfirmDialog } from './confirm-dialog';
+export { Loading } from './loading/Loading';
+export { default as ToggleAvailable } from './near-wallet/toggleAvailable';
+export { PageTitle } from './page-title';
+export { Spinner } from './spinner';
+export { UserSocialPreview } from './user-social-preview';
