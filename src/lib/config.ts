@@ -13,6 +13,8 @@ const appConfigSchema = z.object({
   fastAuthDomain: z.string().url(),
   googleMapKey: z.string(),
   sendbirdAppId: z.string(),
+  contractAddress: z.string(),
+  usdcAddress: z.string(),
 });
 // Infer TS type from the Zod schema
 type AppConfig = z.infer<typeof appConfigSchema>;
@@ -28,6 +30,8 @@ export const config: AppConfig = appConfigSchema.parse({
   fastAuthDomain: process.env.NEXT_PUBLIC_FAST_AUTH_DOMAIN,
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
   sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
+  contractAddress: process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS,
+  usdcAddress: process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
 });
 
 // Networks require more information than just the networkId

@@ -282,7 +282,7 @@ export const GigsDialog = ({
           method: 'eth_call',
           params: [
             {
-              to: process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS || '',
+              to: config.usdcAddress,
               data: balanceOfData,
             },
           ],
@@ -303,7 +303,7 @@ export const GigsDialog = ({
 
         const transactionApproveHash = await sendTransaction(
           wallet,
-          process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS || '',
+          config.usdcAddress,
           TOKEN_ABI,
           'approve',
           [
@@ -315,7 +315,7 @@ export const GigsDialog = ({
         console.log('transactionapproveHash', transactionApproveHash);
         const transactionHash = await sendTransaction(
           wallet,
-          process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS || '',
+          config.contractAddress,
           CONTRACT_ABI,
           'fundMilestone',
           [
@@ -389,7 +389,7 @@ export const GigsDialog = ({
         setLastChainOp('approve_schedule');
         const transactionHash = await sendTransaction(
           wallet,
-          process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS || '',
+          config.contractAddress,
           CONTRACT_ABI,
           'releaseMilestone',
           [projectId, milestoneId]
