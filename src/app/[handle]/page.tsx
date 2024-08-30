@@ -57,7 +57,9 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
 
   // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data;
-  const isMyProfile = params.handle === user?.handle;
+  const isMyProfile = user?.handle === params.handle;
+  const disableHireMe = isMyProfile || !user;
+  const hideShare = !isMyProfile || !user;
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   const handleClaimMyProfile = () => {
@@ -80,7 +82,8 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
                 user={freelancer}
                 canEdit={isMyProfile}
                 onHireMeClick={() => setOfferDialogOpen(true)}
-                disableHireMe={isMyProfile}
+                disableHireMe={disableHireMe}
+                hideShare={hideShare}
               />
               <UserSocialPreview title={freelancerFullName} />
               <ProjectOfferDialog

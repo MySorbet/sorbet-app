@@ -13,7 +13,14 @@ export const Profile: FC<{
   canEdit?: boolean;
   onHireMeClick?: () => void;
   disableHireMe?: boolean;
-}> = ({ user, canEdit = false, onHireMeClick, disableHireMe = false }) => {
+  hideShare?: boolean;
+}> = ({
+  user,
+  canEdit = false,
+  onHireMeClick,
+  disableHireMe = false,
+  hideShare = false,
+}) => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const handleProfileEdit = () => {
@@ -34,6 +41,7 @@ export const Profile: FC<{
             canEdit={canEdit}
             onHireMeClick={onHireMeClick}
             disableHireMe={disableHireMe}
+            hideShare={hideShare}
           />
           <ProfileEditModal
             editModalVisible={showEditModal}
