@@ -1,3 +1,6 @@
+import { CircleHelp, ImagePlus,Link } from 'lucide-react';
+import React, { useState } from 'react';
+
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
 import { validateUrl } from '@/components/profile/widgets';
@@ -13,8 +16,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { Link, CircleHelp, ImagePlus } from 'lucide-react';
-import React, { useState } from 'react';
 
 interface AddWidgetsProps {
   addUrl: (url: string, image?: File | undefined) => void;
@@ -66,7 +67,13 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       const fileSize = file.size / 1024 / 1024; // in MB
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
-      if (validExtensions.includes(fileExtension!) && fileSize <= 10) {
+      if (!fileExtension) {
+        // This condition is hit if there is no file extension
+        showErrorInvalidImage(true);
+        return;
+      }
+
+      if (validExtensions.includes(fileExtension) && fileSize <= 10) {
         addUrl('https://storage.googleapis.com', file);
       } else {
         showErrorInvalidImage(true);
@@ -97,7 +104,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       )}
 
       {errorInvalidImage && (
-        <div className={'animate-in slide-in-from-bottom-8 mb-2 z-0'}>
+        <div className="animate-in slide-in-from-bottom-8 mb-2 z-0">
           <InvalidAlert
             handleAlertVisible={(show: boolean) => showErrorInvalidImage(show)}
             title='Error uploading file'
