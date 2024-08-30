@@ -1,3 +1,4 @@
+import { User01 } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
   LayoutGrid,
@@ -11,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Spinner } from '@/components/common';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
@@ -84,21 +86,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
           <div className='flex w-full flex-col gap-10'>
             <div className='flex w-full flex-row items-center justify-between'>
               <div className='flex flex-row items-center justify-between gap-2'>
-                <div>
-                  {user.profileImage ? (
-                    <img
-                      src={user.profileImage}
-                      alt='logo'
-                      className='h-14 w-14 rounded-full'
-                    />
-                  ) : (
-                    <img
-                      src='/avatar.svg'
-                      className='h-14 w-14 rounded-full'
-                      alt='logo'
-                    />
-                  )}
-                </div>
+                <Avatar className='border-primary-default size-12 border-2'>
+                  <AvatarImage src={user?.profileImage} alt='profile image' />
+                  <AvatarFallback>
+                    <User01 className='text-muted-foreground' />
+                  </AvatarFallback>
+                </Avatar>
                 <div className='flex flex-col'>
                   <div className='text-base font-bold '>
                     {`${user.firstName} ${user.lastName}`}
