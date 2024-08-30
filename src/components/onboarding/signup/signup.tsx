@@ -8,6 +8,8 @@ import {
   useState,
 } from 'react';
 
+import { useAuth } from '@/hooks';
+
 import { AllSet } from './all-set';
 import { Step1 } from './step1';
 import { Step2 } from './step2';
@@ -52,8 +54,15 @@ const initialUserSignUp: UserSignUp = {
 
 /** Component hosting all 4 steps of the signup experience. Facilitates moving though steps via context. */
 const SignUp = () => {
-  const [userData, setUserData] = useState<UserSignUp>(initialUserSignUp);
+  const { user } = useAuth();
+  const [userData, setUserData] = useState<UserSignUp>({
+    ...initialUserSignUp,
+    handle: user?.handle ?? '', // Pre-populate handle with users pregenerated handle
+  });
   const [step, setStep] = useState<number>(1);
+
+  if (!user) throw new Error('User not found');
+
   return (
     <UserSignUpContext.Provider
       value={{ userData, setUserData, step, setStep }}
