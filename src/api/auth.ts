@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import { network } from '@/lib/config';
 import { User } from '@/types';
 import { API_URL } from '@/utils';
 
@@ -86,40 +85,21 @@ export const fetchUserDetails = async (token: string) => {
   }
 };
 
-export const checkIsAccountAvailable = async (username: string) => {
+export const checkHandleIsAvailable = async (handle: string) => {
   try {
-    if (!username) return;
+    const res = await axios.get<{ isUnique: boolean }>(
+      `${API_URL}/users/handle/check/${handle}`
+    );
 
-    const response = await fetch(network.nodeUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 'dontcare',
-        method: 'query',
-        params: {
-          request_type: 'view_account',
-          finality: 'final',
-          account_id: `${username}.${network.fastAuth.accountIdSuffix}`,
-        },
-      }),
-    });
-    const data = await response.json();
-    if (data?.error?.cause?.name == 'UNKNOWN_ACCOUNT') {
-      // Account is available
-      return true;
+    return res;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Axios error: failed to get check handle availability: ${error.response?.data.error}`
+      );
     }
-
-    if (data?.result?.code_hash) {
-      // Account is taken
-      return false;
-    }
-  } catch (error: any) {
-    // Error in checking availabilty, retry
     throw new Error(
-      `Failed to check if account is available: ${error.response.data.message}`
+      `Non-axios error: failed to get check handle availability: ${error}`
     );
   }
 };

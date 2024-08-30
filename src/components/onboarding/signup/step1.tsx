@@ -1,11 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, User } from 'lucide-react';
+import { CircleAlert, CircleCheck, User } from 'lucide-react';
 import { ChangeEventHandler, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
+import { checkHandleIsAvailable } from '@/api/auth';
 import { LocationInput } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -15,14 +16,25 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 import { FormContainer } from '../form-container';
 import { useUserSignUp } from './signup';
 
+// TODO: debounce so that not too many requests are made when typing
+const refine = async (handle: string, initialHandle: string) => {
+  if (handle === initialHandle) return true; // initial handle generated for this user is allowed
+  if (handle.length === 0) return false;
+  const res = await checkHandleIsAvailable(handle);
+  return res.data.isUnique;
+};
+
 const Step1 = () => {
+  const { user } = useAuth();
   const { userData, setUserData, setStep } = useUserSignUp();
   const [image, setImage] = useState<string | undefined>('');
   const [file, setFile] = useState<File | undefined>(undefined);
@@ -30,7 +42,12 @@ const Step1 = () => {
   const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
-    handle: z.string().min(1, { message: 'Handle is required' }),
+    handle: z
+      .string()
+      .min(1, { message: 'Handle is required' })
+      .refine((handle) => refine(handle, user?.handle ?? ''), {
+        message: 'Handle is already taken',
+      }),
     location: z.string().optional(),
   });
 
@@ -115,11 +132,14 @@ const Step1 = () => {
                               errors.handle && 'border-red-500 ring-red-500'
                             )}
                           />
-                          {errors.handle && (
+                          {errors.handle ? (
                             <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
+                          ) : (
+                            <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
                           )}
                         </div>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   );
                 }}
