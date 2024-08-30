@@ -127,8 +127,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await logout();
         setLoading(false);
         toast({
-          title: 'Error',
-          description: `Error logging in: ${loginResult.error?.message}`,
+          title: 'Error logging in',
+          description: loginResult.error?.message,
           variant: 'destructive',
         });
         return;
@@ -146,8 +146,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       toast({
-        title: 'Error',
-        description: `Error logging in: ${error}`,
+        title: 'Error logging in',
+        description: error,
         variant: 'destructive',
       });
     },
