@@ -1,7 +1,7 @@
 import { Link } from 'lucide-react';
 import React from 'react';
 
-import { ImageOverlay,WidgetHeader } from '@/components/profile/widgets/';
+import { ImageOverlay, WidgetHeader } from '@/components/profile/widgets/';
 import { cn } from '@/lib/utils';
 import { LinkWidgetContentType, WidgetSize } from '@/types';
 
@@ -89,7 +89,7 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
     <img
       className={cn('size-[30px]', className)}
       src={src}
-      alt={'Icon for widget'}
+      alt='Icon for widget'
       width={30}
       height={30}
       {...rest}
