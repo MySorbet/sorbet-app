@@ -33,29 +33,25 @@ export const Profile: FC<{
 
   return (
     <div className='container mx-auto py-4'>
-      {user && (
-        <div className='flex flex-col items-center gap-4 py-6'>
-          <ProfileHeader
-            user={user}
-            onEditClick={handleProfileEdit}
-            canEdit={canEdit}
-            onHireMeClick={onHireMeClick}
-            disableHireMe={disableHireMe}
-            hideShare={hideShare}
-          />
-          <ProfileEditModal
-            editModalVisible={showEditModal}
-            handleModalVisible={handleProfileModalVisible}
-            user={user}
-          />
-        </div>
-      )}
+      <div className='flex flex-col items-center gap-4 py-6'>
+        <ProfileHeader
+          user={user}
+          onEditClick={handleProfileEdit}
+          canEdit={canEdit}
+          onHireMeClick={onHireMeClick}
+          disableHireMe={disableHireMe}
+          hideShare={hideShare}
+        />
+        <ProfileEditModal
+          editModalVisible={showEditModal}
+          handleModalVisible={handleProfileModalVisible}
+          user={user}
+        />
+      </div>
 
-      {user && (
-        <div className={cn('mt-12', canEdit ? 'mb-24' : '')}>
-          <WidgetContainer editMode={canEdit} userId={user.id} />
-        </div>
-      )}
+      <div className={cn('mt-12', canEdit && 'mb-24')}>
+        <WidgetContainer editMode={canEdit} userId={user.id} />
+      </div>
     </div>
   );
 };
