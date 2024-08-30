@@ -40,7 +40,7 @@ export const ContractMilestone = ({
       case ContractMilestoneStatus.Active:
         return 'Active';
       case ContractMilestoneStatus.Approved:
-        return 'Approved';
+        return 'Released';
       case ContractMilestoneStatus.FundingPending:
         return 'Funds Pending';
       case ContractMilestoneStatus.InReview:
@@ -138,7 +138,7 @@ export const ContractMilestone = ({
                         size={`sm`}
                         onClick={handleMilestoneApprove}
                       >
-                        Approve <Check className='ml-1' size={17} />
+                        Release <Check className='ml-1' size={17} />
                       </Button>
                     </>
                   )}

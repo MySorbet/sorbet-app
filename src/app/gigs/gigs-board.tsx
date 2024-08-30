@@ -54,7 +54,7 @@ export const GigsBoard = ({ gigsContentType }: GigsBoardProps) => {
   };
 
   const handleOfferReject = async () => {
-    updateOfferStatus({ currentOffer: currentOffer, status: 'rejected' });
+    updateOfferStatus({ currentOffer: currentOffer, status: 'Rejected' });
     setIsCommsOpen(false);
   };
 

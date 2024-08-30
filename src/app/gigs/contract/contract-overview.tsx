@@ -94,6 +94,42 @@ export const ContractOverview = ({
     }
   };
 
+  const mapContractTypeToGigDlgTitle = (type: string) => {
+    switch (type) {
+      case 'NotStarted':
+        return 'Contract Approved';
+      case 'InProgress':
+        return 'Contract is in Progress';
+      case 'InReview':
+        return 'Review Contract';
+      case 'Completed':
+        return 'Contract Completed';
+      default:
+        return '';
+    }
+  };
+
+  const mapContractTypeToGigDlgText = (contract: ContractType) => {
+    switch (contract.status) {
+      case 'PendingApproval':
+        return 'Review and approve contract before funding milestones';
+      case 'NotStarted':
+        return isClient
+          ? 'Get started funding milestones. The freelancer will be notified once you’ve added funds.'
+          : '';
+      case 'InProgress':
+        return isClient
+          ? ''
+          : 'Submit your design once a milestone is complete. You’ll an receive instant payment once approved by the client.';
+      case 'InReview':
+        return contract.name + '\n' + contract.description;
+      case 'Completed':
+        return offer?.projectName + '\n' + offer?.projectDescription;
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className='contract-container flex h-full w-full flex-col items-center rounded-2xl bg-gray-100 p-4'>
       <AlertDialog
@@ -137,14 +173,16 @@ export const ContractOverview = ({
         )}
         <div className='flex flex-col gap-1'>
           <h2 className='text-2xl font-medium'>
-            {contractApproved ? 'Contract Approved' : 'Review Contract'}
+            {mapContractTypeToGigDlgTitle(contract?.status)}
+            {/* {contractApproved ? 'Contract Approved' : 'Review Contract'} */}
           </h2>
-          <p className='md:w-[80%]'>
-            {contractApproved
+          <p className='whitespace-pre-line md:w-[80%]'>
+            {/* {contractApproved
               ? isClient
                 ? 'Get started funding milestones. The freelancer will be notified once you’ve added funds.'
                 : 'Submit your design once a milestone is complete. You’ll an receive instant payment once approved by the client.'
-              : 'Review and approve contract before funding milestones'}
+              : 'Review and approve contract before funding milestones'} */}
+            {mapContractTypeToGigDlgText(contract)}
           </p>
         </div>
         <div className='align-center flex h-full cursor-pointer items-center justify-end'>
@@ -214,6 +252,7 @@ export const ContractOverview = ({
             </div>
           </>
         ) : (
+          contract?.status != 'Completed' &&
           !isClient && (
             <div className='mt-4 flex w-full gap-2'>
               <Button
@@ -221,7 +260,7 @@ export const ContractOverview = ({
                 className='bg-sorbet w-full text-white md:w-1/6 lg:w-2/12'
                 disabled={
                   !(
-                    contract?.status === 'Completed' &&
+                    contract?.status === 'InReview' &&
                     offer?.status === 'Accepted'
                   )
                 }

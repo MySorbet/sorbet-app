@@ -16,17 +16,9 @@ import {
   ContractOverview,
   ContractPendingFreelancer,
   ContractPendingOffer,
-  ContractCompleted,
   ContractRejected,
 } from '@/app/gigs/contract';
-// import { useWalletSelector } from '@/components/common';
-import {
-  encodeFunctionData,
-  parseUnits,
-  formatUnits,
-  hexToBigInt,
-  EIP1193Provider,
-} from 'viem';
+import { encodeFunctionData, parseUnits, formatUnits, hexToBigInt } from 'viem';
 import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
 import {
   useWallets,
@@ -45,7 +37,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
 import { config } from '@/lib/config';
-import { toYoctoNEAR } from '@/lib/helper';
 import { cn } from '@/lib/utils';
 import { ActiveTab } from '@/types';
 import {
@@ -95,15 +86,12 @@ export const GigsDialog = ({
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
-  // const { selector, accounts } = useWalletSelector();
   const { ready, wallets } = useWallets();
 
   const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
     'lastChainOp',
     ''
   );
-
-  const { user } = useAuth();
 
   const {
     isPending: getContractPending,
@@ -194,13 +182,17 @@ export const GigsDialog = ({
 
   const finishContract = async () => {
     setLastChainOp('end_project');
-    if (currentOffer) {
-      await updateOfferStatus(currentOffer?.id, 'Completed');
+    setIsLoading(true);
+    if (contractData) {
+      // await updateOfferStatus(currentOffer?.id, 'Completed');
+      await updateContractStatus(contractData.id, 'Completed');
     }
     toast({
       title: 'Contract completed',
       description: 'The contract has been completed',
     });
+    await refetchContractData();
+    setIsLoading(false);
   };
 
   const onMilestonesFormSubmit = async (
@@ -309,51 +301,36 @@ export const GigsDialog = ({
           return;
         }
 
-        const approve_data = encodeFunctionData({
-          abi: TOKEN_ABI,
-          functionName: 'approve',
-          args: [
+        const transactionApproveHash = await sendTransaction(
+          wallet,
+          '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // usdc address
+          TOKEN_ABI,
+          'approve',
+          [
             '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
             parseUnits(amount.toString(), 6),
-          ],
-        });
+          ]
+        );
 
-        const transactionapproveRequest = {
-          from: wallet.address,
-          to: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // usdc address
-          data: approve_data,
-        };
-        const transactionapproveHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [transactionapproveRequest],
-        });
-
-        console.log('transactionapproveHash', transactionapproveHash);
-
-        const data = encodeFunctionData({
-          abi: CONTRACT_ABI,
-          functionName: 'fundMilestone',
-          args: [
+        console.log('transactionapproveHash', transactionApproveHash);
+        const transactionHash = await sendTransaction(
+          wallet,
+          '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
+          CONTRACT_ABI,
+          'fundMilestone',
+          [
             projectId,
             milestoneId,
-            '0xeB46D095618010dd3f84c32865800703EAC83512',
+            '0x05b47D672aAA1b17F3988b20D23ec336B392B90D',
             parseUnits(amount.toString(), 6),
-          ],
-        });
-        const transactionRequest = {
-          from: wallet.address,
-          to: '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
-          data: data,
-        };
-        const transactionHash = await provider.request({
-          method: 'eth_sendTransaction',
-          params: [transactionRequest],
-        });
+          ]
+        );
+
         console.log('transactionHash', transactionHash);
 
         // this code needs to be run on backend web3 event listener
-        await updateMilestoneStatus(milestoneId, 'Active');
-        await updateContractStatus(projectId, 'InProgress');
+        // await updateMilestoneStatus(milestoneId, 'Active');
+        // await updateContractStatus(projectId, 'InProgress');
 
         toast({
           title: 'Transaction Successful',
@@ -383,9 +360,6 @@ export const GigsDialog = ({
     projectId: string,
     milestoneId: string
   ) => {
-    // const response = !isFixedPrice
-    //   ? await updateMilestoneStatus(milestoneId, 'InReview')
-    //   : await updateContractStatus(projectId, 'InReview');
     const response = await updateMilestoneStatus(milestoneId, 'InReview');
     if (response && response.data) {
       toast({
@@ -424,8 +398,8 @@ export const GigsDialog = ({
         console.log('transactionHash', transactionHash);
 
         // still backend process
-        await updateMilestoneStatus(milestoneId, 'Approved');
-        await updateContractStatus(projectId, 'Completed');
+        // await updateMilestoneStatus(milestoneId, 'Approved');
+        // await updateContractStatus(projectId, 'Completed');
 
         toast({
           title: 'Transaction Successful',
@@ -490,33 +464,9 @@ export const GigsDialog = ({
 
   const renderContractView = () => {
     if (isClient) {
-      if (contractData && currentOffer) {
+      if (contractData) {
         if (contractData.status === 'Rejected') {
           return <ContractRejected isClient={isClient} />;
-        } else if (
-          contractData.status === 'Completed' &&
-          currentOffer.status === 'Completed'
-        ) {
-          return (
-            <ContractCompleted
-              contract={contractData}
-              isClient={isClient}
-              milestones={contractData.milestones as MilestoneType[]}
-              offer={currentOffer}
-              contractApproved={contractApproved}
-              isRejectDialogOpen={isRejectDialogOpen}
-              setIsRejectDialogOpen={() => setIsRejectDialogOpen(false)}
-              isLoading={isLoading}
-              handleApprove={handleApprove}
-              handleReject={handleReject}
-              confirmReject={confirmReject}
-              cancelReject={cancelReject}
-              finishContract={finishContract}
-              handleMilestoneApprove={handleMilestoneApprove}
-              handleMilestoneSubmission={handleMilestoneSubmission}
-              handleMilestoneFunding={handleMilestoneFunding}
-            />
-          );
         } else {
           return (
             <ContractOverview
@@ -547,35 +497,11 @@ export const GigsDialog = ({
         }
       }
     } else {
-      if (contractData && currentOffer) {
+      if (contractData) {
         if (contractData.status === 'PendingApproval') {
           return <ContractPendingFreelancer />;
         } else if (contractData.status === 'Rejected') {
           return <ContractRejected isClient={isClient} />;
-        } else if (
-          contractData.status === 'Completed' &&
-          currentOffer.status === 'Completed'
-        ) {
-          return (
-            <ContractCompleted
-              contract={contractData}
-              isClient={isClient}
-              milestones={contractData.milestones as MilestoneType[]}
-              offer={currentOffer}
-              contractApproved={contractApproved}
-              isRejectDialogOpen={isRejectDialogOpen}
-              setIsRejectDialogOpen={() => setIsRejectDialogOpen(false)}
-              isLoading={isLoading}
-              handleApprove={handleApprove}
-              handleReject={handleReject}
-              confirmReject={confirmReject}
-              cancelReject={cancelReject}
-              finishContract={finishContract}
-              handleMilestoneApprove={handleMilestoneApprove}
-              handleMilestoneSubmission={handleMilestoneSubmission}
-              handleMilestoneFunding={handleMilestoneFunding}
-            />
-          );
         } else {
           return (
             <ContractOverview
