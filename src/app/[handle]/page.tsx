@@ -33,9 +33,6 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
         description: projectFormValues.description,
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
-        // TODO: This will be broken until createOffer uses their handle
-        // clientUsername: withSuffix(user.accountId),
-        // freelancerUsername: withSuffix(params.username),
         clientUsername: user.handle ?? '',
         freelancerUsername: params.handle,
       });
