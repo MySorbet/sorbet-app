@@ -45,7 +45,7 @@ export const Header = () => {
                   </AvatarFallback>
                 </Avatar>
                 <ChevronDown className='transition ease-out group-hover:translate-y-1' />
-                <Sidebar show={toggleOpenSidebar} userInfo={user} />
+                <Sidebar show={toggleOpenSidebar} />
               </div>
             </div>
           </div>
