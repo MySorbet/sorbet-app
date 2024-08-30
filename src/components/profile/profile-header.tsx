@@ -110,10 +110,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           <ShareProfileDialog
             trigger={
               <Button
-                className='align-center flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
+                className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
                 onClick={handleUrlToClipboard()}
               >
-                <Share06 className='h-5 w-5' />
+                <Share06 className='h-5 w-5 transition ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[-0.5px] group-hover:rotate-6' />
                 <span className='text-base'>Share</span>
               </Button>
             }
