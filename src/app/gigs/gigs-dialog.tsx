@@ -319,7 +319,6 @@ export const GigsDialog = ({
           CONTRACT_ABI,
           'fundMilestone',
           [
-            projectId,
             milestoneId,
             '0x05b47D672aAA1b17F3988b20D23ec336B392B90D',
             parseUnits(amount.toString(), 6),
@@ -392,7 +391,7 @@ export const GigsDialog = ({
           config.contractAddress,
           CONTRACT_ABI,
           'releaseMilestone',
-          [projectId, milestoneId]
+          [milestoneId]
         );
 
         console.log('transactionHash', transactionHash);

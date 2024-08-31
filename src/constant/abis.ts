@@ -38,14 +38,13 @@ export const CONTRACT_ABI = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'ReentrancyGuardReentrantCall',
+    type: 'error',
+  },
+  {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'project_id',
-        type: 'string',
-      },
       {
         indexed: false,
         internalType: 'string',
@@ -59,7 +58,7 @@ export const CONTRACT_ABI = [
         type: 'address',
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: 'address',
         name: 'freelancer',
         type: 'address',
@@ -70,14 +69,107 @@ export const CONTRACT_ABI = [
         name: 'amount',
         type: 'uint256',
       },
+    ],
+    name: 'MilestoneCancel',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: false,
         internalType: 'string',
-        name: 'status',
+        name: 'milestone_id',
         type: 'string',
       },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'client',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'freelancer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'client_amount',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'freelancer_amount',
+        type: 'uint256',
+      },
     ],
-    name: 'MilestoneLog',
+    name: 'MilestoneDispute',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'milestone_id',
+        type: 'string',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'client',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'freelancer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'MilestoneFund',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'milestone_id',
+        type: 'string',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'client',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'freelancer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'MilestoneRelease',
     type: 'event',
   },
   {
@@ -101,11 +193,6 @@ export const CONTRACT_ABI = [
   },
   {
     inputs: [
-      {
-        internalType: 'string',
-        name: 'project_id',
-        type: 'string',
-      },
       {
         internalType: 'string',
         name: 'milestone_id',
@@ -144,6 +231,29 @@ export const CONTRACT_ABI = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'milestone_id',
+        type: 'string',
+      },
+      {
+        internalType: 'uint16',
+        name: 'client_percent',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint16',
+        name: 'freelancer_percent',
+        type: 'uint16',
+      },
+    ],
+    name: 'disputeMilestone',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'freelancer_fee',
     outputs: [
@@ -158,11 +268,6 @@ export const CONTRACT_ABI = [
   },
   {
     inputs: [
-      {
-        internalType: 'string',
-        name: 'project_id',
-        type: 'string',
-      },
       {
         internalType: 'string',
         name: 'milestone_id',
@@ -186,11 +291,6 @@ export const CONTRACT_ABI = [
   },
   {
     inputs: [
-      {
-        internalType: 'string',
-        name: 'project_id',
-        type: 'string',
-      },
       {
         internalType: 'string',
         name: 'milestone_id',
@@ -232,11 +332,6 @@ export const CONTRACT_ABI = [
   },
   {
     inputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
       {
         internalType: 'string',
         name: '',
@@ -284,11 +379,6 @@ export const CONTRACT_ABI = [
   },
   {
     inputs: [
-      {
-        internalType: 'string',
-        name: 'project_id',
-        type: 'string',
-      },
       {
         internalType: 'string',
         name: 'milestone_id',
