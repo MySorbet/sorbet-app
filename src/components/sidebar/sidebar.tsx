@@ -60,7 +60,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
     setIsLoggingOut(true);
     await logout();
     setIsLoggingOut(false);
-    router.push('/');
+    router.push('/signin');
   };
 
   const handleSidebarClose = () => {
