@@ -1,10 +1,18 @@
 'use client';
 
+import {
+  type GroupChannel,
+  type MessageCollectionEventHandler,
+  GroupChannelHandler,
+} from '@sendbird/chat/groupChannel';
+import { MessageListParams } from '@sendbird/chat/message';
+import { useEffect, useRef, useState } from 'react';
+
 import { sendNotification } from '@/api/chat';
 import { timestampToTime } from '@/app/gigs/chat/sendbird-utils';
 import { useToast } from '@/components/ui/use-toast';
 import { useSendbird } from '@/hooks/chat/useSendbird';
-import { PrismaOfferType, User } from '@/types';
+import { PrismaOfferType, UserWithId } from '@/types';
 import {
   ChatState,
   NewMessageNotificationDto,
@@ -12,17 +20,9 @@ import {
   SBMessage,
   SendMessageParams,
 } from '@/types/sendbird';
-import {
-  GroupChannelHandler,
-  type GroupChannel,
-  type MessageCollectionEventHandler,
-} from '@sendbird/chat/groupChannel';
-import { MessageListParams } from '@sendbird/chat/message';
-import { Send } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
 
 interface useChatProps {
-  user: User | null;
+  user: UserWithId | null;
   logout: () => void;
   isOpen: boolean;
   offer: PrismaOfferType | undefined;
