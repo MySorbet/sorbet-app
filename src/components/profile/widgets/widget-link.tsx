@@ -1,8 +1,9 @@
-import { WidgetHeader, ImageOverlay } from '@/components/profile/widgets/';
-import { cn } from '@/lib/utils';
-import { LinkWidgetContentType, WidgetSize } from '@/types';
 import { Link } from 'lucide-react';
 import React from 'react';
+
+import { ImageOverlay, WidgetHeader } from '@/components/profile/widgets/';
+import { cn } from '@/lib/utils';
+import { LinkWidgetContentType, WidgetSize } from '@/types';
 
 interface LinkWidgetProps {
   /** The content from link for the widget to render */
@@ -45,8 +46,8 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <div className='flex flex-row gap-3 justify-end h-full'>
-            <BannerImage src={heroImageUrl} className='w-2/3' />
+          <div className='flex max-h-full flex-row justify-end gap-3 overflow-hidden'>
+            <BannerImage src={heroImageUrl} className='w-2/3 ' />
           </div>
         </WidgetLayout>
       );
@@ -67,7 +68,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
 
 const Title: React.FC<React.PropsWithChildren> = (props) => {
   return (
-    <span className='text-secondary-foreground font-semibold text-sm flex-grow self-center'>
+    <span className='text-secondary-foreground flex-grow self-center text-sm font-semibold'>
       {props.children}
     </span>
   );
@@ -88,7 +89,7 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
     <img
       className={cn('size-[30px]', className)}
       src={src}
-      alt={'Icon for widget'}
+      alt='Icon for widget'
       width={30}
       height={30}
       {...rest}
@@ -98,7 +99,7 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
     // we should have a reset applying border-box. div should be size-8 rounded-xl after the rest if the icons change
     <Link
       className={cn(
-        'box-border size-[30px] p-1 bg-gray-300 rounded-md',
+        'box-border size-[30px] rounded-md bg-gray-300 p-1',
         className
       )}
     />
@@ -114,7 +115,7 @@ const WidgetLayout = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('h-full flex flex-col gap-3', className)}
+    className={cn('flex h-full flex-col gap-3', className)}
     {...props}
   />
 ));
@@ -129,7 +130,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        `h-full w-full relative rounded-2xl overflow-hidden flex items-center justify-center`,
+        `relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl`,
         !src && 'bg-gray-200',
         className
       )}
@@ -139,12 +140,12 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
           <img
             src={src}
             alt='Banner image from url'
-            className='w-full h-full object-cover'
+            className='h-full w-full object-cover'
           />
           <ImageOverlay />
         </>
       ) : (
-        <span className='text-muted-foreground font-semibold text-sm'>
+        <span className='text-muted-foreground text-sm font-semibold'>
           Nothing to see here
         </span>
       )}

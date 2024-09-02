@@ -45,12 +45,14 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             )}
           </div>
           <div className='flex flex-col items-center gap-1'>
-            <div className='flex items-center gap-1'>
-              <MarkerPin03 className='h-4 w-4 text-[#667085]' />
-              <span className='text-xs leading-[18px] text-[#667085]'>
-                {user.city}
-              </span>
-            </div>
+            {user.city && (
+              <div className='flex items-center gap-1'>
+                <MarkerPin03 className='h-4 w-4 text-[#667085]' />
+                <span className='text-xs leading-[18px] text-[#667085]'>
+                  {user.city}
+                </span>
+              </div>
+            )}
             <div className='flex justify-center'>
               <div className='lg:w-7/12'>
                 <h1 className='text-center text-4xl font-bold leading-[44px]'>
