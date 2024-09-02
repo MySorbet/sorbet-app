@@ -63,6 +63,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const [initialLayout, setInitialLayout] = useState<ExtendedWidgetLayout[]>(
     []
   );
+  const [containerWidth, setContainerWidth] = useState<number>(0);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
   const [cols, setCols] = useState<number>(8);
   const [error, setError] = useState<string | null>(null);
@@ -88,7 +89,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
     if (!userWidgets || userWidgets.length < 1) return [];
 
-    return userWidgets.map((widget: WidgetDto) => ({
+    return userWidgets.map((widget: WidgetDto, i: number) => ({
       i: widget.id,
       x: widget.layout.x,
       y: widget.layout.y,
@@ -102,7 +103,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       redirectUrl: widget.redirectUrl,
       size: widget.size as WidgetSize,
     }));
-  }, [editMode, userWidgetData]);
+  }, [userId, editMode, userWidgetData]);
 
   const handleWidgetResize = (
     key: string,
@@ -259,7 +260,14 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     }
   };
 
-  const handleWidgetDropStop = (newLayout: Layout[]) => {
+  const handleWidgetDropStop = (
+    newLayout: Layout[],
+    oldItem: Layout,
+    newItem: Layout,
+    placeholder: Layout,
+    event: MouseEvent,
+    element: HTMLElement
+  ) => {
     const extendedLayoutObjects: ExtendedWidgetLayout[] = newLayout.map(
       (item) => {
         const layoutItem = layout.find((layoutItem) => layoutItem.i === item.i);
@@ -338,7 +346,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
     setLayout((prevLayout) => {
       let maxY = 0;
-      return prevLayout.map((item) => {
+      return prevLayout.map((item, index) => {
         const { w, h } = getWidgetDimensions({
           breakpoint: currentBreakpoint,
           size: item.size,
@@ -354,6 +362,12 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
       });
     });
   }, [currentBreakpoint, initialLayout]);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  }, []);
 
   useEffect(() => {
     const calculateBreakpoint = () => {
@@ -377,7 +391,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     window.addEventListener('resize', calculateBreakpoint);
 
     return () => window.removeEventListener('resize', calculateBreakpoint);
-  }, [currentBreakpoint]);
+  }, [window.innerWidth]);
 
   if (isUserWidgetPending)
     return (
