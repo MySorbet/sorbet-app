@@ -138,7 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log(loginResult);
       const sorbetUser = loginResult.data;
       setLoading(false);
-      router.replace(`/${sorbetUser.handle}`);
+      // router.replace(`/${sorbetUser.handle}`);
     },
     onError: (error) => {
       // Ignore the user exiting the auth flow
