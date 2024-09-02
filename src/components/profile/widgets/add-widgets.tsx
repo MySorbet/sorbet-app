@@ -67,7 +67,13 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       const fileSize = file.size / 1024 / 1024; // in MB
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
-      if (validExtensions.includes(fileExtension!) && fileSize <= 10) {
+      if (!fileExtension) {
+        // This condition is hit if there is no file extension
+        showErrorInvalidImage(true);
+        return;
+      }
+
+      if (validExtensions.includes(fileExtension) && fileSize <= 10) {
         addUrl('https://storage.googleapis.com', file);
       } else {
         showErrorInvalidImage(true);

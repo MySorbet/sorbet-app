@@ -27,7 +27,7 @@ const schema = z.object({
     .string()
     .max(100, 'Bio must be at most 100 characters')
     .min(5, 'Bio must be at least 5 characters'),
-  city: z.string().min(1, 'Location is required'),
+  city: z.string(),
   tags: z.array(z.string()),
 });
 
@@ -261,11 +261,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     />
                   )}
                 />
-                {errors.city && (
-                  <p className='mt-1 text-xs text-red-500'>
-                    {errors.city.message}
-                  </p>
-                )}
               </div>
               <div className='item w-full'>
                 <label className='text-sm font-medium text-[#344054]'>
