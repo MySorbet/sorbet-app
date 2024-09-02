@@ -130,7 +130,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        `relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl`,
+        'relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl', // TODO: overflow-hidden is a bandaid for SRBT-132. Fix this at the source
         !src && 'bg-gray-200',
         className
       )}
