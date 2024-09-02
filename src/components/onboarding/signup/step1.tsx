@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -38,6 +39,7 @@ const Step1 = () => {
   const { userData, setUserData, setStep } = useUserSignUp();
   const [image, setImage] = useState<string | undefined>('');
   const [file, setFile] = useState<File | undefined>(undefined);
+  const hostname = window.location.hostname; // TODO: Is there a better way to get hostname?
 
   const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
@@ -122,11 +124,15 @@ const Step1 = () => {
                       <FormLabel className='text-sm text-[#344054]'>
                         Handle *
                       </FormLabel>
+                      <FormDescription>
+                        Claim your unique Sorbet handle
+                      </FormDescription>
                       <FormControl>
                         <div className='relative'>
                           <Input
                             {...form.register('handle')}
                             placeholder='Handle'
+                            prefix={`${hostname}/`}
                             {...field}
                             className={cn(
                               errors.handle && 'border-red-500 ring-red-500'
