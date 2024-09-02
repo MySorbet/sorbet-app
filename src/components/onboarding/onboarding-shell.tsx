@@ -19,7 +19,7 @@ const OnboardingShell: FC<
       <div className='fixed -left-[52rem]'>
         <BlurredLogos className='opacity-60' />
       </div>
-      <div className='z-20 flex h-[562px] w-[980px] justify-between rounded-[32px] border border-[#4F38DD] border-opacity-80  bg-gradient-to-r from-[#FFFFFFCC] to-[#D4CEFDCC] p-8 pl-12'>
+      <div className='z-20 flex min-h-[562px] w-[980px] justify-between rounded-[32px] border border-[#4F38DD] border-opacity-80  bg-gradient-to-r from-[#FFFFFFCC] to-[#D4CEFDCC] p-8 pl-12'>
         <div className='flex h-full flex-col justify-between'>
           <AuthHero />
           {renderUnderAuthHero?.() ?? null}
