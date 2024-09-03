@@ -15,7 +15,7 @@ const SignInPage = () => {
         alt='an abstract blob illustration'
         width={2720}
         height={2843}
-        className='select-none drop-shadow-xl'
+        className='max-h-[500px] select-none drop-shadow-xl'
         draggable='false'
       />
     </OnboardingShell>

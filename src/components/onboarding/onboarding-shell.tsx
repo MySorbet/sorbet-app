@@ -15,12 +15,12 @@ const OnboardingShell: FC<
   PropsWithChildren<{ renderUnderAuthHero?: () => ReactNode }>
 > = ({ children, renderUnderAuthHero }) => {
   return (
-    <div className='flex h-screen w-screen items-center justify-center bg-red-900 bg-gradient-to-r from-[#FFFFFF] to-[#D4CEFD]'>
+    <div className='flex size-full items-center justify-center bg-red-900 bg-gradient-to-r from-[#FFFFFF] to-[#D4CEFD]'>
       <div className='fixed -left-[52rem]'>
         <BlurredLogos className='opacity-60' />
       </div>
-      <div className='z-20 flex min-h-[562px] w-[980px] justify-between rounded-[32px] border border-[#4F38DD] border-opacity-80  bg-gradient-to-r from-[#FFFFFFCC] to-[#D4CEFDCC] p-8 pl-12'>
-        <div className='flex h-full flex-col justify-between'>
+      <div className='z-20 flex min-h-[562px] w-[980px] justify-between rounded-[32px] border border-[#4F38DD] border-opacity-80 bg-gradient-to-r from-[#FFFFFFCC] to-[#D4CEFDCC] p-12'>
+        <div className='flex flex-col justify-between'>
           <AuthHero />
           {renderUnderAuthHero?.() ?? null}
         </div>

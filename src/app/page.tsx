@@ -1,5 +1,3 @@
-'use client';
-
 import Splash from '@/app/splash';
 
 const Home = () => {
