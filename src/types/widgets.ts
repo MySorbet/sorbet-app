@@ -91,6 +91,7 @@ export interface SpotifyWidgetContentType {
 export interface InstagramWidgetContentType {
   handle: string;
   images: string[];
+  isPrivate: boolean;
 }
 
 export interface SoundcloudTrackContentType {
