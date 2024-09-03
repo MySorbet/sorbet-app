@@ -1,38 +1,37 @@
 'use client';
 
-import Head from './head';
-import { WalletSelectorContextProvider } from '@/components/common/near-wallet/walletSelectorContext';
-import { Toaster } from '@/components/ui/toaster';
-import { AuthProvider } from '@/hooks/useAuth';
-import { config } from '@/lib/config';
-import { store } from '@/redux/store';
 import '@/styles/colors.css';
 import '@/styles/globals.css';
-import '@/styles/near-modal-ui.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
 
-const queryClient = new QueryClient();
+import { usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+import Providers from '@/app/providers';
+
+import Head from './head';
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { ready, authenticated } = usePrivy();
+  const router = useRouter();
+
+  // Redirect to signin if not authenticated. Since this is on Root Layout, this will apply for all pages.
+  // TODO: Revisit auth strategy and how this plays with Splash, Authenticated wrapper, and useAuth
+  useEffect(() => {
+    if (ready && !authenticated) {
+      router.push('/signin');
+    }
+  }, [ready, authenticated, router]);
+
   return (
-    <html>
+    <html className='size-full'>
       <Head />
-      <body className='bg-[#F2F3F7]'>
-        <Provider store={store}>
-          <WalletSelectorContextProvider>
-            <AuthProvider>
-              <QueryClientProvider client={queryClient}>
-                {children}
-              </QueryClientProvider>
-            </AuthProvider>
-          </WalletSelectorContextProvider>
-          <Toaster />
-        </Provider>
+      <body className='size-full bg-[#F2F3F7]'>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

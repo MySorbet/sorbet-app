@@ -1,7 +1,54 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
-import { User } from '@/types';
+import { User, UserWithId } from '@/types';
 import { API_URL, withAuthHeader } from '@/utils';
+
+/** Get a user from the db by their handle */
+export const getUserByHandle = async (handle: string) => {
+  try {
+    const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to get user by handle: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(`Failed to get user by handle: ${error}`);
+    }
+  }
+};
+
+/** Get a user from the db by their privy id */
+export const getUserByPrivyId = async (id: string) => {
+  try {
+    const response = await axios.get<User>(`${API_URL}/users/privy/${id}`);
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to get user by privy id: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(`Failed to get user by account id: ${error}`);
+    }
+  }
+};
+
+/** Get the current wallet address of a user */
+export const getCurrentWalletAddressByUserId = async (userId: string) => {
+  try {
+    const res = await axios.get(
+      `${API_URL}/users/${userId}/wallet`,
+      await withAuthHeader()
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to get Address: ${error.response.data.message}`);
+  }
+};
+
+// OLD 👇
 
 // [POST] /api/auth/signup
 export const getUserFromUserId = async (userId: string) => {
@@ -19,7 +66,7 @@ export const deleteProfileImageAsync = async (userId: string) => {
   try {
     const res = await axios.delete(
       `${API_URL}/images/delete/${userId}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res.data;
   } catch (error: any) {
@@ -29,14 +76,14 @@ export const deleteProfileImageAsync = async (userId: string) => {
   }
 };
 
-export const getUserByAccountId = async (accountId: string) => {
+export const getUserByEmail = async (email: string) => {
   try {
     const response = await axios.get(
-      `${API_URL}/users/findByAccountId/${accountId}`
+      `${API_URL}/users/getUserByEmail/${email}`
     );
     return response;
   } catch (error: any) {
-    console.log(`Failed to get user by account id: ${JSON.stringify(error)}`);
+    console.log(`Failed to get user by email: ${JSON.stringify(error)}`);
   }
 };
 
@@ -53,12 +100,12 @@ export const getUsersBySearch = async (skills: string[], location: string) => {
   }
 };
 
-export const updateUser = async (userToUpdate: User, userId: string) => {
+export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   try {
     const response = await axios.patch(
       `${API_URL}/users/${userId}`,
       userToUpdate,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return response;
   } catch (error: any) {
@@ -70,7 +117,7 @@ export const getBalances = async (userId: string) => {
   try {
     const res = await axios.get(
       `${API_URL}/users/${userId}/balances`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -82,7 +129,7 @@ export const getOverview = async (last_days = 30) => {
   try {
     const res = await axios.get(
       `${API_URL}/transactions/overview?last_days=${last_days}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -114,7 +161,7 @@ export const getTransactions = async (
   try {
     const res = await axios.get(
       `${API_URL}/transactions?${queryParams.toString()}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {

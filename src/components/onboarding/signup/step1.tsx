@@ -1,47 +1,77 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, MapPin, User } from 'lucide-react';
-import { ChangeEventHandler, useContext, useState } from 'react';
+import { CircleAlert, CircleCheck, User } from 'lucide-react';
+import { ChangeEventHandler, useState } from 'react';
 import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
+import { checkHandleIsAvailable } from '@/api/auth';
+import { LocationInput } from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
 
 import { FormContainer } from '../form-container';
-import { UserSignUpContext, UserSignUpContextType } from './signup';
+import { useUserSignUp } from './signup';
+
+// TODO: debounce so that not too many requests are made when typing
+const refine = async (handle: string, initialHandle: string) => {
+  if (handle === initialHandle) return true; // initial handle generated for this user is allowed
+  if (handle.length === 0) return false;
+  const res = await checkHandleIsAvailable(handle);
+  return res.data.isUnique;
+};
 
 const Step1 = () => {
-  const { userData, setUserData, setStep } = useContext(
-    UserSignUpContext
-  ) as UserSignUpContextType;
+  const { user } = useAuth();
+  const { userData, setUserData, setStep } = useUserSignUp();
   const [image, setImage] = useState<string | undefined>('');
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [location, setLocation] = useState<string>('');
+  const hostname = window.location.hostname; // TODO: Is there a better way to get hostname?
 
-  const schema = z.object({
+  const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
+    handle: z
+      .string()
+      .min(1, { message: 'Handle is required' })
+      .refine((handle) => refine(handle, user?.handle ?? ''), {
+        message: 'Handle is already taken',
+      }),
+    location: z.string().optional(),
   });
 
-  const handleSubmit = (data: { firstName: string; lastName: string }) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    // Need default values because the form is a controlled component
+    defaultValues: {
+      ...userData,
+    },
+    mode: 'all',
+  });
+
+  const { errors } = useFormState({
+    control: form.control,
+  });
+
+  const handleSubmit = (values: z.infer<typeof formSchema>) => {
     setUserData((user) => ({
       ...user,
-      location,
+      ...values,
       image,
       file,
-      firstName: data.firstName,
-      lastName: data.lastName,
     }));
     setStep(2);
   };
@@ -53,30 +83,17 @@ const Step1 = () => {
     setImage(URL.createObjectURL(file));
   };
 
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-    },
-    mode: 'all',
-  });
-
-  const { errors } = useFormState({
-    control: form.control,
-  });
-
   return (
     <FormContainer>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          <div className='flex h-full flex-col gap-6'>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className='h-full'>
+          <div className='flex h-full flex-col justify-between gap-5'>
             <div className='flex w-full items-center justify-between'>
               <h1 className='text-2xl font-semibold'>Bio</h1>
               <p className='text-sm font-medium text-[#344054]'>Step 1 of 3</p>
             </div>
-            <div className='flex flex-1 flex-col gap-10'>
-              <div className='flex h-[76px] w-full items-center gap-4 py-2'>
+            <div className='flex flex-1 flex-col gap-6'>
+              <div className='flex w-full items-center gap-4'>
                 <Avatar className='h-[60px] w-[60px] border-[1.2px] border-[#00000014] shadow-[#1018280F]'>
                   <AvatarImage src={image} />
                   <AvatarFallback className='h-[60px] w-[60px] bg-[#F2F4F7] '>
@@ -98,6 +115,41 @@ const Step1 = () => {
                   />
                 </label>
               </div>
+              <FormField
+                control={form.control}
+                name='handle'
+                render={({ field }) => {
+                  return (
+                    <FormItem className='space-y-[6px]'>
+                      <FormLabel className='text-sm text-[#344054]'>
+                        Handle *
+                      </FormLabel>
+                      <FormDescription>
+                        Claim your unique Sorbet handle
+                      </FormDescription>
+                      <FormControl>
+                        <div className='relative'>
+                          <Input
+                            {...form.register('handle')}
+                            placeholder='Handle'
+                            prefix={`${hostname}/`}
+                            {...field}
+                            className={cn(
+                              errors.handle && 'border-red-500 ring-red-500'
+                            )}
+                          />
+                          {errors.handle ? (
+                            <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
+                          ) : (
+                            <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
               <div className='flex flex-row gap-6'>
                 <FormField
                   control={form.control}
@@ -157,20 +209,24 @@ const Step1 = () => {
                   }}
                 />
               </div>
-              <div className='flex flex-col gap-[6px]'>
-                <h1 className='text-sm text-[#344054]'>
-                  Where are you located?
-                </h1>
-                <div className='relative'>
-                  <Input
-                    placeholder='Enter location'
-                    className='pl-10'
-                    onChange={(e) => setLocation(e.target.value)}
-                    defaultValue={userData.location}
-                  />
-                  <MapPin className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
-                </div>
-              </div>
+              <FormField
+                control={form.control}
+                name='location'
+                render={() => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <LocationInput
+                          name='location'
+                          register={form.register}
+                          setValue={form.setValue}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
             </div>
             <Button
               type='submit'

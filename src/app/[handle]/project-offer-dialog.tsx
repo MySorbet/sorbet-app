@@ -1,15 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as React from 'react';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import Confetti, { ConfettiRef } from '@/components/magicui/confetti';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogOverlay,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -53,11 +50,11 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
 }) => {
   const {
     register,
-  handleSubmit,
+    handleSubmit,
     control,
     setValue,
     watch,
-    formState: { errors},
+    formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     mode: 'onChange', // This will enable re-validation on every change
@@ -79,35 +76,24 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
   const formattedBudget = budgetValue ? `$${budgetValue.toLocaleString()}` : '';
 
   const onFormSubmit = (data: ProjectFormValues) => {
+    setLoading(true);
     onSubmit(data);
   };
 
+  // Internal loading state which listens to props
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (formSubmitted) setLoading(false);
+  }, [formSubmitted]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogOverlay className='bg-black/80' />
       <DialogContent>
         <DialogTitle className='text-2xl'>
           Message {name && <span>{name}</span>}
         </DialogTitle>
         {formSubmitted && (
-          <div className='align-center flex w-full flex-col items-center justify-center'>
-            <div className='align-center my-24 flex w-full flex-col items-center justify-center gap-2 text-center'>
-              <div className='text-center text-6xl'>🎉</div>
-              <div className='text-3xl font-medium'>Your message was sent</div>
-              <div className='text-lg'>
-                You will receive a notification when the freelancer replies
-              </div>
-            </div>
-
-            <div className='w-full'>
-              <Button
-                className='bg-sorbet w-full'
-                onClick={() => onClose(false)}
-              >
-                Back to profile
-              </Button>
-            </div>
-          </div>
+          <FormSubmitted onClose={() => onClose(false)} name={name} />
         )}
         {!formSubmitted && (
           <form onSubmit={handleSubmit(onFormSubmit)}>
@@ -172,11 +158,56 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
               )}
             </div>
             <Button type='submit' className='bg-sorbet w-full'>
-              Send message
+              {loading ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Sending
+                </>
+              ) : (
+                'Send Message'
+              )}
             </Button>
           </form>
         )}
       </DialogContent>
     </Dialog>
+  );
+};
+
+const FormSubmitted = ({
+  onClose,
+  name = 'the freelancer',
+}: {
+  onClose: () => void;
+  name?: string;
+}) => {
+  // This bit allows us to fire the confetti on mount, overcoming the issue
+  // where the confetti would not fire if the component was mounted in the same render cycle
+  const confettiRef = useRef<ConfettiRef>(null);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      confettiRef.current?.fire();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className='align-center flex w-full flex-col items-center justify-center'>
+      <Confetti
+        ref={confettiRef}
+        className='pointer-events-none absolute left-0 top-0 z-0 size-full'
+      />
+      <div className='align-center animate-in fade-in-10 my-24 flex w-full flex-col items-center justify-center gap-2 text-center'>
+        <div className='text-center text-6xl'>🎉</div>
+        <div className='text-3xl font-medium'>Your message was sent</div>
+        <div className='text-muted-foreground text-lg'>
+          {`You will receive a notification when ${name} replies`}
+        </div>
+      </div>
+
+      <Button className='bg-sorbet w-full' onClick={onClose}>
+        Back to profile
+      </Button>
+    </div>
   );
 };

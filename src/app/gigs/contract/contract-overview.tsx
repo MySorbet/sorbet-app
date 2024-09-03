@@ -36,18 +36,15 @@ export interface ContractOverviewProps {
     scheduleId: string,
     amount: number,
     milestoneId: string,
-    isFixedPrice: boolean,
     index: number
   ) => Promise<void>;
   handleMilestoneSubmission: (
     projectId: string,
-    milestoneId: string,
-    isFixedPrice: boolean
+    milestoneId: string
   ) => Promise<void>;
   handleMilestoneApprove: (
     projectId: string,
     milestoneId: string,
-    isFixedPrice: boolean,
     offerId?: string,
     index?: number
   ) => Promise<void>;
@@ -85,6 +82,51 @@ export const ContractOverview = ({
       case 'InReview':
       default:
         return ContractMilestoneStatus.InReview;
+    }
+  };
+
+  const mapContractTypeToMilestoneTitle = (type: string, name: string) => {
+    switch (type) {
+      case 'FixedPrice':
+        return 'Fixed Price Contract';
+      default:
+        return name;
+    }
+  };
+
+  const mapContractTypeToGigDlgTitle = (type: string) => {
+    switch (type) {
+      case 'NotStarted':
+        return 'Contract Approved';
+      case 'InProgress':
+        return 'Contract is in Progress';
+      case 'InReview':
+        return 'Review Contract';
+      case 'Completed':
+        return 'Contract Completed';
+      default:
+        return '';
+    }
+  };
+
+  const mapContractTypeToGigDlgText = (contract: ContractType) => {
+    switch (contract.status) {
+      case 'PendingApproval':
+        return 'Review and approve contract before funding milestones';
+      case 'NotStarted':
+        return isClient
+          ? 'Get started funding milestones. The freelancer will be notified once you’ve added funds.'
+          : '';
+      case 'InProgress':
+        return isClient
+          ? ''
+          : 'Submit your design once a milestone is complete. You’ll an receive instant payment once approved by the client.';
+      case 'InReview':
+        return contract.name + '\n' + contract.description;
+      case 'Completed':
+        return offer?.projectName + '\n' + offer?.projectDescription;
+      default:
+        return '';
     }
   };
 
@@ -131,14 +173,16 @@ export const ContractOverview = ({
         )}
         <div className='flex flex-col gap-1'>
           <h2 className='text-2xl font-medium'>
-            {contractApproved ? 'Contract Approved' : 'Review Contract'}
+            {mapContractTypeToGigDlgTitle(contract?.status)}
+            {/* {contractApproved ? 'Contract Approved' : 'Review Contract'} */}
           </h2>
-          <p className='md:w-[80%]'>
-            {contractApproved
+          <p className='whitespace-pre-line md:w-[80%]'>
+            {/* {contractApproved
               ? isClient
                 ? 'Get started funding milestones. The freelancer will be notified once you’ve added funds.'
                 : 'Submit your design once a milestone is complete. You’ll an receive instant payment once approved by the client.'
-              : 'Review and approve contract before funding milestones'}
+              : 'Review and approve contract before funding milestones'} */}
+            {mapContractTypeToGigDlgText(contract)}
           </p>
         </div>
         <div className='align-center flex h-full cursor-pointer items-center justify-end'>
@@ -152,7 +196,10 @@ export const ContractOverview = ({
               <ContractMilestone
                 isApproved={contractApproved}
                 status={milestone.status}
-                title={milestone.name}
+                title={mapContractTypeToMilestoneTitle(
+                  contract.contractType,
+                  milestone.name
+                )}
                 amount={milestone.amount}
                 index={index}
                 key={index}
@@ -165,18 +212,16 @@ export const ContractOverview = ({
                     index.toString(),
                     milestone.amount,
                     milestone.id,
-                    false,
                     index
                   )
                 }
                 handleMilestoneSubmission={() =>
-                  handleMilestoneSubmission(contract.id, milestone.id, false)
+                  handleMilestoneSubmission(contract.id, milestone.id)
                 }
                 handleMilestoneApprove={() =>
                   handleMilestoneApprove(
                     contract.id,
                     milestone.id,
-                    false,
                     offer?.id,
                     index
                   )
@@ -185,39 +230,7 @@ export const ContractOverview = ({
             ))}
           </>
         ) : (
-          <ContractMilestone
-            isApproved={contractApproved}
-            status={mapContractStatusToMilestoneStatus(contract.status)}
-            title='Fixed Price Contract'
-            amount={contract.totalAmount}
-            index={0}
-            projectId={contract.id}
-            isClient={isClient}
-            milestoneId={contract.id}
-            isFixedPrice={true}
-            handleMilestoneFunding={() =>
-              handleMilestoneFunding(
-                contract.id,
-                '0',
-                contract.totalAmount,
-                contract.id,
-                true,
-                0
-              )
-            }
-            handleMilestoneSubmission={() =>
-              handleMilestoneSubmission(contract.id, contract.id, true)
-            }
-            handleMilestoneApprove={() =>
-              handleMilestoneApprove(
-                contract.id,
-                contract.id,
-                true,
-                offer?.id,
-                0
-              )
-            }
-          />
+          <></>
         )}
       </div>
       <div className='w-full'>
@@ -239,12 +252,18 @@ export const ContractOverview = ({
             </div>
           </>
         ) : (
+          contract?.status != 'Completed' &&
           !isClient && (
             <div className='mt-4 flex w-full gap-2'>
               <Button
                 onClick={finishContract}
                 className='bg-sorbet w-full text-white md:w-1/6 lg:w-2/12'
-                disabled={offer?.status === 'Completed'}
+                disabled={
+                  !(
+                    contract?.status === 'InReview' &&
+                    offer?.status === 'Accepted'
+                  )
+                }
               >
                 Finish Contract
               </Button>

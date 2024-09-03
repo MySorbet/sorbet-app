@@ -1,11 +1,12 @@
+import { useMutation } from '@tanstack/react-query';
+
 import { uploadProfileImageAsync } from '@/api/images';
 import { useToast } from '@/components/ui/use-toast';
-import type { User } from '@/types';
-import { useMutation } from '@tanstack/react-query';
+import type { UserWithId } from '@/types';
 
 type uploadProfileImageParams = {
   imageFormData: FormData;
-  userToUpdate: User;
+  userToUpdate: UserWithId;
 };
 
 export const useUploadProfileImage = () => {
@@ -22,10 +23,10 @@ export const useUploadProfileImage = () => {
         throw new Error('Profile Image not updated');
       }
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: 'Profile Image not updated',
-        description: 'Your profile image could not be saved due to an error.',
+        description: `Your profile image could not be saved due to an error: ${error}`,
       });
     },
   });

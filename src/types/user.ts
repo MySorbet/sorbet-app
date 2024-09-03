@@ -2,7 +2,9 @@ export interface User {
   id: string;
   firstName: string;
   lastName: string;
-  accountId: string;
+  accountId: string | null;
+  privyId: string | null;
+  handle: string | null;
   email: string;
   bio: string;
   title: string;
@@ -10,7 +12,6 @@ export interface User {
   profileBannerImage: string;
   tags: string[];
   tempLocation: string;
-  role: string;
   city: string;
   balance?: {
     usdc: number;
@@ -18,3 +19,6 @@ export interface User {
     nearUsd: number;
   };
 }
+
+/** Type to capture the fact that a user can have an id but not the rest of the user object */
+export type UserWithId = Partial<User> & Pick<User, 'id'>;

@@ -1,215 +1,209 @@
+'use client';
+
+import { useLogin, usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 
-import { fetchUserDetails, signIn, signInWithWallet } from '@/api/auth';
-import { getBalances } from '@/api/user';
-import { useWalletSelector } from '@/components/common';
-import { config } from '@/lib/config';
+import { signUpWithPrivyId } from '@/api/auth';
+import { getUserByPrivyId } from '@/api/user';
+import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { reset, setOpenSidebar, updateUserData } from '@/redux/userSlice';
-import { User } from '@/types';
+import { reset, updateUserData } from '@/redux/userSlice';
+import { User, UserWithId } from '@/types';
 
 import { useLocalStorage } from './useLocalStorage';
 
-const AuthContext = createContext({
-  user: null as User | null,
-  accessToken: null as string | null,
-  appLoading: false as boolean,
-  loginWithEmail: async (
-    email: string
-  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
-    return { status: '', message: '', error: {}, data: {} };
-  },
-  loginWithWallet: async (
-    accountId: string
-  ): Promise<{
-    status: string;
-    message: string;
-    error?: any;
-    data?: any;
-  }> => {
-    return { status: '', message: '', error: {}, data: {} };
-  },
-  logout: () => {
-    /* noop */
-  },
-  checkAuth: async (): Promise<User | null> => {
-    return null;
-  },
-});
+type LoginResultFailed = {
+  status: 'failed';
+  message: string;
+  error?: any;
+};
+
+type LoginResultSuccess = {
+  status: 'success';
+  message: string;
+  data: User;
+};
+
+type LoginResult = LoginResultFailed | LoginResultSuccess;
+
+interface AuthContextType {
+  user: UserWithId | null;
+  logout: () => void;
+  login: ReturnType<typeof useLogin>['login'];
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useLocalStorage<User | null>('user', null);
-  const [appLoading, setAppLoading] = useState(true);
-  const [accessToken, setAccessToken] = useLocalStorage<string | null>(
-    'access_token',
-    null
-  );
-  const dispatch = useAppDispatch();
-  const { modal: nearModal, selector } = useWalletSelector();
+  // We store a copy of the user in local storage so we don't have to fetch it every time
+  const [user, setUser] = useLocalStorage<UserWithId | null>('user', null);
+  const [loading, setLoading] = useState(false);
+
+  // And one in redux to make it globally available
   const reduxUser = useAppSelector((state) => state.userReducer.user);
+  const dispatch = useAppDispatch();
 
+  const { logout: logoutPrivy } = usePrivy();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  // We sync the user from redux to local storage and vice versa
   useEffect(() => {
-    if (
-      reduxUser &&
-      reduxUser.firstName &&
-      reduxUser.lastName &&
-      reduxUser.id
-    ) {
+    // If redux user is empty, we need to fetch the user from local storage
+    if (!reduxUser || Object.keys(reduxUser).length === 0) {
+      user && dispatch(updateUserData(user));
+    } else {
       setUser(reduxUser);
-      setAppLoading(false);
     }
-  }, [reduxUser, setUser]);
+  }, [dispatch, reduxUser, setUser, user]);
 
-  const registerWithEmail = async (email: string) => {
-    try {
-      console.log('initiating fast auth sign up');
-      selector.wallet('fast-auth-wallet').then((fastAuthWallet: any) => {
-        fastAuthWallet.signIn({
-          contractId: config.contractId,
-          email: email,
-          isRecovery: false,
-          successUrl: config.signUpSuccessUrl,
-          failureUrl: config.signUpFailureUrl,
+  /**
+   * Local helper to find a user by privy id in the sorbet db,
+   * storing the access token and user if successful
+   */
+  const loginWithPrivyId = useCallback(
+    async (id: string): Promise<LoginResult> => {
+      try {
+        // Get the sorbet user from their privy id, fail if there is no user
+        const response = await getUserByPrivyId(id);
+        if (!response) {
+          return {
+            status: 'failed',
+            message: 'Failed to login. Server threw an error',
+          };
+        }
+        const sorbetUser = response.data;
+
+        // Put the user in redux, and thus local storage and return a success
+        dispatch(updateUserData(sorbetUser));
+        return {
+          status: 'success',
+          message: 'Login successful',
+          data: response.data,
+        };
+      } catch (error) {
+        return {
+          status: 'failed',
+          message: 'Login failed',
+          error: error,
+        };
+      }
+    },
+    [dispatch]
+  );
+
+  /**
+   * Login with privy, redirecting to signup if the user is new and to their profile if they already have an account.
+   * Note: No redirect will happen if the user is already authenticated
+   */
+  const { login } = useLogin({
+    onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
+      console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
+
+      // This is a signup so create a user in the sorbet db, put it in redux and redirect to signup
+      if (isNewUser) {
+        console.log(
+          'This is a new user. Creating a sorbet user and redirecting to signup'
+        );
+        setLoading(true);
+        // TODO: What if this fails? We have a privy user but no sorbet. Handle this case.
+        const signUpResponse = await signUpWithPrivyId({ id: user.id });
+        const newSorbetUser = signUpResponse.data;
+        dispatch(updateUserData(newSorbetUser));
+        console.log(`New sorbet user: ${newSorbetUser}`);
+        setLoading(false);
+
+        // We have signed up a privy user and created a minimal (id, privyId, handle) sorbet user.
+        // Redirect to signup so that they can fill out the details and update their profile
+        router.replace('/signup');
+        return;
+      }
+
+      // This is a login from an existing user so fetch their sorbet details
+      setLoading(true);
+      const loginResult = await loginWithPrivyId(user.id);
+
+      // If the login fails, log out and show an error
+      if (loginResult.status === 'failed') {
+        await logout();
+        setLoading(false);
+        toast({
+          title: 'Error logging in',
+          description: loginResult.error?.message,
+          variant: 'destructive',
         });
+        return;
+      }
+
+      // If you get here, the login was successful and you have a sorbet user. Route to their profile
+      const sorbetUser = loginResult.data;
+      console.log(`Existing sorbet user: ${sorbetUser}`);
+      setLoading(false);
+
+      // However, We only want to do this if they are logging in currently.
+      // Not if this is an implicit login from privy
+      // TODO: Revisit this
+      if (!wasAlreadyAuthenticated) {
+        router.replace(`/${sorbetUser.handle}`);
+      } else {
+        console.log(
+          `${sorbetUser.handle} is logged in. Did not redirect b/c they were already authenticated.`
+        );
+      }
+    },
+    onError: (error) => {
+      // Ignore the user exiting the auth flow
+      if (error === 'exited_auth_flow') {
+        return;
+      }
+      toast({
+        title: 'Error logging in',
+        description: error,
+        variant: 'destructive',
       });
-      return {
-        status: 'success',
-        message: 'register successful',
-      };
-    } catch (error) {
-      return {
-        status: 'failed',
-        message: 'register failed',
-      };
-    }
-  };
+    },
+  });
 
-  /** Attempts to sign into sorbet, storing the access token and user if successful  */
-  const loginWithEmail = async (
-    email: string
-  ): Promise<{ status: string; message: string; error?: any; data?: any }> => {
-    try {
-      const response = await signIn({ email });
-      if (response) {
-        const user = response.data.user;
-        const token = response.data.access_token;
-        setUser(user);
-        setAccessToken(token);
-        dispatch(updateUserData(user));
-        dispatch(setOpenSidebar(false));
+  // TODO: balances were fetched before. We should fetch them again?
 
-        return {
-          status: 'success',
-          message: 'Login successful',
-          data: response.data,
-        };
-      } else {
-        return {
-          status: 'failed',
-          message: 'Failed to login. Server threw an error',
-          error: {},
-        };
-      }
-    } catch (error) {
-      return {
-        status: 'failed',
-        message: 'Login failed',
-        error: error,
-      };
-    }
-  };
-
-  const loginWithWallet = async (accountId: string) => {
-    try {
-      const response = await signInWithWallet(accountId);
-      console.log('wallet sign in res', response);
-      if (response.data) {
-        const user = response.data.user;
-        const token = response.data.access_token;
-        setUser(user);
-        setAccessToken(token);
-        dispatch(updateUserData(user));
-        dispatch(setOpenSidebar(false));
-        return {
-          ...response,
-          status: 'success',
-          message: 'Login successful',
-          data: response.data,
-        };
-      } else {
-        return {
-          ...response,
-          status: 'failed',
-          message: 'Failed to sign in with wallet',
-        };
-      }
-    } catch (error) {
-      console.log('wallet sign in catch', error);
-      return { status: 'failed', message: 'Login failed', error: error };
-    } finally {
-      setAppLoading(false);
-    }
-  };
-
-  const checkAuth = async () => {
-    if (!accessToken) {
-      return null;
-    }
-
-    setAppLoading(true);
-
-    try {
-      const response = await fetchUserDetails(accessToken as string);
-      const authenticatedUser = response.data as User;
-
-      const balanceResponse = await getBalances(authenticatedUser.id);
-      if (balanceResponse && balanceResponse.data) {
-        setUser({ ...authenticatedUser, balance: balanceResponse.data });
-      } else {
-        setUser(authenticatedUser);
-      }
-
-      dispatch(updateUserData(authenticatedUser));
-
-      return authenticatedUser;
-    } catch (error) {
-      return null;
-    } finally {
-      setAppLoading(false);
-    }
-  };
-
-  const logout = () => {
+  // Combine a privy logout with resetting the redux user and local storage user
+  const logout = useCallback(async () => {
+    await logoutPrivy();
     setUser(null);
-    setAccessToken(null);
-    setAppLoading(false);
     dispatch(reset());
-  };
+    setLoading(false);
+  }, [dispatch, logoutPrivy, setUser]);
 
   const value = useMemo(
     () => ({
       user,
-      accessToken,
-      loginWithEmail,
-      loginWithWallet,
-      registerWithEmail,
+      loading,
+      login,
       logout,
-      appLoading,
-      checkAuth,
     }),
-    [user, accessToken, appLoading]
+    [user, loading, login, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+/** Use this hook to get access to the currently logged in sorbet user and methods to log them in and out */
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return ctx;
 };
+
+export default AuthProvider;

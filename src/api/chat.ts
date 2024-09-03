@@ -21,7 +21,7 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
     const response = await axios.post(
       `${API_URL}/images/sendbird`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     const binary = response.data.binString;
     const buffer = blobUtil.binaryStringToArrayBuffer(binary);
@@ -42,7 +42,7 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
 */
 export async function sendNotification(reqBody: NewMessageNotificationDto) {
   try {
-    await axios.post(`${API_URL}/chat`, reqBody, withAuthHeader());
+    await axios.post(`${API_URL}/chat`, reqBody, await withAuthHeader());
   } catch (error: any) {
     // Message goes thru to sendbird, but notification fails in backend
     console.error(

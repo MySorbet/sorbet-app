@@ -12,6 +12,7 @@ interface ProfileHeaderProps {
   onEditClick: () => void;
   onHireMeClick?: () => void;
   disableHireMe?: boolean;
+  hideShare?: boolean;
 }
 
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
@@ -20,10 +21,15 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onEditClick,
   onHireMeClick,
   disableHireMe = false,
+  hideShare = false,
 }) => {
+  const handle = user.handle;
+  if (!handle) {
+    throw new Error('User handle is required');
+  }
+
   const handleUrlToClipboard = () => () => {
-    const username = user.accountId.split('.')[0];
-    const url = `${window.location.origin}/${username}`;
+    const url = `${window.location.origin}/${handle}`;
     navigator.clipboard.writeText(url);
   };
 
@@ -31,8 +37,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     <>
       <div className='flex flex-col items-center gap-2'>
         <div className='flex justify-center'>
-          <Avatar className='h-[100px] w-[100px]'>
-            <AvatarImage src={user.profileImage} alt={user.accountId} />
+          <Avatar className='size-24'>
+            <AvatarImage src={user.profileImage} alt={handle} />
             <AvatarFallback className='border-primary-default border-2'>
               <User01 className='text-muted-foreground h-12 w-12' />
             </AvatarFallback>
@@ -54,7 +60,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               </div>
             )}
             <div className='flex justify-center'>
-              <div className='lg:w-7/12'>
+              <div className='max-w-prose'>
                 <h1 className='text-center text-4xl font-bold leading-[44px]'>
                   {user.bio}
                 </h1>
@@ -105,18 +111,20 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               Hire Me
             </Button>
           )}
-          <ShareProfileDialog
-            trigger={
-              <Button
-                className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
-                onClick={handleUrlToClipboard()}
-              >
-                <Share06 className='h-5 w-5 transition ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[-0.5px] group-hover:rotate-6' />
-                <span className='text-base'>Share</span>
-              </Button>
-            }
-            username={user.accountId.split('.')[0]}
-          />
+          {!hideShare && (
+            <ShareProfileDialog
+              trigger={
+                <Button
+                  className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'
+                  onClick={handleUrlToClipboard()}
+                >
+                  <Share06 className='h-5 w-5 transition ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[-0.5px] group-hover:rotate-6' />
+                  <span className='text-base'>Share</span>
+                </Button>
+              }
+              username={handle}
+            />
+          )}
         </div>
       )}
     </>

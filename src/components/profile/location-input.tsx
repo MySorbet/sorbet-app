@@ -1,6 +1,12 @@
 import { MarkerPin02 } from '@untitled-ui/icons-react';
 import { Dispatch, SetStateAction } from 'react';
-import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import {
+  FieldValues,
+  Path,
+  PathValue,
+  UseFormRegister,
+  UseFormSetValue,
+} from 'react-hook-form';
 
 import {
   Command,
@@ -11,24 +17,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { useGooglePlacesApi } from '@/hooks';
 
-interface LocationInputProps {
-  register?: UseFormRegister<{
-    city: string;
-    firstName: string;
-    lastName: string;
-    bio: string;
-    tags: string[];
-  }>;
-  setValue: UseFormSetValue<{
-    city: string;
-    firstName: string;
-    lastName: string;
-    bio: string;
-    tags: string[];
-  }>;
+interface LocationInputProps<T extends FieldValues> {
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  setValue: UseFormSetValue<T>;
 }
 
-export const LocationInput = ({ register, setValue }: LocationInputProps) => {
+export const LocationInput = <T extends FieldValues>({
+  name,
+  register,
+  setValue,
+}: LocationInputProps<T>) => {
   const { predictions, setPredictions, handleLocationInputChange } =
     useGooglePlacesApi();
 
@@ -40,10 +39,9 @@ export const LocationInput = ({ register, setValue }: LocationInputProps) => {
             id='location-input'
             type='text'
             placeholder='Type a location'
-            {...(register &&
-              register('city', {
-                required: 'Location is required',
-              }))}
+            {...register(name, {
+              required: 'Location is required',
+            })}
             onChange={(e) => handleLocationInputChange(e)}
             autoComplete='off'
             className='pl-10 focus:outline-none focus:ring-0'
@@ -51,6 +49,7 @@ export const LocationInput = ({ register, setValue }: LocationInputProps) => {
           <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
         </div>
         <LocationPredictionsList
+          name={name}
           predictions={predictions}
           setValue={setValue}
           setPredictions={setPredictions}
@@ -60,23 +59,21 @@ export const LocationInput = ({ register, setValue }: LocationInputProps) => {
   );
 };
 
-const LocationPredictionsList = ({
-  predictions,
-  setValue,
-  setPredictions,
-}: {
-  predictions: google.maps.places.AutocompletePrediction[];
-  setValue: UseFormSetValue<{
-    city: string;
-    firstName: string;
-    lastName: string;
-    bio: string;
-    tags: string[];
-  }>;
+interface LocationPredictionsListProps<T extends FieldValues> {
+  name: Path<T>;
+  setValue: UseFormSetValue<T>;
   setPredictions: Dispatch<
     SetStateAction<google.maps.places.AutocompletePrediction[]>
   >;
-}) => {
+  predictions: google.maps.places.AutocompletePrediction[];
+}
+
+const LocationPredictionsList = <T extends FieldValues>({
+  name,
+  predictions,
+  setValue,
+  setPredictions,
+}: LocationPredictionsListProps<T>) => {
   return (
     <CommandList
       className={
@@ -92,7 +89,7 @@ const LocationPredictionsList = ({
             key={prediction.place_id}
             value={prediction.description}
             onSelect={() => {
-              setValue('city', prediction.description);
+              setValue(name, prediction.description as PathValue<T, Path<T>>);
               setPredictions([]);
             }}
             className=' text-black'

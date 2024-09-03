@@ -14,7 +14,7 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 'warn',
-    'no-console': 'warn',
+    'no-console': 'off',
     'no-useless-escape': 'warn',
 
     '@typescript-eslint/explicit-module-boundary-types': 'off',

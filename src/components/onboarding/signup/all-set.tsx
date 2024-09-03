@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
+import { useUserSignUp } from '@/components/onboarding/signup/signup';
 import { Button } from '@/components/ui/button';
 
 import { FormContainer } from '../form-container';
@@ -11,6 +12,7 @@ import { WidgetResizeDemo } from './widget-resize-demo';
 
 const AllSet = () => {
   const router = useRouter();
+  const { userData } = useUserSignUp();
 
   return (
     <FormContainer>
@@ -33,7 +35,7 @@ const AllSet = () => {
         </div>
         <Button
           className='w-full border border-[#7F56D9] bg-[#573DF5] text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
-          onClick={() => router.push('/')}
+          onClick={() => router.push(`/${userData.handle}`)}
         >
           Edit My Profile
         </Button>
