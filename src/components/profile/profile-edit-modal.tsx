@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User01, X } from '@untitled-ui/icons-react';
-import { Loader } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -17,7 +17,6 @@ import {
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
-import { cn } from '@/lib/utils';
 import type { User } from '@/types';
 
 const schema = z.object({
@@ -148,16 +147,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setValue('tags', newSkills);
   };
 
+  const loading =
+    updateProfilePending ||
+    deleteProfileImagePending ||
+    uploadProfileImagePending;
+
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
-      <DialogContent
-        className={cn(
-          'sm:rounded-[32px]',
-          updateProfilePending || deleteProfileImagePending,
-          uploadProfileImagePending && 'opacity-50'
-        )}
-        customDialogClose='hidden'
-      >
+      <DialogContent className='sm:rounded-[32px]' customDialogClose='hidden'>
         <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
           <p>Edit Profile</p>
           <X
@@ -306,16 +303,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Button
                   type='submit'
                   className='bg-sorbet w-full'
-                  disabled={
-                    updateProfilePending ||
-                    deleteProfileImagePending ||
-                    uploadProfileImagePending
-                  }
+                  disabled={loading}
                 >
-                  {updateProfilePending ||
-                  deleteProfileImagePending ||
-                  uploadProfileImagePending ? (
-                    <Loader />
+                  {loading ? (
+                    <>
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      Saving
+                    </>
                   ) : (
                     'Save Changes'
                   )}
