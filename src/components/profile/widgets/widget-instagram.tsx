@@ -53,22 +53,11 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
           </div>
           <div>{localHeader}</div>
           <div className='relative flex-grow overflow-hidden'>
-            {content.isPrivate ? (
-              <>
-                <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                  This account is private
-                </span>
-              </>
-            ) : content.images.length > 0 ? (
-              <div className='grid grid-cols-3 gap-1'>
-                <ImageGallery images={content.images} heightClass='h-20' />
-                <ImageOverlay />
-              </div>
-            ) : (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                No pics posted yet!
-              </span>
-            )}
+            <InstagramImageContent
+              {...content}
+              className='grid grid-cols-3 gap-1'
+              heightClass='h-20'
+            />
           </div>
         </div>
       );
@@ -81,20 +70,11 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
             <div>{localHeader}</div>
           </div>
           <div className='relative h-full w-full overflow-hidden rounded-xl bg-white text-black'>
-            {content.isPrivate ? (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                This account is private
-              </span>
-            ) : content.images.length > 0 ? (
-              <div className='grid h-full w-full grid-cols-2 gap-2'>
-                <ImageGallery images={content.images} heightClass='h-44' />
-                <ImageOverlay />
-              </div>
-            ) : (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                No pics posted yet!
-              </span>
-            )}
+            <InstagramImageContent
+              {...content}
+              className='grid h-full w-full grid-cols-2 gap-2'
+              heightClass='h-44'
+            />
           </div>
         </div>
       );
@@ -109,20 +89,11 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
             </div>
           </div>
           <div className='relative h-full w-1/2 overflow-hidden rounded-xl'>
-            {content.isPrivate ? (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                This account is private
-              </span>
-            ) : content.images.length > 0 ? (
-              <div className='grid h-full w-full grid-cols-2 gap-2'>
-                <ImageGallery images={content.images} heightClass='h-20' />
-                <ImageOverlay />
-              </div>
-            ) : (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                No pics posted yet!
-              </span>
-            )}
+            <InstagramImageContent
+              {...content}
+              className='grid h-full w-full grid-cols-2 gap-2'
+              heightClass='h-20'
+            />
           </div>
         </div>
       );
@@ -135,24 +106,11 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
           </div>
           <div>{localHeader}</div>
           <div className='relative mt-24 h-full w-full overflow-hidden rounded-xl'>
-            {content.isPrivate ? (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                This account is private
-              </span>
-            ) : content.images.length > 0 ? (
-              <div className='grid h-full w-full grid-cols-2 gap-2'>
-                <ImageGallery images={content.images} heightClass='h-28' />
-                <ImageOverlay />
-              </div>
-            ) : (
-              <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
-                No pics posted yet!
-              </span>
-            )}
-            <div className='grid h-full w-full grid-cols-2 gap-2'>
-              <ImageGallery images={content.images} heightClass='h-28' />
-              <ImageOverlay />
-            </div>
+            <InstagramImageContent
+              {...content}
+              className='grid h-full w-full grid-cols-2 gap-2'
+              heightClass='h-28'
+            />
           </div>
         </div>
       );
@@ -162,4 +120,35 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
   }
 
   return widgetLayout;
+};
+
+interface InstagramImageContentProps extends InstagramWidgetContentType {
+  className: string;
+  heightClass: string;
+}
+
+const InstagramImageContent = ({
+  isPrivate,
+  images,
+  className,
+  heightClass,
+}: InstagramImageContentProps) => {
+  return (
+    <>
+      {isPrivate ? (
+        <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
+          This account is private
+        </span>
+      ) : images.length > 0 ? (
+        <div className={className}>
+          <ImageGallery images={images} heightClass={heightClass} />
+          <ImageOverlay />
+        </div>
+      ) : (
+        <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
+          No pics posted yet!
+        </span>
+      )}
+    </>
+  );
 };

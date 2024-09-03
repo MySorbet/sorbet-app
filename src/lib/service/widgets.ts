@@ -320,7 +320,7 @@ export const getInstagramProfileMetadata = async ({
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data.message);
     } else {
-      throw new Error('Failed to get Instagram profile metadata');
+      throw new Error(`Failed to get Instagram profile metadata: ${error}`);
     }
   }
 };
