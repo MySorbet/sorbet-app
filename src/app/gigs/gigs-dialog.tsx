@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useGetContractForOffer } from '@/hooks';
+import { getCurrentWalletAddressByUserId } from '@/api/user';
 import { useLocalStorage } from '@/hooks';
 import { config } from '@/lib/config';
 import { cn } from '@/lib/utils';
@@ -266,11 +267,24 @@ export const GigsDialog = ({
     index: number
   ) => {
     try {
+      const freelancerResponse = await getCurrentWalletAddressByUserId(
+        contractData?.freelanceId
+      );
+      const freelancerAddress = freelancerResponse?.data;
+      if (!freelancerAddress || freelancerAddress === '') {
+        toast({
+          title: 'Freelancer address not found',
+          description: 'Unable to fund milestone',
+          variant: 'destructive',
+        });
+        return;
+      }
+      console.log('freelancerAddress', freelancerAddress);
       const wallet = getEmbeddedConnectedWallet(wallets);
       if (wallet) {
         setLastChainOp('fund_schedule');
         const provider = await wallet.getEthereumProvider();
-        console.log(wallet);
+        console.log('current user wallet', wallet);
         const balanceOfData = encodeFunctionData({
           abi: TOKEN_ABI,
           functionName: 'balanceOf',
@@ -288,7 +302,7 @@ export const GigsDialog = ({
           ],
         });
 
-        amount = 0.01;
+        // amount = 0.01;
 
         if (hexToBigInt(balanceResult) < parseUnits(amount.toString(), 6)) {
           toast({
@@ -306,10 +320,7 @@ export const GigsDialog = ({
           config.usdcAddress,
           TOKEN_ABI,
           'approve',
-          [
-            '0x2aEF844155a048e1a78B1475a4F948A3F9853971',
-            parseUnits(amount.toString(), 6),
-          ]
+          [config.contractAddress, parseUnits(amount.toString(), 6)]
         );
 
         console.log('transactionapproveHash', transactionApproveHash);
@@ -318,11 +329,7 @@ export const GigsDialog = ({
           config.contractAddress,
           CONTRACT_ABI,
           'fundMilestone',
-          [
-            milestoneId,
-            '0x05b47D672aAA1b17F3988b20D23ec336B392B90D',
-            parseUnits(amount.toString(), 6),
-          ]
+          [milestoneId, freelancerAddress, parseUnits(amount.toString(), 6)]
         );
 
         console.log('transactionHash', transactionHash);

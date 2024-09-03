@@ -108,6 +108,18 @@ export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   }
 };
 
+export const getCurrentWalletAddressByUserId = async (userId: string) => {
+  try {
+    const res = await axios.get(
+      `${API_URL}/users/${userId}/wallet`,
+      await withAuthHeader()
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to get Address: ${error.response.data.message}`);
+  }
+};
+
 export const getBalances = async (userId: string) => {
   try {
     const res = await axios.get(
