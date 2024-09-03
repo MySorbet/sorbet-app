@@ -5,7 +5,7 @@ import { updateUser } from '@/api/user';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
-import { User, UserWithId } from '@/types';
+import { UserWithId } from '@/types';
 
 export const useUpdateUser = () => {
   const dispatch = useAppDispatch();

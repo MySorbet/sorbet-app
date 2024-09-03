@@ -1,7 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
+
 import { getClientOffers, getFreelancerOffers } from '@/api/gigs';
 import { useToast } from '@/components/ui/use-toast';
-import { GigsContentType, User, UserWithId } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { GigsContentType, UserWithId } from '@/types';
 
 export const useFetchOffers = (
   loggedInUser: UserWithId | null,
