@@ -46,7 +46,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <div className='flex max-h-full flex-row justify-end gap-3 overflow-hidden'>
+          <div className='flex h-full flex-row justify-end gap-3 overflow-hidden'>
             <BannerImage src={heroImageUrl} className='w-2/3 ' />
           </div>
         </WidgetLayout>
