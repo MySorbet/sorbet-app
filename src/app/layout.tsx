@@ -19,9 +19,11 @@ export default function RootLayout({
   const { ready, authenticated } = usePrivy();
   const router = useRouter();
 
+  // Redirect to signin if not authenticated. Since this is on Root Layout, this will apply for all pages.
+  // TODO: Revist auth strategy and how this plays with Splash, Container, and useAuth
   useEffect(() => {
     if (ready && !authenticated) {
-      router.push('/login');
+      router.push('/signin');
     }
   }, [ready, authenticated, router]);
 
