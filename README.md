@@ -8,7 +8,8 @@ More details to follow.
 
 ### 🔥 Quickstart
 
-Note: We use `corepack` to ensure everyone is using the same package manager. Before continuing, install it with `brew install corepack`.
+> [!NOTE]
+> We use `corepack` to ensure everyone is using the same package manager. Before continuing, install it with `brew install corepack`.
 
 1. Clone the repo with `git clone https://github.com/MySorbet/sorbet-app.git`.
 2. Install dependencies with `yarn`.
