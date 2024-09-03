@@ -67,25 +67,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [dispatch, reduxUser, setUser, user]);
 
-  /** Find a user by privy id in the sorbet db, storing the access token and user if successful  */
+  /**
+   * Local helper to find a user by privy id in the sorbet db,
+   * storing the access token and user if successful
+   */
   const loginWithPrivyId = useCallback(
     async (id: string): Promise<LoginResult> => {
       try {
+        // Get the sorbet user from their privy id, fail if there is no user
         const response = await getUserByPrivyId(id);
-        if (response) {
-          const sorbetUser = response.data;
-          dispatch(updateUserData(sorbetUser));
-          return {
-            status: 'success',
-            message: 'Login successful',
-            data: response.data,
-          };
-        } else {
+        if (!response) {
           return {
             status: 'failed',
             message: 'Failed to login. Server threw an error',
           };
         }
+        const sorbetUser = response.data;
+
+        // Put the user in redux, and thus local storage and return a success
+        dispatch(updateUserData(sorbetUser));
+        return {
+          status: 'success',
+          message: 'Login successful',
+          data: response.data,
+        };
       } catch (error) {
         return {
           status: 'failed',
@@ -97,6 +102,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [dispatch]
   );
 
+  /**
+   * Login with privy, redirecting to signup if the user is new and to their profile if they already have an account.
+   * Note: No redirect will happen if the user is already authenticated
+   */
   const { login } = useLogin({
     onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
       console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
@@ -107,17 +116,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           'This is a new user. Creating a sorbet user and redirecting to signup'
         );
         setLoading(true);
+        // TODO: What if this fails? We have a privy user but no sorbet. Handle this case.
         const signUpResponse = await signUpWithPrivyId({ id: user.id });
-        // TODO: What if this fails? We have a privy user but no sorbet
-        // TODO: Maybe we should give them a temp handle so that they can see their profile in case handle update fails?
-        dispatch(updateUserData(signUpResponse.data));
-        console.log(signUpResponse.data);
+        const newSorbetUser = signUpResponse.data;
+        dispatch(updateUserData(newSorbetUser));
+        console.log(`New sorbet user: ${newSorbetUser}`);
         setLoading(false);
+
+        // We have signed up a privy user and created a minimal (id, privyId, handle) sorbet user.
+        // Redirect to signup so that they can fill out the details and update their profile
         router.replace('/signup');
         return;
       }
 
-      // Fetch user from sorbet
+      // This is a login from an existing user so fetch their sorbet details
       setLoading(true);
       const loginResult = await loginWithPrivyId(user.id);
 
@@ -134,8 +146,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // If you get here, the login was successful and you have a sorbet user. Route to their profile
-      console.log(loginResult);
       const sorbetUser = loginResult.data;
+      console.log(`Existing sorbet user: ${sorbetUser}`);
       setLoading(false);
 
       // However, We only want to do this if they are logging in currently.
@@ -162,8 +174,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  // TODO: Fetch balances
+  // TODO: balances were fetched before. We should fetch them again?
 
+  // Combine a privy logout with resetting the redux user and local storage user
   const logout = useCallback(async () => {
     await logoutPrivy();
     setUser(null);
