@@ -3,32 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { User, UserWithId } from '@/types';
 import { API_URL, withAuthHeader } from '@/utils';
 
-// [POST] /api/auth/signup
-export const getUserFromUserId = async (userId: string) => {
-  try {
-    const res = await axios.get(`${API_URL}/user/getUserFromUserId/${userId}`);
-    return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get get user from userId: ${error.response.data.message}`
-    );
-  }
-};
-
-export const deleteProfileImageAsync = async (userId: string) => {
-  try {
-    const res = await axios.delete(
-      `${API_URL}/images/delete/${userId}`,
-      await withAuthHeader()
-    );
-    return res.data;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to delete profile image: ${error.response.data.message}`
-    );
-  }
-};
-
+/** Get a user from the db by their handle */
 export const getUserByHandle = async (handle: string) => {
   try {
     const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);
@@ -57,6 +32,47 @@ export const getUserByPrivyId = async (id: string) => {
     } else {
       throw new Error(`Failed to get user by account id: ${error}`);
     }
+  }
+};
+
+/** Get the current wallet address of a user */
+export const getCurrentWalletAddressByUserId = async (userId: string) => {
+  try {
+    const res = await axios.get(
+      `${API_URL}/users/${userId}/wallet`,
+      await withAuthHeader()
+    );
+    return res;
+  } catch (error: any) {
+    throw new Error(`Failed to get Address: ${error.response.data.message}`);
+  }
+};
+
+// OLD 👇
+
+// [POST] /api/auth/signup
+export const getUserFromUserId = async (userId: string) => {
+  try {
+    const res = await axios.get(`${API_URL}/user/getUserFromUserId/${userId}`);
+    return res;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get get user from userId: ${error.response.data.message}`
+    );
+  }
+};
+
+export const deleteProfileImageAsync = async (userId: string) => {
+  try {
+    const res = await axios.delete(
+      `${API_URL}/images/delete/${userId}`,
+      await withAuthHeader()
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to delete profile image: ${error.response.data.message}`
+    );
   }
 };
 
@@ -94,18 +110,6 @@ export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
     return response;
   } catch (error: any) {
     throw new Error(`Failed to update user: ${error.response.data.message}`);
-  }
-};
-
-export const getCurrentWalletAddressByUserId = async (userId: string) => {
-  try {
-    const res = await axios.get(
-      `${API_URL}/users/${userId}/wallet`,
-      await withAuthHeader()
-    );
-    return res;
-  } catch (error: any) {
-    throw new Error(`Failed to get Address: ${error.response.data.message}`);
   }
 };
 
