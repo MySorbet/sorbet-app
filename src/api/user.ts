@@ -29,17 +29,6 @@ export const deleteProfileImageAsync = async (userId: string) => {
   }
 };
 
-export const getUserByAccountId = async (accountId: string) => {
-  try {
-    const response = await axios.get(
-      `${API_URL}/users/findByAccountId/${accountId}`
-    );
-    return response;
-  } catch (error: any) {
-    console.log(`Failed to get user by account id: ${JSON.stringify(error)}`);
-  }
-};
-
 export const getUserByHandle = async (handle: string) => {
   try {
     const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);

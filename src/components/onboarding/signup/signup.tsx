@@ -39,7 +39,6 @@ export const UserSignUpContext = createContext<UserSignUpContextType | null>(
 UserSignUpContext.displayName = 'UserSignUpContext';
 
 const initialUserSignUp: UserSignUp = {
-  // useSignUp
   firstName: '',
   lastName: '',
   handle: '',
