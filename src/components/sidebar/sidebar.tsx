@@ -22,30 +22,6 @@ interface SidebarProps {
   show: boolean;
 }
 
-const SidebarHeaderOption: React.FC<{
-  label: string;
-  icon: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  comingSoon?: boolean;
-}> = ({ label, icon, comingSoon, onClick }) => {
-  return (
-    <div
-      className='border-1 relative cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
-      onClick={onClick}
-    >
-      {comingSoon && (
-        <div className='bg-sorbet absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 rotate-45 transform rounded-xl px-1 py-1 text-xs font-semibold text-white'>
-          Soon
-        </div>
-      )}
-      <div className='text-sorbet flex flex-col items-center justify-center gap-1 font-semibold'>
-        <div>{icon}</div>
-        <div className='text-sm'>{label}</div>
-      </div>
-    </div>
-  );
-};
-
 export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -183,6 +159,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
             {isLoggingOut ? 'Logging out' : 'Logout'}
           </Button>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const SidebarHeaderOption: React.FC<{
+  label: string;
+  icon: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  comingSoon?: boolean;
+}> = ({ label, icon, comingSoon, onClick }) => {
+  return (
+    <div
+      className='border-1 relative cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
+      onClick={onClick}
+    >
+      {comingSoon && (
+        <div className='bg-sorbet absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 rotate-45 transform rounded-xl px-1 py-1 text-xs font-semibold text-white'>
+          Soon
+        </div>
+      )}
+      <div className='text-sorbet flex flex-col items-center justify-center gap-1 font-semibold'>
+        <div>{icon}</div>
+        <div className='text-sm'>{label}</div>
       </div>
     </div>
   );
