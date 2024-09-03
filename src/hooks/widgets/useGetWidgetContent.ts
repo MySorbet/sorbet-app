@@ -22,7 +22,7 @@ export const useGetWidgetContent = () => {
       }
     },
     onError: (error) => {
-      toast({ title: 'Error', description: 'Failed to fetch widget content' });
+      toast({ title: 'Oops!', description: error.message });
     },
     // No need to invalidate query since we are not mutating data here
     // Can use onSettled callback to do something
