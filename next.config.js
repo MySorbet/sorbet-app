@@ -8,6 +8,11 @@ const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
 
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
+  },
+
   // Uncoment to add domain whitelist
   // images: {
   //   domains: [
