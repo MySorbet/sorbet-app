@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 import { getOverview } from '@/api/user';
-import Container from '@/app/container';
+import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
 import { CreditCardForm } from '@/app/wallet/credit-card';
 import { FundsFlow } from '@/app/wallet/funds-flow';
@@ -53,7 +53,7 @@ export const WalletContainer = () => {
   };
 
   return (
-    <Container>
+    <Authenticated>
       <Header />
       <div className='container my-16'>
         <div className='flex flex-col gap-6 lg:flex-row'>
@@ -145,6 +145,6 @@ export const WalletContainer = () => {
           />
         </div>
       </div>
-    </Container>
+    </Authenticated>
   );
 };

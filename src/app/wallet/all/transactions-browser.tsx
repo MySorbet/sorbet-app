@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { getTransactions } from '@/api/user';
-import Container from '@/app/container';
+import Authenticated from '@/app/authenticated';
 import { PageTitle } from '@/components/common';
 import { Header } from '@/components/header';
 import { useAuth } from '@/hooks';
@@ -113,7 +113,7 @@ export const TransactionsBrowser: React.FC = () => {
   };
 
   return (
-    <Container>
+    <Authenticated>
       <Header />
       <PageTitle title='Transactions' />
       {user && (
@@ -159,6 +159,6 @@ export const TransactionsBrowser: React.FC = () => {
           />
         </div>
       )}
-    </Container>
+    </Authenticated>
   );
 };
