@@ -74,7 +74,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const response = await getUserByPrivyId(id);
         if (response) {
           const sorbetUser = response.data;
-          console.log('sorbetUser: ', sorbetUser);
           dispatch(updateUserData(sorbetUser));
           return {
             status: 'success',
@@ -138,7 +137,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log(loginResult);
       const sorbetUser = loginResult.data;
       setLoading(false);
-      // router.replace(`/${sorbetUser.handle}`);
+
+      // However, We only want to do this if they are logging in currently.
+      // Not if this is an implicit login from privy
+      // TODO: Revisit this
+      if (!wasAlreadyAuthenticated) {
+        router.replace(`/${sorbetUser.handle}`);
+      } else {
+        console.log(
+          `${sorbetUser.handle} is logged in. Did not redirect b/c they were already authenticated.`
+        );
+      }
     },
     onError: (error) => {
       // Ignore the user exiting the auth flow
