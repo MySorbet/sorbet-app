@@ -28,12 +28,14 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const mutation = useMutation({
     mutationFn: (projectFormValues: ProjectFormValues) => {
       if (!user) throw new Error('User not found');
+      if (!user.handle) throw new Error('User handle not found');
+
       return createOffer({
         projectName: projectFormValues.projectName,
         description: projectFormValues.description,
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
-        clientUsername: user.handle ?? '',
+        clientUsername: user.handle,
         freelancerUsername: params.handle,
       });
     },
@@ -62,16 +64,12 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const hideShare = !isMyProfile || !user;
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
-  const handleClaimMyProfile = () => {
-    router.push('/signin');
-  };
-
   return (
     <>
       {isError ? (
         <ClaimYourProfile
           handle={params.handle}
-          handleClaimMyProfile={handleClaimMyProfile}
+          handleClaimMyProfile={() => router.push('/signin')}
         />
       ) : (
         <>

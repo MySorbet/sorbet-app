@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -83,7 +82,7 @@ export const ProjectOfferDialog: React.FC<ProjectOfferDialogProps> = ({
 
   // Internal loading state which listens to props
   const [loading, setLoading] = useState(false);
-  React.useEffect(() => {
+  useEffect(() => {
     if (formSubmitted) setLoading(false);
   }, [formSubmitted]);
 
@@ -184,8 +183,8 @@ const FormSubmitted = ({
 }) => {
   // This bit allows us to fire the confetti on mount, overcoming the issue
   // where the confetti would not fire if the component was mounted in the same render cycle
-  const confettiRef = React.useRef<ConfettiRef>(null);
-  React.useEffect(() => {
+  const confettiRef = useRef<ConfettiRef>(null);
+  useEffect(() => {
     const timer = setTimeout(() => {
       confettiRef.current?.fire();
     }, 0);
