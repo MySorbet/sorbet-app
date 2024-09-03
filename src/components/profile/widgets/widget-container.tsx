@@ -164,16 +164,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
       // We're adding a widget that is not a photo
       // So try to fetch required content from the url and persist that content in the database as a new widget
-      let widget: any;
-      try {
-        widget = await getWidgetContent({ url: widgetUrl, type });
-      } catch (error) {
-        toast({
-          title: 'Failed to add widget',
-          description: 'If the issue persists, contact support',
-        });
-        return;
-      }
+      const widget = await getWidgetContent({ url: widgetUrl, type });
 
       // If you got the content, add the widget to the layout state and persist it in the database
       const widgetToAdd: ExtendedWidgetLayout = {
