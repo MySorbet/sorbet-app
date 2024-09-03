@@ -316,10 +316,12 @@ export const getInstagramProfileMetadata = async ({
       withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Instagram profile metadata: ${error.response.data.message}`
-    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data.message);
+    } else {
+      throw new Error('Failed to get Instagram profile metadata');
+    }
   }
 };
 
