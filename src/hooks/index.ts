@@ -1,4 +1,3 @@
-export * from './auth';
 export * from './gigs';
 export * from './profile';
 export { useAuth } from './useAuth';
