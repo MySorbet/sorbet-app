@@ -20,7 +20,9 @@
     "docker:stop:prod": "docker compose -f docker/production/compose.yml down",
     "docker:build:dev": "docker compose -f docker/development/compose.yml build",
     "docker:start:dev": "docker compose -f docker/development/compose.yml up -d",
-    "docker:stop:dev": "docker compose -f docker/development/compose.yml down"
+    "docker:stop:dev": "docker compose -f docker/development/compose.yml down",
+    "env": "gcloud secrets versions access latest --secret=sorbet-app-env-local --out-file=./.env && echo 'Local .env file updated successfully'",
+    "env:push": "gcloud secrets versions add sorbet-app-env-local --data-file=./.env && gcloud secrets versions list sorbet-app-env-local --format='value(name)' | tail -n +2 | xargs -I {} gcloud secrets versions disable {} --secret=sorbet-app-env-local"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
