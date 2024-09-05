@@ -83,7 +83,7 @@ const LocationPredictionsList = <T extends FieldValues>({
         predictions.length
           ? // TODO: Update the styling here. Kind of flaky in that we are moving the list down with fixed values.
             'absolute top-10 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
-          : 'hidden'
+          : 'h-0'
       }
     >
       <CommandGroup>
