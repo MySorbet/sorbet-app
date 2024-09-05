@@ -1,17 +1,18 @@
+import { useMutation } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+
 import { updateUser } from '@/api/user';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch } from '@/redux/hook';
 import { updateUserData } from '@/redux/userSlice';
-import { User } from '@/types';
-import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import { UserWithId } from '@/types';
 
 export const useUpdateUser = () => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (userToUpdate: User): Promise<any> =>
+    mutationFn: async (userToUpdate: UserWithId): Promise<any> =>
       await updateUser(userToUpdate, userToUpdate.id),
     onSuccess: (user: AxiosResponse) => {
       dispatch(updateUserData(user.data));

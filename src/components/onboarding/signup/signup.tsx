@@ -1,18 +1,24 @@
 'use client';
 
-import { createContext, Dispatch, SetStateAction, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react';
+
+import { useAuth } from '@/hooks';
 
 import { AllSet } from './all-set';
-import { SignUpForm } from './signup-form';
 import { Step1 } from './step1';
 import { Step2 } from './step2';
 import { Step3 } from './step3';
 
 type UserSignUp = {
-  email: string;
   firstName: string;
   lastName: string;
-  accountId: string;
+  handle: string;
   image: string | undefined;
   file: File | undefined;
   location: string;
@@ -30,13 +36,12 @@ export type UserSignUpContextType = {
 export const UserSignUpContext = createContext<UserSignUpContextType | null>(
   null
 );
+UserSignUpContext.displayName = 'UserSignUpContext';
 
 const initialUserSignUp: UserSignUp = {
-  // useSignUp
   firstName: '',
   lastName: '',
-  email: '',
-  accountId: '',
+  handle: '',
   // useUploadProfileImageAsync
   image: '',
   file: undefined,
@@ -48,13 +53,19 @@ const initialUserSignUp: UserSignUp = {
 
 /** Component hosting all 4 steps of the signup experience. Facilitates moving though steps via context. */
 const SignUp = () => {
-  const [userData, setUserData] = useState<UserSignUp>(initialUserSignUp);
-  const [step, setStep] = useState<number>(0);
+  const { user } = useAuth();
+  const [userData, setUserData] = useState<UserSignUp>({
+    ...initialUserSignUp,
+    handle: user?.handle ?? '', // Pre-populate handle with users pregenerated handle
+  });
+  const [step, setStep] = useState<number>(1);
+
+  if (!user) throw new Error('User not found');
+
   return (
     <UserSignUpContext.Provider
       value={{ userData, setUserData, step, setStep }}
     >
-      {step == 0 && <SignUpForm />}
       {step == 1 && <Step1 />}
       {step == 2 && <Step2 />}
       {step == 3 && <Step3 />}
@@ -64,3 +75,12 @@ const SignUp = () => {
 };
 
 export { SignUp };
+
+/** Use this hook throughout the user sign up experience to get and set user info and step */
+export const useUserSignUp = () => {
+  const ctx = useContext(UserSignUpContext);
+  if (!ctx) {
+    throw new Error('useUserSignUp must be used within a UserSignUpContext');
+  }
+  return ctx;
+};

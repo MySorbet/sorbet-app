@@ -16,7 +16,7 @@ const Milestone = ({
   onDelete: (index: number) => void;
 }) => {
   return (
-    <Card className='p-3 rounded-2xl shadow-[0px_0px_16px_1px_#0000001F]'>
+    <Card className='rounded-2xl p-3 shadow-[0px_0px_16px_1px_#0000001F]'>
       <div className='space-y-1'>
         <Label htmlFor={`milestone-name-${index}`}>Milestone {index}</Label>
         <Controller
@@ -28,17 +28,18 @@ const Milestone = ({
               <Input
                 {...field}
                 id={`milestone-name-${index}`}
+                value={field.value || ''}
                 placeholder='Name your milestone'
               />
               {error && (
-                <p className='text-red-500 text-xs mt-1'>{error.message}</p>
+                <p className='mt-1 text-xs text-red-500'>{error.message}</p>
               )}
             </>
           )}
         />
       </div>
 
-      <div className='space-y-1 mt-1'>
+      <div className='mt-1 space-y-1'>
         <Label htmlFor={`milestone-amount-${index}`}>Amount</Label>
         <Controller
           name={`milestone-amount-${index}`}
@@ -54,26 +55,27 @@ const Milestone = ({
             <div className='relative'>
               <Input
                 {...field}
+                value={field.value || ''}
                 id={`milestone-amount-${index}`}
                 placeholder='Enter amount'
                 type='number'
                 className='pr-12' // padding right to make space for the USD label
               />
-              <span className='absolute inset-y-0 right-0 bottom-0 pr-4 flex items-center pointer-events-none text-sm text-gray-500'>
+              <span className='pointer-events-none absolute inset-y-0 bottom-0 right-0 flex items-center pr-4 text-sm text-gray-500'>
                 USD
               </span>
               {error && (
-                <p className='text-red-500 text-xs mt-1'>{error.message}</p>
+                <p className='mt-1 text-xs text-red-500'>{error.message}</p>
               )}
             </div>
           )}
         />
       </div>
       {index > 1 && (
-        <div className='mt-3 flex justify-end text-sorbet'>
+        <div className='text-sorbet mt-3 flex justify-end'>
           <div
             onClick={() => onDelete(index)}
-            className='flex items-center align-center justify-center cursor-pointer hover:bg-gray-100 p-2 rounded-md'
+            className='align-center flex cursor-pointer items-center justify-center rounded-md p-2 hover:bg-gray-100'
           >
             <IconTrash size={18} />
           </div>
@@ -142,10 +144,10 @@ export const ContractFormMilestones = ({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className='flex flex-col gap-2 mt-4'
+      className='mt-4 flex flex-col gap-2'
     >
       <h2 className='text-center'>Break your project down into milestones.</h2>
-      <Card className='p-3 rounded-2xl shadow-[0px_0px_16px_1px_#0000001F]'>
+      <Card className='rounded-2xl p-3 shadow-[0px_0px_16px_1px_#0000001F]'>
         <div className='space-y-1'>
           <Label htmlFor='project-name'>Project name</Label>
           <Controller
@@ -162,7 +164,7 @@ export const ContractFormMilestones = ({
                   disabled={!!projectName}
                 />
                 {error && (
-                  <p className='text-red-500 text-xs mt-1'>{error.message}</p>
+                  <p className='mt-1 text-xs text-red-500'>{error.message}</p>
                 )}
               </>
             )}
@@ -182,7 +184,7 @@ export const ContractFormMilestones = ({
       <div className='flex justify-end'>
         <span
           onClick={addMilestone}
-          className='flex gap-1 items-center cursor-pointer hover:underline text-sorbet font-semibold text-sm'
+          className='text-sorbet flex cursor-pointer items-center gap-1 text-sm font-semibold hover:underline'
         >
           Add milestone <IconPlus size={18} />
         </span>
@@ -190,7 +192,7 @@ export const ContractFormMilestones = ({
       <div className='mt-6'>
         <Button
           type='submit'
-          className='w-full bg-sorbet text-white hover:bg-sorbet disabled:bg-[#DFD7F4] disabled:text-[#8764E8]'
+          className='bg-sorbet hover:bg-sorbet w-full text-white disabled:bg-[#DFD7F4] disabled:text-[#8764E8]'
           disabled={!isValid}
         >
           Submit Contract

@@ -14,7 +14,7 @@ export const findContractsWithFreelancer = async ({
     const res = await axios.post(
       `${API_URL}/contracts/with-freelancer`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -33,7 +33,7 @@ export const getFreelancerOffers = async (
   try {
     const res = await axios.get(
       `${API_URL}/offers/createdFor/${freelancerUserId}${queryParams}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -49,7 +49,7 @@ export const getClientOffers = async (clientId: string, status?: string) => {
   try {
     const res = await axios.get(
       `${API_URL}/offers/createdBy/${clientId}${queryParams}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -64,7 +64,7 @@ export const createContract = async (body: CreateContractType) => {
     const res = await axios.post(
       `${API_URL}/contracts`,
       body,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -80,7 +80,7 @@ export const getContractsForFreelancer = async (status?: string) => {
   try {
     const res = await axios.get(
       `${API_URL}/contracts/freelance${queryParams}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -100,7 +100,7 @@ export const getClientFreelancerOffers = async (
     const res = await axios.post(
       `${API_URL}/offers/between-participants`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -114,7 +114,7 @@ export const getContractForOffer = async (offerId: string) => {
   try {
     const res = await axios.get(
       `${API_URL}/contracts/forOffer/${offerId}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: unknown) {
@@ -137,7 +137,7 @@ export const updateContractStatus = async (
     const res = await axios.patch(
       `${API_URL}/contracts/${contractId}/status`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -157,7 +157,7 @@ export const updateMilestoneStatus = async (
     const res = await axios.patch(
       `${API_URL}/milestones/${milestoneId}/status`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -174,7 +174,7 @@ export const updateOfferStatus = async (offerId: string, status: string) => {
     const res = await axios.patch(
       `${API_URL}/offers/status/${offerId}`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -189,7 +189,7 @@ export const createOffer = async (body: CreateOfferType) => {
     const res = await axios.post(
       `${API_URL}/offers`,
       reqBody,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: any) {
@@ -201,7 +201,7 @@ export const getOfferById = async (offerId: string) => {
   try {
     const res = await axios.get(
       `${API_URL}/offers/${offerId}`,
-      withAuthHeader()
+      await withAuthHeader()
     );
     return res;
   } catch (error: unknown) {

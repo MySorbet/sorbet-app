@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
-import { getUserByAccountId } from '@/api/user';
+import { getUserByHandle } from '@/api/user';
 import {
   ProjectFormValues,
   ProjectOfferDialog,
@@ -15,9 +15,6 @@ import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { config } from '@/lib/config';
-import { User } from '@/types';
-import { withSuffix } from '@/utils/user';
 
 import { ClaimYourProfile } from './claim-your-profile';
 
@@ -31,13 +28,15 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const mutation = useMutation({
     mutationFn: (projectFormValues: ProjectFormValues) => {
       if (!user) throw new Error('User not found');
+      if (!user.handle) throw new Error('User handle not found');
+
       return createOffer({
         projectName: projectFormValues.projectName,
         description: projectFormValues.description,
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
-        clientUsername: withSuffix(user.accountId),
-        freelancerUsername: withSuffix(params.handle),
+        clientUsername: user.handle,
+        freelancerUsername: params.handle,
       });
     },
     onError: () => {
@@ -55,24 +54,22 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
     data: freelancerResponse,
   } = useQuery({
     queryKey: ['freelancer'],
-    queryFn: () => getUserByAccountId(`${params.handle}.${config.networkId}`),
+    queryFn: () => getUserByHandle(params.handle),
   });
 
   // Alias some vars for easy access in JSX
-  const freelancer = freelancerResponse?.data as User;
-  const disableHireMe = params.handle === user?.accountId.split('.')[0];
+  const freelancer = freelancerResponse?.data;
+  const isMyProfile = user?.handle === params.handle;
+  const disableHireMe = isMyProfile || !user;
+  const hideShare = !isMyProfile || !user;
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
-
-  const handleClaimMyProfile = () => {
-    router.push('/signin');
-  };
 
   return (
     <>
       {isError ? (
         <ClaimYourProfile
           handle={params.handle}
-          handleClaimMyProfile={handleClaimMyProfile}
+          handleClaimMyProfile={() => router.push('/signin')}
         />
       ) : (
         <>
@@ -81,9 +78,10 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
             <>
               <Profile
                 user={freelancer}
-                canEdit={false}
+                canEdit={isMyProfile}
                 onHireMeClick={() => setOfferDialogOpen(true)}
                 disableHireMe={disableHireMe}
+                hideShare={hideShare}
               />
               <UserSocialPreview title={freelancerFullName} />
               <ProjectOfferDialog

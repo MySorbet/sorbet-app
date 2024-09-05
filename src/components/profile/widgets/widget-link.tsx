@@ -46,7 +46,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <div className='flex max-h-full flex-row justify-end gap-3 overflow-hidden'>
+          <div className='flex h-full flex-row justify-end gap-3 overflow-hidden'>
             <BannerImage src={heroImageUrl} className='w-2/3 ' />
           </div>
         </WidgetLayout>
@@ -130,7 +130,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        `relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl`,
+        'relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl', // TODO: overflow-hidden is a bandaid for SRBT-132. Fix this at the source
         !src && 'bg-gray-200',
         className
       )}

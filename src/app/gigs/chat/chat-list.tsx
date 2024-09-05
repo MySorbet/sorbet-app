@@ -1,5 +1,7 @@
-import { FileDisplay } from './chat-file-display';
-import { TypingIndicator } from './typing-indicator';
+import type { Member } from '@sendbird/chat/groupChannel';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+
 import { ChatSkeleton } from '@/app/gigs/chat/chat-skeleton';
 import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
 import {
@@ -8,15 +10,15 @@ import {
   getTimeDifferenceInMinutes,
 } from '@/app/gigs/chat/sendbird-utils';
 import { cn } from '@/lib/utils';
-import { User } from '@/types';
+import { UserWithId } from '@/types';
 import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
-import type { Member } from '@sendbird/chat/groupChannel';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useRef, useEffect } from 'react';
+
+import { FileDisplay } from './chat-file-display';
+import { TypingIndicator } from './typing-indicator';
 
 interface ChatListProps {
   messages: SBMessage[];
-  selectedUser: User;
+  selectedUser: UserWithId;
   typingMembers: Member[];
   supportedIcons: SupportedFileIcons;
   chatLoading: boolean;
@@ -39,14 +41,14 @@ export function ChatList({
   }, [messages, typingMembers.length]);
 
   return (
-    <div className='w-full overflow-y-hidden overflow-x-hidden h-[50vh] flex flex-col flex-grow-0'>
+    <div className='flex h-[50vh] w-full flex-grow-0 flex-col overflow-x-hidden overflow-y-hidden'>
       {chatLoading ? (
         <ChatSkeleton />
       ) : (
         <>
           <div
             ref={messagesContainerRef}
-            className='w-full overflow-y-auto overflow-x-hidden h-full flex flex-col pb-1 '
+            className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden pb-1 '
           >
             <AnimatePresence>
               {messages?.map((message, index) => {
@@ -112,7 +114,7 @@ export function ChatList({
                       'items-start'
                     )}
                   >
-                    <div className='flex flex-col gap-1 items-start w-full'>
+                    <div className='flex w-full flex-col items-start gap-1'>
                       {index === 0 && (
                         <MessageAvatar
                           avatar={message?.avatar}
@@ -121,7 +123,7 @@ export function ChatList({
                         />
                       )}
                       {index > 0 && isTimeDifferenceGreaterThanHour && (
-                        <div className='flex w-full justify-center text-gray-500 mt-4'>
+                        <div className='mt-4 flex w-full justify-center text-gray-500'>
                           {chatTime}
                         </div>
                       )}
@@ -136,7 +138,7 @@ export function ChatList({
                     {!message.fileData?.sendbirdUrl ? (
                       <span
                         className={cn(
-                          'bg-accent p-2 px-3  ml-8 rounded-2xl max-w-xs mt-1 font-light',
+                          'bg-accent ml-8 mt-1  max-w-xs rounded-2xl p-2 px-3 font-light',
                           `${
                             message.userId === selectedUser.id
                               ? 'bg-sorbet text-white'
@@ -147,7 +149,7 @@ export function ChatList({
                         {message.message}
                       </span>
                     ) : (
-                      <div className='ml-8 mt-1 flex gap-2 items-center'>
+                      <div className='ml-8 mt-1 flex items-center gap-2'>
                         <FileDisplay
                           fileName={message.fileData.name}
                           fileSize={message.fileData.size}
@@ -175,7 +177,7 @@ export function ChatList({
                       nickname={typingMembers[0].nickname}
                     />
                   )}
-                <div className='flex items-center justify-center py-2 bg-[#D7D7D7]  ml-8 rounded-2xl mt-1 w-16'>
+                <div className='ml-8 mt-1 flex w-16 items-center  justify-center rounded-2xl bg-[#D7D7D7] py-2'>
                   <TypingIndicator />
                 </div>
               </div>

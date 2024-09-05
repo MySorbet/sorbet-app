@@ -164,16 +164,11 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
 
       // We're adding a widget that is not a photo
       // So try to fetch required content from the url and persist that content in the database as a new widget
-      let widget: any;
-      try {
-        widget = await getWidgetContent({ url: widgetUrl, type });
-      } catch (error) {
-        toast({
-          title: 'Failed to add widget',
-          description: 'If the issue persists, contact support',
-        });
-        return;
-      }
+      /**
+       * Any function that is called by getWidgetContent should throw a descriptive error upon failure using the RQ onError callback
+       * i.e. if we are calling getInstagramProfileMetadata, it should throw a descriptive error that would bubble up to the onError callback
+       */
+      const widget = await getWidgetContent({ url: widgetUrl, type });
 
       // If you got the content, add the widget to the layout state and persist it in the database
       const widgetToAdd: ExtendedWidgetLayout = {
@@ -204,37 +199,6 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     }
   };
 
-  const generateDOM = () => {
-    return layout.map((item) => {
-      return (
-        <motion.div
-          className='widget-motion-wrapper'
-          initial={false}
-          animate={animationStyles[item.i]}
-          style={{ width: '100%', height: '100%' }}
-          key={item.i}
-          data-grid={item}
-          ref={(el) => {
-            if (el) widgetRefs.current[item.i] = el;
-          }}
-        >
-          <Widget
-            identifier={item.i}
-            w={item.w}
-            h={item.h}
-            type={item.type}
-            handleResize={handleWidgetResize}
-            handleRemove={handleWidgetRemove}
-            editMode={editMode}
-            content={item.content}
-            initialSize={item.size}
-            redirectUrl={item.redirectUrl}
-          />
-        </motion.div>
-      );
-    });
-  };
-
   const handleLayoutChange = (newLayout: ExtendedWidgetLayout[]) => {
     const updatedLayout = newLayout.map((layoutItem) => {
       const existingItem = layout.find((item) => item.i === layoutItem.i);
@@ -260,14 +224,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     }
   };
 
-  const handleWidgetDropStop = (
-    newLayout: Layout[],
-    oldItem: Layout,
-    newItem: Layout,
-    placeholder: Layout,
-    event: MouseEvent,
-    element: HTMLElement
-  ) => {
+  const handleWidgetDropStop = (newLayout: Layout[]) => {
     const extendedLayoutObjects: ExtendedWidgetLayout[] = newLayout.map(
       (item) => {
         const layoutItem = layout.find((layoutItem) => layoutItem.i === item.i);
@@ -393,12 +350,17 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
-  if (isUserWidgetPending)
+  // See this link to understand why we need to pass a ref boolean into draggable widgets
+  // https://github.com/react-grid-layout/react-draggable/issues/531
+  const draggedRef = useRef<boolean>(false);
+
+  if (isUserWidgetPending) {
     return (
       <div className='flex h-full w-full items-center justify-center'>
         <Spinner />
       </div>
     );
+  }
 
   return (
     <>
@@ -415,8 +377,35 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
           onDragStop={handleWidgetDropStop}
           isDraggable={editMode}
           isResizable={editMode}
+          onDrag={() => (draggedRef.current = true)}
         >
-          {generateDOM()}
+          {layout.map((item) => (
+            <motion.div
+              className='widget-motion-wrapper'
+              initial={false}
+              animate={animationStyles[item.i]}
+              style={{ width: '100%', height: '100%' }}
+              key={item.i}
+              data-grid={item}
+              ref={(el) => {
+                if (el) widgetRefs.current[item.i] = el;
+              }}
+            >
+              <Widget
+                identifier={item.i}
+                w={item.w}
+                h={item.h}
+                type={item.type}
+                showControls={editMode}
+                handleResize={handleWidgetResize}
+                handleRemove={handleWidgetRemove}
+                content={item.content}
+                initialSize={item.size}
+                redirectUrl={item.redirectUrl}
+                draggedRef={draggedRef}
+              />
+            </motion.div>
+          ))}
         </ReactGridLayout>
 
         {editMode && (

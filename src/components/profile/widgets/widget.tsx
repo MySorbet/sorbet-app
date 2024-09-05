@@ -48,11 +48,12 @@ interface WidgetProps {
   type: WidgetType;
   w: number;
   h: number;
-  editMode: boolean;
   content?: any;
   loading?: boolean;
   initialSize?: WidgetSize;
   redirectUrl?: string;
+  draggedRef: React.MutableRefObject<boolean>;
+  showControls?: boolean;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
 }
@@ -60,15 +61,15 @@ interface WidgetProps {
 export const Widget: React.FC<WidgetProps> = ({
   identifier,
   type,
-  editMode,
   loading,
   content,
   redirectUrl,
   initialSize = 'A',
+  showControls = false,
   handleResize,
   handleRemove,
+  draggedRef,
 }) => {
-  const [showResizeWidget, setShowResizeWidget] = useState(false);
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
@@ -80,10 +81,17 @@ export const Widget: React.FC<WidgetProps> = ({
   };
 
   const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    if (!editMode && redirectUrl) {
-      window.open(redirectUrl, '_blank');
+    const dragged = draggedRef.current;
+    draggedRef.current = false;
+    if (!dragged) {
+      if (redirectUrl) {
+        const newWindow = window.open(redirectUrl, '_blank');
+        if (newWindow) {
+          newWindow.opener = null;
+        }
+      }
     }
+    // TODO: Maybe widgets should be anchors?
   };
 
   useEffect(() => {
@@ -243,12 +251,7 @@ export const Widget: React.FC<WidgetProps> = ({
   }, [type, widgetSize, content]);
 
   return (
-    <ErrorBoundary
-      FallbackComponent={WidgetErrorFallback}
-      onReset={(details) => {
-        // Reset the state of your app so the error doesn't happen again
-      }}
-    >
+    <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       {loading && (
         <div className='align-center absolute z-50 flex h-full w-full items-center justify-center rounded-3xl bg-gray-300 opacity-70 drop-shadow-md'>
           <Spinner />
@@ -256,35 +259,34 @@ export const Widget: React.FC<WidgetProps> = ({
       )}
       <div
         className={cn(
-          'transition-height duration-1500 relative z-10 flex h-full w-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md ease-in-out',
+          'transition-height duration-1500 group relative z-10 flex h-full w-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md ease-in-out',
           type !== 'Photo' && 'p-4'
         )}
         key={identifier}
-        onMouseEnter={() => editMode && setShowResizeWidget(true)}
-        onMouseLeave={() => editMode && setShowResizeWidget(false)}
         onClick={onWidgetClick}
       >
         {widgetContent}
-        <div
-          className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-6 transform transition-opacity duration-300 ${
-            showResizeWidget ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div className='flex flex-row gap-1'>
-            <ResizeWidget onResize={onWidgetResize} initialSize={initialSize} />
-            <Button
-              variant='outline'
-              size='icon'
-              className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
-              onClick={(e) => {
-                e.stopPropagation();
-                handleRemove(identifier);
-              }}
-            >
-              <Trash2 size={18} />
-            </Button>
+        {showControls && (
+          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+            <div className='flex flex-row gap-1'>
+              <ResizeWidget
+                onResize={onWidgetResize}
+                initialSize={initialSize}
+              />
+              <Button
+                variant='outline'
+                size='icon'
+                className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemove(identifier);
+                }}
+              >
+                <Trash2 size={18} />
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </ErrorBoundary>
   );

@@ -6,19 +6,13 @@ import { useContext, useEffect, useState } from 'react';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser, useUploadProfileImage } from '@/hooks';
-import { useAppSelector } from '@/redux/hook';
-import { User } from '@/types';
 
 import { FormContainer } from '../form-container';
-import { UserSignUpContext, UserSignUpContextType } from './signup';
+import { useUserSignUp } from './signup';
 
 const Step3 = () => {
-  const { userData, setUserData, setStep } = useContext(
-    UserSignUpContext
-  ) as UserSignUpContextType;
-  const { user: authUser } = useAuth();
-  const reduxUser = useAppSelector((state) => state.userReducer.user);
-  const [user, setUser] = useState(authUser || reduxUser);
+  const { userData, setUserData, setStep } = useUserSignUp();
+  const { user } = useAuth();
 
   const { isPending: uploadPending, mutateAsync: uploadProfileImage } =
     useUploadProfileImage();
@@ -27,19 +21,28 @@ const Step3 = () => {
   const handleSkillChange = (newSkills: string[]) => {
     setUserData({ ...userData, skills: newSkills });
   };
+
+  if (!user) throw new Error('User not found');
+
+  // TODO: Extract this to a function or hook
   const handleCreateProfile = async () => {
-    let userToUpdate: User = { ...user };
+    const userToUpdate = {
+      ...user,
+      ...userData,
+      city: userData.location,
+      tags: userData.skills,
+    };
 
     if (
-      user?.id &&
-      userData.image !== user?.profileImage &&
+      user.id &&
+      userData.image !== user.profileImage &&
       userData.file !== undefined
     ) {
       const imageFormData = new FormData();
       imageFormData.append('file', userData.file);
       imageFormData.append('fileType', 'image');
       imageFormData.append('destination', 'profile');
-      imageFormData.append('oldImageUrl', user?.profileImage);
+      imageFormData.append('oldImageUrl', user?.profileImage ?? '');
       imageFormData.append('userId', user?.id);
 
       await uploadProfileImage({
@@ -48,24 +51,9 @@ const Step3 = () => {
       });
     }
 
-    if (user) {
-      userToUpdate = {
-        ...userToUpdate,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        city: userData.location,
-        tags: userData.skills,
-        bio: userData.bio,
-      };
-
-      updateUser(userToUpdate);
-      setStep(4);
-    }
+    await updateUser(userToUpdate);
+    setStep(4);
   };
-
-  useEffect(() => {
-    setUser(authUser || reduxUser);
-  }, [authUser, reduxUser]);
 
   return (
     <FormContainer>
@@ -90,7 +78,11 @@ const Step3 = () => {
             className='w-full border border-[#7F56D9] bg-[#573DF5] text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
             onClick={handleCreateProfile}
           >
-            {updatePending || uploadPending ? <Loader /> : 'Create Profile'}
+            {updatePending || uploadPending ? (
+              <Loader className='animate animate-spin' />
+            ) : (
+              'Create Profile'
+            )}
           </Button>
         </div>
       </div>

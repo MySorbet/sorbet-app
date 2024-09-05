@@ -1,7 +1,8 @@
+import { useMutation } from '@tanstack/react-query';
+
 import { useToast } from '@/components/ui/use-toast';
 import { getWidgetContent } from '@/lib/service';
 import { WidgetType } from '@/types';
-import { useMutation } from '@tanstack/react-query';
 
 type GetWidgetContentParams = {
   url: string;
@@ -22,7 +23,7 @@ export const useGetWidgetContent = () => {
       }
     },
     onError: (error) => {
-      toast({ title: 'Error', description: 'Failed to fetch widget content' });
+      toast({ title: 'Something went wrong', description: error.message });
     },
     // No need to invalidate query since we are not mutating data here
     // Can use onSettled callback to do something

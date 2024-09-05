@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
-import Container from '@/app/container';
+import Authenticated from '@/app/authenticated';
 import { GigsBoard } from '@/app/gigs/gigs-board';
 import { Header } from '@/components';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -86,7 +86,7 @@ export const GigsContainer = () => {
   }, [router, toast]);
 
   return (
-    <Container>
+    <Authenticated>
       <Header />
       {loggedInUser && (
         <div className='flex w-[100%] items-center justify-center'>
@@ -105,6 +105,6 @@ export const GigsContainer = () => {
           </Tabs>
         </div>
       )}
-    </Container>
+    </Authenticated>
   );
 };

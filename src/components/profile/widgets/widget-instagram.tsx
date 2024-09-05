@@ -1,7 +1,6 @@
 import { ImageOverlay } from '@/components/profile/widgets';
 import { WidgetIcon } from '@/components/profile/widgets';
 import { InstagramWidgetContentType, WidgetSize } from '@/types';
-import React from 'react';
 
 interface InstagramWidgetType {
   content: InstagramWidgetContentType;
@@ -16,21 +15,19 @@ interface ImageGalleryProps {
 const ImageGallery: React.FC<ImageGalleryProps> = ({ images, heightClass }) => {
   return (
     <>
-      {images && images.length > 0 ? (
+      {images &&
+        images.length > 0 &&
         images.map((image, index) => (
           <div key={index} className={`col-span-1 ${heightClass}`}>
             <img
               src={`data:image/jpeg;base64,${image}`}
               crossOrigin='anonymous'
-              className='bg-gray-300 object-cover w-full h-full rounded-md'
+              className='h-full w-full rounded-md bg-gray-300 object-cover'
               alt={`Instagram image ${index + 1}`}
               style={{ objectFit: 'cover' }}
             />
           </div>
-        ))
-      ) : (
-        <div className='w-full h-full bg-gray-300'></div>
-      )}
+        ))}
     </>
   );
 };
@@ -50,68 +47,70 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
   switch (size) {
     case 'A':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={'InstagramProfile'} className='m-0' />
+            <WidgetIcon type='InstagramProfile' className='m-0' />
           </div>
           <div>{localHeader}</div>
-          <div className='flex-grow relative overflow-hidden'>
-            <div className='grid grid-cols-3 gap-1'>
-              <ImageGallery images={content.images} heightClass='h-20' />
-              <ImageOverlay />
-            </div>
+          <div className='relative flex-grow overflow-hidden'>
+            <InstagramImageContent
+              {...content}
+              className='grid grid-cols-3 gap-1'
+              heightClass='h-20'
+            />
           </div>
         </div>
       );
       break;
     case 'B':
       widgetLayout = (
-        <div className='h-full flex flex-row gap-2'>
-          <div className='w-2/6 flex flex-col gap-2'>
-            <WidgetIcon type={'InstagramProfile'} className='m-0' />
+        <div className='flex h-full flex-row gap-2'>
+          <div className='flex w-2/6 flex-col gap-2'>
+            <WidgetIcon type='InstagramProfile' className='m-0' />
             <div>{localHeader}</div>
           </div>
-          <div className='w-4/6 h-full w-full relative rounded-xl overflow-hidden bg-white text-black'>
-            <div className='grid grid-cols-2 gap-2 w-full h-full'>
-              <ImageGallery images={content.images} heightClass='h-44' />
-              <ImageOverlay />
-            </div>
+          <div className='relative h-full w-full overflow-hidden rounded-xl bg-white text-black'>
+            <InstagramImageContent
+              {...content}
+              className='grid h-full w-full grid-cols-2 gap-2'
+              heightClass='h-44'
+            />
           </div>
         </div>
       );
       break;
     case 'C':
       widgetLayout = (
-        <div className='h-full flex flex-row gap-2'>
-          <div className='w-1/2 h-full'>
-            <div className='flex flex-col gap-1 h-full'>
-              <WidgetIcon type={'InstagramProfile'} className='m-0' />
+        <div className='flex h-full flex-row gap-2'>
+          <div className='h-full w-1/2'>
+            <div className='flex h-full flex-col gap-1'>
+              <WidgetIcon type='InstagramProfile' className='m-0' />
               <div>{localHeader}</div>
             </div>
           </div>
-          <div className='w-1/2 relative rounded-xl overflow-hidden h-full'>
-            <div className='grid grid-cols-2 gap-2 w-full h-full'>
-              <ImageGallery images={content.images} heightClass='h-20' />
-              <ImageOverlay />
-            </div>
+          <div className='relative h-full w-1/2 overflow-hidden rounded-xl'>
+            <InstagramImageContent
+              {...content}
+              className='grid h-full w-full grid-cols-2 gap-2'
+              heightClass='h-20'
+            />
           </div>
         </div>
       );
       break;
     case 'D':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={'InstagramProfile'} className='m-0' />
+            <WidgetIcon type='InstagramProfile' className='m-0' />
           </div>
           <div>{localHeader}</div>
-          <div
-            className={`h-full w-full relative rounded-xl overflow-hidden mt-24`}
-          >
-            <div className='grid grid-cols-2 gap-2 w-full h-full'>
-              <ImageGallery images={content.images} heightClass='h-28' />
-              <ImageOverlay />
-            </div>
+          <div className='relative mt-24 h-full w-full overflow-hidden rounded-xl'>
+            <InstagramImageContent
+              {...content}
+              className='grid h-full w-full grid-cols-2 gap-2'
+              heightClass='h-28'
+            />
           </div>
         </div>
       );
@@ -121,4 +120,35 @@ export const InstagramWidget: React.FC<InstagramWidgetType> = ({
   }
 
   return widgetLayout;
+};
+
+interface InstagramImageContentProps extends InstagramWidgetContentType {
+  className: string;
+  heightClass: string;
+}
+
+const InstagramImageContent = ({
+  isPrivate,
+  images,
+  className,
+  heightClass,
+}: InstagramImageContentProps) => {
+  return (
+    <>
+      {isPrivate ? (
+        <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
+          This account is private
+        </span>
+      ) : images.length > 0 ? (
+        <div className={className}>
+          <ImageGallery images={images} heightClass={heightClass} />
+          <ImageOverlay />
+        </div>
+      ) : (
+        <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-200 text-sm font-semibold'>
+          No pics posted yet!
+        </span>
+      )}
+    </>
+  );
 };
