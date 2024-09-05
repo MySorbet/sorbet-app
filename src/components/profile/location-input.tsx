@@ -1,4 +1,5 @@
 import { MarkerPin02 } from '@untitled-ui/icons-react';
+import { motion } from 'framer-motion';
 import { Dispatch, SetStateAction } from 'react';
 import {
   FieldValues,
@@ -7,6 +8,7 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from 'react-hook-form';
+import useMeasure from 'react-use-measure';
 
 import {
   Command,
@@ -74,6 +76,7 @@ const LocationPredictionsList = <T extends FieldValues>({
   setValue,
   setPredictions,
 }: LocationPredictionsListProps<T>) => {
+  const [ref, { height }] = useMeasure();
   return (
     <CommandList
       className={
@@ -84,19 +87,26 @@ const LocationPredictionsList = <T extends FieldValues>({
       }
     >
       <CommandGroup>
-        {predictions.map((prediction) => (
-          <CommandItem
-            key={prediction.place_id}
-            value={prediction.description}
-            onSelect={() => {
-              setValue(name, prediction.description as PathValue<T, Path<T>>);
-              setPredictions([]);
-            }}
-            className=' text-black'
-          >
-            {prediction.description}
-          </CommandItem>
-        ))}
+        <motion.div animate={{ height }}>
+          <div ref={ref}>
+            {predictions.map((prediction) => (
+              <CommandItem
+                key={prediction.place_id}
+                value={prediction.description}
+                onSelect={() => {
+                  setValue(
+                    name,
+                    prediction.description as PathValue<T, Path<T>>
+                  );
+                  setPredictions([]);
+                }}
+                className=' text-black'
+              >
+                {prediction.description}
+              </CommandItem>
+            ))}
+          </div>
+        </motion.div>
       </CommandGroup>
     </CommandList>
   );
