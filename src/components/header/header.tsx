@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import PulsatingButton from '@/components/magicui/pulsating-button';
 import { Notifications } from '@/components/notifications';
 import { Sidebar } from '@/components/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -33,6 +34,18 @@ export const Header = () => {
         {user && (
           <div className='flex items-center justify-end gap-4'>
             <div className='align-center flex flex-row items-center gap-2'>
+              <a
+                href='https://mysorbet.featurebase.app/'
+                target='_blank'
+                rel='noreferrer'
+              >
+                <PulsatingButton
+                  className='border border-[#D0D5DD] bg-white text-sm font-semibold text-[#344054]'
+                  pulseColor='#573df5'
+                >
+                  Feedback
+                </PulsatingButton>
+              </a>
               <Notifications />
               <div
                 className='group flex cursor-pointer flex-row items-center'
