@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
+import FeaturebaseWidget from '@/components/profile/featurebase-widget';
 
 /** Header for all pages */
 export const Header = () => {
@@ -33,7 +34,7 @@ export const Header = () => {
         {user && (
           <div className='flex items-center justify-end gap-4'>
             <div className='align-center flex flex-row items-center gap-2'>
-              <a
+              {/* <a
                 href='https://mysorbet.featurebase.app/'
                 target='_blank'
                 rel='noreferrer'
@@ -41,7 +42,8 @@ export const Header = () => {
                 <Button className='border border-[#D0D5DD] bg-white text-sm font-semibold text-[#344054] hover:bg-gray-100'>
                   Feedback
                 </Button>
-              </a>
+              </a> */}
+              <FeaturebaseWidget />
               <Notifications />
               <div
                 className='group flex cursor-pointer flex-row items-center'
