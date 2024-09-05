@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import PulsatingButton from '@/components/magicui/pulsating-button';
 import { Notifications } from '@/components/notifications';
 import { Sidebar } from '@/components/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -39,12 +38,9 @@ export const Header = () => {
                 target='_blank'
                 rel='noreferrer'
               >
-                <PulsatingButton
-                  className='border border-[#D0D5DD] bg-white text-sm font-semibold text-[#344054]'
-                  pulseColor='#573df5'
-                >
+                <Button className='border border-[#D0D5DD] bg-white text-sm font-semibold text-[#344054] hover:bg-gray-100'>
                   Feedback
-                </PulsatingButton>
+                </Button>
               </a>
               <Notifications />
               <div
