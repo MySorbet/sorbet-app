@@ -66,54 +66,54 @@ export const ShareProfileDialog = ({
         >
           <div ref={contentRef}>
             {activeView === 'ShareYourProfile' && (
-              <AnimatedContainer>
+              <FadeIn>
                 <ShareYourProfile
                   username={username}
                   setActive={setActive}
                   handleUrlToClipboard={handleUrlToClipboard}
                 />
-              </AnimatedContainer>
+              </FadeIn>
             )}
             {activeView === 'AddToSocials' && (
-              <AnimatedContainer>
+              <FadeIn>
                 <AddToSocials setActive={setActive} />
-              </AnimatedContainer>
+              </FadeIn>
             )}
             {activeView === 'ShareMyProfileTo' && (
-              <AnimatedContainer>
+              <FadeIn>
                 <ShareMyProfileTo
                   username={username}
                   setActive={setActive}
                   handleUrlToClipboard={handleUrlToClipboard}
                 />
-              </AnimatedContainer>
+              </FadeIn>
             )}
             {activeView === 'ShareOnSocials' && (
-              <AnimatedContainer>
+              <FadeIn>
                 <ShareOnSocials
                   username={username}
                   setActive={setActive}
                   handleUrlToClipboard={handleUrlToClipboard}
                 />
-              </AnimatedContainer>
+              </FadeIn>
             )}
             {activeView === 'Instagram' && (
-              <AnimatedContainer>
+              <FadeIn>
                 <Instagram
                   username={username}
                   setActive={setActive}
                   handleUrlToClipboard={handleUrlToClipboard}
                 />
-              </AnimatedContainer>
+              </FadeIn>
             )}
             {activeView === 'X' && (
-              <AnimatedContainer>
+              <FadeIn>
                 <XTwitter
                   username={username}
                   setActive={setActive}
                   handleUrlToClipboard={handleUrlToClipboard}
                 />
-              </AnimatedContainer>
+              </FadeIn>
             )}
           </div>
         </motion.div>
@@ -123,7 +123,7 @@ export const ShareProfileDialog = ({
 };
 
 /** All this does is animate the opacity of each component and adds a delay for better timing */
-const AnimatedContainer = ({ children }: { children: React.ReactNode }) => {
+const FadeIn = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       {children}
