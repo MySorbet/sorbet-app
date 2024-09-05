@@ -10,8 +10,9 @@ RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* ./
+# Install dependencies using the verison of yarn corepack installs
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN corepack enable yarn && yarn -v
 RUN yarn --frozen-lockfile
 
 # 2. Rebuild the source code only when needed
