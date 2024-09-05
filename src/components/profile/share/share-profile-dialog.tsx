@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Dispatch, SetStateAction, useState } from 'react';
 import useMeasure from 'react-use-measure';
 
@@ -64,66 +64,65 @@ export const ShareProfileDialog = ({
           }}
           className='overflow-hidden'
         >
-          <AnimatePresence>
-            <div ref={contentRef}>
-              {activeView === 'ShareYourProfile' && (
-                <AnimatedContainer>
-                  <ShareYourProfile
-                    username={username}
-                    setActive={setActive}
-                    handleUrlToClipboard={handleUrlToClipboard}
-                  />
-                </AnimatedContainer>
-              )}
-              {activeView === 'AddToSocials' && (
-                <AnimatedContainer>
-                  <AddToSocials setActive={setActive} />
-                </AnimatedContainer>
-              )}
-              {activeView === 'ShareMyProfileTo' && (
-                <AnimatedContainer>
-                  <ShareMyProfileTo
-                    username={username}
-                    setActive={setActive}
-                    handleUrlToClipboard={handleUrlToClipboard}
-                  />
-                </AnimatedContainer>
-              )}
-              {activeView === 'ShareOnSocials' && (
-                <AnimatedContainer>
-                  <ShareOnSocials
-                    username={username}
-                    setActive={setActive}
-                    handleUrlToClipboard={handleUrlToClipboard}
-                  />
-                </AnimatedContainer>
-              )}
-              {activeView === 'Instagram' && (
-                <AnimatedContainer>
-                  <Instagram
-                    username={username}
-                    setActive={setActive}
-                    handleUrlToClipboard={handleUrlToClipboard}
-                  />
-                </AnimatedContainer>
-              )}
-              {activeView === 'X' && (
-                <AnimatedContainer>
-                  <XTwitter
-                    username={username}
-                    setActive={setActive}
-                    handleUrlToClipboard={handleUrlToClipboard}
-                  />
-                </AnimatedContainer>
-              )}
-            </div>
-          </AnimatePresence>
+          <div ref={contentRef}>
+            {activeView === 'ShareYourProfile' && (
+              <AnimatedContainer>
+                <ShareYourProfile
+                  username={username}
+                  setActive={setActive}
+                  handleUrlToClipboard={handleUrlToClipboard}
+                />
+              </AnimatedContainer>
+            )}
+            {activeView === 'AddToSocials' && (
+              <AnimatedContainer>
+                <AddToSocials setActive={setActive} />
+              </AnimatedContainer>
+            )}
+            {activeView === 'ShareMyProfileTo' && (
+              <AnimatedContainer>
+                <ShareMyProfileTo
+                  username={username}
+                  setActive={setActive}
+                  handleUrlToClipboard={handleUrlToClipboard}
+                />
+              </AnimatedContainer>
+            )}
+            {activeView === 'ShareOnSocials' && (
+              <AnimatedContainer>
+                <ShareOnSocials
+                  username={username}
+                  setActive={setActive}
+                  handleUrlToClipboard={handleUrlToClipboard}
+                />
+              </AnimatedContainer>
+            )}
+            {activeView === 'Instagram' && (
+              <AnimatedContainer>
+                <Instagram
+                  username={username}
+                  setActive={setActive}
+                  handleUrlToClipboard={handleUrlToClipboard}
+                />
+              </AnimatedContainer>
+            )}
+            {activeView === 'X' && (
+              <AnimatedContainer>
+                <XTwitter
+                  username={username}
+                  setActive={setActive}
+                  handleUrlToClipboard={handleUrlToClipboard}
+                />
+              </AnimatedContainer>
+            )}
+          </div>
         </motion.div>
       </DialogContent>
     </Dialog>
   );
 };
 
+/** All this does is animate the opacity of each component and adds a delay for better timing */
 const AnimatedContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
