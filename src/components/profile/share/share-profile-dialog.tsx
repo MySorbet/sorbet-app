@@ -54,7 +54,7 @@ export const ShareProfileDialog = ({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className='flex w-[400px] flex-col items-center gap-6 rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl'
-        customDialogClose='hidden'
+        hideDefaultCloseButton={true}
         aria-describedby='Share your profile!'
       >
         <motion.div
