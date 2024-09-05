@@ -104,7 +104,7 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        pulse: 'pulse var(--duration) ease-out infinite',
+        pulse: 'pulse var(--pulse-duration, 4s) ease-out infinite',
       },
       boxShadow: {
         widget: '0px 20px 120px 0px rgba(52, 64, 84, 0.06)',
