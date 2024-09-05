@@ -1,6 +1,8 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import { Dispatch, SetStateAction, useState } from 'react';
+import useMeasure from 'react-use-measure';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
@@ -45,6 +47,10 @@ export const ShareProfileDialog = ({
     navigator.clipboard.writeText(url);
   };
 
+  const [contentRef, { height: contentHeight }] = useMeasure();
+
+  console.log(contentHeight);
+
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -53,45 +59,81 @@ export const ShareProfileDialog = ({
         customDialogClose='hidden'
         aria-describedby='Share your profile!'
       >
-        {activeView === 'ShareYourProfile' && (
-          <ShareYourProfile
-            username={username}
-            setActive={setActive}
-            handleUrlToClipboard={handleUrlToClipboard}
-          />
-        )}
-        {activeView === 'AddToSocials' && (
-          <AddToSocials setActive={setActive} />
-        )}
-        {activeView === 'ShareMyProfileTo' && (
-          <ShareMyProfileTo
-            username={username}
-            setActive={setActive}
-            handleUrlToClipboard={handleUrlToClipboard}
-          />
-        )}
-        {activeView === 'ShareOnSocials' && (
-          <ShareOnSocials
-            username={username}
-            setActive={setActive}
-            handleUrlToClipboard={handleUrlToClipboard}
-          />
-        )}
-        {activeView === 'Instagram' && (
-          <Instagram
-            username={username}
-            setActive={setActive}
-            handleUrlToClipboard={handleUrlToClipboard}
-          />
-        )}
-        {activeView === 'X' && (
-          <XTwitter
-            username={username}
-            setActive={setActive}
-            handleUrlToClipboard={handleUrlToClipboard}
-          />
-        )}
+        <motion.div
+          // TODO: address this hacky solution for the first view. For some reason, the height is not being calculated correctly when the dialog is opened.
+          animate={{
+            height: activeView === 'ShareYourProfile' ? '372px' : contentHeight,
+          }}
+          className='overflow-hidden'
+        >
+          <AnimatePresence>
+            <div ref={contentRef}>
+              {activeView === 'ShareYourProfile' && (
+                <AnimatedContainer>
+                  <ShareYourProfile
+                    username={username}
+                    setActive={setActive}
+                    handleUrlToClipboard={handleUrlToClipboard}
+                  />
+                </AnimatedContainer>
+              )}
+              {activeView === 'AddToSocials' && (
+                <AnimatedContainer>
+                  <AddToSocials setActive={setActive} />
+                </AnimatedContainer>
+              )}
+              {activeView === 'ShareMyProfileTo' && (
+                <AnimatedContainer>
+                  <ShareMyProfileTo
+                    username={username}
+                    setActive={setActive}
+                    handleUrlToClipboard={handleUrlToClipboard}
+                  />
+                </AnimatedContainer>
+              )}
+              {activeView === 'ShareOnSocials' && (
+                <AnimatedContainer>
+                  <ShareOnSocials
+                    username={username}
+                    setActive={setActive}
+                    handleUrlToClipboard={handleUrlToClipboard}
+                  />
+                </AnimatedContainer>
+              )}
+              {activeView === 'Instagram' && (
+                <AnimatedContainer>
+                  <Instagram
+                    username={username}
+                    setActive={setActive}
+                    handleUrlToClipboard={handleUrlToClipboard}
+                  />
+                </AnimatedContainer>
+              )}
+              {activeView === 'X' && (
+                <AnimatedContainer>
+                  <XTwitter
+                    username={username}
+                    setActive={setActive}
+                    handleUrlToClipboard={handleUrlToClipboard}
+                  />
+                </AnimatedContainer>
+              )}
+            </div>
+          </AnimatePresence>
+        </motion.div>
       </DialogContent>
     </Dialog>
+  );
+};
+
+const AnimatedContainer = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.1 }}
+    >
+      {children}
+    </motion.div>
   );
 };
