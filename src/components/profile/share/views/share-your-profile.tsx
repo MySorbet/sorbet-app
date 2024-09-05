@@ -1,5 +1,4 @@
 import { Plus, Send01, Share01 } from '@untitled-ui/icons-react';
-import { motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 
@@ -14,7 +13,7 @@ export const ShareYourProfile = ({
   handleUrlToClipboard,
 }: ShareYourProfileProps) => {
   return (
-    <motion.div>
+    <>
       <Header
         title='Share your profile'
         description='Showcase your skills globally - share your Sorbet profile on all your channels.'
@@ -47,6 +46,6 @@ export const ShareYourProfile = ({
           />
         </Button>
       </Body>
-    </motion.div>
+    </>
   );
 };
