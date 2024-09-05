@@ -108,6 +108,7 @@
     "react-router-dom": "^6.18.0",
     "react-tag-autocomplete": "^7.1.0",
     "react-tag-input-component": "^2.0.2",
+    "react-use-measure": "^2.1.1",
     "recoil": "^0.7.7",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
