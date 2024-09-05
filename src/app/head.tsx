@@ -12,7 +12,7 @@ export default function Head() {
       <meta name='description' content={description} />
       <meta
         name='keywords'
-        content='social network, NEAR blockchain, collaboration, creators, ai'
+        content='social network, BASE blockchain, collaboration, creators, ai'
       />
 
       {/* Open Graph / Facebook */}
