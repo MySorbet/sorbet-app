@@ -125,11 +125,7 @@ export const ShareProfileDialog = ({
 /** All this does is animate the opacity of each component and adds a delay for better timing */
 const AnimatedContainer = ({ children }: { children: React.ReactNode }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.1 }}
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       {children}
     </motion.div>
   );
