@@ -8,6 +8,7 @@ const appConfigSchema = z.object({
   googleMapKey: z.string(),
   sendbirdAppId: z.string(),
   privyAppId: z.string(),
+  baseRpcUrl: z.string(),
   contractAddress: z.string(),
   usdcAddress: z.string(),
 });
@@ -22,6 +23,7 @@ export const config: AppConfig = appConfigSchema.parse({
   googleMapKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
   sendbirdAppId: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
   privyAppId: process.env.NEXT_PUBLIC_PRIVY_APP_ID,
+  baseRpcUrl: process.env.NEXT_PUBLIC_BASE_RPC_URL,
   contractAddress: process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS,
   usdcAddress: process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
 });
