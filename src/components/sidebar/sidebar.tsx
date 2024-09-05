@@ -131,12 +131,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
                   <div className='flex justify-between'>
                     <div className='flex flex-row gap-2'>
                       <Image
-                        src='/svg/near-protocol.svg'
-                        alt='USDC'
-                        width={17}
-                        height={17}
+                        src='/svg/ethereum.svg'
+                        alt='ETH'
+                        width={20}
+                        height={20}
                       />
-                      <div>{user.balance?.near || `0`} NEAR</div>
+                      <div>{user.balance?.near || `0`} ETH</div>
                     </div>
                     <div className='text-gray-600'>
                       ${user.balance?.nearUsd || `0`}
