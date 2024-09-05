@@ -49,10 +49,8 @@ export const ShareProfileDialog = ({
 
   const [contentRef, { height: contentHeight }] = useMeasure();
 
-  console.log(contentHeight);
-
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setActive('ShareYourProfile')}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className='flex w-[400px] flex-col items-center gap-6 rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl'
