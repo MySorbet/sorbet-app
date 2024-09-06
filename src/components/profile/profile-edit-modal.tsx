@@ -154,7 +154,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
-      <DialogContent className='sm:rounded-[32px]' customDialogClose='hidden'>
+      <DialogContent
+        className='sm:rounded-[32px]'
+        hideDefaultCloseButton={true}
+      >
         <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
           <p>Edit Profile</p>
           <X
