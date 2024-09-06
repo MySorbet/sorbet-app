@@ -1,5 +1,4 @@
 import { MarkerPin02 } from '@untitled-ui/icons-react';
-import { motion } from 'framer-motion';
 import { Dispatch, SetStateAction } from 'react';
 import {
   FieldValues,
@@ -8,16 +7,11 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from 'react-hook-form';
-import useMeasure from 'react-use-measure';
 
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
+import { Command, CommandItem, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { useGooglePlacesApi } from '@/hooks';
+import { cn } from '@/lib/utils';
 
 interface LocationInputProps<T extends FieldValues> {
   name: Path<T>;
@@ -76,38 +70,32 @@ const LocationPredictionsList = <T extends FieldValues>({
   setValue,
   setPredictions,
 }: LocationPredictionsListProps<T>) => {
-  const [ref, { height }] = useMeasure();
+  const isShown = predictions.length > 0;
+
   return (
     <CommandList
-      className={
-        predictions.length
-          ? // TODO: Update the styling here. Kind of flaky in that we are moving the list down with fixed values.
-            'absolute top-10 mt-1 w-full rounded-lg border border-gray-200 bg-white text-black drop-shadow-xl'
-          : 'h-0'
-      }
+      data-shown={isShown}
+      className={cn(
+        'absolute top-10 mt-1 w-full rounded-lg border border-gray-200 bg-white p-1 text-black drop-shadow-xl',
+        'data-[shown=true]:animate-in data-[shown=true]:fade-in-0 data-[shown=true]:zoom-in-95 data-[shown=true]:slide-in-from-top-2',
+        // TODO: Goal is to use the line below to properly animate the exit of the predictions list
+        // 'data-[shown=false]:animate-out data-[shown=false]:fade-out-0 data-[shown=false]:zoom-out-95 data-[shown=false]:slide-out-to-top-2',
+        !isShown && 'mt-0 border-0 p-0'
+      )}
     >
-      <CommandGroup>
-        <motion.div animate={{ height }}>
-          <div ref={ref}>
-            {predictions.map((prediction) => (
-              <CommandItem
-                key={prediction.place_id}
-                value={prediction.description}
-                onSelect={() => {
-                  setValue(
-                    name,
-                    prediction.description as PathValue<T, Path<T>>
-                  );
-                  setPredictions([]);
-                }}
-                className=' text-black'
-              >
-                {prediction.description}
-              </CommandItem>
-            ))}
-          </div>
-        </motion.div>
-      </CommandGroup>
+      {predictions.map((prediction) => (
+        <CommandItem
+          key={prediction.place_id}
+          value={prediction.description}
+          onSelect={() => {
+            setValue(name, prediction.description as PathValue<T, Path<T>>);
+            setPredictions([]);
+          }}
+          className=' text-black'
+        >
+          {prediction.description}
+        </CommandItem>
+      ))}
     </CommandList>
   );
 };
