@@ -27,4 +27,6 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS,
     NEXT_PUBLIC_BASE_USDC_ADDRESS: process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
   },
+  // Why? https://env.t3.gg/docs/customization#treat-empty-strings-as-undefined
+  emptyStringAsUndefined: true,
 });
