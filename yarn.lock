@@ -6468,6 +6468,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@t3-oss/env-core@npm:0.11.1":
+  version: 0.11.1
+  resolution: "@t3-oss/env-core@npm:0.11.1"
+  peerDependencies:
+    typescript: ">=5.0.0"
+    zod: ^3.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/1b59ff54b3f1541b35f5e415eb694daa3e37267d91db7c0654b07839d968b80251a965a7e5d8b913ed518027660c371cc8a5cd11b72c7e6b093569b3b5a6ad9a
+  languageName: node
+  linkType: hard
+
+"@t3-oss/env-nextjs@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "@t3-oss/env-nextjs@npm:0.11.1"
+  dependencies:
+    "@t3-oss/env-core": "npm:0.11.1"
+  peerDependencies:
+    typescript: ">=5.0.0"
+    zod: ^3.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/3b74fc44706c9a80b8de378c41d9d55ac6913672b6358cc2a1d8e3eb73d9817422dc39d8881d3efba560eac8ddc095294d3482d53038b844971ec4772d46f3db
+  languageName: node
+  linkType: hard
+
 "@tailwindcss/forms@npm:^0.5.6":
   version: 0.5.8
   resolution: "@tailwindcss/forms@npm:0.5.8"
@@ -12735,7 +12763,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:^1.21.0":
+"jiti@npm:^1.21.0, jiti@npm:^1.21.6":
   version: 1.21.6
   resolution: "jiti@npm:1.21.6"
   bin:
@@ -16357,6 +16385,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:^1.9.7"
     "@sendbird/chat": "npm:^4.13.1"
     "@svgr/webpack": "npm:^8.1.0"
+    "@t3-oss/env-nextjs": "npm:^0.11.1"
     "@tailwindcss/forms": "npm:^0.5.6"
     "@tanstack/react-query": "npm:^5.28.9"
     "@testing-library/jest-dom": "npm:^5.17.0"
@@ -16405,6 +16434,7 @@ __metadata:
     ieee754: "npm:^1.2.1"
     input-otp: "npm:^1.0.1"
     jest: "npm:^27.5.1"
+    jiti: "npm:^1.21.6"
     json-schema-traverse: "npm:^1.0.0"
     lint-staged: "npm:^12.5.0"
     lodash.pickby: "npm:^4.6.0"
