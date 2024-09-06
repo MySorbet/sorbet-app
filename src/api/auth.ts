@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-import { config } from '@/lib/config';
+import { env } from '@/lib/env';
 import { User } from '@/types';
 
 export const signUpWithPrivyId = async ({ id }: { id: string }) => {
   try {
     const reqBody = { id };
     const res = await axios.post<Pick<User, 'id' | 'privyId'>>(
-      `${config.sorbetApiUrl}/auth/signup/privy`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/privy`,
       reqBody
     );
     return res;
@@ -26,7 +26,7 @@ export const signUpWithPrivyId = async ({ id }: { id: string }) => {
 export const checkHandleIsAvailable = async (handle: string) => {
   try {
     const res = await axios.get<{ isUnique: boolean }>(
-      `${config.sorbetApiUrl}/users/handle/check/${handle}`
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/users/handle/check/${handle}`
     );
 
     return res;
@@ -49,7 +49,7 @@ export const signInWithWallet = async (address: string) => {
   const reqBody = { address };
   try {
     const res = await axios.post(
-      `${config.sorbetApiUrl}/auth/signin/wallet`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signin/wallet`,
       reqBody
     );
     return res;
@@ -70,7 +70,7 @@ export const signUpWithWallet = async (
 
   try {
     const res = axios.post(
-      `${config.sorbetApiUrl}/auth/signup/wallet`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/wallet`,
       reqBody
     );
     return res;
@@ -86,7 +86,10 @@ export const fetchUserDetails = async (token: string) => {
   const reqHeader = { headers };
 
   try {
-    const res = await axios.get(`${config.sorbetApiUrl}/auth/me`, reqHeader);
+    const res = await axios.get(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/me`,
+      reqHeader
+    );
     return res;
   } catch (error: any) {
     throw new Error(
