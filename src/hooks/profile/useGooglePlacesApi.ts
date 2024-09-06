@@ -1,5 +1,6 @@
 import { Library } from '@googlemaps/js-api-loader';
 import { useLoadScript } from '@react-google-maps/api';
+import { debounce } from 'lodash';
 import { ChangeEvent, useRef, useState } from 'react';
 
 import { env } from '@/lib/env';
@@ -25,10 +26,10 @@ export const useGooglePlacesApi = () => {
   });
 
   /**
-   * Handler that calls Google Places API to get predictions based on the input value
+   * Handler that calls Google Places API to get predictions based on the input value with 300ms debounce
    * Only cities are allowed at the moment. Can easily be changed to allow other types of places.
    */
-  const handleLocationInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleLocationInputChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) {
       setPredictions([]);
       return;
@@ -49,7 +50,7 @@ export const useGooglePlacesApi = () => {
         }
       }
     );
-  };
+  }, 300);
 
   /**
    * Clear predictions when the edit modal is closed so it doesnt appear when the user opens the modal again
