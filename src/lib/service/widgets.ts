@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { config } from '@/lib/config';
+import { env } from '@/lib/env';
 import {
   ExtendedWidgetLayout,
   GetBehanceItemType,
@@ -76,7 +76,7 @@ export const getWidgetContent = async ({
 export const getWidgetsByUsername = async (username: string) => {
   try {
     const res = await axios.get(
-      `${config.sorbetApiUrl}/widgets/username/${username}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/username/${username}`,
       await withAuthHeader()
     );
     return res.data;
@@ -91,7 +91,7 @@ export const getWidgetsForUser = async (userId: string) => {
   if (userId !== null) {
     try {
       const response = await axios.get(
-        `${config.sorbetApiUrl}/widgets/user/${userId}`,
+        `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/user/${userId}`,
         await withAuthHeader()
       );
       return response.data;
@@ -110,7 +110,7 @@ export const updateWidgetsBulk = async (
 ) => {
   try {
     const response = await axios.patch(
-      `${config.sorbetApiUrl}/widgets/bulk-update`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/bulk-update`,
       widgetLayouts,
       await withAuthHeader()
     );
@@ -144,7 +144,7 @@ export const updateWidget = async (
 
   try {
     const res = await axios.patch(
-      `${config.sorbetApiUrl}/widgets/${widgetId}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetId}`,
       payload,
       await withAuthHeader()
     );
@@ -157,7 +157,7 @@ export const updateWidget = async (
 export const deleteWidget = async (id: string) => {
   try {
     const response = await axios.delete(
-      `${config.sorbetApiUrl}/widgets/${id}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${id}`,
       await withAuthHeader()
     );
     return response;
@@ -171,7 +171,7 @@ export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/dribbble`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/dribbble`,
       body,
       await withAuthHeader()
     );
@@ -188,7 +188,7 @@ export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
 
   try {
     const response = axios.post(
-      `${config.sorbetApiUrl}/widgets/behance`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/behance`,
       body,
       await withAuthHeader()
     );
@@ -207,7 +207,7 @@ export const getMediumArticleMetadata = async ({
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/medium`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/medium`,
       body,
       await withAuthHeader()
     );
@@ -224,7 +224,7 @@ export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/youtube`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/youtube`,
       body,
       await withAuthHeader()
     );
@@ -241,7 +241,7 @@ export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/substack`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/substack`,
       body,
       await withAuthHeader()
     );
@@ -258,7 +258,7 @@ export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/spotify/album`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/spotify/album`,
       body,
       await withAuthHeader()
     );
@@ -275,7 +275,7 @@ export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/spotify/song`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/spotify/song`,
       body,
       await withAuthHeader()
     );
@@ -292,7 +292,7 @@ export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/soundcloud`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/soundcloud`,
       body,
       await withAuthHeader()
     );
@@ -311,7 +311,7 @@ export const getInstagramProfileMetadata = async ({
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/instagram`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/instagram`,
       body,
       await withAuthHeader()
     );
@@ -330,7 +330,7 @@ export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/photo`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/photo`,
       body,
       await withAuthHeader()
     );
@@ -347,7 +347,7 @@ export const getGithubProfile = async ({ url }: GetGithubWidget) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/github`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/github`,
       body,
       await withAuthHeader()
     );
@@ -364,7 +364,7 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/twitter`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/twitter`,
       body,
       await withAuthHeader()
     );
@@ -381,7 +381,7 @@ export const getLinkedInProfile = async ({ url }: GetItemTypeBase) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/linkedin`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/linkedin`,
       body,
       await withAuthHeader()
     );
@@ -398,7 +398,7 @@ export const getLinkData = async ({ url }: GetItemTypeBase) => {
 
   try {
     const response = await axios.post(
-      `${config.sorbetApiUrl}/widgets/link`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/link`,
       body,
       await withAuthHeader()
     );

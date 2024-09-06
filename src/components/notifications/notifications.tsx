@@ -10,6 +10,7 @@ import React, { useRef, useState } from 'react';
 
 import { NotificationToasts } from '@/components/notifications';
 import { useAuth } from '@/hooks';
+import { env } from '@/lib/env';
 
 export const Notifications = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -23,13 +24,11 @@ export const Notifications = () => {
 
   return (
     <KnockProvider
-      apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY || ''}
+      apiKey={env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY}
       userId={user.id}
     >
       <div className='cursor-pointer'>
-        <KnockFeedProvider
-          feedId={process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID || ''}
-        >
+        <KnockFeedProvider feedId={env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID}>
           <NotificationIconButton
             ref={buttonRef}
             onClick={() => setIsVisible(!isVisible)}

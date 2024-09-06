@@ -3,7 +3,7 @@ import { useLoadScript } from '@react-google-maps/api';
 import { debounce } from 'lodash';
 import { ChangeEvent, useRef, useState } from 'react';
 
-import { config } from '@/lib/config';
+import { env } from '@/lib/env';
 
 const libs: Library[] = ['places', 'core', 'maps', 'marker'];
 
@@ -21,7 +21,7 @@ export const useGooglePlacesApi = () => {
    */
   const { loadError } = useLoadScript({
     id: 'sorbet-google-map-script',
-    googleMapsApiKey: config.googleMapKey,
+    googleMapsApiKey: env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
     libraries: libs,
   });
 
