@@ -17,16 +17,12 @@ import { Balances, Transaction, Transactions } from '@/types/transactions';
 
 export const WalletContainer = () => {
   const [walletAddress, setWalletAddress] = useState<string>('');
-  // const { user } = useAuth();
+  const { wallets } = useWallets();
   const {
     ethBalance,
     usdcBalance,
     loading: balanceLoading,
   } = useWalletBalances(walletAddress);
-  // console.log('user', user);
-  console.log('ethBalance', ethBalance);
-  console.log('usdcBalance', usdcBalance);
-  const { wallets } = useWallets();
   const [transactions, setTransactions] = useState<Transactions>({
     money_in: [],
     money_out: [],
@@ -41,17 +37,18 @@ export const WalletContainer = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const fetchTransactions = async (last_days = 30) => {
-  //   if (user) {
-  //     setLoading(true);
-  //     const response = await getOverview(last_days);
-  //     if (response && response.data) {
-  //       setTransactions(response.data.transactions);
-  //       setBalances(response.data.balances);
-  //     }
-  //     setLoading(false);
-  //   }
-  // };
+  const fetchTransactions = async (last_days = 30) => {
+    // TODO: Move transactions to base
+    // if (user) {
+    //   setLoading(true);
+    //   const response = await getOverview(last_days);
+    //   if (response && response.data) {
+    //     setTransactions(response.data.transactions);
+    //     setBalances(response.data.balances);
+    //   }
+    //   setLoading(false);
+    // }
+  };
 
   useEffect(() => {
     console.log('wallets', wallets);
@@ -63,13 +60,9 @@ export const WalletContainer = () => {
     }
   }, [wallets]);
 
-  // useEffect(() => {
-  //   fetchTransactions();
-  // }, [user]);
-
   const handleTxnDurationChange = (value: string) => {
     const last_days = parseInt(value, 10);
-    // fetchTransactions(last_days);
+    fetchTransactions(last_days);
   };
 
   return (

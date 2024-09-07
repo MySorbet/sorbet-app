@@ -9,11 +9,10 @@ export const useWalletBalances = (walletAddress: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBalances = async () => {
+    (async () => {
       try {
-        if (!walletAddress) {
-          return;
-        }
+        // Ignore empty string wallet address
+        if (!walletAddress) return;
 
         const provider = new ethers.JsonRpcProvider(config.baseRpcUrl);
 
@@ -38,9 +37,7 @@ export const useWalletBalances = (walletAddress: string) => {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchBalances();
+    })();
   }, [walletAddress]);
 
   return { ethBalance, usdcBalance, loading };
