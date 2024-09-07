@@ -1,4 +1,4 @@
-import { config } from '@/lib/config';
+import { env } from '@/lib/env';
 import { getCoordinatesFromFormattedAddress } from '@/utils/geocode';
 import React, { useEffect, useState } from 'react';
 
@@ -33,7 +33,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ locationName }) => {
 
   const mapOptions = {};
 
-  const imageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=10&size=800x400&key=${config.googleMapKey}`;
+  const imageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=10&size=800x400&key=${env.NEXT_PUBLIC_GOOGLE_MAP_KEY}`;
   return (
     <div
       className='h-[200px] w-full rounded-[32px]'

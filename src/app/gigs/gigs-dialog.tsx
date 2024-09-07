@@ -37,7 +37,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useGetContractForOffer } from '@/hooks';
 import { getCurrentWalletAddressByUserId } from '@/api/user';
 import { useLocalStorage } from '@/hooks';
-import { config } from '@/lib/config';
+import { env } from '@/lib/env';
 import { cn } from '@/lib/utils';
 import { ActiveTab } from '@/types';
 import {
@@ -296,7 +296,7 @@ export const GigsDialog = ({
           method: 'eth_call',
           params: [
             {
-              to: config.usdcAddress,
+              to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
               data: balanceOfData,
             },
           ],
@@ -317,16 +317,19 @@ export const GigsDialog = ({
 
         const transactionApproveHash = await sendTransaction(
           wallet,
-          config.usdcAddress,
+          env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
           TOKEN_ABI,
           'approve',
-          [config.contractAddress, parseUnits(amount.toString(), 6)]
+          [
+            env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS,
+            parseUnits(amount.toString(), 6),
+          ]
         );
 
         console.log('transactionapproveHash', transactionApproveHash);
         const transactionHash = await sendTransaction(
           wallet,
-          config.contractAddress,
+          env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS,
           CONTRACT_ABI,
           'fundMilestone',
           [milestoneId, freelancerAddress, parseUnits(amount.toString(), 6)]
@@ -395,7 +398,7 @@ export const GigsDialog = ({
         setLastChainOp('approve_schedule');
         const transactionHash = await sendTransaction(
           wallet,
-          config.contractAddress,
+          env.NEXT_PUBLIC_BASE_CONTRACT_ADDRESS,
           CONTRACT_ABI,
           'releaseMilestone',
           [milestoneId]

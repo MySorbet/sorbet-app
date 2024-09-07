@@ -1,3 +1,9 @@
+// Import env here to validate during build. Using jiti we can import .ts files :)
+import createJiti from 'jiti';
+import { fileURLToPath } from 'node:url';
+const jiti = createJiti(fileURLToPath(import.meta.url));
+jiti('./src/lib/env');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
@@ -53,4 +59,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
