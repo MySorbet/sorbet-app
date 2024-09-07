@@ -18,6 +18,7 @@ import {
   useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
+import { useQueryClient } from '@tanstack/react-query';
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -47,6 +48,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     user?.profileImage || undefined
   );
   const [file, setFile] = useState<Blob | undefined>(undefined);
+
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -110,8 +113,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         ...userToUpdate,
         ...formData,
       };
-
+      // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
       updateProfile(userToUpdate);
+      // Here we invaldiate the query key 'freelancer' which is what the 'user' prop is.
+      queryClient.invalidateQueries({ queryKey: ['freelancer'] });
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
