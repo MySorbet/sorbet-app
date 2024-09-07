@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { Loader2 } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
@@ -18,7 +19,6 @@ import {
   useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
-import { useQueryClient } from '@tanstack/react-query';
 
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
