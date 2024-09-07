@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { config } from '@/lib/config';
+import { env } from '@/lib/env';
 import { TOKEN_ABI } from '@/constant/abis';
 
 export const useWalletBalances = (walletAddress: string) => {
@@ -14,14 +14,16 @@ export const useWalletBalances = (walletAddress: string) => {
         // Ignore empty string wallet address
         if (!walletAddress) return;
 
-        const provider = new ethers.JsonRpcProvider(config.baseRpcUrl);
+        const provider = new ethers.JsonRpcProvider(
+          env.NEXT_PUBLIC_BASE_RPC_URL
+        );
 
         const ethBalanceWei = await provider.getBalance(walletAddress);
         const ethBalanceInEth = ethers.formatEther(ethBalanceWei);
         setEthBalance(ethBalanceInEth);
 
         const usdcContract = new ethers.Contract(
-          config.usdcAddress,
+          env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
           TOKEN_ABI,
           provider
         );
