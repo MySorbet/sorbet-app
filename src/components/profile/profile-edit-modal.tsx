@@ -80,7 +80,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     isError: deleteProfileImageError,
   } = useDeleteProfileImage();
 
-  const { isPending: updateProfilePending, mutate: updateProfile } =
+  const { isPending: updateProfilePending, mutateAsync: updateProfileAsync } =
     useUpdateUser();
 
   const onSubmit = async (formData: FormData) => {
@@ -114,7 +114,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         ...formData,
       };
       // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
-      updateProfile(userToUpdate);
+      await updateProfileAsync(userToUpdate);
       // Here we invaldiate the query key 'freelancer' which is what the 'user' prop is.
       queryClient.invalidateQueries({ queryKey: ['freelancer'] });
       handleModalVisible(false);
