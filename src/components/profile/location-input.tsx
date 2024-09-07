@@ -64,6 +64,11 @@ interface LocationPredictionsListProps<T extends FieldValues> {
   predictions: google.maps.places.AutocompletePrediction[];
 }
 
+/**
+ * This component renders the list of predictions that is returned from interfacing with the Google Places API.
+ * Eventually, we want to make these animations match the shadcn 'popover' animations for consistency reasons.
+ * Currently, it matches on 'enter', but the 'exit' animations are not taking effect.
+ */
 const LocationPredictionsList = <T extends FieldValues>({
   name,
   predictions,
