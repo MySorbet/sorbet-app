@@ -33,7 +33,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'application'
+      - 'sorbet-frontend-production'
       - '--image'
       - '${_IMAGE}:${_TAG}'
       - '--region'
