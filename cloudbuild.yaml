@@ -1,0 +1,59 @@
+# Based on https://krzysztofzuraw.com/blog/2021/on-setting-up-next.js-with-docker-on-google-cloud/
+steps:
+  # Here we are writing the env file to the workspace so next can bake variables into the build
+  - id: write-env
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+      ['-c', 'echo "$$sorbet_app_env_production" > /workspace/.env.production']
+    secretEnv: ['sorbet_app_env_production']
+
+    # Actually build the image
+  - id: build
+    name: 'gcr.io/cloud-builders/docker'
+    args:
+      ['build', '--tag', '${_IMAGE}:${_TAG}', '--tag', '${_IMAGE}:latest', '.']
+
+  # Push the image to artifact registry
+  - id: push
+    waitFor: ['build']
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE}:${_TAG}']
+
+  # Push the latest tag to artifact registry as well
+  - id: push-latest
+    waitFor: ['build']
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE}:latest']
+
+  # TODO: Deploy to cloud run
+  - id: deploy
+    waitFor: ['push']
+    name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'application'
+      - '--image'
+      - '${_IMAGE}:${_TAG}'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+substitutions:
+  _TAG: '$COMMIT_SHA' # Remember to use --substitutions=_TAG="manual" if running with gcloud builds submit
+  _IMAGE: 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production'
+
+images:
+  - '${_IMAGE}:${_TAG}'
+
+options:
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+
+# This is how we pass the env variables to the build from secret manager
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_NUMBER/secrets/sorbet-app-env-production/versions/latest
+      env: 'sorbet_app_env_production'
