@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { Loader2 } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
@@ -48,6 +49,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   );
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -77,7 +80,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     isError: deleteProfileImageError,
   } = useDeleteProfileImage();
 
-  const { isPending: updateProfilePending, mutate: updateProfile } =
+  const { isPending: updateProfilePending, mutateAsync: updateProfileAsync } =
     useUpdateUser();
 
   const onSubmit = async (formData: FormData) => {
@@ -110,8 +113,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         ...userToUpdate,
         ...formData,
       };
-
-      updateProfile(userToUpdate);
+      // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
+      await updateProfileAsync(userToUpdate);
+      // Here we invaldiate the query key 'freelancer' which is what the 'user' prop is.
+      queryClient.invalidateQueries({ queryKey: ['freelancer'] });
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
