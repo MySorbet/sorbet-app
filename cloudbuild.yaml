@@ -41,6 +41,7 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+
 substitutions:
   _TAG: '$COMMIT_SHA' # Remember to use --substitutions=_TAG="manual" if running with gcloud builds submit
   _IMAGE: 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production'
