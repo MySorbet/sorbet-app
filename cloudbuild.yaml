@@ -1,4 +1,5 @@
 # Based on https://krzysztofzuraw.com/blog/2021/on-setting-up-next.js-with-docker-on-google-cloud/
+# This build should be executed by a Cloud Build Service Account that has the Secret Manager Access to the sorbet-app-env-production secret
 steps:
   # Here we are writing the env file to the workspace so next can bake variables into the build
   - id: write-env
