@@ -26,7 +26,7 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE}:latest']
 
-  # TODO: Deploy to cloud run
+  # Deploy to cloud run
   - id: deploy
     waitFor: ['push']
     name: 'gcr.io/cloud-builders/gcloud'
