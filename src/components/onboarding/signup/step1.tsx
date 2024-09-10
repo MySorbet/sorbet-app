@@ -83,8 +83,6 @@ const Step1 = () => {
     setImage(URL.createObjectURL(file));
   };
 
-  console.log(isDirty);
-
   return (
     <FormContainer>
       <Form {...form}>
