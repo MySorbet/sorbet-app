@@ -3,14 +3,11 @@ import Script from 'next/script';
 import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks';
 
 /**
  * Documentation: https://help.featurebase.app/en/articles/1261560-install-feedback-widget
  */
 const FeaturebaseWidget = () => {
-  useInitilizeFeaturebase();
-
   useEffect(() => {
     const win = window as any;
 
@@ -45,41 +42,3 @@ const FeaturebaseWidget = () => {
 };
 
 export default FeaturebaseWidget;
-
-const useInitilizeFeaturebase = () => {
-  const { user } = useAuth();
-  useEffect(() => {
-    const win = window as any;
-
-    if (typeof win.Featurebase !== 'function') {
-      win.Featurebase = function () {
-        // eslint-disable-next-line prefer-rest-params
-        (win.Featurebase.q = win.Featurebase.q || []).push(arguments);
-      };
-    }
-    win.Featurebase(
-      'identify',
-      {
-        organization: 'mysorbet',
-        // Required fields. Replace with your customers data.
-        email: user?.email,
-        name: `${user?.firstName} ${user?.lastName}`,
-        id: user?.id,
-
-        // optional
-        profilePicture: user?.profileImage || '',
-      },
-      (err: unknown) => {
-        if (err) {
-          console.error(`Error initializing featurebase: ${err}`);
-        }
-      }
-    );
-  }, [
-    user?.email,
-    user?.firstName,
-    user?.id,
-    user?.lastName,
-    user?.profileImage,
-  ]);
-};
