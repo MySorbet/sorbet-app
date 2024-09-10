@@ -231,6 +231,7 @@ const Step1 = () => {
             <Button
               type='submit'
               className='w-full border-[#7F56D9] bg-[#573DF5] text-[#FFFFFF] shadow-sm shadow-[#1018280D]'
+              disabled={Object.keys(errors).length > 0}
             >
               Next
             </Button>
