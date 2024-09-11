@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { Loader2 } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -11,7 +11,12 @@ import { LocationInput } from '@/components/profile';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
@@ -67,6 +72,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
+
+  const { dirtyFields, defaultValues } = useFormState({ control });
+
+  console.log(dirtyFields);
+  console.log(Object.keys(dirtyFields).length);
 
   const {
     isPending: uploadProfileImagePending,
@@ -162,14 +172,17 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       <DialogContent
         className='sm:rounded-[32px]'
         hideDefaultCloseButton={true}
+        aria-describedby={undefined}
       >
-        <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
-          <p>Edit Profile</p>
-          <X
-            className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
-            onClick={() => handleModalVisible(false)}
-          />
-        </DialogHeader>
+        <DialogTitle>
+          <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
+            <p>Edit Profile</p>
+            <X
+              className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
+              onClick={() => handleModalVisible(false)}
+            />
+          </DialogHeader>
+        </DialogTitle>
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
             <Avatar className='border-primary-default h-20 w-20 border-2'>
@@ -311,7 +324,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Button
                   type='submit'
                   className='bg-sorbet w-full'
-                  disabled={loading}
+                  disabled={loading || Object.keys(dirtyFields).length <= 0}
                 >
                   {loading ? (
                     <>
