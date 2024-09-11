@@ -38,7 +38,13 @@ export const LocationInput = <T extends FieldValues>({
             {...register(name, {
               required: 'Location is required',
             })}
-            onChange={(e) => handleLocationInputChange(e)}
+            onChange={(e) => {
+              setValue(name, e.target.value as PathValue<T, Path<T>>, {
+                shouldDirty: true,
+                shouldTouch: true,
+              });
+              handleLocationInputChange(e);
+            }}
             autoComplete='off'
             className='pl-10 focus:outline-none focus:ring-0'
           />
@@ -93,7 +99,10 @@ const LocationPredictionsList = <T extends FieldValues>({
           key={prediction.place_id}
           value={prediction.description}
           onSelect={() => {
-            setValue(name, prediction.description as PathValue<T, Path<T>>);
+            setValue(name, prediction.description as PathValue<T, Path<T>>, {
+              shouldDirty: true,
+              shouldTouch: true,
+            });
             setPredictions([]);
           }}
           className=' text-black'

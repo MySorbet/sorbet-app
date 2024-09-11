@@ -159,7 +159,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   const handleSkillChange = (newSkills: string[]) => {
-    setValue('tags', newSkills);
+    setValue('tags', newSkills, {
+      shouldValidate: true,
+      shouldTouch: true,
+      shouldDirty: true,
+    });
   };
 
   const loading =
@@ -305,14 +309,19 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   {...register('tags')}
                   name='tags'
                   control={control}
-                  render={() => (
-                    <SkillInput
-                      initialSkills={user?.tags || []}
-                      onSkillsChange={handleSkillChange}
-                      unique
-                      {...register('tags')}
-                    />
-                  )}
+                  render={() => {
+                    const { onChange, onBlur, name, ref } = register('tags');
+
+                    return (
+                      <SkillInput
+                        ref={ref}
+                        onChange={onChange}
+                        initialSkills={user?.tags || []}
+                        unique
+                        onSkillsChange={handleSkillChange}
+                      />
+                    );
+                  }}
                 />
                 {errors.tags && (
                   <p className='mt-1 text-xs text-red-500'>
