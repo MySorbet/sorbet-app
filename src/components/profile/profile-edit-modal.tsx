@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { Loader2 } from 'lucide-react';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Controller, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -28,12 +28,9 @@ import type { User } from '@/types';
 const schema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  bio: z
-    .string()
-    .max(100, 'Bio must be at most 100 characters')
-    .min(5, 'Bio must be at least 5 characters'),
+  bio: z.string().max(100, 'Bio must be at most 100 characters'),
   city: z.string(),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -59,9 +56,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
     control,
     setValue,
+    getValues,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -73,7 +72,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     },
   });
 
-  const { dirtyFields, defaultValues } = useFormState({ control });
+  const { dirtyFields } = useFormState({ control });
 
   console.log(dirtyFields);
   console.log(Object.keys(dirtyFields).length);
@@ -170,6 +169,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     updateProfilePending ||
     deleteProfileImagePending ||
     uploadProfileImagePending;
+
+  // This effect is to make sure that the form is updated with all the newest changes
+  useEffect(() => {
+    const values = getValues();
+    reset({ ...values });
+  }, [isSubmitSuccessful, reset, getValues]);
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
@@ -309,19 +314,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   {...register('tags')}
                   name='tags'
                   control={control}
-                  render={() => {
-                    const { onChange, onBlur, name, ref } = register('tags');
-
-                    return (
-                      <SkillInput
-                        ref={ref}
-                        onChange={onChange}
-                        initialSkills={user?.tags || []}
-                        unique
-                        onSkillsChange={handleSkillChange}
-                      />
-                    );
-                  }}
+                  render={() => (
+                    <SkillInput
+                      {...register('tags')}
+                      initialSkills={user?.tags || []}
+                      unique
+                      onSkillsChange={handleSkillChange}
+                    />
+                  )}
                 />
                 {errors.tags && (
                   <p className='mt-1 text-xs text-red-500'>
