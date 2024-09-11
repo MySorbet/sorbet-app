@@ -151,7 +151,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     const isImageUpdated = getValues('isImageUpdated');
     // If there is a pre-existing image and we delete, we are considering it dirty
     // If there is no image and we supply one, but then delete, we are considering it clean
-    setValue('isImageUpdated', isImageUpdated ? false : true, {
+    setValue('isImageUpdated', !isImageUpdated, {
       shouldDirty: true,
     });
 
