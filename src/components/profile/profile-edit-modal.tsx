@@ -141,7 +141,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     );
     const i = e.target.files[0];
     setImage(URL.createObjectURL(i));
-    setValue('isImageUpdated', true, { shouldDirty: true, shouldTouch: true });
+    setValue('isImageUpdated', true, { shouldDirty: true });
   };
 
   const deleteImage = async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -152,13 +152,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     // If there is no image and we supply one, but then delete, we are considering it clean
     setValue('isImageUpdated', isImageUpdated ? false : true, {
       shouldDirty: true,
-      shouldTouch: true,
     });
 
     setImage(undefined);
     setFile(undefined);
-
-    // setValue('isImageUpdated', false, { shouldDirty: true, shouldTouch: true });
 
     const fileInput = document.getElementById(
       'profileImage'
@@ -170,8 +167,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const handleSkillChange = (newSkills: string[]) => {
     setValue('tags', newSkills, {
-      shouldValidate: true,
-      shouldTouch: true,
       shouldDirty: true,
     });
   };

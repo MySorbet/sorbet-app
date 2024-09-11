@@ -41,7 +41,6 @@ export const LocationInput = <T extends FieldValues>({
             onChange={(e) => {
               setValue(name, e.target.value as PathValue<T, Path<T>>, {
                 shouldDirty: true,
-                shouldTouch: true,
               });
               handleLocationInputChange(e);
             }}
