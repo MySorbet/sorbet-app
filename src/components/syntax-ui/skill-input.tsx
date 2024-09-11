@@ -1,12 +1,12 @@
 import { SearchLg } from '@untitled-ui/icons-react';
 import { AnimatePresence, motion, useAnimate } from 'framer-motion';
-import { MouseEvent, useState } from 'react';
+import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
 
 const MaxNumOfSkills = 5;
 
-interface SkillInputProps {
+interface SkillInputProps extends ComponentProps<'input'> {
   initialSkills: string[];
   onSkillsChange: (skill: string[]) => void;
   unique: boolean;
@@ -23,6 +23,7 @@ const SkillInput = ({
   initialSkills,
   onSkillsChange,
   unique = false,
+  ...props
 }: SkillInputProps) => {
   const [skills, setSkills] = useState<string[]>(initialSkills);
   const [inputValue, setInputValue] = useState<string>('');
@@ -137,6 +138,7 @@ const SkillInput = ({
             ))}
           </AnimatePresence>
           <input
+            {...props}
             type='text'
             value={inputValue}
             onChange={handleChange}
