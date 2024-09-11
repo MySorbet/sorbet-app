@@ -63,7 +63,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      isImageUpdated: false,
+      isImageUpdated: false, // --> since image is not controlled by form, this allows us to stay within RHF for disabling the 'Save Changes' button.
       firstName: user?.firstName,
       lastName: user?.lastName,
       bio: user?.bio,
