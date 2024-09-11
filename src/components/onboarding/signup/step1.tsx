@@ -62,7 +62,7 @@ const Step1 = () => {
     mode: 'all',
   });
 
-  const { errors, isDirty, dirtyFields, isValid } = useFormState({
+  const { errors, dirtyFields, isValid } = useFormState({
     control: form.control,
   });
 

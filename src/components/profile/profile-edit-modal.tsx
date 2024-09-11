@@ -47,9 +47,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   handleModalVisible,
   user,
 }) => {
-  const [image, setImage] = useState<string | undefined>(
-    user?.profileImage || undefined
-  );
+  const [image, setImage] = useState<string | undefined>();
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const queryClient = useQueryClient();
@@ -149,8 +147,18 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const deleteImage = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
+    const isImageUpdated = getValues('isImageUpdated');
+    // If there is a pre-existing image and we delete, we are considering it dirty
+    // If there is no image and we supply one, but then delete, we are considering it clean
+    setValue('isImageUpdated', isImageUpdated ? false : true, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+
     setImage(undefined);
     setFile(undefined);
+
+    // setValue('isImageUpdated', false, { shouldDirty: true, shouldTouch: true });
 
     const fileInput = document.getElementById(
       'profileImage'
@@ -158,7 +166,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     if (fileInput) {
       fileInput.value = '';
     }
-    setValue('isImageUpdated', false, { shouldDirty: true, shouldTouch: true });
   };
 
   const handleSkillChange = (newSkills: string[]) => {
@@ -176,9 +183,20 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   // This effect is to make sure that the form is updated with all the newest changes
   useEffect(() => {
+    if (!isSubmitSuccessful) {
+      reset();
+      setImage(user?.profileImage || undefined);
+      return;
+    }
     const values = getValues();
     reset({ ...values, isImageUpdated: false });
-  }, [isSubmitSuccessful, reset, getValues]);
+  }, [
+    isSubmitSuccessful,
+    reset,
+    getValues,
+    editModalVisible,
+    user?.profileImage,
+  ]);
 
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
