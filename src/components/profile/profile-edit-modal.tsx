@@ -74,9 +74,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const { dirtyFields } = useFormState({ control });
 
-  console.log(dirtyFields);
-  console.log(Object.keys(dirtyFields).length);
-
   const {
     isPending: uploadProfileImagePending,
     mutateAsync: uploadProfileImageAsync,
