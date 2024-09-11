@@ -173,7 +173,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     deleteProfileImagePending ||
     uploadProfileImagePending;
 
-  // This effect is to make sure that the form is updated with all the newest changes
+  // This effect is to make sure that the form is updated with all the newest changes or restore default values
   useEffect(() => {
     if (!isSubmitSuccessful) {
       reset();
@@ -330,10 +330,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   control={control}
                   render={() => (
                     <SkillInput
-                      {...register('tags')}
                       initialSkills={user?.tags || []}
-                      unique
                       onSkillsChange={handleSkillChange}
+                      unique
+                      {...register('tags')}
                     />
                   )}
                 />
