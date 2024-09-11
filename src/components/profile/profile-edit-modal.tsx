@@ -47,7 +47,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   handleModalVisible,
   user,
 }) => {
-  const [image, setImage] = useState<string | undefined>();
+  const [image, setImage] = useState<string | undefined>(
+    user?.profileImage || undefined
+  );
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const queryClient = useQueryClient();
@@ -137,6 +139,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         : undefined
     );
     const i = e.target.files[0];
+    // TODO: eventually consolidate these two calls since they are called together in multiple places
+    // Can be as simple as changing the 'isImageUpdated' property in zod schema from boolean to the string value of 'image'
     setImage(URL.createObjectURL(i));
     setValue('isImageUpdated', true, { shouldDirty: true });
   };
