@@ -100,7 +100,6 @@ const LocationPredictionsList = <T extends FieldValues>({
           onSelect={() => {
             setValue(name, prediction.description as PathValue<T, Path<T>>, {
               shouldDirty: true,
-              shouldTouch: true,
             });
             setPredictions([]);
           }}
