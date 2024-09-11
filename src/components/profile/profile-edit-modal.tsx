@@ -72,7 +72,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     },
   });
 
-  const { dirtyFields } = useFormState({ control });
+  const { isDirty } = useFormState({ control });
 
   const {
     isPending: uploadProfileImagePending,
@@ -347,7 +347,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Button
                   type='submit'
                   className='bg-sorbet w-full'
-                  disabled={loading || Object.keys(dirtyFields).length <= 0}
+                  disabled={loading || !isDirty}
                 >
                   {loading ? (
                     <>
