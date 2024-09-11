@@ -26,6 +26,7 @@ import {
 import type { User } from '@/types';
 
 const schema = z.object({
+  isImageUpdated: z.boolean(),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   bio: z.string().max(100, 'Bio must be at most 100 characters'),
@@ -64,6 +65,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      isImageUpdated: false,
       firstName: user?.firstName,
       lastName: user?.lastName,
       bio: user?.bio,
@@ -141,6 +143,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     );
     const i = e.target.files[0];
     setImage(URL.createObjectURL(i));
+    setValue('isImageUpdated', true, { shouldDirty: true, shouldTouch: true });
   };
 
   const deleteImage = async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -155,6 +158,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     if (fileInput) {
       fileInput.value = '';
     }
+    setValue('isImageUpdated', false, { shouldDirty: true, shouldTouch: true });
   };
 
   const handleSkillChange = (newSkills: string[]) => {
@@ -173,7 +177,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   // This effect is to make sure that the form is updated with all the newest changes
   useEffect(() => {
     const values = getValues();
-    reset({ ...values });
+    reset({ ...values, isImageUpdated: false });
   }, [isSubmitSuccessful, reset, getValues]);
 
   return (
