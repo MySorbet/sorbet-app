@@ -22,8 +22,8 @@ export const ShareLink = ({
         <Image src={Logo} height={32} width={32} alt='logo' />
         <p className='text-base font-medium text-[#101828]'>
           {username.length > 10
-            ? `mysorbet.xyz/${username.slice(0, 10)}...`
-            : `mysorbet.xyz/${username}`}
+            ? `mysorbet.io/${username.slice(0, 10)}...`
+            : `mysorbet.io/${username}`}
         </p>
       </div>
 
