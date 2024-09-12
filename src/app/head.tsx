@@ -1,10 +1,9 @@
 export default function Head() {
-  const title = 'Sorbet | Ultimate Tool for Creative Freelancers';
+  const title = 'Sorbet | The All-in One Payment Experience for Freelancers';
   const description =
-    'The all-in-one solution for your freelance work, powered by blockchain.';
+    'Unlock your global creative potential with Sorbet. A secure and trustworthy tool here to support you throughout your freelancing journey.';
   const imageUrl =
-    'http://framerusercontent.com/images/oIBwaUw8Is43oxKK9ekodxxA.png';
-
+    'https://storage.googleapis.com/opengraph-image/og-image.png';
   return (
     <head>
       <meta content='width=device-width, initial-scale=1' name='viewport' />
