@@ -128,21 +128,17 @@ export type WidgetType =
   | 'InstagramProfile'
   | 'TwitterProfile'
   | 'LinkedInProfile'
-  | 'Link'
+  | 'Youtube'
 
   // Supported via type catchall
-  | 'Youtube'
   | 'Github'
   | 'Dribbble'
   | 'Behance'
   | 'Medium'
   | 'Figma'
 
-  // Not yet supported
-  | 'Twitter'
-  | 'Nfts'
-  | 'PhotoGallery'
-  | 'Text';
+  // Catchall if nothing else matches
+  | 'Link';
 
 export type WidgetSize = 'A' | 'B' | 'C' | 'D';
 
