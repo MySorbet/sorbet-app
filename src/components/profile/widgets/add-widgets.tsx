@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
-import { validateUrl } from '@/components/profile/widgets';
+import {
+  parseWidgetTypeFromUrl,
+  validateUrl,
+} from '@/components/profile/widgets';
+import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
@@ -30,23 +34,29 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
-  const [error, showError] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
   const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(false);
 
-  const handleUrlSubmit = () => {
-    if (!loading) {
-      try {
-        const isValid: boolean = validateUrl(url);
-        if (!isValid) {
-          showError(true);
-          return;
-        }
+  const [disabled, setDisabled] = useState<boolean>(true);
 
-        addUrl(url);
-      } catch (error) {
-        showError(true);
-      }
+  // TODO: This still needs work
+  const handleUrlSubmit = () => {
+    if (loading) return;
+
+    if (!validateUrl(url)) {
+      setError('invalid');
+      return;
     }
+    // Calling this here so that it throws an error to display
+    try {
+      parseWidgetTypeFromUrl(url);
+    } catch (error) {
+      // TODO: no any
+      setError((error as any).message);
+      return;
+    }
+
+    addUrl(url);
   };
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,8 +65,10 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       setUrl(currentUrl);
 
       if (error && currentUrl === '') {
-        showError(false);
+        setError(undefined);
       }
+
+      setDisabled(currentUrl === '' || !validateUrl(currentUrl));
     }
   };
 
@@ -89,16 +101,25 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         <div className='animate-in slide-in-from-bottom-8 z-0 mb-2'>
           <InvalidAlert
             handleAlertVisible={(status: boolean) => {
-              showError(status);
-              setUrl('');
+              if (!status) {
+                setError(undefined);
+                setUrl('');
+              }
             }}
             title='Link not supported'
           >
-            <p className='mt-2'>We only support the following links:</p>
-            <p className='font-semibold'>
-              Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube, Medium,
-              Substack, Twitter, GitHub
-            </p>
+            {/* Default error */}
+            {error === 'invalid' ? (
+              <>
+                <p className='mt-2'>We only support the following links:</p>
+                <p className='font-semibold'>
+                  Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
+                  Medium, Substack, Twitter, GitHub
+                </p>
+              </>
+            ) : (
+              <p className='font-semibold'>{error}</p>
+            )}
           </InvalidAlert>
         </div>
       )}
@@ -143,13 +164,13 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               value={url}
               disabled={loading}
             />
-            <button
+            <Button
               type='submit'
-              className='flex-none cursor-pointer rounded-lg bg-[#573DF5] px-4 py-1 text-xs text-white lg:text-sm'
-              disabled={loading}
+              className='bg-sorbet'
+              disabled={loading || disabled}
             >
               {loading ? <Spinner size='small' /> : <span>Add</span>}
-            </button>
+            </Button>
           </form>
           <div className='ml-2 cursor-pointer text-gray-500'>
             <Popover>
