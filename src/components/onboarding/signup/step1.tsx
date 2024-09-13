@@ -131,7 +131,7 @@ const Step1 = () => {
                         <div className='relative'>
                           <Input
                             {...form.register('handle')}
-                            placeholder='Handle'
+                            placeholder='my-sorbet-handle'
                             prefix={`${hostname}/`}
                             {...field}
                             className={cn(
