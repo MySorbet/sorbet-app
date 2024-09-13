@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CircleAlert, CircleCheck, User } from 'lucide-react';
 import { ChangeEventHandler, useState } from 'react';
-import { useForm, useFormState } from 'react-hook-form';
+import { ControllerRenderProps, useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { checkHandleIsAvailable } from '@/api/auth';
@@ -47,13 +47,20 @@ const Step1 = () => {
     handle: z
       .string()
       .min(1, { message: 'Handle is required' })
+      .max(25, { message: 'Handle must be less than 25 characters' })
+      .regex(/^[a-z0-9-_]+$/, {
+        message:
+          'Handle may only contain lowercase letters, numbers, dashes, and underscores',
+      }) // Enforce lowercase, no spaces, and allow dashes
       .refine((handle) => refine(handle, user?.handle ?? ''), {
-        message: 'Handle is already taken',
+        message: 'This handle is already taken',
       }),
     location: z.string().optional(),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  type FormSchema = z.infer<typeof formSchema>;
+
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     // Need default values because the form is a controlled component
     defaultValues: {
@@ -66,7 +73,7 @@ const Step1 = () => {
     control: form.control,
   });
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = (values: FormSchema) => {
     setUserData((user) => ({
       ...user,
       ...values,
@@ -81,6 +88,21 @@ const Step1 = () => {
     if (!file) return;
     setFile(file);
     setImage(URL.createObjectURL(file));
+  };
+
+  // This change handler allows us to mask the input to only allow valid handles to be typed or pasted
+  // We still have zod validate the form, but this creates a better user experience by guiding
+  // the user to a valid handle rather than erroring out when they "do something wrong"
+  const handleInputChange = (
+    field: ControllerRenderProps<FormSchema, 'handle'>,
+    value: string
+  ) => {
+    field.onChange(
+      value
+        .replace(/[^a-zA-Z0-9 _-]/g, '') // Remove invalid characters
+        .replace(/\s+/g, '-') // Replace spaces with dashes
+        .toLowerCase() // Convert to lowercase
+    );
   };
 
   return (
@@ -134,6 +156,9 @@ const Step1 = () => {
                             placeholder='my-sorbet-handle'
                             prefix={`${hostname}/`}
                             {...field}
+                            onChange={(e) =>
+                              handleInputChange(field, e.target.value)
+                            }
                             className={cn(
                               errors.handle && 'border-red-500 ring-red-500'
                             )}
