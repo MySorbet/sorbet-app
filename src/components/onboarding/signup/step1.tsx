@@ -170,7 +170,7 @@ const Step1 = () => {
                           )}
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
                     </FormItem>
                   );
                 }}
