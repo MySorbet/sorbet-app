@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { Spinner } from '@/components/common';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks';
+import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
 
@@ -109,41 +109,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
                   </Link>
                 </div>
               </div>
-              <div className='mt-3 flex flex-col rounded-xl bg-white p-5'>
-                <div className='font-light text-gray-600'>Balances</div>
-                <div className='mt-6 flex flex-col gap-3'>
-                  <div className='flex justify-between'>
-                    <div className='flex flex-row gap-2'>
-                      <Image
-                        src='/svg/usdc.svg'
-                        alt='USDC'
-                        width={20}
-                        height={20}
-                      />
-                      <div>
-                        {user.balance?.usdc.toLocaleString() || `0`} USDC
-                      </div>
-                    </div>
-                    <div className='text-gray-600'>
-                      ${user.balance?.usdc.toLocaleString() || `0`}
-                    </div>
-                  </div>
-                  <div className='flex justify-between'>
-                    <div className='flex flex-row gap-2'>
-                      <Image
-                        src='/svg/ethereum.svg'
-                        alt='ETH'
-                        width={20}
-                        height={20}
-                      />
-                      <div>{user.balance?.near || `0`} ETH</div>
-                    </div>
-                    <div className='text-gray-600'>
-                      ${user.balance?.nearUsd || `0`}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Balances />
             </div>
           </div>
 
@@ -158,6 +124,44 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
             </div>
             {isLoggingOut ? 'Logging out' : 'Logout'}
           </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Local component for displaying wallet balances
+ */
+const Balances: React.FC = () => {
+  const address = useEmbeddedWalletAddress();
+  const { ethBalance, usdcBalance, loading } = useWalletBalances(address ?? '');
+
+  return (
+    <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
+      <div className='text-muted-foreground text-sm'>Balances</div>
+      <div className='flex flex-col gap-3'>
+        <div className='flex gap-2 text-sm font-semibold'>
+          <Image
+            src='/svg/usdc.svg'
+            alt='USDC'
+            width={20}
+            height={20}
+            className='size-5'
+          />
+          <div>
+            {loading ? <Spinner size='small' /> : `${usdcBalance} USDC`}
+          </div>
+        </div>
+        <div className='flex gap-2 text-sm font-semibold'>
+          <Image
+            src='/svg/ethereum.svg'
+            alt='ETH'
+            width={20}
+            height={20}
+            className='size-5'
+          />
+          <div>{loading ? <Spinner size='small' /> : `${ethBalance} ETH`}</div>
         </div>
       </div>
     </div>
