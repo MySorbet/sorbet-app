@@ -8,9 +8,6 @@ interface MediumWidgetType {
 }
 
 export const MediumWidget: React.FC<MediumWidgetType> = ({ content, size }) => {
-  useEffect(() => {
-    console.log(size.toString());
-  }, [size]);
 
   let widgetLayout;
   switch (size) {
