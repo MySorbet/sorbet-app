@@ -102,17 +102,17 @@ describe('parseWidgetTypeFromUrl', () => {
   });
 
   describe('Instagram', () => {
-    it('correctly parses post URL', () => {
+    it('correctly parses profile URL', () => {
       expect(
-        parseWidgetTypeFromUrl('https://www.instagram.com/p/C5OKLHIoSiy/')
-      ).toBe('InstagramPost');
+        parseWidgetTypeFromUrl('https://www.instagram.com/mysorbet.xyz')
+      ).toBe('InstagramProfile');
     });
 
-    it('throws an error for unsupported Instagram profile url', () => {
+    it('throws an error for unsupported Instagram post url', () => {
       expect(() =>
-        parseWidgetTypeFromUrl('https://www.instagram.com/mysorbet.xyz')
+        parseWidgetTypeFromUrl('https://www.instagram.com/p/C5OKLHIoSiy/')
       ).toThrow();
-      // TODO: This will be supported toBe('InstagramProfile');
+      // TODO: This will be supported toBe('InstagramPost');
     });
 
     it('throws an error for unsupported Instagram story url', () => {

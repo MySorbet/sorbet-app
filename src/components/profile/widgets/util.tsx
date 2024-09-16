@@ -98,10 +98,11 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     }
 
     if (pathname.includes('/p/')) {
-      return 'InstagramPost';
+      throw new Error('Only Instagram profiles are supported');
+      // TODO: This will be supported
+      // return 'InstagramPost';
     } else {
-      throw new Error('Only Instagram profiles are currently are supported');
-      // TODO: This will be supported return 'InstagramProfile';
+      return 'InstagramProfile';
     }
   }
 
