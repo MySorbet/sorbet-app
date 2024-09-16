@@ -13,33 +13,33 @@ export const InvalidAlert: React.FC<InvalidAlertProps> = ({
   children,
 }) => {
   return (
-    <div className='flex flex-row gap-3 bg-white p-4 rounded-xl border border-gray-300 cursor-pointer'>
+    <div className='flex flex-row gap-3 rounded-xl border border-gray-300 bg-white p-4 shadow-sm'>
       <div>
-        <div className='p-1 border border-red-100 rounded-full border-2'>
-          <div className='p-1 border border-red-300 rounded-full border-2'>
-            <CircleAlert className='w-6 h-6' color={`red`} />
+        <div className='rounded-full border-2 border-red-100 p-1'>
+          <div className='rounded-full border-2 border-red-300 p-1'>
+            <CircleAlert className='h-6 w-6' color='red' />
           </div>
         </div>
       </div>
       <div className='flex flex-col gap-1'>
         <p className='font-semibold'>{title}</p>
         {children}
-        <div className='flex flex-row gap-3 mt-2 cursor-pointer'>
+        <div className='mt-2 flex cursor-pointer flex-row gap-3'>
           <div
             className='hover:underline'
             onClick={() => handleAlertVisible(false)}
           >
             Dismiss
           </div>
-          <div className='hover:underline text-sorbet font-semibold'>
+          <div className='text-sorbet font-semibold hover:underline'>
             Learn More
           </div>
         </div>
       </div>
-      <div className='flex justify-center items-center align-center'>
+      <div className='align-center flex justify-center'>
         <X
-          className='w-6 h-6'
-          color={`gray`}
+          className='h-6 w-6 cursor-pointer'
+          color='gray'
           onClick={() => handleAlertVisible(false)}
         />
       </div>

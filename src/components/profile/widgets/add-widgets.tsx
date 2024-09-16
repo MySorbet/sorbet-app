@@ -119,7 +119,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                 </p>
               </>
             ) : (
-              <p className='font-semibold'>{error}</p>
+              <p>{error}</p>
             )}
           </InvalidAlert>
         </div>
