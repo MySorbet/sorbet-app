@@ -124,7 +124,7 @@ export type WidgetType =
   | 'SpotifySong'
   | 'SpotifyAlbum'
   | 'SoundcloudSong'
-  | 'InstagramPost'
+  | 'InstagramPost' // Currently unsupported
   | 'InstagramProfile'
   | 'TwitterProfile'
   | 'LinkedInProfile'
