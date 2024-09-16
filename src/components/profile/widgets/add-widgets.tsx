@@ -48,15 +48,20 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       setError('invalid');
       return;
     }
+
     // Calling this here so that it throws an error to display
     try {
       parseWidgetTypeFromUrl(url);
     } catch (error) {
-      // TODO: no any
-      setError((error as any).message);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Unexpected error');
+      }
       return;
     }
 
+    // If the above doesn't throw, we're good to add the url
     addUrl(url);
   };
 
