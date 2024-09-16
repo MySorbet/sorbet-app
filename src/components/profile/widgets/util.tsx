@@ -149,19 +149,6 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
   return 'Link';
 };
 
-export const getWidgetTypeWithRegex = (url: string): WidgetType | null => {
-  const type = parseWidgetTypeFromUrl(url);
-
-  // If the widget type is in the exclusion list, return it
-  if (Exclusions.includes(type as Exclusion)) {
-    return type;
-  }
-
-  // Otherwise, use the regex to check if the url is valid
-  const regex = regexMap[type as Exclude<WidgetType, Exclusion>];
-  return regex.test(url) ? type : null;
-};
-
 /** We support all http and https */
 export function validateUrl(url: string) {
   try {
@@ -181,6 +168,23 @@ export function validateUrl(url: string) {
     }
   }
 }
+
+/**
+ * Uses the above validation with the added layer of checking the url against the regex's in the original implementation.
+ * Currently unused.
+ */
+export const getWidgetTypeWithRegex = (url: string): WidgetType | null => {
+  const type = parseWidgetTypeFromUrl(url);
+
+  // If the widget type is in the exclusion list, return it
+  if (Exclusions.includes(type as Exclusion)) {
+    return type;
+  }
+
+  // Otherwise, use the regex to check if the url is valid
+  const regex = regexMap[type as Exclude<WidgetType, Exclusion>];
+  return regex.test(url) ? type : null;
+};
 
 // Exclusions are widget types that did not have regex
 const Exclusions = ['Photo', 'Figma', 'Link'] as const;
