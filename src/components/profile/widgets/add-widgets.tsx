@@ -99,10 +99,15 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
     }
   };
 
-  const panelClass = loading ? 'opacity-90 pointer-events-none' : '';
+  const loadingClasses = 'opacity-90 pointer-events-none';
 
   return (
-    <div className={`isolate hidden max-w-96 md:block ${panelClass}`}>
+    <div
+      className={cn(
+        'isolate hidden max-w-96 md:block',
+        loading && loadingClasses
+      )}
+    >
       {error && (
         <div className='animate-in slide-in-from-bottom-8 z-0 mb-2'>
           <InvalidAlert
@@ -144,7 +149,10 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         </div>
       )}
       <div
-        className={`z-10 flex w-full flex-row gap-4 rounded-2xl bg-white px-4 py-3 drop-shadow-xl ${panelClass}`}
+        className={cn(
+          'z-10 flex w-full flex-row gap-4 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
+          loading && loadingClasses
+        )}
       >
         <div
           className={cn(
@@ -198,9 +206,10 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <label
-                className={`hover:text-sorbet align-center flex cursor-pointer items-center justify-center ${panelClass} ${
-                  loading ? 'opacity-50' : ''
-                }`}
+                className={cn(
+                  'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
+                  loading && loadingClasses
+                )}
               >
                 <input
                   type='file'
