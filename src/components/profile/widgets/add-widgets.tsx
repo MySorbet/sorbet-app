@@ -1,4 +1,5 @@
-import { CircleHelp, ImagePlus, Link } from 'lucide-react';
+import { HelpCircle, Link03 } from '@untitled-ui/icons-react';
+import { ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
 import { Spinner } from '@/components/common';
@@ -93,10 +94,10 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
     }
   };
 
-  const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
+  const panelClass = loading ? 'opacity-90 pointer-events-none' : '';
 
   return (
-    <div className={`isolate hidden md:block lg:w-[480px] ${panelClass}`}>
+    <div className={`isolate hidden max-w-96 md:block ${panelClass}`}>
       {error && (
         <div className='animate-in slide-in-from-bottom-8 z-0 mb-2'>
           <InvalidAlert
@@ -138,17 +139,16 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         </div>
       )}
       <div
-        className={`z-10 flex w-full flex-row gap-2 rounded-2xl bg-white p-2 drop-shadow-xl lg:gap-4 lg:p-4 ${panelClass}`}
+        className={`z-10 flex w-full flex-row gap-4 rounded-2xl bg-white px-4 py-3 drop-shadow-xl ${panelClass}`}
       >
         <div
           className={cn(
-            'flex flex-grow items-center rounded-2xl border-2 px-2 py-1 lg:px-3 lg:py-2',
+            'flex flex-grow items-center rounded-lg border-2 px-3 py-2',
             error ? 'border-red-500' : 'border-gray-300'
           )}
         >
-          <div>
-            <Link className='mr-2' size={22} />
-          </div>
+          <Link03 className='text-muted-foreground mr-2 size-5' />
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -166,29 +166,27 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             />
             <Button
               type='submit'
-              className='bg-sorbet'
+              className='bg-sorbet h-fit px-3 py-1'
               disabled={loading || disabled}
             >
               {loading ? <Spinner size='small' /> : <span>Add</span>}
             </Button>
           </form>
-          <div className='ml-2 cursor-pointer text-gray-500'>
-            <Popover>
-              <PopoverTrigger asChild>
-                <CircleHelp size={20} />
-              </PopoverTrigger>
-              <PopoverContent>
-                <p>
-                  You can post a link from the following supported platforms and
-                  click <b>Add</b>. The following platforms are supported:
-                </p>
-                <p className='mt-2 font-semibold'>
-                  Dribbble, Behance, Spotify, Instagram, Soundcloud, YouTube,
-                  Medium, Substack
-                </p>
-              </PopoverContent>
-            </Popover>
-          </div>
+          <Popover>
+            <PopoverTrigger>
+              <HelpCircle className='ml-2 size-4 cursor-pointer' />
+            </PopoverTrigger>
+            <PopoverContent>
+              <p>
+                You can post a link from the following supported platforms and
+                click <b>Add</b>. The following platforms are supported:
+              </p>
+              <p className='mt-2 font-semibold'>
+                Dribbble, Behance, Spotify, Instagram, Soundcloud, YouTube,
+                Medium, Substack
+              </p>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <TooltipProvider>
@@ -206,7 +204,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                   disabled={loading}
                   accept='image/*'
                 />
-                <ImagePlus size={24} />
+                <ImagePlus size={20} />
               </label>
             </TooltipTrigger>
             <TooltipContent>Upload custom image as widget</TooltipContent>
