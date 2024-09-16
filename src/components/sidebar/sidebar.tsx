@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Spinner } from '@/components/common';
+import { CopyButton, Spinner } from '@/components/common';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
@@ -139,7 +139,10 @@ const Balances: React.FC = () => {
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
-      <div className='text-muted-foreground text-sm'>Balances</div>
+      <div className='flex flex-row justify-between'>
+        <div className='text-muted-foreground text-sm'>Balances</div>
+        <WalletAddress />
+      </div>
       <div className='flex flex-col gap-3'>
         <div className='flex gap-2 text-sm font-semibold'>
           <Image
@@ -149,9 +152,8 @@ const Balances: React.FC = () => {
             height={20}
             className='size-5'
           />
-          <div>
-            {loading ? <Spinner size='small' /> : `${usdcBalance} USDC`}
-          </div>
+
+          {loading ? <Spinner size='small' /> : `${usdcBalance} USDC`}
         </div>
         <div className='flex gap-2 text-sm font-semibold'>
           <Image
@@ -161,9 +163,27 @@ const Balances: React.FC = () => {
             height={20}
             className='size-5'
           />
-          <div>{loading ? <Spinner size='small' /> : `${ethBalance} ETH`}</div>
+          {loading ? <Spinner size='small' /> : `${ethBalance} ETH`}
         </div>
       </div>
+    </div>
+  );
+};
+
+/**
+ * Local component for displaying wallet address with a copy button
+ */
+const WalletAddress: React.FC = () => {
+  const address = useEmbeddedWalletAddress();
+  const truncatedAddress = `${address?.slice(0, 5)}...${address?.slice(-5)}`;
+  return (
+    <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
+      <span>{truncatedAddress}</span>
+      <CopyButton
+        onCopy={() => {
+          navigator.clipboard.writeText(address ?? '');
+        }}
+      />
     </div>
   );
 };
