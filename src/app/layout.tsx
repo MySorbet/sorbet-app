@@ -4,12 +4,19 @@ import '@/styles/colors.css';
 import '@/styles/globals.css';
 
 import { usePrivy } from '@privy-io/react-auth';
+import { Inter } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import Providers from '@/app/providers';
+import { cn } from '@/lib/utils';
 
 import Head from './head';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function RootLayout({
   children,
@@ -28,7 +35,7 @@ export default function RootLayout({
   }, [ready, authenticated, router]);
 
   return (
-    <html className='size-full'>
+    <html className={cn('size-full', inter.className)}>
       <Head />
       <body className='size-full bg-[#F2F3F7]'>
         <Providers>{children}</Providers>
