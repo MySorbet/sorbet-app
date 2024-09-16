@@ -36,14 +36,13 @@ export const CopyButton: React.FC<CopyButtonProps> = ({ onCopy }) => {
     <Button
       variant='link'
       className='h-fit p-0'
-      // className='group m-0 border-none bg-transparent p-0 hover:bg-transparent'
       onClick={handleClick}
       disabled={isCopied}
     >
       {isCopied ? (
-        <CheckCircle className='animate-in zoom-in-0 size-3 text-green-500' />
+        <CheckCircle className='animate-in zoom-in-0 size-4 p-[.125rem] text-green-500' />
       ) : (
-        <Copy06 className='animate-in zoom-in-0 size-3' />
+        <Copy06 className='animate-in zoom-in-0 text-muted-foreground size-4 p-[.125rem]' />
       )}
     </Button>
   );
