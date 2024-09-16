@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { env } from '@/lib/env';
+import { useEffect, useState } from 'react';
+
 import { TOKEN_ABI } from '@/constant/abis';
+import { env } from '@/lib/env';
 
 export const useWalletBalances = (walletAddress: string) => {
   const [ethBalance, setEthBalance] = useState<string>('0');
@@ -19,7 +20,10 @@ export const useWalletBalances = (walletAddress: string) => {
         );
 
         const ethBalanceWei = await provider.getBalance(walletAddress);
-        const ethBalanceInEth = ethers.formatEther(ethBalanceWei);
+        // TODO: Perhaps there is a better way to format this
+        const ethBalanceInEth = parseFloat(
+          ethers.formatEther(ethBalanceWei)
+        ).toFixed(4);
         setEthBalance(ethBalanceInEth);
 
         const usdcContract = new ethers.Contract(

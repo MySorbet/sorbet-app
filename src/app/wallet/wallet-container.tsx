@@ -3,7 +3,7 @@
 import { MoveDown, MoveUp, Send } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { useWallets, getEmbeddedConnectedWallet } from '@privy-io/react-auth';
+
 import { getOverview } from '@/api/user';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
@@ -12,17 +12,18 @@ import { FundsFlow } from '@/app/wallet/funds-flow';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
-import { useAuth, useWalletBalances } from '@/hooks';
+import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { Balances, Transaction, Transactions } from '@/types/transactions';
 
 export const WalletContainer = () => {
-  const [walletAddress, setWalletAddress] = useState<string>('');
-  const { wallets } = useWallets();
+  const walletAddress = useEmbeddedWalletAddress();
   const {
     ethBalance,
     usdcBalance,
     loading: balanceLoading,
-  } = useWalletBalances(walletAddress);
+  } = useWalletBalances(walletAddress ?? '');
+
+  // TODO: Move transactions to base
   const [transactions, setTransactions] = useState<Transactions>({
     money_in: [],
     money_out: [],
@@ -30,39 +31,22 @@ export const WalletContainer = () => {
     total_money_in: '',
     total_money_out: '',
   });
-  const [balances, setBalances] = useState<Balances>({
-    usdc: 0,
-    near: 0,
-    nearUsd: 0,
-  });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchTransactions = async (last_days = 30) => {
-    // TODO: Move transactions to base
-    // if (user) {
-    //   setLoading(true);
-    //   const response = await getOverview(last_days);
-    //   if (response && response.data) {
-    //     setTransactions(response.data.transactions);
-    //     setBalances(response.data.balances);
-    //   }
-    //   setLoading(false);
-    // }
-  };
-
-  useEffect(() => {
-    console.log('wallets', wallets);
-    if (wallets) {
-      const wallet = getEmbeddedConnectedWallet(wallets);
-      if (wallet) {
-        setWalletAddress(wallet.address);
-      }
-    }
-  }, [wallets]);
-
+  // const fetchTransactions = async (last_days = 30) => {
+  //   if (user) {
+  //     setLoading(true);
+  //     const response = await getOverview(last_days);
+  //     if (response && response.data) {
+  //       setTransactions(response.data.transactions);
+  //       setBalances(response.data.balances);
+  //     }
+  //     setLoading(false);
+  //   }
+  // };
   const handleTxnDurationChange = (value: string) => {
-    const last_days = parseInt(value, 10);
-    fetchTransactions(last_days);
+    // const last_days = parseInt(value, 10);
+    // fetchTransactions(last_days);
   };
 
   return (
