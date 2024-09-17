@@ -14,13 +14,6 @@ export const metadata = {
   },
   description:
     'Unlock your global creative potential with Sorbet. A secure and trustworthy tool here to support you throughout your freelancing journey.',
-  alternates: {
-    canonical: '/',
-    languages: {
-      'en-US': '/en-US',
-      'de-DE': '/de-DE',
-    },
-  },
 };
 
 export default function RootLayout({
