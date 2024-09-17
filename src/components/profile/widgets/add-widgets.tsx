@@ -72,16 +72,18 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   };
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!loading) {
-      const currentUrl = event.target.value;
-      setUrl(currentUrl);
+    if (loading) return;
 
-      if (error && currentUrl === '') {
-        setError(undefined);
-      }
+    const currentUrl = event.target.value;
+    setUrl(currentUrl);
 
-      setDisabled(currentUrl === '' || !isValidUrl(currentUrl));
+    // Clear the error if the user deletes the url
+    if (error && !currentUrl) {
+      setError(undefined);
     }
+
+    // Can't add an empty or invalid url
+    setDisabled(!currentUrl || !isValidUrl(currentUrl));
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,6 +145,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           </InvalidAlert>
         </div>
       )}
+
       <div
         className={cn(
           'z-10 flex w-full flex-row gap-4 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
