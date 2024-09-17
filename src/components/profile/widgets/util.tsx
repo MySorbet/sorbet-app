@@ -182,7 +182,7 @@ export function normalizeUrl(url: string): string | undefined {
  * Uses the above validation with the added layer of checking the url against the regex's in the original implementation.
  * Currently unused.
  */
-export const getWidgetTypeWithRegex = (url: string): WidgetType | null => {
+export const parseWidgetTypeWithRegex = (url: string): WidgetType | null => {
   const type = parseWidgetTypeFromUrl(url);
 
   // If the widget type is in the exclusion list, return it
