@@ -147,7 +147,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // If you get here, the login was successful and you have a sorbet user. Route to their profile
       const sorbetUser = loginResult.data;
-      console.log(`Existing sorbet user: ${sorbetUser}`);
+      console.log('Existing sorbet user:');
+      console.dir(sorbetUser);
       setLoading(false);
 
       // However, We only want to do this if they are logging in currently.

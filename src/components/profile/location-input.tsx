@@ -38,7 +38,12 @@ export const LocationInput = <T extends FieldValues>({
             {...register(name, {
               required: 'Location is required',
             })}
-            onChange={(e) => handleLocationInputChange(e)}
+            onChange={(e) => {
+              setValue(name, e.target.value as PathValue<T, Path<T>>, {
+                shouldDirty: true,
+              });
+              handleLocationInputChange(e);
+            }}
             autoComplete='off'
             className='pl-10 focus:outline-none focus:ring-0'
           />
@@ -64,6 +69,11 @@ interface LocationPredictionsListProps<T extends FieldValues> {
   predictions: google.maps.places.AutocompletePrediction[];
 }
 
+/**
+ * This component renders the list of predictions that is returned from interfacing with the Google Places API.
+ * Eventually, we want to make these animations match the shadcn 'popover' animations for consistency reasons.
+ * Currently, it matches on 'enter', but the 'exit' animations are not taking effect.
+ */
 const LocationPredictionsList = <T extends FieldValues>({
   name,
   predictions,
@@ -88,7 +98,9 @@ const LocationPredictionsList = <T extends FieldValues>({
           key={prediction.place_id}
           value={prediction.description}
           onSelect={() => {
-            setValue(name, prediction.description as PathValue<T, Path<T>>);
+            setValue(name, prediction.description as PathValue<T, Path<T>>, {
+              shouldDirty: true,
+            });
             setPredictions([]);
           }}
           className=' text-black'

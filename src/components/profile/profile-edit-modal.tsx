@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { Loader2 } from 'lucide-react';
-import { ChangeEvent, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Controller, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -10,7 +11,12 @@ import { LocationInput } from '@/components/profile';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
   useDeleteProfileImage,
@@ -20,14 +26,12 @@ import {
 import type { User } from '@/types';
 
 const schema = z.object({
+  isImageUpdated: z.boolean(),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  bio: z
-    .string()
-    .max(100, 'Bio must be at most 100 characters')
-    .min(5, 'Bio must be at least 5 characters'),
+  bio: z.string().max(100, 'Bio must be at most 100 characters'),
   city: z.string(),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -48,15 +52,20 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   );
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
     control,
     setValue,
+    getValues,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
+      isImageUpdated: false, // --> since image is not controlled by form, this allows us to stay within RHF for disabling the 'Save Changes' button.
       firstName: user?.firstName,
       lastName: user?.lastName,
       bio: user?.bio,
@@ -64,6 +73,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
+
+  const { isDirty } = useFormState({ control });
 
   const {
     isPending: uploadProfileImagePending,
@@ -77,7 +88,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     isError: deleteProfileImageError,
   } = useDeleteProfileImage();
 
-  const { isPending: updateProfilePending, mutate: updateProfile } =
+  const { isPending: updateProfilePending, mutateAsync: updateProfileAsync } =
     useUpdateUser();
 
   const onSubmit = async (formData: FormData) => {
@@ -110,8 +121,10 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         ...userToUpdate,
         ...formData,
       };
-
-      updateProfile(userToUpdate);
+      // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
+      await updateProfileAsync(userToUpdate);
+      // Here we invaldiate the query key 'freelancer' which is what the 'user' prop is.
+      queryClient.invalidateQueries({ queryKey: ['freelancer'] });
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
@@ -126,11 +139,21 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         : undefined
     );
     const i = e.target.files[0];
+    // TODO: eventually consolidate these two calls since they are called together in multiple places
+    // Can be as simple as changing the 'isImageUpdated' property in zod schema from boolean to the string value of 'image'
     setImage(URL.createObjectURL(i));
+    setValue('isImageUpdated', true, { shouldDirty: true });
   };
 
   const deleteImage = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
+
+    const isImageUpdated = getValues('isImageUpdated');
+    // If there is a pre-existing image and we delete, we are considering it dirty
+    // If there is no image and we supply one, but then delete, we are considering it clean
+    setValue('isImageUpdated', !isImageUpdated, {
+      shouldDirty: true,
+    });
 
     setImage(undefined);
     setFile(undefined);
@@ -144,7 +167,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   const handleSkillChange = (newSkills: string[]) => {
-    setValue('tags', newSkills);
+    setValue('tags', newSkills, {
+      shouldDirty: true,
+    });
   };
 
   const loading =
@@ -152,19 +177,39 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     deleteProfileImagePending ||
     uploadProfileImagePending;
 
+  // This effect is to make sure that the form is updated with all the newest changes or restore default values
+  useEffect(() => {
+    if (!isSubmitSuccessful) {
+      reset();
+      setImage(user?.profileImage || undefined);
+      return;
+    }
+    const values = getValues();
+    reset({ ...values, isImageUpdated: false });
+  }, [
+    isSubmitSuccessful,
+    reset,
+    getValues,
+    editModalVisible,
+    user?.profileImage,
+  ]);
+
   return (
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogContent
         className='sm:rounded-[32px]'
         hideDefaultCloseButton={true}
+        aria-describedby={undefined}
       >
-        <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
-          <p>Edit Profile</p>
-          <X
-            className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
-            onClick={() => handleModalVisible(false)}
-          />
-        </DialogHeader>
+        <DialogTitle>
+          <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
+            <p>Edit Profile</p>
+            <X
+              className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
+              onClick={() => handleModalVisible(false)}
+            />
+          </DialogHeader>
+        </DialogTitle>
         <div className='flex flex-col gap-6'>
           <div className='flex items-center gap-2 text-[#344054]'>
             <Avatar className='border-primary-default h-20 w-20 border-2'>
@@ -306,7 +351,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <Button
                   type='submit'
                   className='bg-sorbet w-full'
-                  disabled={loading}
+                  disabled={loading || !isDirty}
                 >
                   {loading ? (
                     <>
