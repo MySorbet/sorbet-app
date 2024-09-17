@@ -57,7 +57,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         throw new Error('Invalid URL');
       }
 
-      // Calling this here so that it throws an error to display
+      // Calling this here so that it throws an error to display if it is unsupported
       parseWidgetTypeFromUrl(normalizedUrl);
       // If the above doesn't throw, we're good to add the url
       addUrl(normalizedUrl);

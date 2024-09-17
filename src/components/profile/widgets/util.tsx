@@ -33,6 +33,7 @@ export const getSocialIconForWidget = (widgetType: WidgetType): string => {
 
 /**
  * Parses the WidgetType from a given URL
+ * Make sure to call this with a normalized URL
  * @param url The url to parse
  * @returns the WidgetType of the given URL
  * @throws an error if the URL is invalid in some way
@@ -52,7 +53,6 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
   }
 
   // Substack posts only
-  // TODO: Exclude profiles here and callout in UI
   if (platform === 'substack') {
     if (pathname.includes('/p/')) {
       return 'Substack';
@@ -90,13 +90,14 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     throw new Error('Only Soundcloud songs are supported');
   }
 
-  // Instagram posts and profiles
+  // Instagram posts only
   if (platform === 'instagram') {
     // Explicitly exclude stories
     if (pathname.includes('stories')) {
       throw new Error('Instagram stories are not supported');
     }
 
+    // Explicitly exclude posts
     if (pathname.includes('/p/')) {
       throw new Error('Only Instagram profiles are supported');
       // TODO: This will be supported
@@ -115,7 +116,7 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     }
   }
 
-  // LinkedIn profiles
+  // LinkedIn profiles only
   if (platform === 'linkedin') {
     // Explicitly exclude posts
     if (pathname.includes('/posts/')) {
@@ -145,8 +146,9 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     return (platform.charAt(0).toUpperCase() + platform.slice(1)) as WidgetType;
   }
 
-  // If you get here, it's a generic link
-  console.log('Typed as Generic link: ', url);
+  // If you get here, it's not a platform we explicitly support
+  // So it's a generic link
+  console.log('Parsed as generic link: ', url);
   return 'Link';
 };
 
@@ -168,9 +170,10 @@ export function isValidUrl(url: string) {
 export function normalizeUrl(url: string): string | undefined {
   const parsed = parseURL(url, 'https://');
 
-  // Exclude "a."
+  // Exclude urls without a TLD (i.e. "a.")
   const hasTLD = (parsed.host?.split('.').filter(Boolean).length ?? 0) >= 2;
 
+  // We accept http and https urls with a TLD
   if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && hasTLD) {
     return stringifyParsedURL(parsed);
   }
@@ -180,8 +183,8 @@ export function normalizeUrl(url: string): string | undefined {
 }
 
 /**
- * Uses the above validation with the added layer of checking the url against the regex's in the original implementation.
- * Currently unused.
+ * Uses `parseWidgetTypeFromUrl` with the added layer of checking the url against regex's in the original implementation.
+ * Currently unused. Will be removed if new url validation proves to be more reliable.
  */
 export const parseWidgetTypeWithRegex = (url: string): WidgetType | null => {
   const type = parseWidgetTypeFromUrl(url);
