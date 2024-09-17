@@ -37,9 +37,8 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string>();
-  const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(false);
-
-  const [disabled, setDisabled] = useState<boolean>(true);
+  const [errorInvalidImage, showErrorInvalidImage] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   const handleUrlSubmit = () => {
     if (loading) return;
@@ -48,23 +47,26 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       // This can only be triggered when the url is valid
       // So this is just for safety
       if (!isValidUrl(url)) {
-        throw new Error('Something is not right with the link you pasted');
+        throw new Error('Something is not right with the link');
       }
 
       // Normalize the URL and throw an error if it's invalid
+      // Again, since isValidUrl is true, this should never happen, but just in case
       const normalizedUrl = normalizeUrl(url);
       if (!normalizedUrl) {
-        throw new Error('Invalid URL');
+        throw new Error('Something is not right with the link');
       }
 
-      // Calling this here so that it throws an error to display if it is unsupported
+      // Parse the url here so that it throws an error to display if it is unsupported
       parseWidgetTypeFromUrl(normalizedUrl);
       // If the above doesn't throw, we're good to add the url
       addUrl(normalizedUrl);
     } catch (error) {
       if (error instanceof Error) {
+        // This is an expected error so display it to the user
         setError(error.message);
       } else {
+        // This is an unexpected error so log it and display a generic error to the user
         console.error('unexpected error', error);
         setError('Something went wrong');
       }
