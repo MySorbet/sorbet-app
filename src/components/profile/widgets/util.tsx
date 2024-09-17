@@ -140,6 +140,7 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
   }
 
   // The rest of the platforms are supported by manipulating the string
+  // TODO: Expand these to validate platform details
   if (['github', 'dribbble', 'behance', 'medium', 'figma'].includes(platform)) {
     return (platform.charAt(0).toUpperCase() + platform.slice(1)) as WidgetType;
   }
