@@ -1,334 +1,319 @@
 import { isValidUrl, parseWidgetTypeFromUrl } from './util';
 
+/**
+ *  Helper to expect `parseWidgetTypeFromUrl` to return a specific widget type.
+ * @param url - The URL to parse.
+ * @param expectedType - The expected widget type.
+ */
+const expectParseToReturn = (url: string, expectedType: string) => {
+  expect(parseWidgetTypeFromUrl(url)).toBe(expectedType);
+};
+
+/**
+ *  Helper to expect `parseWidgetTypeFromUrl` to throw an error.
+ * @param url - The URL to parse.
+ */
+const expectParseToThrow = (url: string) => {
+  expect(() => parseWidgetTypeFromUrl(url)).toThrow();
+};
+
+/**
+ *  Helper to expect `isValidUrl` to return true.
+ * @param url - The URL to validate.
+ */
+const expectUrlToBeValid = (url: string) => {
+  expect(isValidUrl(url)).toBe(true);
+};
+
+/**
+ *  Helper to expect `isValidUrl` to return false.
+ * @param url - The URL to validate.
+ */
+const expectUrlToBeInvalid = (url: string) => {
+  expect(isValidUrl(url)).toBe(false);
+};
+
 describe('parseWidgetTypeFromUrl', () => {
   describe('Photo', () => {
     it('correctly parses photo URL', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://storage.googleapis.com/example.jpg')
-      ).toBe('Photo');
+      expectParseToReturn(
+        'https://storage.googleapis.com/example.jpg',
+        'Photo'
+      );
     });
   });
 
   describe('Substack', () => {
     it('correctly parses Substack article URL', () => {
-      expect(
-        parseWidgetTypeFromUrl(
-          'https://example.substack.com/p/heroes-who-came-to-look-for-example'
-        )
-      ).toBe('Substack');
+      expectParseToReturn(
+        'https://example.substack.com/p/heroes-who-came-to-look-for-example',
+        'Substack'
+      );
     });
 
     it('throws an error for unsupported Substack profile URL', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://example.substack.com')
-      ).toThrow();
+      expectParseToThrow('https://example.substack.com');
     });
   });
 
   describe('Spotify', () => {
     it('correctly parses track URL', () => {
-      expect(
-        parseWidgetTypeFromUrl(
-          'https://open.spotify.com/track/51q75hNecOooZoFdON9GOh?si=0b7304623b454aa6'
-        )
-      ).toBe('SpotifySong');
+      expectParseToReturn(
+        'https://open.spotify.com/track/51q75hNecOooZoFdON9GOh?si=0b7304623b454aa6',
+        'SpotifySong'
+      );
     });
 
     it('correctly parses album URL', () => {
-      expect(
-        parseWidgetTypeFromUrl(
-          'https://open.spotify.com/album/4OlJgjlpzzUDYqdhf3vVdD?si=o3udjAIHTZGZALcuSWNwbA'
-        )
-      ).toBe('SpotifyAlbum');
+      expectParseToReturn(
+        'https://open.spotify.com/album/4OlJgjlpzzUDYqdhf3vVdD?si=o3udjAIHTZGZALcuSWNwbA',
+        'SpotifyAlbum'
+      );
     });
 
     it('throws an error for unsupported Spotify URL', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl(
-          'https://open.spotify.com/artist/5RPzPJCg4ER1LzQkorZ31p?si=O6VClbhzRyW3u28Mvec7JQ'
-        )
-      ).toThrow();
+      expectParseToThrow(
+        'https://open.spotify.com/artist/5RPzPJCg4ER1LzQkorZ31p?si=O6VClbhzRyW3u28Mvec7JQ'
+      );
     });
   });
 
   describe('Soundcloud', () => {
-    // Songs are supported
     it('correctly parses song URL', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://soundcloud.com/nepado/stutter')
-      ).toBe('SoundcloudSong');
+      expectParseToReturn(
+        'https://soundcloud.com/nepado/stutter',
+        'SoundcloudSong'
+      );
     });
 
     it('correctly parses song URL with trailing slash', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://soundcloud.com/nepado/stutter/')
-      ).toBe('SoundcloudSong');
+      expectParseToReturn(
+        'https://soundcloud.com/nepado/stutter/',
+        'SoundcloudSong'
+      );
     });
 
-    // Unfortunately, short URLs are not supported since there is no way to tell them apart
     it('throws an error for unsupported short Soundcloud song link', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://on.soundcloud.com/VPFFZmvarbnm9er19')
-      ).toThrow();
+      expectParseToThrow('https://on.soundcloud.com/VPFFZmvarbnm9er19');
     });
 
-    // Profiles are not supported
     it('throws an error for unsupported Soundcloud Profile', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://soundcloud.com/nepado')
-      ).toThrow();
+      expectParseToThrow('https://soundcloud.com/nepado');
     });
 
     it('throws an error for unsupported short Soundcloud Profile', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://on.soundcloud.com/ug2v9Ds9hQ89yKMX8')
-      ).toThrow();
+      expectParseToThrow('https://on.soundcloud.com/ug2v9Ds9hQ89yKMX8');
     });
 
-    // Playlist and albums (sets) are not
     it('throws an error for unsupported Soundcloud set', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl(
-          'https://soundcloud.com/nepado/sets/junkyard-mosaic-1'
-        )
-      ).toThrow();
+      expectParseToThrow(
+        'https://soundcloud.com/nepado/sets/junkyard-mosaic-1'
+      );
     });
 
     it('throws an error for unsupported short Soundcloud set', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://on.soundcloud.com/wnRvwh7r6kyj3oY46')
-      ).toThrow();
+      expectParseToThrow('https://on.soundcloud.com/wnRvwh7r6kyj3oY46');
     });
   });
 
   describe('Instagram', () => {
     it('correctly parses profile URL', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://www.instagram.com/mysorbet.xyz')
-      ).toBe('InstagramProfile');
+      expectParseToReturn(
+        'https://www.instagram.com/mysorbet.xyz',
+        'InstagramProfile'
+      );
     });
 
     it('throws an error for unsupported Instagram post url', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://www.instagram.com/p/C5OKLHIoSiy/')
-      ).toThrow();
-      // TODO: This will be supported toBe('InstagramPost');
+      expectParseToThrow('https://www.instagram.com/p/C5OKLHIoSiy/');
     });
 
     it('throws an error for unsupported Instagram story url', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl(
-          'https://www.instagram.com/stories/highlights/17965342688723373/'
-        )
-      ).toThrow();
+      expectParseToThrow(
+        'https://www.instagram.com/stories/highlights/17965342688723373/'
+      );
     });
   });
 
   describe('Twitter', () => {
     it('correctly parses profile URL', () => {
-      expect(parseWidgetTypeFromUrl('https://twitter.com/mysorbetxyz')).toBe(
-        'TwitterProfile'
-      );
+      expectParseToReturn('https://twitter.com/mysorbetxyz', 'TwitterProfile');
     });
 
     it('throws an error for unsupported Twitter URL', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl(
-          'https://x.com/mysorbetxyz/status/1792269032324038672'
-        )
-      ).toThrow();
+      expectParseToThrow(
+        'https://x.com/mysorbetxyz/status/1792269032324038672'
+      );
     });
   });
 
   describe('LinkedIn', () => {
     it('correctly parses profile URL', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://www.linkedin.com/in/dilloncutaiar')
-      ).toBe('LinkedInProfile');
+      expectParseToReturn(
+        'https://www.linkedin.com/in/dilloncutaiar',
+        'LinkedInProfile'
+      );
     });
 
     it('throws an error for unsupported LinkedIn company profile', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl(
-          'https://www.linkedin.com/company/mysorbet/posts'
-        )
-      ).toThrow();
+      expectParseToThrow('https://www.linkedin.com/company/mysorbet/posts');
     });
 
     it('throws an error for unsupported LinkedIn post', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl(
-          'https://www.linkedin.com/posts/mysorbet_exciting-news-were-onboarding-new-activity-7239256540170379264-TKz1'
-        )
-      ).toThrow();
+      expectParseToThrow(
+        'https://www.linkedin.com/posts/mysorbet_exciting-news-were-onboarding-new-activity-7239256540170379264-TKz1'
+      );
     });
   });
 
   describe('Youtube', () => {
-    // Support video links
     it('correctly parses YouTube link', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://www.youtube.com/watch?v=myYU_Vujf0A')
-      ).toBe('Youtube');
-    });
-
-    // And their short versions
-    it('correctly parses YouTube short link', () => {
-      expect(parseWidgetTypeFromUrl('https://youtu.be/myYU_Vujf0A')).toBe(
+      expectParseToReturn(
+        'https://www.youtube.com/watch?v=myYU_Vujf0A',
         'Youtube'
       );
     });
 
-    // No channels
-    it('throws an error for unsupported YouTube channel', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://www.youtube.com/@cutaiar')
-      ).toThrow('Youtube channels are not supported');
+    it('correctly parses YouTube short link', () => {
+      expectParseToReturn('https://youtu.be/myYU_Vujf0A', 'Youtube');
     });
 
-    // Even with more path segments
     it('throws an error for unsupported YouTube channel', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://www.youtube.com/@cutaiar/featured')
-      ).toThrow('Youtube channels are not supported');
+      expectParseToThrow('https://www.youtube.com/@cutaiar');
     });
 
-    // No shorts
+    it('throws an error for unsupported YouTube channel with more path segments', () => {
+      expectParseToThrow('https://www.youtube.com/@cutaiar/featured');
+    });
+
     it('throws an error for unsupported YouTube shorts', () => {
-      expect(() =>
-        parseWidgetTypeFromUrl('https://www.youtube.com/shorts/Zmx0Ou5TNJs')
-      ).toThrow('Youtube shorts are not supported');
+      expectParseToThrow('https://www.youtube.com/shorts/Zmx0Ou5TNJs');
     });
   });
 
   describe('Github', () => {
     it('correctly parses profile URL', () => {
-      expect(parseWidgetTypeFromUrl('https://github.com/cutaiar')).toBe(
-        'Github'
-      );
+      expectParseToReturn('https://github.com/cutaiar', 'Github');
     });
 
     it('correctly parses repository URL', () => {
-      expect(parseWidgetTypeFromUrl('https://github.com/username/repo')).toBe(
-        'Github'
-      );
+      expectParseToReturn('https://github.com/username/repo', 'Github');
     });
   });
 
   describe('Dribbble', () => {
     it('correctly parses Dribbble shot URL', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://dribbble.com/shots/1234567-title')
-      ).toBe('Dribbble');
+      expectParseToReturn(
+        'https://dribbble.com/shots/1234567-title',
+        'Dribbble'
+      );
     });
   });
 
   describe('Behance', () => {
     it('correctly parses Behance project URL', () => {
-      expect(
-        parseWidgetTypeFromUrl(
-          'https://www.behance.net/gallery/1234567/Project-Title'
-        )
-      ).toBe('Behance');
+      expectParseToReturn(
+        'https://www.behance.net/gallery/1234567/Project-Title',
+        'Behance'
+      );
     });
   });
 
   describe('Medium', () => {
     it('correctly parses Medium article URL', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://medium.com/@username/article-title')
-      ).toBe('Medium');
+      expectParseToReturn(
+        'https://medium.com/@username/article-title',
+        'Medium'
+      );
     });
   });
 
   describe('Figma', () => {
     it('correctly parses Figma link', () => {
-      expect(
-        parseWidgetTypeFromUrl('https://www.figma.com/file/1234567/Design-File')
-      ).toBe('Figma');
+      expectParseToReturn(
+        'https://www.figma.com/file/1234567/Design-File',
+        'Figma'
+      );
     });
   });
 
   describe('General Links', () => {
     it('correctly parses generic link', () => {
-      expect(parseWidgetTypeFromUrl('https://www.example.com')).toBe('Link');
+      expectParseToReturn('https://www.example.com', 'Link');
     });
   });
 
   it('throws an error for invalid URLs', () => {
-    expect(() => parseWidgetTypeFromUrl('invalid-url')).toThrow();
+    expectParseToThrow('invalid-url');
   });
 });
 
 describe('validateUrl', () => {
   it('returns true for valid URLs', () => {
-    expect(isValidUrl('https://www.example.com')).toBe(true);
-    expect(isValidUrl('https://example.com')).toBe(true);
-    expect(
-      isValidUrl('https://subdomain.example.co.uk/path?query=param#hash')
-    ).toBe(true);
+    expectUrlToBeValid('https://www.example.com');
+    expectUrlToBeValid('https://example.com');
+    expectUrlToBeValid('https://subdomain.example.co.uk/path?query=param#hash');
   });
 
-  it('returns true urls without a protocol', () => {
-    expect(isValidUrl('www.example.com')).toBe(true);
-    expect(isValidUrl('example.com')).toBe(true);
-    expect(isValidUrl('subdomain.example.co.uk/path?query=param#hash')).toBe(
-      true
-    );
+  it('returns true for urls without a protocol', () => {
+    expectUrlToBeValid('www.example.com');
+    expectUrlToBeValid('example.com');
+    expectUrlToBeValid('subdomain.example.co.uk/path?query=param#hash');
   });
 
   it('returns true for silly urls', () => {
-    expect(isValidUrl('a.b')).toBe(true);
-    expect(isValidUrl('a.b.c')).toBe(true);
-    expect(isValidUrl('a.b/nothing')).toBe(true);
+    expectUrlToBeValid('a.b');
+    expectUrlToBeValid('a.b.c');
+    expectUrlToBeValid('a.b/nothing');
   });
 
   it('returns true for URLs with IP addresses', () => {
-    expect(isValidUrl('http://192.168.0.1')).toBe(true);
-    expect(isValidUrl('https://8.8.8.8')).toBe(true);
+    expectUrlToBeValid('http://192.168.0.1');
+    expectUrlToBeValid('https://8.8.8.8');
   });
 
   it('returns true for URLs with ports', () => {
-    expect(isValidUrl('https://example.com:8080')).toBe(true);
+    expectUrlToBeValid('https://example.com:8080');
   });
 
   it('returns true for URLs with underscores in the domain', () => {
-    expect(isValidUrl('http://example_domain.com')).toBe(true);
+    expectUrlToBeValid('http://example_domain.com');
   });
 
   it('returns true for URLs with spaces and special characters', () => {
-    expect(isValidUrl('https://example. com')).toBe(true);
-    expect(isValidUrl('https://exam ple.com')).toBe(true);
-    expect(isValidUrl('https:// example.com')).toBe(true);
-    expect(isValidUrl('https://example!.com')).toBe(true);
+    expectUrlToBeValid('https://example. com');
+    expectUrlToBeValid('https://exam ple.com');
+    expectUrlToBeValid('https:// example.com');
+    expectUrlToBeValid('https://example!.com');
   });
 
   it('returns false for URLs without a TLD', () => {
-    expect(isValidUrl('https://example')).toBe(false);
-    expect(isValidUrl('http://localhost:3000')).toBe(false);
+    expectUrlToBeInvalid('https://example');
+    expectUrlToBeInvalid('http://localhost:3000');
+    expectUrlToBeInvalid('http://localhost');
   });
 
   it('returns false for invalid URLs', () => {
-    expect(isValidUrl('not a url')).toBe(false);
-    expect(isValidUrl('http://')).toBe(false);
-    expect(isValidUrl('https://')).toBe(false);
-    expect(isValidUrl('google')).toBe(false);
-    expect(isValidUrl('a.')).toBe(false);
-    expect(isValidUrl('.')).toBe(false);
+    expectUrlToBeInvalid('not a url');
+    expectUrlToBeInvalid('http://');
+    expectUrlToBeInvalid('https://');
+    expectUrlToBeInvalid('http://a');
+    expectUrlToBeInvalid('http://a.');
+    expectUrlToBeInvalid('google');
+    expectUrlToBeInvalid('a.');
+    expectUrlToBeInvalid('.');
   });
 
   it('returns false for urls with unsupported protocols', () => {
-    expect(isValidUrl('ftp://example.com')).toBe(false);
-    expect(isValidUrl('mailto:example@example.com')).toBe(false);
-    expect(isValidUrl('tel:1234567890')).toBe(false);
-    expect(isValidUrl('irc://irc.example.com')).toBe(false);
-    expect(isValidUrl('file://example.com')).toBe(false);
-    expect(isValidUrl('sftp://example.com')).toBe(false);
-    expect(isValidUrl('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==')).toBe(
-      false
-    );
-    expect(isValidUrl('ws://example.com')).toBe(false);
-    expect(isValidUrl('wss://example.com')).toBe(false);
-    expect(isValidUrl('magnet:?xt=urn:btih:example')).toBe(false);
+    expectUrlToBeInvalid('ftp://example.com');
+    expectUrlToBeInvalid('mailto:example@example.com');
+    expectUrlToBeInvalid('tel:1234567890');
+    expectUrlToBeInvalid('irc://irc.example.com');
+    expectUrlToBeInvalid('file://example.com');
+    expectUrlToBeInvalid('sftp://example.com');
+    expectUrlToBeInvalid('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==');
+    expectUrlToBeInvalid('ws://example.com');
+    expectUrlToBeInvalid('wss://example.com');
+    expectUrlToBeInvalid('magnet:?xt=urn:btih:example');
   });
 });
