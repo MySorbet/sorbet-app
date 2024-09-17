@@ -1,12 +1,13 @@
 'use client';
 
-import Providers from '@/app/providers';
-import { ReactNode } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
+import { ReactNode } from 'react';
 import { useEffect } from 'react';
 
-export const AppWrapper = ({ children }: { children: ReactNode }) => {
+import Providers from '@/app/providers';
+
+export const ClientProviders = ({ children }: { children: ReactNode }) => {
   const { ready, authenticated } = usePrivy();
   const router = useRouter();
 
