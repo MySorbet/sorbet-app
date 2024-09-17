@@ -161,17 +161,16 @@ export function isValidUrl(url: string) {
 /**
  * Normalizes a URL by parsing it and ensuring it's in a valid format.
  * Adds a protocol if it's missing. Returns undefined for invalid URLs.
+ *
+ * We use [ufo](https://github.com/unjs/ufo) to parse as opposed to `new URL` because it is more ergonomic.
  */
 export function normalizeUrl(url: string): string | undefined {
   const parsed = parseURL(url, 'https://');
 
   // Exclude "a."
-  const hostPartsLength = parsed.host?.split('.').filter(Boolean).length ?? 0;
+  const hasTLD = (parsed.host?.split('.').filter(Boolean).length ?? 0) >= 2;
 
-  if (
-    (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
-    hostPartsLength >= 2
-  ) {
+  if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && hasTLD) {
     return stringifyParsedURL(parsed);
   }
 

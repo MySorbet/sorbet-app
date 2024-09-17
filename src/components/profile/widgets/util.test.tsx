@@ -1,4 +1,4 @@
-import { parseWidgetTypeFromUrl, isValidUrl } from './util';
+import { isValidUrl, parseWidgetTypeFromUrl } from './util';
 
 describe('parseWidgetTypeFromUrl', () => {
   describe('Photo', () => {
@@ -314,6 +314,7 @@ describe('validateUrl', () => {
     expect(isValidUrl('https://')).toBe(false);
     expect(isValidUrl('google')).toBe(false);
     expect(isValidUrl('a.')).toBe(false);
+    expect(isValidUrl('.')).toBe(false);
   });
 
   it('returns false for urls with unsupported protocols', () => {
