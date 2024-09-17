@@ -1,4 +1,4 @@
-import { withoutTrailingSlash } from 'ufo';
+import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 
 import { WidgetType } from '@/types';
 
@@ -149,24 +149,34 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
   return 'Link';
 };
 
-/** We support all http and https */
-export function validateUrl(url: string) {
-  try {
-    const urlObj = new URL(url);
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-  } catch (err) {
-    try {
-      // Could have failed because of a missing protocol
-      // urls without a protocol are assumed to be https
-      if (!(url.startsWith('http://') || url.startsWith('https://'))) {
-        url = 'https://' + url;
-      }
-      const urlObj = new URL(url);
-      return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-    } catch {
-      return false;
-    }
+/**
+ * Validates a URL by normalizing it and checking if it's in a valid format.
+ * @param url The URL to validate
+ * @returns True if the URL is valid, false otherwise
+ */
+export function isValidUrl(url: string) {
+  return normalizeUrl(url) !== undefined;
+}
+
+/**
+ * Normalizes a URL by parsing it and ensuring it's in a valid format.
+ * Adds a protocol if it's missing. Returns undefined for invalid URLs.
+ */
+export function normalizeUrl(url: string): string | undefined {
+  const parsed = parseURL(url, 'https://');
+
+  // Exclude "a."
+  const hostPartsLength = parsed.host?.split('.').filter(Boolean).length ?? 0;
+
+  if (
+    (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+    hostPartsLength >= 2
+  ) {
+    return stringifyParsedURL(parsed);
   }
+
+  // invalid url
+  return undefined;
 }
 
 /**

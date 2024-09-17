@@ -5,8 +5,9 @@ import React, { useState } from 'react';
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
 import {
+  isValidUrl,
+  normalizeUrl,
   parseWidgetTypeFromUrl,
-  validateUrl,
 } from '@/components/profile/widgets';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,29 +41,34 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 
   const [disabled, setDisabled] = useState<boolean>(true);
 
-  // TODO: This still needs work
   const handleUrlSubmit = () => {
     if (loading) return;
 
-    if (!validateUrl(url)) {
-      setError('invalid');
-      return;
-    }
-
-    // Calling this here so that it throws an error to display
     try {
-      parseWidgetTypeFromUrl(url);
+      // This can only be triggered when the url is valid
+      // So this is just for safety
+      if (!isValidUrl(url)) {
+        throw new Error('Something is not right with the link you pasted');
+      }
+
+      // Normalize the URL and throw an error if it's invalid
+      const normalizedUrl = normalizeUrl(url);
+      if (!normalizedUrl) {
+        throw new Error('Invalid URL');
+      }
+
+      // Calling this here so that it throws an error to display
+      parseWidgetTypeFromUrl(normalizedUrl);
+      // If the above doesn't throw, we're good to add the url
+      addUrl(normalizedUrl);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Unexpected error');
+        console.error('unexpected error', error);
+        setError('Something went wrong');
       }
-      return;
     }
-
-    // If the above doesn't throw, we're good to add the url
-    addUrl(url);
   };
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +80,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         setError(undefined);
       }
 
-      setDisabled(currentUrl === '' || !validateUrl(currentUrl));
+      setDisabled(currentUrl === '' || !isValidUrl(currentUrl));
     }
   };
 
@@ -119,18 +125,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             }}
             title='Link not supported'
           >
-            {/* Default error */}
-            {error === 'invalid' ? (
-              <>
-                <p className='mt-2'>We only support the following links:</p>
-                <p className='font-semibold'>
-                  Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
-                  Medium, Substack, Twitter, GitHub
-                </p>
-              </>
-            ) : (
-              <p>{error}</p>
-            )}
+            <p>{error}</p>
           </InvalidAlert>
         </div>
       )}
@@ -191,12 +186,11 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             </PopoverTrigger>
             <PopoverContent>
               <p>
-                You can post a link from the following supported platforms and
-                click <b>Add</b>. The following platforms are supported:
+                Paste a link from the following platforms and click <b>Add</b>:
               </p>
               <p className='mt-2 font-semibold'>
-                Dribbble, Behance, Spotify, Instagram, Soundcloud, YouTube,
-                Medium, Substack
+                Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
+                Medium, Substack, Twitter, GitHub
               </p>
             </PopoverContent>
           </Popover>

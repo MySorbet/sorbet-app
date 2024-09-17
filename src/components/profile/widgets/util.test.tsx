@@ -1,4 +1,4 @@
-import { parseWidgetTypeFromUrl, validateUrl } from './util';
+import { parseWidgetTypeFromUrl, isValidUrl } from './util';
 
 describe('parseWidgetTypeFromUrl', () => {
   describe('Photo', () => {
@@ -262,20 +262,72 @@ describe('parseWidgetTypeFromUrl', () => {
 
 describe('validateUrl', () => {
   it('returns true for valid URLs', () => {
-    expect(validateUrl('https://www.example.com')).toBe(true);
-    expect(validateUrl('https://example.com')).toBe(true);
-    expect(validateUrl('http://localhost:3000')).toBe(true);
+    expect(isValidUrl('https://www.example.com')).toBe(true);
+    expect(isValidUrl('https://example.com')).toBe(true);
     expect(
-      validateUrl('https://subdomain.example.co.uk/path?query=param#hash')
+      isValidUrl('https://subdomain.example.co.uk/path?query=param#hash')
     ).toBe(true);
-    expect(validateUrl('example.com')).toBe(true);
-    expect(validateUrl('www.example.com')).toBe(true);
+  });
+
+  it('returns true urls without a protocol', () => {
+    expect(isValidUrl('www.example.com')).toBe(true);
+    expect(isValidUrl('example.com')).toBe(true);
+    expect(isValidUrl('subdomain.example.co.uk/path?query=param#hash')).toBe(
+      true
+    );
+  });
+
+  it('returns true for silly urls', () => {
+    expect(isValidUrl('a.b')).toBe(true);
+    expect(isValidUrl('a.b.c')).toBe(true);
+    expect(isValidUrl('a.b/nothing')).toBe(true);
+  });
+
+  it('returns true for URLs with IP addresses', () => {
+    expect(isValidUrl('http://192.168.0.1')).toBe(true);
+    expect(isValidUrl('https://8.8.8.8')).toBe(true);
+  });
+
+  it('returns true for URLs with ports', () => {
+    expect(isValidUrl('https://example.com:8080')).toBe(true);
+  });
+
+  it('returns true for URLs with underscores in the domain', () => {
+    expect(isValidUrl('http://example_domain.com')).toBe(true);
+  });
+
+  it('returns true for URLs with spaces and special characters', () => {
+    expect(isValidUrl('https://example. com')).toBe(true);
+    expect(isValidUrl('https://exam ple.com')).toBe(true);
+    expect(isValidUrl('https:// example.com')).toBe(true);
+    expect(isValidUrl('https://example!.com')).toBe(true);
+  });
+
+  it('returns false for URLs without a TLD', () => {
+    expect(isValidUrl('https://example')).toBe(false);
+    expect(isValidUrl('http://localhost:3000')).toBe(false);
   });
 
   it('returns false for invalid URLs', () => {
-    expect(validateUrl('not a url')).toBe(false);
-    expect(validateUrl('http://')).toBe(false);
-    expect(validateUrl('ftp://example.com')).toBe(false);
-    // expect(validateUrl('google')).toBe(false);
+    expect(isValidUrl('not a url')).toBe(false);
+    expect(isValidUrl('http://')).toBe(false);
+    expect(isValidUrl('https://')).toBe(false);
+    expect(isValidUrl('google')).toBe(false);
+    expect(isValidUrl('a.')).toBe(false);
+  });
+
+  it('returns false for urls with unsupported protocols', () => {
+    expect(isValidUrl('ftp://example.com')).toBe(false);
+    expect(isValidUrl('mailto:example@example.com')).toBe(false);
+    expect(isValidUrl('tel:1234567890')).toBe(false);
+    expect(isValidUrl('irc://irc.example.com')).toBe(false);
+    expect(isValidUrl('file://example.com')).toBe(false);
+    expect(isValidUrl('sftp://example.com')).toBe(false);
+    expect(isValidUrl('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==')).toBe(
+      false
+    );
+    expect(isValidUrl('ws://example.com')).toBe(false);
+    expect(isValidUrl('wss://example.com')).toBe(false);
+    expect(isValidUrl('magnet:?xt=urn:btih:example')).toBe(false);
   });
 });
