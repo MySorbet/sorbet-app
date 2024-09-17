@@ -129,14 +129,11 @@ export type WidgetType =
   | 'TwitterProfile'
   | 'LinkedInProfile'
   | 'Youtube'
-
-  // Supported via type catchall
   | 'Github'
   | 'Dribbble'
   | 'Behance'
   | 'Medium'
-  | 'Figma'
-
+  | 'Figma' // Currently unsupported
   // Catchall if nothing else matches
   | 'Link';
 

@@ -196,44 +196,73 @@ describe('parseWidgetTypeFromUrl', () => {
       expectParseToReturn('https://github.com/cutaiar', 'Github');
     });
 
-    it('correctly parses repository URL', () => {
-      expectParseToReturn('https://github.com/username/repo', 'Github');
+    it('correctly parses organization URL', () => {
+      expectParseToReturn('https://github.com/MySorbet', 'Github');
+    });
+
+    it('correctly parses repo URL', () => {
+      expectParseToReturn('https://github.com/MySorbet/sorbet-app', 'Github');
+    });
+
+    it('correctly parses repo URL with file', () => {
+      expectParseToReturn(
+        'https://github.com/MySorbet/sorbet-app/blob/main/README.md',
+        'Github'
+      );
     });
   });
 
   describe('Dribbble', () => {
     it('correctly parses Dribbble shot URL', () => {
       expectParseToReturn(
-        'https://dribbble.com/shots/1234567-title',
+        'https://dribbble.com/shots/24550798-A-Grainy-Gradient',
         'Dribbble'
       );
+    });
+
+    it('throws an error for unsupported Dribbble profile URL', () => {
+      expectParseToThrow('https://dribbble.com/cutaiar');
     });
   });
 
   describe('Behance', () => {
     it('correctly parses Behance project URL', () => {
       expectParseToReturn(
-        'https://www.behance.net/gallery/1234567/Project-Title',
+        'https://www.behance.net/gallery/208139325/A-Grainy-Gradient',
         'Behance'
       );
+    });
+    it('correctly parses Behance profile URL', () => {
+      expectParseToReturn('https://www.behance.net/dilloncutaiar', 'Behance');
     });
   });
 
   describe('Medium', () => {
     it('correctly parses Medium article URL', () => {
       expectParseToReturn(
-        'https://medium.com/@username/article-title',
+        'https://medium.com/@mysorbet/client-compatibility-check-spotting-bad-clients-and-finding-the-best-ones-c49ac047ad05',
         'Medium'
       );
+    });
+    it('correctly parses Medium profile URL', () => {
+      expectParseToReturn('https://medium.com/@mysorbet', 'Medium');
     });
   });
 
   describe('Figma', () => {
-    it('correctly parses Figma link', () => {
-      expectParseToReturn(
-        'https://www.figma.com/file/1234567/Design-File',
-        'Figma'
+    it('correctly parses Figma file link (currently unsupported)', () => {
+      // TODO: Uncomment when Figma is supported
+      // expectParseToReturn(
+      //   'https://www.figma.com/design/j8hO0Ewoyi13gZIHcboR1Q/Sorbet-App?node-id=2182-6196&node-type=canvas&t=1VYq4J9BkUzLNVtm-0',
+      //   'Figma'
+      // );
+      expectParseToThrow(
+        'https://www.figma.com/design/j8hO0Ewoyi13gZIHcboR1Q/Sorbet-App?node-id=2182-6196&node-type=canvas&t=1VYq4J9BkUzLNVtm-0'
       );
+    });
+
+    it('throws an error for unsupported Figma URL', () => {
+      expectParseToThrow('https://www.figma.com/@cutaiar');
     });
   });
 

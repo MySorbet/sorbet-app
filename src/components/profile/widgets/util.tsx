@@ -140,10 +140,38 @@ export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
     return 'Youtube';
   }
 
-  // The rest of the platforms are supported by manipulating the string
-  // TODO: Expand these to validate platform details
-  if (['github', 'dribbble', 'behance', 'medium', 'figma'].includes(platform)) {
-    return (platform.charAt(0).toUpperCase() + platform.slice(1)) as WidgetType;
+  // Github profiles, orgs, repos, files, etc.
+  if (platform === 'github') {
+    return 'Github';
+  }
+
+  // Only dribbble shots
+  if (platform === 'dribbble') {
+    if (pathname.includes('/shots/')) {
+      return 'Dribbble';
+    }
+    throw new Error('Only Dribbble shots are supported');
+  }
+
+  // Behance galleries and profiles
+  if (platform === 'behance') {
+    return 'Behance';
+  }
+
+  // Medium articles and profiles
+  if (platform === 'medium') {
+    return 'Medium';
+  }
+
+  // Figma design files only
+  if (platform === 'figma') {
+    if (pathname.includes('/design/')) {
+      throw new Error('Figma is not yet supported');
+      // return 'Figma'; // TODO: Uncomment when Figma is supported
+    }
+    throw new Error('Figma is not yet supported');
+    // TODO: Uncomment when Figma is supported
+    // throw new Error('Only Figma design files are supported');
   }
 
   // If you get here, it's not a platform we explicitly support
