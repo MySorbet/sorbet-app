@@ -27,7 +27,7 @@ export default async function Image() {
         {/* https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image#using-external-data */}
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore Next.js docs say to pass an array buffer to the 'src' prop */}
-        <img src={logoSrc} height='100' alt='Sorbet' />
+        <img src={logoSrc} alt='Sorbet' />
       </div>
     )
   );

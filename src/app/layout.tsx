@@ -5,7 +5,15 @@ import Providers from '@/app/providers';
 
 import Head from './head';
 
+/** Docs on metadata object options: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields */
 export const metadata = {
+  metadataBase: new URL('https://www.mysorbet.io'),
+  title: {
+    default: 'Sorbet | The All-in One Payment Experience for Freelancers',
+    template: 'Sorbet | %s',
+  },
+  description:
+    'Unlock your global creative potential with Sorbet. A secure and trustworthy tool here to support you throughout your freelancing journey.',
   alternates: {
     canonical: '/',
     languages: {
