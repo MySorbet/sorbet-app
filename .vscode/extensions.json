@@ -1,10 +1,10 @@
 {
   "recommendations": [
-    // Tailwind CSS Intellisense
-    "bradlc.vscode-tailwindcss",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "aaron-bond.better-comments",
-    "meouwu.css-var-color-decorator"
+    "bradlc.vscode-tailwindcss", // Tailwind CSS Intellisense
+    "esbenp.prettier-vscode", // Formatter
+    "dbaeumer.vscode-eslint", // Linter
+    "aaron-bond.better-comments", // Comment highlighting
+    "meouwu.css-var-color-decorator", // CSS var highlighting
+    "orta.vscode-jest" // Test runner
   ]
 }

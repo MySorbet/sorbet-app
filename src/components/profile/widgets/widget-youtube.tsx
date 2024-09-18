@@ -12,9 +12,6 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
   content,
   size,
 }) => {
-  useEffect(() => {
-    console.log(size.toString());
-  }, [size]);
 
   let widgetLayout;
 

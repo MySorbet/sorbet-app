@@ -41,7 +41,7 @@ export const CreditCardForm = () => {
 
   return (
     <>
-      <div className='shadow-[0px_10px_30px_0px_#00000014] credit-card-form bg-white rounded-3xl px-4 py-8 lg:p-12 flex flex-col gap-8'>
+      <div className='credit-card-form flex flex-col gap-8 rounded-3xl bg-white px-4 py-8 shadow-[0px_10px_30px_0px_#00000014] lg:p-12'>
         <div className=''>
           <Cards
             number={cardData.cardNumber}
@@ -58,9 +58,11 @@ export const CreditCardForm = () => {
           } hover:brightness-125`}
           onClick={() => setIsCardAdded(true)}
           variant={cardData.cardNumber ? 'outline' : 'default'}
+          disabled
         >
-          {cardData.cardNumber ? <Edit size={18} /> : <Plus size={18} />}{' '}
-          {cardData.cardNumber ? 'Edit Card' : 'Add Card'}
+          {/* {cardData.cardNumber ? <Edit size={18} /> : <Plus size={18} />}{' '}
+          {cardData.cardNumber ? 'Edit Card' : 'Add Card'} */}
+          Coming soon
         </Button>
       </div>
 
