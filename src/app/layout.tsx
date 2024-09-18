@@ -11,7 +11,6 @@ import Head from './head';
 
 /** Docs on metadata object options: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields */
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.mysorbet.io'),
   title: {
     default: 'Sorbet | The All-in One Payment Experience for Freelancers',
     template: 'Sorbet | %s',
