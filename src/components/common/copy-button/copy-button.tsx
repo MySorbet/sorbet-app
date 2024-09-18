@@ -34,14 +34,14 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
       {isCopied ? (
         <CheckCircle
           className={cn(
-            'animate-in zoom-in-0 size-4 p-[.125rem] text-green-500',
+            'animate-in zoom-in-0 size-3 p-0 text-green-500',
             checkIconClassName
           )}
         />
       ) : (
         <Copy06
           className={cn(
-            'animate-in zoom-in-0 text-muted-foreground size-4 p-[.125rem]',
+            'animate-in zoom-in-0 text-muted-foreground size-3 p-0',
             copyIconClassName
           )}
         />

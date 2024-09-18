@@ -149,9 +149,9 @@ const Balances: React.FC = () => {
           <Image
             src='/svg/usdc.svg'
             alt='USDC'
-            width={20}
-            height={20}
-            className='size-5'
+            width={18}
+            height={18}
+            className='size-[1.125rem]' // 18px
           />
 
           {loading ? <Skeleton className='h-4 w-24' /> : `${usdcBalance} USDC`}
@@ -160,9 +160,9 @@ const Balances: React.FC = () => {
           <Image
             src='/svg/ethereum.svg'
             alt='ETH'
-            width={20}
-            height={20}
-            className='size-5'
+            width={18}
+            height={18}
+            className='size-[1.125rem]' // 18px
           />
           {loading ? <Skeleton className='h-4 w-24' /> : `${ethBalance} ETH`}
         </div>
