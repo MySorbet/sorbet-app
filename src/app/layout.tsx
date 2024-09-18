@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html className='size-full'>
-      {/* <Head /> */}
+      <Head />
       <body className='size-full bg-[#F2F3F7]'>
         <ClientProviders>{children}</ClientProviders>
       </body>
