@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: `Sorbet | Profile`,
+  title: `Profile`,
 };
 
 export default function ClientLayout({ children }: { children: ReactNode }) {

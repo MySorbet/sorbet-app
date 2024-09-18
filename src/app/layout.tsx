@@ -1,17 +1,31 @@
-'use client';
-
 import '@/styles/colors.css';
 import '@/styles/globals.css';
 
-import { usePrivy } from '@privy-io/react-auth';
+import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
-import Providers from '@/app/providers';
+import { ClientProviders } from '@/app/client-providers';
 import { cn } from '@/lib/utils';
 
 import Head from './head';
+
+/** Docs on metadata object options: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields */
+export const metadata: Metadata = {
+  metadataBase: new URL('https://www.mysorbet.io'),
+  title: {
+    default: 'Sorbet | The All-in One Payment Experience for Freelancers',
+    template: 'Sorbet | %s',
+  },
+  description:
+    'Unlock your global creative potential with Sorbet. A secure and trustworthy tool here to support you throughout your freelancing journey.',
+  keywords: [
+    'social network',
+    'BASE blockchain',
+    'collaboration',
+    'creators',
+    'ai',
+  ],
+};
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,22 +37,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { ready, authenticated } = usePrivy();
-  const router = useRouter();
-
-  // Redirect to signin if not authenticated. Since this is on Root Layout, this will apply for all pages.
-  // TODO: Revisit auth strategy and how this plays with Splash, Authenticated wrapper, and useAuth
-  useEffect(() => {
-    if (ready && !authenticated) {
-      router.push('/signin');
-    }
-  }, [ready, authenticated, router]);
-
   return (
     <html className={cn('size-full', inter.className)}>
       <Head />
       <body className='size-full bg-[#F2F3F7]'>
-        <Providers>{children}</Providers>
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );
