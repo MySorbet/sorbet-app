@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { ImageOverlay } from '@/components/profile/widgets';
-import { cn } from '@/lib/utils';
 import { PhotoWidgetContentType, WidgetSize } from '@/types';
 
 interface PhotoWidgetType {
@@ -9,16 +8,13 @@ interface PhotoWidgetType {
   size: WidgetSize;
 }
 
-export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content, size }) => {
+export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content }) => {
   return (
     <div className='relative h-full overflow-hidden rounded-3xl'>
       <img
         src={content.image}
         alt='Photo content'
-        className={cn(
-          'relative h-full w-full object-cover',
-          size === 'C' || (size === 'D' && 'object-contain')
-        )}
+        className='relative h-full w-full object-cover'
       />
       <ImageOverlay />
     </div>
