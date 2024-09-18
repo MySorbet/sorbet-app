@@ -11,7 +11,7 @@ export const runtime = 'edge';
 
 export default async function Image() {
   const logoSrc = await fetch(
-    new URL('./opengraph-image.png', import.meta.url)
+    new URL('./og-image.png', import.meta.url)
   ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
