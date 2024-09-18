@@ -1,5 +1,5 @@
 export { ConfirmDialog } from './confirm-dialog';
-export { CopyButton } from './CopyButton';
+export * from './copy-button/copy-button';
 export { Loading } from './loading/Loading';
 export { PageTitle } from './page-title';
 export { Spinner } from './spinner';
