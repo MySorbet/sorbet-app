@@ -34,6 +34,11 @@ const Step2 = () => {
             onChange={(e) => setBio(e.target.value)}
             defaultValue={userData.bio}
           />
+          {bio.length > 100 ? (
+            <p className='mt-1 text-xs text-red-500'>Max of 100 characters</p>
+          ) : (
+            <p className='mt-1 text-xs text-[#344054]'>{bio.length}/100</p>
+          )}
         </div>
         <div className='flex gap-3'>
           <Button
@@ -45,6 +50,7 @@ const Step2 = () => {
           <Button
             className='w-full border border-[#7F56D9] bg-[#573DF5] text-white shadow-sm shadow-[#1018280D]'
             onClick={handleNext}
+            disabled={bio.length > 100}
           >
             Next
           </Button>
