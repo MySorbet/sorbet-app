@@ -12,9 +12,6 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   content,
   size,
 }) => {
-  useEffect(() => {
-    console.log(size.toString());
-  }, [size]);
 
   let widgetLayout;
 

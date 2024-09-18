@@ -124,25 +124,18 @@ export type WidgetType =
   | 'SpotifySong'
   | 'SpotifyAlbum'
   | 'SoundcloudSong'
-  | 'InstagramPost'
+  | 'InstagramPost' // Currently unsupported
   | 'InstagramProfile'
   | 'TwitterProfile'
   | 'LinkedInProfile'
-  | 'Link'
-
-  // Supported via type catchall
   | 'Youtube'
   | 'Github'
   | 'Dribbble'
   | 'Behance'
   | 'Medium'
-  | 'Figma'
-
-  // Not yet supported
-  | 'Twitter'
-  | 'Nfts'
-  | 'PhotoGallery'
-  | 'Text';
+  | 'Figma' // Currently unsupported
+  // Catchall if nothing else matches
+  | 'Link';
 
 export type WidgetSize = 'A' | 'B' | 'C' | 'D';
 

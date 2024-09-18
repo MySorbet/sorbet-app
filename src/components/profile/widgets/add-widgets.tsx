@@ -1,9 +1,15 @@
-import { CircleHelp, ImagePlus, Link } from 'lucide-react';
+import { HelpCircle, Link03 } from '@untitled-ui/icons-react';
+import { ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
 import { Spinner } from '@/components/common';
 import { InvalidAlert } from '@/components/profile';
-import { validateUrl } from '@/components/profile/widgets';
+import {
+  isValidUrl,
+  normalizeUrl,
+  parseWidgetTypeFromUrl,
+} from '@/components/profile/widgets';
+import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
@@ -30,34 +36,56 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
-  const [error, showError] = useState<boolean>(false);
-  const [errorInvalidImage, showErrorInvalidImage] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+  const [errorInvalidImage, showErrorInvalidImage] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
   const handleUrlSubmit = () => {
-    if (!loading) {
-      try {
-        const isValid: boolean = validateUrl(url);
-        if (!isValid) {
-          showError(true);
-          return;
-        }
+    if (loading) return;
 
-        addUrl(url);
-      } catch (error) {
-        showError(true);
+    try {
+      // This can only be triggered when the url is valid
+      // So this is just for safety
+      if (!isValidUrl(url)) {
+        throw new Error('Something is not right with the link');
+      }
+
+      // Normalize the URL and throw an error if it's invalid
+      // Again, since isValidUrl is true, this should never happen, but just in case
+      const normalizedUrl = normalizeUrl(url);
+      if (!normalizedUrl) {
+        throw new Error('Something is not right with the link');
+      }
+
+      // Parse the url here so that it throws an error to display if it is unsupported
+      parseWidgetTypeFromUrl(normalizedUrl);
+      // If the above doesn't throw, we're good to add the url
+      addUrl(normalizedUrl);
+    } catch (error) {
+      if (error instanceof Error) {
+        // This is an expected error so display it to the user
+        setError(error.message);
+      } else {
+        // This is an unexpected error so log it and display a generic error to the user
+        console.error('unexpected error', error);
+        setError('Something went wrong');
       }
     }
   };
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!loading) {
-      const currentUrl = event.target.value;
-      setUrl(currentUrl);
+    if (loading) return;
 
-      if (error && currentUrl === '') {
-        showError(false);
-      }
+    const currentUrl = event.target.value;
+    setUrl(currentUrl);
+
+    // Clear the error if the user deletes the url
+    if (error && !currentUrl) {
+      setError(undefined);
     }
+
+    // Can't add an empty or invalid url
+    setDisabled(!currentUrl || !isValidUrl(currentUrl));
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,24 +109,27 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
     }
   };
 
-  const panelClass = loading ? 'opacity-70 pointer-events-none' : '';
+  const loadingClasses = 'opacity-90 pointer-events-none';
 
   return (
-    <div className={`isolate hidden md:block lg:w-[480px] ${panelClass}`}>
+    <div
+      className={cn(
+        'isolate hidden max-w-96 md:block',
+        loading && loadingClasses
+      )}
+    >
       {error && (
         <div className='animate-in slide-in-from-bottom-8 z-0 mb-2'>
           <InvalidAlert
             handleAlertVisible={(status: boolean) => {
-              showError(status);
-              setUrl('');
+              if (!status) {
+                setError(undefined);
+                setUrl('');
+              }
             }}
             title='Link not supported'
           >
-            <p className='mt-2'>We only support the following links:</p>
-            <p className='font-semibold'>
-              Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube, Medium,
-              Substack, Twitter, GitHub
-            </p>
+            <p>{error}</p>
           </InvalidAlert>
         </div>
       )}
@@ -116,18 +147,21 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           </InvalidAlert>
         </div>
       )}
+
       <div
-        className={`z-10 flex w-full flex-row gap-2 rounded-2xl bg-white p-2 drop-shadow-xl lg:gap-4 lg:p-4 ${panelClass}`}
+        className={cn(
+          'z-10 flex w-full flex-row gap-4 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
+          loading && loadingClasses
+        )}
       >
         <div
           className={cn(
-            'flex flex-grow items-center rounded-2xl border-2 px-2 py-1 lg:px-3 lg:py-2',
+            'flex flex-grow items-center rounded-lg border-2 px-3 py-2',
             error ? 'border-red-500' : 'border-gray-300'
           )}
         >
-          <div>
-            <Link className='mr-2' size={22} />
-          </div>
+          <Link03 className='text-muted-foreground mr-2 size-5' />
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -143,40 +177,38 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               value={url}
               disabled={loading}
             />
-            <button
+            <Button
               type='submit'
-              className='flex-none cursor-pointer rounded-lg bg-[#573DF5] px-4 py-1 text-xs text-white lg:text-sm'
-              disabled={loading}
+              className='bg-sorbet h-fit px-3 py-1'
+              disabled={loading || disabled}
             >
               {loading ? <Spinner size='small' /> : <span>Add</span>}
-            </button>
+            </Button>
           </form>
-          <div className='ml-2 cursor-pointer text-gray-500'>
-            <Popover>
-              <PopoverTrigger asChild>
-                <CircleHelp size={20} />
-              </PopoverTrigger>
-              <PopoverContent>
-                <p>
-                  You can post a link from the following supported platforms and
-                  click <b>Add</b>. The following platforms are supported:
-                </p>
-                <p className='mt-2 font-semibold'>
-                  Dribbble, Behance, Spotify, Instagram, Soundcloud, YouTube,
-                  Medium, Substack
-                </p>
-              </PopoverContent>
-            </Popover>
-          </div>
+          <Popover>
+            <PopoverTrigger>
+              <HelpCircle className='ml-2 size-4 cursor-pointer' />
+            </PopoverTrigger>
+            <PopoverContent>
+              <p>
+                Paste a link from the following platforms and click <b>Add</b>:
+              </p>
+              <p className='mt-2 font-semibold'>
+                Dribble, Behance, Spotify, Instagram, Soundcloud, Youtube,
+                Medium, Substack, Twitter, GitHub
+              </p>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <label
-                className={`hover:text-sorbet align-center flex cursor-pointer items-center justify-center ${panelClass} ${
-                  loading ? 'opacity-50' : ''
-                }`}
+                className={cn(
+                  'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
+                  loading && loadingClasses
+                )}
               >
                 <input
                   type='file'
@@ -185,7 +217,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                   disabled={loading}
                   accept='image/*'
                 />
-                <ImagePlus size={24} />
+                <ImagePlus size={20} />
               </label>
             </TooltipTrigger>
             <TooltipContent>Upload custom image as widget</TooltipContent>
