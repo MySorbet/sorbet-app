@@ -1,6 +1,7 @@
-import { ImageOverlay } from '@/components/profile/widgets';
-import { WidgetIcon } from '@/components/profile/widgets';
 import { InstagramWidgetContentType, WidgetSize } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetIcon } from './widget-icon';
 
 interface InstagramWidgetType {
   content: InstagramWidgetContentType;

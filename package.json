@@ -22,7 +22,10 @@
     "docker:start:dev": "docker compose -f docker/development/compose.yml up -d",
     "docker:stop:dev": "docker compose -f docker/development/compose.yml down",
     "env": "gcloud secrets versions access latest --secret=sorbet-app-env-local --out-file=./.env && echo 'Local .env file updated successfully'",
-    "env:push": "gcloud secrets versions add sorbet-app-env-local --data-file=./.env && gcloud secrets versions list sorbet-app-env-local --format='value(name)' | tail -n +2 | xargs -I {} gcloud secrets versions disable {} --secret=sorbet-app-env-local"
+    "env:push": "gcloud secrets versions add sorbet-app-env-local --data-file=./.env && gcloud secrets versions list sorbet-app-env-local --format='value(name)' | tail -n +2 | xargs -I {} gcloud secrets versions disable {} --secret=sorbet-app-env-local",
+    "storybook": "storybook dev -p 6006",
+    "sb": "yarn storybook",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
@@ -133,6 +136,11 @@
   "devDependencies": {
     "@commitlint/cli": "^16.3.0",
     "@commitlint/config-conventional": "^16.2.4",
+    "@storybook/addon-a11y": "^8.3.2",
+    "@storybook/addon-essentials": "^8.3.1",
+    "@storybook/addon-links": "^8.3.1",
+    "@storybook/nextjs": "^8.3.1",
+    "@storybook/react": "^8.3.1",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/forms": "^0.5.6",
     "@testing-library/jest-dom": "^5.17.0",
@@ -154,6 +162,7 @@
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "ieee754": "^1.2.1",
     "jest": "^27.5.1",
@@ -163,6 +172,7 @@
     "postcss": "^8.4.31",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.1.13",
+    "storybook": "^8.3.1",
     "tailwindcss": "^3.3.3",
     "tailwindcss-bg-patterns": "^0.3.0",
     "typescript": "^5.5.4"

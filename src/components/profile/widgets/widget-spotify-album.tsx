@@ -1,7 +1,10 @@
-import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { SpotifyWidgetContentType, WidgetSize } from '@/types';
 import { Play } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React from 'react';
+
+import { SpotifyWidgetContentType, WidgetSize } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetIcon } from './widget-icon';
 
 interface SpotifyWidgetType {
   content: SpotifyWidgetContentType;
@@ -12,7 +15,6 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   content,
   size,
 }) => {
-
   let widgetLayout;
 
   const localHeader = (
@@ -25,20 +27,20 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
   switch (size) {
     case 'A':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2 '>
+        <div className='flex h-full flex-col gap-2 '>
           <div className='flex justify-between'>
             <WidgetIcon type={'SpotifyAlbum'} className='m-0' />
-            <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
+            <button className='flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
               <Play size={16} />
               Play
             </button>
           </div>
           <div>{localHeader}</div>
-          <div className='flex-grow relative rounded-xl overflow-hidden'>
+          <div className='relative flex-grow overflow-hidden rounded-xl'>
             <img
               src={content.cover}
               alt='Spotify content'
-              className='absolute inset-0 w-full h-full object-cover'
+              className='absolute inset-0 h-full w-full object-cover'
             />
             <ImageOverlay />
           </div>
@@ -47,15 +49,15 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
       break;
     case 'B':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div className='flex justify-between'>
             <WidgetIcon type={'SpotifyAlbum'} className='m-0' />
           </div>
           <div>{localHeader}</div>
-          <div className='h-full w-full relative rounded-xl overflow-hidden mt-6 bg-white text-black'>
+          <div className='relative mt-6 h-full w-full overflow-hidden rounded-xl bg-white text-black'>
             <iframe
               title='Spotify'
-              className='SpotifyPlayer absolute w-full h-full'
+              className='SpotifyPlayer absolute h-full w-full'
               src={`https://embed.spotify.com/?uri=${content.url}&view=list&theme=light`}
               width='100%'
               height='450px'
@@ -68,24 +70,24 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
       break;
     case 'C':
       widgetLayout = (
-        <div className='h-full flex flex-row gap-2'>
-          <div className='w-1/5 h-full'>
-            <div className='flex flex-col gap-1 h-full'>
+        <div className='flex h-full flex-row gap-2'>
+          <div className='h-full w-1/5'>
+            <div className='flex h-full flex-col gap-1'>
               <WidgetIcon type={'SpotifyAlbum'} />
               <div>{localHeader}</div>
               <div className='mt-auto'>
-                <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg mt-auto'>
+                <button className='mt-auto flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
                   <Play size={16} />
                   Play
                 </button>
               </div>
             </div>
           </div>
-          <div className='relative rounded-xl overflow-hidden w-4/5 h-full'>
+          <div className='relative h-full w-4/5 overflow-hidden rounded-xl'>
             <img
               src={content.cover}
               alt='Spotify content'
-              className='absolute inset-0 w-full h-full object-cover'
+              className='absolute inset-0 h-full w-full object-cover'
             />
             <ImageOverlay />
           </div>
@@ -94,22 +96,22 @@ export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
       break;
     case 'D':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div className='flex justify-between'>
             <WidgetIcon type={'SpotifyAlbum'} className='m-0' />
-            <button className='cursor-pointer flex gap-1 items-center bg-[#573DF5] text-white px-4 text-sm py-1 rounded-lg'>
+            <button className='flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
               <Play size={16} />
               Play
             </button>
           </div>
           <div>{localHeader}</div>
           <div
-            className={`h-full w-full relative rounded-xl overflow-hidden mt-6`}
+            className={`relative mt-6 h-full w-full overflow-hidden rounded-xl`}
           >
             <img
               src={content.cover}
               alt='Spotify content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
               style={{ objectFit: 'cover' }}
             />
             <ImageOverlay />
