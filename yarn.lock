@@ -6555,15 +6555,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-a11y@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "@storybook/addon-a11y@npm:8.3.2"
+"@storybook/addon-a11y@npm:8.3.1":
+  version: 8.3.1
+  resolution: "@storybook/addon-a11y@npm:8.3.1"
   dependencies:
-    "@storybook/addon-highlight": "npm:8.3.2"
+    "@storybook/addon-highlight": "npm:8.3.1"
     axe-core: "npm:^4.2.0"
   peerDependencies:
-    storybook: ^8.3.2
-  checksum: 10c0/3cb021fb435165bd028a88bae6674e7c3c46934cf219e503f6583cd5612078560e7f07847acca8339ab232e5de85aea911be32f6ae9957a7ea0de097981a6e56
+    storybook: ^8.3.1
+  checksum: 10c0/f089f882dde992231f005ede08282dad5210d43fde852c37c90f50739e954879147fb73c81c111fb401356941caa896e75d9873797b5b7b9f839faf88bf911de
   languageName: node
   linkType: hard
 
@@ -6659,17 +6659,6 @@ __metadata:
   peerDependencies:
     storybook: ^8.3.1
   checksum: 10c0/9911024dc5324374b08ab4482a6dda25b89619c89546884d66546e3af046c714bdf178727322cdd64cbfaf02744db2d772a87617e6b2ef861bf24ff3d7faabfe
-  languageName: node
-  linkType: hard
-
-"@storybook/addon-highlight@npm:8.3.2":
-  version: 8.3.2
-  resolution: "@storybook/addon-highlight@npm:8.3.2"
-  dependencies:
-    "@storybook/global": "npm:^5.0.0"
-  peerDependencies:
-    storybook: ^8.3.2
-  checksum: 10c0/4439a2c51da41af9df4918f7ec3dba9e56cabc0d99bad7d9ebd776e12c5673a300324873c5a49d65428ed867ffbc909f7b5bc0df2489dad881047720e9a2619d
   languageName: node
   linkType: hard
 
@@ -19741,7 +19730,7 @@ __metadata:
     "@react-google-maps/api": "npm:^2.19.2"
     "@reduxjs/toolkit": "npm:^1.9.7"
     "@sendbird/chat": "npm:^4.13.1"
-    "@storybook/addon-a11y": "npm:^8.3.2"
+    "@storybook/addon-a11y": "npm:8.3.1"
     "@storybook/addon-essentials": "npm:^8.3.1"
     "@storybook/addon-links": "npm:^8.3.1"
     "@storybook/nextjs": "npm:^8.3.1"
