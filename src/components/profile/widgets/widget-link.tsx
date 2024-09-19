@@ -1,9 +1,11 @@
 import { Link } from 'lucide-react';
 import React from 'react';
 
-import { ImageOverlay, WidgetHeader } from '@/components/profile/widgets/';
 import { cn } from '@/lib/utils';
 import { LinkWidgetContentType, WidgetSize } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetHeader } from './widget-header';
 
 interface LinkWidgetProps {
   /** The content from link for the widget to render */

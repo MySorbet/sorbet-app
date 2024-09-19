@@ -1,5 +1,6 @@
-import { cn } from '@/lib/utils';
 import React from 'react';
+
+import { cn } from '@/lib/utils';
 
 export const WidgetHeader = React.forwardRef<
   HTMLDivElement,
@@ -7,7 +8,7 @@ export const WidgetHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('flex flex-row gap-2 justify-between', className)}
+    className={cn('flex flex-row justify-between gap-2', className)}
     {...props}
   />
 ));

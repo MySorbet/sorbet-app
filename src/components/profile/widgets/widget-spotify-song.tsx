@@ -1,7 +1,10 @@
-import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { SpotifyWidgetContentType, WidgetSize } from '@/types';
 import { Play } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React from 'react';
+
+import { SpotifyWidgetContentType, WidgetSize } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetIcon } from './widget-icon';
 
 interface SpotifyWidgetType {
   content: SpotifyWidgetContentType;

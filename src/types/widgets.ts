@@ -117,25 +117,26 @@ export interface LinkedInProfileWidgetContentType {
   profileImage: string;
 }
 
-export type WidgetType =
-  // Explicitly Supported
-  | 'Photo'
-  | 'Substack'
-  | 'SpotifySong'
-  | 'SpotifyAlbum'
-  | 'SoundcloudSong'
-  | 'InstagramPost' // Currently unsupported
-  | 'InstagramProfile'
-  | 'TwitterProfile'
-  | 'LinkedInProfile'
-  | 'Youtube'
-  | 'Github'
-  | 'Dribbble'
-  | 'Behance'
-  | 'Medium'
-  | 'Figma' // Currently unsupported
-  // Catchall if nothing else matches
-  | 'Link';
+export const WidgetTypes = [
+  'Photo',
+  'Substack',
+  'SpotifySong',
+  'SpotifyAlbum',
+  'SoundcloudSong',
+  'InstagramPost', // Currently unsupported
+  'InstagramProfile',
+  'TwitterProfile',
+  'LinkedInProfile',
+  'Youtube',
+  'Github',
+  'Dribbble',
+  'Behance',
+  'Medium',
+  'Figma', // Currently unsupported
+  'Link', // Catchall if nothing else matches
+] as const;
+
+export type WidgetType = (typeof WidgetTypes)[number];
 
 export type WidgetSize = 'A' | 'B' | 'C' | 'D';
 

@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { ImageOverlay } from '@/components/profile/widgets';
 import { PhotoWidgetContentType, WidgetSize } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
 
 interface PhotoWidgetType {
   content: PhotoWidgetContentType;
