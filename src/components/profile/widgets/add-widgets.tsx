@@ -21,7 +21,9 @@ import { InvalidAlert } from './invalid-alert';
 import { isValidUrl, normalizeUrl, parseWidgetTypeFromUrl } from './util';
 
 interface AddWidgetsProps {
-  addUrl: (url: string, image?: File | undefined) => void;
+  /** Callback for when a url is added. `image` is defined if adding an image  */
+  addUrl: (url: string, image?: File) => void;
+  /** Should the component be loading? */
   loading?: boolean;
 }
 
