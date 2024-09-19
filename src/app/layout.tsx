@@ -7,8 +7,6 @@ import { Inter } from 'next/font/google';
 import { ClientProviders } from '@/app/client-providers';
 import { cn } from '@/lib/utils';
 
-import Head from './head';
-
 /** Docs on metadata object options: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields */
 export const metadata: Metadata = {
   metadataBase: new URL('https://mysorbet.io'),
@@ -39,7 +37,6 @@ export default function RootLayout({
 }) {
   return (
     <html className={cn('size-full', inter.className)}>
-      <Head />
       <body className='size-full bg-[#F2F3F7]'>
         <ClientProviders>{children}</ClientProviders>
       </body>
