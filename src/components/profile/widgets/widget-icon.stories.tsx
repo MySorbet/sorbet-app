@@ -5,7 +5,7 @@ import { WidgetTypes } from '@/types';
 import { WidgetIcon } from './widget-icon';
 
 const meta: Meta<typeof WidgetIcon> = {
-  title: 'WidgetIcon',
+  title: 'Widgets/WidgetIcon',
   component: WidgetIcon,
   parameters: {
     layout: 'centered',

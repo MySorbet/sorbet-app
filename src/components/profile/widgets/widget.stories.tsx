@@ -2,52 +2,47 @@ import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { useRef } from 'react';
 
-import { WidgetSize } from '@/types';
+import { WidgetTypes } from '@/types';
 
 import { Widget } from './widget';
 
 const meta = {
-  title: 'Widget',
+  title: 'Widgets/Widget',
   component: Widget,
   parameters: {
     layout: 'centered',
   },
+  argTypes: {
+    type: {
+      control: {
+        type: 'select',
+        options: WidgetTypes,
+      },
+    },
+  },
   args: {
     handleResize: fn(),
     handleRemove: fn(),
+    identifier: 'identifier',
+    redirectUrl: 'https://mysorbet.xyz',
+  },
+  render: (args) => {
+    const ref = useRef(false);
+    return <Widget {...args} draggedRef={ref} />;
   },
 } satisfies Meta<typeof Widget>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default = {
-  render: () => {
-    const ref = useRef(false);
-    return (
-      <Widget
-        identifier='identifier'
-        type='Link'
-        w={1}
-        h={1}
-        content={{}}
-        loading={true}
-        initialSize='A'
-        redirectUrl='https://mysorbet.xyz'
-        draggedRef={ref}
-        showControls={true}
-        handleResize={function (
-          key: string,
-          w: number,
-          h: number,
-          size: WidgetSize
-        ): void {
-          throw new Error('Function not implemented.');
-        }}
-        handleRemove={function (key: string): void {
-          throw new Error('Function not implemented.');
-        }}
-      />
-    );
+export const Default: Story = {
+  args: {
+    // type: 'Link',
+    w: 1,
+    h: 1,
+    content: {},
+    loading: false,
+    initialSize: 'A',
+    showControls: true,
   },
 };
