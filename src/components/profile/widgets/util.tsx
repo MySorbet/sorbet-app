@@ -3,35 +3,6 @@ import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 import { WidgetType } from '@/types';
 
 /**
- * Maps widget type to social icon.
- *
- * @param widgetType - The type of the widget.
- * @returns The path to the social icon image to be used as `src`
- */
-export const getSocialIconForWidget = (widgetType: WidgetType): string => {
-  const iconMap: Record<WidgetType, string> = {
-    Photo: 'default.png',
-    Substack: 'substack.png',
-    SpotifySong: 'spotify.png',
-    SpotifyAlbum: 'spotify.png',
-    SoundcloudSong: 'soundCloud.png',
-    InstagramPost: 'instagram.png',
-    InstagramProfile: 'instagram.png',
-    TwitterProfile: 'twitter.png',
-    LinkedInProfile: 'linkedIn.png',
-    Youtube: 'youtube.png',
-    Github: 'github.png',
-    Dribbble: 'dribbble.png',
-    Behance: 'behance.png',
-    Medium: 'medium.png',
-    Figma: 'figma.png',
-    Link: 'default.png',
-  };
-
-  return `/images/social/${iconMap[widgetType]}`;
-};
-
-/**
  * Parses the WidgetType from a given URL
  * Make sure to call this with a normalized URL
  * @param url The url to parse

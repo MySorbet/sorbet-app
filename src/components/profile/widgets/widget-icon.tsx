@@ -3,8 +3,6 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { WidgetType } from '@/types';
 
-import { getSocialIconForWidget } from './util';
-
 /**
  * This type allows you to passthrough any prop that a Next `<Image/>` takes save for `src` which is handled by the `type` prop.
  */
@@ -36,4 +34,33 @@ export const WidgetIcon: React.FC<WidgetIconProps> = ({
       {...rest}
     />
   );
+};
+
+/**
+ * Maps widget type to social icon.
+ *
+ * @param widgetType - The type of the widget.
+ * @returns The path to the social icon image to be used as `src`
+ */
+export const getSocialIconForWidget = (widgetType: WidgetType): string => {
+  const iconMap: Record<WidgetType, string> = {
+    Photo: 'default.png',
+    Substack: 'substack.png',
+    SpotifySong: 'spotify.png',
+    SpotifyAlbum: 'spotify.png',
+    SoundcloudSong: 'soundCloud.png',
+    InstagramPost: 'instagram.png',
+    InstagramProfile: 'instagram.png',
+    TwitterProfile: 'twitter.png',
+    LinkedInProfile: 'linkedIn.png',
+    Youtube: 'youtube.png',
+    Github: 'github.png',
+    Dribbble: 'dribbble.png',
+    Behance: 'behance.png',
+    Medium: 'medium.png',
+    Figma: 'figma.png',
+    Link: 'default.png',
+  };
+
+  return `/images/social/${iconMap[widgetType]}`;
 };
