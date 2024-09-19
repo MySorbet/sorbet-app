@@ -5,10 +5,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
-import { NoWidgetsContent } from '@/components';
-import { AddWidgets } from '@/components/profile/widgets';
-import { DesktopOnlyAlert } from '@/components/profile/widgets';
-import { parseWidgetTypeFromUrl } from '@/components/profile/widgets';
+import { Spinner } from '@/components/common';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useDeleteWidget,
@@ -27,8 +24,11 @@ import {
   WidgetType,
 } from '@/types';
 
-import { Spinner } from '../../common';
+import { AddWidgets } from './add-widgets';
+import { DesktopOnlyAlert } from './desktop-only-alert';
+import { NoWidgetsContent } from './no-widgets-content';
 import styles from './react-grid-layout-custom.module.css';
+import { parseWidgetTypeFromUrl } from './util';
 import { Widget } from './widget';
 
 const ReactGridLayout = WidthProvider(RGL);

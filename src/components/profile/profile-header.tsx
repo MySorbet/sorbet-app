@@ -1,10 +1,11 @@
 import { MarkerPin03, Share06, User01 } from '@untitled-ui/icons-react';
 import React from 'react';
 
-import { ShareProfileDialog } from '@/components/profile/share/share-profile-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
+
+import { ShareProfileDialog } from './share/share-profile-dialog';
 
 interface ProfileHeaderProps {
   canEdit: boolean;

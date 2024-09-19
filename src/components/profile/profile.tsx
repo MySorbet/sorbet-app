@@ -1,12 +1,11 @@
 import { type FC, useState } from 'react';
 
-import {
-  ProfileEditModal,
-  ProfileHeader,
-  WidgetContainer,
-} from '@/components/profile';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
+
+import { ProfileEditModal } from './profile-edit-modal';
+import { ProfileHeader } from './profile-header';
+import { WidgetContainer } from './widgets/widget-container';
 
 export const Profile: FC<{
   user: User;

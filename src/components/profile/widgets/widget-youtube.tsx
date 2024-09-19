@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { ImageOverlay, WidgetIcon } from '@/components/profile/widgets';
 import { WidgetSize, YoutubeWidgetContentType } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetIcon } from './widget-icon';
 
 interface YouTubeWidgetType {
   content: YoutubeWidgetContentType;
@@ -12,7 +14,6 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
   content,
   size,
 }) => {
-
   let widgetLayout;
 
   const localHeader = (

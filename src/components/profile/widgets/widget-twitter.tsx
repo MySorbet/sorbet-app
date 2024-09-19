@@ -1,13 +1,13 @@
-import {
-  WidgetHeader,
-  WidgetIcon,
-  ImageOverlay,
-} from '@/components/profile/widgets/';
+import React from 'react';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TwitterWidgetContentType, WidgetSize } from '@/types';
-import React from 'react';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetHeader } from './widget-header';
+import { WidgetIcon } from './widget-icon';
 
 interface TwitterWidgetProps {
   /** The content from twitter for the widget to render */
@@ -59,7 +59,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             <FollowButton handle={handle} />
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
-          <div className='flex flex-row gap-3 justify-between h-full'>
+          <div className='flex h-full flex-row justify-between gap-3'>
             <Bio bio={bio} />
             <BannerImage src={bannerImage} className='w-2/3' />
           </div>
@@ -91,7 +91,7 @@ const WidgetLayout = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('h-full flex flex-col gap-3', className)}
+    className={cn('flex h-full flex-col gap-3', className)}
     {...props}
   />
 ));
@@ -101,7 +101,7 @@ const WidgetLayout = React.forwardRef<
  */
 const Handle: React.FC<{ handle: string; img: string }> = ({ handle, img }) => {
   return (
-    <div className='flex flex-row gap-1 items-center'>
+    <div className='flex flex-row items-center gap-1'>
       <Avatar className='size-5'>
         <AvatarImage src={img} alt={`@${handle}`} />
         <AvatarFallback>{handle.substring(0, 1)}</AvatarFallback>
@@ -123,14 +123,14 @@ const BannerImage: React.FC<{ src: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        `h-full w-full relative rounded-2xl overflow-hidden`,
+        `relative h-full w-full overflow-hidden rounded-2xl`,
         className
       )}
     >
       <img
         src={src}
         alt='Banner image from twitter profile'
-        className='w-full h-full object-cover'
+        className='h-full w-full object-cover'
       />
       <ImageOverlay />
     </div>
@@ -156,7 +156,7 @@ const FollowButton: React.FC<{ handle: string }> = ({ handle }) => {
       rel='noopener noreferrer'
       className={cn(
         buttonVariants({ variant: 'outline' }),
-        'rounded-full font-semibold text-sm px-3 py-1 h-fit'
+        'h-fit rounded-full px-3 py-1 text-sm font-semibold'
       )}
     >
       Follow

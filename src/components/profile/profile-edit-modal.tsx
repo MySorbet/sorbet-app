@@ -7,7 +7,6 @@ import { Controller, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LocationInput } from '@/components/profile';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -24,6 +23,8 @@ import {
   useUploadProfileImage,
 } from '@/hooks';
 import type { User } from '@/types';
+
+import { LocationInput } from './location-input';
 
 const schema = z.object({
   isImageUpdated: z.boolean(),
