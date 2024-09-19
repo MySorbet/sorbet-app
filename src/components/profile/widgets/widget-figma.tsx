@@ -1,6 +1,9 @@
-import { WidgetIcon, ImageOverlay } from '@/components/profile/widgets';
-import { FigmaWidgetContentType, WidgetSize } from '@/types';
 import React from 'react';
+
+import { FigmaWidgetContentType, WidgetSize } from '@/types';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetIcon } from './widget-icon';
 
 interface FigmaWidgetType {
   content: FigmaWidgetContentType;
@@ -12,7 +15,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
   switch (size) {
     case 'A':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-10'>
               <WidgetIcon type={'Figma'} />
@@ -22,11 +25,11 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
               <div className='text-xs text-gray-500'>{content.description}</div>
             </div>
           </div>
-          <div className='flex-grow relative rounded-xl overflow-hidden'>
+          <div className='relative flex-grow overflow-hidden rounded-xl'>
             <img
               src={content.image}
               alt='Figma content'
-              className='absolute inset-0 w-full h-full object-cover'
+              className='absolute inset-0 h-full w-full object-cover'
             />
             <ImageOverlay />
           </div>
@@ -35,7 +38,7 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
       break;
     case 'B':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <div>
             <WidgetIcon type={'Figma'} className='m-0' />
           </div>
@@ -43,11 +46,11 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className='h-full w-full relative rounded-xl overflow-hidden'>
+          <div className='relative h-full w-full overflow-hidden rounded-xl'>
             <img
               src={content.image}
               alt='Figma content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
             />
             <ImageOverlay />
           </div>
@@ -56,17 +59,17 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
       break;
     case 'C':
       widgetLayout = (
-        <div className='h-full flex flex-row gap-2'>
+        <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
             <WidgetIcon type={'Figma'} />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className={`relative rounded-xl overflow-hidden w-3/5`}>
+          <div className={`relative w-3/5 overflow-hidden rounded-xl`}>
             <img
               src={content.image}
               alt='Figma content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
               style={{ objectFit: 'cover' }}
             />
             <ImageOverlay />
@@ -76,17 +79,17 @@ export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
       break;
     case 'D':
       widgetLayout = (
-        <div className='h-full flex flex-col gap-2'>
+        <div className='flex h-full flex-col gap-2'>
           <WidgetIcon type={'Figma'} className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className={`h-full w-full relative rounded-xl overflow-hidden`}>
+          <div className={`relative h-full w-full overflow-hidden rounded-xl`}>
             <img
               src={content.image}
               alt='Figma content'
-              className='w-full h-full object-cover'
+              className='h-full w-full object-cover'
               style={{ objectFit: 'cover' }}
             />
             <ImageOverlay />

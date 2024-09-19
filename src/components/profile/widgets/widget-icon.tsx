@@ -1,7 +1,9 @@
-import { getSocialIconForWidget } from '@/components/profile/widgets';
+import Image from 'next/image';
+
 import { cn } from '@/lib/utils';
 import { WidgetType } from '@/types';
-import Image from 'next/image';
+
+import { getSocialIconForWidget } from './util';
 
 /**
  * This type allows you to passthrough any prop that a Next `<Image/>` takes save for `src` which is handled by the `type` prop.
@@ -26,7 +28,7 @@ export const WidgetIcon: React.FC<WidgetIconProps> = ({
 }) => {
   return (
     <Image
-      className={cn('size-[30px] mb-4', className)} // TODO: Get rid of bottom margin
+      className={cn('mb-4 size-[30px]', className)} // TODO: Get rid of bottom margin
       src={getSocialIconForWidget(type)}
       alt={alt ?? 'Icon for widget'}
       width={30}

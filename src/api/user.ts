@@ -48,20 +48,7 @@ export const getCurrentWalletAddressByUserId = async (userId: string) => {
   }
 };
 
-// OLD 👇
-
-// [POST] /api/auth/signup
-export const getUserFromUserId = async (userId: string) => {
-  try {
-    const res = await axios.get(`${API_URL}/user/getUserFromUserId/${userId}`);
-    return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get get user from userId: ${error.response.data.message}`
-    );
-  }
-};
-
+/** Delete a user's profile image */
 export const deleteProfileImageAsync = async (userId: string) => {
   try {
     const res = await axios.delete(
@@ -76,30 +63,20 @@ export const deleteProfileImageAsync = async (userId: string) => {
   }
 };
 
+/**
+ * Get a user from the db by their email
+ * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
+ */
 export const getUserByEmail = async (email: string) => {
   try {
-    const response = await axios.get(
-      `${API_URL}/users/getUserByEmail/${email}`
-    );
+    const response = await axios.get(`${API_URL}/users/email/${email}`);
     return response;
   } catch (error: any) {
     console.log(`Failed to get user by email: ${JSON.stringify(error)}`);
   }
 };
 
-export const getUsersBySearch = async (skills: string[], location: string) => {
-  const reqBody = { skills, location };
-
-  try {
-    const res = await axios.post(`${API_URL}/users/searchUsers`, reqBody);
-    return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get users by search: ${error.response.data.message}`
-    );
-  }
-};
-
+/** Update a user's profile */
 export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   try {
     const response = await axios.patch(
@@ -113,6 +90,10 @@ export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   }
 };
 
+/**
+ * Get a user's balances
+ * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
+ */
 export const getBalances = async (userId: string) => {
   try {
     const res = await axios.get(
@@ -125,6 +106,10 @@ export const getBalances = async (userId: string) => {
   }
 };
 
+/**
+ * Get a user's transaction overview
+ * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
+ */
 export const getOverview = async (last_days = 30) => {
   try {
     const res = await axios.get(
@@ -137,6 +122,10 @@ export const getOverview = async (last_days = 30) => {
   }
 };
 
+/**
+ * Get a user's transactions
+ * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
+ */
 export const getTransactions = async (
   page = 1,
   limit = 20,

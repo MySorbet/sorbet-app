@@ -1,7 +1,8 @@
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { AlertCircle } from 'lucide-react';
 import { FallbackProps } from 'react-error-boundary';
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 /**
  * A fallback component to be passed to `<ErrorBoundary/>` that is displayed when an error occurs in the widget.
@@ -14,7 +15,7 @@ export const WidgetErrorFallback: React.ComponentType<FallbackProps> = ({
   return (
     <Alert
       variant='destructive'
-      className='rounded-3xl w-full h-full drop-shadow-md bg-white'
+      className='h-full w-full rounded-3xl bg-white drop-shadow-md'
     >
       <AlertCircle className='h-4 w-4' />
       <AlertTitle>Whoops</AlertTitle>
