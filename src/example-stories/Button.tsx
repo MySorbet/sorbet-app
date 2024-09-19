@@ -1,6 +1,5 @@
 import React from 'react';
 import './button.css';
-import { Button as ShadButton } from '@/components/ui/button';
 
 export interface ButtonProps {
   /**
@@ -39,12 +38,11 @@ export const Button = ({
     ? 'storybook-button--primary'
     : 'storybook-button--secondary';
   return (
-    <ShadButton
+    <button
       type='button'
-      variant={'destructive'}
-      // className={['storybook-button', `storybook-button--${size}`, mode].join(
-      //   ' '
-      // )}
+      className={['storybook-button', `storybook-button--${size}`, mode].join(
+        ' '
+      )}
       {...props}
     >
       {label}
@@ -53,6 +51,6 @@ export const Button = ({
           background-color: ${backgroundColor};
         }
       `}</style>
-    </ShadButton>
+    </button>
   );
 };
