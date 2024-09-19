@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     'creators',
     'ai',
   ],
+  authors: [{ name: 'Sorbet' }],
 };
 
 const inter = Inter({
