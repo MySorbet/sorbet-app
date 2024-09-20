@@ -1,3 +1,4 @@
+import { useArgs } from '@storybook/client-api';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
@@ -16,8 +17,16 @@ const meta: Meta<typeof OnboardingDrawer> = {
 };
 
 export default meta;
-
 type Story = StoryObj<typeof OnboardingDrawer>;
 
-// TODO: How to make click off and skip affect the control?
-export const Default: Story = {};
+export const Default: Story = {
+  render: (args) => {
+    // This is some SB boiler plate to sync the control with drawer state
+    const [{ open }, updateArgs] = useArgs();
+    const handleClose = () => {
+      updateArgs({ open: false });
+    };
+
+    return <OnboardingDrawer {...args} open={open} onClose={handleClose} />;
+  },
+};

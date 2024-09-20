@@ -28,9 +28,11 @@ type FormSchema = z.infer<typeof formSchema>;
 
 interface OnboardingDrawerProps {
   /** Callback for when the form is submitted. Note: This can only be done with at least one input filled */
-  onSubmit: (values: FormSchema) => void;
+  onSubmit?: (values: FormSchema) => void;
   /** Is the drawer is open */
-  open: boolean;
+  open?: boolean;
+  /** Callback for when the drawer is closed */
+  onClose?: () => void;
 }
 
 /**
@@ -38,7 +40,11 @@ interface OnboardingDrawerProps {
  *
  * All of the entered handles are stored in the form state and submitted to the parent component.
  */
-export const OnboardingDrawer = ({ onSubmit, open }: OnboardingDrawerProps) => {
+export const OnboardingDrawer = ({
+  onSubmit,
+  open,
+  onClose,
+}: OnboardingDrawerProps) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,11 +64,11 @@ export const OnboardingDrawer = ({ onSubmit, open }: OnboardingDrawerProps) => {
   // TODO: Nail the scroll within the drawer (for large font sizes)
   // TODO: Forward all drawer props to the drawer?
   return (
-    <Drawer open={open}>
+    <Drawer open={open} onClose={onClose}>
       <DrawerContent>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={onSubmit ? form.handleSubmit(onSubmit) : undefined}
             className='mx-auto w-full max-w-xl px-4'
           >
             <DrawerHeader className='pb-2'>

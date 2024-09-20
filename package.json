@@ -139,6 +139,7 @@
     "@storybook/addon-a11y": "8.3.1",
     "@storybook/addon-essentials": "^8.3.1",
     "@storybook/addon-links": "^8.3.1",
+    "@storybook/client-api": "7.6.17",
     "@storybook/nextjs": "^8.3.1",
     "@storybook/react": "^8.3.1",
     "@svgr/webpack": "^8.1.0",
