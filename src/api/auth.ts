@@ -3,6 +3,7 @@ import axios from 'axios';
 import { env } from '@/lib/env';
 import { User } from '@/types';
 
+/** Create a new sorbet user with a privy id (after user signs up with privy) */
 export const signUpWithPrivyId = async ({ id }: { id: string }) => {
   try {
     const reqBody = { id };
@@ -23,6 +24,7 @@ export const signUpWithPrivyId = async ({ id }: { id: string }) => {
   }
 };
 
+/** Check if a handle is available */
 export const checkHandleIsAvailable = async (handle: string) => {
   try {
     const res = await axios.get<{ isUnique: boolean }>(
@@ -42,45 +44,7 @@ export const checkHandleIsAvailable = async (handle: string) => {
   }
 };
 
-// OLD 👇
-
-// [POST] /api/auth/signin
-export const signInWithWallet = async (address: string) => {
-  const reqBody = { address };
-  try {
-    const res = await axios.post(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signin/wallet`,
-      reqBody
-    );
-    return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to sign in with wallet: ${error.response.data.message}`
-    );
-  }
-};
-
-// [POST] /api/auth/signin
-export const signUpWithWallet = async (
-  address: string,
-  email: string | null,
-  phone: string | null
-) => {
-  const reqBody = { address, email, phone };
-
-  try {
-    const res = axios.post(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/wallet`,
-      reqBody
-    );
-    return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to sign up with wallet: ${error.response.data.message}`
-    );
-  }
-};
-
+/** Fetch user details */
 export const fetchUserDetails = async (token: string) => {
   const headers = { Authorization: `Bearer ${token}` };
   const reqHeader = { headers };
@@ -91,9 +55,13 @@ export const fetchUserDetails = async (token: string) => {
       reqHeader
     );
     return res;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get user details: ${error.response.data.message}`
-    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Failed to get user details: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(`Non-axios error: failed to get user details: ${error}`);
+    }
   }
 };
