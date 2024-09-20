@@ -91,13 +91,13 @@ export const OnboardingDrawer = ({ onSubmit, open }: OnboardingDrawerProps) => {
             </div>
 
             <DrawerFooter className='flex flex-row justify-between'>
-              <DrawerClose>
+              <DrawerClose asChild>
                 {/* We need type='button' to prevent the form from being submitted */}
                 <Button variant='outline' type='button'>
                   Skip
                 </Button>
               </DrawerClose>
-              <DrawerClose>
+              <DrawerClose asChild>
                 <Button
                   type='submit'
                   className='bg-sorbet w-fit'

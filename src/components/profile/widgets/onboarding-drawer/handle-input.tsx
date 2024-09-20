@@ -50,6 +50,7 @@ export const HandleInput = React.forwardRef<HTMLInputElement, HandleInputProps>(
             setShowClearButton(e.target.value.length > 0);
             onChange?.(e);
           }}
+          aria-label={`${type} username input`}
           {...props}
         />
         <div className='absolute left-2 top-1/2 -translate-y-1/2 transform'>
@@ -61,7 +62,7 @@ export const HandleInput = React.forwardRef<HTMLInputElement, HandleInputProps>(
             onClick={clearInput}
             className='absolute right-2 top-1/2 h-fit -translate-y-1/2 transform p-1 text-gray-500'
           >
-            <X className='size-4' />
+            <X className='size-4' aria-label='Clear' />
           </Button>
         )}
       </div>
