@@ -3,8 +3,7 @@ import { AnimatePresence, motion, useAnimate } from 'framer-motion';
 import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
-
-const MaxNumOfSkills = 5;
+import { MAX_NUM_SKILLS, MAX_CHARS_PER_SKILL } from '@/constant/constants';
 
 interface SkillInputProps extends ComponentProps<'input'> {
   initialSkills: string[];
@@ -29,7 +28,7 @@ const SkillInput = ({
   const [inputValue, setInputValue] = useState<string>('');
   const [scope, animate] = useAnimate();
 
-  const isMaxSkills = skills.length >= MaxNumOfSkills;
+  const isMaxSkills = skills.length >= MAX_NUM_SKILLS;
 
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
