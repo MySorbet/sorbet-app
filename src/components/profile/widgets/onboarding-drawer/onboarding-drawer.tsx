@@ -15,11 +15,15 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 
 import { HandleInput, HandleInputWidgetTypes } from './handle-input';
 
-const formSchema = z.object(
-  Object.fromEntries(HandleInputWidgetTypes.map((type) => [type, z.string()]))
-  // TODO: Fix this type
-);
-
+/**
+ * This schema is used to validate the form values.
+ *
+ * It is a record of the widget types and the string values.
+ *
+ * TODO: Could be improved by validating that every key is present
+ * TODO: Could be improved by validating that the value is a valid handle for the given platform
+ */
+const formSchema = z.record(z.enum(HandleInputWidgetTypes), z.string());
 type FormSchema = z.infer<typeof formSchema>;
 
 interface OnboardingDrawerProps {

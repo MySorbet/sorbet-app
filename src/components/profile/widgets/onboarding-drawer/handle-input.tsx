@@ -82,12 +82,12 @@ export const HandleInputWidgetTypes = [
 ] as const satisfies WidgetTypeWithIcon[];
 
 // TODO: Figure out why SB can't infer this type for controls
-// export type HandleInputWidgetType = (typeof HandleInputWidgetTypes)[number];
-export type HandleInputWidgetType =
-  | 'InstagramProfile'
-  | 'TwitterProfile'
-  | 'LinkedInProfile'
-  | 'Github'
-  | 'Dribbble'
-  | 'Behance'
-  | 'Medium';
+export type HandleInputWidgetType = (typeof HandleInputWidgetTypes)[number];
+// export type HandleInputWidgetType =
+//   | 'InstagramProfile'
+//   | 'TwitterProfile'
+//   | 'LinkedInProfile'
+//   | 'Github'
+//   | 'Dribbble'
+//   | 'Behance'
+//   | 'Medium';
