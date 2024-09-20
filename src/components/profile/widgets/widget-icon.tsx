@@ -59,7 +59,7 @@ export const getSocialIconForWidget = (
     Substack: 'substack.svg',
     SpotifySong: 'spotify.svg',
     SpotifyAlbum: 'spotify.svg',
-    SoundcloudSong: 'soundCloud.svg',
+    SoundcloudSong: 'soundcloud.svg',
     InstagramPost: 'instagram.svg',
     InstagramProfile: 'instagram.svg',
     TwitterProfile: 'twitter.svg',
