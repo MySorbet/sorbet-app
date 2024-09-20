@@ -68,6 +68,7 @@ export const OnboardingDrawer = ({
       <DrawerContent>
         <Form {...form}>
           <form
+            // TODO: Maybe onSubmit should clear the form?
             onSubmit={onSubmit ? form.handleSubmit(onSubmit) : undefined}
             className='mx-auto w-full max-w-xl px-4'
           >
