@@ -1,9 +1,9 @@
-import { Play } from 'lucide-react';
 import React from 'react';
 
 import { SoundcloudTrackContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
+import { PlayButton } from './play-button';
 import { WidgetIcon } from './widget-icon';
 
 interface SoundcloudWidgetType {
@@ -29,11 +29,8 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
       widgetLayout = (
         <div className='flex h-full flex-col gap-2 '>
           <div className='flex justify-between'>
-            <WidgetIcon type={'SoundcloudSong'} className='m-0' />
-            <button className='flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
-              <Play size={16} />
-              Play
-            </button>
+            <WidgetIcon type='SoundcloudSong' className='m-0' />
+            <PlayButton />
           </div>
           <div>{localHeader}</div>
           <div className='relative flex-grow overflow-hidden rounded-xl'>
@@ -51,11 +48,8 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
       widgetLayout = (
         <div className='flex h-full flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={'SoundcloudSong'} className='m-0' />
-            <button className='flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
-              <Play size={16} />
-              Play
-            </button>
+            <WidgetIcon type='SoundcloudSong' className='m-0' />
+            <PlayButton />
           </div>
           <div>{localHeader}</div>
           <div className='relative mt-6 h-full w-full overflow-hidden rounded-xl bg-white text-black'>
@@ -74,13 +68,10 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
         <div className='flex h-full flex-row gap-2'>
           <div className='h-full w-1/5'>
             <div className='flex h-full flex-col gap-1'>
-              <WidgetIcon type={'SoundcloudSong'} />
+              <WidgetIcon type='SoundcloudSong' />
               <div>{localHeader}</div>
               <div className='mt-auto'>
-                <button className='mt-auto flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
-                  <Play size={16} />
-                  Play
-                </button>
+                <PlayButton />
               </div>
             </div>
           </div>
@@ -99,16 +90,11 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
       widgetLayout = (
         <div className='flex h-full flex-col gap-2'>
           <div className='flex justify-between'>
-            <WidgetIcon type={'SoundcloudSong'} className='m-0' />
-            <button className='flex cursor-pointer items-center gap-1 rounded-lg bg-[#573DF5] px-4 py-1 text-sm text-white'>
-              <Play size={16} />
-              Play
-            </button>
+            <WidgetIcon type='SoundcloudSong' className='m-0' />
+            <PlayButton />
           </div>
           <div>{localHeader}</div>
-          <div
-            className={`relative mt-6 h-full w-full overflow-hidden rounded-xl`}
-          >
+          <div className='relative mt-6 h-full w-full overflow-hidden rounded-xl'>
             <img
               src={content.artwork}
               alt='Soundcloud Content'
