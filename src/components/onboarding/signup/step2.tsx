@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
 import { FormContainer } from '../form-container';
-import { MAX_BIO_LENGTH } from '@/constant/constants';
+import { MAX_BIO_LENGTH } from '@/constant';
 
 const Step2 = () => {
   const { setUserData, setStep, userData } = useUserSignUp();

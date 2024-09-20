@@ -7,7 +7,7 @@ import {
 } from '@/components/onboarding/signup/signup';
 import { useState } from 'react';
 import { within, userEvent } from '@storybook/testing-library';
-import { MAX_BIO_LENGTH } from '@/constant/constants';
+import { MAX_BIO_LENGTH } from '@/constant';
 
 const meta = {
   component: Step2,
