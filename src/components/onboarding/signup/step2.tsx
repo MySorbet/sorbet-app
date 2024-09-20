@@ -7,10 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
 import { FormContainer } from '../form-container';
+import { MAX_BIO_LENGTH } from '@/lib/constants';
 
 const Step2 = () => {
   const { setUserData, setStep, userData } = useUserSignUp();
   const [bio, setBio] = useState<string>('');
+
+  const isMax = bio.length > MAX_BIO_LENGTH;
 
   const handleNext = () => {
     setUserData((prev) => ({ ...prev, bio }));
@@ -34,8 +37,13 @@ const Step2 = () => {
             onChange={(e) => setBio(e.target.value)}
             defaultValue={userData.bio}
           />
-          {bio.length > 100 ? (
-            <p className='mt-1 text-xs text-red-500'>Max of 100 characters</p>
+          {isMax ? (
+            <p
+              data-testid='maxCharMessage'
+              className='animate-in slide-in-from-top-1 fade-in-0 mt-1 text-xs text-red-500'
+            >
+              Max of 100 characters
+            </p>
           ) : (
             <p className='mt-1 text-xs text-[#344054]'>{bio.length}/100</p>
           )}
@@ -50,7 +58,7 @@ const Step2 = () => {
           <Button
             className='w-full border border-[#7F56D9] bg-[#573DF5] text-white shadow-sm shadow-[#1018280D]'
             onClick={handleNext}
-            disabled={bio.length > 100}
+            disabled={isMax}
           >
             Next
           </Button>

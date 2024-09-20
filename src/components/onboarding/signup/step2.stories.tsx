@@ -4,11 +4,10 @@ import {
   initialUserSignUp,
   UserSignUp,
   UserSignUpContext,
-  useUserSignUp,
 } from '@/components/onboarding/signup/signup';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { within, userEvent } from '@storybook/testing-library';
-import { expect } from '@storybook/jest';
+import { MAX_BIO_LENGTH } from '@/lib/constants';
 
 const meta = {
   component: Step2,
@@ -59,7 +58,7 @@ export const SimulateMaxCharacters = {
     await userEvent.type(bioTextarea, 'Test input');
 
     // Try to type more than 100 characters
-    const longInput = 'a'.repeat(101);
+    const longInput = 'a'.repeat(MAX_BIO_LENGTH + 1);
     await userEvent.clear(bioTextarea);
     await userEvent.type(bioTextarea, longInput);
   },
