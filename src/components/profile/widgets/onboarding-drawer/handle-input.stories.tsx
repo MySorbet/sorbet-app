@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { HandleInput } from './handle-input';
+import { HandleInput, HandleInputWidgetTypes } from './handle-input';
 
 const meta: Meta<typeof HandleInput> = {
   component: HandleInput,
@@ -24,7 +24,14 @@ const meta: Meta<typeof HandleInput> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  // TODO: Why is SB not picking up the correct type for type? It thinks it's a string.
+  argTypes: {
+    type: {
+      options: HandleInputWidgetTypes,
+      control: {
+        type: 'select',
+      },
+    },
+  },
 };
 
 export default meta;

@@ -11,6 +11,7 @@ import { WidgetIcon, WidgetTypeWithIcon } from '../widget-icon';
 interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** The type of the widget icon to be displayed */
   type: HandleInputWidgetType;
+  // TODO: Fix SB not displaying this type correctly under Docs description (shows "string")
 }
 
 /**
@@ -82,13 +83,5 @@ export const HandleInputWidgetTypes = [
   'Medium',
 ] as const satisfies WidgetTypeWithIcon[];
 
-// TODO: Figure out why SB can't infer this type for controls
+/** These are the supported widget types for the onboarding flow */
 export type HandleInputWidgetType = (typeof HandleInputWidgetTypes)[number];
-// export type HandleInputWidgetType =
-//   | 'InstagramProfile'
-//   | 'TwitterProfile'
-//   | 'LinkedInProfile'
-//   | 'Github'
-//   | 'Dribbble'
-//   | 'Behance'
-//   | 'Medium';
