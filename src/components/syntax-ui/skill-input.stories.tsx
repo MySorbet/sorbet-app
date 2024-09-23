@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/react';
+import { userEvent, within } from '@storybook/test';
+
 import SkillInput from '@/components/syntax-ui/skill-input';
-import { userEvent, within } from '@storybook/testing-library';
 
 const meta = {
   component: SkillInput,

@@ -181,25 +181,25 @@ const SkillStatus = ({
   isMaxChars: boolean;
   scope: AnimationScope<any>;
 }) => {
-  return (
-    <>
-      {isMaxSkills ? (
-        <p
-          ref={scope}
-          className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
-        >
-          Max {MAX_NUM_SKILLS} skills
-        </p>
-      ) : (
-        isMaxChars && (
-          <p
-            ref={scope}
-            className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
-          >
-            Max {MAX_CHARS_PER_SKILL} characters per skill
-          </p>
-        )
-      )}
-    </>
-  );
+  if (isMaxSkills) {
+    return (
+      <p
+        ref={scope}
+        className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
+      >
+        Max {MAX_NUM_SKILLS} skills
+      </p>
+    );
+  }
+
+  if (isMaxChars) {
+    return (
+      <p
+        ref={scope}
+        className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
+      >
+        Max {MAX_CHARS_PER_SKILL} characters per skill
+      </p>
+    );
+  }
 };

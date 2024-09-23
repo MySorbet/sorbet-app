@@ -1,13 +1,15 @@
 import { Meta } from '@storybook/react';
-import { Step2 } from './step2';
+import { userEvent,within } from '@storybook/test';
+import { useState } from 'react';
+
 import {
   initialUserSignUp,
   UserSignUp,
   UserSignUpContext,
 } from '@/components/onboarding/signup/signup';
-import { useState } from 'react';
-import { within, userEvent } from '@storybook/testing-library';
 import { MAX_BIO_LENGTH } from '@/constant';
+
+import { Step2 } from './step2';
 
 const meta = {
   component: Step2,
