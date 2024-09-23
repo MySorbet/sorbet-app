@@ -1,77 +1,15 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import { env } from '@/lib/env';
 import {
-  ExtendedWidgetLayout,
-  GetBehanceItemType,
-  GetDribbleShotType,
-  GetGithubWidget,
-  GetInstagramType,
-  GetItemTypeBase,
-  GetMediumArticleType,
-  GetPhotoWidget,
-  GetSoundcloudType,
-  GetSpotifyType,
-  GetSubstackArticleType,
-  GetTwitterWidget,
-  GetYouTubeVideoType,
+  GetWidgetBody,
   UpdateWidgetsBulkDto,
+  WidgetDto,
+  WidgetLayoutItem,
   WidgetSize,
   WidgetType,
 } from '@/types';
 import { withAuthHeader } from '@/utils';
-
-export const getWidgetContent = async ({
-  url,
-  type,
-}: {
-  url: string;
-  type: WidgetType;
-}) => {
-  switch (type) {
-    case 'Dribbble':
-      return getDribbleShot({ url });
-
-    case 'Behance':
-      return getBehanceItem({ url });
-
-    case 'Medium':
-      return getMediumArticleMetadata({ url });
-
-    case 'Youtube':
-      return getYouTubeVideoMetadata({ url });
-
-    case 'Substack':
-      return getSubstackMetadata({ url });
-
-    case 'SpotifyAlbum':
-      return getSpotifyAlbumDetails({ url });
-
-    case 'SpotifySong':
-      return getSpotifySongDetails({ url });
-
-    case 'SoundcloudSong':
-      return getSoundcloudTrackDetails({ url });
-
-    case 'InstagramProfile':
-      return getInstagramProfileMetadata({ url });
-
-    case 'Photo':
-      return getPhotoWidget({ url });
-
-    case 'Github':
-      return getGithubProfile({ url });
-
-    case 'TwitterProfile':
-      return getTwitterProfile({ url });
-
-    case 'LinkedInProfile':
-      return getLinkedInProfile({ url });
-
-    case 'Link':
-      return getLinkData({ url });
-  }
-};
 
 export const getWidgetsByUsername = async (username: string) => {
   try {
@@ -124,17 +62,17 @@ export const updateWidgetsBulk = async (
 
 export const updateWidget = async (
   widgetId: string,
-  widgetLayout: ExtendedWidgetLayout,
+  widgetLayoutItem: WidgetLayoutItem,
   widgetSize?: WidgetSize
 ) => {
   let payload: any = {
-    type: widgetLayout.type,
-    content: widgetLayout.content,
+    type: widgetLayoutItem.type,
+    content: widgetLayoutItem.content,
     layout: {
-      x: widgetLayout.x,
-      y: widgetLayout.y,
-      w: widgetLayout.w,
-      h: widgetLayout.h,
+      x: widgetLayoutItem.x,
+      y: widgetLayoutItem.y,
+      w: widgetLayoutItem.w,
+      h: widgetLayoutItem.h,
     },
   };
 
@@ -166,11 +104,9 @@ export const deleteWidget = async (id: string) => {
   }
 };
 
-export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
-  const body: GetDribbleShotType = { url };
-
+export const getDribbleShot: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/dribbble`,
       body,
       await withAuthHeader()
@@ -183,11 +119,9 @@ export const getDribbleShot = async ({ url }: GetDribbleShotType) => {
   }
 };
 
-export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
-  const body: GetBehanceItemType = { url };
-
+export const getBehanceItem: WidgetGetterFn = async (body) => {
   try {
-    const response = axios.post(
+    const response = axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/behance`,
       body,
       await withAuthHeader()
@@ -200,13 +134,9 @@ export const getBehanceItem = async ({ url }: GetBehanceItemType) => {
   }
 };
 
-export const getMediumArticleMetadata = async ({
-  url,
-}: GetMediumArticleType) => {
-  const body: GetMediumArticleType = { url };
-
+export const getMediumArticleMetadata: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/medium`,
       body,
       await withAuthHeader()
@@ -219,11 +149,9 @@ export const getMediumArticleMetadata = async ({
   }
 };
 
-export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
-  const body: GetYouTubeVideoType = { url };
-
+export const getYouTubeVideoMetadata: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/youtube`,
       body,
       await withAuthHeader()
@@ -236,11 +164,9 @@ export const getYouTubeVideoMetadata = async ({ url }: GetYouTubeVideoType) => {
   }
 };
 
-export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
-  const body: GetSubstackArticleType = { url };
-
+export const getSubstackMetadata: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/substack`,
       body,
       await withAuthHeader()
@@ -253,11 +179,9 @@ export const getSubstackMetadata = async ({ url }: GetSubstackArticleType) => {
   }
 };
 
-export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
-  const body: GetSpotifyType = { url };
-
+export const getSpotifyAlbumDetails: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/spotify/album`,
       body,
       await withAuthHeader()
@@ -270,11 +194,9 @@ export const getSpotifyAlbumDetails = async ({ url }: GetSpotifyType) => {
   }
 };
 
-export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
-  const body: GetSpotifyType = { url };
-
+export const getSpotifySongDetails: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/spotify/song`,
       body,
       await withAuthHeader()
@@ -287,11 +209,9 @@ export const getSpotifySongDetails = async ({ url }: GetSpotifyType) => {
   }
 };
 
-export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
-  const body: GetSoundcloudType = { url };
-
+export const getSoundcloudTrackDetails: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/soundcloud`,
       body,
       await withAuthHeader()
@@ -304,13 +224,9 @@ export const getSoundcloudTrackDetails = async ({ url }: GetSoundcloudType) => {
   }
 };
 
-export const getInstagramProfileMetadata = async ({
-  url,
-}: GetInstagramType) => {
-  const body: GetInstagramType = { url };
-
+export const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/instagram`,
       body,
       await withAuthHeader()
@@ -325,11 +241,9 @@ export const getInstagramProfileMetadata = async ({
   }
 };
 
-export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
-  const body: GetPhotoWidget = { url };
-
+export const getPhotoWidget: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/photo`,
       body,
       await withAuthHeader()
@@ -342,11 +256,9 @@ export const getPhotoWidget = async ({ url }: GetPhotoWidget) => {
   }
 };
 
-export const getGithubProfile = async ({ url }: GetGithubWidget) => {
-  const body: GetGithubWidget = { url };
-
+export const getGithubProfile: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/github`,
       body,
       await withAuthHeader()
@@ -359,11 +271,9 @@ export const getGithubProfile = async ({ url }: GetGithubWidget) => {
   }
 };
 
-export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
-  const body: GetTwitterWidget = { url };
-
+export const getTwitterProfile: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/twitter`,
       body,
       await withAuthHeader()
@@ -376,11 +286,9 @@ export const getTwitterProfile = async ({ url }: GetTwitterWidget) => {
   }
 };
 
-export const getLinkedInProfile = async ({ url }: GetItemTypeBase) => {
-  const body: GetItemTypeBase = { url };
-
+export const getLinkedInProfile: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/linkedin`,
       body,
       await withAuthHeader()
@@ -393,11 +301,9 @@ export const getLinkedInProfile = async ({ url }: GetItemTypeBase) => {
   }
 };
 
-export const getLinkData = async ({ url }: GetItemTypeBase) => {
-  const body: GetItemTypeBase = { url };
-
+export const getLinkData: WidgetGetterFn = async (body) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/link`,
       body,
       await withAuthHeader()
@@ -408,4 +314,45 @@ export const getLinkData = async ({ url }: GetItemTypeBase) => {
       `Failed to get generic link data: ${error.response.data.message}`
     );
   }
+};
+
+type WidgetGetterFn = (
+  body: GetWidgetBody
+) => Promise<AxiosResponse<WidgetDto, unknown>>;
+
+/** Currently, Figma and InstagramPost are not supported */
+export type SupportedWidgetTypes = Exclude<
+  WidgetType,
+  'Figma' | 'InstagramPost'
+>;
+
+/** Map the supported widget types to their corresponding getter functions */
+const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
+  Photo: getPhotoWidget,
+  Substack: getSubstackMetadata,
+  SpotifySong: getSpotifySongDetails,
+  SpotifyAlbum: getSpotifyAlbumDetails,
+  SoundcloudSong: getSoundcloudTrackDetails,
+  InstagramProfile: getInstagramProfileMetadata,
+  TwitterProfile: getTwitterProfile,
+  LinkedInProfile: getLinkedInProfile,
+  Youtube: getYouTubeVideoMetadata,
+  Github: getGithubProfile,
+  Dribbble: getDribbleShot,
+  Behance: getBehanceItem,
+  Medium: getMediumArticleMetadata,
+  Link: getLinkData,
+};
+
+/** Get/create a widget with the given url and type */
+export type GetWidgetContentParams = {
+  url: string;
+  type: SupportedWidgetTypes;
+};
+
+export const getWidgetContent = async ({
+  url,
+  type,
+}: GetWidgetContentParams) => {
+  return widgetGetters[type]({ url });
 };

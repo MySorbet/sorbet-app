@@ -19,6 +19,7 @@ import {
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
   TwitterWidgetContentType,
+  WidgetContentType,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -47,7 +48,7 @@ interface WidgetProps {
   type: WidgetType;
   w: number;
   h: number;
-  content?: any;
+  content?: WidgetContentType;
   loading?: boolean;
   initialSize?: WidgetSize;
   redirectUrl?: string;

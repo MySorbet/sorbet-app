@@ -15,13 +15,12 @@ import {
   useUploadWidgetsImage,
 } from '@/hooks';
 import {
-  ExtendedWidgetLayout,
   getWidgetDimensions,
   UpdateWidgetsBulkDto,
   WidgetDimensions,
   WidgetDto,
+  WidgetLayoutItem,
   WidgetSize,
-  WidgetType,
 } from '@/types';
 
 import { AddWidgets } from './add-widgets';
@@ -59,10 +58,8 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     /** noop */
   },
 }) => {
-  const [layout, setLayout] = useState<ExtendedWidgetLayout[]>([]);
-  const [initialLayout, setInitialLayout] = useState<ExtendedWidgetLayout[]>(
-    []
-  );
+  const [layout, setLayout] = useState<WidgetLayoutItem[]>([]);
+  const [initialLayout, setInitialLayout] = useState<WidgetLayoutItem[]>([]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
   const [cols, setCols] = useState<number>(8);
@@ -82,26 +79,24 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   const { data: userWidgetData, isPending: isUserWidgetPending } =
     useGetWidgetsForUser(userId);
 
-  const generateLayout = useCallback(async (): Promise<
-    ExtendedWidgetLayout[]
-  > => {
+  const generateLayout = useCallback(async (): Promise<WidgetLayoutItem[]> => {
     const userWidgets: WidgetDto[] = userWidgetData;
 
     if (!userWidgets || userWidgets.length < 1) return [];
 
-    return userWidgets.map((widget: WidgetDto, i: number) => ({
+    return userWidgets.map((widget: WidgetDto) => ({
       i: widget.id,
       x: widget.layout.x,
       y: widget.layout.y,
-      w: WidgetDimensions[widget.size as WidgetSize].w,
-      h: WidgetDimensions[widget.size as WidgetSize].h,
-      type: widget.type as WidgetType,
+      w: WidgetDimensions[widget.size].w,
+      h: WidgetDimensions[widget.size].h,
+      type: widget.type,
       content: widget.content,
       static: !editMode,
       isResizable: false,
       isDraggable: editMode,
       redirectUrl: widget.redirectUrl,
-      size: widget.size as WidgetSize,
+      size: widget.size,
     }));
   }, [userId, editMode, userWidgetData]);
 
@@ -170,8 +165,13 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
        */
       const widget = await getWidgetContent({ url: widgetUrl, type });
 
+      // TODO: getWidgetContent probably should not return undefined
+      if (!widget) {
+        throw new Error('Failed to add widget. Please try again.');
+      }
+
       // If you got the content, add the widget to the layout state and persist it in the database
-      const widgetToAdd: ExtendedWidgetLayout = {
+      const widgetToAdd: WidgetLayoutItem = {
         i: widget.id,
         x: (layout.length * 2) % cols,
         y: 0,
@@ -199,7 +199,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     }
   };
 
-  const handleLayoutChange = (newLayout: ExtendedWidgetLayout[]) => {
+  const handleLayoutChange = (newLayout: WidgetLayoutItem[]) => {
     const updatedLayout = newLayout.map((layoutItem) => {
       const existingItem = layout.find((item) => item.i === layoutItem.i);
       return existingItem ? { ...existingItem, ...layoutItem } : layoutItem;
@@ -209,7 +209,7 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
     onLayoutChange(updatedLayout);
   };
 
-  const persistWidgetsLayoutOnChange = (items?: ExtendedWidgetLayout[]) => {
+  const persistWidgetsLayoutOnChange = (items?: WidgetLayoutItem[]) => {
     const itemsToUse = items && items.length > 0 ? items : layout;
     if (itemsToUse.length > 0 && editMode) {
       const payload: UpdateWidgetsBulkDto[] = [];
@@ -225,20 +225,18 @@ export const WidgetContainer: React.FC<WidgetContainerProps> = ({
   };
 
   const handleWidgetDropStop = (newLayout: Layout[]) => {
-    const extendedLayoutObjects: ExtendedWidgetLayout[] = newLayout.map(
-      (item) => {
-        const layoutItem = layout.find((layoutItem) => layoutItem.i === item.i);
-        const extendedItem = {
-          ...item,
-          type: layoutItem?.type,
-          loading: layoutItem?.loading,
-          content: layoutItem?.content,
-          size: layoutItem?.size,
-        };
-        return extendedItem as ExtendedWidgetLayout;
-      }
-    );
-    persistWidgetsLayoutOnChange(extendedLayoutObjects);
+    const widgetLayoutItems: WidgetLayoutItem[] = newLayout.map((item) => {
+      const layoutItem = layout.find((layoutItem) => layoutItem.i === item.i);
+      const newItem = {
+        ...item,
+        type: layoutItem?.type,
+        loading: layoutItem?.loading,
+        content: layoutItem?.content,
+        size: layoutItem?.size,
+      };
+      return newItem as WidgetLayoutItem;
+    });
+    persistWidgetsLayoutOnChange(widgetLayoutItems);
   };
 
   useEffect(() => {
