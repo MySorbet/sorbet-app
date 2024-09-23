@@ -40,7 +40,7 @@ const breakpoints = {
   xl: 1600,
 };
 
-interface WidgetContainerProps {
+interface WidgetGridProps {
   rowHeight?: number;
   editMode: boolean;
   userId: string;
@@ -50,7 +50,7 @@ interface WidgetContainerProps {
 /**
  * Root component which renders all widgets and link input to add new widgets.
  */
-export const WidgetContainer: React.FC<WidgetContainerProps> = ({
+export const WidgetGrid: React.FC<WidgetGridProps> = ({
   rowHeight = 120,
   editMode,
   userId,
