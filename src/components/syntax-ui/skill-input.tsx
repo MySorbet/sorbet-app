@@ -94,7 +94,10 @@ const SkillInput = ({
   // Adds the keyword when the input loses focus, if there's a keyword to add
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     if (inputValue.trim() !== '' && event.relatedTarget?.tagName !== 'BUTTON') {
-      const newSkills = [...skills, inputValue.trim()];
+      const newSkills = [
+        ...skills,
+        inputValue.trim().slice(0, MAX_CHARS_PER_SKILL),
+      ];
       setSkills(newSkills);
       onSkillsChange(newSkills);
       setInputValue('');
