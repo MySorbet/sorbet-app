@@ -3,29 +3,30 @@ import { WidgetDimensions, WidgetSize } from '@/types';
 
 import { WidgetIcon, WidgetTypeWithIcon } from './widget-icon';
 
-const multiplier = 100;
-
 export const WidgetPlaceHolder = ({
   type,
   size,
   onClick,
+  className,
 }: {
   type: WidgetTypeWithIcon;
   size: WidgetSize;
   onClick?: () => void;
+  className?: string;
 }) => {
   const d = WidgetDimensions[size];
+  const multiplier = 100;
 
   return (
     <div
       className={cn(
-        'flex cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white',
-        `w-[${d.w * multiplier}px]`,
-        `h-[${d.h * multiplier}px]` // Why does this not work?
+        'flex cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-4',
+        // `w-[${d.w * multiplier}px]`,
+        // `h-[${d.h * multiplier}px]`,
+        // `aspect-[${d.w} / ${d.h}]`,
+        'size-full',
+        className
       )}
-      style={{
-        height: d.h * multiplier,
-      }}
       onClick={onClick}
     >
       <WidgetIcon type={type} className='mb-0 size-10' />
