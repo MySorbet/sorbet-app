@@ -40,6 +40,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  // @ts-expect-error draggedRef is handled in the meta render
   args: {
     type: 'Link',
     w: 1,
