@@ -1,11 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { WidgetTypes } from '@/types';
-
-import { WidgetIcon } from './widget-icon';
+import { WidgetIcon, WidgetTypesWithIcons } from './widget-icon';
 
 const meta: Meta<typeof WidgetIcon> = {
-  title: 'Widgets/WidgetIcon',
+  title: 'WidgetIcon',
   component: WidgetIcon,
   parameters: {
     layout: 'centered',
@@ -13,7 +11,7 @@ const meta: Meta<typeof WidgetIcon> = {
   argTypes: {
     type: {
       control: 'select',
-      options: WidgetTypes,
+      options: WidgetTypesWithIcons,
     },
   },
 };
@@ -23,7 +21,7 @@ type Story = StoryObj<typeof WidgetIcon>;
 
 export const Default: Story = {
   args: {
-    type: 'Link',
+    type: 'Substack',
   },
 };
 
@@ -33,30 +31,10 @@ export const AllIcons: Story = {
     return (
       <div style={{ display: 'flex', gap: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {WidgetTypes.slice(0, Math.ceil(WidgetTypes.length / 2)).map(
-            (type) => (
-              <div
-                key={type}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
-              >
-                <WidgetIcon type={type} className='m-0' />
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    alignItems: 'center',
-                    height: '30px', // Match the height of the icon
-                  }}
-                >
-                  {type}
-                </span>
-              </div>
-            )
-          )}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {WidgetTypes.slice(Math.ceil(WidgetTypes.length / 2)).map((type) => (
+          {WidgetTypesWithIcons.slice(
+            0,
+            Math.ceil(WidgetTypesWithIcons.length / 2)
+          ).map((type) => (
             <div
               key={type}
               style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
@@ -68,7 +46,28 @@ export const AllIcons: Story = {
                   fontWeight: 'bold',
                   display: 'flex',
                   alignItems: 'center',
-                  height: '30px', // Match the height of the icon
+                }}
+              >
+                {type}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {WidgetTypesWithIcons.slice(
+            Math.ceil(WidgetTypesWithIcons.length / 2)
+          ).map((type) => (
+            <div
+              key={type}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+            >
+              <WidgetIcon type={type} className='m-0' />
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
                 {type}
