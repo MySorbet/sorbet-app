@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useAnimate } from 'framer-motion';
 import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
-import { MAX_NUM_SKILLS, MAX_CHARS_PER_SKILL } from '@/constant';
+import { MAX_CHARS_PER_SKILL,MAX_NUM_SKILLS } from '@/constant';
 
 interface SkillInputProps extends ComponentProps<'input'> {
   initialSkills: string[];
