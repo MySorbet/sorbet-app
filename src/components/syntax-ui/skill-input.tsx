@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useAnimate } from 'framer-motion';
 import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
-import { MAX_CHARS_PER_SKILL,MAX_NUM_SKILLS } from '@/constant';
+import { MAX_CHARS_PER_SKILL, MAX_NUM_SKILLS } from '@/constant';
 
 interface SkillInputProps extends ComponentProps<'input'> {
   initialSkills: string[];
@@ -67,7 +67,9 @@ const SkillInput = ({
   const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
     const paste = event.clipboardData.getData('text');
-    const allwords = paste.split(', ').map((word) => word.trim());
+    const allwords = paste
+      .split(', ')
+      .map((word) => word.trim().slice(0, MAX_CHARS_PER_SKILL));
     const newallwords = allwords.slice(0, 5);
     const strippedArr = newallwords.join(', ');
 
