@@ -31,7 +31,7 @@ const schema = z.object({
   isImageUpdated: z.boolean(),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  bio: z.string().max(MAX_BIO_LENGTH, 'Bio must be at most 100 characters'),
+  bio: z.string().max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`),
   city: z.string(),
   tags: z.array(z.string()).optional(),
 });

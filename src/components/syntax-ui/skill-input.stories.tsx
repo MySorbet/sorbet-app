@@ -26,6 +26,7 @@ export const Default = {};
 export const MaxSkills = {
   args: {
     initialSkills: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4', 'Skill 5'],
+    unique: true,
   },
 };
 

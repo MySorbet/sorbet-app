@@ -1,5 +1,10 @@
 import { SearchLg } from '@untitled-ui/icons-react';
-import { AnimatePresence, motion, useAnimate } from 'framer-motion';
+import {
+  AnimatePresence,
+  AnimationScope,
+  motion,
+  useAnimate,
+} from 'framer-motion';
 import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
@@ -156,19 +161,45 @@ const SkillInput = ({
           />
         </div>
       </div>
-      {isMaxSkills ? (
-        <p ref={scope} className='text-sm font-normal text-[#475467]'>
-          Max {MAX_NUM_SKILLS} skills
-        </p>
-      ) : (
-        isMaxChars && (
-          <p ref={scope} className='text-sm font-normal text-[#475467]'>
-            Max {MAX_CHARS_PER_SKILL} characters per skill
-          </p>
-        )
-      )}
+      <SkillStatus
+        isMaxChars={isMaxChars}
+        isMaxSkills={isMaxSkills}
+        scope={scope}
+      />
     </div>
   );
 };
 
 export default SkillInput;
+
+const SkillStatus = ({
+  isMaxSkills,
+  isMaxChars,
+  scope,
+}: {
+  isMaxSkills: boolean;
+  isMaxChars: boolean;
+  scope: AnimationScope<any>;
+}) => {
+  return (
+    <>
+      {isMaxSkills ? (
+        <p
+          ref={scope}
+          className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
+        >
+          Max {MAX_NUM_SKILLS} skills
+        </p>
+      ) : (
+        isMaxChars && (
+          <p
+            ref={scope}
+            className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
+          >
+            Max {MAX_CHARS_PER_SKILL} characters per skill
+          </p>
+        )
+      )}
+    </>
+  );
+};
