@@ -43,7 +43,6 @@ export const SimulateMaxCharacters = {
     let bioTextarea: HTMLTextAreaElement;
     try {
       bioTextarea = await canvas.findByRole('textbox');
-      console.log('Found textarea by role');
     } catch (error) {
       try {
         bioTextarea = await canvas.findByPlaceholderText(/bio|about you/i);
@@ -53,9 +52,6 @@ export const SimulateMaxCharacters = {
         throw error;
       }
     }
-
-    // Type some text
-    await userEvent.type(bioTextarea, 'Test input');
 
     // Try to type more than 100 characters
     const longInput = 'a'.repeat(MAX_BIO_LENGTH + 1);

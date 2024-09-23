@@ -29,17 +29,23 @@ const SkillInput = ({
   const [scope, animate] = useAnimate();
 
   const isMaxSkills = skills.length >= MAX_NUM_SKILLS;
+  const isMaxChars = inputValue.length > MAX_CHARS_PER_SKILL;
 
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (
       event.key === 'Enter' ||
       event.key === ',' ||
       (event.key === 'Tab' && inputValue.trim() !== '')
     ) {
-      if (inputValue.trim() === '' || isMaxSkills) {
+      if (inputValue.trim() === '' || isMaxSkills || isMaxChars) {
         event.preventDefault();
-
+        if (scope.current) {
+          await animate(scope.current, { x: 20, y: 5, scale: 1.1 });
+          await animate(scope.current, { x: 0, y: 0, scale: 1 });
+        }
         return;
       }
       event.preventDefault();
@@ -82,10 +88,6 @@ const SkillInput = ({
   // Updates the inputValue state as the user types
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-    if (isMaxSkills) {
-      await animate(scope.current, { x: 20, y: 5, scale: 1.1 });
-      await animate(scope.current, { x: 0, y: 0, scale: 1 });
-    }
   };
   // Adds the keyword when the input loses focus, if there's a keyword to add
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -145,14 +147,20 @@ const SkillInput = ({
             onPaste={handlePaste}
             onBlur={(e) => handleBlur(e)}
             className='my-1 flex-1 bg-transparent text-sm outline-none'
-            placeholder='Enter your skills (max 5)'
+            placeholder={`Enter your skills (max ${MAX_NUM_SKILLS})`}
           />
         </div>
       </div>
-      {isMaxSkills && (
+      {isMaxSkills ? (
         <p ref={scope} className='text-sm font-normal text-[#475467]'>
-          Max 5 skills
+          Max {MAX_NUM_SKILLS} skills
         </p>
+      ) : (
+        isMaxChars && (
+          <p ref={scope} className='text-sm font-normal text-[#475467]'>
+            Max {MAX_CHARS_PER_SKILL} characters per skill
+          </p>
+        )
       )}
     </div>
   );
