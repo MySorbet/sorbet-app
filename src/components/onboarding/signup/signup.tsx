@@ -15,7 +15,7 @@ import { Step1 } from './step1';
 import { Step2 } from './step2';
 import { Step3 } from './step3';
 
-type UserSignUp = {
+export type UserSignUp = {
   firstName: string;
   lastName: string;
   handle: string;
@@ -38,7 +38,7 @@ export const UserSignUpContext = createContext<UserSignUpContextType | null>(
 );
 UserSignUpContext.displayName = 'UserSignUpContext';
 
-const initialUserSignUp: UserSignUp = {
+export const initialUserSignUp: UserSignUp = {
   firstName: '',
   lastName: '',
   handle: '',
