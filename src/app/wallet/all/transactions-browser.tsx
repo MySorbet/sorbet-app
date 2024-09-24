@@ -10,13 +10,14 @@ import { getTransactions } from '@/api/user';
 import Authenticated from '@/app/authenticated';
 import { PageTitle } from '@/components/common';
 import { Header } from '@/components/header';
-import { useAuth } from '@/hooks';
+import { useAuth, useEmbeddedWalletAddress } from '@/hooks';
 import { Transaction } from '@/types/transactions';
 
 import TransactionsTable, { TableTransaction } from './transactions-table';
 
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();
+  const walletAddress = useEmbeddedWalletAddress();
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [searchValue, setSearchValue] = useState<string>('');
   const [transactionsData, setTransactionsData] = useState<TableTransaction[]>(
@@ -27,8 +28,13 @@ export const TransactionsBrowser: React.FC = () => {
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [cursorsMap, setCursorsMap] = useState<{ [key: number]: string }>({});
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
+
+  const getCurrentCursor = (page: number): string => {
+    return cursorsMap[page] || '';
+  };
 
   const handleClearAll = () => {
     setDateRange(undefined);
@@ -41,16 +47,19 @@ export const TransactionsBrowser: React.FC = () => {
     after_date?: string,
     before_date?: string
   ) => {
+    if (!walletAddress) return;
+    const cursor = getCurrentCursor(currentPage);
     setIsLoading(true);
     const res = await getTransactions(
-      currentPage,
+      walletAddress,
+      cursor,
       10,
-      'desc',
+      'DESC',
       after_date,
       before_date
     );
     if (res.status === 200 && res.data) {
-      const formattedTransactions = res.data.transactions.map(
+      const formattedTransactions = res.data.transactions.transactions.map(
         (transaction: Transaction) => {
           const type =
             transaction.sender !== transaction.receiver
@@ -73,17 +82,25 @@ export const TransactionsBrowser: React.FC = () => {
           };
         }
       );
+      const cursor_data = res.data.transactions.cursor;
+      if (cursor_data) {
+        setCursorsMap((prev) => ({ ...prev, [currentPage + 1]: cursor_data }));
+        setHasNextPage(true);
+      } else {
+        setHasNextPage(false);
+      }
       setTransactionsData(formattedTransactions);
       setFilteredTransactions(formattedTransactions);
-      setHasNextPage(res.data.transactions.length === 10);
       setHasPrevPage(currentPage > 1);
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, [currentPage]);
+    if (walletAddress) {
+      fetchTransactions();
+    }
+  }, [currentPage, walletAddress]);
 
   useEffect(() => {
     if (dateRange?.from && dateRange?.to) {

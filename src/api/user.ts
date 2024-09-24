@@ -106,14 +106,10 @@ export const getBalances = async (userId: string) => {
   }
 };
 
-/**
- * Get a user's transaction overview
- * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
- */
-export const getOverview = async (last_days = 30) => {
+export const getOverview = async (address: string, last_days = 30) => {
   try {
     const res = await axios.get(
-      `${API_URL}/transactions/overview?last_days=${last_days}`,
+      `${API_URL}/transactions/overview?account=${address}&last_days=${last_days}`,
       await withAuthHeader()
     );
     return res;
@@ -127,24 +123,26 @@ export const getOverview = async (last_days = 30) => {
  * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
  */
 export const getTransactions = async (
-  page = 1,
+  address: string,
+  cursor: string = '',
   limit = 20,
-  order = 'desc',
-  after_date?: string,
-  before_date?: string
+  order = 'DESC',
+  from_date?: string,
+  to_date?: string
 ) => {
   const queryParams = new URLSearchParams({
-    page: page.toString(),
+    account: address,
+    cursor: cursor.toString(),
     limit: limit.toString(),
     order,
   });
 
-  if (after_date) {
-    queryParams.append('after_date', after_date);
+  if (from_date) {
+    queryParams.append('from_date', from_date);
   }
 
-  if (before_date) {
-    queryParams.append('before_date', before_date);
+  if (to_date) {
+    queryParams.append('to_date', to_date);
   }
 
   try {
