@@ -1,7 +1,11 @@
-import { WidgetHeader, ImageOverlay, WidgetIcon } from '@/components';
+import React from 'react';
+
 import { cn } from '@/lib/utils';
 import { LinkedInProfileWidgetContentType, WidgetSize } from '@/types';
-import React from 'react';
+
+import { ImageOverlay } from './image-overlay';
+import { WidgetHeader } from './widget-header';
+import { WidgetIcon } from './widget-icon';
 
 // TODO: This could be shared type WidgetProps<LinkedInProfileWidgetContentType>
 interface LinkedInProfileWidgetProps {
@@ -45,7 +49,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
-          <div className='flex flex-row gap-3 justify-end h-full'>
+          <div className='flex h-full flex-row justify-end gap-3'>
             <BannerImage src={bannerImage} className='w-2/3' />
           </div>
         </WidgetLayout>
@@ -67,7 +71,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
 
 const Title: React.FC<React.PropsWithChildren> = (props) => {
   return (
-    <span className='text-secondary-foreground font-semibold text-sm flex-grow self-center'>
+    <span className='text-secondary-foreground flex-grow self-center text-sm font-semibold'>
       {props.children}
     </span>
   );
@@ -82,7 +86,7 @@ const WidgetLayout = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('h-full flex flex-col gap-3', className)}
+    className={cn('flex h-full flex-col gap-3', className)}
     {...props}
   />
 ));
@@ -97,7 +101,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        `h-full w-full relative rounded-2xl overflow-hidden flex items-center justify-center`,
+        `relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl`,
         !src && 'bg-gray-200',
         className
       )}
@@ -107,12 +111,12 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
           <img
             src={src}
             alt='Banner image from url'
-            className='w-full h-full object-cover'
+            className='h-full w-full object-cover'
           />
           <ImageOverlay />
         </>
       ) : (
-        <span className='text-muted-foreground font-semibold text-sm'>
+        <span className='text-muted-foreground text-sm font-semibold'>
           Nothing to see here
         </span>
       )}

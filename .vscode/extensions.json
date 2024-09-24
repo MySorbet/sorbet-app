@@ -5,6 +5,7 @@
     "dbaeumer.vscode-eslint", // Linter
     "aaron-bond.better-comments", // Comment highlighting
     "meouwu.css-var-color-decorator", // CSS var highlighting
-    "orta.vscode-jest" // Test runner
+    "orta.vscode-jest", // Test runner
+    "streetsidesoftware.code-spell-checker" // Check spelling for less typos
   ]
 }

@@ -3,12 +3,6 @@ import { ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
 import { Spinner } from '@/components/common';
-import { InvalidAlert } from '@/components/profile';
-import {
-  isValidUrl,
-  normalizeUrl,
-  parseWidgetTypeFromUrl,
-} from '@/components/profile/widgets';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -23,8 +17,13 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
+import { InvalidAlert } from './invalid-alert';
+import { isValidUrl, normalizeUrl, parseWidgetTypeFromUrl } from './util';
+
 interface AddWidgetsProps {
-  addUrl: (url: string, image?: File | undefined) => void;
+  /** Callback for when a url is added. `image` is defined if adding an image  */
+  addUrl: (url: string, image?: File) => void;
+  /** Should the component be loading? */
   loading?: boolean;
 }
 

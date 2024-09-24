@@ -1,8 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { WidgetSize, WidgetDimensions } from '@/types';
-import { Square, RectangleHorizontal, RectangleVertical } from 'lucide-react';
+import { RectangleHorizontal, RectangleVertical, Square } from 'lucide-react';
 import React, { useState } from 'react';
+
+import { WidgetDimensions, WidgetSize } from '@/types';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;

@@ -3,25 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Spinner } from '@/components/common';
-import {
-  BehanceWidget,
-  DribbbleWidget,
-  FigmaWidget,
-  GithubWidget,
-  InstagramWidget,
-  LinkedInProfileWidget,
-  LinkWidget,
-  MediumWidget,
-  PhotoWidget,
-  ResizeWidget,
-  SoundcloudWidget,
-  SpotifyAlbumWidget,
-  SpotifySongWidget,
-  SubstackWidget,
-  TwitterWidget,
-  YouTubeWidget,
-} from '@/components/profile';
-import { WidgetErrorFallback } from '@/components/profile/widgets';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import {
@@ -42,6 +23,24 @@ import {
   WidgetType,
   YoutubeWidgetContentType,
 } from '@/types';
+
+import { ResizeWidget } from './resize-widget';
+import { BehanceWidget } from './widget-behance';
+import { DribbbleWidget } from './widget-dribbble';
+import { WidgetErrorFallback } from './widget-error-fallback';
+import { FigmaWidget } from './widget-figma';
+import { GithubWidget } from './widget-github';
+import { InstagramWidget } from './widget-instagram';
+import { LinkWidget } from './widget-link';
+import { LinkedInProfileWidget } from './widget-linkedin-profile';
+import { MediumWidget } from './widget-medium';
+import { PhotoWidget } from './widget-photo';
+import { SoundcloudWidget } from './widget-soundcloud';
+import { SpotifyAlbumWidget } from './widget-spotify-album';
+import { SpotifySongWidget } from './widget-spotify-song';
+import { SubstackWidget } from './widget-substack';
+import { TwitterWidget } from './widget-twitter';
+import { YouTubeWidget } from './widget-youtube';
 
 interface WidgetProps {
   identifier: string;

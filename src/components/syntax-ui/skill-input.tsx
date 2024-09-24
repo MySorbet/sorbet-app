@@ -1,10 +1,14 @@
 import { SearchLg } from '@untitled-ui/icons-react';
-import { AnimatePresence, motion, useAnimate } from 'framer-motion';
+import {
+  AnimatePresence,
+  AnimationScope,
+  motion,
+  useAnimate,
+} from 'framer-motion';
 import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
-
-const MaxNumOfSkills = 5;
+import { MAX_CHARS_PER_SKILL, MAX_NUM_SKILLS } from '@/constant';
 
 interface SkillInputProps extends ComponentProps<'input'> {
   initialSkills: string[];
@@ -29,18 +33,24 @@ const SkillInput = ({
   const [inputValue, setInputValue] = useState<string>('');
   const [scope, animate] = useAnimate();
 
-  const isMaxSkills = skills.length >= MaxNumOfSkills;
+  const isMaxSkills = skills.length >= MAX_NUM_SKILLS;
+  const isMaxChars = inputValue.length > MAX_CHARS_PER_SKILL;
 
   // Handles adding new keyword on Enter or comma press, and keyword removal on Backspace
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (
       event.key === 'Enter' ||
       event.key === ',' ||
       (event.key === 'Tab' && inputValue.trim() !== '')
     ) {
-      if (inputValue.trim() === '' || isMaxSkills) {
+      if (inputValue.trim() === '' || isMaxSkills || isMaxChars) {
         event.preventDefault();
-
+        if (scope.current) {
+          await animate(scope.current, { x: 20, y: 5, scale: 1.1 });
+          await animate(scope.current, { x: 0, y: 0, scale: 1 });
+        }
         return;
       }
       event.preventDefault();
@@ -62,7 +72,9 @@ const SkillInput = ({
   const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
     const paste = event.clipboardData.getData('text');
-    const allwords = paste.split(', ').map((word) => word.trim());
+    const allwords = paste
+      .split(', ')
+      .map((word) => word.trim().slice(0, MAX_CHARS_PER_SKILL));
     const newallwords = allwords.slice(0, 5);
     const strippedArr = newallwords.join(', ');
 
@@ -83,15 +95,14 @@ const SkillInput = ({
   // Updates the inputValue state as the user types
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-    if (isMaxSkills) {
-      await animate(scope.current, { x: 20, y: 5, scale: 1.1 });
-      await animate(scope.current, { x: 0, y: 0, scale: 1 });
-    }
   };
   // Adds the keyword when the input loses focus, if there's a keyword to add
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     if (inputValue.trim() !== '' && event.relatedTarget?.tagName !== 'BUTTON') {
-      const newSkills = [...skills, inputValue.trim()];
+      const newSkills = [
+        ...skills,
+        inputValue.trim().slice(0, MAX_CHARS_PER_SKILL),
+      ];
       setSkills(newSkills);
       onSkillsChange(newSkills);
       setInputValue('');
@@ -146,17 +157,49 @@ const SkillInput = ({
             onPaste={handlePaste}
             onBlur={(e) => handleBlur(e)}
             className='my-1 flex-1 bg-transparent text-sm outline-none'
-            placeholder='Enter your skills (max 5)'
+            placeholder={`Enter your skills (max ${MAX_NUM_SKILLS})`}
           />
         </div>
       </div>
-      {isMaxSkills && (
-        <p ref={scope} className='text-sm font-normal text-[#475467]'>
-          Max 5 skills
-        </p>
-      )}
+      <SkillStatus
+        isMaxChars={isMaxChars}
+        isMaxSkills={isMaxSkills}
+        scope={scope}
+      />
     </div>
   );
 };
 
 export default SkillInput;
+
+const SkillStatus = ({
+  isMaxSkills,
+  isMaxChars,
+  scope,
+}: {
+  isMaxSkills: boolean;
+  isMaxChars: boolean;
+  scope: AnimationScope<any>;
+}) => {
+  if (isMaxSkills) {
+    return (
+      <p
+        ref={scope}
+        className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
+      >
+        Max {MAX_NUM_SKILLS} skills
+      </p>
+    );
+  }
+
+  if (isMaxChars) {
+    return (
+      <p
+        ref={scope}
+        className='animate-in slide-in-from-top-1 fade-in-0 text-destructive text-sm font-normal'
+      >
+        Max {MAX_CHARS_PER_SKILL} characters per skill
+      </p>
+    );
+  }
+};

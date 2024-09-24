@@ -11,9 +11,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Spinner } from '@/components/common';
+import { CopyButton, Spinner } from '@/components/common';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
@@ -139,31 +140,57 @@ const Balances: React.FC = () => {
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
-      <div className='text-muted-foreground text-sm'>Balances</div>
+      <div className='flex flex-row items-center justify-between'>
+        <div className='text-muted-foreground text-sm'>Balances</div>
+        <WalletAddress />
+      </div>
       <div className='flex flex-col gap-3'>
-        <div className='flex gap-2 text-sm font-semibold'>
+        <div className='flex items-center gap-2 text-sm font-semibold'>
           <Image
             src='/svg/usdc.svg'
             alt='USDC'
-            width={20}
-            height={20}
-            className='size-5'
+            width={18}
+            height={18}
+            className='size-[1.125rem]' // 18px
           />
-          <div>
-            {loading ? <Spinner size='small' /> : `${usdcBalance} USDC`}
-          </div>
+
+          {loading ? <Skeleton className='h-4 w-24' /> : `${usdcBalance} USDC`}
         </div>
-        <div className='flex gap-2 text-sm font-semibold'>
+        <div className='flex items-center gap-2 text-sm font-semibold'>
           <Image
             src='/svg/ethereum.svg'
             alt='ETH'
-            width={20}
-            height={20}
-            className='size-5'
+            width={18}
+            height={18}
+            className='size-[1.125rem]' // 18px
           />
-          <div>{loading ? <Spinner size='small' /> : `${ethBalance} ETH`}</div>
+          {loading ? <Skeleton className='h-4 w-24' /> : `${ethBalance} ETH`}
         </div>
       </div>
+    </div>
+  );
+};
+
+/**
+ * Local component for displaying wallet address with a copy button
+ */
+const WalletAddress: React.FC = () => {
+  const address = useEmbeddedWalletAddress();
+
+  // If we don't have an address yet, we should show a skeleton
+  if (!address) {
+    return <Skeleton className='h-4 w-24' />;
+  }
+
+  const truncatedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
+  return (
+    <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
+      <span>{truncatedAddress}</span>
+      <CopyButton
+        onCopy={() => {
+          navigator.clipboard.writeText(address);
+        }}
+      />
     </div>
   );
 };
