@@ -8,8 +8,8 @@ import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 import { Spinner } from '@/components/common';
 import { useToast } from '@/components/ui/use-toast';
 import {
+  useCreateWidget,
   useDeleteWidget,
-  useGetWidgetContent,
   useGetWidgetsForUser,
   useUpdateWidgetsBulk,
   useUploadWidgetsImage,
@@ -75,7 +75,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetsBulk } = useUpdateWidgetsBulk();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
-  const { mutateAsync: getWidgetContent } = useGetWidgetContent();
+  const { mutateAsync: createWidget } = useCreateWidget();
   const { data: userWidgetData, isPending: isUserWidgetPending } =
     useGetWidgetsForUser(userId);
 
@@ -160,12 +160,12 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
       // We're adding a widget that is not a photo
       // So try to fetch required content from the url and persist that content in the database as a new widget
       /**
-       * Any function that is called by getWidgetContent should throw a descriptive error upon failure using the RQ onError callback
+       * Any function that is called by createWidget should throw a descriptive error upon failure using the RQ onError callback
        * i.e. if we are calling getInstagramProfileMetadata, it should throw a descriptive error that would bubble up to the onError callback
        */
-      const widget = await getWidgetContent({ url: widgetUrl, type });
+      const widget = await createWidget({ url: widgetUrl, type });
 
-      // TODO: getWidgetContent probably should not return undefined
+      // TODO: createWidget probably should not return undefined
       if (!widget) {
         throw new Error('Failed to add widget. Please try again.');
       }
