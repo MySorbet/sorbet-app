@@ -11,13 +11,13 @@ interface WidgetPlaceholderGridProps {
 /**
  * Grid of widget placeholders for the profile page. Lays out a bento grid of placeholders to match design.
  *
- * Note: this grid maintains a 2:1 ratio intentionally to size placeholders correctly. It will fill its container's width up to a max width of 1280px.
+ * Note: this grid maintains a 2:1 ratio intentionally to size placeholders correctly. It will fill its container's width up to a reasonable max width.
  */
 export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
   onClick,
 }) => {
   return (
-    <div className='grid aspect-[2/1] max-w-[1280px] grid-cols-4 grid-rows-2 gap-8 p-4'>
+    <div className='grid aspect-[2/1] w-full max-w-screen-2xl grid-cols-4 grid-rows-2 gap-8'>
       <WidgetPlaceholder
         type='TwitterProfile'
         className='col-span-1 row-span-1'
