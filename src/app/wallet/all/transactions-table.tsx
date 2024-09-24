@@ -48,22 +48,22 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
 }) => {
   const handleTxnClick = (hash: string) => {
     window.open(
-      `${process.env.NEXT_PUBLIC_NEARBLOCKS_EXPLORER}/txns/${hash}`,
+      `${process.env.NEXT_PUBLIC_BASESEPOLIA_EXPLORER}/tx/${hash}`,
       '_blank'
     );
   };
 
   return (
-    <div className='shadow-[0px_10px_30px_0px_#00000014] rounded-xl bg-white p-6 min-h-[100%] relative'>
+    <div className='relative min-h-[100%] rounded-xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
       {isLoading && (
-        <div className='absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-3xl'>
+        <div className='absolute inset-0 flex items-center justify-center rounded-3xl bg-white bg-opacity-75'>
           <Spinner />
         </div>
       )}
       {!minimalMode && (
-        <div className='grid grid-cols-12 gap-4 mb-4'>
-          <div className='relative col-span-12 lg:col-span-6'>
-            <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
+        <div className='mb-4 grid grid-cols-12 gap-4'>
+          <div className='relative col-span-12 lg:col-span-8'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
               <Search size={20} />
             </div>
             <input
@@ -71,14 +71,14 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
               placeholder='Search'
               value={searchValue}
               onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-              className='px-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full'
+              className='w-full rounded-md border border-gray-300 px-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
           </div>
-          <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
+          {/* <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button className='flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground'>
+                  <button className='text-md text-muted-foreground flex w-full items-center justify-center rounded-md border border-gray-300 px-4 py-2 focus:outline-none'>
                     Amount
                     <ChevronDown size={16} className='ml-1' />
                   </button>
@@ -86,14 +86,14 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                 <TooltipContent>Coming soon!</TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>
+          </div> */}
           <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
             {onDateRangeChange && (
               <DatePickerWithRange
                 date={dateRange}
                 onDateChange={onDateRangeChange}
                 triggerButton={
-                  <button className='flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground'>
+                  <button className='text-md text-muted-foreground flex w-full items-center justify-center rounded-md border border-gray-300 px-4 py-2 focus:outline-none'>
                     Date
                     <ChevronDown size={16} className='ml-1' />
                   </button>
@@ -103,7 +103,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           </div>
           <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
             <button
-              className='flex items-center px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-md w-full text-muted-foreground justify-center'
+              className='text-md text-muted-foreground flex w-full items-center justify-center rounded-md border border-gray-300 px-4 py-2 focus:outline-none'
               onClick={onClearAll}
             >
               Clear All
@@ -116,33 +116,33 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           <tr>
             <th
               scope='col'
-              className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+              className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'
             >
               To/From
             </th>
             <th
               scope='col'
-              className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+              className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'
             >
               Date
             </th>
             <th
               scope='col'
-              className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-right'
+              className='px-6 py-3 text-left text-right text-xs font-medium uppercase tracking-wider text-gray-500'
             >
               Amount
             </th>
           </tr>
         </thead>
-        <tbody className='bg-white divide-y divide-gray-200'>
+        <tbody className='divide-y divide-gray-200 bg-white'>
           {transactions &&
             transactions.map((transaction, index) => (
               <tr key={index}>
-                <td className='px-6 py-4 whitespace-nowrap'>
+                <td className='whitespace-nowrap px-6 py-4'>
                   <div className='flex items-center'>
-                    <div className='flex-shrink-0 h-10 w-10'>
+                    <div className='h-10 w-10 flex-shrink-0'>
                       <span
-                        className={`bg-gray-200 w-10 h-10 text-gray-500 rounded-full flex justify-center items-center`}
+                        className={`flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-500`}
                       >
                         {transaction.type === 'Sent' && <MoveDown size={16} />}
                         {transaction.type === 'Received' && <Send size={16} />}
@@ -161,13 +161,13 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                     </div>
                   </div>
                 </td>
-                <td className='px-6 py-4 whitespace-nowrap'>
+                <td className='whitespace-nowrap px-6 py-4'>
                   <div className='text-sm text-gray-900'>
                     {transaction.date}
                   </div>
                 </td>
                 <td
-                  className='px-6 py-4 whitespace-nowrap flex gap-2 items-center justify-end cursor-pointer'
+                  className='flex cursor-pointer items-center justify-end gap-2 whitespace-nowrap px-6 py-4'
                   onClick={() => handleTxnClick(transaction.hash)}
                 >
                   <div className={`text-sm`}>{transaction.amount}</div>

@@ -3,7 +3,7 @@
 import { MoveDown, MoveUp, Send } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-
+import { useWallets, getEmbeddedConnectedWallet } from '@privy-io/react-auth';
 import { getOverview } from '@/api/user';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
@@ -33,21 +33,27 @@ export const WalletContainer = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const fetchTransactions = async (last_days = 30) => {
-  //   if (user) {
-  //     setLoading(true);
-  //     const response = await getOverview(last_days);
-  //     if (response && response.data) {
-  //       setTransactions(response.data.transactions);
-  //       setBalances(response.data.balances);
-  //     }
-  //     setLoading(false);
-  //   }
-  // };
-  const handleTxnDurationChange = (value: string) => {
-    // const last_days = parseInt(value, 10);
-    // fetchTransactions(last_days);
+  const fetchTransactions = async (last_days = 30) => {
+    if (walletAddress) {
+      setLoading(true);
+      const response = await getOverview(walletAddress, last_days);
+      if (response && response.data) {
+        setTransactions(response.data.transactions);
+        // setBalances(response.data.balances);
+      }
+      setLoading(false);
+    }
   };
+  const handleTxnDurationChange = (value: string) => {
+    const last_days = parseInt(value, 10);
+    fetchTransactions(last_days);
+  };
+
+  useEffect(() => {
+    (async () => {
+      await fetchTransactions();
+    })();
+  }, [walletAddress]);
 
   return (
     <Authenticated>
