@@ -1,56 +1,35 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { WidgetTypes } from '@/types';
+import { WidgetTypesWithIcons } from '@/components/profile/widgets/widget-icon';
 
-import { WidgetPlaceHolder } from './widget-placeholder';
+import { WidgetPlaceholder } from './widget-placeholder';
 
 const meta = {
   title: 'WidgetPlaceholder',
-  component: WidgetPlaceHolder,
+  component: WidgetPlaceholder,
   parameters: {
     layout: 'centered',
   },
+  tags: ['autodocs'],
   args: {
     onClick: fn(),
   },
   argTypes: {
     type: {
-      options: WidgetTypes,
+      options: WidgetTypesWithIcons,
       control: {
         type: 'select',
       },
     },
   },
-} satisfies Meta<typeof WidgetPlaceHolder>;
+} satisfies Meta<typeof WidgetPlaceholder>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    type: 'TwitterProfile',
-    size: 'A',
-  },
-};
-
-export const B: Story = {
-  args: {
-    type: 'TwitterProfile',
-    size: 'B',
-  },
-};
-
-export const C: Story = {
-  args: {
-    type: 'TwitterProfile',
-    size: 'C',
-  },
-};
-
-export const D: Story = {
-  args: {
-    type: 'TwitterProfile',
-    size: 'D',
+    type: 'Behance',
   },
 };

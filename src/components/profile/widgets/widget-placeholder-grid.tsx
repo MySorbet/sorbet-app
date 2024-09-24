@@ -1,50 +1,49 @@
 import React from 'react';
 
-import { WidgetPlaceHolder } from './widget-placeholder';
+import { WidgetPlaceholder } from './widget-placeholder';
 
-interface BentoGridWidgetPlaceholdersProps {
+interface WidgetPlaceholderGridProps {
   /** Callback for when any placeholder is clicked */
   onClick?: () => void;
 }
 
-export const BentoGridWidgetPlaceholders: React.FC<
-  BentoGridWidgetPlaceholdersProps
-> = ({ onClick }) => {
+/**
+ * Grid of widget placeholders for the profile page
+ *
+ * Note: this is a grid of 1280x640px (2:1 ratio) intentionally to size placeholders correctly.
+ */
+export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
+  onClick,
+}) => {
   return (
-    <div className='grid h-[720px] w-[1280px] grid-cols-4 grid-rows-2 gap-4 p-4'>
-      <WidgetPlaceHolder
+    <div className='grid h-[640px] w-[1280px] grid-cols-4 grid-rows-2 gap-4 p-4'>
+      <WidgetPlaceholder
         type='TwitterProfile'
-        size='A'
         className='col-span-1 row-span-1'
         onClick={onClick}
       />
-      <WidgetPlaceHolder
+      <WidgetPlaceholder
         type='Dribbble'
-        size='D'
         className='col-span-1 row-span-2'
         onClick={onClick}
       />
-      <WidgetPlaceHolder
+      <WidgetPlaceholder
         type='Behance'
-        size='A'
         className='col-span-2 row-span-1'
         onClick={onClick}
       />
-      <WidgetPlaceHolder
-        type='InstagramProfile'
-        size='A'
+      <WidgetPlaceholder
+        type='LinkedInProfile'
         className='col-span-1 row-span-1'
         onClick={onClick}
       />
-      <WidgetPlaceHolder
+      <WidgetPlaceholder
         type='InstagramProfile'
-        size='A'
         className='col-span-1 row-span-1'
         onClick={onClick}
       />
-      <WidgetPlaceHolder
+      <WidgetPlaceholder
         type='SpotifySong'
-        size='A'
         className='col-span-1 row-span-1'
         onClick={onClick}
       />

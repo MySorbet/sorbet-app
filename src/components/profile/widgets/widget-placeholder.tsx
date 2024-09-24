@@ -3,23 +3,31 @@ import { cn } from '@/lib/utils';
 import { WidgetIcon, WidgetTypeWithIcon } from './widget-icon';
 
 /**
+ * Props for the WidgetPlaceholder component.
+ */
+interface WidgetPlaceholderProps {
+  /** The type of the widget*/
+  type: WidgetTypeWithIcon;
+  /** Function to be called when the placeholder is clicked */
+  onClick?: () => void;
+  /** Additional CSS class names for styling */
+  className?: string;
+}
+
+/**
  * Widget placeholder is used to show a placeholder for a widget when the user has not added any widgets to their profile.
  *
- * Note: it will fill it's container's width and height as it is expected to be rendered in RGL or CSS Grid
+ * Note: it will fill its container's width and height as it is expected to be rendered in RGL or CSS Grid
  */
-export const WidgetPlaceHolder = ({
+export const WidgetPlaceholder = ({
   type,
   onClick,
   className,
-}: {
-  type: WidgetTypeWithIcon;
-  onClick?: () => void;
-  className?: string;
-}) => {
+}: WidgetPlaceholderProps) => {
   return (
     <div
       className={cn(
-        'flex size-full cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-4',
+        'hover:bg-accent hover:text-accent-foreground flex size-full min-h-fit min-w-fit cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-8',
         className
       )}
       onClick={onClick}
