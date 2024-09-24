@@ -2,8 +2,8 @@ import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   BehanceWidgetContentType,
@@ -19,6 +19,7 @@ import {
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
   TwitterWidgetContentType,
+  WidgetContentType,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -47,7 +48,7 @@ interface WidgetProps {
   type: WidgetType;
   w: number;
   h: number;
-  content?: any;
+  content?: WidgetContentType;
   loading?: boolean;
   initialSize?: WidgetSize;
   redirectUrl?: string;
@@ -251,20 +252,24 @@ export const Widget: React.FC<WidgetProps> = ({
 
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
-      {loading && (
-        <div className='align-center absolute z-50 flex h-full w-full items-center justify-center rounded-3xl bg-gray-300 opacity-70 drop-shadow-md'>
-          <Spinner />
-        </div>
-      )}
       <div
         className={cn(
-          'transition-height duration-1500 group relative z-10 flex h-full w-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md ease-in-out',
+          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md',
           type !== 'Photo' && 'p-4'
         )}
         key={identifier}
         onClick={onWidgetClick}
       >
-        {widgetContent}
+        {loading ? (
+          <Skeleton
+            className={cn(
+              'size-full rounded-xl',
+              type === 'Photo' && 'rounded-3xl'
+            )}
+          />
+        ) : (
+          widgetContent
+        )}
         {showControls && (
           <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
             <div className='flex flex-row gap-1'>

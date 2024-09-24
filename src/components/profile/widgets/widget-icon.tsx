@@ -28,7 +28,7 @@ export const WidgetIcon: React.FC<WidgetIconProps> = ({
     <Image
       className={cn('mb-4 size-[30px]', className)} // TODO: Get rid of bottom margin
       src={getSocialIconForWidget(type)}
-      alt={alt ?? 'Icon for widget'}
+      alt={alt ?? `${type} widget icon`}
       width={30}
       height={30}
       {...rest}

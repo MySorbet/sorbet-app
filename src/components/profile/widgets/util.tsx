@@ -1,5 +1,6 @@
 import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 
+import { SupportedWidgetTypes } from '@/lib/service';
 import { WidgetType } from '@/types';
 
 /**
@@ -9,7 +10,7 @@ import { WidgetType } from '@/types';
  * @returns the WidgetType of the given URL
  * @throws an error if the URL is invalid in some way
  */
-export const parseWidgetTypeFromUrl = (url: string): WidgetType => {
+export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
   const urlObj = new URL(url);
   const hostname = urlObj.hostname;
   const pathname = urlObj.pathname;

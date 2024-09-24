@@ -1,20 +1,8 @@
-import type { Layout as WidgetLayout } from 'react-grid-layout';
+import type { Layout } from 'react-grid-layout';
 
-export interface GetItemTypeBase {
+export interface GetWidgetBody {
   url: string;
 }
-
-export type GetDribbleShotType = GetItemTypeBase;
-export type GetBehanceItemType = GetItemTypeBase;
-export type GetMediumArticleType = GetItemTypeBase;
-export type GetYouTubeVideoType = GetItemTypeBase;
-export type GetSubstackArticleType = GetItemTypeBase;
-export type GetSpotifyType = GetItemTypeBase;
-export type GetSoundcloudType = GetItemTypeBase;
-export type GetInstagramType = GetItemTypeBase;
-export type GetPhotoWidget = GetItemTypeBase;
-export type GetGithubWidget = GetItemTypeBase;
-export type GetTwitterWidget = GetItemTypeBase;
 
 export interface Widget {
   id: string;
@@ -117,6 +105,23 @@ export interface LinkedInProfileWidgetContentType {
   profileImage: string;
 }
 
+/** Widget Content can be any of the following types per widget */
+export type WidgetContentType =
+  | DribbbleWidgetContentType
+  | PhotoWidgetContentType
+  | BehanceWidgetContentType
+  | MediumArticleContentType
+  | GithubWidgetContentType
+  | TwitterWidgetContentType
+  | FigmaWidgetContentType
+  | YoutubeWidgetContentType
+  | SubstackWidgetContentType
+  | SpotifyWidgetContentType
+  | InstagramWidgetContentType
+  | SoundcloudTrackContentType
+  | LinkWidgetContentType
+  | LinkedInProfileWidgetContentType;
+
 export const WidgetTypes = [
   'Photo',
   'Substack',
@@ -156,28 +161,27 @@ export const getWidgetDimensions = ({
   return adjustedDimensions;
 };
 
-export interface ExtendedWidgetLayout extends WidgetLayout {
-  type: WidgetType;
-  loading?: boolean;
-  redirectUrl?: string;
-  content?: any;
-  size: WidgetSize;
-}
-
 export interface UpdateWidgetsBulkDto {
   id: string;
   layout: { x: number; y: number; w: number; h: number };
   size: string;
 }
 
+/** This should match sorbet-api Widget in schema.prisma */
 export interface WidgetDto {
   id: string;
-  type: string; // TODO: Should be a WidgetType
-  size: string;
-  content: any;
+  type: WidgetType;
+  size: WidgetSize;
+  content: WidgetContentType;
   redirectUrl?: string;
   layout: { x: number; y: number; w: number; h: number };
   userId: string;
   createdAt: string;
   updatedAt: string;
 }
+
+/** This is a widget with extra properties for display in RGL */
+export type WidgetLayoutItem = Layout &
+  Pick<WidgetDto, 'type' | 'size' | 'redirectUrl' | 'content'> & {
+    loading?: boolean;
+  };

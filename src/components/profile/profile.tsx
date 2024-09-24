@@ -5,7 +5,7 @@ import { User } from '@/types';
 
 import { ProfileEditModal } from './profile-edit-modal';
 import { ProfileHeader } from './profile-header';
-import { WidgetContainer } from './widgets/widget-container';
+import { WidgetGrid } from './widgets/widget-grid';
 
 export const Profile: FC<{
   user: User;
@@ -49,7 +49,7 @@ export const Profile: FC<{
       </div>
 
       <div className={cn('mt-12', canEdit && 'mb-24')}>
-        <WidgetContainer editMode={canEdit} userId={user.id} />
+        <WidgetGrid editMode={canEdit} userId={user.id} />
       </div>
     </div>
   );
