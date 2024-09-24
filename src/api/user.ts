@@ -124,7 +124,7 @@ export const getOverview = async (address: string, last_days = 30) => {
  */
 export const getTransactions = async (
   address: string,
-  cursor: string = '',
+  cursor = '',
   limit = 20,
   order = 'DESC',
   from_date?: string,
