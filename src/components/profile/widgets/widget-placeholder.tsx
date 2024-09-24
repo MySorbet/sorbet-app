@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import { WidgetIcon, WidgetTypeWithIcon } from './widget-icon';
@@ -25,18 +26,19 @@ export const WidgetPlaceholder = ({
   className,
 }: WidgetPlaceholderProps) => {
   return (
-    <div
+    <Button
       className={cn(
-        'hover:bg-accent hover:text-accent-foreground flex size-full min-h-fit min-w-fit cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-8',
+        'size-full min-h-fit min-w-fit flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-8',
         className
       )}
+      variant='outline'
       onClick={onClick}
     >
       <WidgetIcon type={type} className='mb-0 size-10' />
       <span className='text-lg font-medium text-[#667085]'>
         {widgetPlaceHolderText[type]}
       </span>
-    </div>
+    </Button>
   );
 };
 
