@@ -7,7 +7,7 @@ const meta: Meta<typeof WidgetPlaceholderGrid> = {
   title: 'WidgetPlaceholderGrid',
   component: WidgetPlaceholderGrid,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
   args: {
     onClick: fn(),
