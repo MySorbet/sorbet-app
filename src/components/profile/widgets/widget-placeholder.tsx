@@ -1,30 +1,25 @@
 import { cn } from '@/lib/utils';
-import { WidgetDimensions, WidgetSize } from '@/types';
 
 import { WidgetIcon, WidgetTypeWithIcon } from './widget-icon';
 
+/**
+ * Widget placeholder is used to show a placeholder for a widget when the user has not added any widgets to their profile.
+ *
+ * Note: it will fill it's container's width and height as it is expected to be rendered in RGL or CSS Grid
+ */
 export const WidgetPlaceHolder = ({
   type,
-  size,
   onClick,
   className,
 }: {
   type: WidgetTypeWithIcon;
-  size: WidgetSize;
   onClick?: () => void;
   className?: string;
 }) => {
-  const d = WidgetDimensions[size];
-  const multiplier = 100;
-
   return (
     <div
       className={cn(
-        'flex cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-4',
-        // `w-[${d.w * multiplier}px]`,
-        // `h-[${d.h * multiplier}px]`,
-        // `aspect-[${d.w} / ${d.h}]`,
-        'size-full',
+        'flex size-full cursor-pointer flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-[#D7D7D7] bg-white p-4',
         className
       )}
       onClick={onClick}
@@ -37,19 +32,27 @@ export const WidgetPlaceHolder = ({
   );
 };
 
+/** Text to display for the placeholder */
+const placeholderText = {
+  social: 'Add Social',
+  portfolio: 'Add Portfolio',
+  music: 'Add Music',
+};
+
+/** Map of widget types to their placeholder text */
 const widgetPlaceHolderText: Record<WidgetTypeWithIcon, string> = {
-  Substack: 'Add Social',
-  SpotifySong: 'Add Social',
-  SpotifyAlbum: 'Add Social',
-  SoundcloudSong: 'Add Social',
-  InstagramPost: 'Add Social',
-  InstagramProfile: 'Add Social',
-  TwitterProfile: 'Add Social',
-  LinkedInProfile: 'Add Social',
-  Youtube: 'Add Social',
-  Github: 'Add Social',
-  Dribbble: 'Add Portfolio',
-  Behance: 'Add Portfolio',
-  Medium: 'Add Social',
-  Figma: 'Add Portfolio',
+  Substack: placeholderText.social,
+  SpotifySong: placeholderText.music,
+  SpotifyAlbum: placeholderText.music,
+  SoundcloudSong: placeholderText.music,
+  InstagramPost: placeholderText.social,
+  InstagramProfile: placeholderText.social,
+  TwitterProfile: placeholderText.social,
+  LinkedInProfile: placeholderText.social,
+  Youtube: placeholderText.social,
+  Github: placeholderText.social,
+  Dribbble: placeholderText.portfolio,
+  Behance: placeholderText.portfolio,
+  Medium: placeholderText.social,
+  Figma: placeholderText.portfolio,
 };
