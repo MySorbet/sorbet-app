@@ -3,22 +3,20 @@ import { cn } from '@/lib/utils';
 
 import { WidgetIcon, WidgetTypeWithIcon } from './widget-icon';
 
-/**
- * Props for the WidgetPlaceholder component.
- */
 interface WidgetPlaceholderProps {
-  /** The type of the widget*/
+  /** The type of the widget (controls icon and text*/
   type: WidgetTypeWithIcon;
-  /** Function to be called when the placeholder is clicked */
+  /** Callback when the placeholder is clicked */
   onClick?: () => void;
   /** Additional CSS class names for styling */
   className?: string;
 }
 
+// TODO: Rather than fill, should these maintain their own aspect based on a `WidgetSize`?
 /**
  * Widget placeholder is used to show a placeholder for a widget when the user has not added any widgets to their profile.
  *
- * Note: it will fill its container's width and height as it is expected to be rendered in RGL or CSS Grid
+ * Note: will fill its container's width and height as it is expected to be rendered in RGL or CSS Grid.
  */
 export const WidgetPlaceholder = ({
   type,

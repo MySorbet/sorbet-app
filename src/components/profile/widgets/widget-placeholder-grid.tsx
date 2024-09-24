@@ -8,7 +8,7 @@ interface WidgetPlaceholderGridProps {
 }
 
 /**
- * Grid of widget placeholders for the profile page
+ * Grid of widget placeholders for the profile page. Lays out a bento grid of placeholders to match design.
  *
  * Note: this is a grid of 1280x640px (2:1 ratio) intentionally to size placeholders correctly.
  */
