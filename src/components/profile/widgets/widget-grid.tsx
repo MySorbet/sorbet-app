@@ -54,9 +54,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   rowHeight = 120,
   editMode,
   userId,
-  onLayoutChange = () => {
-    /** noop */
-  },
+  onLayoutChange,
 }) => {
   const [layout, setLayout] = useState<WidgetLayoutItem[]>([]);
   const [initialLayout, setInitialLayout] = useState<WidgetLayoutItem[]>([]);
@@ -129,7 +127,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     });
   };
 
-  const handleWidgetAdd = async (url: string, image: File | undefined) => {
+  const handleWidgetAdd = async (url: string, image?: File) => {
     setAddingWidget(true);
     setError(null);
     let widgetUrl: string = url;
@@ -206,7 +204,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     });
 
     setLayout(updatedLayout);
-    onLayoutChange(updatedLayout);
+    onLayoutChange?.(updatedLayout);
   };
 
   const persistWidgetsLayoutOnChange = (items?: WidgetLayoutItem[]) => {
