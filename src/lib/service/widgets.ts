@@ -344,12 +344,14 @@ const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Link: getLinkData,
 };
 
-/** Get/create a widget with the given url and type */
 export type GetWidgetContentParams = {
+  /** The url to get the widget content for */
   url: string;
+  /** The type of the widget to get */
   type: SupportedWidgetTypes;
 };
 
+/** Get/create a widget with the given url and type */
 export const getWidgetContent = async ({
   url,
   type,
