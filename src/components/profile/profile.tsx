@@ -31,7 +31,7 @@ export const Profile: FC<{
   };
 
   return (
-    <div className='container px-20 py-4'>
+    <div className='container px-16 py-4'>
       <div className='flex flex-col items-center gap-4 py-6'>
         <ProfileHeader
           user={user}

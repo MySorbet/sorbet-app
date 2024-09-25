@@ -9,6 +9,8 @@ interface WidgetPlaceholderGridProps {
   onClick?: () => void;
   /** Whether the grid is loading */
   loading?: boolean;
+  /** Additional className to apply to the grid */
+  className?: string;
 }
 
 // TODO: Could tweak the grid properties with tw breakpoints to support smaller screen sizes
@@ -20,9 +22,15 @@ interface WidgetPlaceholderGridProps {
 export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
   onClick,
   loading,
+  className,
 }) => {
   return (
-    <div className='animate-in fade-in grid aspect-[2/1] w-full max-w-screen-2xl grid-cols-4 grid-rows-2 gap-8'>
+    <div
+      className={cn(
+        'animate-in fade-in grid aspect-[2/1] w-full max-w-screen-2xl grid-cols-4 grid-rows-2 gap-8',
+        className
+      )}
+    >
       <WidgetPlaceholder
         type='TwitterProfile'
         className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}

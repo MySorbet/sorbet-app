@@ -428,7 +428,12 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
   // Use the placeholder grid loading state while we fetch the user's widgets
   if (isUserWidgetPending) {
-    return <WidgetPlaceholderGrid loading />;
+    return (
+      <WidgetPlaceholderGrid
+        loading
+        className='px-[25px]' // Add some additional padding because RGL margin is around the entire grid
+      />
+    );
   }
 
   return (
@@ -437,6 +442,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         <WidgetPlaceholderGrid
           onClick={() => setDrawerOpen(true)}
           loading={addingWidget}
+          className='px-[25px]' // Add some additional padding because RGL margin is around the entire grid
         />
       )}
       <OnboardingDrawer
