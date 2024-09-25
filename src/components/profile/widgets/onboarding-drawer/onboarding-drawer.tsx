@@ -52,7 +52,6 @@ export const OnboardingDrawer = ({
       TwitterProfile: '',
       LinkedInProfile: '',
       Github: '',
-      Dribbble: '',
       Behance: '',
       Medium: '',
     },
@@ -107,7 +106,7 @@ export const OnboardingDrawer = ({
               ))}
             </div>
 
-            <DrawerFooter className='flex flex-row justify-between'>
+            <DrawerFooter className='flex flex-row justify-between pb-8'>
               <DrawerClose asChild>
                 {/* We need type='button' to prevent the form from being submitted */}
                 <Button variant='outline' type='button'>

@@ -38,7 +38,7 @@ export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
         loading={loading}
       />
       <WidgetPlaceholder
-        type='Dribbble'
+        type='Medium'
         className={cn('col-span-1 row-span-2', loading && 'bg-slate-200')}
         onClick={onClick}
         loading={loading}
@@ -62,7 +62,7 @@ export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
         loading={loading}
       />
       <WidgetPlaceholder
-        type='SpotifySong'
+        type='Github'
         className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
         onClick={onClick}
         loading={loading}

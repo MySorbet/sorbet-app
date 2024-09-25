@@ -95,7 +95,6 @@ export const HandleInputWidgetTypes = [
   'TwitterProfile',
   'LinkedInProfile',
   'Github',
-  'Dribbble',
   'Behance',
   'Medium',
 ] as const satisfies WidgetTypeWithIcon[];
@@ -117,7 +116,6 @@ export const typeAndHandleToWidgetUrl = (
   const baseUrl: Record<HandleInputWidgetType, string> = {
     TwitterProfile: 'https://x.com/',
     InstagramProfile: 'https://instagram.com/',
-    Dribbble: 'https://dribbble.com/',
     Behance: 'https://behance.net/',
     LinkedInProfile: 'https://linkedin.com/in/',
     Github: 'https://github.com/',
