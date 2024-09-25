@@ -142,7 +142,8 @@ const Balances: React.FC = () => {
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
       <div className='flex flex-row items-center justify-between'>
         <div className='text-muted-foreground text-sm'>Balances</div>
-        <WalletAddress />
+        {/* Temporarily hiding as per request from Rami for demo 9/24/24 */}
+        {/* <WalletAddress /> */}
       </div>
       <div className='flex flex-col gap-3'>
         <div className='flex items-center gap-2 text-sm font-semibold'>
