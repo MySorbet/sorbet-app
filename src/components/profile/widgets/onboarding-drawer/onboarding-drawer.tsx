@@ -61,6 +61,15 @@ export const OnboardingDrawer = ({
   const formValues = form.watch();
   const isFormEmpty = Object.values(formValues).every((value) => value === '');
 
+  /** Handle the submit event, removing empty values before calling the onSubmit callback */
+  const handleSubmit = (values: FormSchema) => {
+    // Filter out empty values
+    const res = Object.fromEntries(
+      Object.entries(values).filter(([, value]) => value !== '')
+    );
+    onSubmit?.(res);
+  };
+
   // TODO: Nail the scroll within the drawer (for large font sizes)
   // TODO: Forward all drawer props to the drawer?
   return (
@@ -69,7 +78,7 @@ export const OnboardingDrawer = ({
         <Form {...form}>
           <form
             // TODO: Maybe onSubmit should clear the form?
-            onSubmit={onSubmit ? form.handleSubmit(onSubmit) : undefined}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className='mx-auto w-full max-w-xl px-4'
           >
             <DrawerHeader className='pb-2'>
