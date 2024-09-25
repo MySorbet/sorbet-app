@@ -57,16 +57,18 @@ const Step3 = () => {
 
   return (
     <FormContainer>
-      <div className='flex h-full flex-col gap-6'>
-        <div className='flex w-full items-center justify-between'>
-          <h1 className='text-2xl font-semibold'>Skills</h1>
-          <p className='text-sm font-medium text-[#344054]'>Step 3 of 3</p>
+      <div className='flex h-full flex-col justify-between gap-6'>
+        <div className='flex flex-col gap-4'>
+          <div className='flex w-full items-center justify-between'>
+            <h1 className='text-2xl font-semibold'>Skills</h1>
+            <p className='text-sm font-medium text-[#344054]'>Step 3 of 3</p>
+          </div>
+          <SkillInput
+            initialSkills={userData.skills}
+            onSkillsChange={handleSkillChange}
+            unique
+          />
         </div>
-        <SkillInput
-          initialSkills={userData.skills}
-          onSkillsChange={handleSkillChange}
-          unique
-        />
         <div className='flex gap-3'>
           <Button
             className='border border-[#D0D5DD] bg-[#FFFFFF] text-base font-semibold text-[#344054] shadow-sm shadow-[#1018280D] hover:bg-gray-300'
