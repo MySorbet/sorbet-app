@@ -17,7 +17,7 @@ export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
   onClick,
 }) => {
   return (
-    <div className='grid aspect-[2/1] w-full max-w-screen-2xl grid-cols-4 grid-rows-2 gap-8'>
+    <div className='animate-in fade-in grid aspect-[2/1] w-full max-w-screen-2xl grid-cols-4 grid-rows-2 gap-8'>
       <WidgetPlaceholder
         type='TwitterProfile'
         className='col-span-1 row-span-1'
