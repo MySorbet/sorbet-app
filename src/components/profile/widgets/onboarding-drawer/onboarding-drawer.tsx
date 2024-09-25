@@ -67,6 +67,7 @@ export const OnboardingDrawer = ({
     const res = Object.fromEntries(
       Object.entries(values).filter(([, value]) => value !== '')
     );
+    form.reset();
     onSubmit?.(res);
   };
 
