@@ -1,10 +1,14 @@
 import React from 'react';
 
+import { cn } from '@/lib/utils';
+
 import { WidgetPlaceholder } from './widget-placeholder';
 
 interface WidgetPlaceholderGridProps {
   /** Callback for when any placeholder is clicked */
   onClick?: () => void;
+  /** Whether the grid is loading */
+  loading?: boolean;
 }
 
 // TODO: Could tweak the grid properties with tw breakpoints to support smaller screen sizes
@@ -15,38 +19,45 @@ interface WidgetPlaceholderGridProps {
  */
 export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
   onClick,
+  loading,
 }) => {
   return (
     <div className='animate-in fade-in grid aspect-[2/1] w-full max-w-screen-2xl grid-cols-4 grid-rows-2 gap-8'>
       <WidgetPlaceholder
         type='TwitterProfile'
-        className='col-span-1 row-span-1'
+        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
         onClick={onClick}
+        loading={loading}
       />
       <WidgetPlaceholder
         type='Dribbble'
-        className='col-span-1 row-span-2'
+        className={cn('col-span-1 row-span-2', loading && 'bg-slate-200')}
         onClick={onClick}
+        loading={loading}
       />
       <WidgetPlaceholder
         type='Behance'
-        className='col-span-2 row-span-1'
+        className={cn('col-span-2 row-span-1', loading && 'bg-slate-200')}
         onClick={onClick}
+        loading={loading}
       />
       <WidgetPlaceholder
         type='LinkedInProfile'
-        className='col-span-1 row-span-1'
+        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
         onClick={onClick}
+        loading={loading}
       />
       <WidgetPlaceholder
         type='InstagramProfile'
-        className='col-span-1 row-span-1'
+        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
         onClick={onClick}
+        loading={loading}
       />
       <WidgetPlaceholder
         type='SpotifySong'
-        className='col-span-1 row-span-1'
+        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
         onClick={onClick}
+        loading={loading}
       />
     </div>
   );

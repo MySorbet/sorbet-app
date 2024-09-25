@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetIcon, WidgetTypeWithIcon } from './widget-icon';
@@ -10,6 +11,8 @@ interface WidgetPlaceholderProps {
   onClick?: () => void;
   /** Additional CSS class names for styling */
   className?: string;
+  /** Whether the placeholder is loading */
+  loading?: boolean;
 }
 
 // TODO: Rather than fill, should these maintain their own aspect based on a `WidgetSize`?
@@ -22,7 +25,15 @@ export const WidgetPlaceholder = ({
   type,
   onClick,
   className,
+  loading,
 }: WidgetPlaceholderProps) => {
+  if (loading) {
+    return (
+      <Skeleton
+        className={cn('size-full min-h-28 min-w-28 rounded-3xl', className)}
+      />
+    );
+  }
   return (
     <Button
       className={cn(
