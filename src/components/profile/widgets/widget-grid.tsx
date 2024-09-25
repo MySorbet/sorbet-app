@@ -5,11 +5,10 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import RGL, { Layout, WidthProvider } from 'react-grid-layout';
 
-import { Spinner } from '@/components/common';
 import { useToast } from '@/components/ui/use-toast';
 import {
+  useCreateWidget,
   useDeleteWidget,
-  useGetWidgetContent,
   useGetWidgetsForUser,
   useUpdateWidgetsBulk,
   useUploadWidgetsImage,
@@ -25,10 +24,15 @@ import {
 
 import { AddWidgets } from './add-widgets';
 import { DesktopOnlyAlert } from './desktop-only-alert';
-import { NoWidgetsContent } from './no-widgets-content';
+import {
+  HandleInputWidgetType,
+  OnboardingDrawer,
+  typeAndHandleToWidgetUrl,
+} from './onboarding-drawer';
 import styles from './react-grid-layout-custom.module.css';
 import { parseWidgetTypeFromUrl } from './util';
 import { Widget } from './widget';
+import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -54,9 +58,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   rowHeight = 120,
   editMode,
   userId,
-  onLayoutChange = () => {
-    /** noop */
-  },
+  onLayoutChange,
 }) => {
   const [layout, setLayout] = useState<WidgetLayoutItem[]>([]);
   const [initialLayout, setInitialLayout] = useState<WidgetLayoutItem[]>([]);
@@ -75,9 +77,29 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetsBulk } = useUpdateWidgetsBulk();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
-  const { mutateAsync: getWidgetContent } = useGetWidgetContent();
+  const { mutateAsync: createWidget } = useCreateWidget();
   const { data: userWidgetData, isPending: isUserWidgetPending } =
     useGetWidgetsForUser(userId);
+
+  // See this link to understand why we need to pass a ref boolean into draggable widgets
+  // https://github.com/react-grid-layout/react-draggable/issues/531
+  const draggedRef = useRef<boolean>(false);
+
+  // State for the onboarding drawer
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  /**
+   * Handles the submission of the onboarding drawer.
+   * Get an array of urls from the handles and call handleAddMultipleWidgets with them
+   */
+  const handleOnboardingDrawerSubmit = async (
+    handles: Partial<Record<HandleInputWidgetType, string>>
+  ) => {
+    const urls = Object.entries(handles).map(([type, handle]) => {
+      return typeAndHandleToWidgetUrl(type as HandleInputWidgetType, handle);
+    });
+    await handleAddMultipleWidgets(urls);
+  };
 
   const generateLayout = useCallback(async (): Promise<WidgetLayoutItem[]> => {
     const userWidgets: WidgetDto[] = userWidgetData;
@@ -129,7 +151,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     });
   };
 
-  const handleWidgetAdd = async (url: string, image: File | undefined) => {
+  const handleWidgetAdd = async (url: string, image?: File) => {
     setAddingWidget(true);
     setError(null);
     let widgetUrl: string = url;
@@ -160,12 +182,12 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
       // We're adding a widget that is not a photo
       // So try to fetch required content from the url and persist that content in the database as a new widget
       /**
-       * Any function that is called by getWidgetContent should throw a descriptive error upon failure using the RQ onError callback
+       * Any function that is called by createWidget should throw a descriptive error upon failure using the RQ onError callback
        * i.e. if we are calling getInstagramProfileMetadata, it should throw a descriptive error that would bubble up to the onError callback
        */
-      const widget = await getWidgetContent({ url: widgetUrl, type });
+      const widget = await createWidget({ url: widgetUrl, type });
 
-      // TODO: getWidgetContent probably should not return undefined
+      // TODO: createWidget probably should not return undefined
       if (!widget) {
         throw new Error('Failed to add widget. Please try again.');
       }
@@ -199,6 +221,62 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     }
   };
 
+  /**
+   * Adds multiple widgets to the layout and database. This is a modified version of handleWidgetAdd above.
+   * @param urls - An array of widget URLs to add.
+   */
+  const handleAddMultipleWidgets = async (urls: string[]) => {
+    setAddingWidget(true);
+    setError(null);
+
+    const widgetsToAdd = (
+      await Promise.all(
+        urls.map(async (url, index) => {
+          try {
+            const type = parseWidgetTypeFromUrl(url);
+            const widget = await createWidget({ url, type });
+
+            // TODO: createWidget probably should not return undefined
+            if (!widget) {
+              throw new Error('Failed to add widget. Please try again.');
+            }
+
+            const widgetToAdd: WidgetLayoutItem = {
+              i: widget.id,
+              x: (index * 2) % cols,
+              y: Math.floor((index * 2) / cols),
+              w: WidgetDimensions.A.w,
+              h: WidgetDimensions.A.h,
+              type: type,
+              content: widget.content,
+              static: !editMode,
+              isResizable: false,
+              isDraggable: editMode,
+              loading: false,
+              size: 'A',
+            };
+            return widgetToAdd;
+          } catch (error) {
+            const message =
+              error instanceof Error ? error.message : 'Something went wrong';
+            toast({
+              title: `We couldn't add a widget`,
+              description: message,
+            });
+          }
+        })
+      )
+    ).filter((widget) => widget !== undefined);
+
+    setLayout((prevLayout) => {
+      const newLayout = [...prevLayout, ...widgetsToAdd];
+      persistWidgetsLayoutOnChange(newLayout);
+      return newLayout;
+    });
+    setInitialLayout((prevLayout) => [...prevLayout, ...widgetsToAdd]);
+    setAddingWidget(false);
+  };
+
   const handleLayoutChange = (newLayout: WidgetLayoutItem[]) => {
     const updatedLayout = newLayout.map((layoutItem) => {
       const existingItem = layout.find((item) => item.i === layoutItem.i);
@@ -206,7 +284,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     });
 
     setLayout(updatedLayout);
-    onLayoutChange(updatedLayout);
+    onLayoutChange?.(updatedLayout);
   };
 
   const persistWidgetsLayoutOnChange = (items?: WidgetLayoutItem[]) => {
@@ -348,21 +426,30 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     return () => window.removeEventListener('resize', calculateBreakpoint);
   }, [window.innerWidth]);
 
-  // See this link to understand why we need to pass a ref boolean into draggable widgets
-  // https://github.com/react-grid-layout/react-draggable/issues/531
-  const draggedRef = useRef<boolean>(false);
-
+  // Use the placeholder grid loading state while we fetch the user's widgets
   if (isUserWidgetPending) {
     return (
-      <div className='flex h-full w-full items-center justify-center'>
-        <Spinner />
-      </div>
+      <WidgetPlaceholderGrid
+        loading
+        className='px-[25px]' // Add some additional padding because RGL margin is around the entire grid
+      />
     );
   }
 
   return (
     <>
-      {layout.length < 1 && editMode && <NoWidgetsContent />}
+      {editMode && layout.length < 1 && (
+        <WidgetPlaceholderGrid
+          onClick={() => setDrawerOpen(true)}
+          loading={addingWidget}
+          className='px-[25px]' // Add some additional padding because RGL margin is around the entire grid
+        />
+      )}
+      <OnboardingDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSubmit={handleOnboardingDrawerSubmit}
+      />
       <DesktopOnlyAlert />
       <div ref={containerRef}>
         <ReactGridLayout

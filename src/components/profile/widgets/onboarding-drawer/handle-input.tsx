@@ -18,6 +18,9 @@ interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
  * HandleInput is a component that allows the user to input a handle for a social media profile.
  *
  * It is a forwardRef component that allows the parent component to access the input element.
+ *
+ * Note: A clear button is rendered when `value` is not empty. Clicking it will cause value to be set to an empty string and is handled internally.
+ * Note: Pressing enter will tab to the next input, skipping the clear button if it is shown.
  */
 export const HandleInput = React.forwardRef<HTMLInputElement, HandleInputProps>(
   ({ className, type, onChange, ...props }, ref) => {
@@ -39,6 +42,19 @@ export const HandleInput = React.forwardRef<HTMLInputElement, HandleInputProps>(
       }
     };
 
+    // Prevent enter from clearing the input and instead, make it tab to the next input (skipping the clear button if needed)
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        // Simulate Tab key press
+        const nextElement = e.currentTarget.form?.elements[
+          Array.from(e.currentTarget.form.elements).indexOf(e.currentTarget) +
+            (showClearButton ? 2 : 1)
+        ] as HTMLElement;
+        nextElement?.focus();
+      }
+    };
+
     return (
       <div className='relative'>
         <Input
@@ -51,6 +67,7 @@ export const HandleInput = React.forwardRef<HTMLInputElement, HandleInputProps>(
             setShowClearButton(e.target.value.length > 0);
             onChange?.(e);
           }}
+          onKeyDown={handleKeyDown}
           aria-label={`${type} username input`}
           {...props}
         />
@@ -78,10 +95,32 @@ export const HandleInputWidgetTypes = [
   'TwitterProfile',
   'LinkedInProfile',
   'Github',
-  'Dribbble',
   'Behance',
   'Medium',
 ] as const satisfies WidgetTypeWithIcon[];
 
 /** These are the supported widget types for the onboarding flow */
 export type HandleInputWidgetType = (typeof HandleInputWidgetTypes)[number];
+
+/**
+ * Converts a handle and type to a widget URL.
+ *
+ * @param type - The type of the widget.
+ * @param handle - The handle of the widget.
+ * @returns The widget URL.
+ */
+export const typeAndHandleToWidgetUrl = (
+  type: HandleInputWidgetType,
+  handle: string
+) => {
+  const baseUrl: Record<HandleInputWidgetType, string> = {
+    TwitterProfile: 'https://x.com/',
+    InstagramProfile: 'https://instagram.com/',
+    Behance: 'https://behance.net/',
+    LinkedInProfile: 'https://linkedin.com/in/',
+    Github: 'https://github.com/',
+    Medium: 'https://medium.com/',
+  };
+
+  return `${baseUrl[type]}${handle}`;
+};

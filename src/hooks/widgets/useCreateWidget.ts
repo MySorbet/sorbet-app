@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { useToast } from '@/components/ui/use-toast';
-import { getWidgetContent, GetWidgetContentParams } from '@/lib/service';
+import { createWidget, CreateWidgetParams } from '@/lib/service';
 
-export const useGetWidgetContent = () => {
+export const useCreateWidget = () => {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (params: GetWidgetContentParams) => {
-      const response = await getWidgetContent(params);
+    mutationFn: async (params: CreateWidgetParams) => {
+      const response = await createWidget(params);
       if (response) {
         return response.data;
       }

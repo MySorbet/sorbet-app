@@ -344,7 +344,7 @@ const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Link: getLinkData,
 };
 
-export type GetWidgetContentParams = {
+export type CreateWidgetParams = {
   /** The url to get the widget content for */
   url: string;
   /** The type of the widget to get */
@@ -352,9 +352,6 @@ export type GetWidgetContentParams = {
 };
 
 /** Get/create a widget with the given url and type */
-export const getWidgetContent = async ({
-  url,
-  type,
-}: GetWidgetContentParams) => {
+export const createWidget = async ({ url, type }: CreateWidgetParams) => {
   return widgetGetters[type]({ url });
 };

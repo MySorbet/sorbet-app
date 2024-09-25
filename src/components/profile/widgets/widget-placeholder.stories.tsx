@@ -13,6 +13,7 @@ const meta = {
   },
   tags: ['autodocs'],
   args: {
+    type: 'Behance',
     onClick: fn(),
   },
   argTypes: {
@@ -28,9 +29,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Default: Story = {};
+
+export const Loading: Story = {
   args: {
-    type: 'Behance',
+    loading: true,
   },
 };
 

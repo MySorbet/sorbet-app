@@ -52,7 +52,6 @@ export const OnboardingDrawer = ({
       TwitterProfile: '',
       LinkedInProfile: '',
       Github: '',
-      Dribbble: '',
       Behance: '',
       Medium: '',
     },
@@ -60,6 +59,16 @@ export const OnboardingDrawer = ({
 
   const formValues = form.watch();
   const isFormEmpty = Object.values(formValues).every((value) => value === '');
+
+  /** Handle the submit event, removing empty values before calling the onSubmit callback */
+  const handleSubmit = (values: FormSchema) => {
+    // Filter out empty values
+    const res = Object.fromEntries(
+      Object.entries(values).filter(([, value]) => value !== '')
+    );
+    form.reset();
+    onSubmit?.(res);
+  };
 
   // TODO: Nail the scroll within the drawer (for large font sizes)
   // TODO: Forward all drawer props to the drawer?
@@ -69,7 +78,7 @@ export const OnboardingDrawer = ({
         <Form {...form}>
           <form
             // TODO: Maybe onSubmit should clear the form?
-            onSubmit={onSubmit ? form.handleSubmit(onSubmit) : undefined}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className='mx-auto w-full max-w-xl px-4'
           >
             <DrawerHeader className='pb-2'>
@@ -97,7 +106,7 @@ export const OnboardingDrawer = ({
               ))}
             </div>
 
-            <DrawerFooter className='flex flex-row justify-between'>
+            <DrawerFooter className='flex flex-row justify-between pb-8'>
               <DrawerClose asChild>
                 {/* We need type='button' to prevent the form from being submitted */}
                 <Button variant='outline' type='button'>

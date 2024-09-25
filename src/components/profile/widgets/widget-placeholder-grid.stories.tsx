@@ -18,3 +18,9 @@ export default meta;
 type Story = StoryObj<typeof WidgetPlaceholderGrid>;
 
 export const Default: Story = {};
+
+export const Loading: Story = {
+  args: {
+    loading: true,
+  },
+};

@@ -1,13 +1,5 @@
-import { useDeleteWidget } from './useDeleteWidget';
-import { useGetWidgetContent } from './useGetWidgetContent';
-import { useGetWidgetsForUser } from './useGetWidgetsForUser';
-import { useUpdateWidgetsBulk } from './useUpdateWidgetsBulk';
-import { useUploadWidgetsImage } from './useUploadWidgetsImage';
-
-export {
-  useDeleteWidget,
-  useGetWidgetContent,
-  useGetWidgetsForUser,
-  useUpdateWidgetsBulk,
-  useUploadWidgetsImage,
-};
+export { useCreateWidget } from './useCreateWidget';
+export { useDeleteWidget } from './useDeleteWidget';
+export { useGetWidgetsForUser } from './useGetWidgetsForUser';
+export { useUpdateWidgetsBulk } from './useUpdateWidgetsBulk';
+export { useUploadWidgetsImage } from './useUploadWidgetsImage';
