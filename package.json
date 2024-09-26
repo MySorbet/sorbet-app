@@ -25,7 +25,7 @@
     "env:push": "gcloud secrets versions add sorbet-app-env-local --data-file=./.env && gcloud secrets versions list sorbet-app-env-local --format='value(name)' | tail -n +2 | xargs -I {} gcloud secrets versions disable {} --secret=sorbet-app-env-local",
     "storybook": "storybook dev -p 6006",
     "sb": "yarn storybook",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build -o ./.storybook/storybook-static"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
