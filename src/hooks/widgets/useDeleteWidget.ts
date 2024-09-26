@@ -1,6 +1,7 @@
-import { useToast } from '@/components/ui/use-toast';
-import { deleteWidget } from '@/lib/service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { deleteWidget } from '@/api/widgets';
+import { useToast } from '@/components/ui/use-toast';
 
 export const useDeleteWidget = () => {
   const queryClient = useQueryClient();

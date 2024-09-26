@@ -1,7 +1,8 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { updateOfferStatus } from '@/api/gigs';
 import { useToast } from '@/components/ui/use-toast';
 import { OfferType } from '@/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface updateOfferStatusParams {
   currentOffer: OfferType | undefined;

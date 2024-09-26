@@ -3,9 +3,9 @@
  * @see https://github.com/iamvishnusankar/next-sitemap#readme
  */
 module.exports = {
-  // !STARTERCONF Change the siteUrl
-  /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
-  siteUrl: 'https://tsnext-tw.thcl.dev',
+  /** Without trailing '/' */
+  // TODO: Consider making this dynamic based on the environment. Other references to window.location.origin could then use the same env var
+  siteUrl: 'https://mysorbet.io',
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [{ userAgent: '*', allow: '/' }],

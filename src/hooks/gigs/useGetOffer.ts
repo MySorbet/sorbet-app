@@ -1,6 +1,7 @@
-import { getOfferById } from '@/api/gigs';
-import { ContractType, PrismaOfferType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
+
+import { getOfferById } from '@/api/gigs';
+import { PrismaOfferType } from '@/types';
 
 export const useGetOffer = (offerId: string) => {
   return useQuery({

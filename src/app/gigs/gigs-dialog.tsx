@@ -1,16 +1,27 @@
 'use client';
 
 import {
+  ConnectedWallet,
+  getEmbeddedConnectedWallet,
+  useWallets,
+} from '@privy-io/react-auth';
+import {
+  FileCheck2 as IconContract,
+  MessageCircle as IconMessage,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
+
+import {
   createContract,
   updateContractStatus,
   updateMilestoneStatus,
-  updateOfferStatus,
 } from '@/api/gigs';
+import { getCurrentWalletAddressByUserId } from '@/api/user';
 import { Chat } from '@/app/gigs/chat';
 import {
   ContractFormContainer,
   ContractFormFixedPriceData,
-  ContractMilestoneMinimalProps,
   ContractMilestonesFormData,
   ContractNotFound,
   ContractOverview,
@@ -18,13 +29,6 @@ import {
   ContractPendingOffer,
   ContractRejected,
 } from '@/app/gigs/contract';
-import { encodeFunctionData, parseUnits, formatUnits, hexToBigInt } from 'viem';
-import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
-import {
-  useWallets,
-  getEmbeddedConnectedWallet,
-  ConnectedWallet,
-} from '@privy-io/react-auth';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,24 +38,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth, useGetContractForOffer } from '@/hooks';
-import { getCurrentWalletAddressByUserId } from '@/api/user';
+import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
+import { useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
 import { env } from '@/lib/env';
 import { cn } from '@/lib/utils';
 import { ActiveTab } from '@/types';
-import {
-  ContractType,
-  CreateContractType,
-  MilestoneType,
-  OfferType,
-} from '@/types';
-import BigNumber from 'bignumber.js';
-import {
-  FileCheck2 as IconContract,
-  MessageCircle as IconMessage,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { CreateContractType, MilestoneType, OfferType } from '@/types';
 
 export interface GigsDialogProps {
   isOpen: boolean;

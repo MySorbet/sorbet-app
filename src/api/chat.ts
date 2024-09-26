@@ -1,8 +1,12 @@
 import axios from 'axios';
 import * as blobUtil from 'blob-util';
 
+import { env } from '@/lib/env';
 import { NewMessageNotificationDto } from '@/types/sendbird';
-import { API_URL, withAuthHeader } from '@/utils';
+
+import { withAuthHeader } from './withAuthHeader';
+
+const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
 /**
   Fetches the files stored in Sendbird with proper api tokens in the backend and returns the blob url

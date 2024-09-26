@@ -10,7 +10,6 @@ import {
   ProjectFormValues,
   ProjectOfferDialog,
 } from '@/app/[handle]/project-offer-dialog';
-import { UserSocialPreview } from '@/components/common';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useToast } from '@/components/ui/use-toast';
@@ -83,7 +82,6 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
                 disableHireMe={disableHireMe}
                 hideShare={hideShare}
               />
-              <UserSocialPreview title={freelancerFullName} />
               <ProjectOfferDialog
                 isOpen={isOfferDialogOpen}
                 onClose={(open) => setOfferDialogOpen(open)}

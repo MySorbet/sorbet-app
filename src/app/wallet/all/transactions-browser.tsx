@@ -8,7 +8,6 @@ import { DateRange } from 'react-day-picker';
 
 import { getTransactions } from '@/api/user';
 import Authenticated from '@/app/authenticated';
-import { PageTitle } from '@/components/common';
 import { Header } from '@/components/header';
 import { useAuth, useEmbeddedWalletAddress } from '@/hooks';
 import { Transaction } from '@/types/transactions';
@@ -132,7 +131,6 @@ export const TransactionsBrowser: React.FC = () => {
   return (
     <Authenticated>
       <Header />
-      <PageTitle title='Transactions' />
       {user && (
         <div className='container my-16'>
           <div className='text-sorbet mb-6'>

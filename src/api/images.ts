@@ -1,6 +1,10 @@
 import axios, { AxiosError } from 'axios';
 
-import { API_URL, withAuthHeader } from '@/utils';
+import { env } from '@/lib/env';
+
+import { withAuthHeader } from './withAuthHeader';
+
+const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
 export const uploadProfileImageAsync = async (data: FormData) => {
   try {

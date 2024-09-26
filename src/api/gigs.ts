@@ -1,8 +1,12 @@
 import axios from 'axios';
 
+import { env } from '@/lib/env';
 import { CreateContractType, CreateOfferType } from '@/types';
 import { FindContractsType } from '@/types';
-import { API_URL, withAuthHeader } from '@/utils';
+
+import { withAuthHeader } from './withAuthHeader';
+
+const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
 export const findContractsWithFreelancer = async ({
   freelancerUsername,

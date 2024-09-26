@@ -1,5 +1,11 @@
-# Description & Technical Solution
+# [SRBT-ID] Name of this PR
+
+**Changes**
+
+- a
+- b
+- c
 
 # Screenshots
 
-Provide screenshots or videos of the changes made if any (optional)
+Screenshots/videos of the changes made (if any, otherwise delete this section)

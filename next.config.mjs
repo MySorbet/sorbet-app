@@ -15,11 +15,12 @@ const nextConfig = {
   swcMinify: true,
 
   compiler: {
+    // Remove non-error console statements in production
     removeConsole:
       process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
   },
 
-  // Uncoment to add domain whitelist
+  // Uncomment to add domain whitelist
   // images: {
   //   domains: [
   //     'res.cloudinary.com',
