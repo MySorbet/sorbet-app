@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { createWidget, CreateWidgetParams } from '@/api/widgets';
 import { useToast } from '@/components/ui/use-toast';
-import { createWidget, CreateWidgetParams } from '@/lib/service';
 
 export const useCreateWidget = () => {
   const { toast } = useToast();

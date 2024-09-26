@@ -1,7 +1,11 @@
 import axios, { AxiosError } from 'axios';
 
+import { env } from '@/lib/env';
 import { User, UserWithId } from '@/types';
-import { API_URL, withAuthHeader } from '@/utils';
+
+import { withAuthHeader } from './withAuthHeader';
+
+const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
 /** Get a user from the db by their handle */
 export const getUserByHandle = async (handle: string) => {

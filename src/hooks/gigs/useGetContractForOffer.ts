@@ -1,7 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
+
 import { getContractForOffer } from '@/api/gigs';
 import { useToast } from '@/components/ui/use-toast';
 import { ActiveTab } from '@/types';
-import { useQuery } from '@tanstack/react-query';
 
 type useGetContractForOfferParams = {
   currentOfferId: string;

@@ -1,8 +1,4 @@
-import { env } from '@/lib/env';
-import SendbirdChat, {
-  SendbirdChatParams,
-  SendbirdChatWith,
-} from '@sendbird/chat';
+import SendbirdChat, { SendbirdChatParams } from '@sendbird/chat';
 import {
   GroupChannel,
   GroupChannelModule,
@@ -10,6 +6,8 @@ import {
   MessageFilter,
 } from '@sendbird/chat/groupChannel';
 import { useQuery } from '@tanstack/react-query';
+
+import { env } from '@/lib/env';
 
 export const useSendbird = () => {
   const { data: sb } = useQuery({

@@ -1,6 +1,6 @@
 import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 
-import { SupportedWidgetTypes } from '@/lib/service';
+import { SupportedWidgetTypes } from '@/api/widgets';
 import { WidgetType } from '@/types';
 
 /**

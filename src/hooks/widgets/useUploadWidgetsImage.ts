@@ -1,6 +1,7 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { uploadWidgetsImageAsync } from '@/api/images';
 import { useToast } from '@/components/ui/use-toast';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useUploadWidgetsImage = () => {
   const { toast } = useToast();

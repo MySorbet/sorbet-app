@@ -1,7 +1,8 @@
-import { useToast } from '@/components/ui/use-toast';
-import { updateWidgetsBulk } from '@/lib/service';
-import { UpdateWidgetsBulkDto } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { updateWidgetsBulk } from '@/api/widgets';
+import { useToast } from '@/components/ui/use-toast';
+import { UpdateWidgetsBulkDto } from '@/types';
 
 export const useUpdateWidgetsBulk = () => {
   const queryClient = useQueryClient();

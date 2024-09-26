@@ -9,7 +9,8 @@ import {
   WidgetSize,
   WidgetType,
 } from '@/types';
-import { withAuthHeader } from '@/utils';
+
+import { withAuthHeader } from './withAuthHeader';
 
 export const getWidgetsByUsername = async (username: string) => {
   try {
@@ -104,7 +105,9 @@ export const deleteWidget = async (id: string) => {
   }
 };
 
-export const getDribbleShot: WidgetGetterFn = async (body) => {
+// 👇 Local Widget Getters 👇
+
+const getDribbleShot: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/dribbble`,
@@ -119,7 +122,7 @@ export const getDribbleShot: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getBehanceItem: WidgetGetterFn = async (body) => {
+const getBehanceItem: WidgetGetterFn = async (body) => {
   try {
     const response = axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/behance`,
@@ -134,7 +137,7 @@ export const getBehanceItem: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getMediumArticleMetadata: WidgetGetterFn = async (body) => {
+const getMediumArticleMetadata: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/medium`,
@@ -149,7 +152,7 @@ export const getMediumArticleMetadata: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getYouTubeVideoMetadata: WidgetGetterFn = async (body) => {
+const getYouTubeVideoMetadata: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/youtube`,
@@ -164,7 +167,7 @@ export const getYouTubeVideoMetadata: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getSubstackMetadata: WidgetGetterFn = async (body) => {
+const getSubstackMetadata: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/substack`,
@@ -179,7 +182,7 @@ export const getSubstackMetadata: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getSpotifyAlbumDetails: WidgetGetterFn = async (body) => {
+const getSpotifyAlbumDetails: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/spotify/album`,
@@ -194,7 +197,7 @@ export const getSpotifyAlbumDetails: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getSpotifySongDetails: WidgetGetterFn = async (body) => {
+const getSpotifySongDetails: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/spotify/song`,
@@ -209,7 +212,7 @@ export const getSpotifySongDetails: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getSoundcloudTrackDetails: WidgetGetterFn = async (body) => {
+const getSoundcloudTrackDetails: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/soundcloud`,
@@ -224,7 +227,7 @@ export const getSoundcloudTrackDetails: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
+const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/instagram`,
@@ -241,7 +244,7 @@ export const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getPhotoWidget: WidgetGetterFn = async (body) => {
+const getPhotoWidget: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/photo`,
@@ -256,7 +259,7 @@ export const getPhotoWidget: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getGithubProfile: WidgetGetterFn = async (body) => {
+const getGithubProfile: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/github`,
@@ -271,7 +274,7 @@ export const getGithubProfile: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getTwitterProfile: WidgetGetterFn = async (body) => {
+const getTwitterProfile: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/twitter`,
@@ -286,7 +289,7 @@ export const getTwitterProfile: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getLinkedInProfile: WidgetGetterFn = async (body) => {
+const getLinkedInProfile: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/linkedin`,
@@ -301,7 +304,7 @@ export const getLinkedInProfile: WidgetGetterFn = async (body) => {
   }
 };
 
-export const getLinkData: WidgetGetterFn = async (body) => {
+const getLinkData: WidgetGetterFn = async (body) => {
   try {
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/link`,
@@ -315,16 +318,6 @@ export const getLinkData: WidgetGetterFn = async (body) => {
     );
   }
 };
-
-type WidgetGetterFn = (
-  body: GetWidgetBody
-) => Promise<AxiosResponse<WidgetDto, unknown>>;
-
-/** Currently, Figma and InstagramPost are not supported */
-export type SupportedWidgetTypes = Exclude<
-  WidgetType,
-  'Figma' | 'InstagramPost'
->;
 
 /** Map the supported widget types to their corresponding getter functions */
 const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
@@ -344,6 +337,13 @@ const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Link: getLinkData,
 };
 
+/** Get/create a widget with the given url and type */
+export const createWidget = async ({ url, type }: CreateWidgetParams) => {
+  return widgetGetters[type]({ url });
+};
+
+// 👇 Types 👇
+
 export type CreateWidgetParams = {
   /** The url to get the widget content for */
   url: string;
@@ -351,7 +351,12 @@ export type CreateWidgetParams = {
   type: SupportedWidgetTypes;
 };
 
-/** Get/create a widget with the given url and type */
-export const createWidget = async ({ url, type }: CreateWidgetParams) => {
-  return widgetGetters[type]({ url });
-};
+type WidgetGetterFn = (
+  body: GetWidgetBody
+) => Promise<AxiosResponse<WidgetDto, unknown>>;
+
+/** Currently, Figma and InstagramPost are not supported */
+export type SupportedWidgetTypes = Exclude<
+  WidgetType,
+  'Figma' | 'InstagramPost'
+>;
