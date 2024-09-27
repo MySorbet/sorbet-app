@@ -111,6 +111,7 @@ const ToastDescription = React.forwardRef<
 ));
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
 
+/** This type is straight from shadcn, except for the href */
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast> & {
   href?: string
 };
