@@ -8,4 +8,3 @@ handlers:
   - url: /(.*)
     static_files: storybook-static/\1
     upload: storybook-static/(.*)
-# gcloud app deploy ./.storybook/sb-deploy.yml --ignore-file ./.sb-deploy-gcloudignore -q
