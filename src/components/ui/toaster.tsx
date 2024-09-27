@@ -9,6 +9,7 @@ import {
   ToastViewport,
 } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
+import Link from "next/link"
 
 export function Toaster() {
   const { toasts } = useToast()
@@ -18,7 +19,7 @@ export function Toaster() {
       {toasts.map(function ({ id, title, description, action, href, ...props }) {
         return (
           <Toast key={id} {...props}>
-              <a href={href ?? '/gigs'}>
+              <Link href={href ?? '/gigs'} className="grid gap-1">
                 <div className="grid gap-1">
                   {title && <ToastTitle>{title}</ToastTitle>}
                   {description && (
@@ -26,7 +27,7 @@ export function Toaster() {
                   )}
                 </div>
                 {action}
-              </a>
+              </Link>
             <ToastClose />
           </Toast>
         )
