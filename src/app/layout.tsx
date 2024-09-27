@@ -37,7 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className={cn('size-full', inter.className)}>
+    // classnames prevent horizontal layout shift when radix models open
+    <html className={cn('h-full w-screen overflow-x-hidden', inter.className)}>
       <body className='size-full bg-[#F2F3F7]'>
         <ClientProviders>{children}</ClientProviders>
       </body>
