@@ -75,3 +75,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+
+  /* Prevents a horizontal layout shift (for fixed elements) when radix modals are open */
+  /* Use this on your fixed positioned elements that are affected by the shift */
+  .fix-modal-layout-shift {
+    padding-right: var(--removed-body-scroll-bar-size);
+  }
+}

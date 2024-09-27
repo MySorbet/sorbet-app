@@ -494,7 +494,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         </ReactGridLayout>
 
         {editMode && (
-          <div className='fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
+          <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
             <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
           </div>
         )}
