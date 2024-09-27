@@ -1,6 +1,7 @@
-import { useToast } from '@/components/ui/use-toast';
 import { useKnockFeed } from '@knocklabs/react';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+
+import { useToast } from '@/components/ui/use-toast';
 
 const NotificationToasts = () => {
   const { feedClient } = useKnockFeed();
