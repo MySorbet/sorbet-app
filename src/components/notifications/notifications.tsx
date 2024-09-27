@@ -39,8 +39,8 @@ export const Notifications = () => {
             buttonRef={buttonRef}
             isVisible={isVisible}
             onClose={() => setIsVisible(false)}
-            // TODO: Redirect to appropriate route based on 'item' data.
-            // TODO: The identifier would come from the backend, ideally relating to how we put state in the url
+            // TODO: Redirect to appropriate route based on 'item' data that comes from Knock
+            // TODO: The identifier would come from the backend where we call Knock, ideally relating to how we put state in the url
             // TODO: i.e: if we put contract id in the url, the backend would populate the 'data' prop with the contract id
             // For now, it is a simple redirect to 'gigs' page. As we have that more solidified, we can then have more detailed/specific redirects
             onNotificationClick={(item) => {
