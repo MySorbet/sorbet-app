@@ -4,6 +4,10 @@
 # - Secret Manager Secret Accessor
 # - Cloud Run Developer
 # - Service Account User
+#
+# For deploying the storybook to app engine, the SA need:
+# - App Engine Deployer
+# - App Engine Service Admin
 steps:
   # Here we are writing the env file to the workspace so next can bake variables into the build
   - id: write-env
@@ -27,7 +31,7 @@ steps:
         yarn build-storybook
     volumes:
       - name: storybook
-        path: /workspace/.storybook/storybook-static
+        path: /workspace/.storybook
 
   # Deploy storybook to app engine
   - id: deploy-storybook
@@ -42,7 +46,7 @@ steps:
       - '-q'
     volumes:
       - name: storybook
-        path: /workspace/.storybook/storybook-static
+        path: /workspace/.storybook
 
     # Actually build the image
   - id: build
