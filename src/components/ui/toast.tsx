@@ -113,10 +113,12 @@ ToastDescription.displayName = ToastPrimitives.Description.displayName;
 
 /** 
  * This type is straight from shadcn, except for the href.
- * href: is a property when you call the 'toast' function from useToast. 
- * The value is where the Link is redirecting, so ensure that the path is correct.
 */
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast> & {
+  /**
+   * href: is a property when you call the 'toast' function from useToast. 
+   * The value is where the Link is redirecting, so ensure that the path is correct.
+   */
   href?: string
 };
 
