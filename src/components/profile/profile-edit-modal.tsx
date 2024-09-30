@@ -26,12 +26,15 @@ import {
 import type { User } from '@/types';
 
 import { LocationInput } from './location-input';
+import { BioStatus } from '@/components/profile/bio-status';
 
 const schema = z.object({
   isImageUpdated: z.boolean(),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  bio: z.string().max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`),
+  bio: z
+    .string()
+    .max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`),
   city: z.string(),
   tags: z.array(z.string()).optional(),
 });
@@ -64,6 +67,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     setValue,
     getValues,
     reset,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -75,6 +79,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
     },
   });
+
+  const bioLength = watch('bio').length;
+  const isMaxBioLength = bioLength > MAX_BIO_LENGTH;
 
   const { isDirty } = useFormState({ control });
 
@@ -320,14 +327,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   {...register('bio', { required: 'Bio is required' })}
                   defaultValue={user?.bio}
                 />
-                <label className='text-sm font-normal text-[#475467]'>
-                  Max 100 characters
-                </label>
-                {errors.bio && (
-                  <p className='mt-1 text-xs text-red-500'>
-                    {errors.bio.message}
-                  </p>
-                )}
+                <BioStatus isMax={isMaxBioLength} length={bioLength} />
               </div>
               <div className='item w-full'>
                 <Controller
