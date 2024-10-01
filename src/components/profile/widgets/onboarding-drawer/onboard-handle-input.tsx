@@ -52,6 +52,7 @@ export const OnboardHandleInput = React.forwardRef<
         onChange={onChange}
         type={type}
         className={className}
+        {...props}
       />
       <div className='absolute left-2 top-1/2 -translate-y-1/2 transform'>
         <WidgetIcon type={type} className='mb-0 size-6' />

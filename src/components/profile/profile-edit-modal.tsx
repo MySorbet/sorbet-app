@@ -38,6 +38,7 @@ import {
 import type { User } from '@/types';
 
 import { LocationInput } from './location-input';
+import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
@@ -320,14 +321,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   </FormLabel>
                   <FormControl>
                     <div className='relative'>
-                      <Input
-                        {...form.register('handle')}
-                        placeholder='my-sorbet-handle'
+                      <HandleInput
+                        register={form.register}
                         {...field}
-                        onChange={(e) =>
-                          handleInputChange(field, e.target.value)
-                        }
-                        className='text-textPlaceholder focus:outline-none focus:ring-0'
+                        onChange={(e) => {
+                          handleInputChange(field, e.target.value);
+                        }}
+                        className='text-textPlaceholder pl-2 focus:outline-none focus:ring-0'
+                        placeholder='my-sorbet-handle'
                       />
                       {errors.handle ? (
                         <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />

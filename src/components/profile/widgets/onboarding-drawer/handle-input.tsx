@@ -1,20 +1,24 @@
 import {
   ChangeEventHandler,
+  ComponentProps,
   Dispatch,
   Ref,
   SetStateAction,
 } from 'react';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-interface HandleInputProps {
+interface HandleInputProps<T extends FieldValues>
+  extends ComponentProps<'input'> {
   setShowClearButton?: Dispatch<SetStateAction<boolean>>;
   showClearButton?: boolean;
   className?: string;
-  onChange: ChangeEventHandler<HTMLInputElement> | undefined
+  onChange: ChangeEventHandler<HTMLInputElement> | undefined;
   type?: string;
   localRef?: Ref<HTMLInputElement>;
+  register?: UseFormRegister<T>;
 }
 
 /**
@@ -22,7 +26,7 @@ interface HandleInputProps {
  * * Not to be confused for OnboardHandleInput (renamed from HandleInput)
  * @returns an input that has an associated handler
  */
-export const HandleInput = ({
+export const HandleInput = <T extends FieldValues>({
   showClearButton,
   setShowClearButton,
   className,
@@ -30,8 +34,8 @@ export const HandleInput = ({
   onChange,
   type,
   ...props
-}: HandleInputProps) => {
-    // Prevent enter from clearing the input and instead, make it tab to the next input (skipping the clear button if needed)
+}: HandleInputProps<T>) => {
+  // Prevent enter from clearing the input and instead, make it tab to the next input (skipping the clear button if needed)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
