@@ -9,6 +9,7 @@ import {
 } from '@/components/onboarding/signup/signup';
 
 const meta = {
+  title: 'Onboarding/AllSet',
   component: AllSet,
   parameters: {
     layout: 'centered',

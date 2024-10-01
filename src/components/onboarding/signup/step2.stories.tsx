@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { userEvent,within } from '@storybook/test';
+import { userEvent, within } from '@storybook/test';
 import { useState } from 'react';
 
 import {
@@ -12,6 +12,7 @@ import { MAX_BIO_LENGTH } from '@/constant';
 import { Step2 } from './step2';
 
 const meta = {
+  title: 'Onboarding/Step2',
   component: Step2,
   parameters: {
     layout: 'centered',
