@@ -263,7 +263,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className='flex flex-col gap-4'
+            className='flex flex-col gap-5'
           >
             <div className='flex items-center gap-2 text-[#344054]'>
               <Avatar className='border-primary-default h-20 w-20 border-2'>
@@ -274,7 +274,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               </Avatar>
               <label
                 htmlFor='profileImage'
-                className='flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
+                className='text-textSecondary flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
               >
                 Upload
                 <input
@@ -311,7 +311,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               name='handle'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-sm font-medium text-[#344054]'>
+                  <FormLabel className='text-textSecondary text-sm font-medium'>
                     Handle
                   </FormLabel>
                   <FormControl>
@@ -323,7 +323,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         onChange={(e) =>
                           handleInputChange(field, e.target.value)
                         }
-                        className='focus:outline-none focus:ring-0'
+                        className='text-textPlaceholder focus:outline-none focus:ring-0'
                       />
                       {errors.handle ? (
                         <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
@@ -342,7 +342,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 name='firstName'
                 render={({ field }) => (
                   <FormItem className='w-full'>
-                    <FormLabel className='text-sm font-medium text-[#344054]'>
+                    <FormLabel className='text-textSecondary text-sm font-medium'>
                       First name
                     </FormLabel>
                     <FormControl>
@@ -350,7 +350,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         {...form.register('firstName')}
                         placeholder='First name'
                         {...field}
-                        className='w-full focus:outline-none focus:ring-0'
+                        className='text-textPlaceholder w-full focus:outline-none focus:ring-0'
                       />
                     </FormControl>
                     <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
@@ -362,7 +362,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 name='lastName'
                 render={({ field }) => (
                   <FormItem className='w-full'>
-                    <FormLabel className='text-sm font-medium text-[#344054]'>
+                    <FormLabel className='text-textSecondary text-sm font-medium'>
                       Last name
                     </FormLabel>
                     <FormControl>
@@ -370,7 +370,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         {...form.register('lastName')}
                         placeholder='Last name'
                         {...field}
-                        className='focus:outline-none focus:ring-0'
+                        className='text-textPlaceholder focus:outline-none focus:ring-0'
                       />
                     </FormControl>
                     <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
@@ -383,12 +383,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               name='city'
               render={() => (
                 <FormItem>
-                  <FormLabel>Where are you located?</FormLabel>
+                  <FormLabel className='text-textSecondary'>
+                    Where are you located?
+                  </FormLabel>
                   <FormControl>
                     <LocationInput
                       register={form.register}
                       setValue={form.setValue}
                       name='city'
+                      className='text-textPlaceholder'
                     />
                   </FormControl>
                 </FormItem>
@@ -399,10 +402,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               name='bio'
               render={() => (
                 <FormItem>
-                  <FormLabel>Create a short bio</FormLabel>
+                  <FormLabel className='text-textSecondary'>
+                    Create a short bio
+                  </FormLabel>
                   <FormControl>
                     <textarea
-                      className='border-1 mt-1 w-full resize-none rounded-lg border border-[#D0D5DD] p-3 text-base font-normal text-[#667085] focus:outline-none'
+                      className='border-1 text-textPlaceholder mt-1 w-full resize-none rounded-lg border border-[#D0D5DD] p-3 text-base font-normal text-[#667085] focus:outline-none'
                       placeholder='A few words about yourself'
                       rows={4}
                       {...form.register('bio', { required: 'Bio is required' })}
