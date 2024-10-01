@@ -3,10 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react';
 import { ChangeEvent, useEffect, useState } from 'react';
-import {
-  ControllerRenderProps,
-  useFormState,
-} from 'react-hook-form';
+import { ControllerRenderProps, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -39,6 +36,7 @@ import {
 import type { User } from '@/types';
 
 import { LocationInput } from './location-input';
+import { useRouter } from 'next/navigation';
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
@@ -57,6 +55,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const schema = z.object({
     isImageUpdated: z.boolean(),
@@ -98,10 +97,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const { errors, isSubmitSuccessful } = form.formState;
 
+  const handle = form.watch('handle');
   const bioLength = form.watch('bio').length;
   const isMaxBioLength = bioLength > MAX_BIO_LENGTH;
 
-  const { isDirty } = useFormState({ control: form.control });
+  const { isDirty, dirtyFields } = useFormState({ control: form.control });
 
   const {
     isPending: uploadProfileImagePending,
@@ -150,7 +150,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       };
       // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
       await updateProfileAsync(userToUpdate);
-      // Here we invaldiate the query key 'freelancer' which is what the 'user' prop is.
+      // Here, we replace the url with the user's updated username if it is changed
+      if (dirtyFields.handle) {
+        router.replace(`/${handle}`);
+      }
+      // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.
+      // If the user changes his/her username, we still want to update our cache with the new username data
       queryClient.invalidateQueries({ queryKey: ['freelancer'] });
       handleModalVisible(false);
     } else {
