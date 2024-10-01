@@ -1,5 +1,5 @@
 // Profile Exports
-export { BioStatus } from './bio-status';
+export { BioMessage } from './bio-message';
 export { LocationInput } from './location-input';
 export { Profile } from './profile';
 export { ProfileEditModal } from './profile-edit-modal';

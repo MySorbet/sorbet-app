@@ -1,6 +1,6 @@
 import { MAX_BIO_LENGTH } from '@/constant';
 
-export const BioStatus = ({
+export const BioMessage = ({
   length,
   isMax,
 }: {

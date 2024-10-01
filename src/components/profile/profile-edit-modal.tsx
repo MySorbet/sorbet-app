@@ -8,7 +8,7 @@ import { ControllerRenderProps, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { BioStatus } from '@/components/profile/bio-status';
+import { BioMessage } from '@/components/profile/bio-message';
 import { refine } from '@/components/profile/refine';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -28,6 +28,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { MAX_BIO_LENGTH } from '@/constant';
 import {
   useDeleteProfileImage,
@@ -63,7 +64,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     lastName: z.string().min(1, 'Last name is required'),
     bio: z
       .string()
-      .max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`),
+      .max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`)
+      .optional(),
     city: z.string(),
     tags: z.array(z.string()).optional(),
     handle: z
@@ -99,10 +101,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const { errors, isSubmitSuccessful } = form.formState;
 
   const handle = form.watch('handle');
-  const bioLength = form.watch('bio').length;
+  const bioLength = form.watch('bio')?.length ?? 0;
   const isMaxBioLength = bioLength > MAX_BIO_LENGTH;
 
-  const { isDirty, dirtyFields } = useFormState({ control: form.control });
+  const { isDirty, dirtyFields, isValid } = useFormState({
+    control: form.control,
+  });
 
   const {
     isPending: uploadProfileImagePending,
@@ -406,15 +410,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     Create a short bio
                   </FormLabel>
                   <FormControl>
-                    <textarea
-                      className='border-1 text-textPlaceholder mt-1 w-full resize-none rounded-lg border border-[#D0D5DD] p-3 text-base font-normal text-[#667085] focus:outline-none'
+                    <Textarea
+                      className='border-1 text-textPlaceholder mt-1 w-full resize-none rounded-lg border border-[#D0D5DD] p-3 text-base font-normal focus:outline-none focus:ring-0 focus-visible:ring-transparent'
                       placeholder='A few words about yourself'
                       rows={4}
-                      {...form.register('bio', { required: 'Bio is required' })}
+                      {...form.register('bio')}
                       defaultValue={user?.bio}
                     />
                   </FormControl>
-                  <BioStatus isMax={isMaxBioLength} length={bioLength} />
+                  <BioMessage isMax={isMaxBioLength} length={bioLength} />
                 </FormItem>
               )}
             />
@@ -435,7 +439,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <Button
               type='submit'
               className='bg-sorbet w-full'
-              disabled={loading || !isDirty || Object.keys(errors).length > 0}
+              disabled={loading || !isDirty || !isValid}
             >
               {loading ? (
                 <>

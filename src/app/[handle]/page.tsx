@@ -87,7 +87,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
           {!isPending && freelancer && (
             <>
               <Profile
-                user={freelancerResponse.data}
+                user={freelancer}
                 canEdit={isMyProfile}
                 onHireMeClick={() => setOfferDialogOpen(true)}
                 disableHireMe={disableHireMe}

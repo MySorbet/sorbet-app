@@ -15,10 +15,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { HandleInput, HandleInputWidgetTypes } from './handle-input';
+import { OnboardHandleInput, OnboardHandleInputWidgetTypes } from './onboard-handle-input';
 
-const meta: Meta<typeof HandleInput> = {
-  component: HandleInput,
+const meta: Meta<typeof OnboardHandleInput> = {
+  component: OnboardHandleInput,
   title: 'HandleInput',
   parameters: {
     layout: 'centered',
@@ -26,7 +26,7 @@ const meta: Meta<typeof HandleInput> = {
   tags: ['autodocs'],
   argTypes: {
     type: {
-      options: HandleInputWidgetTypes,
+      options: OnboardHandleInputWidgetTypes,
       control: {
         type: 'select',
       },
@@ -35,7 +35,7 @@ const meta: Meta<typeof HandleInput> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof HandleInput>;
+type Story = StoryObj<typeof OnboardHandleInput>;
 
 export const Default: Story = {
   args: {
@@ -48,7 +48,7 @@ export const Controlled: Story = {
     const [value, setValue] = useState('');
 
     return (
-      <HandleInput
+      <OnboardHandleInput
         {...args}
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -87,7 +87,7 @@ export const ControlledWithRHF: Story = {
               <FormItem>
                 <FormLabel>Controlled by form</FormLabel>
                 <FormControl>
-                  <HandleInput {...args} {...field} />
+                  <OnboardHandleInput {...args} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

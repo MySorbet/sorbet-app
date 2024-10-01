@@ -20,6 +20,10 @@ interface LocationInputProps<T extends FieldValues> {
   className?: string
 }
 
+/**
+ * @param className styles only the input component.
+ * @returns an input component designed to be used with React Hook Form
+ */
 export const LocationInput = <T extends FieldValues>({
   name,
   register,
