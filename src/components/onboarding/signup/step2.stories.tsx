@@ -1,15 +1,10 @@
 import { Meta } from '@storybook/react';
 import { userEvent, within } from '@storybook/test';
-import { useState } from 'react';
 
-import {
-  initialUserSignUp,
-  UserSignUp,
-  UserSignUpContext,
-} from '@/components/onboarding/signup/signup';
 import { MAX_BIO_LENGTH } from '@/constant';
 
 import { Step2 } from './step2';
+import { UserSignUpDecorator } from './user-signup.decorator';
 
 const meta = {
   title: 'Onboarding/Step2',
@@ -17,19 +12,7 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  decorators: [
-    (Story) => {
-      const [userData, setUserData] = useState<UserSignUp>(initialUserSignUp);
-      const [step, setStep] = useState<number>(0);
-      return (
-        <UserSignUpContext.Provider
-          value={{ userData, setUserData, step, setStep }}
-        >
-          <Story />
-        </UserSignUpContext.Provider>
-      );
-    },
-  ],
+  decorators: [UserSignUpDecorator],
 } satisfies Meta<typeof Step2>;
 
 export default meta;
