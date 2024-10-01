@@ -6,8 +6,8 @@ import { ChangeEventHandler, useState } from 'react';
 import { ControllerRenderProps, useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
-import { checkHandleIsAvailable } from '@/api/auth';
 import { LocationInput } from '@/components/profile';
+import { refine } from '@/components/profile/refine';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,14 +25,6 @@ import { cn } from '@/lib/utils';
 
 import { FormContainer } from '../form-container';
 import { useUserSignUp } from './signup';
-
-// TODO: debounce so that not too many requests are made when typing
-const refine = async (handle: string, initialHandle: string) => {
-  if (handle === initialHandle) return true; // initial handle generated for this user is allowed
-  if (handle.length === 0) return false;
-  const res = await checkHandleIsAvailable(handle);
-  return res.data.isUnique;
-};
 
 const Step1 = () => {
   const { user } = useAuth();

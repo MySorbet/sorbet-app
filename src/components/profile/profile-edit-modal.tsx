@@ -4,15 +4,14 @@ import { User01, X } from '@untitled-ui/icons-react';
 import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import {
-  Controller,
   ControllerRenderProps,
   useFormState,
 } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { checkHandleIsAvailable } from '@/api/auth';
 import { BioStatus } from '@/components/profile/bio-status';
+import { refine } from '@/components/profile/refine';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -46,14 +45,6 @@ interface ProfileEditModalProps {
   handleModalVisible: (open: boolean) => void;
   user: User;
 }
-
-// TODO: debounce so that not too many requests are made when typing
-const refine = async (handle: string, initialHandle: string) => {
-  if (handle === initialHandle) return true; // initial handle generated for this user is allowed
-  if (handle.length === 0) return false;
-  const res = await checkHandleIsAvailable(handle);
-  return res.data.isUnique;
-};
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   editModalVisible,
