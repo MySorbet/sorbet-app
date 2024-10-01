@@ -152,12 +152,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
       await updateProfileAsync(userToUpdate);
       // * Here, we replace the url with the user's updated username if it is changed
+      // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.
+      // If the user changes his/her username, we still want to update our cache with the new username data
       if (dirtyFields.handle) {
         router.replace(`/${handle}`);
       }
-      // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.
-      // If the user changes his/her username, we still want to update our cache with the new username data
-      queryClient.invalidateQueries({ queryKey: ['freelancer'] });
+      queryClient.invalidateQueries({ queryKey: ['freelancer', handle] });
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
@@ -353,7 +353,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         className='w-full focus:outline-none focus:ring-0'
                       />
                     </FormControl>
-                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0'/>
+                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
                   </FormItem>
                 )}
               />
@@ -373,7 +373,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         className='focus:outline-none focus:ring-0'
                       />
                     </FormControl>
-                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0'/>
+                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
                   </FormItem>
                 )}
               />
