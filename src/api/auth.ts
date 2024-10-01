@@ -3,13 +3,18 @@ import axios from 'axios';
 import { env } from '@/lib/env';
 import { User } from '@/types';
 
+// Should match the SignUpWithPrivyIdDto in the api
+type SignUpWithPrivyIdDto = {
+  id: string;
+  email?: string;
+};
+
 /** Create a new sorbet user with a privy id (after user signs up with privy) */
-export const signUpWithPrivyId = async ({ id }: { id: string }) => {
+export const signUpWithPrivyId = async (body: SignUpWithPrivyIdDto) => {
   try {
-    const reqBody = { id };
     const res = await axios.post<Pick<User, 'id' | 'privyId'>>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/privy`,
-      reqBody
+      body
     );
     return res;
   } catch (error) {

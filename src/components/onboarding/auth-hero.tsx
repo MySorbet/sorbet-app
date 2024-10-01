@@ -1,4 +1,4 @@
-const listItemStyles = 'flex text-lg font-medium items-center w-[186px] gap-3';
+const listItemStyles = 'flex text-lg font-medium items-center gap-3';
 
 const AuthHero = () => {
   return (

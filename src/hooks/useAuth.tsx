@@ -117,7 +117,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         );
         setLoading(true);
         // TODO: What if this fails? We have a privy user but no sorbet. Handle this case.
-        const signUpResponse = await signUpWithPrivyId({ id: user.id });
+        const signUpResponse = await signUpWithPrivyId({
+          id: user.id,
+          email: user.email?.address, // If they sign up with email, we'll store that in the sorbet db too
+        });
         const newSorbetUser = signUpResponse.data;
         dispatch(updateUserData(newSorbetUser));
         console.log(`New sorbet user: ${newSorbetUser}`);
