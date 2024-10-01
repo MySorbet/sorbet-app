@@ -5,7 +5,7 @@ import { fn } from '@storybook/test';
 import { OnboardingDrawer } from './onboarding-drawer';
 
 const meta: Meta<typeof OnboardingDrawer> = {
-  title: 'OnboardingDrawer',
+  title: 'Widgets/OnboardingDrawer',
   component: OnboardingDrawer,
   parameters: {
     layout: 'centered',

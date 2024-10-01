@@ -19,7 +19,7 @@ import { HandleInput, HandleInputWidgetTypes } from './handle-input';
 
 const meta: Meta<typeof HandleInput> = {
   component: HandleInput,
-  title: 'HandleInput',
+  title: 'Widgets/HandleInput',
   parameters: {
     layout: 'centered',
   },

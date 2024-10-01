@@ -6,7 +6,7 @@ import { WidgetTypesWithIcons } from '@/components/profile/widgets/widget-icon';
 import { WidgetPlaceholder } from './widget-placeholder';
 
 const meta = {
-  title: 'WidgetPlaceholder',
+  title: 'Widgets/WidgetPlaceholder',
   component: WidgetPlaceholder,
   parameters: {
     layout: 'centered',
