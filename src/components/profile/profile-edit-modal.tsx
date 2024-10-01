@@ -150,7 +150,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       };
       // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
       await updateProfileAsync(userToUpdate);
-      // Here, we replace the url with the user's updated username if it is changed
+      // * Here, we replace the url with the user's updated username if it is changed
       if (dirtyFields.handle) {
         router.replace(`/${handle}`);
       }
@@ -322,6 +322,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         onChange={(e) =>
                           handleInputChange(field, e.target.value)
                         }
+                        className='focus:outline-none focus:ring-0'
                       />
                       {errors.handle ? (
                         <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
@@ -348,7 +349,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         {...form.register('firstName')}
                         placeholder='First name'
                         {...field}
-                        className='w-full'
+                        className='w-full focus:outline-none focus:ring-0'
                       />
                     </FormControl>
                   </FormItem>
@@ -367,6 +368,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         {...form.register('lastName')}
                         placeholder='Last name'
                         {...field}
+                        className='focus:outline-none focus:ring-0'
                       />
                     </FormControl>
                   </FormItem>
