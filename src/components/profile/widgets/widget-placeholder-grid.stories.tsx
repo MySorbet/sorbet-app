@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
 
 const meta: Meta<typeof WidgetPlaceholderGrid> = {
-  title: 'WidgetPlaceholderGrid',
+  title: 'Widgets/WidgetPlaceholderGrid',
   component: WidgetPlaceholderGrid,
   parameters: {
     layout: 'fullscreen',

@@ -19,7 +19,7 @@ import { OnboardHandleInput, OnboardHandleInputWidgetTypes } from './onboard-han
 
 const meta: Meta<typeof OnboardHandleInput> = {
   component: OnboardHandleInput,
-  title: 'HandleInput',
+  title: 'Widgets/HandleInput',
   parameters: {
     layout: 'centered',
   },

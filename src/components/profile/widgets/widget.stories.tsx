@@ -7,7 +7,7 @@ import { WidgetContentType, WidgetType, WidgetTypes } from '@/types';
 import { Widget } from './widget';
 
 const meta = {
-  title: 'Widget',
+  title: 'Widgets/Widget',
   component: Widget,
   parameters: {
     layout: 'centered',

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ShareProfileDialog } from './share-profile-dialog';
 
 const meta: Meta<typeof ShareProfileDialog> = {
-  title: 'ShareProfileDialog',
+  title: 'Profile/ShareProfileDialog',
   component: ShareProfileDialog,
   parameters: {
     layout: 'centered',
