@@ -47,7 +47,7 @@ const AllSet = () => {
           className='bg-sorbet w-full text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
           onClick={() => router.push(`/${userData.handle}`)}
         >
-          Edit My Profile
+          Continue to your Profile
         </Button>
       </div>
     </FormContainer>
