@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { ControllerRenderProps, useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -36,7 +37,6 @@ import {
 import type { User } from '@/types';
 
 import { LocationInput } from './location-input';
-import { useRouter } from 'next/navigation';
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
@@ -93,6 +93,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       tags: user?.tags,
       handle: user?.handle ?? '',
     },
+    mode: 'all',
   });
 
   const { errors, isSubmitSuccessful } = form.formState;
@@ -352,6 +353,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         className='w-full focus:outline-none focus:ring-0'
                       />
                     </FormControl>
+                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0'/>
                   </FormItem>
                 )}
               />
@@ -371,6 +373,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         className='focus:outline-none focus:ring-0'
                       />
                     </FormControl>
+                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0'/>
                   </FormItem>
                 )}
               />
@@ -427,7 +430,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <Button
               type='submit'
               className='bg-sorbet w-full'
-              disabled={loading || !isDirty}
+              disabled={loading || !isDirty || Object.keys(errors).length > 0}
             >
               {loading ? (
                 <>
