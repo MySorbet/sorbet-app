@@ -7,7 +7,7 @@ import { ControllerRenderProps, useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { LocationInput } from '@/components/profile';
-import { refine } from '@/components/profile/refine';
+import { handleValidation } from '@/components/profile/handle-validation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,17 +36,7 @@ const Step1 = () => {
   const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
-    handle: z
-      .string()
-      .min(1, { message: 'Handle is required' })
-      .max(25, { message: 'Handle must be less than 25 characters' })
-      .regex(/^[a-z0-9-_]+$/, {
-        message:
-          'Handle may only contain lowercase letters, numbers, dashes, and underscores',
-      }) // Enforce lowercase, no spaces, and allow dashes
-      .refine((handle) => refine(handle, user?.handle ?? ''), {
-        message: 'This handle is already taken',
-      }),
+    handle: handleValidation(user),
     location: z.string().optional(),
   });
 

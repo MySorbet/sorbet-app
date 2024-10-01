@@ -9,7 +9,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { BioMessage } from '@/components/profile/bio-message';
-import { refine } from '@/components/profile/refine';
+import { handleValidation } from '@/components/profile/handle-validation';
+import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -38,7 +39,6 @@ import {
 import type { User } from '@/types';
 
 import { LocationInput } from './location-input';
-import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
@@ -69,17 +69,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       .optional(),
     city: z.string(),
     tags: z.array(z.string()).optional(),
-    handle: z
-      .string()
-      .min(1, { message: 'Handle is required' })
-      .max(25, { message: 'Handle must be less than 25 characters' })
-      .regex(/^[a-z0-9-_]+$/, {
-        message:
-          'Handle may only contain lowercase letters, numbers, dashes, and underscores',
-      }) // Enforce lowercase, no spaces, and allow dashes
-      .refine((handle) => refine(handle, user?.handle ?? ''), {
-        message: 'This handle is already taken',
-      }),
+    handle: handleValidation(user),
     location: z.string().optional(),
   });
 

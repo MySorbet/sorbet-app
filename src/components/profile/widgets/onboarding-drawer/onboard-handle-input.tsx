@@ -2,10 +2,10 @@ import { X } from '@untitled-ui/icons-react';
 import { useImperativeHandle, useRef, useState } from 'react';
 import React from 'react';
 
+import { HandleInput } from '@/components/profile/widgets/onboarding-drawer/handle-input';
 import { Button } from '@/components/ui/button';
 
 import { WidgetIcon, WidgetTypeWithIcon } from '../widget-icon';
-import { HandleInput } from '@/components/profile/widgets/onboarding-drawer/handle-input';
 
 interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** The type of the widget icon to be displayed */
