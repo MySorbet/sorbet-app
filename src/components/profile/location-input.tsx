@@ -17,12 +17,19 @@ interface LocationInputProps<T extends FieldValues> {
   name: Path<T>;
   register: UseFormRegister<T>;
   setValue: UseFormSetValue<T>;
+  /** Styles only the shadcn input component */
+  className?: string;
 }
 
+/**
+ * @param className styles only the input component.
+ * @returns an input component interacting with Google Places API, designed to be used with React Hook Form
+ */
 export const LocationInput = <T extends FieldValues>({
   name,
   register,
   setValue,
+  className,
 }: LocationInputProps<T>) => {
   const { predictions, setPredictions, handleLocationInputChange } =
     useGooglePlacesApi();
@@ -45,7 +52,7 @@ export const LocationInput = <T extends FieldValues>({
               handleLocationInputChange(e);
             }}
             autoComplete='off'
-            className='pl-10 focus:outline-none focus:ring-0'
+            className={cn('pl-10 focus:outline-none focus:ring-0', className)}
           />
           <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
         </div>

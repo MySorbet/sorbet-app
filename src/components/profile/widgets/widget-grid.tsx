@@ -25,8 +25,8 @@ import {
 import { AddWidgets } from './add-widgets';
 import { DesktopOnlyAlert } from './desktop-only-alert';
 import {
-  HandleInputWidgetType,
   OnboardingDrawer,
+  SocialHandleInputWidgetType,
   typeAndHandleToWidgetUrl,
 } from './onboarding-drawer';
 import styles from './react-grid-layout-custom.module.css';
@@ -93,10 +93,13 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
    * Get an array of urls from the handles and call handleAddMultipleWidgets with them
    */
   const handleOnboardingDrawerSubmit = async (
-    handles: Partial<Record<HandleInputWidgetType, string>>
+    handles: Partial<Record<SocialHandleInputWidgetType, string>>
   ) => {
     const urls = Object.entries(handles).map(([type, handle]) => {
-      return typeAndHandleToWidgetUrl(type as HandleInputWidgetType, handle);
+      return typeAndHandleToWidgetUrl(
+        type as SocialHandleInputWidgetType,
+        handle
+      );
     });
     await handleAddMultipleWidgets(urls);
   };

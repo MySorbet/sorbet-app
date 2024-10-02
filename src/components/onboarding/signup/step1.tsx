@@ -1,13 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, CircleCheck, User } from 'lucide-react';
+import { CircleAlert, User } from 'lucide-react';
 import { ChangeEventHandler, useState } from 'react';
-import { ControllerRenderProps, useForm, useFormState } from 'react-hook-form';
+import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
-import { checkHandleIsAvailable } from '@/api/auth';
-import { LocationInput } from '@/components/profile';
+import {
+  HandleInput,
+  LocationInput,
+  validateHandle,
+} from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,14 +29,6 @@ import { cn } from '@/lib/utils';
 import { FormContainer } from '../form-container';
 import { useUserSignUp } from './signup';
 
-// TODO: debounce so that not too many requests are made when typing
-const refine = async (handle: string, initialHandle: string) => {
-  if (handle === initialHandle) return true; // initial handle generated for this user is allowed
-  if (handle.length === 0) return false;
-  const res = await checkHandleIsAvailable(handle);
-  return res.data.isUnique;
-};
-
 const Step1 = () => {
   const { user } = useAuth();
   const { userData, setUserData, setStep } = useUserSignUp();
@@ -44,17 +39,9 @@ const Step1 = () => {
   const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
-    handle: z
-      .string()
-      .min(1, { message: 'Handle is required' })
-      .max(25, { message: 'Handle must be less than 25 characters' })
-      .regex(/^[a-z0-9-_]+$/, {
-        message:
-          'Handle may only contain lowercase letters, numbers, dashes, and underscores',
-      }) // Enforce lowercase, no spaces, and allow dashes
-      .refine((handle) => refine(handle, user?.handle ?? ''), {
-        message: 'This handle is already taken',
-      }),
+    // TODO: eventually, update the user type to make handle required, because as it stands, a user cannot be created without a handle.
+    // * This is a temporary fix due to mistyping of User type
+    handle: validateHandle(user?.handle ?? ''), 
     location: z.string().optional(),
   });
 
@@ -88,21 +75,6 @@ const Step1 = () => {
     if (!file) return;
     setFile(file);
     setImage(URL.createObjectURL(file));
-  };
-
-  // This change handler allows us to mask the input to only allow valid handles to be typed or pasted
-  // We still have zod validate the form, but this creates a better user experience by guiding
-  // the user to a valid handle rather than erroring out when they "do something wrong"
-  const handleInputChange = (
-    field: ControllerRenderProps<FormSchema, 'handle'>,
-    value: string
-  ) => {
-    field.onChange(
-      value
-        .replace(/[^a-zA-Z0-9 _-]/g, '') // Remove invalid characters
-        .replace(/\s+/g, '-') // Replace spaces with dashes
-        .toLowerCase() // Convert to lowercase
-    );
   };
 
   return (
@@ -150,25 +122,13 @@ const Step1 = () => {
                         Claim your unique Sorbet handle
                       </FormDescription>
                       <FormControl>
-                        <div className='relative'>
-                          <Input
-                            {...form.register('handle')}
-                            placeholder='my-sorbet-handle'
-                            prefix={`${hostname}/`}
-                            {...field}
-                            onChange={(e) =>
-                              handleInputChange(field, e.target.value)
-                            }
-                            className={cn(
-                              errors.handle && 'border-red-500 ring-red-500'
-                            )}
-                          />
-                          {errors.handle ? (
-                            <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
-                          ) : (
-                            <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
-                          )}
-                        </div>
+                        <HandleInput
+                          name={field.name}
+                          register={form.register}
+                          setValue={form.setValue}
+                          error={errors.handle}
+                          prefix={`${hostname}/`}
+                        />
                       </FormControl>
                       <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
                     </FormItem>
