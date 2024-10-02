@@ -11,6 +11,11 @@ const refine = async (handle: string, initialHandle: string) => {
   return res.data.isUnique;
 };
 
+/**
+ * This returns a zod schema for a user's handle. It uses a custom 'refine' function to check username availability
+ * @param user
+ * @returns zod schema for handle
+ */
 export const handleValidation = (user: UserWithId | null) => {
   if (!user) {
     throw new Error('User not found');

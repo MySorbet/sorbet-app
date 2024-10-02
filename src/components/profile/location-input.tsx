@@ -17,18 +17,18 @@ interface LocationInputProps<T extends FieldValues> {
   name: Path<T>;
   register: UseFormRegister<T>;
   setValue: UseFormSetValue<T>;
-  className?: string
+  className?: string;
 }
 
 /**
  * @param className styles only the input component.
- * @returns an input component designed to be used with React Hook Form
+ * @returns an input component interacting with Google Places API, designed to be used with React Hook Form
  */
 export const LocationInput = <T extends FieldValues>({
   name,
   register,
   setValue,
-  className
+  className,
 }: LocationInputProps<T>) => {
   const { predictions, setPredictions, handleLocationInputChange } =
     useGooglePlacesApi();

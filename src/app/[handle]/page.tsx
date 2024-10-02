@@ -54,7 +54,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
     isError,
     data: freelancerResponse,
   } = useQuery({
-    queryKey: ['freelancer', params.handle],
+    queryKey: ['freelancer', params.handle], // --> 2nd arg is for a more detailed query key
     queryFn: () => getUserByHandle(params.handle),
   });
 

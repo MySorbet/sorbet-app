@@ -22,9 +22,9 @@ interface HandleInputProps<T extends FieldValues>
 }
 
 /**
- * This component is the component for the input, that's it.
+ * This component is the component for the user handle input, that's it.
  * * Not to be confused for OnboardHandleInput (renamed from HandleInput)
- * @returns an input that has an associated handler
+ * @returns an input for user handles that is intended to be used with React Hook Form
  */
 export const HandleInput = <T extends FieldValues>({
   name,

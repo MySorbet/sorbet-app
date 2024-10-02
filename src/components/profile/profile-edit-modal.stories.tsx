@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import Providers from '@/app/providers';
+import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 
 const meta = {
   title: 'Profile Edit',
@@ -31,25 +31,27 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    editModalVisible: true,
-    handleModalVisible: fn(),
-    user: {
-      id: '123',
-      firstName: 'Test',
-      lastName: 'Test',
-      privyId: '123',
-      handle: 'apple-banana-mango',
-      accountId: '123',
-      email: '',
-      bio: '',
-      city: 'New York',
-      tags: ['JavaScript', 'React', 'Node.js'],
-      profileImage: 'https://example.com/profile-image.jpg',
-      title: '',
-      profileBannerImage: '',
-      tempLocation: '',
-    },
+const mockData = {
+  editModalVisible: true,
+  handleModalVisible: fn(),
+  user: {
+    id: '123',
+    firstName: 'Test',
+    lastName: 'Test',
+    privyId: '123',
+    handle: 'apple-banana-mango',
+    accountId: '123',
+    email: '',
+    bio: '',
+    city: 'New York',
+    tags: ['JavaScript', 'React', 'Node.js'],
+    profileImage: 'https://example.com/profile-image.jpg',
+    title: '',
+    profileBannerImage: '',
+    tempLocation: '',
   },
+};
+
+export const Default: Story = {
+  args: mockData,
 };

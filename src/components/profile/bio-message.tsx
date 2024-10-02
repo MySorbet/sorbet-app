@@ -1,5 +1,11 @@
 import { MAX_BIO_LENGTH } from '@/constant';
 
+/**
+ * This component displays character count as well as an error message if bio length is exceeded
+ * @param length number length of the bio
+ * @param isMax boolean indicating whether the bio has exceeded the maximum bio length
+ * @returns
+ */
 export const BioMessage = ({
   length,
   isMax,

@@ -15,7 +15,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 
-import { OnboardHandleInput, OnboardHandleInputWidgetTypes } from './onboard-handle-input';
+import {
+  OnboardHandleInput,
+  OnboardHandleInputWidgetTypes,
+} from './onboard-handle-input';
 
 const meta: Meta<typeof OnboardHandleInput> = {
   component: OnboardHandleInput,
