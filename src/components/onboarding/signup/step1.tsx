@@ -1,13 +1,16 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert,  User } from 'lucide-react';
+import { CircleAlert, User } from 'lucide-react';
 import { ChangeEventHandler, useState } from 'react';
-import {  useForm, useFormState } from 'react-hook-form';
+import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LocationInput, validateHandle } from '@/components/profile';
-import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
+import {
+  HandleInput,
+  LocationInput,
+  validateHandle,
+} from '@/components/profile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {

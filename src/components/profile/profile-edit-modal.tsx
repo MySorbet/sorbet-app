@@ -8,9 +8,6 @@ import { useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { BioMessage } from '@/components/profile/bio-message';
-import { validateHandle } from '@/components/profile/validate-handle';
-import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -38,6 +35,8 @@ import {
 } from '@/hooks';
 import type { User } from '@/types';
 
+import { BioMessage } from './bio-message';
+import { HandleInput, validateHandle } from './handle-input';
 import { LocationInput } from './location-input';
 
 interface ProfileEditModalProps {

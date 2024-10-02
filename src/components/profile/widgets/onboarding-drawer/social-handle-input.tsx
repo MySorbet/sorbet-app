@@ -8,7 +8,8 @@ import { cn } from '@/lib/utils';
 
 import { WidgetIcon, WidgetTypeWithIcon } from '../widget-icon';
 
-interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface SocialHandleInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   /** The type of the widget icon to be displayed */
   type: SocialHandleInputWidgetType;
   // TODO: Fix SB not displaying this type correctly under Docs description (shows "string")
@@ -24,7 +25,7 @@ interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
  */
 export const SocialHandleInput = React.forwardRef<
   HTMLInputElement,
-  HandleInputProps
+  SocialHandleInputProps
 >(({ className, type, onChange, ...props }, ref) => {
   const localRef = useRef<HTMLInputElement>(null);
   const [showClearButton, setShowClearButton] = useState(false);
