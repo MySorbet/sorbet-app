@@ -86,11 +86,7 @@ const refine = async (handle: string, initialHandle: string) => {
  * @param user
  * @returns zod schema for handle
  */
-export const validateHandle = (handle: string | null | undefined) => {
-  if (!handle) {
-    throw new Error('User not found');
-  }
-
+export const validateHandle = (initialHandle: string) => {
   return z
     .string()
     .min(1, { message: 'Handle is required' })
@@ -99,7 +95,7 @@ export const validateHandle = (handle: string | null | undefined) => {
       message:
         'Handle may only contain lowercase letters, numbers, dashes, and underscores',
     }) // Enforce lowercase, no spaces, and allow dashes
-    .refine((handle) => refine(handle, handle ?? ''), {
+    .refine((handle) => refine(handle, initialHandle), {
       message: 'This handle is already taken',
     });
 };

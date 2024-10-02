@@ -39,7 +39,9 @@ const Step1 = () => {
   const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
-    handle: validateHandle(user?.handle),
+    // TODO: eventually, update the user type to make handle required, because as it stands, a user cannot be created without a handle.
+    // * This is a temporary fix due to mistyping of User type
+    handle: validateHandle(user?.handle ?? ''), 
     location: z.string().optional(),
   });
 

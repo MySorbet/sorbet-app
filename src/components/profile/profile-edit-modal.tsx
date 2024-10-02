@@ -68,7 +68,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       .optional(),
     city: z.string(),
     tags: z.array(z.string()).optional(),
-    handle: validateHandle(user?.handle),
+    // TODO: eventually, update the user type to make handle required, because as it stands, a user cannot be created without a handle.
+    // * This is a temporary fix due to mistyping of User type
+    handle: validateHandle(user.handle ?? ''),
     location: z.string().optional(),
   });
 
