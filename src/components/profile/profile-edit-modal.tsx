@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
-import { CircleAlert, CircleCheck, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { ControllerRenderProps, useFormState } from 'react-hook-form';
+import { useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -198,21 +198,6 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     form.setValue('tags', newSkills, {
       shouldDirty: true,
     });
-  };
-
-  // This change handler allows us to mask the input to only allow valid handles to be typed or pasted
-  // We still have zod validate the form, but this creates a better user experience by guiding
-  // the user to a valid handle rather than erroring out when they "do something wrong"
-  const handleInputChange = (
-    field: ControllerRenderProps<FormData, 'handle'>,
-    value: string
-  ) => {
-    field.onChange(
-      value
-        .replace(/[^a-zA-Z0-9 _-]/g, '') // Remove invalid characters
-        .replace(/\s+/g, '-') // Replace spaces with dashes
-        .toLowerCase() // Convert to lowercase
-    );
   };
 
   const loading =
