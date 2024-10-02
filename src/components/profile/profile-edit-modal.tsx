@@ -304,7 +304,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <FormField
               control={form.control}
               name='handle'
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel className='text-textSecondary text-sm font-medium'>
                     Handle
@@ -312,19 +312,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   <FormControl>
                     <div className='relative'>
                       <HandleInput
+                        name='handle'
                         register={form.register}
-                        {...field}
-                        onChange={(e) => {
-                          handleInputChange(field, e.target.value);
-                        }}
-                        className='text-textPlaceholder pl-2 focus:outline-none focus:ring-0'
-                        placeholder='my-sorbet-handle'
+                        setValue={form.setValue}
+                        error={errors.handle}
                       />
-                      {errors.handle ? (
-                        <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
-                      ) : (
-                        <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
-                      )}
                     </div>
                   </FormControl>
                   <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />

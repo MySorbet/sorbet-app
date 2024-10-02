@@ -2,8 +2,9 @@ import { X } from '@untitled-ui/icons-react';
 import { useImperativeHandle, useRef, useState } from 'react';
 import React from 'react';
 
-import { HandleInput } from '@/components/profile/widgets/onboarding-drawer/handle-input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 import { WidgetIcon, WidgetTypeWithIcon } from '../widget-icon';
 
@@ -14,7 +15,7 @@ interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 /**
- * HandleInput is a component that allows the user to input a handle for a social media profile.
+ * OnboardHandleInput is a component that allows the user to input a handle for a social media profile.
  *
  * It is a forwardRef component that allows the parent component to access the input element.
  *
@@ -43,15 +44,33 @@ export const OnboardHandleInput = React.forwardRef<
     }
   };
 
+  // Prevent enter from clearing the input and instead, make it tab to the next input (skipping the clear button if needed)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Simulate Tab key press
+      const nextElement = e.currentTarget.form?.elements[
+        Array.from(e.currentTarget.form.elements).indexOf(e.currentTarget) +
+          (showClearButton ? 2 : 1)
+      ] as HTMLElement;
+      nextElement?.focus();
+    }
+  };
+
   return (
     <div className='relative'>
-      <HandleInput
-        showClearButton={showClearButton}
-        setShowClearButton={setShowClearButton}
-        localRef={localRef}
-        onChange={onChange}
-        type={type}
-        className={className}
+      <Input
+        type='text'
+        // TODO: Keep the @ when user types
+        placeholder='@username'
+        className={cn('truncate pl-9 pr-10 shadow-sm', className)}
+        ref={localRef}
+        onChange={(e) => {
+          setShowClearButton(e.target.value.length > 0);
+          onChange?.(e);
+        }}
+        onKeyDown={handleKeyDown}
+        aria-label={`${type} username input`}
         {...props}
       />
       <div className='absolute left-2 top-1/2 -translate-y-1/2 transform'>

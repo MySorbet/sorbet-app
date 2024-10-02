@@ -1,24 +1,24 @@
+import { CircleAlert, CircleCheck } from 'lucide-react';
+import { ChangeEvent, ComponentProps } from 'react';
 import {
-  ChangeEventHandler,
-  ComponentProps,
-  Dispatch,
-  Ref,
-  SetStateAction,
-} from 'react';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+  FieldError,
+  FieldValues,
+  Path,
+  PathValue,
+  UseFormRegister,
+  UseFormSetValue,
+} from 'react-hook-form';
 
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface HandleInputProps<T extends FieldValues>
   extends ComponentProps<'input'> {
-  setShowClearButton?: Dispatch<SetStateAction<boolean>>;
-  showClearButton?: boolean;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  setValue: UseFormSetValue<T>;
+  error: FieldError | undefined;
   className?: string;
-  onChange: ChangeEventHandler<HTMLInputElement> | undefined;
-  type?: string;
-  localRef?: Ref<HTMLInputElement>;
-  register?: UseFormRegister<T>;
 }
 
 /**
@@ -27,41 +27,39 @@ interface HandleInputProps<T extends FieldValues>
  * @returns an input that has an associated handler
  */
 export const HandleInput = <T extends FieldValues>({
-  showClearButton,
-  setShowClearButton,
+  name,
+  register,
+  setValue,
+  error,
   className,
-  localRef,
-  onChange,
-  type,
   ...props
 }: HandleInputProps<T>) => {
-  // Prevent enter from clearing the input and instead, make it tab to the next input (skipping the clear button if needed)
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      // Simulate Tab key press
-      const nextElement = e.currentTarget.form?.elements[
-        Array.from(e.currentTarget.form.elements).indexOf(e.currentTarget) +
-          (showClearButton ? 2 : 1)
-      ] as HTMLElement;
-      nextElement?.focus();
-    }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(name, e.target.value as PathValue<T, Path<T>>, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   return (
-    <Input
-      type='text'
-      // TODO: Keep the @ when user types
-      placeholder='@username'
-      className={cn('truncate pl-9 pr-10 shadow-sm', className)}
-      ref={localRef}
-      onChange={(e) => {
-        setShowClearButton?.(e.target.value.length > 0);
-        onChange?.(e);
-      }}
-      onKeyDown={handleKeyDown}
-      aria-label={`${type} username input`}
-      {...props}
-    />
+    <>
+      <Input
+        {...register(name)}
+        type='text'
+        // TODO: Keep the @ when user types
+        placeholder='my-sorbet-handle'
+        onChange={(e) => handleChange(e)}
+        {...props}
+        className={cn(
+          'text-textPlaceholder focus:outline-none focus:ring-0',
+          className
+        )}
+      />
+      {error ? (
+        <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
+      ) : (
+        <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
+      )}
+    </>
   );
 };
