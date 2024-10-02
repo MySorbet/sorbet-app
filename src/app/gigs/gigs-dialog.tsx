@@ -45,6 +45,7 @@ import { env } from '@/lib/env';
 import { cn } from '@/lib/utils';
 import { ActiveTab } from '@/types';
 import { CreateContractType, MilestoneType, OfferType } from '@/types';
+import { TabsList } from '@/components/build-ui/tabs-list';
 
 export interface GigsDialogProps {
   isOpen: boolean;
@@ -556,7 +557,11 @@ export const GigsDialog = ({
                 ? `Chat with ${chatParticipantName}`
                 : `Chat`
               : `Contract`}
-            <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
+            <TabsList
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              tabs={['Chat', 'Contract']}
+            />
           </DialogTitle>
 
           {activeTab === 'Chat' && (
