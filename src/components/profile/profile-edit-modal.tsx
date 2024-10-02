@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { BioMessage } from '@/components/profile/bio-message';
-import { handleValidation } from '@/components/profile/handle-validation';
+import { validateHandle } from '@/components/profile/validate-handle';
 import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -69,7 +69,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       .optional(),
     city: z.string(),
     tags: z.array(z.string()).optional(),
-    handle: handleValidation(user),
+    handle: validateHandle(user?.handle),
     location: z.string().optional(),
   });
 
@@ -289,20 +289,18 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <FormField
               control={form.control}
               name='handle'
-              render={() => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-textSecondary text-sm font-medium'>
                     Handle
                   </FormLabel>
                   <FormControl>
-                    <div className='relative'>
-                      <HandleInput
-                        name='handle'
-                        register={form.register}
-                        setValue={form.setValue}
-                        error={errors.handle}
-                      />
-                    </div>
+                    <HandleInput
+                      name={field.name}
+                      register={form.register}
+                      setValue={form.setValue}
+                      error={errors.handle}
+                    />
                   </FormControl>
                   <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
                 </FormItem>

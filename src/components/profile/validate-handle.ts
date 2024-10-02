@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 import { checkHandleIsAvailable } from '@/api/auth';
-import { UserWithId } from '@/types';
 
 // TODO: debounce so that not too many requests are made when typing
 const refine = async (handle: string, initialHandle: string) => {
@@ -16,12 +15,12 @@ const refine = async (handle: string, initialHandle: string) => {
  * @param user
  * @returns zod schema for handle
  */
-export const handleValidation = (user: UserWithId | null) => {
-  if (!user) {
+export const validateHandle = (handle: string | null | undefined) => {
+  if (!handle) {
     throw new Error('User not found');
   }
 
-  const handleSchema = z
+  return z
     .string()
     .min(1, { message: 'Handle is required' })
     .max(25, { message: 'Handle must be less than 25 characters' })
@@ -29,9 +28,7 @@ export const handleValidation = (user: UserWithId | null) => {
       message:
         'Handle may only contain lowercase letters, numbers, dashes, and underscores',
     }) // Enforce lowercase, no spaces, and allow dashes
-    .refine((handle) => refine(handle, user?.handle ?? ''), {
+    .refine((handle) => refine(handle, handle ?? ''), {
       message: 'This handle is already taken',
     });
-
-  return handleSchema;
 };

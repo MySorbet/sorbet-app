@@ -17,6 +17,7 @@ interface LocationInputProps<T extends FieldValues> {
   name: Path<T>;
   register: UseFormRegister<T>;
   setValue: UseFormSetValue<T>;
+  /** Styles only the shadcn input component */
   className?: string;
 }
 

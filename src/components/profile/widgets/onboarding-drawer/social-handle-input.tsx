@@ -10,19 +10,19 @@ import { WidgetIcon, WidgetTypeWithIcon } from '../widget-icon';
 
 interface HandleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** The type of the widget icon to be displayed */
-  type: OnboardHandleInputWidgetType;
+  type: SocialHandleInputWidgetType;
   // TODO: Fix SB not displaying this type correctly under Docs description (shows "string")
 }
 
 /**
- * OnboardHandleInput is a component that allows the user to input a handle for a social media profile.
+ * SocialHandleInput is a component that allows the user to input a handle for a social media profile.
  *
  * It is a forwardRef component that allows the parent component to access the input element.
  *
  * Note: A clear button is rendered when `value` is not empty. Clicking it will cause value to be set to an empty string and is handled internally.
  * Note: Pressing enter will tab to the next input, skipping the clear button if it is shown.
  */
-export const OnboardHandleInput = React.forwardRef<
+export const SocialHandleInput = React.forwardRef<
   HTMLInputElement,
   HandleInputProps
 >(({ className, type, onChange, ...props }, ref) => {
@@ -88,10 +88,10 @@ export const OnboardHandleInput = React.forwardRef<
     </div>
   );
 });
-OnboardHandleInput.displayName = 'HandleInput';
+SocialHandleInput.displayName = 'HandleInput';
 
 /** These are the supported widget types for the onboarding flow */
-export const OnboardHandleInputWidgetTypes = [
+export const SocialHandleInputWidgetTypes = [
   'InstagramProfile',
   'TwitterProfile',
   'LinkedInProfile',
@@ -101,8 +101,8 @@ export const OnboardHandleInputWidgetTypes = [
 ] as const satisfies WidgetTypeWithIcon[];
 
 /** These are the supported widget types for the onboarding flow */
-export type OnboardHandleInputWidgetType =
-  (typeof OnboardHandleInputWidgetTypes)[number];
+export type SocialHandleInputWidgetType =
+  (typeof SocialHandleInputWidgetTypes)[number];
 
 /**
  * Converts a handle and type to a widget URL.
@@ -112,10 +112,10 @@ export type OnboardHandleInputWidgetType =
  * @returns The widget URL.
  */
 export const typeAndHandleToWidgetUrl = (
-  type: OnboardHandleInputWidgetType,
+  type: SocialHandleInputWidgetType,
   handle: string
 ) => {
-  const baseUrl: Record<OnboardHandleInputWidgetType, string> = {
+  const baseUrl: Record<SocialHandleInputWidgetType, string> = {
     TwitterProfile: 'https://x.com/',
     InstagramProfile: 'https://instagram.com/',
     Behance: 'https://behance.net/',

@@ -1,6 +1,7 @@
 import { CircleAlert, CircleCheck } from 'lucide-react';
 import { ChangeEvent, ComponentProps } from 'react';
 import {
+  ControllerRenderProps,
   FieldError,
   FieldValues,
   Path,
@@ -34,19 +35,27 @@ export const HandleInput = <T extends FieldValues>({
   className,
   ...props
 }: HandleInputProps<T>) => {
+
+  // This change handler allows us to mask the input to only allow valid handles to be typed or pasted
+  // We still have zod validate the form, but this creates a better user experience by guiding
+  // the user to a valid handle rather than erroring out when they "do something wrong"
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue(name, e.target.value as PathValue<T, Path<T>>, {
+    const maskedHandle = e.target.value
+      .replace(/[^a-zA-Z0-9 _-]/g, '') // Remove invalid characters
+      .replace(/\s+/g, '-') // Replace spaces with dashes
+      .toLowerCase(); // Convert to lowercase
+
+    setValue(name, maskedHandle as PathValue<T, Path<T>>, {
       shouldDirty: true,
       shouldValidate: true,
     });
   };
 
   return (
-    <>
+    <div className='relative'>
       <Input
         {...register(name)}
         type='text'
-        // TODO: Keep the @ when user types
         placeholder='my-sorbet-handle'
         onChange={(e) => handleChange(e)}
         {...props}
@@ -60,6 +69,6 @@ export const HandleInput = <T extends FieldValues>({
       ) : (
         <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
       )}
-    </>
+    </div>
   );
 };

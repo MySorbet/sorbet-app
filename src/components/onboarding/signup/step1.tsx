@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CircleAlert, CircleCheck, User } from 'lucide-react';
+import { CircleAlert,  User } from 'lucide-react';
 import { ChangeEventHandler, useState } from 'react';
-import { ControllerRenderProps, useForm, useFormState } from 'react-hook-form';
+import {  useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LocationInput } from '@/components/profile';
-import { handleValidation } from '@/components/profile/handle-validation';
+import { LocationInput, validateHandle } from '@/components/profile';
+import { HandleInput } from '@/components/profile/widgets/onboarding-drawer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,7 +36,7 @@ const Step1 = () => {
   const formSchema = z.object({
     firstName: z.string().min(1, { message: 'First name is required' }),
     lastName: z.string().min(1, { message: 'Last name is required' }),
-    handle: handleValidation(user),
+    handle: validateHandle(user?.handle),
     location: z.string().optional(),
   });
 
@@ -70,21 +70,6 @@ const Step1 = () => {
     if (!file) return;
     setFile(file);
     setImage(URL.createObjectURL(file));
-  };
-
-  // This change handler allows us to mask the input to only allow valid handles to be typed or pasted
-  // We still have zod validate the form, but this creates a better user experience by guiding
-  // the user to a valid handle rather than erroring out when they "do something wrong"
-  const handleInputChange = (
-    field: ControllerRenderProps<FormSchema, 'handle'>,
-    value: string
-  ) => {
-    field.onChange(
-      value
-        .replace(/[^a-zA-Z0-9 _-]/g, '') // Remove invalid characters
-        .replace(/\s+/g, '-') // Replace spaces with dashes
-        .toLowerCase() // Convert to lowercase
-    );
   };
 
   return (
@@ -132,25 +117,13 @@ const Step1 = () => {
                         Claim your unique Sorbet handle
                       </FormDescription>
                       <FormControl>
-                        <div className='relative'>
-                          <Input
-                            {...form.register('handle')}
-                            placeholder='my-sorbet-handle'
-                            prefix={`${hostname}/`}
-                            {...field}
-                            onChange={(e) =>
-                              handleInputChange(field, e.target.value)
-                            }
-                            className={cn(
-                              errors.handle && 'border-red-500 ring-red-500'
-                            )}
-                          />
-                          {errors.handle ? (
-                            <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />
-                          ) : (
-                            <CircleCheck className='absolute right-4 top-3 h-4 w-4 text-[#00A886]' />
-                          )}
-                        </div>
+                        <HandleInput
+                          name={field.name}
+                          register={form.register}
+                          setValue={form.setValue}
+                          error={errors.handle}
+                          prefix={`${hostname}/`}
+                        />
                       </FormControl>
                       <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
                     </FormItem>
