@@ -9,6 +9,9 @@ import { twMerge } from 'tailwind-merge';
 
 import { ActiveTab } from '@/types';
 
+/**
+ * TODO: comeback and make these types more universal. i.e remove ActiveTab and implement a way to type the name based on the list that is passed down.
+ */
 type Tab = {
   name: ActiveTab;
   icon?: JSX.Element;
