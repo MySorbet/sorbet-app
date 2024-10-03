@@ -1,9 +1,9 @@
 'use client';
 
-import { MoveDown, MoveUp, Send } from 'lucide-react';
+import { MoveDown, MoveUp } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { useWallets, getEmbeddedConnectedWallet } from '@privy-io/react-auth';
+
 import { getOverview } from '@/api/user';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
@@ -12,8 +12,8 @@ import { FundsFlow } from '@/app/wallet/funds-flow';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
-import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
-import { Balances, Transaction, Transactions } from '@/types/transactions';
+import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { Transaction, Transactions } from '@/types/transactions';
 
 export const WalletContainer = () => {
   const walletAddress = useEmbeddedWalletAddress();
@@ -39,7 +39,6 @@ export const WalletContainer = () => {
       const response = await getOverview(walletAddress, last_days);
       if (response && response.data) {
         setTransactions(response.data.transactions);
-        // setBalances(response.data.balances);
       }
       setLoading(false);
     }

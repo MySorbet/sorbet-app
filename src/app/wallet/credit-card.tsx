@@ -1,10 +1,12 @@
-import { CreditCardDialog } from './credit-card-dialog';
 import './styles.css';
-import { Button } from '@/components/ui/button';
-import { Edit, Plus } from 'lucide-react';
+
 import React, { useState } from 'react';
-import Cards from 'react-credit-cards';
 import type { Focused } from 'react-credit-cards';
+import Cards from 'react-credit-cards';
+
+import { Button } from '@/components/ui/button';
+
+import { CreditCardDialog } from './credit-card-dialog';
 
 export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);
