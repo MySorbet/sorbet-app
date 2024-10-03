@@ -1,13 +1,31 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { twMerge } from 'tailwind-merge';
 
+import { ActiveTab } from '@/types';
+
 type Tab = {
-  name: string;
-  icon?: ReactNode;
+  name: ActiveTab;
+  icon?: JSX.Element;
 };
 
-//you handle routing logic. Code is not complex, just play with it and you gonna figure out how it works.
-export const TabsList: React.FC<{ tabs: Tab[] }> = ({ tabs }) => {
+type TabsListProps = {
+  tabs: Array<Tab>;
+  setActiveTab: Dispatch<SetStateAction<ActiveTab>>;
+};
+
+/**
+ * This returns an animated tab list
+ * @param tabs An array of objects with a name and an icon
+ * @param setActiveTab A function to update the active tab state
+ * @returns
+ */
+export const TabsList: React.FC<TabsListProps> = ({ tabs, setActiveTab }) => {
   const fired = useRef(false);
   const defaultSelectedTabIndex = 0;
   const [currentLink, setCurrentLink] = useState<{
@@ -27,10 +45,10 @@ export const TabsList: React.FC<{ tabs: Tab[] }> = ({ tabs }) => {
    * you can not do like this - `[&:nth-child(${child})]:bg-neutral-950` it won't work
    */
   const defaultSelectedTabStyles = [
-    '[&:nth-child(1)]:dark:bg-white [&:nth-child(1)]:bg-sorbet',
-    '[&:nth-child(2)]:dark:bg-white [&:nth-child(2)]:bg-sorbet',
-    '[&:nth-child(3)]:dark:bg-white [&:nth-child(3)]:bg-sorbet',
-    '[&:nth-child(4)]:dark:bg-white [&:nth-child(4)]:bg-sorbet',
+    '[&:nth-child(2)]:dark:bg-white [&:nth-child(2)]:bg-sorbet [&:nth-child(1)]:text-base',
+    '[&:nth-child(1)]:dark:bg-white [&:nth-child(1)]:bg-sorbet [&:nth-child(1)]:text-base',
+    '[&:nth-child(3)]:dark:bg-white [&:nth-child(3)]:bg-sorbet [&:nth-child(1)]:text-base',
+    '[&:nth-child(4)]:dark:bg-white [&:nth-child(4)]:bg-sorbet [&:nth-child(1)]:text-base',
   ];
 
   useEffect(() => {
@@ -59,9 +77,10 @@ export const TabsList: React.FC<{ tabs: Tab[] }> = ({ tabs }) => {
                 ?.getBoundingClientRect().width,
               index: i,
             }));
+            setActiveTab(tab.name);
           }}
           className={twMerge(
-            'flex h-fit items-center justify-center gap-1 text-nowrap rounded-full px-3 py-1 transition-colors duration-200',
+            'flex h-fit items-center justify-center gap-1 text-nowrap rounded-full px-3 py-1 text-base font-medium transition-colors duration-200',
             currentLink.index === i && 'text-white dark:text-neutral-900',
             fired.current
               ? ''
