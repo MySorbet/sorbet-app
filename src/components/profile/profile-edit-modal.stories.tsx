@@ -5,7 +5,7 @@ import Providers from '@/app/providers';
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 
 const meta = {
-  title: 'Profile Edit',
+  title: 'Profile/ProfileEditModal',
   component: ProfileEditModal,
   parameters: {
     layout: 'centered',
