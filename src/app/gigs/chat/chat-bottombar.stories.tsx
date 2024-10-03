@@ -1,0 +1,39 @@
+import { Meta } from '@storybook/react';
+import ChatBottombar from '@/app/gigs/chat/chat-bottombar';
+import { fn } from '@storybook/test';
+import { File, ImageIcon } from 'lucide-react';
+
+const meta = {
+  title: 'ChatBottomBar',
+  component: ChatBottombar,
+  args: {
+    sendMessage: fn(),
+    isMobile: false,
+    channel: undefined,
+    contractStatus: 'Pending',
+    supportedIcons: {
+      pdf: <File className='h-5 w-5 text-white' />,
+      jpeg: <ImageIcon className='h-5 w-5 text-white' />,
+      png: <ImageIcon className='h-5 w-5 text-white' />,
+    },
+  },
+  parameters: {
+    layout: 'centered',
+    nextjs: {
+      appDirectory: true,
+    },
+  },
+  decorators: [
+    (Story) => {
+      return (
+        <div className='w-[900px] rounded-xl bg-gray-100'>
+          <Story />
+        </div>
+      );
+    },
+  ],
+} satisfies Meta<typeof ChatBottombar>;
+
+export default meta;
+
+export const Default = {};
