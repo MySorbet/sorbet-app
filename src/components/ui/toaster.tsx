@@ -30,7 +30,7 @@ export function Toaster() {
         return (
           <Toast key={id} {...props}>
             {href ? (
-              <Link href={href} className="grid gap-1">
+              <Link href={href}>
                 {content}
               </Link>
             ) : (
