@@ -1,8 +1,8 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
 import { getUserByHandle } from '@/api/user';
@@ -22,6 +22,8 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   // Mutation to be called when an offer is sent from the logged in user to the freelancer
   const mutation = useMutation({
@@ -52,7 +54,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
     isError,
     data: freelancerResponse,
   } = useQuery({
-    queryKey: ['freelancer'],
+    queryKey: ['freelancer', params.handle], // --> 2nd arg is for a more detailed query key
     queryFn: () => getUserByHandle(params.handle),
   });
 
@@ -62,6 +64,15 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const disableHireMe = isMyProfile || !user;
   const hideShare = !isMyProfile || !user;
   const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
+
+  /**
+   * This effect is to refetch at the parent level when a username is updated.
+   * Previously, we were refetching in the profile-edit-modal component and it was resulting
+   * in stale data. For now, this manual fix works.
+   */
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['freelancer', params.handle] });
+  }, [queryClient, params.handle]);
 
   return (
     <>

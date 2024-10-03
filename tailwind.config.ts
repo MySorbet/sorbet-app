@@ -81,6 +81,12 @@ const config = {
           DEFAULT: '#573DF5',
           foreground: '#573DF5',
         },
+        textPlaceholder: {
+          DEFAULT: '#667085',
+        },
+        textSecondary: {
+          DEFAULT: '#344054',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

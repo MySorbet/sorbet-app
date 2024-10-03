@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Controller, useFormState } from 'react-hook-form';
+import { useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -16,7 +17,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { MAX_BIO_LENGTH } from '@/constant';
 import {
   useDeleteProfileImage,
@@ -25,18 +35,9 @@ import {
 } from '@/hooks';
 import type { User } from '@/types';
 
+import { BioMessage } from './bio-message';
+import { HandleInput, validateHandle } from './handle-input';
 import { LocationInput } from './location-input';
-
-const schema = z.object({
-  isImageUpdated: z.boolean(),
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  bio: z.string().max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`),
-  city: z.string(),
-  tags: z.array(z.string()).optional(),
-});
-
-type FormData = z.infer<typeof schema>;
 
 interface ProfileEditModalProps {
   editModalVisible: boolean;
@@ -55,16 +56,27 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const [file, setFile] = useState<Blob | undefined>(undefined);
 
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful },
-    control,
-    setValue,
-    getValues,
-    reset,
-  } = useForm<FormData>({
+  const schema = z.object({
+    isImageUpdated: z.boolean(),
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    bio: z
+      .string()
+      .max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`)
+      .optional(),
+    city: z.string(),
+    tags: z.array(z.string()).optional(),
+    // TODO: eventually, update the user type to make handle required, because as it stands, a user cannot be created without a handle.
+    // * This is a temporary fix due to mistyping of User type
+    handle: validateHandle(user.handle ?? ''),
+    location: z.string().optional(),
+  });
+
+  type FormData = z.infer<typeof schema>;
+
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       isImageUpdated: false, // --> since image is not controlled by form, this allows us to stay within RHF for disabling the 'Save Changes' button.
@@ -73,10 +85,20 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       bio: user?.bio,
       city: user?.city,
       tags: user?.tags,
+      handle: user?.handle ?? '',
     },
+    mode: 'all',
   });
 
-  const { isDirty } = useFormState({ control });
+  const { errors, isSubmitSuccessful } = form.formState;
+
+  const handle = form.watch('handle');
+  const bioLength = form.watch('bio')?.length ?? 0;
+  const isMaxBioLength = bioLength > MAX_BIO_LENGTH;
+
+  const { isDirty, dirtyFields, isValid } = useFormState({
+    control: form.control,
+  });
 
   const {
     isPending: uploadProfileImagePending,
@@ -125,8 +147,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       };
       // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
       await updateProfileAsync(userToUpdate);
-      // Here we invaldiate the query key 'freelancer' which is what the 'user' prop is.
-      queryClient.invalidateQueries({ queryKey: ['freelancer'] });
+      // * Here, we replace the url with the user's updated username if it is changed
+      // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.
+      // If the user changes his/her username, we still want to update our cache with the new username data
+      if (dirtyFields.handle) {
+        router.replace(`/${handle}`);
+      }
+      queryClient.invalidateQueries({ queryKey: ['freelancer', handle] });
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
@@ -144,16 +171,16 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     // TODO: eventually consolidate these two calls since they are called together in multiple places
     // Can be as simple as changing the 'isImageUpdated' property in zod schema from boolean to the string value of 'image'
     setImage(URL.createObjectURL(i));
-    setValue('isImageUpdated', true, { shouldDirty: true });
+    form.setValue('isImageUpdated', true, { shouldDirty: true });
   };
 
   const deleteImage = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    const isImageUpdated = getValues('isImageUpdated');
+    const isImageUpdated = form.getValues('isImageUpdated');
     // If there is a pre-existing image and we delete, we are considering it dirty
     // If there is no image and we supply one, but then delete, we are considering it clean
-    setValue('isImageUpdated', !isImageUpdated, {
+    form.setValue('isImageUpdated', !isImageUpdated, {
       shouldDirty: true,
     });
 
@@ -169,7 +196,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   };
 
   const handleSkillChange = (newSkills: string[]) => {
-    setValue('tags', newSkills, {
+    form.setValue('tags', newSkills, {
       shouldDirty: true,
     });
   };
@@ -182,18 +209,19 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   // This effect is to make sure that the form is updated with all the newest changes or restore default values
   useEffect(() => {
     if (!isSubmitSuccessful) {
-      reset();
+      form.reset();
       setImage(user?.profileImage || undefined);
       return;
     }
-    const values = getValues();
-    reset({ ...values, isImageUpdated: false });
+    const values = form.getValues();
+    form.reset({ ...values, isImageUpdated: false });
   }, [
     isSubmitSuccessful,
-    reset,
-    getValues,
+    form.reset,
+    form.getValues,
     editModalVisible,
     user?.profileImage,
+    form,
   ]);
 
   return (
@@ -212,162 +240,185 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             />
           </DialogHeader>
         </DialogTitle>
-        <div className='flex flex-col gap-6'>
-          <div className='flex items-center gap-2 text-[#344054]'>
-            <Avatar className='border-primary-default h-20 w-20 border-2'>
-              <AvatarImage src={image} alt='new profile image' />
-              <AvatarFallback className='bg-white'>
-                <User01 className='text-muted-foreground h-10 w-10' />
-              </AvatarFallback>
-            </Avatar>
-            <label
-              htmlFor='profileImage'
-              className='flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
-            >
-              Upload
-              <input
-                id='profileImage'
-                name='profileImage'
-                onChange={(e) => fileChange(e)}
-                type='file'
-                className='hidden'
-                accept='image/*'
-              />
-            </label>
-            {image && (
-              <div
-                className={`flex items-center justify-center rounded-lg border-[1px] border-[#D0D5DD] p-2 ${
-                  image || user?.profileImage
-                    ? 'cursor-pointer'
-                    : 'cursor-not-allowed opacity-50'
-                }`}
-                onClick={image || user?.profileImage ? deleteImage : undefined}
+        {/* Where the form starts */}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='flex flex-col gap-5'
+          >
+            <div className='flex items-center gap-2 text-[#344054]'>
+              <Avatar className='border-primary-default h-20 w-20 border-2'>
+                <AvatarImage src={image} alt='new profile image' />
+                <AvatarFallback className='bg-white'>
+                  <User01 className='text-muted-foreground h-10 w-10' />
+                </AvatarFallback>
+              </Avatar>
+              <label
+                htmlFor='profileImage'
+                className='text-textSecondary flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
               >
-                <img
-                  src='/images/trash-01.svg'
-                  alt='trash'
-                  width={20}
-                  height={20}
+                Upload
+                <input
+                  id='profileImage'
+                  name='profileImage'
+                  onChange={(e) => fileChange(e)}
+                  type='file'
+                  className='hidden'
+                  accept='image/*'
                 />
-              </div>
-            )}
-          </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='flex flex-col gap-6'>
-              <div className='flex w-full flex-row gap-6'>
-                <div className='w-full'>
-                  <label className='text-sm font-medium text-[#344054]'>
-                    First name
-                  </label>
-                  <Input
-                    className='mt-1 w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] focus:outline-none focus:ring-0'
-                    placeholder='Your first name'
-                    {...register('firstName', {
-                      required: 'First name is required',
-                    })}
-                    defaultValue={user?.firstName}
-                  />
-                  {errors.firstName && (
-                    <p className='mt-1 text-xs text-red-500'>
-                      {errors.firstName.message}
-                    </p>
-                  )}
-                </div>
-                <div className='w-full'>
-                  <label className='text-sm font-medium text-[#344054]'>
-                    Last name
-                  </label>
-
-                  <Input
-                    className='mt-1 w-full rounded-lg border-[#D0D5DD] text-base font-normal text-[#667085] focus:outline-none focus:ring-0'
-                    placeholder='Your last name'
-                    {...register('lastName', {
-                      required: 'Last name is required',
-                    })}
-                    defaultValue={user?.lastName}
-                  />
-                  {errors.lastName && (
-                    <p className='mt-1 text-xs text-red-500'>
-                      {errors.lastName.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className='item w-full'>
-                <label className='text-sm font-medium text-[#344054]'>
-                  Where are you located?
-                </label>
-                <Controller
-                  name='city'
-                  control={control}
-                  render={() => (
-                    <LocationInput
-                      register={register}
-                      setValue={setValue}
-                      name='city'
-                    />
-                  )}
-                />
-              </div>
-              <div className='item w-full'>
-                <label className='text-sm font-medium text-[#344054]'>
-                  Create a short Bio
-                </label>
-                <textarea
-                  className='border-1 mt-1 w-full rounded-lg border border-[#D0D5DD] p-3 text-base font-normal text-[#667085] focus:outline-none'
-                  placeholder='A few words about yourself'
-                  rows={4}
-                  {...register('bio', { required: 'Bio is required' })}
-                  defaultValue={user?.bio}
-                />
-                <label className='text-sm font-normal text-[#475467]'>
-                  Max 100 characters
-                </label>
-                {errors.bio && (
-                  <p className='mt-1 text-xs text-red-500'>
-                    {errors.bio.message}
-                  </p>
-                )}
-              </div>
-              <div className='item w-full'>
-                <Controller
-                  {...register('tags')}
-                  name='tags'
-                  control={control}
-                  render={() => (
-                    <SkillInput
-                      initialSkills={user?.tags || []}
-                      onSkillsChange={handleSkillChange}
-                      unique
-                      {...register('tags')}
-                    />
-                  )}
-                />
-                {errors.tags && (
-                  <p className='mt-1 text-xs text-red-500'>
-                    {errors.tags.message}
-                  </p>
-                )}
-              </div>
-              <div className='w-full'>
-                <Button
-                  type='submit'
-                  className='bg-sorbet w-full'
-                  disabled={loading || !isDirty}
+              </label>
+              {image && (
+                <div
+                  className={`flex items-center justify-center rounded-lg border-[1px] border-[#D0D5DD] p-2 ${
+                    image || user?.profileImage
+                      ? 'cursor-pointer'
+                      : 'cursor-not-allowed opacity-50'
+                  }`}
+                  onClick={
+                    image || user?.profileImage ? deleteImage : undefined
+                  }
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      Saving
-                    </>
-                  ) : (
-                    'Save Changes'
-                  )}
-                </Button>
-              </div>
+                  <img
+                    src='/images/trash-01.svg'
+                    alt='trash'
+                    width={20}
+                    height={20}
+                  />
+                </div>
+              )}
             </div>
+            <FormField
+              control={form.control}
+              name='handle'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-textSecondary text-sm font-medium'>
+                    Handle
+                  </FormLabel>
+                  <FormControl>
+                    <HandleInput
+                      name={field.name}
+                      register={form.register}
+                      setValue={form.setValue}
+                      error={errors.handle}
+                    />
+                  </FormControl>
+                  <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                </FormItem>
+              )}
+            />
+            <div className='flex w-full flex-row gap-6'>
+              <FormField
+                control={form.control}
+                name='firstName'
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel className='text-textSecondary text-sm font-medium'>
+                      First name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...form.register('firstName')}
+                        placeholder='First name'
+                        {...field}
+                        className='text-textPlaceholder w-full focus:outline-none focus:ring-0'
+                      />
+                    </FormControl>
+                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='lastName'
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel className='text-textSecondary text-sm font-medium'>
+                      Last name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...form.register('lastName')}
+                        placeholder='Last name'
+                        {...field}
+                        className='text-textPlaceholder focus:outline-none focus:ring-0'
+                      />
+                    </FormControl>
+                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name='city'
+              render={() => (
+                <FormItem>
+                  <FormLabel className='text-textSecondary'>
+                    Where are you located?
+                  </FormLabel>
+                  <FormControl>
+                    <LocationInput
+                      register={form.register}
+                      setValue={form.setValue}
+                      name='city'
+                      className='text-textPlaceholder'
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='bio'
+              render={() => (
+                <FormItem>
+                  <FormLabel className='text-textSecondary'>
+                    Create a short bio
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className='border-1 text-textPlaceholder mt-1 w-full resize-none rounded-lg border border-[#D0D5DD] p-3 text-base font-normal focus:outline-none focus:ring-0 focus-visible:ring-transparent'
+                      placeholder='A few words about yourself'
+                      rows={4}
+                      {...form.register('bio')}
+                      defaultValue={user?.bio}
+                    />
+                  </FormControl>
+                  <BioMessage isMax={isMaxBioLength} length={bioLength} />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='tags'
+              render={() => (
+                <FormItem>
+                  <SkillInput
+                    initialSkills={user?.tags || []}
+                    onSkillsChange={handleSkillChange}
+                    unique
+                    {...form.register('tags')}
+                  />
+                </FormItem>
+              )}
+            />
+            <Button
+              type='submit'
+              className='bg-sorbet w-full'
+              disabled={loading || !isDirty || !isValid}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Saving
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
           </form>
-        </div>
+        </Form>
       </DialogContent>
     </Dialog>
   );

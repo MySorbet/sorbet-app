@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { useUserSignUp } from '@/components/onboarding/signup/signup';
+import { BioMessage } from '@/components/profile';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { MAX_BIO_LENGTH } from '@/constant';
@@ -37,7 +38,7 @@ const Step2 = () => {
             onChange={(e) => setBio(e.target.value)}
             defaultValue={userData.bio}
           />
-          <BioStatus isMax={isMax} length={bio.length} />
+          <BioMessage isMax={isMax} length={bio.length} />
         </div>
         <div className='flex gap-3'>
           <Button
@@ -60,14 +61,3 @@ const Step2 = () => {
 };
 
 export { Step2 };
-
-/** Local component meant to clean up the JSX */
-const BioStatus = ({ length, isMax }: { length: number; isMax: boolean }) => {
-  return isMax ? (
-    <p className='animate-in slide-in-from-top-1 fade-in-0 mt-1 text-xs text-red-500'>
-      Max of {MAX_BIO_LENGTH} characters
-    </p>
-  ) : (
-    <p className='mt-1 text-xs text-[#344054]'>{length}/100</p>
-  );
-};

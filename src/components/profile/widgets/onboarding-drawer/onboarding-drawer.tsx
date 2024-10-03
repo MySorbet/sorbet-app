@@ -13,7 +13,10 @@ import {
 } from '@/components/ui/drawer';
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 
-import { HandleInput, HandleInputWidgetTypes } from './handle-input';
+import {
+  SocialHandleInput,
+  SocialHandleInputWidgetTypes,
+} from './social-handle-input';
 
 /**
  * This schema is used to validate the form values.
@@ -23,7 +26,7 @@ import { HandleInput, HandleInputWidgetTypes } from './handle-input';
  * TODO: Could be improved by validating that every key is present
  * TODO: Could be improved by validating that the value is a valid handle for the given platform
  */
-const formSchema = z.record(z.enum(HandleInputWidgetTypes), z.string());
+const formSchema = z.record(z.enum(SocialHandleInputWidgetTypes), z.string());
 type FormSchema = z.infer<typeof formSchema>;
 
 interface OnboardingDrawerProps {
@@ -90,7 +93,7 @@ export const OnboardingDrawer = ({
 
             {/* HandleInputs map */}
             <div className='mx-auto grid max-w-2xl grid-cols-1 gap-4 p-4 pb-0 md:grid-cols-2'>
-              {HandleInputWidgetTypes.map((type) => (
+              {SocialHandleInputWidgetTypes.map((type) => (
                 <FormField
                   control={form.control}
                   key={type}
@@ -98,7 +101,7 @@ export const OnboardingDrawer = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <HandleInput key={type} type={type} {...field} />
+                        <SocialHandleInput key={type} type={type} {...field} />
                       </FormControl>
                     </FormItem>
                   )}
