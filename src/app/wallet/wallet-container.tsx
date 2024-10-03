@@ -4,7 +4,7 @@ import { MoveDown, MoveUp } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-import { getOverview } from '@/api/user';
+import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
 import { CreditCardForm } from '@/app/wallet/credit-card';
