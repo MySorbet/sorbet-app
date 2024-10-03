@@ -17,17 +17,25 @@ export function Toaster() {
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, href, ...props }) {
+        const content = (
+          <div className="grid gap-1">
+            {title && <ToastTitle>{title}</ToastTitle>}
+            {description && (
+              <ToastDescription>{description}</ToastDescription>
+            )}
+            {action}
+          </div>
+        )
+
         return (
           <Toast key={id} {...props}>
-              <Link href={href ?? '/gigs'} className="grid gap-1">
-                <div className="grid gap-1">
-                  {title && <ToastTitle>{title}</ToastTitle>}
-                  {description && (
-                    <ToastDescription>{description}</ToastDescription>
-                  )}
-                </div>
-                {action}
+            {href ? (
+              <Link href={href} className="grid gap-1">
+                {content}
               </Link>
+            ) : (
+              content
+            )}
             <ToastClose />
           </Toast>
         )
