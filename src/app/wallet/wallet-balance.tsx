@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 interface WalletBalanceProps {
   ethBalance: string;
   usdcBalance: string;
-  onTopUp: () => void;
-  onSend: () => void;
+  onTopUp?: () => void;
+  onSend?: () => void;
 }
 
 /**
