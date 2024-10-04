@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
-import { getTransactions } from '@/api/user';
+import { getTransactions } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import { Header } from '@/components/header';
 import { useAuth, useEmbeddedWalletAddress } from '@/hooks';
