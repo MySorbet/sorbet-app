@@ -1,3 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -6,13 +10,9 @@ import {
   DialogHeader,
   DialogOverlay,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 const schema = z.object({
   cardName: z.string().min(1, { message: 'Name is required' }),
@@ -95,7 +95,7 @@ export const CreditCardDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className='bg-black/70' />
-      <DialogContent className='sm:rounded-3xl p-8'>
+      <DialogContent className='p-8 sm:rounded-3xl'>
         <DialogHeader>
           <DialogTitle className='text-3xl font-normal'>
             {isEditMode ? 'Edit Card' : 'Add Card'}
@@ -106,7 +106,7 @@ export const CreditCardDialog = ({
             <div className='flex flex-col'>
               <Label
                 htmlFor='cardName'
-                className='text-[#344054] font-normal text-left text-md mb-2'
+                className='text-md mb-2 text-left font-normal text-[#344054]'
               >
                 Full name
               </Label>
@@ -124,7 +124,7 @@ export const CreditCardDialog = ({
               />
               {errors.cardName &&
                 typeof errors.cardName.message === 'string' && (
-                  <p className='text-red-500 text-xs'>
+                  <p className='text-xs text-red-500'>
                     {errors.cardName.message}
                   </p>
                 )}
@@ -133,7 +133,7 @@ export const CreditCardDialog = ({
             <div className='flex flex-col'>
               <Label
                 htmlFor='cardNumber'
-                className='text-[#344054] font-normal text-left text-md mb-2'
+                className='text-md mb-2 text-left font-normal text-[#344054]'
               >
                 Card number
               </Label>
@@ -155,16 +155,16 @@ export const CreditCardDialog = ({
               />
               {errors.cardNumber &&
                 typeof errors.cardNumber.message === 'string' && (
-                  <p className='text-red-500 text-xs'>
+                  <p className='text-xs text-red-500'>
                     {errors.cardNumber.message}
                   </p>
                 )}
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
               <div className='flex flex-col'>
                 <Label
                   htmlFor='expiry'
-                  className='text-[#344054] font-normal text-left text-md mb-2'
+                  className='text-md mb-2 text-left font-normal text-[#344054]'
                 >
                   Exp Date
                 </Label>
@@ -185,7 +185,7 @@ export const CreditCardDialog = ({
                   )}
                 />
                 {errors.expiry && typeof errors.expiry.message === 'string' && (
-                  <p className='text-red-500 text-xs'>
+                  <p className='text-xs text-red-500'>
                     {errors.expiry.message}
                   </p>
                 )}
@@ -193,7 +193,7 @@ export const CreditCardDialog = ({
               <div className='flex flex-col'>
                 <Label
                   htmlFor='cvc'
-                  className='text-[#344054] font-normal text-left text-md mb-2'
+                  className='text-md mb-2 text-left font-normal text-[#344054]'
                 >
                   CVC
                 </Label>
@@ -210,7 +210,7 @@ export const CreditCardDialog = ({
                   )}
                 />
                 {errors.cvc && (
-                  <p className='text-red-500 text-xs'>
+                  <p className='text-xs text-red-500'>
                     {typeof errors.cvc.message === 'string' &&
                       errors.cvc.message}
                   </p>
@@ -220,7 +220,7 @@ export const CreditCardDialog = ({
             <div className='flex flex-col'>
               <Label
                 htmlFor='zipCode'
-                className='text-[#344054] font-normal text-left text-md mb-2'
+                className='text-md mb-2 text-left font-normal text-[#344054]'
               >
                 Zip Code
               </Label>
@@ -237,7 +237,7 @@ export const CreditCardDialog = ({
                 )}
               />
               {errors.zipCode && (
-                <p className='text-red-500 text-xs'>
+                <p className='text-xs text-red-500'>
                   {typeof errors.zipCode.message === 'string' &&
                     errors.zipCode.message}
                 </p>
@@ -247,7 +247,7 @@ export const CreditCardDialog = ({
           <DialogFooter>
             <Button
               type='submit'
-              className='w-full bg-sorbet'
+              className='bg-sorbet w-full'
               disabled={!isValid}
             >
               {isEditMode ? 'Edit Card' : 'Add Card'}

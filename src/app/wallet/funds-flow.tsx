@@ -1,6 +1,7 @@
-import { Spinner } from '@/components/common';
 import Link from 'next/link';
 import React from 'react';
+
+import { Spinner } from '@/components/common';
 
 interface FundsFlowProps {
   icon: React.ReactNode;
@@ -24,7 +25,7 @@ const BalanceItem: React.FC<BalanceItemProps> = ({
   return (
     <div className='flex items-center justify-between'>
       <div className='flex items-center gap-3'>
-        <span className='bg-gray-200 w-12 h-12 text-gray-500 rounded-full flex justify-center items-center'>
+        <span className='flex h-12 w-12 items-center justify-center rounded-full bg-gray-200 text-gray-500'>
           {icon}
         </span>
         <div className='flex flex-col'>
@@ -42,26 +43,26 @@ export const FundsFlow: React.FC<
 > = ({ title, balance, icon, items, isLoading }) => {
   return (
     <>
-      <div className='shadow-[0px_10px_30px_0px_#00000014] rounded-3xl bg-white p-6 min-h-[100%] relative'>
+      <div className='relative min-h-[100%] rounded-3xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
         {isLoading && (
-          <div className='absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 rounded-3xl'>
+          <div className='absolute inset-0 flex items-center justify-center rounded-3xl bg-white bg-opacity-75'>
             <Spinner />
           </div>
         )}
         <div className='flex flex-col gap-2'>
-          <div className='flex justify-between items-center'>
+          <div className='flex items-center justify-between'>
             <div className='flex items-center gap-2'>
-              <span className='bg-black p-3 text-white rounded-full'>
+              <span className='rounded-full bg-black p-3 text-white'>
                 {icon}
               </span>
-              <span className='text-sm uppercase font-medium text-[#595B5A]'>
+              <span className='text-sm font-medium uppercase text-[#595B5A]'>
                 {title}
               </span>
             </div>
             <div className='text-xl font-semibold'>{balance}</div>
           </div>
 
-          <div className='border-t border-gray-200 mt-4'></div>
+          <div className='mt-4 border-t border-gray-200'></div>
           <div className='mt-4'>
             <div className='flex flex-col gap-4'>
               {(!items || items.length < 1) && !isLoading && (
@@ -79,7 +80,7 @@ export const FundsFlow: React.FC<
                 ))}
             </div>
             <Link href='/wallet/all'>
-              <div className='text-right mt-4 font-semibold text-sm cursor-pointer text-sorbet'>
+              <div className='text-sorbet mt-4 cursor-pointer text-right text-sm font-semibold'>
                 View all
               </div>
             </Link>
