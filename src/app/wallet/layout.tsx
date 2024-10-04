@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export const metadata = {
-  title: 'Sorbet | Wallet',
+  title: 'Wallet',
 };
 
 export default function ClientLayout({ children }: { children: ReactNode }) {
