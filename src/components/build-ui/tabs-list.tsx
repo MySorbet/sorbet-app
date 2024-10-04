@@ -48,8 +48,8 @@ export const TabsList: React.FC<TabsListProps> = ({ tabs, setActiveTab }) => {
    * you can not do like this - `[&:nth-child(${child})]:bg-neutral-950` it won't work
    */
   const defaultSelectedTabStyles = [
-    '[&:nth-child(2)]:dark:bg-white [&:nth-child(2)]:bg-sorbet [&:nth-child(1)]:text-base',
     '[&:nth-child(1)]:dark:bg-white [&:nth-child(1)]:bg-sorbet [&:nth-child(1)]:text-base',
+    '[&:nth-child(2)]:dark:bg-white [&:nth-child(2)]:bg-sorbet [&:nth-child(1)]:text-base',
     '[&:nth-child(3)]:dark:bg-white [&:nth-child(3)]:bg-sorbet [&:nth-child(1)]:text-base',
     '[&:nth-child(4)]:dark:bg-white [&:nth-child(4)]:bg-sorbet [&:nth-child(1)]:text-base',
   ];

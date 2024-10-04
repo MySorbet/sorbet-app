@@ -1,5 +1,4 @@
 import { Meta } from '@storybook/react';
-import { fn } from '@storybook/test';
 import { FileCheck02 } from '@untitled-ui/icons-react';
 
 import { TabsList } from '@/components/build-ui/tabs-list';

@@ -1,5 +1,24 @@
-import { FilePreview } from './chat-file-preview';
-import { EmojiPicker } from './emoji-picker';
+import { GroupChannel } from '@sendbird/chat/groupChannel';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  FileImage,
+  ListOrdered,
+  Mic,
+  Paperclip,
+  PlusCircle,
+  SendHorizontal,
+  ThumbsUp,
+} from 'lucide-react';
+import Link from 'next/link';
+import React, {
+  Dispatch,
+  Ref,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
 import { buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -17,18 +36,16 @@ import {
   SupportedFileIcons,
   TextMessage,
 } from '@/types/sendbird';
-import { GroupChannel } from '@sendbird/chat/groupChannel';
-import { AnimatePresence, motion } from 'framer-motion';
+
+import { FilePreview } from './chat-file-preview';
+import { EmojiPicker } from './emoji-picker';
 import {
-  FileImage,
-  Mic,
-  Paperclip,
-  PlusCircle,
-  SendHorizontal,
-  ThumbsUp,
-} from 'lucide-react';
-import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+  ArrowNarrowUp,
+  Bold01,
+  Italic01,
+  Link03,
+  List,
+} from '@untitled-ui/icons-react';
 
 interface ChatBottombarProps {
   sendMessage: (newMessage: SendMessageParams) => void;
@@ -148,199 +165,61 @@ export default function ChatBottombar({
   }, [files.length]);
 
   return (
-    <div className='p-2 flex justify-between w-full items-center gap-2'>
-      <div className='flex'>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Link
-              href='#'
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'h-9 w-9',
-                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <PlusCircle size={20} className='text-muted-foreground' />
-            </Link>
-          </PopoverTrigger>
-          <PopoverContent side='top' className='w-full p-2'>
-            {message.trim() || isMobile ? (
-              <div className='flex gap-2'>
-                <Link
-                  href='#'
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-9 w-9',
-                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                  )}
-                >
-                  <Mic size={20} className='text-muted-foreground' />
-                </Link>
-                <Link
-                  href='#'
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-9 w-9',
-                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                  )}
-                >
-                  <FileImage size={20} className='text-muted-foreground' />
-                </Link>
-                <Link
-                  href='#'
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-9 w-9',
-                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                  )}
-                >
-                  <Paperclip size={20} className='text-muted-foreground' />
-                </Link>
-              </div>
-            ) : (
-              <Link
-                href='#'
-                className={cn(
-                  buttonVariants({ variant: 'ghost', size: 'icon' }),
-                  'h-9 w-9',
-                  'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                )}
-              >
-                <Mic size={20} className='text-muted-foreground' />
-              </Link>
-            )}
-          </PopoverContent>
-        </Popover>
-        {!message.trim() && !isMobile && (
-          <div className='flex'>
-            <div
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'h-9 w-9',
-                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Input
-                type='file'
-                className='hidden'
-                ref={fileInputRef}
-                onChange={handleAddFile}
-                accept={Object.keys(supportedIcons)
-                  .map((type: string) => '.' + type)
-                  .join(',')}
-              />
-              <FileImage
-                size={20}
-                className='text-muted-foreground hover:cursor-pointer hover:text-foreground transition'
-                onClick={handleFileClick}
-              />
-            </div>
-            <Link
-              href='#'
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'h-9 w-9',
-                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Paperclip size={20} className='text-muted-foreground' />
-            </Link>
-          </div>
-        )}
-      </div>
-
-      <AnimatePresence initial={false}>
-        <motion.div
-          key='input'
-          className='w-full relative'
-          layout
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1 }}
-          transition={{
-            opacity: { duration: 0.05 },
-            layout: {
-              type: 'spring',
-              bounce: 0.15,
-            },
-          }}
-        >
-          <div className='flex items-center'>
-            <div className='w-full border rounded-full flex resize-none overflow-hidden bg-background'>
-              {files.length > 0 ? (
-                <div className='flex gap-1 my-2 pl-4'>
-                  {files.map((file: File, index: number) => (
-                    <FilePreview
-                      key={index}
-                      file={URL.createObjectURL(file)}
-                      removeFile={() =>
-                        setFiles((files) => {
-                          const newFiles = files.filter(
-                            (current: File) => current.name !== file.name
-                          );
-                          return newFiles;
-                        })
-                      }
-                    />
-                  ))}
-                </div>
-              ) : (
-                <Textarea
-                  disabled={disabled}
-                  autoComplete='off'
-                  value={message}
-                  ref={inputRef}
-                  onKeyDown={handleKeyPress}
-                  onChange={handleInputChange}
-                  name='message'
-                  placeholder='Aa'
-                  className=' border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 h-9'
-                ></Textarea>
-              )}
-            </div>
-
-            <div className='absolute right-4 top-3'>
-              <EmojiPicker
-                onChange={(value) => {
-                  setMessage(message + value);
-                  if (inputRef.current) {
-                    inputRef.current.focus();
-                  }
-                }}
-              />
-            </div>
-          </div>
-        </motion.div>
-
-        {message.trim() || files.length ? (
-          <Link
-            href='#'
-            className={cn(
-              buttonVariants({ variant: 'ghost', size: 'icon' }),
-              'h-9 w-9',
-              'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0'
-            )}
-            onClick={handleSend}
-          >
-            <SendHorizontal size={20} className='text-muted-foreground' />
-          </Link>
-        ) : (
-          <Link
-            href='#'
-            className={cn(
-              buttonVariants({ variant: 'ghost', size: 'icon' }),
-              'h-9 w-9',
-              'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0'
-            )}
-            onClick={handleThumbsUp}
-          >
-            <ThumbsUp
-              size={20}
-              className='text-muted-foreground hover:text-foreground transition'
-            />
-          </Link>
-        )}
-      </AnimatePresence>
+    <div className='flex flex-col rounded-lg border border-[#D7D7D7] bg-white py-2 pl-4 pr-2 shadow-sm'>
+      <Textarea
+        placeholder='Type your message...'
+        className='text-foreground w-full resize-none overflow-hidden border-none bg-transparent pl-0 text-base font-normal placeholder:italic placeholder:text-[#95949C] focus-visible:ring-transparent'
+      />
+      <ChatActions
+        inputRef={inputRef}
+        setMessage={setMessage}
+        message={message}
+        disabled={true}
+      />
     </div>
   );
 }
+
+interface ChatActionsProps {
+  setMessage: Dispatch<SetStateAction<string>>;
+  inputRef: any;
+  message: string;
+  disabled: boolean;
+}
+
+const ChatActionStyles =
+  'h-4 w-4 text-[#D9D9D9] hover:text-muted-foreground transition hover:cursor-pointer';
+
+const ChatActions = ({
+  setMessage,
+  inputRef,
+  message,
+  disabled,
+}: ChatActionsProps) => {
+  return (
+    <div className='flex max-h-full items-center justify-between'>
+      <div className='flex gap-3'>
+        <EmojiPicker
+          onChange={(value) => {
+            setMessage(message + value);
+            if (inputRef.current) {
+              inputRef.current.focus();
+            }
+          }}
+        />
+        <div className='divider h-4 w-[1px] bg-[#F2F2F2]' />
+        <Link03 className={ChatActionStyles} />
+        <Bold01 className={ChatActionStyles} />
+        <Italic01 className={ChatActionStyles} />
+        <List className={ChatActionStyles} />
+        <ListOrdered className={ChatActionStyles} />
+      </div>
+      <button
+        className='bg-sorbet disabled:bg-sorbet/20 flex h-8 w-8 items-center justify-center rounded-xl border-none'
+        disabled={disabled}
+      >
+        <ArrowNarrowUp className='h-4 w-4 text-white' />
+      </button>
+    </div>
+  );
+};
