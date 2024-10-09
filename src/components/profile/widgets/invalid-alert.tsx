@@ -33,7 +33,7 @@ export const InvalidAlert: React.FC<InvalidAlertProps> = ({
             Dismiss
           </div>
           <a
-            href='https://docs.mysorbet.xyz/sorbet'
+            href='https://docs.mysorbet.xyz/sorbet/key-features/quickstart/list-of-supported-widgets'
             target='_blank'
             rel='noopener noreferrer'
             className='text-sorbet font-semibold hover:underline'
