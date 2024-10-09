@@ -13,7 +13,7 @@ steps:
   - id: write-env
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: ['-c', 'echo "$$sorbet_app_env_staging" > /workspace/.env.test']
+    args: ['-c', 'echo "$$sorbet_app_env_staging" > /workspace/.env']
     secretEnv: ['sorbet_app_env_staging']
 
   # Install dependencies and build Storybook
