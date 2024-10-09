@@ -1,44 +1,9 @@
 import { GroupChannel } from '@sendbird/chat/groupChannel';
-import { AnimatePresence, motion } from 'framer-motion';
 import {
-  FileImage,
-  ListOrdered,
-  Mic,
-  Paperclip,
-  PlusCircle,
-  SendHorizontal,
-  ThumbsUp,
-} from 'lucide-react';
-import Link from 'next/link';
-import React, {
-  Dispatch,
-  Ref,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-
-import { buttonVariants } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
-import {
-  FileMessage,
-  SendMessageParams,
-  SupportedFileIcon,
-  SupportedFileIcons,
-  TextMessage,
-} from '@/types/sendbird';
-
-import { FilePreview } from './chat-file-preview';
-import { EmojiPicker } from './emoji-picker';
+  FileMessageCreateParams,
+  UserMessageCreateParams,
+} from '@sendbird/chat/message';
+import { UikitMessageHandler } from '@sendbird/uikit-react/sendbirdSelectors';
 import {
   ArrowNarrowUp,
   Bold01,
@@ -46,11 +11,35 @@ import {
   Link03,
   List,
 } from '@untitled-ui/icons-react';
+import { FileImage, ListOrdered, Paperclip } from 'lucide-react';
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { SupportedFileIcons, TextMessage } from '@/types/sendbird';
+
+import { FilePreview } from './chat-file-preview';
+import { EmojiPicker } from './emoji-picker';
 
 interface ChatBottombarProps {
-  sendMessage: (newMessage: SendMessageParams) => void;
+  // eslint-disable-next-line no-unused-vars
+  sendMessage: (channel: GroupChannel, params: UserMessageCreateParams) => void;
+  sendFileMessage: (
+    // eslint-disable-next-line no-unused-vars
+    channel: GroupChannel,
+    // eslint-disable-next-line no-unused-vars
+    params: FileMessageCreateParams
+  ) => UikitMessageHandler;
   isMobile: boolean;
-  channel: GroupChannel | undefined | null;
+  channel: GroupChannel | undefined;
   contractStatus: string;
   supportedIcons: SupportedFileIcons;
 }
@@ -59,6 +48,7 @@ export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
 
 export default function ChatBottombar({
   sendMessage,
+  sendFileMessage,
   isMobile,
   channel,
   contractStatus,
@@ -77,7 +67,7 @@ export default function ChatBottombar({
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleAddFile = async (event: any) => {
+  const handleAddFile = (event: any) => {
     // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
     if (files.length === 1) {
       toast({ title: 'Only one file can be uploaded at a time.' });
@@ -99,15 +89,6 @@ export default function ChatBottombar({
     }
   };
 
-  const handleThumbsUp = () => {
-    const params: TextMessage = {
-      type: 'text',
-      message: '👍',
-    };
-    sendMessage(params);
-    setMessage('');
-  };
-
   const handleSend = () => {
     if (message.length > 0) {
       if (message.trim()) {
@@ -115,7 +96,8 @@ export default function ChatBottombar({
           type: 'text',
           message: message.trim(),
         };
-        sendMessage(params);
+        console.log('sending message');
+        sendMessage(channel!, params);
         setMessage('');
 
         if (inputRef.current) {
@@ -123,11 +105,12 @@ export default function ChatBottombar({
         }
       }
     } else {
-      const params: FileMessage = {
+      const params = {
         type: 'file',
-        message: files,
+        file: files[0],
       };
-      sendMessage(params);
+      sendFileMessage(channel!, params);
+
       setFiles([]);
     }
   };
@@ -166,15 +149,42 @@ export default function ChatBottombar({
 
   return (
     <div className='flex flex-col rounded-lg border border-[#D7D7D7] bg-white py-2 pl-4 pr-2 shadow-sm'>
-      <Textarea
-        placeholder='Type your message...'
-        className='text-foreground w-full resize-none overflow-hidden border-none bg-transparent pl-0 text-base font-normal placeholder:italic placeholder:text-[#95949C] focus-visible:ring-transparent'
-      />
+      {files.length > 0 ? (
+        <div className='my-2 flex gap-1'>
+          {files.map((file: File, index: number) => (
+            <FilePreview
+              key={index}
+              file={URL.createObjectURL(file)}
+              removeFile={() =>
+                setFiles((files) => {
+                  const newFiles = files.filter(
+                    (current: File) => current.name !== file.name
+                  );
+                  return newFiles;
+                })
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <Textarea
+          placeholder='Type your message...'
+          className='text-foreground w-full resize-none overflow-hidden border-none bg-transparent pl-0 text-base font-normal placeholder:italic placeholder:text-[#95949C] focus-visible:ring-transparent'
+          onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
+          value={message}
+        />
+      )}
       <ChatActions
         inputRef={inputRef}
         setMessage={setMessage}
         message={message}
-        disabled={true}
+        disabled={disabled}
+        handleSend={handleSend}
+        fileInputRef={fileInputRef}
+        handleAddFile={handleAddFile}
+        supportedIcons={supportedIcons}
+        handleFileClick={handleFileClick}
       />
     </div>
   );
@@ -182,9 +192,15 @@ export default function ChatBottombar({
 
 interface ChatActionsProps {
   setMessage: Dispatch<SetStateAction<string>>;
-  inputRef: any;
+  inputRef: RefObject<HTMLTextAreaElement>;
   message: string;
   disabled: boolean;
+  handleSend: () => void;
+  fileInputRef: RefObject<HTMLInputElement>;
+  // eslint-disable-next-line no-unused-vars
+  handleAddFile: (event: any) => void;
+  supportedIcons: SupportedFileIcons;
+  handleFileClick: () => void;
 }
 
 const ChatActionStyles =
@@ -195,6 +211,11 @@ const ChatActions = ({
   inputRef,
   message,
   disabled,
+  handleSend,
+  fileInputRef,
+  handleAddFile,
+  handleFileClick,
+  supportedIcons,
 }: ChatActionsProps) => {
   return (
     <div className='flex max-h-full items-center justify-between'>
@@ -208,7 +229,18 @@ const ChatActions = ({
           }}
         />
         <div className='divider h-4 w-[1px] bg-[#F2F2F2]' />
-        <Link03 className={ChatActionStyles} />
+        <div>
+          <Input
+            type='file'
+            className='hidden'
+            ref={fileInputRef}
+            onChange={handleAddFile}
+            accept={Object.keys(supportedIcons)
+              .map((type: string) => '.' + type)
+              .join(',')}
+          />
+          <Link03 className={ChatActionStyles} onClick={handleFileClick} />
+        </div>
         <Bold01 className={ChatActionStyles} />
         <Italic01 className={ChatActionStyles} />
         <List className={ChatActionStyles} />
@@ -217,6 +249,7 @@ const ChatActions = ({
       <button
         className='bg-sorbet disabled:bg-sorbet/20 flex h-8 w-8 items-center justify-center rounded-xl border-none'
         disabled={disabled}
+        onClick={handleSend}
       >
         <ArrowNarrowUp className='h-4 w-4 text-white' />
       </button>

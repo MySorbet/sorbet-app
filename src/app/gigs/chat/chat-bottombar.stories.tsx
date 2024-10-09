@@ -5,7 +5,7 @@ import { File, ImageIcon } from 'lucide-react';
 import ChatBottombar from '@/app/gigs/chat/chat-bottombar';
 
 const meta = {
-  title: 'ChatBottomBar',
+  title: 'Chat/ChatBottomBar',
   component: ChatBottombar,
   args: {
     sendMessage: fn(),

@@ -1,6 +1,8 @@
+import BaseMessage from '@sendbird/chat';
 import type { Member } from '@sendbird/chat/groupChannel';
+import { useGroupChannelContext } from '@sendbird/uikit-react/GroupChannel/context';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { ChatSkeleton } from '@/app/gigs/chat/chat-skeleton';
 import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
@@ -8,30 +10,44 @@ import {
   convertMilitaryToRegular,
   createChatTimestamp,
   getTimeDifferenceInMinutes,
+  timestampToTime,
 } from '@/app/gigs/chat/sendbird-utils';
 import { cn } from '@/lib/utils';
-import { UserWithId } from '@/types';
-import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
+import { SupportedFileIcons } from '@/types/sendbird';
 
 import { FileDisplay } from './chat-file-display';
 import { TypingIndicator } from './typing-indicator';
 
 interface ChatListProps {
-  messages: SBMessage[];
-  selectedUser: UserWithId;
+  loggedInUserId: string;
   typingMembers: Member[];
   supportedIcons: SupportedFileIcons;
   chatLoading: boolean;
 }
 
+/**
+ * This type serves to bridge the gap btw the React SDK v3 and the JS SDK v4
+ * React SDK BaseMessage type is missing some properties
+ */
+interface BaseMessageWithSender extends BaseMessage {
+  sender: { userId: string; nickname: string; plainProfileUrl: string };
+  createdAt: number;
+  messageType: string;
+  name: string;
+  size: string;
+  plainUrl: string;
+  type: string;
+}
+
 export function ChatList({
-  messages,
-  selectedUser,
+  loggedInUserId,
   typingMembers,
   supportedIcons,
   chatLoading,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const ctx = useGroupChannelContext();
+  const messages = ctx.messages as unknown as BaseMessageWithSender[];
 
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -51,9 +67,9 @@ export function ChatList({
             className='flex h-full w-full flex-col overflow-y-auto overflow-x-hidden pb-1 '
           >
             <AnimatePresence>
-              {messages?.map((message, index) => {
+              {messages.map((message, index) => {
                 const { year, month, day, hour, minute, second } =
-                  message.timestampData!;
+                  timestampToTime(message.createdAt);
 
                 /**
                  * Renders the time (it's centered horizontally) in between messages when there is a large time gap between messages
@@ -78,17 +94,19 @@ export function ChatList({
                 let isPreviousMessageSameUser: boolean | undefined;
                 if (index > 0) {
                   isPreviousMessageSameUser =
-                    messages[index - 1].userId !== message.userId;
+                    messages[index - 1].sender.userId !== message.sender.userId;
                 }
                 /**
                  * Shows the time between the current message and the previous message if the time difference is greater than an hour
                  */
+                const { hour: prevHour, minute: prevMinute } = timestampToTime(
+                  messages[index - 1]?.createdAt ?? ''
+                );
+
                 const isTimeDifferenceGreaterThanHour =
                   getTimeDifferenceInMinutes(
-                    `${message?.timestampData?.hour}:${message?.timestampData?.minute}`,
-                    `${messages[index - 1]?.timestampData?.hour}:${
-                      messages[index - 1]?.timestampData?.minute
-                    }`
+                    `${hour}:${minute}`,
+                    `${prevHour}:${prevMinute}`
                   ) > 60;
                 return (
                   <motion.div
@@ -117,8 +135,8 @@ export function ChatList({
                     <div className='flex w-full flex-col items-start gap-1'>
                       {index === 0 && (
                         <MessageAvatar
-                          avatar={message?.avatar}
-                          nickname={message?.nickname}
+                          avatar={message?.sender.plainProfileUrl}
+                          nickname={message?.sender.nickname}
                           time={messageTime}
                         />
                       )}
@@ -129,34 +147,39 @@ export function ChatList({
                       )}
                       {index > 0 && isPreviousMessageSameUser && (
                         <MessageAvatar
-                          avatar={message?.avatar}
-                          nickname={message?.nickname}
+                          avatar={message?.sender.plainProfileUrl}
+                          nickname={message?.sender.nickname}
                           time={messageTime}
                         />
                       )}
                     </div>
-                    {!message.fileData?.sendbirdUrl ? (
+                    {message.messageType !== 'file' ? (
                       <span
                         className={cn(
                           'bg-accent ml-8 mt-1  max-w-xs rounded-2xl p-2 px-3 font-light',
                           `${
-                            message.userId === selectedUser.id
+                            message.sender.userId === loggedInUserId
                               ? 'bg-sorbet text-white'
                               : 'bg-[#D7D7D7]'
                           }`
                         )}
                       >
-                        {message.message}
+                        {message.message as unknown as string}
                       </span>
                     ) : (
                       <div className='ml-8 mt-1 flex items-center gap-2'>
                         <FileDisplay
-                          fileName={message.fileData.name}
-                          fileSize={message.fileData.size}
-                          file={message.fileData}
+                          fileName={message.name}
+                          fileSize={Number(message.size)}
+                          file={{
+                            name: message.name,
+                            sendbirdUrl: message.plainUrl,
+                            type: message.type,
+                            size: Number(message.size),
+                          }}
                           supportedIcons={supportedIcons}
                           color={
-                            message.userId === selectedUser.id
+                            message.sender.userId === loggedInUserId
                               ? 'bg-sorbet text-white'
                               : 'bg-[#D7D7D7]'
                           }
@@ -170,7 +193,7 @@ export function ChatList({
             {typingMembers.length > 0 && (
               <div className='flex flex-col gap-1'>
                 {messages &&
-                  messages[messages.length - 1]?.userId !==
+                  messages[messages.length - 1]?.sender.userId !==
                     typingMembers[0].userId && (
                     <MessageAvatar
                       avatar={typingMembers[0].profileUrl}

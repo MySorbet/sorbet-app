@@ -96,11 +96,11 @@ export const GigsContainer = () => {
               <TabsTrigger value='sent'>Offers Sent</TabsTrigger>
             </TabsList>
             <TabsContent value='sent'>
-              <GigsBoard gigsContentType={GigsContentType.Sent} />
+              <GigsBoard gigsContentType={GigsContentType.Sent} loggedInUser={loggedInUser}/>
             </TabsContent>
 
             <TabsContent value='received'>
-              <GigsBoard gigsContentType={GigsContentType.Received} />
+              <GigsBoard gigsContentType={GigsContentType.Received} loggedInUser={loggedInUser}/>
             </TabsContent>
           </Tabs>
         </div>

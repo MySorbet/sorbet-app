@@ -9,10 +9,13 @@ import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
 
 const icons = {
-  pdf: <File className='w-5 h-5 text-white' />,
-  jpeg: <ImageIcon className='w-5 h-5 text-white' />,
-  png: <ImageIcon className='w-5 h-5 text-white' />,
+  pdf: <File className='h-5 w-5 text-white' />,
+  jpeg: <ImageIcon className='h-5 w-5 text-white' />,
+  png: <ImageIcon className='h-5 w-5 text-white' />,
 };
+import { useEffect } from 'react';
+import { GroupChannelProvider } from '@sendbird/uikit-react/GroupChannel/context';
+import { useGroupChannelContext } from '@sendbird/uikit-react/GroupChannel/context';
 
 type SupportedFileIcon = keyof typeof icons;
 
@@ -21,6 +24,7 @@ interface ChatProps {
   isOpen: boolean;
   offerId: string;
   contractStatus: string;
+  loggedInUserId: string;
 }
 
 export function Chat({
@@ -28,36 +32,47 @@ export function Chat({
   isOpen,
   offerId,
   contractStatus = '',
+  loggedInUserId,
 }: ChatProps) {
-  const { user, logout } = useAuth();
-  const { data: offer } = useGetOffer(offerId);
-  const [state, chatLoading, error, sendMessage] = useChat({
-    user,
-    logout,
-    isOpen,
-    offer,
-  });
+  const { user } = useAuth();
+
+  const { data: offer, isLoading: isOfferLoading } = useGetOffer(offerId);
+
+  const { sendMessage, getChannelData, sendFileMessage } = useChat(
+    loggedInUserId,
+    offer?.channelId,
+    isOfferLoading
+  );
+
+  const { data: channel } = getChannelData;
 
   return (
-    <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl '>
+    <div className='flex h-full w-full flex-col justify-between rounded-2xl bg-gray-100 p-2 py-3 '>
       {showTopbar && <ChatTopbar selectedUser={user} />}
 
-      <ChatList
-        messages={state.messages}
-        selectedUser={user!}
-        typingMembers={state.typingMembers}
-        supportedIcons={icons}
-        chatLoading={chatLoading}
-      />
-      <div className='mt-4'>
-        <ChatBottombar
-          sendMessage={sendMessage}
-          isMobile={false}
-          channel={state.channel}
-          contractStatus={contractStatus}
-          supportedIcons={icons}
-        />
-      </div>
+      {channel && (
+        <GroupChannelProvider
+          channelUrl={channel.url}
+          messageListQueryParams={{}}
+        >
+          <ChatList
+            loggedInUserId={loggedInUserId}
+            typingMembers={[]}
+            supportedIcons={icons}
+            chatLoading={false}
+          />
+          <div className='mt-4'>
+            <ChatBottombar
+              sendMessage={sendMessage}
+              sendFileMessage={sendFileMessage}
+              isMobile={false}
+              channel={channel}
+              contractStatus={contractStatus}
+              supportedIcons={icons}
+            />
+          </div>
+        </GroupChannelProvider>
+      )}
     </div>
   );
 }

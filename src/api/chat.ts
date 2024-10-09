@@ -8,6 +8,7 @@ import { withAuthHeader } from './withAuthHeader';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
+// TODO: turn this into an RQ useQuery and cache result
 /**
   Fetches the files stored in Sendbird with proper api tokens in the backend and returns the blob url
   @params sendbirdUrl: string - the url of the file stored in Sendbird
@@ -33,7 +34,7 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
     const blobUrl = URL.createObjectURL(blob);
     return blobUrl;
   } catch (error: any) {
-    throw new Error(`Failed to fetch file: ${error}`);
+    throw new Error(`Failed to fetch file: ${error.response.message}`);
   }
 }
 

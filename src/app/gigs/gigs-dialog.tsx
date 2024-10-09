@@ -51,6 +51,7 @@ export interface GigsDialogProps {
   onOpenChange: (open: boolean) => void;
   handleRejectOffer?: () => void;
   afterContractSubmitted?: () => void;
+  loggedInUserId: string;
 }
 
 export const GigsDialog = ({
@@ -62,6 +63,7 @@ export const GigsDialog = ({
   chatParticipantName = '',
   currentOfferId = '',
   handleRejectOffer,
+  loggedInUserId,
 }: GigsDialogProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('Chat');
   const [offers, setOffers] = useState([]);
@@ -564,6 +566,7 @@ export const GigsDialog = ({
               isOpen={isOpen}
               offerId={currentOfferId}
               contractStatus={'Approved'}
+              loggedInUserId={loggedInUserId}
             />
           )}
           {activeTab === 'Contract' ? (
