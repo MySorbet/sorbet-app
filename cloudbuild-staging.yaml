@@ -4,14 +4,49 @@
 # - Secret Manager Secret Accessor
 # - Cloud Run Developer
 # - Service Account User
+#
+# For deploying the storybook to app engine, the SA need:
+# - App Engine Deployer
+# - App Engine Service Admin
 steps:
   # Here we are writing the env file to the workspace so next can bake variables into the build
   - id: write-env
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
+    args: ['-c', 'echo "$$sorbet_app_env_staging" > /workspace/.env.test']
+    secretEnv: ['sorbet_app_env_staging']
+
+  # Install dependencies and build Storybook
+  # waitFor: ['-'] tells this to run in parallel with the main build
+  - id: build-storybook
+    waitFor: ['-']
+    name: 'node:20'
+    entrypoint: 'bash'
     args:
-      ['-c', 'echo "$$sorbet_app_env_production" > /workspace/.env.production']
-    secretEnv: ['sorbet_app_env_production']
+      - '-c'
+      - |
+        corepack enable yarn
+        yarn -v
+        yarn install
+        yarn build-storybook
+    volumes:
+      - name: storybook
+        path: /workspace/.storybook/storybook-static
+
+  # Deploy storybook to app engine
+  - id: deploy-storybook
+    waitFor: ['build-storybook']
+    name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'app'
+      - 'deploy'
+      - './.storybook/sb-deploy.yml'
+      - '--ignore-file'
+      - './.sb-deploy-gcloudignore'
+      - '-q'
+    volumes:
+      - name: storybook
+        path: /workspace/.storybook/storybook-static
 
     # Actually build the image
   - id: build
@@ -39,7 +74,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'sorbet-frontend-production'
+      - 'sorbet-frontend-staging'
       - '--image'
       - '${_IMAGE}:${_TAG}'
       - '--region'
@@ -50,7 +85,7 @@ steps:
 
 substitutions:
   _TAG: '$COMMIT_SHA' # Remember to use --substitutions=_TAG="manual" if running with gcloud builds submit
-  _IMAGE: 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-production'
+  _IMAGE: 'us-east1-docker.pkg.dev/sorbet-production/sorbet/sorbet-frontend-staging'
 
 images:
   - '${_IMAGE}:${_TAG}'
@@ -62,5 +97,5 @@ options:
 # This is how we pass the env variables to the build from secret manager
 availableSecrets:
   secretManager:
-    - versionName: projects/$PROJECT_NUMBER/secrets/sorbet-app-env-production/versions/latest
-      env: 'sorbet_app_env_production'
+    - versionName: projects/$PROJECT_NUMBER/secrets/sorbet-app-env-staging/versions/latest
+      env: 'sorbet_app_env_staging'
