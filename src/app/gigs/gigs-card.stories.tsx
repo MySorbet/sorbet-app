@@ -1,5 +1,4 @@
-import { Meta } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { Meta, } from '@storybook/react';
 
 import { GigsCard } from '@/app/gigs/gigs-card';
 
@@ -21,7 +20,7 @@ const meta = {
       appDirectory: true,
     },
   },
-  args: { ...args },
+  args: args,
   decorators: [
     (Story) => {
       return (
@@ -35,4 +34,4 @@ const meta = {
 
 export default meta;
 
-export const Default = {};
+export const Default = {}

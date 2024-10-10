@@ -1,13 +1,11 @@
 import {
+  Calendar,
   CoinsStacked03,
   MessageChatCircle,
-  Calendar,
 } from '@untitled-ui/icons-react';
 import { User } from 'lucide-react';
-import React, { ReactNode } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 
 export interface GigsCardProps {
   requester: string;
@@ -22,12 +20,11 @@ export const GigsCard = ({
   requester,
   requesterImage,
   title,
-  status,
   projectStart,
   budget,
 }: GigsCardProps) => {
   return (
-    <div className='flex cursor-pointer flex-col gap-2 rounded-xl border border-solid border-[#000000/10] bg-white shadow-[0px_0px_16px_4px_rgba(0,0,0,0.12)]'>
+    <div className='flex cursor-pointer flex-col gap-2 rounded-xl border border-solid border-[#000000/10] bg-white drop-shadow-md'>
       <div className='flex items-center justify-between px-4 py-3'>
         <div className='flex items-center gap-1'>
           <Avatar className='h-6 w-6 shadow-md'>
@@ -63,7 +60,7 @@ export const GigsCard = ({
         </div>
 
         <div className='flex justify-between'>
-          <div className='flex flex-row gap-1 items-center'>
+          <div className='flex flex-row items-center gap-1'>
             <Calendar className='h-3 w-3 text-[#344054]' />
             <span className='text-[10px] font-normal leading-[18px] text-[#344054]'>
               Start
