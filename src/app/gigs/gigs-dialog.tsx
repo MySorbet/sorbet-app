@@ -41,6 +41,7 @@ import { useLocalStorage } from '@/hooks';
 import { env } from '@/lib/env';
 import { ActiveTab } from '@/types';
 import { CreateContractType, MilestoneType, OfferType } from '@/types';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface GigsDialogProps {
   isOpen: boolean;
@@ -77,6 +78,8 @@ export const GigsDialog = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const { ready, wallets } = useWallets();
+
+  const queryClient = useQueryClient();
 
   const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
     'lastChainOp',
@@ -137,6 +140,7 @@ export const GigsDialog = ({
       }
     }
     setIsLoading(false);
+    refetchContractData();
   };
 
   const handleReject = () => {
@@ -162,8 +166,11 @@ export const GigsDialog = ({
         });
       }
     }
-    await refetchContractData();
     setIsLoading(false);
+    queryClient.invalidateQueries({
+      queryKey: ['contractForOffer'],
+    });
+    queryClient.invalidateQueries({ queryKey: ['offers'] });
   };
 
   const cancelReject = () => {
@@ -216,6 +223,7 @@ export const GigsDialog = ({
         });
       }
     }
+    refetchContractData();
   };
 
   const onFixedPriceFormSubmit = async (
@@ -246,6 +254,7 @@ export const GigsDialog = ({
         });
       }
     }
+    refetchContractData();
   };
 
   const handleMilestoneFunding = async (
@@ -459,7 +468,6 @@ export const GigsDialog = ({
       throw error;
     }
   }
-
   const renderContractView = () => {
     if (isClient) {
       if (contractData) {
