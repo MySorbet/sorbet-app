@@ -36,7 +36,9 @@ interface ChatBottombarProps {
   contractStatus: string;
   supportedIcons: SupportedFileIcons;
 }
-
+/**
+ * Component that handles user input for chat.
+ */
 export default function ChatBottombar({
   sendMessage,
   isMobile,
@@ -194,6 +196,9 @@ interface ChatActionsProps {
 const ChatActionStyles =
   'h-4 w-4 text-[#D9D9D9] hover:text-muted-foreground transition hover:cursor-pointer';
 
+/**
+ * Component for the list of buttons/icons below the text area
+ */
 const ChatActions = ({
   setMessage,
   inputRef,

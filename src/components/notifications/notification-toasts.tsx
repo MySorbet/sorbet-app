@@ -32,6 +32,7 @@ const NotificationToasts = () => {
         console.log('from onNotificationsReceived ', notification);
         if (notification.data.showToast === false) return;
         if (KnockContractWorkflows.has(notification.data.type)) {
+          // Invalidating both because they are not mutually exclusive
           queryClient.invalidateQueries({
             queryKey: ['contractForOffer'],
           });

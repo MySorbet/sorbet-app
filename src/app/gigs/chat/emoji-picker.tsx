@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 
 interface EmojiPickerProps {
   onChange: (value: string) => void;
+  /** This affects the styling of the SmileIcon */
   className?: string;
 }
 

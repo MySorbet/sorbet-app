@@ -21,6 +21,9 @@ export interface ContractMilestoneProps {
   handleMilestoneApprove: () => void;
 }
 
+/**
+ * These are the individual milestones that you see in the 'Contract' tab of gigs-dialog
+ */
 export const ContractMilestone = ({
   isApproved = false,
   status,

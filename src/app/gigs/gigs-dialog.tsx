@@ -5,6 +5,7 @@ import {
   getEmbeddedConnectedWallet,
   useWallets,
 } from '@privy-io/react-auth';
+import { useQueryClient } from '@tanstack/react-query';
 import { FileCheck02 } from '@untitled-ui/icons-react';
 import { useEffect, useState } from 'react';
 import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
@@ -41,7 +42,6 @@ import { useLocalStorage } from '@/hooks';
 import { env } from '@/lib/env';
 import { ActiveTab } from '@/types';
 import { CreateContractType, MilestoneType, OfferType } from '@/types';
-import { useQueryClient } from '@tanstack/react-query';
 
 export interface GigsDialogProps {
   isOpen: boolean;
@@ -91,12 +91,16 @@ export const GigsDialog = ({
     data: contractData,
     // error: getContractError,
     isError: isGetContractError,
-    refetch: refetchContractData,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
+
+  const invalidateQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['offers'] });
+    queryClient.invalidateQueries({ queryKey: ['contractForOffer'] });
+  };
 
   if (isGetContractError) {
     toast({
@@ -140,8 +144,7 @@ export const GigsDialog = ({
       }
     }
     setIsLoading(false);
-    queryClient.invalidateQueries({ queryKey: ['offers'] });
-    queryClient.invalidateQueries({ queryKey: ['contractForOffer'] });
+    invalidateQueries();
   };
 
   const handleReject = () => {
@@ -168,10 +171,7 @@ export const GigsDialog = ({
       }
     }
     setIsLoading(false);
-    queryClient.invalidateQueries({
-      queryKey: ['contractForOffer'],
-    });
-    queryClient.invalidateQueries({ queryKey: ['offers'] });
+    invalidateQueries();
   };
 
   const cancelReject = () => {
@@ -189,7 +189,7 @@ export const GigsDialog = ({
       title: 'Contract completed',
       description: 'The contract has been completed',
     });
-    await refetchContractData();
+    invalidateQueries();
     setIsLoading(false);
   };
 
@@ -224,7 +224,7 @@ export const GigsDialog = ({
         });
       }
     }
-    refetchContractData();
+    invalidateQueries();
   };
 
   const onFixedPriceFormSubmit = async (
@@ -255,7 +255,7 @@ export const GigsDialog = ({
         });
       }
     }
-    refetchContractData();
+    invalidateQueries();
   };
 
   const handleMilestoneFunding = async (
@@ -361,7 +361,7 @@ export const GigsDialog = ({
       throw err;
     }
 
-    await refetchContractData();
+    invalidateQueries();
   };
 
   const handleMilestoneSubmission = async (
@@ -382,7 +382,7 @@ export const GigsDialog = ({
       });
     }
 
-    await refetchContractData();
+    invalidateQueries();
   };
 
   const handleMilestoneApprove = async (
@@ -430,7 +430,7 @@ export const GigsDialog = ({
       throw err;
     }
 
-    await refetchContractData();
+    invalidateQueries();
   };
 
   async function sendTransaction(
