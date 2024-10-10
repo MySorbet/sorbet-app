@@ -42,20 +42,20 @@ const mockGigsCardData = [
     budget: '500-1000',
   },
   {
-    requester: 'Client 1',
+    requester: 'Client 2',
     requesterImage: undefined,
-    title: 'Gig 1',
+    title: 'Gig 2',
     status: 'Pending',
     projectStart: 'Within a week',
-    budget: '500-1000',
+    budget: '1000-1500',
   },
   {
-    requester: 'Client 1',
+    requester: 'Client 3',
     requesterImage: undefined,
-    title: 'Gig 1',
+    title: 'Gig 3',
     status: 'Pending',
     projectStart: 'Within a week',
-    budget: '500-1000',
+    budget: '5000-10000',
   },
 ];
 
