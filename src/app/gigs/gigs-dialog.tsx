@@ -5,6 +5,7 @@ import {
   getEmbeddedConnectedWallet,
   useWallets,
 } from '@privy-io/react-auth';
+import { FileCheck02 } from '@untitled-ui/icons-react';
 import {
   FileCheck2 as IconContract,
   MessageCircle as IconMessage,
@@ -29,6 +30,7 @@ import {
   ContractPendingOffer,
   ContractRejected,
 } from '@/app/gigs/contract';
+import { TabsList } from '@/components/build-ui/tabs-list';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -550,13 +552,21 @@ export const GigsDialog = ({
           className='flex max-w-[900px] flex-col rounded-2xl md:h-[75vh]'
           aria-describedby={undefined}
         >
-          <DialogTitle className='flex h-14 justify-between px-4 py-2 text-2xl'>
-            {activeTab === 'Chat'
-              ? chatParticipantName !== ''
-                ? `Chat with ${chatParticipantName}`
-                : `Chat`
-              : `Contract`}
-            <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
+          <DialogTitle className='flex items-center justify-between px-4'>
+            <span className='text-2xl'>
+              {activeTab === 'Chat'
+                ? chatParticipantName !== ''
+                  ? `Chat with ${chatParticipantName}`
+                  : `Chat`
+                : `Contract`}
+            </span>
+            <TabsList
+              setActiveTab={setActiveTab}
+              tabs={[
+                { name: 'Chat', icon: undefined },
+                { name: 'Contract', icon: <FileCheck02 className='h-4 w-4' /> },
+              ]}
+            />
           </DialogTitle>
 
           {activeTab === 'Chat' && (
