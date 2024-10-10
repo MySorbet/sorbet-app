@@ -6,10 +6,6 @@ import {
   useWallets,
 } from '@privy-io/react-auth';
 import { FileCheck02 } from '@untitled-ui/icons-react';
-import {
-  FileCheck2 as IconContract,
-  MessageCircle as IconMessage,
-} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
 
@@ -32,7 +28,6 @@ import {
 } from '@/app/gigs/contract';
 import { TabsList } from '@/components/build-ui/tabs-list';
 import { Spinner } from '@/components/common/spinner';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -44,7 +39,6 @@ import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
 import { useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
 import { env } from '@/lib/env';
-import { cn } from '@/lib/utils';
 import { ActiveTab } from '@/types';
 import { CreateContractType, MilestoneType, OfferType } from '@/types';
 
@@ -589,37 +583,5 @@ export const GigsDialog = ({
         </DialogContent>
       </Dialog>
     </>
-  );
-};
-
-const TabSelector: React.FC<TabSelectorProps> = ({
-  activeTab,
-  setActiveTab,
-}) => {
-  return (
-    <div className='border-1 h-11 rounded-full border border-solid border-gray-100'>
-      <Button
-        variant={`outline`}
-        className={cn(
-          'active:ouline-none hover:bg-sorbet gap-2 rounded-full border-none outline-none hover:text-white focus:outline-none',
-          activeTab === 'Chat' && 'bg-sorbet text-white'
-        )}
-        onClick={() => setActiveTab('Chat')}
-      >
-        <span>Chat</span>
-        <IconMessage size={15} />
-      </Button>
-      <Button
-        variant={`outline`}
-        className={cn(
-          'active:ouline-none hover:bg-sorbet gap-2 rounded-full border-none hover:text-white focus:outline-none',
-          activeTab === 'Contract' && 'bg-sorbet text-white'
-        )}
-        onClick={() => setActiveTab('Contract')}
-      >
-        <span>Contract</span>
-        <IconContract size={15} />
-      </Button>
-    </div>
   );
 };
