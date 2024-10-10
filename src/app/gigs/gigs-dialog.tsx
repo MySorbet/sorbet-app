@@ -140,7 +140,8 @@ export const GigsDialog = ({
       }
     }
     setIsLoading(false);
-    refetchContractData();
+    queryClient.invalidateQueries({ queryKey: ['offers'] });
+    queryClient.invalidateQueries({ queryKey: ['contractForOffer'] });
   };
 
   const handleReject = () => {
