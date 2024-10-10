@@ -56,7 +56,7 @@ export const ContractMilestone = ({
 
   return (
     <Card
-      className={`flex w-full flex-col gap-2 px-4 py-3${
+      className={`flex w-full flex-col gap-2 px-4 py-3 ${
         isCompleted ? 'cursor-not-allowed opacity-60' : ''
       } ${isApproved ? 'min-h-32' : ''}`}
       tabIndex={isCompleted ? -1 : 0}
