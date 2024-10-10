@@ -1,11 +1,13 @@
-import { GigsColumn } from './gigs-column';
+import { Loader } from 'lucide-react';
+import { useState } from 'react';
+
 import { GigsCard } from '@/app/gigs/gigs-card';
 import { GigsDialog } from '@/app/gigs/gigs-dialog';
 import { useAuth, useUpdateOfferStatus } from '@/hooks';
 import { useFetchOffers } from '@/hooks/gigs/useFetchOffers';
 import { GigsContentType, OfferType } from '@/types';
-import { Loader } from 'lucide-react';
-import { useState } from 'react';
+
+import { GigsColumn } from './gigs-column';
 
 export interface GigsBoardProps {
   gigsContentType: GigsContentType;
