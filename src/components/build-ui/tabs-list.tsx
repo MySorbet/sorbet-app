@@ -66,7 +66,7 @@ export const TabsList: React.FC<TabsListProps> = ({ tabs, setActiveTab }) => {
   }, []);
 
   return (
-    <div className='relative flex w-fit items-center justify-center gap-2 rounded-full border border-neutral-300 p-2 backdrop-blur-2xl dark:border-neutral-800'>
+    <div className='relative flex w-fit items-center justify-center gap-1 rounded-full border border-neutral-300 p-1 backdrop-blur-2xl dark:border-neutral-800'>
       {tabs.map((tab, i) => (
         <button
           key={i}
@@ -83,22 +83,24 @@ export const TabsList: React.FC<TabsListProps> = ({ tabs, setActiveTab }) => {
             setActiveTab(tab.name);
           }}
           className={twMerge(
-            'flex h-fit items-center justify-center gap-1 text-nowrap rounded-full px-3 py-1 text-base font-medium transition-colors duration-200',
+            'flex h-fit items-center justify-center gap-1 text-nowrap rounded-full px-2 py-0.5 text-base font-medium transition-colors duration-200',
             currentLink.index === i && 'text-white dark:text-neutral-900',
             fired.current
               ? ''
-              : defaultSelectedTabStyles[defaultSelectedTabIndex]
+              : defaultSelectedTabStyles[defaultSelectedTabIndex],
+            tab.name === 'Chat' && 'mr-[2px]', // Add extra margin to the right of "Chat"
+            tab.name === 'Contract' && 'ml-[2px]'
           )}
         >
           {tab.name}
           {tab.icon}
         </button>
       ))}
-      <div className='absolute inset-0 -z-[1] h-full overflow-hidden p-2'>
+      <div className='absolute inset-0 -z-[1] h-full overflow-hidden p-1'>
         <div className='relative h-full w-full overflow-hidden'>
           <div
             style={{
-              left: `calc(${currentLink.left || 0}px - 0.75rem + 0.25rem)`,
+              left: `calc(${currentLink.left || 0}px - 0.5rem + 0.25rem)`,
               width: `${currentLink.width || 0}px`,
             }}
             className={twMerge(

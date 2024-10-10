@@ -1,9 +1,10 @@
+import { Check, Lock, Plus, Zap } from 'lucide-react';
+import React from 'react';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ContractMilestoneStatus } from '@/types';
-import { Check, Lock, Plus, Zap } from 'lucide-react';
-import React from 'react';
 
 export interface ContractMilestoneProps {
   isApproved?: boolean;
