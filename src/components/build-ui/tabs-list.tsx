@@ -88,8 +88,8 @@ export const TabsList: React.FC<TabsListProps> = ({ tabs, setActiveTab }) => {
             fired.current
               ? ''
               : defaultSelectedTabStyles[defaultSelectedTabIndex],
-            tab.name === 'Chat' && 'mr-[2px]', // Add extra margin to the right of "Chat"
-            tab.name === 'Contract' && 'ml-[2px]'
+            tab.name === 'Chat' && 'pr-[9px]',
+            tab.name === 'Contract' && 'pl-[9px]'
           )}
         >
           {tab.name}
