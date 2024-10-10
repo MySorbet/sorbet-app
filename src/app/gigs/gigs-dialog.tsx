@@ -552,7 +552,7 @@ export const GigsDialog = ({
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogOverlay className='bg-[#F3F3F4]/90' />
         <DialogContent
-          className='flex min-h-[80vh] max-w-[900px] flex-col rounded-2xl'
+          className='flex min-h-[75vh] max-w-[900px] flex-col rounded-2xl'
           aria-describedby={undefined}
         >
           <DialogTitle className='flex items-center justify-between px-4'>
