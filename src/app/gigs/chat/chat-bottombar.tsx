@@ -199,7 +199,7 @@ interface ChatActionsProps {
 }
 
 const ChatActionStyles =
-  'h-4 w-4 text-[#D9D9D9] hover:text-muted-foreground transition hover:cursor-pointer';
+  'size-4 text-[#D9D9D9] hover:text-muted-foreground transition hover:cursor-pointer';
 
 /**
  * Component for the list of buttons/icons below the text area
@@ -225,7 +225,7 @@ const ChatActions = ({
               inputRef.current.focus();
             }
           }}
-          className='hover:text-muted-foreground h-4 w-4 text-[#D9D9D9]'
+          className='hover:text-muted-foreground size-4 text-[#D9D9D9]'
         />
         <div className='divider h-4 w-[1px] bg-[#F2F2F2]' />
         <div>
@@ -250,11 +250,11 @@ const ChatActions = ({
         <ListOrdered className={ChatActionStyles} /> */}
       </div>
       <button
-        className='bg-sorbet disabled:bg-sorbet/20 group flex h-8 w-8 items-center justify-center rounded-xl border-none'
+        className='bg-sorbet disabled:bg-sorbet/20 group flex size-8 items-center justify-center rounded-xl border-none'
         disabled={disabled}
         onClick={handleSend}
       >
-        <ArrowNarrowUp className='h-4 w-4 text-white transition ease-out group-hover:translate-y-[-1px]' />
+        <ArrowNarrowUp className='size-4 text-white transition ease-out group-hover:translate-y-[-1px]' />
       </button>
     </div>
   );
