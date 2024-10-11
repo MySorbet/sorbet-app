@@ -22,7 +22,7 @@ export const PaymentDetails = ({ onBack }: PaymentDetailsProps) => {
           type='submit'
           // disabled={form.formState.isSubmitting || !form.formState.isValid}
         >
-          Create Invoice <ArrowRight className='ml-2 h-4 w-4' />
+          Review <ArrowRight className='ml-2 h-4 w-4' />
         </Button>
       </CreateInvoiceFooter>
     </CreateInvoiceShell>
