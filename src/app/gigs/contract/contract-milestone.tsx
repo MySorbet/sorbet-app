@@ -1,9 +1,10 @@
+import { Check, Lock, Plus, Zap } from 'lucide-react';
+import React from 'react';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ContractMilestoneStatus } from '@/types';
-import { Check, Lock, Plus, Zap } from 'lucide-react';
-import React from 'react';
 
 export interface ContractMilestoneProps {
   isApproved?: boolean;
@@ -20,6 +21,9 @@ export interface ContractMilestoneProps {
   handleMilestoneApprove: () => void;
 }
 
+/**
+ * These are the individual milestones that you see in the 'Contract' tab of gigs-dialog
+ */
 export const ContractMilestone = ({
   isApproved = false,
   status,
@@ -52,14 +56,14 @@ export const ContractMilestone = ({
 
   return (
     <Card
-      className={`w-full p-4 ${
+      className={`flex w-full flex-col gap-2 px-4 py-3 ${
         isCompleted ? 'cursor-not-allowed opacity-60' : ''
       } ${isApproved ? 'min-h-32' : ''}`}
       tabIndex={isCompleted ? -1 : 0}
       key={`milestone-${index}`}
     >
       <div
-        className={`flex h-full flex-row justify-between ${
+        className={`flex h-full flex-row justify-between${
           isCompleted ? 'pointer-events-none' : ''
         }`}
       >
@@ -89,7 +93,7 @@ export const ContractMilestone = ({
           </div>
         </div>
 
-        <div className='flex h-full flex-col justify-end'>
+        <div className='flex h-full flex-col justify-end gap-4'>
           <div className='flex h-full flex-col justify-between text-right'>
             <div>
               <Badge
@@ -102,73 +106,69 @@ export const ContractMilestone = ({
                 {mapStatusLabel()}
               </Badge>
             </div>
-            <div>
-              {isClient && status === ContractMilestoneStatus.Active && (
-                <h2 className='text-center font-medium text-gray-400'>
-                  Funded
-                </h2>
-              )}
-              {isClient && (
-                <>
-                  {isApproved &&
-                    status === ContractMilestoneStatus.FundingPending && (
-                      <>
-                        <Button
-                          variant='default'
-                          className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
-                            fundingButtonDisabled &&
-                            `bg-sorbet/30 text-sorbet disabled text-[#B39DEE]`
-                          }`}
-                          size={`sm`}
-                          onClick={handleMilestoneFunding}
-                        >
-                          Add Funds <Plus className='ml-1' size={17} />
-                        </Button>
-                      </>
-                    )}
-
-                  {status === ContractMilestoneStatus.InReview && (
-                    <>
-                      <Button
-                        variant='default'
-                        className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
-                          fundingButtonDisabled &&
-                          `bg-sorbet/30 text-sorbet disabled text-[#B39DEE]`
-                        }`}
-                        size={`sm`}
-                        onClick={handleMilestoneApprove}
-                      >
-                        Release <Check className='ml-1' size={17} />
-                      </Button>
-                    </>
-                  )}
-                </>
-              )}
-              {!isClient && (
-                <>
-                  {isApproved &&
-                    (status === ContractMilestoneStatus.Active ||
-                      status === ContractMilestoneStatus.InReview) && (
-                      <>
-                        <Button
-                          variant='default'
-                          className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
-                            status === ContractMilestoneStatus.InReview &&
-                            `bg-sorbet/30 text-sorbet disabled text-[#B39DEE]`
-                          }`}
-                          size={`sm`}
-                          onClick={handleMilestoneSubmission}
-                          disabled={status === ContractMilestoneStatus.InReview}
-                        >
-                          Submit Work
-                        </Button>
-                      </>
-                    )}
-                </>
-              )}
-            </div>
           </div>
         </div>
+      </div>
+      <div className='flex items-end justify-end'>
+        {isClient && status === ContractMilestoneStatus.Active && (
+          <h2 className='text-center font-medium text-gray-400'>Funded</h2>
+        )}
+        {isClient && (
+          <>
+            {isApproved &&
+              status === ContractMilestoneStatus.FundingPending && (
+                <>
+                  <Button
+                    variant='default'
+                    className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
+                      fundingButtonDisabled &&
+                      `bg-sorbet/30 disabled text-[#B39DEE]`
+                    }`}
+                    size='sm'
+                    onClick={handleMilestoneFunding}
+                  >
+                    Add Funds <Plus className='ml-1' size={17} />
+                  </Button>
+                </>
+              )}
+
+            {status === ContractMilestoneStatus.InReview && (
+              <Button
+                variant='default'
+                className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
+                  fundingButtonDisabled &&
+                  `bg-sorbet/30  disabled text-[#B39DEE]`
+                }`}
+                size='sm'
+                onClick={handleMilestoneApprove}
+              >
+                Release <Check className='ml-1' size={17} />
+              </Button>
+            )}
+          </>
+        )}
+        {!isClient && (
+          <>
+            {isApproved &&
+              (status === ContractMilestoneStatus.Active ||
+                status === ContractMilestoneStatus.InReview) && (
+                <>
+                  <Button
+                    variant='default'
+                    className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
+                      status === ContractMilestoneStatus.InReview &&
+                      `bg-sorbet/30 disabled text-[#B39DEE]`
+                    }`}
+                    size='sm'
+                    onClick={handleMilestoneSubmission}
+                    disabled={status === ContractMilestoneStatus.InReview}
+                  >
+                    Submit Work
+                  </Button>
+                </>
+              )}
+          </>
+        )}
       </div>
     </Card>
   );
