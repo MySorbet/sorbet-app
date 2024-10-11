@@ -72,20 +72,3 @@ export const Default: Story = {
     );
   },
 };
-
-export const FreelancerView: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(true);
-    return (
-      <GigsDialog
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        isClient={false}
-        currentOffer={mockOffer}
-        handleRejectOffer={fn()}
-        afterContractSubmitted={fn()}
-        currentOfferId={mockOffer.id}
-      />
-    );
-  },
-};
