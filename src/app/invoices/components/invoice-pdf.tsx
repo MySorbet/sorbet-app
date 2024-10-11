@@ -3,7 +3,7 @@ import React from 'react';
 import { createTw } from 'react-pdf-tailwind';
 
 // Import your tailwind config
-import tailwindConfig from '../../../tailwind.config';
+import tailwindConfig from '../../../../tailwind.config';
 
 // Create a 'tw' function using your tailwind config
 const tw = createTw({

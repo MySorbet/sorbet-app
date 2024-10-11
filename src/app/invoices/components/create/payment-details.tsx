@@ -4,13 +4,17 @@ import { Button } from '@/components/ui/button';
 
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
+import { CreateInvoiceShell } from './create-invoice-shell';
 
-export const PaymentDetails = () => {
+type PaymentDetailsProps = {
+  onBack?: () => void;
+};
+export const PaymentDetails = ({ onBack }: PaymentDetailsProps) => {
   return (
-    <div>
+    <CreateInvoiceShell>
       <CreateInvoiceHeader step={3}>Payment Details</CreateInvoiceHeader>
       <CreateInvoiceFooter>
-        <Button variant='outline' type='button'>
+        <Button variant='outline' type='button' onClick={onBack}>
           <ArrowLeft className='mr-2 h-4 w-4' /> Back
         </Button>
         <Button
@@ -21,6 +25,6 @@ export const PaymentDetails = () => {
           Create Invoice <ArrowRight className='ml-2 h-4 w-4' />
         </Button>
       </CreateInvoiceFooter>
-    </div>
+    </CreateInvoiceShell>
   );
 };

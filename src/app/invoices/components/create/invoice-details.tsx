@@ -1,10 +1,14 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { ArrowLeft, ArrowRight, Plus, Trash01 } from '@untitled-ui/icons-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputAsRow } from '@/components/invoicing/create/input-as-row';
+import { InputAsRow } from '@/app/invoices/components/create/input-as-row';
+import { useInvoiceFormContext } from '@/app/invoices/create/layout';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,6 +21,7 @@ import { Input } from '@/components/ui/input';
 
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
+import { CreateInvoiceShell } from './create-invoice-shell';
 
 const InvoiceItemDataSchema = z.object({
   name: z.string().min(1).max(50),
@@ -43,30 +48,44 @@ const formSchema = z.object({
  */
 export const InvoiceDetails = ({
   onSubmit,
+  onBack,
   invoiceNumber,
 }: {
   onSubmit?: (values: z.infer<typeof formSchema>) => void;
+  onBack?: () => void;
   invoiceNumber: string;
 }) => {
+  const { formData, setFormData } = useInvoiceFormContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projectName: '',
+      projectName: formData.projectName,
       invoiceNumber: invoiceNumber,
-      items: [emptyInvoiceItemData],
+      items: formData.items ?? [emptyInvoiceItemData],
     },
   });
 
   const items = form.watch('items');
 
+  const router = useRouter();
+  const handleSubmit = form.handleSubmit((data, event) => {
+    event?.preventDefault();
+    const newFormData = { ...formData, ...data };
+    const newFormDataForURL = { ...newFormData, items: JSON.stringify(items) };
+    setFormData(newFormData);
+    onSubmit?.(newFormData);
+    router.push(
+      `/invoices/create/payment-details?${new URLSearchParams(
+        newFormDataForURL as unknown as Record<string, string>
+      )}`
+    );
+  });
+
   return (
-    <>
+    <CreateInvoiceShell>
       <CreateInvoiceHeader step={2}>Invoice Details</CreateInvoiceHeader>
       <Form {...form}>
-        <form
-          onSubmit={onSubmit ? form.handleSubmit(onSubmit) : undefined}
-          className='flex flex-col gap-12'
-        >
+        <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
           <FormField
             name='projectName'
             control={form.control}
@@ -144,7 +163,7 @@ export const InvoiceDetails = ({
             </span>
           </div>
           <CreateInvoiceFooter>
-            <Button variant='outline' type='button'>
+            <Button variant='outline' type='button' onClick={onBack}>
               <ArrowLeft className='mr-2 h-4 w-4' /> Back
             </Button>
             <Button
@@ -157,7 +176,7 @@ export const InvoiceDetails = ({
           </CreateInvoiceFooter>
         </form>
       </Form>
-    </>
+    </CreateInvoiceShell>
   );
 };
 
