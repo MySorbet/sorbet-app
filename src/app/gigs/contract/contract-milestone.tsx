@@ -133,19 +133,17 @@ export const ContractMilestone = ({
               )}
 
             {status === ContractMilestoneStatus.InReview && (
-              <>
-                <Button
-                  variant='default'
-                  className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
-                    fundingButtonDisabled &&
-                    `bg-sorbet/30  disabled text-[#B39DEE]`
-                  }`}
-                  size='sm'
-                  onClick={handleMilestoneApprove}
-                >
-                  Release <Check className='ml-1' size={17} />
-                </Button>
-              </>
+              <Button
+                variant='default'
+                className={`bg-sorbet hover:bg-sorbet/70 rounded-xl ${
+                  fundingButtonDisabled &&
+                  `bg-sorbet/30  disabled text-[#B39DEE]`
+                }`}
+                size='sm'
+                onClick={handleMilestoneApprove}
+              >
+                Release <Check className='ml-1' size={17} />
+              </Button>
             )}
           </>
         )}
