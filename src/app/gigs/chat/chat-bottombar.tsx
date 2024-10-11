@@ -1,6 +1,7 @@
 import { GroupChannel } from '@sendbird/chat/groupChannel';
 import {
   ArrowNarrowUp,
+  Attachment01,
   Bold01,
   Italic01,
   Link03,
@@ -66,13 +67,19 @@ export default function ChatBottombar({
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleAddFile = async (event: any) => {
-    // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
-    if (files.length === 1) {
-      toast({ title: 'Only one file can be uploaded at a time.' });
-      return;
+  const handleAddFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
+      if (files.length === 1) {
+        toast({ title: 'Only one file can be uploaded at a time.' });
+        return;
+      }
+      setFiles((prevFiles) => [
+        ...prevFiles,
+        // Ensure event.target.files is not null before spreading
+        ...(event.target.files ? Array.from(event.target.files) : []),
+      ]);
     }
-    setFiles((files) => [...files, event.target.files[0]]);
   };
 
   const handleInputChange = async (
@@ -186,7 +193,7 @@ interface ChatActionsProps {
   handleSend: () => void;
   fileInputRef: RefObject<HTMLInputElement>;
   // eslint-disable-next-line no-unused-vars
-  handleAddFile: (event: any) => void;
+  handleAddFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
   supportedIcons: SupportedFileIcons;
   handleFileClick: () => void;
 }
@@ -231,7 +238,10 @@ const ChatActions = ({
               .map((type: string) => '.' + type)
               .join(',')}
           />
-          <Link03 className={ChatActionStyles} onClick={handleFileClick} />
+          <Attachment01
+            className={ChatActionStyles}
+            onClick={handleFileClick}
+          />
         </div>
         {/* // ! These are currently unsupported */}
         {/* <Bold01 className={ChatActionStyles} />
