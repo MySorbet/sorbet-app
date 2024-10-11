@@ -3,7 +3,6 @@ import { fn } from '@storybook/test';
 
 import {
   ContractMilestone,
-  ContractMilestoneProps,
 } from '@/app/gigs/contract/contract-milestone';
 import { ContractMilestoneStatus } from '@/types';
 
@@ -53,56 +52,57 @@ export const Completed: Story = {
   args: {
     ...Default.args,
     status: ContractMilestoneStatus.Approved,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const InReview: Story = {
   args: {
     ...Default.args,
     status: ContractMilestoneStatus.InReview,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const FundingPending: Story = {
   args: {
     ...Default.args,
     status: ContractMilestoneStatus.FundingPending,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const FreelancerView: Story = {
   args: {
     ...Default.args,
     isClient: false,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const ApprovedMilestone: Story = {
   args: {
     ...Default.args,
     isApproved: true,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const FundingButtonDisabled: Story = {
   args: {
     ...Default.args,
     fundingButtonDisabled: true,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const LongTitle: Story = {
   args: {
     ...Default.args,
-    title: 'This is a very long milestone title that might wrap to multiple lines',
-  } as ContractMilestoneProps,
+    title:
+      'This is a very long milestone title that might wrap to multiple lines',
+  },
 };
 
 export const LargeAmount: Story = {
   args: {
     ...Default.args,
     amount: 1000000,
-  } as ContractMilestoneProps,
+  },
 };
 
 export const ClientFundingPending: Story = {
@@ -111,5 +111,5 @@ export const ClientFundingPending: Story = {
     isClient: true,
     status: ContractMilestoneStatus.FundingPending,
     isApproved: true,
-  } as ContractMilestoneProps,
+  },
 };
