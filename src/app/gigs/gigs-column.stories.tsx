@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { GigsColumn } from '@/app/gigs/gigs-column';
+
 import { GigsCard } from '@/app/gigs/gigs-card';
+import { GigsColumn } from '@/app/gigs/gigs-column';
 
 const args = {
   title: 'Offers',

@@ -1,16 +1,16 @@
 import { PrivyProvider } from '@privy-io/react-auth';
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
+import { Provider } from 'react-redux';
 
+import AuthProvider from '@/hooks/useAuth';
 import { env } from '@/lib/env';
+import { store } from '@/redux/store';
 import { OfferType } from '@/types';
 
 import { GigsDialog } from './gigs-dialog';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import AuthProvider from '@/hooks/useAuth';
-import { Provider } from 'react-redux';
-import { store } from '@/redux/store';
-import { fn } from '@storybook/test';
 
 const meta: Meta<typeof GigsDialog> = {
   title: 'Gigs/GigsDialog',
@@ -57,7 +57,7 @@ const mockOffer: OfferType = {
 };
 
 export const Default: Story = {
-  render: (args) => {
+  render: () => {
     const [isOpen, setIsOpen] = useState(true);
     return (
       <GigsDialog

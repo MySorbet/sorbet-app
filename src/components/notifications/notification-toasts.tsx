@@ -29,7 +29,7 @@ const NotificationToasts = () => {
       // Whenever we receive a new notification from our real-time stream, show a toast
       // (note here that we can receive > 1 items in a batch)
       items.forEach((notification: any) => {
-        console.log('from onNotificationsReceived ', notification);
+        console.log('onNotificationsReceived ', notification);
         if (notification.data.showToast === false) return;
         if (KnockContractWorkflows.has(notification.data.type)) {
           // Invalidating both because they are not mutually exclusive

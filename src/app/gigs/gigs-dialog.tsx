@@ -566,7 +566,7 @@ export const GigsDialog = ({
             <TabsList
               setActiveTab={setActiveTab}
               tabs={[
-                { name: 'Chat', icon: undefined },
+                { name: 'Chat' },
                 { name: 'Contract', icon: <FileCheck02 className='h-4 w-4' /> },
               ]}
             />
