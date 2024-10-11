@@ -12,6 +12,7 @@ type InvoiceFormContextType = {
 };
 
 const InvoiceFormContext = createContext<InvoiceFormContextType | null>(null);
+InvoiceFormContext.displayName = 'InvoiceFormContext';
 
 // TODO: each route should prefetch the next one
 
@@ -20,7 +21,8 @@ export default function CreateInvoiceLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [formData, setFormData] = useQueryState({});
+  const invoiceNumber = useInvoiceNumber();
+  const [formData, setFormData] = useQueryState({ invoiceNumber });
 
   return (
     <Authenticated>
@@ -55,6 +57,18 @@ export const useQueryState = (initialState = {}) => {
   const [state, setState] = useState(initialState);
   const pathname = usePathname();
 
+  // Throw the initial state into the query params
+  // Triggering the below effect to set the state
+  useEffect(
+    () => {
+      setQueryParams(initialState);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      /* Intentionally left empty to run on mount */
+    ]
+  );
+
   // Derive state from query parameters
   // TODO: Revisit special handling ot items
   useEffect(() => {
@@ -76,4 +90,14 @@ export const useQueryState = (initialState = {}) => {
   };
 
   return [state, setQueryParams] as const;
+};
+
+/**
+ * Gets the auto-incremented invoice number for the current user
+ */
+const useInvoiceNumber = () => {
+  // TODO: Store the last invoice number, and auto-increment from there
+  // This could be acheived by storing the invoice number in the database
+  // Or by querying the number of invoices for the current user and incrementing from there
+  return 'INV-001';
 };

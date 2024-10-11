@@ -106,7 +106,8 @@ export const InvoiceDetails = ({
               <InputAsRow>
                 <FormLabel>Invoice number</FormLabel>
                 <FormItem>
-                  <Input placeholder='Invoice number' {...field} disabled />
+                  <Input placeholder='Invoice number' {...field} />
+                  <FormMessage />
                 </FormItem>
               </InputAsRow>
             )}
