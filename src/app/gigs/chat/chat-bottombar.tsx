@@ -33,6 +33,7 @@ interface ChatBottombarProps {
   sendMessage: (newMessage: SendMessageParams) => void;
   isMobile: boolean;
   channel: GroupChannel | undefined | null;
+  /** This will be used later to make chat read only */
   contractStatus: string;
   supportedIcons: SupportedFileIcons;
 }
@@ -50,7 +51,13 @@ export default function ChatBottombar({
   const [files, setFiles] = useState<File[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [disabled, setDisabled] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(true);
+
+  console.log(message.trim().length === 0 && files.length === 0);
+
+  useEffect(() => {
+    setDisabled(message.trim().length === 0 && files.length === 0);
+  }, [message, files]);
 
   const { toast } = useToast();
 
@@ -116,15 +123,6 @@ export default function ChatBottombar({
       setMessage((prev) => prev + '\n');
     }
   };
-  const test = 'test';
-  useEffect(() => {
-    //TODO: Figure out when chat becomes read only and sync the input with that disabled state
-    if (contractStatus === 'Completed') {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  }, [contractStatus]);
 
   useEffect(() => {
     async function checkTypingForFiles() {
