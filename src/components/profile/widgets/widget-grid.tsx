@@ -33,6 +33,7 @@ import styles from './react-grid-layout-custom.module.css';
 import { parseWidgetTypeFromUrl } from './util';
 import { Widget } from './widget';
 import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
+import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 
 const ReactGridLayout = WidthProvider(RGL);
 const breakpoints = {
@@ -72,6 +73,12 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const [animationStyles, setAnimationStyles] = useState<{
     [key: string]: { width: number; height: number };
   }>({});
+
+  const [file, setFile] = useState<string>();
+  const [errorInvalidImage, setErrorInvalidImage] = useState(false);
+
+  const [fileEnter, setFileEnter] = useState(false);
+
   const { toast } = useToast();
 
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
@@ -219,6 +226,41 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
       setInitialLayout((prevLayout) => [...prevLayout, widgetToAdd]);
     } catch (e) {
       setError('Failed to add widget. Please try again.');
+    } finally {
+      setAddingWidget(false);
+    }
+  };
+
+  const handleFileDrop = async (file: File) => {
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const fileSize = file.size / 1024 / 1024; // in MB
+
+    if (
+      !fileExtension ||
+      !validExtensions.includes(fileExtension) ||
+      fileSize > 10
+    ) {
+      setErrorInvalidImage(true);
+      return;
+    }
+
+    setAddingWidget(true);
+    try {
+      const imageFormData = new FormData();
+      imageFormData.append('file', file);
+      imageFormData.append('fileType', 'image');
+      imageFormData.append('destination', 'widgets');
+      imageFormData.append('userId', userId);
+
+      const response = await uploadWidgetsImageAsync(imageFormData);
+      if (response.data && response.data.fileUrl) {
+        await handleWidgetAdd(response.data.fileUrl, file);
+      } else {
+        throw new Error('Failed to upload image');
+      }
+    } catch (error) {
+      setErrorInvalidImage(true);
     } finally {
       setAddingWidget(false);
     }
@@ -454,7 +496,36 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         onSubmit={handleOnboardingDrawerSubmit}
       />
       <DesktopOnlyAlert />
-      <div ref={containerRef}>
+      <div
+        ref={containerRef}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setFileEnter(true);
+        }}
+        onDragLeave={(e) => {
+          setFileEnter(false);
+        }}
+        onDragEnd={(e) => {
+          e.preventDefault();
+          setFileEnter(false);
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          setFileEnter(false);
+          if (e.dataTransfer.items) {
+            [...e.dataTransfer.items].forEach((item) => {
+              if (item.kind === 'file') {
+                const file = item.getAsFile();
+                if (file) {
+                  handleFileDrop(file);
+                }
+              }
+            });
+          } else if (e.dataTransfer.files.length > 0) {
+            handleFileDrop(e.dataTransfer.files[0]);
+          }
+        }}
+      >
         <ReactGridLayout
           layout={layout}
           onLayoutChange={handleLayoutChange}
@@ -498,7 +569,24 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
         {editMode && (
           <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
-            <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
+            <div className='flex w-full max-w-96 flex-col items-center'>
+              {errorInvalidImage && (
+                <div className='animate-in slide-in-from-bottom-8 z-0 mb-2 w-full'>
+                  <InvalidAlert
+                    handleAlertVisible={(show: boolean) =>
+                      setErrorInvalidImage(show)
+                    }
+                    title='Error uploading file'
+                  >
+                    <p className='mt-2'>
+                      You can only upload jpg, png, svg or gif files only.
+                    </p>
+                    <p>Maximum 10mb file size</p>
+                  </InvalidAlert>
+                </div>
+              )}
+              <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
+            </div>
           </div>
         )}
       </div>
