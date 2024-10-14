@@ -1,45 +1,46 @@
-import { FilePreview } from './chat-file-preview';
-import { EmojiPicker } from './emoji-picker';
-import { buttonVariants } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { GroupChannel } from '@sendbird/chat/groupChannel';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+  ArrowNarrowUp,
+  Attachment01,
+  Bold01,
+  Italic01,
+  Link03,
+  List,
+} from '@untitled-ui/icons-react';
+import { ListOrdered } from 'lucide-react';
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
 import {
   FileMessage,
   SendMessageParams,
-  SupportedFileIcon,
   SupportedFileIcons,
   TextMessage,
 } from '@/types/sendbird';
-import { GroupChannel } from '@sendbird/chat/groupChannel';
-import { AnimatePresence, motion } from 'framer-motion';
-import {
-  FileImage,
-  Mic,
-  Paperclip,
-  PlusCircle,
-  SendHorizontal,
-  ThumbsUp,
-} from 'lucide-react';
-import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+
+import { FilePreview } from './chat-file-preview';
+import { EmojiPicker } from './emoji-picker';
 
 interface ChatBottombarProps {
   sendMessage: (newMessage: SendMessageParams) => void;
   isMobile: boolean;
   channel: GroupChannel | undefined | null;
+  /** This will be used later to make chat read only */
   contractStatus: string;
   supportedIcons: SupportedFileIcons;
 }
-
-export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
-
+/**
+ * Component that handles user input for chat.
+ */
 export default function ChatBottombar({
   sendMessage,
   isMobile,
@@ -51,7 +52,13 @@ export default function ChatBottombar({
   const [files, setFiles] = useState<File[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [disabled, setDisabled] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(true);
+
+  console.log(message.trim().length === 0 && files.length === 0);
+
+  useEffect(() => {
+    setDisabled(message.trim().length === 0 && files.length === 0);
+  }, [message, files]);
 
   const { toast } = useToast();
 
@@ -60,13 +67,19 @@ export default function ChatBottombar({
   const handleFileClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
-  const handleAddFile = async (event: any) => {
-    // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
-    if (files.length === 1) {
-      toast({ title: 'Only one file can be uploaded at a time.' });
-      return;
+  const handleAddFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
+      if (files.length === 1) {
+        toast({ title: 'Only one file can be uploaded at a time.' });
+        return;
+      }
+      setFiles((prevFiles) => [
+        ...prevFiles,
+        // Ensure event.target.files is not null before spreading
+        ...(event.target.files ? Array.from(event.target.files) : []),
+      ]);
     }
-    setFiles((files) => [...files, event.target.files[0]]);
   };
 
   const handleInputChange = async (
@@ -80,15 +93,6 @@ export default function ChatBottombar({
     } else {
       await channel?.endTyping();
     }
-  };
-
-  const handleThumbsUp = () => {
-    const params: TextMessage = {
-      type: 'text',
-      message: '👍',
-    };
-    sendMessage(params);
-    setMessage('');
   };
 
   const handleSend = () => {
@@ -128,15 +132,6 @@ export default function ChatBottombar({
   };
 
   useEffect(() => {
-    //TODO: Figure out when chat becomes read only and sync the input with that disabled state
-    if (contractStatus === 'Completed') {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  }, [contractStatus]);
-
-  useEffect(() => {
     async function checkTypingForFiles() {
       if (files.length > 0) {
         await channel?.startTyping();
@@ -148,199 +143,119 @@ export default function ChatBottombar({
   }, [files.length]);
 
   return (
-    <div className='p-2 flex justify-between w-full items-center gap-2'>
-      <div className='flex'>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Link
-              href='#'
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'h-9 w-9',
-                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <PlusCircle size={20} className='text-muted-foreground' />
-            </Link>
-          </PopoverTrigger>
-          <PopoverContent side='top' className='w-full p-2'>
-            {message.trim() || isMobile ? (
-              <div className='flex gap-2'>
-                <Link
-                  href='#'
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-9 w-9',
-                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                  )}
-                >
-                  <Mic size={20} className='text-muted-foreground' />
-                </Link>
-                <Link
-                  href='#'
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-9 w-9',
-                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                  )}
-                >
-                  <FileImage size={20} className='text-muted-foreground' />
-                </Link>
-                <Link
-                  href='#'
-                  className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-9 w-9',
-                    'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                  )}
-                >
-                  <Paperclip size={20} className='text-muted-foreground' />
-                </Link>
-              </div>
-            ) : (
-              <Link
-                href='#'
-                className={cn(
-                  buttonVariants({ variant: 'ghost', size: 'icon' }),
-                  'h-9 w-9',
-                  'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-                )}
-              >
-                <Mic size={20} className='text-muted-foreground' />
-              </Link>
-            )}
-          </PopoverContent>
-        </Popover>
-        {!message.trim() && !isMobile && (
-          <div className='flex'>
-            <div
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'h-9 w-9',
-                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Input
-                type='file'
-                className='hidden'
-                ref={fileInputRef}
-                onChange={handleAddFile}
-                accept={Object.keys(supportedIcons)
-                  .map((type: string) => '.' + type)
-                  .join(',')}
-              />
-              <FileImage
-                size={20}
-                className='text-muted-foreground hover:cursor-pointer hover:text-foreground transition'
-                onClick={handleFileClick}
-              />
-            </div>
-            <Link
-              href='#'
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'h-9 w-9',
-                'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Paperclip size={20} className='text-muted-foreground' />
-            </Link>
-          </div>
-        )}
-      </div>
-
-      <AnimatePresence initial={false}>
-        <motion.div
-          key='input'
-          className='w-full relative'
-          layout
-          initial={{ opacity: 0, scale: 1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1 }}
-          transition={{
-            opacity: { duration: 0.05 },
-            layout: {
-              type: 'spring',
-              bounce: 0.15,
-            },
-          }}
-        >
-          <div className='flex items-center'>
-            <div className='w-full border rounded-full flex resize-none overflow-hidden bg-background'>
-              {files.length > 0 ? (
-                <div className='flex gap-1 my-2 pl-4'>
-                  {files.map((file: File, index: number) => (
-                    <FilePreview
-                      key={index}
-                      file={URL.createObjectURL(file)}
-                      removeFile={() =>
-                        setFiles((files) => {
-                          const newFiles = files.filter(
-                            (current: File) => current.name !== file.name
-                          );
-                          return newFiles;
-                        })
-                      }
-                    />
-                  ))}
-                </div>
-              ) : (
-                <Textarea
-                  disabled={disabled}
-                  autoComplete='off'
-                  value={message}
-                  ref={inputRef}
-                  onKeyDown={handleKeyPress}
-                  onChange={handleInputChange}
-                  name='message'
-                  placeholder='Aa'
-                  className=' border-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 h-9'
-                ></Textarea>
-              )}
-            </div>
-
-            <div className='absolute right-4 top-3'>
-              <EmojiPicker
-                onChange={(value) => {
-                  setMessage(message + value);
-                  if (inputRef.current) {
-                    inputRef.current.focus();
-                  }
-                }}
-              />
-            </div>
-          </div>
-        </motion.div>
-
-        {message.trim() || files.length ? (
-          <Link
-            href='#'
-            className={cn(
-              buttonVariants({ variant: 'ghost', size: 'icon' }),
-              'h-9 w-9',
-              'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0'
-            )}
-            onClick={handleSend}
-          >
-            <SendHorizontal size={20} className='text-muted-foreground' />
-          </Link>
-        ) : (
-          <Link
-            href='#'
-            className={cn(
-              buttonVariants({ variant: 'ghost', size: 'icon' }),
-              'h-9 w-9',
-              'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white shrink-0'
-            )}
-            onClick={handleThumbsUp}
-          >
-            <ThumbsUp
-              size={20}
-              className='text-muted-foreground hover:text-foreground transition'
+    <div className='flex flex-col rounded-lg border border-[#D7D7D7] bg-white py-2 pl-4 pr-2 shadow-sm'>
+      {files.length > 0 ? (
+        <div className='my-2 flex gap-1'>
+          {files.map((file: File, index: number) => (
+            <FilePreview
+              key={index}
+              file={URL.createObjectURL(file)}
+              removeFile={() =>
+                setFiles((files) => {
+                  const newFiles = files.filter(
+                    (current: File) => current.name !== file.name
+                  );
+                  return newFiles;
+                })
+              }
             />
-          </Link>
-        )}
-      </AnimatePresence>
+          ))}
+        </div>
+      ) : (
+        <Textarea
+          placeholder='Type your message...'
+          className='text-foreground w-full resize-none overflow-hidden border-none bg-transparent pl-0 text-base font-normal placeholder:italic placeholder:text-[#95949C] focus-visible:ring-transparent'
+          onChange={handleInputChange}
+          onKeyDown={handleKeyPress}
+          value={message}
+        />
+      )}
+      <ChatActions
+        inputRef={inputRef}
+        setMessage={setMessage}
+        message={message}
+        disabled={disabled}
+        handleSend={handleSend}
+        fileInputRef={fileInputRef}
+        handleAddFile={handleAddFile}
+        supportedIcons={supportedIcons}
+        handleFileClick={handleFileClick}
+      />
     </div>
   );
 }
+
+interface ChatActionsProps {
+  setMessage: Dispatch<SetStateAction<string>>;
+  inputRef: RefObject<HTMLTextAreaElement>;
+  message: string;
+  disabled: boolean;
+  handleSend: () => void;
+  fileInputRef: RefObject<HTMLInputElement>;
+  // eslint-disable-next-line no-unused-vars
+  handleAddFile: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  supportedIcons: SupportedFileIcons;
+  handleFileClick: () => void;
+}
+
+const ChatActionStyles =
+  'size-4 text-[#D9D9D9] hover:text-muted-foreground transition hover:cursor-pointer';
+
+/**
+ * Component for the list of buttons/icons below the text area
+ */
+const ChatActions = ({
+  setMessage,
+  inputRef,
+  message,
+  disabled,
+  handleSend,
+  fileInputRef,
+  handleAddFile,
+  handleFileClick,
+  supportedIcons,
+}: ChatActionsProps) => {
+  return (
+    <div className='flex max-h-full items-center justify-between'>
+      <div className='flex gap-3'>
+        <EmojiPicker
+          onChange={(value) => {
+            setMessage(message + value);
+            if (inputRef.current) {
+              inputRef.current.focus();
+            }
+          }}
+          className='hover:text-muted-foreground size-4 text-[#D9D9D9]'
+        />
+        <div className='divider h-4 w-[1px] bg-[#F2F2F2]' />
+        <div>
+          <Input
+            type='file'
+            className='hidden'
+            ref={fileInputRef}
+            onChange={handleAddFile}
+            accept={Object.keys(supportedIcons)
+              .map((type: string) => '.' + type)
+              .join(',')}
+          />
+          <Attachment01
+            className={ChatActionStyles}
+            onClick={handleFileClick}
+          />
+        </div>
+        {/* // ! These are currently unsupported */}
+        {/* <Bold01 className={ChatActionStyles} />
+        <Italic01 className={ChatActionStyles} />
+        <List className={ChatActionStyles} />
+        <ListOrdered className={ChatActionStyles} /> */}
+      </div>
+      <button
+        className='bg-sorbet disabled:bg-sorbet/20 group flex size-8 items-center justify-center rounded-xl border-none'
+        disabled={disabled}
+        onClick={handleSend}
+      >
+        <ArrowNarrowUp className='size-4 text-white transition ease-out group-hover:translate-y-[-1px]' />
+      </button>
+    </div>
+  );
+};
