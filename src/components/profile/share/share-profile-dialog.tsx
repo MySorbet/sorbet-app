@@ -60,7 +60,7 @@ export const ShareProfileDialog = ({
         <motion.div
           // TODO: address this hacky solution for the first view. For some reason, the height is not being calculated correctly when the dialog is opened.
           animate={{
-            height: activeView === 'ShareYourProfile' ? '372px' : contentHeight,
+            height: activeView === 'ShareYourProfile' ? '390px' : contentHeight,
           }}
           className='overflow-hidden'
         >
