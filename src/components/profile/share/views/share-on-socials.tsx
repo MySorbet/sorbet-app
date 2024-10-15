@@ -15,18 +15,21 @@ export const ShareOnSocials = ({
   setActive,
   handleUrlToClipboard,
 }: ShareOnSocialsProps) => {
+  const url = `${window.location.origin}/${username}`;
   const qrCodeRef = useRef<HTMLDivElement>(null);
   const [isPngCopied, setIsPngCopied] = useState(false);
   const [isSvgCopied, setIsSvgCopied] = useState(false);
   const [isQRCodeLoaded, setIsQRCodeLoaded] = useState(false);
 
-  const qrCode = useMemo(
-    () => useGenerateQRCode(`${window.location.origin}/${username}`),
+  const { qrCode, downloadQRCode } = useMemo(
+    () => useGenerateQRCode(url),
     [username]
   );
 
   useEffect(() => {
+    console.log('is loaded', qrCode, qrCodeRef);
     if (qrCodeRef.current && qrCode) {
+      qrCodeRef.current.innerHTML = '';
       qrCode.append(qrCodeRef.current);
       setIsQRCodeLoaded(true);
     }
@@ -50,7 +53,8 @@ export const ShareOnSocials = ({
       />
       <Body>
         <div className='flex min-h-[256px] w-full items-center justify-center'>
-          <div ref={qrCodeRef} />
+          <div ref={qrCodeRef} className='qr-code-container h-64 w-64' />
+          {!isQRCodeLoaded && <Spinner />}
         </div>
         <div className='flex flex-col gap-4'>
           <div className='m-0 flex items-center justify-between '>
@@ -59,7 +63,7 @@ export const ShareOnSocials = ({
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
               onClick={() => {
                 setIsPngCopied(true);
-                handleDownload('png');
+                downloadQRCode(username, 'png');
               }}
               disabled={isPngCopied}
             >
@@ -76,7 +80,7 @@ export const ShareOnSocials = ({
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
               onClick={() => {
                 setIsSvgCopied(true);
-                handleDownload('svg');
+                downloadQRCode(username, 'svg');
               }}
               disabled={isSvgCopied}
             >

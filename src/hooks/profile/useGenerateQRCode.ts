@@ -2,8 +2,8 @@ import QRCodeStyling, { Options } from 'qr-code-styling';
 
 export const useGenerateQRCode = (url: string) => {
   const qrOptions: Options = {
-    width: 256,
-    height: 256,
+    width: 512,
+    height: 512,
     margin: 0,
     data: url,
     qrOptions: { typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' },
@@ -30,5 +30,13 @@ export const useGenerateQRCode = (url: string) => {
     cornersDotOptions: { type: 'square', color: '#d3ec30' },
   };
   const qrCodeStyling = new QRCodeStyling(qrOptions);
-  return qrCodeStyling;
+
+  const downloadQRCode = (username: string, fileExt: 'svg' | 'png') => {
+    qrCodeStyling.download({
+      name: `${username}-sorbet-qrcode`,
+      extension: fileExt,
+    });
+  };
+
+  return { qrCode: qrCodeStyling, downloadQRCode };
 };
