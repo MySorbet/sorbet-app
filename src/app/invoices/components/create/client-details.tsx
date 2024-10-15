@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useInvoiceFormContext } from '@/app/invoices/create/layout';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -21,13 +20,14 @@ import { Label } from '@/components/ui/label';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
+import { useInvoiceFormContext } from './invoice-form-context';
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().min(2).max(50),
 });
 
-type FormSchema = z.infer<typeof formSchema>;
+export type ClientDetailsFormSchema = z.infer<typeof formSchema>;
 
 /**
  * Create Invoice Step 1
@@ -38,13 +38,13 @@ export const ClientDetails = ({
   name,
   email,
 }: {
-  onSubmit?: (values: FormSchema) => void;
+  onSubmit?: (values: ClientDetailsFormSchema) => void;
   name: string;
   email: string;
 }) => {
   const { formData, setFormData } = useInvoiceFormContext();
 
-  const form = useForm<FormSchema>({
+  const form = useForm<ClientDetailsFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: formData.name,

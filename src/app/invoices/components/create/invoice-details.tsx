@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { InputAsRow } from '@/app/invoices/components/create/input-as-row';
-import { useInvoiceFormContext } from '@/app/invoices/create/layout';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -22,6 +21,7 @@ import { Input } from '@/components/ui/input';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
+import { useInvoiceFormContext } from './invoice-form-context';
 
 const InvoiceItemDataSchema = z.object({
   name: z.string().min(1).max(50),
@@ -42,6 +42,8 @@ const formSchema = z.object({
   items: z.array(InvoiceItemDataSchema),
 });
 
+export type InvoiceDetailsFormSchema = z.infer<typeof formSchema>;
+
 /**
  * Create Invoice Step 2
  * Capture invoice details
@@ -51,16 +53,16 @@ export const InvoiceDetails = ({
   onBack,
   invoiceNumber,
 }: {
-  onSubmit?: (values: z.infer<typeof formSchema>) => void;
+  onSubmit?: (values: InvoiceDetailsFormSchema) => void;
   onBack?: () => void;
-  invoiceNumber: string;
+  invoiceNumber?: string;
 }) => {
   const { formData, setFormData } = useInvoiceFormContext();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<InvoiceDetailsFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectName: formData.projectName,
-      invoiceNumber: invoiceNumber,
+      invoiceNumber: invoiceNumber ?? formData.invoiceNumber,
       items: formData.items ?? [emptyInvoiceItemData],
     },
   });
