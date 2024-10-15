@@ -23,8 +23,10 @@ import { CreateInvoiceShell } from './create-invoice-shell';
 import { useInvoiceFormContext } from './invoice-form-context';
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  email: z.string().min(2).max(50),
+  fromName: z.string().min(2).max(50),
+  fromEmail: z.string().min(2).max(50),
+  toName: z.string().min(2).max(50),
+  toEmail: z.string().min(2).max(50),
 });
 
 export type ClientDetailsFormSchema = z.infer<typeof formSchema>;
@@ -39,16 +41,18 @@ export const ClientDetails = ({
   email,
 }: {
   onSubmit?: (values: ClientDetailsFormSchema) => void;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
 }) => {
   const { formData, setFormData } = useInvoiceFormContext();
 
   const form = useForm<ClientDetailsFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: formData.name,
-      email: formData.email,
+      toName: formData.toName,
+      toEmail: formData.toEmail,
+      fromName: name ?? formData.fromName,
+      fromEmail: email ?? formData.fromEmail,
     },
   });
 
@@ -69,18 +73,42 @@ export const ClientDetails = ({
     <CreateInvoiceShell>
       <div className='flex flex-col gap-12'>
         <CreateInvoiceHeader step={1}>Client</CreateInvoiceHeader>
-        <div className='flex justify-between'>
-          <span className='text-sm font-medium'>From</span>
-          <FromFreelancer name={name} email={email} />
-        </div>
         <Form {...form}>
           <form onSubmit={handleSubmit}>
+            <div className='flex justify-between'>
+              <span className='text-sm font-medium'>From</span>
+              <div className='flex flex-col gap-2'>
+                <FormField
+                  name='fromName'
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <Input placeholder='Your name' {...field} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name='fromEmail'
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <Input placeholder='Your email address' {...field} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
             <div className='flex justify-between'>
               <span className='text-sm font-medium'>Bill To</span>
 
               <div className='flex flex-col gap-2'>
                 <FormField
-                  name='name'
+                  name='toName'
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
@@ -91,7 +119,7 @@ export const ClientDetails = ({
                   )}
                 />
                 <FormField
-                  name='email'
+                  name='toEmail'
                   control={form.control}
                   render={({ field }) => (
                     <FormItem>
