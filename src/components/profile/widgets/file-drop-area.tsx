@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
 
 interface FileDropAreaProps {
@@ -43,7 +44,10 @@ export const FileDropArea: React.FC<FileDropAreaProps> = ({
       onDragLeave={handleDragLeave}
       onDragEnd={handleDragLeave}
       onDrop={handleDrop}
-      style={{ border: fileEnter ? '2px dashed #000' : 'none' }}
+      className={cn(
+        'rounded-3xl',
+        fileEnter && 'border-2 border-dashed border-[#D7D7D7]'
+      )}
     >
       {children}
     </div>

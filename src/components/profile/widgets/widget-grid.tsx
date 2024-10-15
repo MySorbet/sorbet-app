@@ -12,7 +12,9 @@ import { Widget } from './widget';
 import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
 import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
-import { useWidgetGrid } from '@/hooks/profile/useWidgetGrid';
+import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
+import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
+import { useRef } from 'react';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -23,46 +25,51 @@ export interface WidgetGridProps {
   onLayoutChange?: (layout: any) => void;
 }
 
-/**
- * Root component which renders all widgets and link input to add new widgets.
- */
 export const WidgetGrid: React.FC<WidgetGridProps> = ({
   rowHeight = 120,
   editMode,
   userId,
   onLayoutChange,
 }) => {
+  /** Separate hook for managing the layout of the profile grid (the size of cols, widgets, etc.) */
   const {
     layout,
+    setLayout,
     cols,
-    containerRef,
-    widgetRefs,
     animationStyles,
+    widgetRefs,
+    handleLayoutChange,
+    handleWidgetDropStop,
+    handleWidgetResize,
+    isUserWidgetPending,
+    persistWidgetsLayoutOnChange,
+  } = useLayoutManagement({ userId, editMode, onLayoutChange });
+
+  /** Separate hook for managing adding, removing, and dropping widgets + the status of onboarding */
+  const {
     errorInvalidImage,
     setErrorInvalidImage,
     addingWidget,
     drawerOpen,
     setDrawerOpen,
-    handleLayoutChange,
-    handleWidgetResize,
     handleOnboardingDrawerSubmit,
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
     handleAddMultipleWidgets,
-    handleWidgetDropStop,
-    draggedRef,
-    isUserWidgetPending,
-  } = useWidgetGrid({ userId, editMode, onLayoutChange });
+  } = useWidgetManagement({
+    userId,
+    editMode,
+    layout,
+    setLayout,
+    cols,
+    persistWidgetsLayoutOnChange,
+  });
 
-  // Use the placeholder grid loading state while we fetch the user's widgets
+  const draggedRef = useRef<boolean>(false);
+
   if (isUserWidgetPending) {
-    return (
-      <WidgetPlaceholderGrid
-        loading
-        className='px-[25px]' // Add some additional padding because RGL margin is around the entire grid
-      />
-    );
+    return <WidgetPlaceholderGrid loading className='px-[25px]' />;
   }
 
   return (
@@ -71,7 +78,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         <WidgetPlaceholderGrid
           onClick={() => setDrawerOpen(true)}
           loading={addingWidget}
-          className='px-[25px]' // Add some additional padding because RGL margin is around the entire grid
+          className='px-[25px]'
         />
       )}
       <OnboardingDrawer
@@ -80,7 +87,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         onSubmit={handleOnboardingDrawerSubmit}
       />
       <DesktopOnlyAlert />
-      <div ref={containerRef}>
+      <div>
         <FileDropArea onFileDrop={handleFileDrop}>
           <ReactGridLayout
             layout={layout}
