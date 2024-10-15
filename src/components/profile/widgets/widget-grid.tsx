@@ -168,7 +168,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         const imageFormData = new FormData();
         imageFormData.append('file', image);
         // fileType must be different for svgs to render correctly
-        if (fileExtension == 'svg') {
+        if (fileExtension === 'svg') {
           imageFormData.append('fileType', 'image/svg+xml');
         } else {
           imageFormData.append('fileType', 'image');
