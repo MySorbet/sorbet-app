@@ -14,6 +14,7 @@ import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
 import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
 import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
+import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
 import { useRef } from 'react';
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -31,7 +32,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   userId,
   onLayoutChange,
 }) => {
-  /** Separate hook for managing the layout of the profile grid (the size of cols, widgets, etc.) */
+  const draggedRef = useRef<boolean>(false);
+
   const {
     layout,
     setLayout,
@@ -45,14 +47,10 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     persistWidgetsLayoutOnChange,
   } = useLayoutManagement({ userId, editMode, onLayoutChange });
 
-  /** Separate hook for managing adding, removing, and dropping widgets + the status of onboarding */
   const {
     errorInvalidImage,
     setErrorInvalidImage,
     addingWidget,
-    drawerOpen,
-    setDrawerOpen,
-    handleOnboardingDrawerSubmit,
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
@@ -66,7 +64,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     persistWidgetsLayoutOnChange,
   });
 
-  const draggedRef = useRef<boolean>(false);
+  const { drawerOpen, setDrawerOpen, handleOnboardingDrawerSubmit } =
+    useOnboardingDrawer({ handleAddMultipleWidgets });
 
   if (isUserWidgetPending) {
     return <WidgetPlaceholderGrid loading className='px-[25px]' />;

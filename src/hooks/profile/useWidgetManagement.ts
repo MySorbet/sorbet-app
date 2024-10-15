@@ -7,10 +7,6 @@ import {
 } from '@/hooks';
 import { WidgetLayoutItem, WidgetSize, WidgetDimensions } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
-import {
-  SocialHandleInputWidgetType,
-  typeAndHandleToWidgetUrl,
-} from '@/components/profile/widgets/onboarding-drawer';
 
 interface WidgetManagementProps {
   userId: string;
@@ -31,7 +27,6 @@ export const useWidgetManagement = ({
 }: WidgetManagementProps) => {
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
@@ -218,26 +213,10 @@ export const useWidgetManagement = ({
     ]
   );
 
-  const handleOnboardingDrawerSubmit = useCallback(
-    async (handles: Partial<Record<SocialHandleInputWidgetType, string>>) => {
-      const urls = Object.entries(handles).map(([type, handle]) => {
-        return typeAndHandleToWidgetUrl(
-          type as SocialHandleInputWidgetType,
-          handle
-        );
-      });
-      await handleAddMultipleWidgets(urls);
-    },
-    [handleAddMultipleWidgets]
-  );
-
   return {
     errorInvalidImage,
     setErrorInvalidImage,
     addingWidget,
-    drawerOpen,
-    setDrawerOpen,
-    handleOnboardingDrawerSubmit,
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
