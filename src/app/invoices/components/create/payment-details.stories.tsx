@@ -21,6 +21,7 @@ const meta: Meta<typeof PaymentDetails> = {
   },
   args: {
     onBack: fn(),
+    onSubmit: fn(),
   },
 };
 

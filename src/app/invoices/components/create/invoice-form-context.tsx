@@ -5,9 +5,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { ClientDetailsFormSchema } from './client-details';
 import { InvoiceDetailsFormSchema } from './invoice-details';
+import { PaymentDetailsFormData } from './payment-details';
 
 type InvoiceFormData = Partial<
-  InvoiceDetailsFormSchema & ClientDetailsFormSchema
+  InvoiceDetailsFormSchema & ClientDetailsFormSchema & PaymentDetailsFormData
 >;
 
 type InvoiceFormContextType = {
@@ -88,6 +89,7 @@ export const useQueryState = <T extends Record<string, unknown>>(
       `${pathname}?${new URLSearchParams({
         ...Object.fromEntries(params),
         ...Object.entries(query).reduce((acc, [key, value]) => {
+          console.log(key, value);
           acc[key] =
             typeof value === 'object' ? JSON.stringify(value) : String(value);
           return acc;
