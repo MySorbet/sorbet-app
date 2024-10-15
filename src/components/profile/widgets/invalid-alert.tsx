@@ -1,4 +1,5 @@
 import { CircleAlert, X } from 'lucide-react';
+import Link from 'next/link';
 import React, { ReactNode } from 'react';
 
 interface InvalidAlertProps {
@@ -31,9 +32,14 @@ export const InvalidAlert: React.FC<InvalidAlertProps> = ({
           >
             Dismiss
           </div>
-          <div className='text-sorbet font-semibold hover:underline'>
+          <a
+            href='https://docs.mysorbet.xyz/sorbet/key-features/quickstart/list-of-supported-widgets'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-sorbet font-semibold hover:underline'
+          >
             Learn More
-          </div>
+          </a>
         </div>
       </div>
       <div className='align-center flex justify-center'>
