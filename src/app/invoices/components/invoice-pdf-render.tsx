@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 
 import { CreateInvoiceFooter } from './create/create-invoice-footer';
 import { CreateInvoiceHeader } from './create/create-invoice-header';
+import { CreateInvoiceShell } from './create/create-invoice-shell';
 import { InvoiceFormData } from './create/invoice-form-context';
 import { InvoicePDF } from './invoice-pdf';
 
@@ -20,9 +21,8 @@ export const InvoicePDFRender = ({
   data,
 }: InvoicePDFRenderProps) => {
   return (
-    <div className='flex flex-col gap-4'>
+    <CreateInvoiceShell>
       <CreateInvoiceHeader step={1}>Review</CreateInvoiceHeader>
-
       <PDFViewer width={800} height={600} showToolbar={false}>
         <InvoicePDF {...data} />
       </PDFViewer>
@@ -38,6 +38,6 @@ export const InvoicePDFRender = ({
           Create Invoice <ArrowRight className='ml-2 h-4 w-4' />
         </Button>
       </CreateInvoiceFooter>
-    </div>
+    </CreateInvoiceShell>
   );
 };
