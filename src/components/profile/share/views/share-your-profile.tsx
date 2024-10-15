@@ -36,7 +36,7 @@ export const ShareYourProfile = ({
             navigate={() => setActive('ShareOnSocials')}
           />
         </div>
-        <div className='m-0 border-none bg-transparent p-0 hover:bg-transparent'>
+        <div className='m-0 m-0 h-auto w-full border-none bg-transparent p-0 py-2 hover:bg-transparent'>
           <ShareLink
             username={username}
             handleUrlToClipboard={handleUrlToClipboard}
