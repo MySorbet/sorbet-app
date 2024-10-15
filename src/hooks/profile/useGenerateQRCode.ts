@@ -2,8 +2,9 @@ import QRCodeStyling, { Options } from 'qr-code-styling';
 
 export const useGenerateQRCode = (url: string) => {
   const qrOptions: Options = {
-    width: 512,
-    height: 512,
+    type: 'svg',
+    width: 300,
+    height: 300,
     margin: 0,
     data: url,
     qrOptions: { typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' },

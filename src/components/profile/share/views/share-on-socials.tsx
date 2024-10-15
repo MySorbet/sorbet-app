@@ -7,6 +7,7 @@ import { CheckCircle, Download01 } from '@untitled-ui/icons-react';
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { Body, Header, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type ShareOnSocialsProps = ViewProps;
 
@@ -16,10 +17,10 @@ export const ShareOnSocials = ({
   handleUrlToClipboard,
 }: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
-  const qrCodeRef = useRef<HTMLDivElement>(null);
+  const qrCodeRef = useRef<HTMLDivElement>(document.createElement('div'));
   const [isPngCopied, setIsPngCopied] = useState(false);
   const [isSvgCopied, setIsSvgCopied] = useState(false);
-  const [isQRCodeLoaded, setIsQRCodeLoaded] = useState(false);
+  const [isLoadingQRCode, setIsLoadingQRCode] = useState(true);
 
   const { qrCode, downloadQRCode } = useMemo(
     () => useGenerateQRCode(url),
@@ -27,21 +28,12 @@ export const ShareOnSocials = ({
   );
 
   useEffect(() => {
-    console.log('is loaded', qrCode, qrCodeRef);
     if (qrCodeRef.current && qrCode) {
       qrCodeRef.current.innerHTML = '';
       qrCode.append(qrCodeRef.current);
-      setIsQRCodeLoaded(true);
+      setIsLoadingQRCode(false);
     }
-  }, [qrCode]);
-
-  const handleDownload = (fileExt: 'svg' | 'png') => {
-    if (!qrCode) return;
-    qrCode.download({
-      name: `${username}-sorbet-qrcode`,
-      extension: fileExt,
-    });
-  };
+  }, [qrCode, isLoadingQRCode]);
 
   return (
     <>
@@ -53,8 +45,11 @@ export const ShareOnSocials = ({
       />
       <Body>
         <div className='flex min-h-[256px] w-full items-center justify-center'>
-          <div ref={qrCodeRef} className='qr-code-container h-64 w-64' />
-          {!isQRCodeLoaded && <Spinner />}
+          {isLoadingQRCode ? (
+            <Skeleton className='h-[256px] w-[256px]' />
+          ) : (
+            <div ref={qrCodeRef} />
+          )}
         </div>
         <div className='flex flex-col gap-4'>
           <div className='m-0 flex items-center justify-between '>
