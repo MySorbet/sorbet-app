@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation';
 
 import { InvoiceDetails } from '@/app/invoices/components/create/invoice-details';
-import { useInvoiceFormContext } from '@/app/invoices/create/layout';
+
+import { useInvoiceFormContext } from '../../components/create/invoice-form-context';
 
 export default function InvoiceDetailsPage() {
   const router = useRouter();

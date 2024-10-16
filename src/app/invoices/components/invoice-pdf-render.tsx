@@ -12,19 +12,19 @@ import { InvoicePDF } from './invoice-pdf';
 type InvoicePDFRenderProps = {
   onBack: () => void;
   onCreate: () => void;
-  data: InvoiceFormData;
+  invoice: InvoiceFormData;
 };
 
 export const InvoicePDFRender = ({
   onBack,
   onCreate,
-  data,
+  invoice,
 }: InvoicePDFRenderProps) => {
   return (
     <CreateInvoiceShell>
       <CreateInvoiceHeader step={1}>Review</CreateInvoiceHeader>
       <PDFViewer width={800} height={600} showToolbar={false}>
-        <InvoicePDF {...data} />
+        <InvoicePDF {...invoice} />
       </PDFViewer>
       <CreateInvoiceFooter>
         <Button variant='outline' type='button' onClick={onBack}>

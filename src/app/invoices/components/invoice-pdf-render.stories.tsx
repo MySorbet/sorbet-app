@@ -20,7 +20,7 @@ type Story = StoryObj<typeof InvoicePDFRender>;
 
 export const Default: Story = {
   args: {
-    data: {
+    invoice: {
       fromName: 'Dillon Cutaiar',
       fromEmail: 'dillon@sorbet.dev',
       toName: 'My Client-01',
