@@ -94,7 +94,7 @@ export const InvoiceDetails = ({
             render={({ field }) => (
               <InputAsRow>
                 <FormLabel>Project name</FormLabel>
-                <FormItem>
+                <FormItem className='w-full max-w-md'>
                   <Input placeholder='Project name' {...field} />
                   <FormMessage />
                 </FormItem>
@@ -107,7 +107,7 @@ export const InvoiceDetails = ({
             render={({ field }) => (
               <InputAsRow>
                 <FormLabel>Invoice number</FormLabel>
-                <FormItem>
+                <FormItem className='w-full max-w-md'>
                   <Input placeholder='Invoice number' {...field} />
                   <FormMessage />
                 </FormItem>
@@ -203,7 +203,7 @@ const InvoiceItem = ({
     <div className='flex flex-row justify-between gap-6'>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         {!hideLabel && (
-          <Label htmlFor='item' className='text-sm font-medium'>
+          <Label htmlFor='item' className='flex-1 text-sm font-medium'>
             Item
           </Label>
         )}
@@ -217,7 +217,7 @@ const InvoiceItem = ({
           }}
         />
       </div>
-      <div className='grid w-full items-center gap-1.5'>
+      <div className='grid w-full max-w-32 items-center gap-1.5'>
         {!hideLabel && (
           <Label htmlFor='quantity' className='text-sm font-medium'>
             Quantity
@@ -233,7 +233,7 @@ const InvoiceItem = ({
           }}
         />
       </div>
-      <div className='grid w-full max-w-sm items-center gap-1.5'>
+      <div className='grid w-full max-w-56 items-center gap-1.5'>
         {!hideLabel && (
           <Label htmlFor='amount' className='text-sm font-medium'>
             Amount

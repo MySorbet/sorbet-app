@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
@@ -71,108 +70,84 @@ export const ClientDetails = ({
 
   return (
     <CreateInvoiceShell>
-      <div className='flex flex-col gap-12'>
-        <CreateInvoiceHeader step={1}>Client</CreateInvoiceHeader>
-        <Form {...form}>
-          <form onSubmit={handleSubmit}>
-            <div className='flex justify-between'>
-              <span className='text-sm font-medium'>From</span>
-              <div className='flex flex-col gap-2'>
-                <FormField
-                  name='fromName'
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <Input placeholder='Your name' {...field} />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name='fromEmail'
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <Input placeholder='Your email address' {...field} />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
+      <CreateInvoiceHeader step={1}>Client</CreateInvoiceHeader>
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
+          <Block label='From'>
+            <FormField
+              name='fromName'
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className='w-full max-w-md'>
+                  <FormLabel>Name</FormLabel>
+                  <Input placeholder='Your name' {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name='fromEmail'
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className='w-full max-w-md'>
+                  <FormLabel>Email</FormLabel>
+                  <Input placeholder='Your email address' {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Block>
 
-            <div className='flex justify-between'>
-              <span className='text-sm font-medium'>Bill To</span>
-
-              <div className='flex flex-col gap-2'>
-                <FormField
-                  name='toName'
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <Input placeholder='Client name' {...field} />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name='toEmail'
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <Input placeholder='Client email address' {...field} />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <CreateInvoiceFooter>
-              <Button
-                className='bg-sorbet ml-auto'
-                type='submit'
-                disabled={
-                  form.formState.isSubmitting || !form.formState.isValid
-                }
-              >
-                Invoice Details <ArrowRight className='ml-2 h-4 w-4' />
-              </Button>
-            </CreateInvoiceFooter>
-          </form>
-        </Form>
-      </div>
+          <Block label='Bill To'>
+            <FormField
+              name='toName'
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className='w-full max-w-md'>
+                  <FormLabel>Name</FormLabel>
+                  <Input placeholder='Client name' {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name='toEmail'
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className='w-full max-w-md'>
+                  <FormLabel>Email</FormLabel>
+                  <Input placeholder='Client email address' {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Block>
+          <CreateInvoiceFooter>
+            <Button
+              className='bg-sorbet ml-auto'
+              type='submit'
+              disabled={form.formState.isSubmitting || !form.formState.isValid}
+            >
+              Invoice Details <ArrowRight className='ml-2 h-4 w-4' />
+            </Button>
+          </CreateInvoiceFooter>
+        </form>
+      </Form>
     </CreateInvoiceShell>
   );
 };
 
-/**
- * Local component to display freelancer name and email (we already know this)
- */
-const FromFreelancer = ({ name, email }: { name: string; email: string }) => {
+const Block = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => {
   return (
-    <div className='flex flex-col gap-2'>
-      <div className='grid w-full max-w-sm items-center gap-1.5'>
-        <Label htmlFor='name' className='text-sm font-medium'>
-          Name
-        </Label>
-        <Input id='name' placeholder='Name' value={name} disabled />
-      </div>
-      <div className='grid w-full max-w-sm items-center gap-1.5'>
-        <Label htmlFor='email' className='text-sm font-medium'>
-          Email
-        </Label>
-        <Input
-          type='email'
-          id='email'
-          placeholder='Email'
-          value={email}
-          disabled
-        />
-      </div>
+    <div className='flex justify-between gap-6'>
+      <span className='text-sm font-medium'>{label}</span>
+      <div className='flex flex-1 flex-col items-end gap-2'>{children}</div>
     </div>
   );
 };

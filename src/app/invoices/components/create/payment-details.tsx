@@ -124,7 +124,7 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
                   <FormControl>
                     <Textarea
                       placeholder='Payment terms or additional info'
-                      className='w-[240px] resize-none'
+                      className='w-full max-w-md resize-none'
                       {...field}
                     />
                   </FormControl>
@@ -169,7 +169,7 @@ const DatePicker = ({
           <Button
             variant='outline'
             className={cn(
-              'w-[240px] pl-3 text-left font-normal',
+              'w-full max-w-md pl-3 text-left font-normal',
               !value && 'text-muted-foreground'
             )}
           >

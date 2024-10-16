@@ -22,8 +22,8 @@ export const InvoicePDFRender = ({
 }: InvoicePDFRenderProps) => {
   return (
     <CreateInvoiceShell>
-      <CreateInvoiceHeader step={1}>Review</CreateInvoiceHeader>
-      <PDFViewer width={800} height={600} showToolbar={false}>
+      <CreateInvoiceHeader>Review</CreateInvoiceHeader>
+      <PDFViewer width={800} height={500} showToolbar={false}>
         <InvoicePDF {...invoice} />
       </PDFViewer>
       <CreateInvoiceFooter>
