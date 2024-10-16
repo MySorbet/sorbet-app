@@ -90,7 +90,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : undefined;
     if (file) {
-      const validExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+      const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
       const fileSize = file.size / 1024 / 1024; // in MB
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
