@@ -151,6 +151,7 @@ export function ChatList({
                     ) : (
                       <div className='ml-8 mt-1 flex items-center gap-2'>
                         <FileDisplay
+                          userId={selectedUser.id}
                           fileName={message.fileData.name}
                           fileSize={message.fileData.size}
                           file={message.fileData}

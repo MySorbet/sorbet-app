@@ -15,11 +15,15 @@ const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
   @returns blobUrl: string - the blob url of the file
   @throws Error: if request fails
 */
-export async function fetchFile(sendbirdUrl: string, type: string) {
+export async function fetchFile(
+  sendbirdUrl: string,
+  type: string,
+  userId: string
+) {
   if (sendbirdUrl.includes('blob:')) {
     return sendbirdUrl;
   }
-  const reqBody = { url: sendbirdUrl };
+  const reqBody = { url: sendbirdUrl, userId };
 
   try {
     const response = await axios.post(
