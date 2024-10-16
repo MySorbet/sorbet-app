@@ -2,24 +2,24 @@
 
 import { useRouter } from 'next/navigation';
 
-import { useToast } from '../../../../components/ui/use-toast';
+import { useCreateInvoice } from '@/hooks/invoices/useCreateInvoice';
+
 import { useInvoiceFormContext } from '../../components/create/invoice-form-context';
 import { InvoicePDFRender } from '../../components/invoice-pdf-render';
 
 export default function ReviewPage() {
   const { formData } = useInvoiceFormContext();
   const router = useRouter();
-  const { toast } = useToast();
+  const { mutateAsync: createInvoice, isPending } = useCreateInvoice();
+
   return (
     <InvoicePDFRender
       invoice={formData}
       onBack={() => router.back()}
-      onCreate={() => {
-        toast({
-          title: 'Invoice created',
-          description: 'Your invoice has been created',
-        });
+      onCreate={async () => {
+        await createInvoice(formData);
       }}
+      isLoading={isPending}
     />
   );
 }
