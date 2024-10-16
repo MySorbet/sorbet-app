@@ -38,7 +38,9 @@ export const useWidgetManagement = ({
       await deleteWidget(key);
       setLayout((prevLayout) => {
         const newLayout = prevLayout.filter((item) => item.i !== key);
-        persistWidgetsLayoutOnChange(newLayout);
+        if (newLayout.length > 0) {
+          persistWidgetsLayoutOnChange(newLayout);
+        }
         return newLayout;
       });
     },
