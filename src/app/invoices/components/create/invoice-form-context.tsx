@@ -8,7 +8,7 @@ import { InvoiceDetailsFormSchema } from './invoice-details';
 import { PaymentDetailsFormData } from './payment-details';
 import { useMount } from './useMount';
 
-type InvoiceFormData = Partial<
+export type InvoiceFormData = Partial<
   InvoiceDetailsFormSchema & ClientDetailsFormSchema & PaymentDetailsFormData
 >;
 
