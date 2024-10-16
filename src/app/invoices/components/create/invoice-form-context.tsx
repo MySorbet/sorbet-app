@@ -6,6 +6,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ClientDetailsFormSchema } from './client-details';
 import { InvoiceDetailsFormSchema } from './invoice-details';
 import { PaymentDetailsFormData } from './payment-details';
+import { useMount } from './useMount';
 
 type InvoiceFormData = Partial<
   InvoiceDetailsFormSchema & ClientDetailsFormSchema & PaymentDetailsFormData
@@ -63,15 +64,9 @@ export const useQueryState = <T extends Record<string, unknown>>(
 
   // Throw the initial state into the query params
   // Triggering the below effect to set the state
-  useEffect(
-    () => {
-      setQueryParams(initialState);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      /* Intentionally left empty to run on mount */
-    ]
-  );
+  useMount(() => {
+    setQueryParams(initialState);
+  });
 
   // Derive state from query parameters
   // TODO: Revisit special handling of items
@@ -79,6 +74,10 @@ export const useQueryState = <T extends Record<string, unknown>>(
     const p = Object.fromEntries(params);
     if (Object.keys(p).includes('items')) {
       setState({ ...p, items: JSON.parse(p.items) } as T);
+    } else if (Object.keys(p).includes('issueDate')) {
+      setState({ ...p, issueDate: new Date(p.issueDate) } as T);
+    } else if (Object.keys(p).includes('dueDate')) {
+      setState({ ...p, dueDate: new Date(p.dueDate) } as T);
     } else {
       setState(p as T);
     }
@@ -89,7 +88,6 @@ export const useQueryState = <T extends Record<string, unknown>>(
       `${pathname}?${new URLSearchParams({
         ...Object.fromEntries(params),
         ...Object.entries(query).reduce((acc, [key, value]) => {
-          console.log(key, value);
           acc[key] =
             typeof value === 'object' ? JSON.stringify(value) : String(value);
           return acc;

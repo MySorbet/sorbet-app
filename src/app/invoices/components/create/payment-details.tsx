@@ -63,13 +63,18 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
   // TODO: Can we share these submits?
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
-    console.log(data);
     const newFormData = { ...formData, ...data };
+    const newFormDataForUrl = {
+      ...newFormData,
+      items: JSON.stringify(newFormData.items),
+      issueDate: data.issueDate.toISOString(),
+      dueDate: data.dueDate.toISOString(),
+    };
     setFormData(newFormData);
     onSubmit?.(newFormData);
     router.push(
       `/invoices/create/review?${new URLSearchParams(
-        newFormData as unknown as Record<string, string>
+        newFormDataForUrl as unknown as Record<string, string>
       )}`
     );
   });
