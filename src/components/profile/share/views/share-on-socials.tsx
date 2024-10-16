@@ -1,13 +1,13 @@
 'use client';
 
-import { Spinner } from '@/components/common';
-import { Button } from '@/components/ui/button';
-import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 import { CheckCircle, Download01 } from '@untitled-ui/icons-react';
-import { useEffect, useRef, useState, useMemo } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
+
 import { Body, Header, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
-import { Skeleton } from '@/components/ui/skeleton';
 
 type ShareOnSocialsProps = ViewProps;
 
@@ -17,23 +17,13 @@ export const ShareOnSocials = ({
   handleUrlToClipboard,
 }: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
-  const qrCodeRef = useRef<HTMLDivElement>(document.createElement('div'));
-  const [isPngCopied, setIsPngCopied] = useState(false);
-  const [isSvgCopied, setIsSvgCopied] = useState(false);
-  const [isLoadingQRCode, setIsLoadingQRCode] = useState(true);
-
-  const { qrCode, downloadQRCode } = useMemo(
-    () => useGenerateQRCode(url),
-    [username]
-  );
-
-  useEffect(() => {
-    if (qrCodeRef.current && qrCode) {
-      qrCodeRef.current.innerHTML = '';
-      qrCode.append(qrCodeRef.current);
-      setIsLoadingQRCode(false);
-    }
-  }, [qrCode, isLoadingQRCode]);
+  const {
+    qrCodeRef,
+    isPngCopied,
+    isSvgCopied,
+    isLoadingQRCode,
+    downloadQRCode,
+  } = useGenerateQRCode(url);
 
   return (
     <>
@@ -56,10 +46,7 @@ export const ShareOnSocials = ({
             <span className='text-base text-black'>Download PNG</span>
             <Button
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-              onClick={() => {
-                setIsPngCopied(true);
-                downloadQRCode(username, 'png');
-              }}
+              onClick={() => downloadQRCode(username, 'png')}
               disabled={isPngCopied}
             >
               {isPngCopied ? (
@@ -73,10 +60,7 @@ export const ShareOnSocials = ({
             <span className='text-base text-black'>Download SVG</span>
             <Button
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-              onClick={() => {
-                setIsSvgCopied(true);
-                downloadQRCode(username, 'svg');
-              }}
+              onClick={() => downloadQRCode(username, 'svg')}
               disabled={isSvgCopied}
             >
               {isSvgCopied ? (

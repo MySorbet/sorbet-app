@@ -1,6 +1,12 @@
 import QRCodeStyling, { Options } from 'qr-code-styling';
+import { useEffect, useRef, useState } from 'react';
 
 export const useGenerateQRCode = (url: string) => {
+  const qrCodeRef = useRef<HTMLDivElement>(document.createElement('div'));
+  const [isPngCopied, setIsPngCopied] = useState(false);
+  const [isSvgCopied, setIsSvgCopied] = useState(false);
+  const [isLoadingQRCode, setIsLoadingQRCode] = useState(true);
+
   const qrOptions: Options = {
     type: 'svg',
     width: 300,
@@ -32,12 +38,31 @@ export const useGenerateQRCode = (url: string) => {
   };
   const qrCodeStyling = new QRCodeStyling(qrOptions);
 
+  useEffect(() => {
+    if (qrCodeRef.current && qrCodeStyling) {
+      qrCodeRef.current.innerHTML = '';
+      qrCodeStyling.append(qrCodeRef.current);
+      setIsLoadingQRCode(false);
+    }
+  }, [qrCodeStyling]);
+
   const downloadQRCode = (username: string, fileExt: 'svg' | 'png') => {
     qrCodeStyling.download({
       name: `${username}-sorbet-qrcode`,
       extension: fileExt,
     });
+    if (fileExt === 'png') {
+      setIsPngCopied(true);
+    } else if (fileExt === 'svg') {
+      setIsSvgCopied(true);
+    }
   };
 
-  return { qrCode: qrCodeStyling, downloadQRCode };
+  return {
+    qrCodeRef,
+    isPngCopied,
+    isSvgCopied,
+    isLoadingQRCode,
+    downloadQRCode,
+  };
 };

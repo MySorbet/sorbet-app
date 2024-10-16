@@ -1,10 +1,10 @@
 import { Plus, Send01, Share01 } from '@untitled-ui/icons-react';
 
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 import { Body, Header, Option, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
-import { cn } from '@/lib/utils';
 
 type ShareYourProfileProps = ViewProps;
 
