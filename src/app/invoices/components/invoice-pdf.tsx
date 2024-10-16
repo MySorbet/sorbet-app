@@ -56,7 +56,7 @@ export const InvoicePDF: React.FC<InvoiceFormData> = ({
       </View>
 
       <View style={tw('mb-8')}>
-        <View style={tw('flex flex-row bg-gray-100 py-2')}>
+        <View style={tw('flex flex-row py-2')}>
           <Text style={tw('flex-1 font-bold text-sm')}>Item</Text>
           <Text style={tw('w-20 font-bold text-sm text-right')}>Quantity</Text>
           <Text style={tw('w-24 font-bold text-sm text-right')}>Amount</Text>
