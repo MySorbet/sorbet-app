@@ -164,9 +164,15 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
       // We're attempting to add a photo widget
       if (type === 'Photo' && image && image !== undefined) {
+        const fileExtension = image.name.split('.').pop()?.toLowerCase();
         const imageFormData = new FormData();
         imageFormData.append('file', image);
-        imageFormData.append('fileType', 'image');
+        // fileType must be different for svgs to render correctly
+        if (fileExtension === 'svg') {
+          imageFormData.append('fileType', 'image/svg+xml');
+        } else {
+          imageFormData.append('fileType', 'image');
+        }
         imageFormData.append('destination', 'widgets');
         imageFormData.append('userId', '');
         const response = await uploadWidgetsImageAsync(imageFormData);
