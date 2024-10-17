@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle, Download01 } from '@untitled-ui/icons-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,19 +12,32 @@ import { ViewProps } from '../share-profile-dialog';
 
 type ShareOnSocialsProps = ViewProps;
 
+/** Page rendered when a user want to share their Sorbet profile
+ * and sent out a QR Code to it */
 export const ShareOnSocials = ({
   username,
   setActive,
   handleUrlToClipboard,
 }: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
-  const {
-    qrCodeRef,
-    isPngCopied,
-    isSvgCopied,
-    isLoadingQRCode,
-    downloadQRCode,
-  } = useGenerateQRCode(url);
+
+  const { qrCodeRef, qrCode, isLoadingQRCode } = useGenerateQRCode(url);
+
+  const [isPngCopied, setIsPngCopied] = useState(false);
+  const [isSvgCopied, setIsSvgCopied] = useState(false);
+
+  /** Downloads SVG or PNG of QR code to user's computer */
+  const downloadQRCode = (username: string, fileExt: 'svg' | 'png') => {
+    qrCode.download({
+      name: `${username}-sorbet-qrcode`,
+      extension: fileExt,
+    });
+    if (fileExt === 'png') {
+      setIsPngCopied(true);
+    } else if (fileExt === 'svg') {
+      setIsSvgCopied(true);
+    }
+  };
 
   return (
     <>
