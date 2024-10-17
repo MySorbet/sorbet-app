@@ -8,6 +8,7 @@ import { withAuthHeader } from './withAuthHeader';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
+// !UNUSED
 export const findContractsWithFreelancer = async ({
   freelancerUsername,
   clientUsername,
@@ -78,6 +79,7 @@ export const createContract = async (body: CreateContractType) => {
   }
 };
 
+// !UNUSED
 export const getContractsForFreelancer = async (status?: string) => {
   const queryParams = status ? `?status=${status}` : '';
 
@@ -94,6 +96,7 @@ export const getContractsForFreelancer = async (status?: string) => {
   }
 };
 
+// !UNUSED
 export const getClientFreelancerOffers = async (
   freelancerUsername: string,
   clientUsername: string
