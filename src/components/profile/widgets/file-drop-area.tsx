@@ -1,14 +1,17 @@
-import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface FileDropAreaProps {
   onFileDrop: (file: File) => void;
   children: React.ReactNode;
+  className?: string;
 }
 
 export const FileDropArea: React.FC<FileDropAreaProps> = ({
   onFileDrop,
   children,
+  className,
 }) => {
   const [fileEnter, setFileEnter] = useState(false);
 
@@ -45,8 +48,12 @@ export const FileDropArea: React.FC<FileDropAreaProps> = ({
       onDragEnd={handleDragLeave}
       onDrop={handleDrop}
       className={cn(
-        'rounded-3xl',
-        fileEnter && 'border-2 border-dashed border-[#D7D7D7]'
+        'rounded-3xl transition-all duration-300 ease-out',
+        'border-2 border-dashed',
+        fileEnter
+          ? 'scale-[1.01] border-[#D7D7D7]'
+          : 'scale-100 border-transparent shadow-none',
+        className
       )}
     >
       {children}

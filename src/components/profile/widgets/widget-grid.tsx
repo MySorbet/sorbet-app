@@ -2,7 +2,14 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { motion } from 'framer-motion';
+import { useRef } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
+
+import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
+import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
+import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
+import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
+import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
 
 import { AddWidgets } from './add-widgets';
 import { DesktopOnlyAlert } from './desktop-only-alert';
@@ -10,12 +17,6 @@ import { OnboardingDrawer } from './onboarding-drawer';
 import styles from './react-grid-layout-custom.module.css';
 import { Widget } from './widget';
 import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
-import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
-import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
-import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
-import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
-import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
-import { useRef } from 'react';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -74,11 +75,13 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   return (
     <>
       {editMode && layout.length < 1 && (
-        <WidgetPlaceholderGrid
-          onClick={() => setDrawerOpen(true)}
-          loading={addingWidget}
-          className='px-[25px]'
-        />
+        <FileDropArea onFileDrop={handleFileDrop} className='py-[25px]'>
+          <WidgetPlaceholderGrid
+            onClick={() => setDrawerOpen(true)}
+            loading={addingWidget}
+            className='px-[25px]'
+          />
+        </FileDropArea>
       )}
       <OnboardingDrawer
         open={drawerOpen}
