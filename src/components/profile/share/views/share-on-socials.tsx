@@ -1,11 +1,10 @@
 'use client';
 
-import { CheckCircle,Download01 } from '@untitled-ui/icons-react';
-import Image from 'next/image';
+import { CheckCircle, Download01 } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 
-import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 
 import { Body, Header, ShareLink } from '../components';
@@ -13,6 +12,8 @@ import { ViewProps } from '../share-profile-dialog';
 
 type ShareOnSocialsProps = ViewProps;
 
+/** Page rendered when a user want to share their Sorbet profile
+ * and sent out a QR Code to it */
 export const ShareOnSocials = ({
   username,
   setActive,
@@ -20,39 +21,22 @@ export const ShareOnSocials = ({
 }: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
 
+  const { qrCodeRef, qrCode, isLoadingQRCode } = useGenerateQRCode(url);
+
   const [isPngCopied, setIsPngCopied] = useState(false);
   const [isSvgCopied, setIsSvgCopied] = useState(false);
 
-  const {
-    svgURL,
-    pngURL,
-    isPending: isQRCodeUrlsPending,
-  } = useGenerateQRCode(url);
-
-  const handleDownloadPng = () => {
-    if (!pngURL) {
-      return;
+  /** Downloads SVG or PNG of QR code to user's computer */
+  const downloadQRCode = (username: string, fileExt: 'svg' | 'png') => {
+    qrCode.download({
+      name: `${username}-sorbet-qrcode`,
+      extension: fileExt,
+    });
+    if (fileExt === 'png') {
+      setIsPngCopied(true);
+    } else if (fileExt === 'svg') {
+      setIsSvgCopied(true);
     }
-
-    const a = document.createElement('a');
-    a.href = pngURL;
-    a.download = `${username}-sorbet-qrcode.png`;
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(pngURL);
-  };
-
-  const handleDownloadSvg = () => {
-    if (!svgURL) {
-      return;
-    }
-
-    const a = document.createElement('a');
-    a.href = svgURL;
-    a.download = `${username}-sorbet-qrcode.svg`;
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(svgURL);
   };
 
   return (
@@ -65,18 +49,10 @@ export const ShareOnSocials = ({
       />
       <Body>
         <div className='flex min-h-[256px] w-full items-center justify-center'>
-          {isQRCodeUrlsPending ? (
-            <Spinner />
+          {isLoadingQRCode ? (
+            <Skeleton className='h-[256px] w-[256px]' />
           ) : (
-            pngURL && (
-              <Image
-                src={pngURL}
-                alt='QR Code'
-                id='qrcode'
-                width={256}
-                height={256}
-              />
-            )
+            <div ref={qrCodeRef} />
           )}
         </div>
         <div className='flex flex-col gap-4'>
@@ -84,10 +60,7 @@ export const ShareOnSocials = ({
             <span className='text-base text-black'>Download PNG</span>
             <Button
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-              onClick={() => {
-                setIsPngCopied(true);
-                handleDownloadPng();
-              }}
+              onClick={() => downloadQRCode(username, 'png')}
               disabled={isPngCopied}
             >
               {isPngCopied ? (
@@ -101,10 +74,7 @@ export const ShareOnSocials = ({
             <span className='text-base text-black'>Download SVG</span>
             <Button
               className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-              onClick={() => {
-                setIsSvgCopied(true);
-                handleDownloadSvg();
-              }}
+              onClick={() => downloadQRCode(username, 'svg')}
               disabled={isSvgCopied}
             >
               {isSvgCopied ? (

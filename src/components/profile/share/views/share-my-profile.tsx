@@ -1,10 +1,4 @@
-import {
-  Body,
-  Header,
-  Option,
-  ShareLink,
-  TwitterIcon,
-} from '../components';
+import { Body, Header, Option, ShareLink, TwitterIcon } from '../components';
 import { ViewProps } from '../share-profile-dialog';
 
 type ShareMyProfileToProps = ViewProps;

@@ -5,10 +5,8 @@ import {
   getEmbeddedConnectedWallet,
   useWallets,
 } from '@privy-io/react-auth';
-import {
-  FileCheck2 as IconContract,
-  MessageCircle as IconMessage,
-} from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { FileCheck02 } from '@untitled-ui/icons-react';
 import { useEffect, useState } from 'react';
 import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
 
@@ -29,8 +27,8 @@ import {
   ContractPendingOffer,
   ContractRejected,
 } from '@/app/gigs/contract';
+import { TabsList } from '@/components/build-ui/tabs-list';
 import { Spinner } from '@/components/common/spinner';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -42,7 +40,6 @@ import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
 import { useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
 import { env } from '@/lib/env';
-import { cn } from '@/lib/utils';
 import { ActiveTab } from '@/types';
 import { CreateContractType, MilestoneType, OfferType } from '@/types';
 
@@ -82,6 +79,8 @@ export const GigsDialog = ({
   const { toast } = useToast();
   const { ready, wallets } = useWallets();
 
+  const queryClient = useQueryClient();
+
   const [lastChainOp, setLastChainOp] = useLocalStorage<string>(
     'lastChainOp',
     ''
@@ -92,12 +91,16 @@ export const GigsDialog = ({
     data: contractData,
     // error: getContractError,
     isError: isGetContractError,
-    refetch: refetchContractData,
   } = useGetContractForOffer({
     currentOfferId,
     isOpen,
     activeTab,
   });
+
+  const invalidateQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['offers'] });
+    queryClient.invalidateQueries({ queryKey: ['contractForOffer'] });
+  };
 
   if (isGetContractError) {
     toast({
@@ -141,6 +144,7 @@ export const GigsDialog = ({
       }
     }
     setIsLoading(false);
+    invalidateQueries();
   };
 
   const handleReject = () => {
@@ -166,8 +170,8 @@ export const GigsDialog = ({
         });
       }
     }
-    await refetchContractData();
     setIsLoading(false);
+    invalidateQueries();
   };
 
   const cancelReject = () => {
@@ -185,7 +189,7 @@ export const GigsDialog = ({
       title: 'Contract completed',
       description: 'The contract has been completed',
     });
-    await refetchContractData();
+    invalidateQueries();
     setIsLoading(false);
   };
 
@@ -220,6 +224,7 @@ export const GigsDialog = ({
         });
       }
     }
+    invalidateQueries();
   };
 
   const onFixedPriceFormSubmit = async (
@@ -250,6 +255,7 @@ export const GigsDialog = ({
         });
       }
     }
+    invalidateQueries();
   };
 
   const handleMilestoneFunding = async (
@@ -355,7 +361,7 @@ export const GigsDialog = ({
       throw err;
     }
 
-    await refetchContractData();
+    invalidateQueries();
   };
 
   const handleMilestoneSubmission = async (
@@ -376,7 +382,7 @@ export const GigsDialog = ({
       });
     }
 
-    await refetchContractData();
+    invalidateQueries();
   };
 
   const handleMilestoneApprove = async (
@@ -424,7 +430,7 @@ export const GigsDialog = ({
       throw err;
     }
 
-    await refetchContractData();
+    invalidateQueries();
   };
 
   async function sendTransaction(
@@ -463,7 +469,6 @@ export const GigsDialog = ({
       throw error;
     }
   }
-
   const renderContractView = () => {
     if (isClient) {
       if (contractData) {
@@ -547,16 +552,24 @@ export const GigsDialog = ({
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogOverlay className='bg-[#F3F3F4]/90' />
         <DialogContent
-          className='flex max-w-[900px] flex-col rounded-2xl md:h-[75vh]'
+          className='flex min-h-[75vh] max-w-[900px] flex-col rounded-2xl'
           aria-describedby={undefined}
         >
-          <DialogTitle className='flex h-14 justify-between px-4 py-2 text-2xl'>
-            {activeTab === 'Chat'
-              ? chatParticipantName !== ''
-                ? `Chat with ${chatParticipantName}`
-                : `Chat`
-              : `Contract`}
-            <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
+          <DialogTitle className='flex items-center justify-between px-4'>
+            <span className='text-2xl'>
+              {activeTab === 'Chat'
+                ? chatParticipantName !== ''
+                  ? `Chat with ${chatParticipantName}`
+                  : `Chat`
+                : `Contract`}
+            </span>
+            <TabsList
+              setActiveTab={setActiveTab}
+              tabs={[
+                { name: 'Chat' },
+                { name: 'Contract', icon: <FileCheck02 className='h-4 w-4' /> },
+              ]}
+            />
           </DialogTitle>
 
           {activeTab === 'Chat' && (
@@ -579,37 +592,5 @@ export const GigsDialog = ({
         </DialogContent>
       </Dialog>
     </>
-  );
-};
-
-const TabSelector: React.FC<TabSelectorProps> = ({
-  activeTab,
-  setActiveTab,
-}) => {
-  return (
-    <div className='border-1 h-11 rounded-full border border-solid border-gray-100'>
-      <Button
-        variant={`outline`}
-        className={cn(
-          'active:ouline-none hover:bg-sorbet gap-2 rounded-full border-none outline-none hover:text-white focus:outline-none',
-          activeTab === 'Chat' && 'bg-sorbet text-white'
-        )}
-        onClick={() => setActiveTab('Chat')}
-      >
-        <span>Chat</span>
-        <IconMessage size={15} />
-      </Button>
-      <Button
-        variant={`outline`}
-        className={cn(
-          'active:ouline-none hover:bg-sorbet gap-2 rounded-full border-none hover:text-white focus:outline-none',
-          activeTab === 'Contract' && 'bg-sorbet text-white'
-        )}
-        onClick={() => setActiveTab('Contract')}
-      >
-        <span>Contract</span>
-        <IconContract size={15} />
-      </Button>
-    </div>
   );
 };
