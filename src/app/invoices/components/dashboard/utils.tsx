@@ -1,8 +1,10 @@
 import { InvoiceFormData } from '../create/invoice-form-context';
 
+export type InvoiceStatus = 'open' | 'cancelled' | 'overdue' | 'paid';
 export type Invoice = InvoiceFormData & {
-  status: 'open' | 'cancelled' | 'overdue' | 'paid';
+  status: InvoiceStatus;
   totalAmount: number;
+  id: string;
 };
 
 export const formatCurrency = (amount?: number) => {
