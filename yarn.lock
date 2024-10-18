@@ -17447,6 +17447,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qr-code-styling@npm:^1.7.2":
+  version: 1.8.1
+  resolution: "qr-code-styling@npm:1.8.1"
+  dependencies:
+    qrcode-generator: "npm:^1.4.4"
+  checksum: 10c0/6330fe01980622a092ef13fa17b9da524e40be5bf8a66ddfe5873394293c628772fbf42941830f9e7c973fea08dee14f2781fe54c3ba9906204af698d1571733
+  languageName: node
+  linkType: hard
+
+"qrcode-generator@npm:^1.4.4":
+  version: 1.4.4
+  resolution: "qrcode-generator@npm:1.4.4"
+  checksum: 10c0/3249fcff98cb9fa17c21329d3dfd895e294a2d6ea48161f7b377010779d41f0cd88668b7fb3478a659725061bb0a770b40a227c2f4853e8c4a6b947a9e8bf17a
+  languageName: node
+  linkType: hard
+
 "qrcode@npm:1.5.3":
   version: 1.5.3
   resolution: "qrcode@npm:1.5.3"
@@ -19179,6 +19195,7 @@ __metadata:
     postcss: "npm:^8.4.31"
     prettier: "npm:^2.8.8"
     prettier-plugin-tailwindcss: "npm:^0.1.13"
+    qr-code-styling: "npm:^1.7.2"
     react: "npm:^18.2.0"
     react-credit-cards: "npm:^0.8.3"
     react-day-picker: "npm:^8.10.0"
