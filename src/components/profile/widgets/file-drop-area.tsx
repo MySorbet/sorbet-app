@@ -50,9 +50,7 @@ export const FileDropArea: React.FC<FileDropAreaProps> = ({
       className={cn(
         'rounded-3xl transition-all duration-300 ease-out',
         'border-2 border-dashed',
-        fileEnter
-          ? 'scale-[1.01] border-[#D7D7D7]'
-          : 'scale-100 border-transparent shadow-none',
+        fileEnter ? 'border-[#D7D7D7]' : 'border-transparent shadow-none',
         className
       )}
     >
