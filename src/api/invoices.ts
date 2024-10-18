@@ -8,7 +8,9 @@ import { env } from '../lib/env';
 
 // TODO: Implement these once the backend is sending data
 
-export const createInvoice = async (invoice: InvoiceFormData) => {
+export const createInvoice = async (
+  invoice: InvoiceFormData
+): Promise<Invoice> => {
   // const res = await axios.post(
   //   `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
   //   invoice
@@ -17,7 +19,10 @@ export const createInvoice = async (invoice: InvoiceFormData) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        id: '123',
+        id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a',
+        ...invoice,
+        status: 'open',
+        totalAmount: 0,
       });
     }, 2000);
   });

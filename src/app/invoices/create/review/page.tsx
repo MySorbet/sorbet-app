@@ -17,7 +17,8 @@ export default function ReviewPage() {
       invoice={formData}
       onBack={() => router.back()}
       onCreate={async () => {
-        await createInvoice(formData);
+        const invoice = await createInvoice(formData);
+        router.push(`/invoices/${invoice.id}`);
       }}
       isLoading={isPending}
     />
