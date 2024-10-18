@@ -45,8 +45,7 @@ export default function InvoiceSheet({
 }) {
   if (!invoice) return null;
 
-  const invoiceLink = `https://mysorbet.io/invoices/${invoice.id}`;
-  const invoiceLinkShort = `mysorbet.io/invoices/${invoice.id}`;
+  const invoiceLink = `${window.location.origin}/invoices/${invoice.id}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(invoiceLink);
@@ -101,7 +100,7 @@ export default function InvoiceSheet({
           {/* Invoice payment link */}
           <div className='space-y-2'>
             <Label className='text-sm font-medium'>Invoice payment link</Label>
-            <Input value={invoiceLinkShort} readOnly className='truncate' />
+            <Input value={invoiceLink} readOnly className='truncate' />
             <div className='flex gap-2'>
               <Button
                 variant='outline'

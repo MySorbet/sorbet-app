@@ -108,6 +108,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
                       onClick={() => handleSidebarClose()}
                     />
                   </Link>
+                  <Link href='/invoices'>
+                    <SidebarHeaderOption
+                      label='Invoices'
+                      icon={<CircleArrowRight />}
+                      onClick={() => handleSidebarClose()}
+                    />
+                  </Link>
                 </div>
               </div>
               <Balances />

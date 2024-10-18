@@ -1,3 +1,5 @@
+'use client';
+
 import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 

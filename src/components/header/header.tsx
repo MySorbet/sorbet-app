@@ -24,17 +24,16 @@ export const Header = () => {
   const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
 
   return (
-    <div className='bg-[#F2F3F7]'>
-      <div className='container mx-auto flex w-full justify-between py-4'>
-        <div className='flex gap-6'>
-          <Link href='/'>
-            <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
-          </Link>
-        </div>
-        {user && (
-          <div className='flex items-center justify-end gap-4'>
-            <div className='align-center flex flex-row items-center gap-2'>
-              {/* <a
+    <div className='container mx-auto flex w-full justify-between bg-[#F2F3F7] py-4'>
+      <div className='flex gap-6'>
+        <Link href='/'>
+          <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
+        </Link>
+      </div>
+      {user && (
+        <div className='flex items-center justify-end gap-4'>
+          <div className='align-center flex flex-row items-center gap-2'>
+            {/* <a
                 href='https://mysorbet.featurebase.app/'
                 target='_blank'
                 rel='noreferrer'
@@ -43,26 +42,25 @@ export const Header = () => {
                   Feedback
                 </Button>
               </a> */}
-              <FeaturebaseWidget />
-              <Notifications />
-              <div
-                className='group flex cursor-pointer flex-row items-center'
-                onClick={() => dispatch(setOpenSidebar(true))}
-              >
-                <Avatar className='border-primary-default size-10 border-2'>
-                  <AvatarImage src={profileImage} alt='profile image' />
-                  <AvatarFallback>
-                    <User01 className='text-muted-foreground' />
-                  </AvatarFallback>
-                </Avatar>
-                <ChevronDown className='transition ease-out group-hover:translate-y-1' />
-                <Sidebar show={toggleOpenSidebar} />
-              </div>
+            <FeaturebaseWidget />
+            <Notifications />
+            <div
+              className='group flex cursor-pointer flex-row items-center'
+              onClick={() => dispatch(setOpenSidebar(true))}
+            >
+              <Avatar className='border-primary-default size-10 border-2'>
+                <AvatarImage src={profileImage} alt='profile image' />
+                <AvatarFallback>
+                  <User01 className='text-muted-foreground' />
+                </AvatarFallback>
+              </Avatar>
+              <ChevronDown className='transition ease-out group-hover:translate-y-1' />
+              <Sidebar show={toggleOpenSidebar} />
             </div>
           </div>
-        )}
-        {!user && <LoggedOutCTA />}
-      </div>
+        </div>
+      )}
+      {!user && <LoggedOutCTA />}
     </div>
   );
 };
