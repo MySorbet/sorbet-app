@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 
 import { useInvoiceFormContext } from '../../components/create/invoice-form-context';
-import { InvoicePDFRender } from '../../components/invoice-pdf-render';
 import { useCreateInvoice } from '../../hooks/useCreateInvoice';
+import { InvoiceReview } from '../../components/create/invoice-review';
 
 export default function ReviewPage() {
   const { formData } = useInvoiceFormContext();
@@ -12,7 +12,7 @@ export default function ReviewPage() {
   const { mutateAsync: createInvoice, isPending } = useCreateInvoice();
 
   return (
-    <InvoicePDFRender
+    <InvoiceReview
       invoice={formData}
       onBack={() => router.back()}
       onCreate={async () => {

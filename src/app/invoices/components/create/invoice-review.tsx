@@ -4,31 +4,34 @@ import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
 
-import { CreateInvoiceFooter } from './create/create-invoice-footer';
-import { CreateInvoiceHeader } from './create/create-invoice-header';
-import { CreateInvoiceShell } from './create/create-invoice-shell';
-import { InvoiceFormData } from './create/invoice-form-context';
-import { InvoicePDF } from './invoice-pdf';
+import { CreateInvoiceFooter } from './create-invoice-footer';
+import {
+  CreateInvoiceHeader,
+  CreateInvoiceTitle,
+} from './create-invoice-header';
+import { CreateInvoiceShell } from './create-invoice-shell';
+import { InvoiceFormData } from './invoice-form-context';
+import { InvoiceDocument } from '../invoice-document';
 
-type InvoicePDFRenderProps = {
+type InvoiceReview = {
   onBack: () => void;
   onCreate: () => void;
   invoice: InvoiceFormData;
   isLoading?: boolean;
 };
 
-export const InvoicePDFRender = ({
+export const InvoiceReview = ({
   onBack,
   onCreate,
   invoice,
   isLoading,
-}: InvoicePDFRenderProps) => {
+}: InvoiceReview) => {
   return (
     <CreateInvoiceShell>
-      <CreateInvoiceHeader>Review</CreateInvoiceHeader>
-      <PDFViewer width={800} height={500} showToolbar={false}>
-        <InvoicePDF {...invoice} />
-      </PDFViewer>
+      <CreateInvoiceHeader>
+        <CreateInvoiceTitle>Review</CreateInvoiceTitle>
+      </CreateInvoiceHeader>
+      <InvoiceDocument invoice={invoice} />
       <CreateInvoiceFooter>
         <Button variant='outline' type='button' onClick={onBack}>
           <ArrowLeft className='mr-2 h-4 w-4' /> Back to Edit

@@ -19,9 +19,13 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { CreateInvoiceFooter } from './create-invoice-footer';
-import { CreateInvoiceHeader } from './create-invoice-header';
+import {
+  CreateInvoiceHeader,
+  CreateInvoiceTitle,
+} from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { useInvoiceFormContext } from './invoice-form-context';
+import { Stepper } from './stepper';
 
 const InvoiceItemDataSchema = z.object({
   name: z.string().min(1).max(50),
@@ -85,7 +89,10 @@ export const InvoiceDetails = ({
 
   return (
     <CreateInvoiceShell>
-      <CreateInvoiceHeader step={2}>Invoice Details</CreateInvoiceHeader>
+      <CreateInvoiceHeader>
+        <CreateInvoiceTitle>Invoice Details</CreateInvoiceTitle>
+        <Stepper step={2} totalSteps={3} />
+      </CreateInvoiceHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
           <FormField

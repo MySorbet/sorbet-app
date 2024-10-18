@@ -1,12 +1,19 @@
-import { PDFViewer } from '@react-pdf/renderer';
-
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { Invoice } from '../components/dashboard/utils';
-import { CreateInvoiceHeader } from './create/create-invoice-header';
+import {
+  CreateInvoiceHeader,
+  CreateInvoiceTitle,
+} from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
-import { InvoicePDF } from './invoice-pdf';
+import { InvoiceDocument } from './invoice-document';
+import { Button } from '@/components/ui/button';
+import { Download01 } from '@untitled-ui/icons-react';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
+import Logo from '@/../public/svg/logo.svg';
+import Image from 'next/image';
 type InvoicePublicViewProps = {
   invoice?: Invoice;
   isLoading?: boolean;
@@ -16,22 +23,44 @@ export const InvoicePublicView = ({
   invoice,
   isLoading,
 }: InvoicePublicViewProps) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <CreateInvoiceShell>
       <CreateInvoiceHeader>
         {isLoading ? (
           <Skeleton variant='lighter' className='h-6 w-40' />
         ) : (
-          `${invoice?.fromName} sent you an invoice`
+          <div className='flex items-center gap-3'>
+            <Image
+              src={Logo}
+              height={40}
+              width={40}
+              className='size-10'
+              alt='Sorbet logo'
+            />
+            <CreateInvoiceTitle>
+              {invoice?.fromName} sent you an invoice
+            </CreateInvoiceTitle>
+          </div>
         )}
+        <div className='flex gap-2'>
+          <Button variant='outline' onClick={reactToPrintFn}>
+            <Download01 className='mr-2 h-4 w-4' /> Download
+          </Button>
+          <Button variant='sorbet'>Pay USDC</Button>
+        </div>
       </CreateInvoiceHeader>
-      {/* TODO: Download and pay buttons */}
+
       {isLoading ? (
         <Skeleton variant='lighter' className='h-[500px] w-[800px]' />
       ) : (
-        <PDFViewer width={800} height={500} showToolbar={false}>
-          <InvoicePDF {...invoice} />
-        </PDFViewer>
+        invoice && (
+          <div ref={contentRef}>
+            <InvoiceDocument invoice={invoice} />
+          </div>
+        )
       )}
     </CreateInvoiceShell>
   );

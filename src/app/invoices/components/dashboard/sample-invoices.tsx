@@ -14,6 +14,18 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Acme Corp',
     toEmail: 'accounts@acmecorp.com',
     projectName: 'Website Redesign',
+    items: [
+      {
+        name: 'Website Redesign',
+        quantity: 1,
+        amount: 250.0,
+      },
+      {
+        name: 'Domain Registration',
+        quantity: 1,
+        amount: 100.0,
+      },
+    ],
   },
   {
     id: 'c2d8f3a1-8f7b-4e3c-9d6a-8b7f9e2c1d3b',
@@ -28,6 +40,18 @@ export const sampleInvoices: Invoice[] = [
     toName: 'TechStart LLC',
     toEmail: 'finance@techstart.com',
     projectName: 'Mobile App Development',
+    items: [
+      {
+        name: 'Mobile App Development - Phase 1',
+        quantity: 1,
+        amount: 150.0,
+      },
+      {
+        name: 'UI/UX Design',
+        quantity: 1,
+        amount: 25.5,
+      },
+    ],
   },
   {
     id: 'a1b2c3d4-e5f6-4a5b-9c8d-7e6f5a4b3c2d',
@@ -42,6 +66,18 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Global Innovations Inc.',
     toEmail: 'payments@globalinnovations.com',
     projectName: 'AI Research Project',
+    items: [
+      {
+        name: 'AI Research Consultation',
+        quantity: 10,
+        amount: 40.0,
+      },
+      {
+        name: 'Data Processing',
+        quantity: 1,
+        amount: 20.75,
+      },
+    ],
   },
   {
     id: 'f1e2d3c4-b5a6-4c5d-8e7f-9a8b7c6d5e4f',
@@ -56,6 +92,13 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Smith Consulting',
     toEmail: 'accounting@smithconsulting.com',
     projectName: 'Marketing Strategy',
+    items: [
+      {
+        name: 'Marketing Strategy Session',
+        quantity: 2,
+        amount: 40.0,
+      },
+    ],
   },
   {
     id: '1a2b3c4d-5e6f-4a5b-9c8d-7e6f5a4b3c2d',
@@ -70,6 +113,18 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Mega Industries',
     toEmail: 'invoices@megaindustries.com',
     projectName: 'AI Research Project',
+    items: [
+      {
+        name: 'AI Algorithm Development',
+        quantity: 1,
+        amount: 1000.0,
+      },
+      {
+        name: 'Technical Documentation',
+        quantity: 5,
+        amount: 50.0,
+      },
+    ],
   },
   {
     id: 'b1c2d3e4-f5a6-4b5c-8d7e-9f8a7b6c5d4e',
@@ -84,6 +139,18 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Bright Future Solutions',
     toEmail: 'ap@brightfuture.com',
     projectName: 'AI Research Project',
+    items: [
+      {
+        name: 'AI Model Training',
+        quantity: 1,
+        amount: 250.0,
+      },
+      {
+        name: 'Data Annotation',
+        quantity: 15,
+        amount: 5.0,
+      },
+    ],
   },
   {
     id: 'd1e2f3a4-b5c6-4d5e-9f8a-7b6c5d4e3f2a',
@@ -98,5 +165,17 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Quantum Dynamics Ltd.',
     toEmail: 'finance@quantumdynamics.com',
     projectName: 'Data Analysis Service',
+    items: [
+      {
+        name: 'Data Analysis Report',
+        quantity: 1,
+        amount: 500.0,
+      },
+      {
+        name: 'Visualization Creation',
+        quantity: 3,
+        amount: 30.0,
+      },
+    ],
   },
 ];

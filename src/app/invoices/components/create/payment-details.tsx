@@ -26,10 +26,14 @@ import { cn } from '@/lib/utils';
 
 import { Calendar } from '../../../../components/ui/calendar';
 import { CreateInvoiceFooter } from './create-invoice-footer';
-import { CreateInvoiceHeader } from './create-invoice-header';
+import {
+  CreateInvoiceHeader,
+  CreateInvoiceTitle,
+} from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { InputAsRow } from './input-as-row';
 import { useInvoiceFormContext } from './invoice-form-context';
+import { Stepper } from './stepper';
 
 const paymentDetailsSchema = z.object({
   issueDate: z.date({ required_error: 'An issue date is required.' }),
@@ -81,7 +85,10 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
 
   return (
     <CreateInvoiceShell>
-      <CreateInvoiceHeader step={3}>Payment Details</CreateInvoiceHeader>
+      <CreateInvoiceHeader>
+        <CreateInvoiceTitle>Payment Details</CreateInvoiceTitle>
+        <Stepper step={3} totalSteps={3} />
+      </CreateInvoiceHeader>
       <Form {...form}>
         <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
           <FormField

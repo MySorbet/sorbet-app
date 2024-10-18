@@ -16,6 +16,10 @@ export const formatCurrency = (amount?: number) => {
 };
 
 export const formatDate = (date?: Date) => {
+  // TODO: Address this hack. dates should always be stored as dates in the form context
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
   if (!date) return '';
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
