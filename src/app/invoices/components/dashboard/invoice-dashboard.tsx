@@ -1,11 +1,12 @@
 import { Plus } from '@untitled-ui/icons-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
-import { Invoice, InvoiceTable } from './invoice-table';
-import SummaryCard from './summary-card';
 import InvoiceSheet from './invoice-sheet';
-import { useState } from 'react';
+import { InvoiceTable } from './invoice-table';
+import SummaryCard from './summary-card';
+import { Invoice } from './utils';
 
 type InvoiceDashboardProps = {
   invoices: Invoice[];

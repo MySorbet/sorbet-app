@@ -1,56 +1,89 @@
 'use client';
 
-import { Copy06, Download01, X } from '@untitled-ui/icons-react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { Download01 } from '@untitled-ui/icons-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
-import { Invoice } from './invoice-table';
-import { InvoiceStatusBadge } from './InvoiceStatusBadge';
+import { CopyButton } from './copy-button';
+import { InvoiceStatusBadge } from './invoice-status-badge';
+import { Invoice } from './utils';
 import { formatCurrency, formatDate } from './utils';
 
+// TODO: Address scroll when there is not enough height
+
+/**
+ * Right side sheet that shows the invoice details and actions.
+ */
 export default function InvoiceSheet({
   open,
   setOpen,
   invoice,
   onEdit,
   onCancel,
+  onDownload,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   invoice?: Invoice;
   onEdit?: () => void;
   onCancel?: () => void;
+  onDownload?: () => void;
 }) {
   if (!invoice) return null;
 
+  // TODO: This should be invoice id not number
+  const invoiceLink = `https://mysorbet.io/invoices/${invoice.invoiceNumber}`;
+  const invoiceLinkShort = `mysorbet.io/invoices/${invoice.invoiceNumber}`;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(invoiceLink);
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 p-3'>
+      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 p-6'>
         <SheetHeader>
           <SheetTitle className='text-sm font-medium'>
             {invoice.toName}
           </SheetTitle>
+          <SheetDescription>
+            <VisuallyHidden>Description goes here</VisuallyHidden>
+          </SheetDescription>
         </SheetHeader>
+
         <div className='flex flex-1 flex-col gap-12'>
+          {/* Invoice status and total amount */}
           <div>
             <InvoiceStatusBadge variant={invoice.status}>
               {invoice.status}
             </InvoiceStatusBadge>
-            <div className='text-2xl font-semibold'>
+            <div
+              className={cn(
+                'mt-3 text-2xl font-semibold',
+                invoice.status === 'cancelled' && 'line-through'
+              )}
+            >
               {formatCurrency(invoice.totalAmount)}
             </div>
           </div>
+
           <Separator />
-          <div className='space-y-2'>
+
+          {/* Invoice details */}
+          <div className='space-y-4'>
             <InvoiceDetail
               label='Due date'
               value={formatDate(invoice.dueDate)}
@@ -62,31 +95,50 @@ export default function InvoiceSheet({
             <InvoiceDetail label='Invoice no.' value={invoice.invoiceNumber} />
             <InvoiceDetail label='Project name' value={invoice.projectName} />
           </div>
-          <Separator />
-          <div className='space-y-2'>
-            <h3 className='font-semibold'>Invoice payment link</h3>
-            <Input
-              value={`mysorbet.io/invoices/${invoice.invoiceNumber}`}
-              readOnly
-            />
 
+          <Separator />
+
+          {/* Invoice payment link */}
+          <div className='space-y-2'>
+            <Label className='text-sm font-medium'>Invoice payment link</Label>
+            <Input value={invoiceLinkShort} readOnly />
             <div className='flex gap-2'>
-              <Button variant='outline' size='icon' className='min-w-11'>
+              <Button
+                variant='outline'
+                size='icon'
+                className='min-w-11'
+                onClick={onDownload}
+              >
                 <Download01 className='size-4' />
               </Button>
-              <Button variant='outline' className='w-full'>
-                <Copy06 className='mr-2 size-4' />
-                Copy invoice link
-              </Button>
+              <CopyButton
+                className='w-full'
+                onCopy={handleCopy}
+                copyIconClassName='size-4'
+                checkIconClassName='size-4'
+              >
+                Copy Invoice Link
+              </CopyButton>
             </div>
           </div>
         </div>
 
-        <SheetFooter className='flex flex-1 flex-col justify-end'>
-          <Button variant='outline' className='w-full' onClick={onCancel}>
+        {/* Invoice actions */}
+        <SheetFooter className='items-end'>
+          <Button
+            variant='outline'
+            className='w-full'
+            onClick={onCancel}
+            disabled={invoice.status === 'cancelled'}
+          >
             Cancel Invoice
           </Button>
-          <Button variant='outline' className='w-full' onClick={onEdit}>
+          <Button
+            variant='outline'
+            className='w-full'
+            onClick={onEdit}
+            disabled={invoice.status === 'cancelled'}
+          >
             Edit Invoice
           </Button>
         </SheetFooter>

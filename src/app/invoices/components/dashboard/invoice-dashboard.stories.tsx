@@ -12,7 +12,6 @@ const meta: Meta<typeof InvoiceDashboard> = {
       default: 'sorbet',
     },
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

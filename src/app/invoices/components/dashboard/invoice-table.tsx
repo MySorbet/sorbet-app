@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
   Table,
   TableBody,
@@ -10,13 +8,8 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-import { InvoiceFormData } from '../create/invoice-form-context';
-import { InvoiceStatusBadge } from './InvoiceStatusBadge';
-import { formatCurrency, formatDate } from './utils';
-export type Invoice = InvoiceFormData & {
-  status: 'open' | 'cancelled' | 'overdue' | 'paid';
-  totalAmount: number;
-};
+import { InvoiceStatusBadge } from './invoice-status-badge';
+import { formatCurrency, formatDate, Invoice } from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({

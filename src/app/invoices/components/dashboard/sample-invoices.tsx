@@ -1,4 +1,4 @@
-import { Invoice } from './invoice-table';
+import { Invoice } from './utils';
 
 export const sampleInvoices: Invoice[] = [
   {

@@ -16,6 +16,7 @@ const meta: Meta<typeof InvoiceSheet> = {
     invoice: sampleInvoices[0],
     onCancel: fn(),
     onEdit: fn(),
+    onDownload: fn(),
   },
 };
 
@@ -30,5 +31,15 @@ export const Default: Story = {
       updateArgs({ open });
     };
     return <InvoiceSheet {...args} open={open} setOpen={handleSetOpen} />;
+  },
+};
+
+export const Cancelled: Story = {
+  render: Default.render,
+  args: {
+    invoice: {
+      ...sampleInvoices[0],
+      status: 'cancelled',
+    },
   },
 };
