@@ -1,3 +1,5 @@
+'use client';
+
 import { Download01 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 import { useRef } from 'react';
@@ -24,7 +26,10 @@ export const InvoicePublicView = ({
   isLoading,
 }: InvoicePublicViewProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const reactToPrintFn = useReactToPrint({ contentRef });
+  const reactToPrintFn = useReactToPrint({
+    contentRef,
+    documentTitle: `sorbet-invoice-${invoice?.invoiceNumber}`,
+  });
 
   return (
     <CreateInvoiceShell>
@@ -46,7 +51,7 @@ export const InvoicePublicView = ({
           </div>
         )}
         <div className='flex gap-2'>
-          <Button variant='outline' onClick={reactToPrintFn}>
+          <Button variant='outline' onClick={() => reactToPrintFn()}>
             <Download01 className='mr-2 h-4 w-4' /> Download
           </Button>
           <Button variant='sorbet'>Pay USDC</Button>
@@ -56,11 +61,7 @@ export const InvoicePublicView = ({
       {isLoading ? (
         <Skeleton variant='lighter' className='h-[500px] w-[800px]' />
       ) : (
-        invoice && (
-          <div ref={contentRef}>
-            <InvoiceDocument invoice={invoice} />
-          </div>
-        )
+        invoice && <InvoiceDocument invoice={invoice} ref={contentRef} />
       )}
     </CreateInvoiceShell>
   );

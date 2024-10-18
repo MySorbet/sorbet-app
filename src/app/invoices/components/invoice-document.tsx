@@ -1,9 +1,17 @@
-import { formatDate } from './dashboard/utils';
-import { InvoiceFormData } from './create/invoice-form-context';
+import { forwardRef } from 'react';
 
-export const InvoiceDocument = ({ invoice }: { invoice: InvoiceFormData }) => {
+import { InvoiceFormData } from './create/invoice-form-context';
+import { formatDate } from './dashboard/utils';
+
+export const InvoiceDocument = forwardRef<
+  HTMLDivElement,
+  { invoice: InvoiceFormData }
+>(({ invoice }, ref) => {
   return (
-    <div className='mx-auto min-w-[800px] max-w-4xl rounded-2xl bg-white p-16'>
+    <div
+      className='mx-auto min-w-[800px] max-w-4xl rounded-2xl bg-white p-16'
+      ref={ref}
+    >
       <h1 className='mb-16 text-5xl font-semibold'>Invoice</h1>
 
       <table className='mb-20 w-full'>
@@ -122,4 +130,4 @@ export const InvoiceDocument = ({ invoice }: { invoice: InvoiceFormData }) => {
       </table>
     </div>
   );
-};
+});
