@@ -54,3 +54,9 @@ export const ZeroInvoices: Story = {
     invoiceCount: 0,
   },
 };
+
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+};

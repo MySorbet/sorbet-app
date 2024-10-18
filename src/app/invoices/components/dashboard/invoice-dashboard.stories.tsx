@@ -27,6 +27,13 @@ export const Default: Story = {
   },
 };
 
+export const Loading: Story = {
+  args: {
+    ...Default.args,
+    isLoading: true,
+  },
+};
+
 export const Empty: Story = {
   args: {
     invoices: [],

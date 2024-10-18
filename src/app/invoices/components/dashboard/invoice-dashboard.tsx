@@ -11,6 +11,7 @@ import { Invoice } from './utils';
 type InvoiceDashboardProps = {
   invoices: Invoice[];
   onCreateNew: () => void;
+  isLoading?: boolean;
 };
 
 const calculateTotal = (invoices: Invoice[]) => {
@@ -20,6 +21,7 @@ const calculateTotal = (invoices: Invoice[]) => {
 export const InvoiceDashboard = ({
   invoices,
   onCreateNew,
+  isLoading,
 }: InvoiceDashboardProps) => {
   const openInvoices = invoices.filter((invoice) => invoice.status === 'open');
   const overdueInvoices = invoices.filter(
@@ -63,16 +65,19 @@ export const InvoiceDashboard = ({
             label='Total Open'
             value={calculateTotal(openInvoices)}
             invoiceCount={openInvoices.length}
+            isLoading={isLoading}
           />
           <SummaryCard
             label='Overdue'
             value={calculateTotal(overdueInvoices)}
             invoiceCount={overdueInvoices.length}
+            isLoading={isLoading}
           />
           <SummaryCard
             label='Paid'
             value={calculateTotal(paidInvoices)}
             invoiceCount={paidInvoices.length}
+            isLoading={isLoading}
           />
         </div>
 
@@ -83,6 +88,7 @@ export const InvoiceDashboard = ({
             setSelectedInvoice(invoice);
             setOpen(true);
           }}
+          isLoading={isLoading}
         />
       </div>
     </>

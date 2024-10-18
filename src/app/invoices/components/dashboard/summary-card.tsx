@@ -1,9 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SummaryCardProps {
   label: string;
   value: number;
   invoiceCount: number;
+  isLoading?: boolean;
 }
 
 // TODO: Look into muted-foreground vs secondary-foreground text color matching design
@@ -14,7 +16,12 @@ export default function SummaryCard({
   label,
   value,
   invoiceCount,
+  isLoading,
 }: SummaryCardProps) {
+  if (isLoading) {
+    return <SummaryCardSkeleton />;
+  }
+
   return (
     <Card className='w-full max-w-sm rounded-2xl border-none bg-white shadow-none'>
       <CardContent className='flex flex-col items-start gap-1 px-6 py-4'>
@@ -33,3 +40,15 @@ export default function SummaryCard({
     </Card>
   );
 }
+
+export const SummaryCardSkeleton = () => {
+  return (
+    <Card className='w-full max-w-sm rounded-2xl border-none bg-white shadow-none'>
+      <CardContent className='flex flex-col items-start gap-1 px-6 py-4'>
+        <Skeleton className='h-4 w-20' />
+        <Skeleton className='h-7 w-32' />
+        <Skeleton className='h-4 w-24' />
+      </CardContent>
+    </Card>
+  );
+};

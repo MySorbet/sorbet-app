@@ -24,3 +24,17 @@ export const Default: Story = {
     onInvoiceClick: fn(),
   },
 };
+
+export const Loading: Story = {
+  args: {
+    ...Default.args,
+    isLoading: true,
+  },
+};
+
+export const Empty: Story = {
+  args: {
+    ...Default.args,
+    invoices: [],
+  },
+};
