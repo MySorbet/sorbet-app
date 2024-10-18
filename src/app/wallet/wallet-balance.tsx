@@ -1,13 +1,12 @@
 import { Plus, Send, Wallet } from 'lucide-react';
-import React from 'react';
 
+import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
 
 interface WalletBalanceProps {
   ethBalance: string;
   usdcBalance: string;
   onTopUp?: () => void;
-  onSend?: () => void;
 }
 
 /**
@@ -18,7 +17,6 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   ethBalance,
   usdcBalance,
   onTopUp,
-  onSend,
 }) => {
   return (
     <div className='min-h-[100%] min-w-80 rounded-3xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
@@ -40,10 +38,9 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
               label='Top up'
               onClick={onTopUp}
             />
-            <CircleButton
-              icon={<Send size={26} />}
-              label='Send'
-              onClick={onSend}
+
+            <WalletSendDialog
+              trigger={<CircleButton icon={<Send size={26} />} label='Send' />}
             />
           </div>
         </div>
@@ -66,7 +63,6 @@ const CircleButton: React.FC<{
       <Button
         className='bg-sorbet flex size-12 items-center justify-center rounded-full p-0 text-white'
         onClick={onClick}
-        disabled // TODO: Enable when functionality is implemented
       >
         {icon}
       </Button>
