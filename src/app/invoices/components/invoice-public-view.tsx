@@ -1,3 +1,9 @@
+import { Download01 } from '@untitled-ui/icons-react';
+import Image from 'next/image';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { Invoice } from '../components/dashboard/utils';
@@ -7,13 +13,7 @@ import {
 } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
 import { InvoiceDocument } from './invoice-document';
-import { Button } from '@/components/ui/button';
-import { Download01 } from '@untitled-ui/icons-react';
-import { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
 
-import Logo from '@/../public/svg/logo.svg';
-import Image from 'next/image';
 type InvoicePublicViewProps = {
   invoice?: Invoice;
   isLoading?: boolean;
@@ -34,7 +34,7 @@ export const InvoicePublicView = ({
         ) : (
           <div className='flex items-center gap-3'>
             <Image
-              src={Logo}
+              src='/svg/logo.svg'
               height={40}
               width={40}
               className='size-10'
