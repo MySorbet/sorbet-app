@@ -17,10 +17,3 @@ export default meta;
 type Story = StoryObj<typeof WalletSendDialog>;
 
 export const Default: Story = {};
-
-export const InitialScreen = {
-  args: {
-    isOpen: true,
-    initialStep: 1,
-  },
-};

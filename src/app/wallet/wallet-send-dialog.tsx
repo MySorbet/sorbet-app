@@ -1,15 +1,17 @@
 import { CheckCircle, LinkExternal02, X } from '@untitled-ui/icons-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
 import useMeasure from 'react-use-measure';
 
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,23 +19,24 @@ import SorbetSvg from '~/svg/logo.svg';
 import USDCSvg from '~/svg/usdc.svg';
 
 interface WalletSendDialogProps {
-  isOpen: boolean;
   initialStep?: number;
+  trigger: ReactNode;
 }
 
 /**
  * This dialog is triggered when a user wants to send from their Privy wallet. Currently only functional for USDCc
  */
 export const WalletSendDialog = ({
-  isOpen,
   initialStep = 1,
+  trigger,
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(initialStep);
   const [amount, setAmount] = useState<number>(0);
   const [contentRef, { height: contentHeight }] = useMeasure();
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog onOpenChange={() => setStep(1)}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
         hideDefaultCloseButton={true}
@@ -83,7 +86,9 @@ const Step1 = ({ setStep }: ScreenProps) => {
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Send
         </DialogTitle>
-        <X className='size-6 text-[#98A2B3]' />
+        <DialogClose className='static'>
+          <X className='size-6 text-[#98A2B3]' />
+        </DialogClose>
       </DialogHeader>
       <div className='flex flex-col gap-6'>
         <div className='flex flex-col gap-[6px]'>
@@ -143,7 +148,9 @@ const Step2 = ({ amount, destination, setStep }: Step2Props) => {
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Confirm Send
         </DialogTitle>
-        <X className='size-6 text-[#98A2B3]' />
+        <DialogClose>
+          <X className='size-6 text-[#98A2B3]' />
+        </DialogClose>
       </DialogHeader>
       <div className='flex flex-col items-center gap-6'>
         <div className='flex w-full flex-col items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] py-6'>
@@ -179,7 +186,6 @@ interface Step3Props extends ScreenProps {
 // Results screen either success or failure
 const Step3 = ({
   transactionId = '23sdbdf824b3b383b3c9AS24534BSUDsadasd',
-  setStep,
 }: Step3Props) => {
   return (
     <div className='flex flex-col gap-6 p-6'>
