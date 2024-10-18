@@ -1,4 +1,4 @@
-import { User01 } from '@untitled-ui/icons-react';
+import { Receipt, User01 } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
   LayoutGrid,
@@ -81,41 +81,35 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
               </div>
             </div>
             <div>
-              <div className='grid grid-cols-3 gap-2'>
-                <div className='col-span-1'>
-                  <Link href='/wallet'>
-                    <SidebarHeaderOption
-                      label='Wallet'
-                      icon={<WalletMinimal />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
-                <div className='col-span-1'>
-                  <Link href='/gigs'>
-                    <SidebarHeaderOption
-                      label='Gigs'
-                      icon={<LayoutGrid />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
-                <div className='col-span-1'>
-                  <Link href={`/${user.handle}`}>
-                    <SidebarHeaderOption
-                      label='Profile'
-                      icon={<CircleArrowRight />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                  <Link href='/invoices'>
-                    <SidebarHeaderOption
-                      label='Invoices'
-                      icon={<CircleArrowRight />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
+              <div className='grid grid-cols-2 grid-rows-2 gap-2'>
+                <Link href='/wallet'>
+                  <SidebarHeaderOption
+                    label='Wallet'
+                    icon={<WalletMinimal />}
+                    onClick={() => handleSidebarClose()}
+                  />
+                </Link>
+                <Link href='/gigs'>
+                  <SidebarHeaderOption
+                    label='Gigs'
+                    icon={<LayoutGrid />}
+                    onClick={() => handleSidebarClose()}
+                  />
+                </Link>
+                <Link href={`/${user.handle}`}>
+                  <SidebarHeaderOption
+                    label='Profile'
+                    icon={<CircleArrowRight />}
+                    onClick={() => handleSidebarClose()}
+                  />
+                </Link>
+                <Link href='/invoices'>
+                  <SidebarHeaderOption
+                    label='Invoices'
+                    icon={<Receipt />}
+                    onClick={() => handleSidebarClose()}
+                  />
+                </Link>
               </div>
               <Balances />
             </div>
