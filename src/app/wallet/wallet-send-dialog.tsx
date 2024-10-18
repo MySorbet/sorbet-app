@@ -15,8 +15,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import SorbetSvg from '~/svg/logo.svg';
-import USDCSvg from '~/svg/usdc.svg';
 
 interface WalletSendDialogProps {
   initialStep?: number;
@@ -86,8 +84,8 @@ const Step1 = ({ setStep }: ScreenProps) => {
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Send
         </DialogTitle>
-        <DialogClose className='static'>
-          <X className='size-6 text-[#98A2B3]' />
+        <DialogClose className='group fixed right-7'>
+          <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
         </DialogClose>
       </DialogHeader>
       <div className='flex flex-col gap-6'>
@@ -148,21 +146,21 @@ const Step2 = ({ amount, destination, setStep }: Step2Props) => {
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Confirm Send
         </DialogTitle>
-        <DialogClose>
-          <X className='size-6 text-[#98A2B3]' />
+        <DialogClose className='group fixed right-7'>
+          <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
         </DialogClose>
       </DialogHeader>
       <div className='flex flex-col items-center gap-6'>
         <div className='flex w-full flex-col items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] py-6'>
           <span className='text-3xl font-bold leading-[38px]'>{amount}</span>
           <div className='flex flex-row items-center gap-1'>
-            <Image src={USDCSvg} height={20} width={20} alt='USDC logo' />
+            <Image src='/svg/usdc.svg' height={20} width={20} alt='USDC logo' />
             <span className='text-sm font-medium text-[#344054]'>USDC</span>
           </div>
         </div>
         <span className='text-sm font-medium text-[#344054]'>To</span>
         <div className='flex w-full items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] py-6'>
-          <Image src={SorbetSvg} height={48} width={48} alt='Sorbet logo' />
+          <Image src='/svg/logo.svg' height={48} width={48} alt='Sorbet logo' />
           <div className='flex flex-col justify-between'>
             <span className='text-sm font-medium text-[#344054]'>Sorbet</span>
             <span className='text-sorbet text-lg'>{destination}test</span>
