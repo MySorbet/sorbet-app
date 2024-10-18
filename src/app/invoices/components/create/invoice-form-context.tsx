@@ -73,11 +73,11 @@ export const useQueryState = <T extends Record<string, unknown>>(
   useEffect(() => {
     const p = Object.fromEntries(params);
     if (Object.keys(p).includes('items')) {
-      setState({ ...p, items: JSON.parse(p.items) } as T);
+      setState({ ...p, items: JSON.parse(p.items) } as unknown as T);
     } else if (Object.keys(p).includes('issueDate')) {
-      setState({ ...p, issueDate: new Date(p.issueDate) } as T);
+      setState({ ...p, issueDate: new Date(p.issueDate) } as unknown as T);
     } else if (Object.keys(p).includes('dueDate')) {
-      setState({ ...p, dueDate: new Date(p.dueDate) } as T);
+      setState({ ...p, dueDate: new Date(p.dueDate) } as unknown as T);
     } else {
       setState(p as T);
     }

@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation';
 
 import { Header } from '@/components/header';
-import { useInvoices } from '@/hooks/invoices/useInvoices';
 
 import { InvoiceDashboard } from './components/dashboard/invoice-dashboard';
+import { useInvoices } from './hooks/useInvoices';
 
 export default function InvoicesPage() {
   const { data, isLoading } = useInvoices();
