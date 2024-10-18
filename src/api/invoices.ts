@@ -32,3 +32,13 @@ export const getInvoices = async (): Promise<Invoice[]> => {
     }, 2000);
   });
 };
+
+export const getInvoice = async (id: string): Promise<Invoice> => {
+  // const res = await axios.get(`${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}`);
+  // return res;
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(sampleInvoices[0]);
+    }, 2000);
+  });
+};
