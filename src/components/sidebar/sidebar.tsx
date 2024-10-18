@@ -16,16 +16,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
-import { useAppDispatch } from '@/redux/hook';
-import { setOpenSidebar } from '@/redux/userSlice';
 
 interface SidebarProps {
-  show: boolean;
+  isOpen: boolean;
+  onIsOpenChange: (open: boolean) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { user, logout } = useAuth();
 
   if (!user) {
@@ -41,19 +39,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
   };
 
   const handleSidebarClose = () => {
-    dispatch(setOpenSidebar(false));
+    onIsOpenChange(false);
   };
 
   return (
     <div
       className={`fixed z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 lg:left-0 ${
-        show ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
+        isOpen ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
       }`}
-      onClick={() => dispatch(setOpenSidebar(false))}
+      onClick={handleSidebarClose}
     >
       <div
         className={`right-0 z-40 flex h-full w-full flex-col items-start justify-between gap-6 overflow-y-auto bg-[#F9FAFB] p-8 text-black lg:m-6 lg:h-[calc(100%-48px)] lg:w-[420px] lg:rounded-[32px] ${
-          show ? 'fixed' : 'hidden'
+          isOpen ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
           e.stopPropagation();

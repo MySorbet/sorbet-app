@@ -4,7 +4,7 @@ import { ChevronDown, User01 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Notifications } from '@/components/notifications';
 import FeaturebaseWidget from '@/components/profile/featurebase-widget';
@@ -12,16 +12,13 @@ import { Sidebar } from '@/components/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
-import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { setOpenSidebar } from '@/redux/userSlice';
 
 /** Header for all pages */
 export const Header = () => {
   const { user } = useAuth();
   const profileImage = user?.profileImage;
 
-  const dispatch = useAppDispatch();
-  const { toggleOpenSidebar } = useAppSelector((state) => state.userReducer);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className='container mx-auto flex w-full justify-between bg-[#F2F3F7] py-4'>
@@ -46,7 +43,7 @@ export const Header = () => {
             <Notifications />
             <div
               className='group flex cursor-pointer flex-row items-center'
-              onClick={() => dispatch(setOpenSidebar(true))}
+              onClick={() => setIsSidebarOpen(true)}
             >
               <Avatar className='border-primary-default size-10 border-2'>
                 <AvatarImage src={profileImage} alt='profile image' />
@@ -55,7 +52,10 @@ export const Header = () => {
                 </AvatarFallback>
               </Avatar>
               <ChevronDown className='transition ease-out group-hover:translate-y-1' />
-              <Sidebar show={toggleOpenSidebar} />
+              <Sidebar
+                isOpen={isSidebarOpen}
+                onIsOpenChange={setIsSidebarOpen}
+              />
             </div>
           </div>
         </div>
