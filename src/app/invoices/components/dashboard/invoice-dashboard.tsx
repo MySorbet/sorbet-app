@@ -47,15 +47,17 @@ export const InvoiceDashboard = ({
         invoice={selectedInvoice}
       />
 
-      <div className='flex w-full max-w-6xl flex-col gap-4'>
+      <div className='flex w-full max-w-6xl flex-col gap-10'>
+        {/* Header */}
         <div className='flex items-center justify-between gap-4'>
-          <h1 className='text-2xl font-semibold'>Invoices</h1>
-          {/* TODO: Can we make this a button variant? */}
-          <Button onClick={onCreateNew} className='bg-sorbet text-white'>
+          <h1 className='text-2xl font-semibold'>Invoicing</h1>
+          <Button onClick={onCreateNew} variant='sorbet'>
             <Plus className='mr-2 h-4 w-4' />
             Create new
           </Button>
         </div>
+
+        {/* Summary cards */}
         <div className='flex items-center justify-between gap-4'>
           <SummaryCard
             label='Total Open'
@@ -73,6 +75,8 @@ export const InvoiceDashboard = ({
             invoiceCount={paidInvoices.length}
           />
         </div>
+
+        {/* Invoice table */}
         <InvoiceTable
           invoices={invoices}
           onInvoiceClick={(invoice) => {

@@ -23,6 +23,7 @@ import { Invoice } from './utils';
 import { formatCurrency, formatDate } from './utils';
 
 // TODO: Address scroll when there is not enough height
+// TODO: Use custom easing curves to improve the feel of the sheet open animation (match vaul?)
 
 /**
  * Right side sheet that shows the invoice details and actions.
@@ -44,9 +45,8 @@ export default function InvoiceSheet({
 }) {
   if (!invoice) return null;
 
-  // TODO: This should be invoice id not number
-  const invoiceLink = `https://mysorbet.io/invoices/${invoice.invoiceNumber}`;
-  const invoiceLinkShort = `mysorbet.io/invoices/${invoice.invoiceNumber}`;
+  const invoiceLink = `https://mysorbet.io/invoices/${invoice.id}`;
+  const invoiceLinkShort = `mysorbet.io/invoices/${invoice.id}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(invoiceLink);
@@ -101,7 +101,7 @@ export default function InvoiceSheet({
           {/* Invoice payment link */}
           <div className='space-y-2'>
             <Label className='text-sm font-medium'>Invoice payment link</Label>
-            <Input value={invoiceLinkShort} readOnly />
+            <Input value={invoiceLinkShort} readOnly className='truncate' />
             <div className='flex gap-2'>
               <Button
                 variant='outline'

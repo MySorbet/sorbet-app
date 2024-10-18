@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { InvoiceDashboard } from './invoice-dashboard';
 import { sampleInvoices } from './sample-invoices';
@@ -11,6 +12,9 @@ const meta: Meta<typeof InvoiceDashboard> = {
     backgrounds: {
       default: 'sorbet',
     },
+  },
+  args: {
+    onCreateNew: fn(),
   },
 };
 

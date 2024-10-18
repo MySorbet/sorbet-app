@@ -2,6 +2,7 @@ import { Invoice } from './utils';
 
 export const sampleInvoices: Invoice[] = [
   {
+    id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a',
     invoiceNumber: 'INV001',
     status: 'paid',
     totalAmount: 250.0,
@@ -12,6 +13,7 @@ export const sampleInvoices: Invoice[] = [
     projectName: 'Website Redesign',
   },
   {
+    id: 'c2d8f3a1-8f7b-4e3c-9d6a-8b7f9e2c1d3b',
     invoiceNumber: 'INV002',
     status: 'open',
     totalAmount: 175.5,
@@ -22,6 +24,7 @@ export const sampleInvoices: Invoice[] = [
     projectName: 'Mobile App Development',
   },
   {
+    id: 'a1b2c3d4-e5f6-4a5b-9c8d-7e6f5a4b3c2d',
     invoiceNumber: 'INV003',
     status: 'overdue',
     totalAmount: 420.75,
@@ -31,6 +34,7 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Global Innovations Inc.',
   },
   {
+    id: 'f1e2d3c4-b5a6-4c5d-8e7f-9a8b7c6d5e4f',
     invoiceNumber: 'INV004',
     status: 'cancelled',
     totalAmount: 80.0,
@@ -40,6 +44,7 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Smith Consulting',
   },
   {
+    id: '1a2b3c4d-5e6f-4a5b-9c8d-7e6f5a4b3c2d',
     invoiceNumber: 'INV005',
     status: 'paid',
     totalAmount: 1250.0,
@@ -49,6 +54,7 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Mega Industries',
   },
   {
+    id: 'b1c2d3e4-f5a6-4b5c-8d7e-9f8a7b6c5d4e',
     invoiceNumber: 'INV006',
     status: 'open',
     totalAmount: 325.25,
@@ -58,6 +64,7 @@ export const sampleInvoices: Invoice[] = [
     toName: 'Bright Future Solutions',
   },
   {
+    id: 'd1e2f3a4-b5c6-4d5e-9f8a-7b6c5d4e3f2a',
     invoiceNumber: 'INV007',
     status: 'overdue',
     totalAmount: 590.0,

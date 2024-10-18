@@ -34,7 +34,7 @@ export const InvoiceTable = ({
   onInvoiceClick?: (invoice: Invoice) => void;
 }) => {
   return (
-    <div className='rounded-lg bg-white px-6 py-3'>
+    <div className='rounded-2xl bg-white px-6 py-3'>
       <Table>
         <TableHeader>
           <TableRow>
