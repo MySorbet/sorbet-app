@@ -1,6 +1,8 @@
 import { CheckCircle, LinkExternal02, X } from '@untitled-ui/icons-react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useState } from 'react';
+import useMeasure from 'react-use-measure';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -9,10 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import SorbetSvg from '~/svg/logo.svg';
-import USDCSvg from '~/svg/usdc.svg';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import SorbetSvg from '~/svg/logo.svg';
+import USDCSvg from '~/svg/usdc.svg';
 
 interface WalletSendDialogProps {
   isOpen: boolean;
@@ -28,31 +30,55 @@ export const WalletSendDialog = ({
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(initialStep);
   const [amount, setAmount] = useState<number>(0);
+  const [contentRef, { height: contentHeight }] = useMeasure();
+
   return (
     <Dialog open={isOpen}>
       <DialogContent
-        className='w-[460px] gap-6 rounded-[32px] p-6 sm:rounded-[32px]'
+        className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
         hideDefaultCloseButton={true}
       >
-        {step === 1 && <Step1 />}
-        {step === 2 && <Step2 amount={amount} />}
-        {step === 3 && <Step3 />}
+        <motion.div
+          // TODO: address this hacky solution for the first view. For some reason, the height is not being calculated correctly when the dialog is opened.
+          animate={{
+            height: step === 1 ? '424px' : contentHeight,
+          }}
+          className='overflow-hidden'
+        >
+          <div ref={contentRef}>
+            {step === 1 && (
+              <FadeIn>
+                <Step1 setStep={setStep} />
+              </FadeIn>
+            )}
+            {step === 2 && (
+              <FadeIn>
+                <Step2 amount={amount} setStep={setStep} />
+              </FadeIn>
+            )}
+            {step === 3 && (
+              <FadeIn>
+                <Step3 setStep={setStep} />
+              </FadeIn>
+            )}
+          </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );
 };
 
 interface ScreenProps {
-  setStep?: Dispatch<SetStateAction<number>>;
+  setStep: Dispatch<SetStateAction<number>>;
 }
 
 // Initial screen to get amount to send USDC from Privy wallet
-const Step1 = () => {
+const Step1 = ({ setStep }: ScreenProps) => {
   const conversion = 0.0;
   const available = 1.2345;
 
   return (
-    <>
+    <div className='flex flex-col gap-6 p-6'>
       <DialogHeader className='flex w-full flex-row justify-between'>
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Send
@@ -94,10 +120,13 @@ const Step1 = () => {
           </Label>
         </div>
       </div>
-      <Button className='bg-sorbet border-sorbet-border border'>
+      <Button
+        className='bg-sorbet border-sorbet-border mt-4 w-full border'
+        onClick={() => setStep(2)}
+      >
         Continue
       </Button>
-    </>
+    </div>
   );
 };
 
@@ -107,9 +136,9 @@ interface Step2Props extends ScreenProps {
 }
 
 // Confirmation Screen
-const Step2 = ({ amount, destination }: Step2Props) => {
+const Step2 = ({ amount, destination, setStep }: Step2Props) => {
   return (
-    <>
+    <div className='flex flex-col gap-6 p-6'>
       <DialogHeader className='flex w-full flex-row justify-between'>
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Confirm Send
@@ -133,10 +162,13 @@ const Step2 = ({ amount, destination }: Step2Props) => {
           </div>
         </div>
       </div>
-      <Button className='bg-sorbet border-sorbet-border mt-4 border text-base'>
+      <Button
+        className='bg-sorbet border-sorbet-border mt-4 w-full border text-base'
+        onClick={() => setStep(3)}
+      >
         Send
       </Button>
-    </>
+    </div>
   );
 };
 
@@ -147,9 +179,10 @@ interface Step3Props extends ScreenProps {
 // Results screen either success or failure
 const Step3 = ({
   transactionId = '23sdbdf824b3b383b3c9AS24534BSUDsadasd',
+  setStep,
 }: Step3Props) => {
   return (
-    <>
+    <div className='flex flex-col gap-6 p-6'>
       <div className='flex flex-col items-center justify-center gap-[10px] py-6'>
         <CheckCircle className='size-[53px] text-[#17B26A]' />
         <span className='text-3xl font-bold leading-[38px] text-[#17B26A]'>
@@ -166,9 +199,18 @@ const Step3 = ({
           <LinkExternal02 className='size-4 text-[#595B5A]' />
         </a>
       </div>
-      <Button className='bg-sorbet border-sorbet-border mt-4 border'>
+      <Button className='bg-sorbet border-sorbet-border mt-4 w-full border'>
         Done
       </Button>
-    </>
+    </div>
+  );
+};
+
+/** All this does is animate the opacity of each component and adds a delay for better timing */
+const FadeIn = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      {children}
+    </motion.div>
   );
 };

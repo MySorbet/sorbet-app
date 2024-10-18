@@ -24,17 +24,3 @@ export const InitialScreen = {
     initialStep: 1,
   },
 };
-
-export const ConfirmationScreen = {
-  args: {
-    isOpen: true,
-    initialStep: 2,
-  },
-};
-
-export const FinalScreen = {
-  args: {
-    isOpen: true,
-    initialStep: 3,
-  },
-};
