@@ -1,4 +1,3 @@
-import { PDFViewer } from '@react-pdf/renderer';
 import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 
 import { Spinner } from '@/components/common';
