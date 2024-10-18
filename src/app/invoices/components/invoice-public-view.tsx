@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { InvoiceReceipt } from '@/app/invoices/components/invoice-receipt';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -30,6 +31,15 @@ export const InvoicePublicView = ({
     contentRef,
     documentTitle: `sorbet-invoice-${invoice?.invoiceNumber}`,
   });
+
+  // Render closed receipts in the case of paid or cancelled invoices
+  if (invoice?.status === 'paid' || invoice?.status === 'cancelled') {
+    return (
+      <div className='container flex size-full items-center justify-center'>
+        <InvoiceReceipt status={invoice.status} />
+      </div>
+    );
+  }
 
   return (
     <CreateInvoiceShell>

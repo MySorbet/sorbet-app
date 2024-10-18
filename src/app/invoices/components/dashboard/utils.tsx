@@ -1,6 +1,13 @@
 import { InvoiceFormData } from '../create/invoice-form-context';
 
-export type InvoiceStatus = 'open' | 'cancelled' | 'overdue' | 'paid';
+export const InvoiceStatuses = [
+  'open',
+  'cancelled',
+  'overdue',
+  'paid',
+] as const;
+export type InvoiceStatus = (typeof InvoiceStatuses)[number];
+
 export type Invoice = InvoiceFormData & {
   status: InvoiceStatus;
   totalAmount: number;
