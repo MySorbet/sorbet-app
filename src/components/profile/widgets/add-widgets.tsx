@@ -140,7 +140,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             title='Error uploading file'
           >
             <p className='mt-2'>
-              You can only upload jpg, png or gif files only.
+              You can only upload jpg, png, svg, or gif files only.
             </p>
             <p>Maximum 10mb file size</p>
           </InvalidAlert>
