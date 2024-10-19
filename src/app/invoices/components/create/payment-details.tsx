@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
-import { format } from 'date-fns';
+import { addDays, format, startOfDay } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { DayPickerSingleProps } from 'react-day-picker';
@@ -36,9 +36,9 @@ import { useInvoiceFormContext } from './invoice-form-context';
 import { Stepper } from './stepper';
 
 // react-day-picker Matcher which allows any date after and including today
+// TODO: Revisit this and the form validation ot accepting today
 const isInTheFuture = (date: Date) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = startOfDay(new Date());
   return date >= today;
 };
 
@@ -50,7 +50,7 @@ const paymentDetailsSchema = z.object({
     }),
   dueDate: z
     .date({ required_error: 'A due date is required.' })
-    .refine((date) => isInTheFuture(date), {
+    .refine(isInTheFuture, {
       message: 'Due date must be a future date',
     }),
   memo: z.string().optional(),
@@ -73,8 +73,7 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
     resolver: zodResolver(paymentDetailsSchema),
     defaultValues: {
       issueDate: formData.issueDate ?? new Date(), // Prefill today's date
-      dueDate:
-        formData.dueDate ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Prefill 7 days from today
+      dueDate: formData.dueDate ?? addDays(new Date(), 7),
       memo: formData.memo ?? '',
     },
   });

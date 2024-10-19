@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { InputAsRow } from '@/app/invoices/components/create/input-as-row';
+import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -169,7 +170,9 @@ export const InvoiceDetails = ({
 
           <div className='flex justify-between border-t border-gray-200 py-4'>
             <span className='text-sm font-semibold'>Total</span>
-            <span className='text-xl font-semibold'>{formattedTotal}</span>
+            <TextMorph className='text-xl font-semibold'>
+              {formattedTotal}
+            </TextMorph>
           </div>
           <CreateInvoiceFooter>
             <Button variant='outline' type='button' onClick={onBack}>
@@ -189,6 +192,7 @@ export const InvoiceDetails = ({
   );
 };
 
+// TODO: Revisit FormMessage errors for these items
 /**
  * Local component to display a single invoice item
  */
@@ -208,7 +212,7 @@ const InvoiceItem = ({
   index: number;
 }) => {
   return (
-    <div className='flex flex-row justify-between gap-6'>
+    <div className='animate-in slide-in-from-top-3 fade-in-0 flex flex-row justify-between gap-6'>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         {!hideLabel && (
           <Label htmlFor='item' className='flex-1 text-sm font-medium'>
@@ -240,7 +244,7 @@ const InvoiceItem = ({
           onChange={(e) => {
             onChange?.({ ...item, quantity: parseInt(e.target.value) });
           }}
-          className='text-right'
+          className='no-spin-buttons text-right'
         />
       </div>
       <div className='grid w-full max-w-56 items-center gap-1.5'>
