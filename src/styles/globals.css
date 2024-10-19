@@ -92,6 +92,7 @@
   .no-spin-buttons {
     -webkit-appearance: none;
     -moz-appearance: textfield !important;
+    appearance: textfield !important;
     margin: 0;
   }
 }
