@@ -1,11 +1,13 @@
 import { EIP1193Provider, useWallets } from '@privy-io/react-auth';
 import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
 import {
+  ArrowNarrowLeft,
   CheckCircle,
   LinkExternal02,
   Loading02,
   X,
 } from '@untitled-ui/icons-react';
+import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -54,6 +56,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
 
   const { usdcBalance } = useWalletBalances(walletAddress);
 
+  // Perhaps we only want to run this fetch request once...
   const {
     data: transactionData,
     mutateAsync: sendTransactionMutation,
@@ -225,6 +228,8 @@ const Step1 = ({
       <Button
         className='bg-sorbet border-sorbet-border mt-4 w-full border'
         onClick={() => setStep(2)}
+        // TODO: Add disabled condition for walletId. Just need to confirm w/ Rami what it should look like
+        disabled={Number(amount) <= 0}
       >
         Continue
       </Button>
@@ -279,16 +284,25 @@ const Step2 = ({
           </div>
         </div>
       </div>
-      <Button
-        className='bg-sorbet border-sorbet-border mt-4 w-full border text-base'
-        onClick={() => setStep(3)}
-      >
-        {sendTransactionLoading ? (
-          <Loading02 className='animate-spin' />
-        ) : (
-          'Send'
-        )}
-      </Button>
+      <div className='mt-4 flex gap-3'>
+        <Button
+          onClick={() => setStep(1)}
+          className='flex items-center gap-[6px] border border-[#D0D5DD] bg-white text-[#344054]'
+        >
+          <ArrowNarrowLeft className='size-3 text-[#344054]' />
+          Go back
+        </Button>
+        <Button
+          className='bg-sorbet border-sorbet-border w-full border text-base'
+          onClick={() => setStep(3)}
+        >
+          {sendTransactionLoading ? (
+            <Loading02 className='animate-spin' />
+          ) : (
+            'Send'
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
@@ -314,7 +328,7 @@ const Step3 = ({
         <span className='text-sm font-medium text-[#344054]'>
           Transaction ID
         </span>
-        {/* //TODO: Have this link to the transaction hash on basescan */}
+        {/* //TODO: Have this link to the transaction hash on basescan (all we need to do is redirect the href link with the proper transaction hash) */}
         <a className='hover:decoration-sorbet flex flex-row items-center gap-1 hover:cursor-pointer hover:underline'>
           <span className='text-sorbet truncate text-sm'>{transactionId}</span>
           <LinkExternal02 className='size-4 text-[#595B5A]' />
