@@ -1,6 +1,5 @@
 import { Plus, Send, Wallet } from 'lucide-react';
 import React from 'react';
-
 import { Button } from '@/components/ui/button';
 
 interface WalletBalanceProps {
@@ -66,7 +65,7 @@ const CircleButton: React.FC<{
       <Button
         className='bg-sorbet flex size-12 items-center justify-center rounded-full p-0 text-white'
         onClick={onClick}
-        disabled // TODO: Enable when functionality is implemented
+        // disabled // TODO: Enable when functionality is implemented
       >
         {icon}
       </Button>
