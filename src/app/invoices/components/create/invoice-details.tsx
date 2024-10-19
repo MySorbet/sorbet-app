@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
+import { formatCurrency } from '../dashboard/utils';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import {
   CreateInvoiceHeader,
@@ -29,8 +30,8 @@ import { Stepper } from './stepper';
 
 const InvoiceItemDataSchema = z.object({
   name: z.string().min(1).max(50),
-  quantity: z.number().min(1),
-  amount: z.number().min(1),
+  quantity: z.coerce.number().min(1),
+  amount: z.coerce.number().min(0),
 });
 type InvoiceItemData = z.infer<typeof InvoiceItemDataSchema>;
 
@@ -65,13 +66,16 @@ export const InvoiceDetails = ({
   const form = useForm<InvoiceDetailsFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projectName: formData.projectName,
-      invoiceNumber: invoiceNumber ?? formData.invoiceNumber,
+      projectName: formData.projectName ?? '',
+      invoiceNumber: invoiceNumber ?? formData.invoiceNumber ?? '',
       items: formData.items ?? [emptyInvoiceItemData],
     },
   });
 
   const items = form.watch('items');
+  const formattedTotal = formatCurrency(
+    items.reduce((acc, item) => acc + item.amount * item.quantity, 0)
+  );
 
   const router = useRouter();
   const handleSubmit = form.handleSubmit((data, event) => {
@@ -164,13 +168,7 @@ export const InvoiceDetails = ({
 
           <div className='flex justify-between border-t border-gray-200 py-4'>
             <span className='text-sm font-semibold'>Total</span>
-            <span className='text-xl font-semibold'>
-              $
-              {items
-                .reduce((acc, item) => acc + item.amount, 0)
-                .toFixed(2)
-                .toLocaleString()}
-            </span>
+            <span className='text-xl font-semibold'>{formattedTotal}</span>
           </div>
           <CreateInvoiceFooter>
             <Button variant='outline' type='button' onClick={onBack}>
@@ -238,6 +236,7 @@ const InvoiceItem = ({
           onChange={(e) => {
             onChange?.({ ...item, quantity: parseInt(e.target.value) });
           }}
+          className='text-right'
         />
       </div>
       <div className='grid w-full max-w-56 items-center gap-1.5'>
@@ -252,8 +251,9 @@ const InvoiceItem = ({
           placeholder='amount'
           value={item.amount}
           onChange={(e) => {
-            onChange?.({ ...item, amount: parseInt(e.target.value) });
+            onChange?.({ ...item, amount: parseFloat(e.target.value) });
           }}
+          className='text-right'
         />
       </div>
       {hideDelete ? (

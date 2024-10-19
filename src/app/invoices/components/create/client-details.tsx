@@ -52,10 +52,10 @@ export const ClientDetails = ({
   const form = useForm<ClientDetailsFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      toName: formData.toName,
-      toEmail: formData.toEmail,
-      fromName: name ?? formData.fromName,
-      fromEmail: email ?? formData.fromEmail,
+      toName: formData.toName ?? '',
+      toEmail: formData.toEmail ?? '',
+      fromName: name ?? formData.fromName ?? '',
+      fromEmail: email ?? formData.fromEmail ?? '',
     },
   });
 

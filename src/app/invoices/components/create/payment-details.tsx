@@ -3,11 +3,12 @@ import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { SelectSingleEventHandler } from 'react-day-picker';
+import { DayPickerSingleProps } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -24,7 +25,6 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
-import { Calendar } from '../../../../components/ui/calendar';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import {
   CreateInvoiceHeader,
@@ -35,9 +35,24 @@ import { InputAsRow } from './input-as-row';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { Stepper } from './stepper';
 
+// react-day-picker Matcher which allows any date after and including today
+const isInTheFuture = (date: Date) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date >= today;
+};
+
 const paymentDetailsSchema = z.object({
-  issueDate: z.date({ required_error: 'An issue date is required.' }),
-  dueDate: z.date({ required_error: 'A due date is required.' }),
+  issueDate: z
+    .date({ required_error: 'An issue date is required.' })
+    .refine(isInTheFuture, {
+      message: 'Issue date must be today or a future date.',
+    }),
+  dueDate: z
+    .date({ required_error: 'A due date is required.' })
+    .refine((date) => isInTheFuture(date), {
+      message: 'Due date must be a future date',
+    }),
   memo: z.string().optional(),
 });
 
@@ -57,9 +72,10 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
   const form = useForm<PaymentDetailsFormData>({
     resolver: zodResolver(paymentDetailsSchema),
     defaultValues: {
-      issueDate: formData.issueDate,
-      dueDate: formData.dueDate,
-      memo: formData.memo,
+      issueDate: formData.issueDate ?? new Date(), // Prefill today's date
+      dueDate:
+        formData.dueDate ?? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Prefill 7 days from today
+      memo: formData.memo ?? '',
     },
   });
 
@@ -83,6 +99,8 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
     );
   });
 
+  const { issueDate, dueDate } = form.watch();
+
   return (
     <CreateInvoiceShell>
       <CreateInvoiceHeader>
@@ -99,7 +117,13 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
                 <InputAsRow>
                   <FormLabel>Issue date</FormLabel>
                   <FormControl>
-                    <DatePicker value={field.value} onChange={field.onChange} />
+                    <DatePicker
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        !isInTheFuture(date) || date > dueDate
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </InputAsRow>
@@ -114,7 +138,13 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
                 <InputAsRow>
                   <FormLabel>Due date</FormLabel>
                   <FormControl>
-                    <DatePicker value={field.value} onChange={field.onChange} />
+                    <DatePicker
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        !isInTheFuture(date) || date < issueDate
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </InputAsRow>
@@ -163,12 +193,10 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
  * Local component to handle date picking
  */
 const DatePicker = ({
-  value,
-  onChange,
-}: {
-  value: Date;
-  onChange: SelectSingleEventHandler;
-}) => {
+  selected,
+  onSelect,
+  disabled,
+}: Pick<DayPickerSingleProps, 'selected' | 'onSelect' | 'disabled'>) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -177,10 +205,10 @@ const DatePicker = ({
             variant='outline'
             className={cn(
               'w-full max-w-md pl-3 text-left font-normal',
-              !value && 'text-muted-foreground'
+              !selected && 'text-muted-foreground'
             )}
           >
-            {value ? format(value, 'PPP') : <span>Pick a date</span>}
+            {selected ? format(selected, 'PPP') : <span>Pick a date</span>}
             <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
           </Button>
         </FormControl>
@@ -188,11 +216,9 @@ const DatePicker = ({
       <PopoverContent className='w-auto p-0' align='start'>
         <Calendar
           mode='single'
-          selected={value}
-          onSelect={onChange}
-          disabled={(date) =>
-            date > new Date() || date < new Date('1900-01-01')
-          }
+          selected={selected}
+          onSelect={onSelect}
+          disabled={disabled}
           initialFocus
         />
       </PopoverContent>
