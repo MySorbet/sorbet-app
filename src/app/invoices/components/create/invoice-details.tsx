@@ -129,6 +129,7 @@ export const InvoiceDetails = ({
             {items.map((item, index) => (
               <InvoiceItem
                 key={index}
+                index={index}
                 item={item}
                 hideDelete={index === 0}
                 hideLabel={index !== 0}
@@ -197,12 +198,14 @@ const InvoiceItem = ({
   onDelete,
   onChange,
   hideLabel,
+  index,
 }: {
   item: InvoiceItemData;
   hideDelete?: boolean;
   hideLabel?: boolean;
   onDelete?: () => void;
   onChange?: (item: InvoiceItemData) => void;
+  index: number;
 }) => {
   return (
     <div className='flex flex-row justify-between gap-6'>
@@ -220,6 +223,7 @@ const InvoiceItem = ({
           onChange={(e) => {
             onChange?.({ ...item, name: e.target.value });
           }}
+          autoFocus={index !== 0}
         />
       </div>
       <div className='grid w-full max-w-32 items-center gap-1.5'>
