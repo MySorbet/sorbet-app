@@ -1,9 +1,23 @@
-import { CheckCircle, LinkExternal02, X } from '@untitled-ui/icons-react';
+import { EIP1193Provider, useWallets } from '@privy-io/react-auth';
+import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
+import {
+  CheckCircle,
+  LinkExternal02,
+  Loading02,
+  X,
+} from '@untitled-ui/icons-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import useMeasure from 'react-use-measure';
 
+import { USDCToUSD } from '@/app/wallet/USDCToUSDConversion';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,6 +29,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useWalletBalances } from '@/hooks';
 
 interface WalletSendDialogProps {
   initialStep?: number;
@@ -24,16 +39,68 @@ interface WalletSendDialogProps {
 /**
  * This dialog is triggered when a user wants to send from their Privy wallet. Currently only functional for USDCc
  */
-export const WalletSendDialog = ({
-  initialStep = 1,
-  trigger,
-}: WalletSendDialogProps) => {
-  const [step, setStep] = useState<number>(initialStep);
-  const [amount, setAmount] = useState<number>(0);
+export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
+  const [step, setStep] = useState<number>(1);
+  const [amount, setAmount] = useState<string>('');
   const [contentRef, { height: contentHeight }] = useMeasure();
+  const { data: rate } = USDCToUSD();
+  const convertedUSD = String(rate * Number(amount));
+  const [recipientWallet, setRecipientWallet] = useState<string>('');
+  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [provider, setProvider] = useState<EIP1193Provider | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { ready, wallets } = useWallets();
+
+  const { usdcBalance } = useWalletBalances(walletAddress);
+
+  const {
+    data: transactionData,
+    mutateAsync: sendTransactionMutation,
+    isPending: sendTransactionLoading,
+  } = useMutation({
+    mutationFn: async () => await sendTransaction,
+  });
+
+  async function sendTransaction() {
+    if (!provider) {
+      return;
+    }
+    // TODO: replace with proper recipient wallet address
+    // TODO: look into to params object (to, value, data, gasLimit, etc)
+    // https://docs.privy.io/guide/react/wallets/usage/requests#transactions
+    const transactionRequest = {
+      to: '0xTheRecipientAddress',
+      value: 10,
+    };
+    const transactionHash = await provider.request({
+      method: 'eth_sendTransaction',
+      params: [transactionRequest],
+    });
+  }
+
+  useEffect(() => {
+    async function initWalletProvider() {
+      const wallet = wallets[0];
+      const provider = await wallet.getEthereumProvider();
+      setProvider(provider);
+    }
+    // When Privy is done finding the user's wallets, we set walletAddress and provider pieces of state
+    if (ready) {
+      setWalletAddress(wallets[0].address);
+      initWalletProvider();
+    }
+  }, [wallets, ready]);
 
   return (
-    <Dialog onOpenChange={() => setStep(1)}>
+    <Dialog
+      onOpenChange={() => {
+        // Reset the form state whenever the modal is closed
+        setStep(1);
+        setAmount('');
+        setWalletAddress('');
+      }}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
@@ -49,12 +116,25 @@ export const WalletSendDialog = ({
           <div ref={contentRef}>
             {step === 1 && (
               <FadeIn>
-                <Step1 setStep={setStep} />
+                <Step1
+                  amount={amount}
+                  setStep={setStep}
+                  usdcBalance={usdcBalance}
+                  setAmount={setAmount}
+                  convertedUSD={convertedUSD}
+                  setRecipientWallet={setRecipientWallet}
+                />
               </FadeIn>
             )}
             {step === 2 && (
               <FadeIn>
-                <Step2 amount={amount} setStep={setStep} />
+                <Step2
+                  amount={amount}
+                  setStep={setStep}
+                  recipientWallet={recipientWallet}
+                  sendTransactionLoading={sendTransactionLoading}
+                  sendTransactionMutation={sendTransactionMutation}
+                />
               </FadeIn>
             )}
             {step === 3 && (
@@ -73,11 +153,23 @@ interface ScreenProps {
   setStep: Dispatch<SetStateAction<number>>;
 }
 
-// Initial screen to get amount to send USDC from Privy wallet
-const Step1 = ({ setStep }: ScreenProps) => {
-  const conversion = 0.0;
-  const available = 1.2345;
+interface Step1Props extends ScreenProps {
+  amount: string;
+  usdcBalance: string;
+  setAmount: Dispatch<SetStateAction<string>>;
+  convertedUSD: string;
+  setRecipientWallet: Dispatch<SetStateAction<string>>;
+}
 
+// Initial screen to get amount to send USDC from Privy wallet
+const Step1 = ({
+  setStep,
+  usdcBalance,
+  amount,
+  setAmount,
+  convertedUSD,
+  setRecipientWallet,
+}: Step1Props) => {
   return (
     <div className='flex flex-col gap-6 p-6'>
       <DialogHeader className='flex w-full flex-row justify-between'>
@@ -95,9 +187,14 @@ const Step1 = ({ setStep }: ScreenProps) => {
             <Input
               placeholder='0.0'
               className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
+              value={amount}
               type='number'
+              onChange={(e) => setAmount(e.target.value)}
             />
-            <Button className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'>
+            <Button
+              className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
+              onClick={() => setAmount(usdcBalance)}
+            >
               MAX
             </Button>
             <span className='absolute right-3 top-[14px] text-base font-semibold text-[#D0D5DD]'>
@@ -106,17 +203,19 @@ const Step1 = ({ setStep }: ScreenProps) => {
           </div>
           <div className='flex justify-between'>
             <Label className='text-xs font-semibold text-[#667085]'>
-              ~ {conversion} USD
+              ~ {convertedUSD} USD
             </Label>
             <Label className='flex gap-1 text-xs font-semibold text-[#667085]'>
               <span className='font-normal'>Available</span>
-              <span className='font-semibold text-[#344054]'>{available}</span>
+              <span className='font-semibold text-[#344054]'>
+                {usdcBalance} USDC
+              </span>
             </Label>
           </div>
         </div>
         <div className='flex flex-col gap-[6px]'>
           <Label className='text-sm font-normal text-[#344054]'>Send to</Label>
-          <Input />
+          <Input onChange={(e) => setRecipientWallet(e.target.value)} />
           <Label className='text-sm font-normal text-[#667085]'>
             The account ID must be valid such as.near or contain exactly 64
             characters
@@ -134,12 +233,25 @@ const Step1 = ({ setStep }: ScreenProps) => {
 };
 
 interface Step2Props extends ScreenProps {
-  amount?: number;
-  destination?: string;
+  amount: string;
+  recipientWallet: string;
+  sendTransactionMutation: UseMutateAsyncFunction<
+    () => Promise<void>,
+    Error,
+    void,
+    unknown
+  >;
+  sendTransactionLoading: boolean;
 }
 
 // Confirmation Screen
-const Step2 = ({ amount, destination, setStep }: Step2Props) => {
+const Step2 = ({
+  amount,
+  recipientWallet,
+  setStep,
+  sendTransactionLoading,
+  sendTransactionMutation,
+}: Step2Props) => {
   return (
     <div className='flex flex-col gap-6 p-6'>
       <DialogHeader className='flex w-full flex-row justify-between'>
@@ -163,7 +275,7 @@ const Step2 = ({ amount, destination, setStep }: Step2Props) => {
           <Image src='/svg/logo.svg' height={48} width={48} alt='Sorbet logo' />
           <div className='flex flex-col justify-between'>
             <span className='text-sm font-medium text-[#344054]'>Sorbet</span>
-            <span className='text-sorbet text-lg'>{destination}test</span>
+            <span className='text-sorbet text-lg'>{recipientWallet}</span>
           </div>
         </div>
       </div>
@@ -171,7 +283,11 @@ const Step2 = ({ amount, destination, setStep }: Step2Props) => {
         className='bg-sorbet border-sorbet-border mt-4 w-full border text-base'
         onClick={() => setStep(3)}
       >
-        Send
+        {sendTransactionLoading ? (
+          <Loading02 className='animate-spin' />
+        ) : (
+          'Send'
+        )}
       </Button>
     </div>
   );
@@ -183,6 +299,7 @@ interface Step3Props extends ScreenProps {
 
 // Results screen either success or failure
 const Step3 = ({
+  // TODO: Update this with the proper transactionId from the sendTransaction call
   transactionId = '23sdbdf824b3b383b3c9AS24534BSUDsadasd',
 }: Step3Props) => {
   return (

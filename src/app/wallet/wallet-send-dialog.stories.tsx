@@ -8,9 +8,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  args: {
-    isOpen: true,
-  },
 } satisfies Meta<typeof WalletSendDialog>;
 
 export default meta;
