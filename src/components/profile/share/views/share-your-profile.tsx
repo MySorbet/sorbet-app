@@ -1,6 +1,7 @@
 import { Plus, Send01, Share01 } from '@untitled-ui/icons-react';
 
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 import { Body, Header, Option, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
@@ -36,15 +37,17 @@ export const ShareYourProfile = ({
             navigate={() => setActive('ShareOnSocials')}
           />
         </div>
-        <Button
-          className='m-0 border-none bg-transparent p-0 hover:bg-transparent'
-          onClick={handleUrlToClipboard}
+        <div
+          className={cn(
+            buttonVariants({ variant: 'ghost', size: 'default' }),
+            'm-0 border-none bg-transparent p-0 hover:bg-transparent'
+          )}
         >
           <ShareLink
             username={username}
             handleUrlToClipboard={handleUrlToClipboard}
           />
-        </Button>
+        </div>
       </Body>
     </>
   );

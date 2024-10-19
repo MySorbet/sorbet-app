@@ -1,30 +1,54 @@
-import { useQuery } from '@tanstack/react-query';
+import QRCodeStyling, { Options } from 'qr-code-styling';
+import { useEffect, useRef, useState } from 'react';
 
+/** Generates QR code as an SVG */
 export const useGenerateQRCode = (url: string) => {
-  const svgEndpoint = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${url}&format=svg`;
-  const pngEndpoint = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${url}&format=png`;
+  const qrCodeRef = useRef<HTMLDivElement>(document.createElement('div'));
+  const [isLoadingQRCode, setIsLoadingQRCode] = useState(true);
 
-  const { data: svgUrl, isPending: isSvgURLPending } = useQuery({
-    queryKey: ['svg-qr-code'],
-    queryFn: async () => {
-      const response = await fetch(svgEndpoint);
-      const blob = await response.blob();
-      return URL.createObjectURL(blob);
+  const qrOptions: Options = {
+    type: 'svg',
+    width: 300,
+    height: 300,
+    margin: 0,
+    data: url,
+    qrOptions: { typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' },
+    imageOptions: { hideBackgroundDots: false, imageSize: 0.4, margin: 0 },
+    dotsOptions: {
+      type: 'square',
+      color: '#6a1a4c',
+      gradient: {
+        type: 'radial',
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: '#d3ec30' },
+          { offset: 1, color: '#573df5' },
+        ],
+      },
     },
-  });
+    backgroundOptions: { color: '#f9f7ff' },
+    image: '/svg/logo.svg',
+    cornersSquareOptions: {
+      type: 'extra-rounded',
+      color: '#573df5',
+      gradient: undefined,
+    },
+    cornersDotOptions: { type: 'square', color: '#d3ec30' },
+  };
 
-  const { data: pngUrl, isPending: isPngURLPending } = useQuery({
-    queryKey: ['png-qr-code'],
-    queryFn: async () => {
-      const response = await fetch(pngEndpoint);
-      const blob = await response.blob();
-      return URL.createObjectURL(blob);
-    },
-  });
+  const qrCode = new QRCodeStyling(qrOptions);
+
+  useEffect(() => {
+    if (qrCodeRef.current && qrCode) {
+      qrCodeRef.current.innerHTML = '';
+      qrCode.append(qrCodeRef.current);
+      setIsLoadingQRCode(false);
+    }
+  }, []);
 
   return {
-    svgURL: svgUrl,
-    pngURL: pngUrl,
-    isPending: isSvgURLPending || isPngURLPending,
+    qrCodeRef,
+    qrCode,
+    isLoadingQRCode,
   };
 };
