@@ -259,27 +259,33 @@ export const WalletContainer = () => {
               </div>
             </Link>
           </div>
-          <TransactionsTable
-            isLoading={loading}
-            minimalMode
-            transactions={
-              !transactions.transactions
-                ? []
-                : transactions.transactions.map((transaction: Transaction) => ({
-                    type:
-                      transaction.sender === walletAddress
-                        ? 'Sent'
-                        : 'Received',
-                    account:
-                      transaction.sender === walletAddress
-                        ? transaction.receiver
-                        : transaction.sender,
-                    date: transaction.timestamp,
-                    amount: transaction.value,
-                    hash: transaction.hash,
-                  }))
-            }
-          />
+          {walletAddress && (
+            <TransactionsTable
+              isLoading={loading}
+              minimalMode
+              transactions={
+                !transactions.transactions
+                  ? []
+                  : transactions.transactions.map(
+                      (transaction: Transaction) => ({
+                        type:
+                          transaction.sender.toLowerCase() ===
+                          walletAddress.toLowerCase()
+                            ? 'Sent'
+                            : 'Received',
+                        account:
+                          transaction.sender.toLowerCase() ===
+                          walletAddress.toLowerCase()
+                            ? transaction.receiver
+                            : transaction.sender,
+                        date: transaction.timestamp,
+                        amount: transaction.value,
+                        hash: transaction.hash,
+                      })
+                    )
+              }
+            />
+          )}
         </div>
       </div>
     </Authenticated>
