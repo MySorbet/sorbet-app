@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { EIP1193Provider, useWallets } from '@privy-io/react-auth';
 import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
 import {
@@ -7,7 +8,6 @@ import {
   Loading02,
   X,
 } from '@untitled-ui/icons-react';
-import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -17,7 +17,14 @@ import {
   useEffect,
   useState,
 } from 'react';
+import {
+  FieldErrors,
+  useForm,
+  UseFormReturn,
+  useFormState,
+} from 'react-hook-form';
 import useMeasure from 'react-use-measure';
+import { z } from 'zod';
 
 import { USDCToUSD } from '@/app/wallet/USDCToUSDConversion';
 import { Button } from '@/components/ui/button';
@@ -29,40 +36,68 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useWalletBalances } from '@/hooks';
 
 interface WalletSendDialogProps {
-  initialStep?: number;
   trigger: ReactNode;
 }
+
+type FormSchema = { amount: string; recipientWalletAddress: string };
 
 /**
  * This dialog is triggered when a user wants to send from their Privy wallet. Currently only functional for USDCc
  */
 export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
-  const [amount, setAmount] = useState<string>('');
   const [contentRef, { height: contentHeight }] = useMeasure();
-  const { data: rate } = USDCToUSD();
-  const convertedUSD = String(rate * Number(amount));
-  const [recipientWallet, setRecipientWallet] = useState<string>('');
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [provider, setProvider] = useState<EIP1193Provider | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const { ready, wallets } = useWallets();
 
   const { usdcBalance } = useWalletBalances(walletAddress);
+  const formSchema = z.object({
+    amount: z
+      .string()
+      .min(1, { message: 'An amount must be entered' })
+      .refine((amount) => isAmountWithinBalance(amount, usdcBalance), {
+        message: 'Amount entered exceeds available balance',
+      }),
+    recipientWalletAddress: z.string().max(42),
+  });
+
+  /** Checks if a user types in a balance that exceeds the amount available */
+  const isAmountWithinBalance = (amount: string, amountAvailable: string) => {
+    if (Number(amount) > Number(amountAvailable)) return false;
+    return true;
+  };
+
+  type FormSchema = z.infer<typeof formSchema>;
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    mode: 'all',
+  });
+
+  const { errors, isValid } = useFormState({ control: form.control });
+
+  const amount = form.watch('amount');
+  const recipientWalletAddress = form.watch('recipientWalletAddress');
+
+  const { data: rate } = USDCToUSD();
+  const convertedUSD = String(rate * Number(amount));
 
   // Perhaps we only want to run this fetch request once...
   const {
-    data: transactionData,
+    data: transactionHash,
     mutateAsync: sendTransactionMutation,
     isPending: sendTransactionLoading,
   } = useMutation({
-    mutationFn: async () => await sendTransaction,
+    mutationFn: async () => await sendTransaction(),
+    // onError: () => {}, // TODO: handle whenever the transaction fails
   });
 
   async function sendTransaction() {
@@ -76,7 +111,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
       to: '0xTheRecipientAddress',
       value: 10,
     };
-    const transactionHash = await provider.request({
+    return await provider.request({
       method: 'eth_sendTransaction',
       params: [transactionRequest],
     });
@@ -100,8 +135,8 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
       onOpenChange={() => {
         // Reset the form state whenever the modal is closed
         setStep(1);
-        setAmount('');
-        setWalletAddress('');
+        form.clearErrors();
+        form.reset();
       }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -112,7 +147,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
         <motion.div
           // TODO: address this hacky solution for the first view. For some reason, the height is not being calculated correctly when the dialog is opened.
           animate={{
-            height: step === 1 ? '424px' : contentHeight,
+            height: step === 1 ? '400px' : contentHeight,
           }}
           className='overflow-hidden'
         >
@@ -120,12 +155,12 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
             {step === 1 && (
               <FadeIn>
                 <Step1
-                  amount={amount}
                   setStep={setStep}
                   usdcBalance={usdcBalance}
-                  setAmount={setAmount}
                   convertedUSD={convertedUSD}
-                  setRecipientWallet={setRecipientWallet}
+                  form={form}
+                  isValid={isValid}
+                  errors={errors}
                 />
               </FadeIn>
             )}
@@ -134,7 +169,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
                 <Step2
                   amount={amount}
                   setStep={setStep}
-                  recipientWallet={recipientWallet}
+                  recipientWalletAddress={recipientWalletAddress}
                   sendTransactionLoading={sendTransactionLoading}
                   sendTransactionMutation={sendTransactionMutation}
                 />
@@ -142,7 +177,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
             )}
             {step === 3 && (
               <FadeIn>
-                <Step3 setStep={setStep} />
+                <Step3 setStep={setStep} transactionHash={transactionHash} />
               </FadeIn>
             )}
           </div>
@@ -157,22 +192,28 @@ interface ScreenProps {
 }
 
 interface Step1Props extends ScreenProps {
-  amount: string;
   usdcBalance: string;
-  setAmount: Dispatch<SetStateAction<string>>;
   convertedUSD: string;
-  setRecipientWallet: Dispatch<SetStateAction<string>>;
+  form: UseFormReturn<FormSchema>;
+  isValid: boolean;
+  errors: FieldErrors<FormSchema>;
 }
 
-// Initial screen to get amount to send USDC from Privy wallet
+/**
+ * Initial screen to get amount to send USDC from Privy wallet
+ */
 const Step1 = ({
   setStep,
   usdcBalance,
-  amount,
-  setAmount,
   convertedUSD,
-  setRecipientWallet,
+  form,
+  isValid,
+  errors,
 }: Step1Props) => {
+  const handleSubmit = () => {
+    setStep(2);
+  };
+
   return (
     <div className='flex flex-col gap-6 p-6'>
       <DialogHeader className='flex w-full flex-row justify-between'>
@@ -183,63 +224,99 @@ const Step1 = ({
           <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
         </DialogClose>
       </DialogHeader>
-      <div className='flex flex-col gap-6'>
-        <div className='flex flex-col gap-[6px]'>
-          <Label className='text-sm font-normal text-[#344054]'>Amount</Label>
-          <div className='relative'>
-            <Input
-              placeholder='0.0'
-              className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
-              value={amount}
-              type='number'
-              onChange={(e) => setAmount(e.target.value)}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <div className='flex flex-col gap-6'>
+            <FormField
+              control={form.control}
+              name='amount'
+              render={({ field }) => (
+                <div className='flex flex-col gap-[6px]'>
+                  <Label className='text-sm font-normal text-[#344054]'>
+                    Amount
+                  </Label>
+                  <div className='relative'>
+                    <Input
+                      {...field}
+                      placeholder='0.0'
+                      className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
+                      type='number'
+                    />
+                    <Button
+                      className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
+                      onClick={() => form.setValue('amount', usdcBalance)}
+                    >
+                      MAX
+                    </Button>
+                    <span className='absolute right-3 top-[14px] text-base font-semibold text-[#D0D5DD]'>
+                      USDC
+                    </span>
+                  </div>
+                  <div className='flex justify-between'>
+                    {errors.amount ? (
+                      <Label className='animate-in slide-in-from-top-1 fade-in-0 text-xs font-semibold text-red-500'>
+                        {errors.amount.message}
+                      </Label>
+                    ) : (
+                      <Label className='text-xs font-semibold text-[#667085]'>
+                        ~ {convertedUSD} USD
+                      </Label>
+                    )}
+                    <Label className='flex gap-1 text-xs font-semibold text-[#667085]'>
+                      <span className='font-normal'>Available</span>
+                      <span className='font-semibold text-[#344054]'>
+                        {usdcBalance} USDC
+                      </span>
+                    </Label>
+                  </div>
+                </div>
+              )}
             />
-            <Button
-              className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
-              onClick={() => setAmount(usdcBalance)}
-            >
-              MAX
-            </Button>
-            <span className='absolute right-3 top-[14px] text-base font-semibold text-[#D0D5DD]'>
-              USDC
-            </span>
+
+            <FormField
+              control={form.control}
+              name='recipientWalletAddress'
+              render={({ field }) => (
+                <div className='flex flex-col gap-[6px]'>
+                  <Label className='text-sm font-normal text-[#344054]'>
+                    Send to
+                  </Label>
+                  <Input
+                    {...field}
+                    type='text'
+                    placeholder='0xTheRecipientAddress'
+                    className={
+                      errors.recipientWalletAddress &&
+                      'border border-red-500 focus-visible:ring-red-500'
+                    }
+                  />
+
+                  <Label className='text-sm font-normal text-[#667085]'>
+                    {/* // TODO: Update this label text with appropriate text */}
+                    Replace this label with updated text (Was previously
+                    designed for NEAR chain)
+                  </Label>
+                </div>
+              )}
+            />
           </div>
-          <div className='flex justify-between'>
-            <Label className='text-xs font-semibold text-[#667085]'>
-              ~ {convertedUSD} USD
-            </Label>
-            <Label className='flex gap-1 text-xs font-semibold text-[#667085]'>
-              <span className='font-normal'>Available</span>
-              <span className='font-semibold text-[#344054]'>
-                {usdcBalance} USDC
-              </span>
-            </Label>
-          </div>
-        </div>
-        <div className='flex flex-col gap-[6px]'>
-          <Label className='text-sm font-normal text-[#344054]'>Send to</Label>
-          <Input onChange={(e) => setRecipientWallet(e.target.value)} />
-          <Label className='text-sm font-normal text-[#667085]'>
-            The account ID must be valid such as.near or contain exactly 64
-            characters
-          </Label>
-        </div>
-      </div>
-      <Button
-        className='bg-sorbet border-sorbet-border mt-4 w-full border'
-        onClick={() => setStep(2)}
-        // TODO: Add disabled condition for walletId. Just need to confirm w/ Rami what it should look like
-        disabled={Number(amount) <= 0}
-      >
-        Continue
-      </Button>
+          <Button
+            className='bg-sorbet border-sorbet-border mt-4 w-full border'
+            type='submit'
+            // TODO: Add disabled condition for walletId. Just need to confirm w/ Rami what it should look like
+            disabled={!isValid}
+          >
+            Continue
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
 
 interface Step2Props extends ScreenProps {
   amount: string;
-  recipientWallet: string;
+  recipientWalletAddress: string;
   sendTransactionMutation: UseMutateAsyncFunction<
     () => Promise<void>,
     Error,
@@ -249,10 +326,12 @@ interface Step2Props extends ScreenProps {
   sendTransactionLoading: boolean;
 }
 
-// Confirmation Screen
+/**
+ * Confirmation screen with option to go back
+ */
 const Step2 = ({
   amount,
-  recipientWallet,
+  recipientWalletAddress,
   setStep,
   sendTransactionLoading,
   sendTransactionMutation,
@@ -276,25 +355,29 @@ const Step2 = ({
           </div>
         </div>
         <span className='text-sm font-medium text-[#344054]'>To</span>
-        <div className='flex w-full items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] py-6'>
+        <div className='flex w-full items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] px-4 py-6'>
           <Image src='/svg/logo.svg' height={48} width={48} alt='Sorbet logo' />
-          <div className='flex flex-col justify-between'>
+          <div className='flex max-w-[calc(100%-58px)] flex-col justify-between'>
             <span className='text-sm font-medium text-[#344054]'>Sorbet</span>
-            <span className='text-sorbet text-lg'>{recipientWallet}</span>
+            <p className='text-sorbet w-full truncate text-lg'>
+              {recipientWalletAddress}
+            </p>
           </div>
         </div>
       </div>
       <div className='mt-4 flex gap-3'>
         <Button
           onClick={() => setStep(1)}
-          className='flex items-center gap-[6px] border border-[#D0D5DD] bg-white text-[#344054]'
+          className='group flex items-center gap-[6px] border border-[#D0D5DD] bg-white text-[#344054] hover:bg-[#FAFAFA]'
         >
-          <ArrowNarrowLeft className='size-3 text-[#344054]' />
+          <ArrowNarrowLeft className='size-3 text-[#344054] transition ease-out group-hover:translate-x-[-1px]' />
           Go back
         </Button>
         <Button
           className='bg-sorbet border-sorbet-border w-full border text-base'
-          onClick={() => setStep(3)}
+          onClick={() => {
+            sendTransactionMutation();
+          }}
         >
           {sendTransactionLoading ? (
             <Loading02 className='animate-spin' />
@@ -308,13 +391,15 @@ const Step2 = ({
 };
 
 interface Step3Props extends ScreenProps {
-  transactionId?: string;
+  transactionHash: string | undefined;
 }
 
-// Results screen either success or failure
+/**
+ * Final screen showing success and a link to basescan for transaction hash
+ */
 const Step3 = ({
   // TODO: Update this with the proper transactionId from the sendTransaction call
-  transactionId = '23sdbdf824b3b383b3c9AS24534BSUDsadasd',
+  transactionHash,
 }: Step3Props) => {
   return (
     <div className='flex flex-col gap-6 p-6'>
@@ -329,8 +414,14 @@ const Step3 = ({
           Transaction ID
         </span>
         {/* //TODO: Have this link to the transaction hash on basescan (all we need to do is redirect the href link with the proper transaction hash) */}
-        <a className='hover:decoration-sorbet flex flex-row items-center gap-1 hover:cursor-pointer hover:underline'>
-          <span className='text-sorbet truncate text-sm'>{transactionId}</span>
+        <a
+          className='hover:decoration-sorbet flex flex-row items-center gap-1 hover:cursor-pointer hover:underline'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          <span className='text-sorbet truncate text-sm'>
+            {transactionHash}
+          </span>
           <LinkExternal02 className='size-4 text-[#595B5A]' />
         </a>
       </div>

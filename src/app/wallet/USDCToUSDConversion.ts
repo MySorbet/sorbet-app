@@ -13,7 +13,7 @@ export const USDCToUSD = () => {
         return rate;
       } catch (error: unknown) {
         console.error('Error fetching USDC to USD conversion rate:', error);
-        throw error;
+        return 1;
       }
     },
   });
