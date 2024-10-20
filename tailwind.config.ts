@@ -80,6 +80,7 @@ const config = {
         sorbet: {
           DEFAULT: '#573DF5',
           foreground: '#573DF5',
+          border: '#7F56D9',
         },
         textPlaceholder: {
           DEFAULT: '#667085',
