@@ -135,7 +135,6 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
       onOpenChange={() => {
         // Reset the form state whenever the modal is closed
         setStep(1);
-        form.clearErrors();
         form.reset();
       }}
     >
