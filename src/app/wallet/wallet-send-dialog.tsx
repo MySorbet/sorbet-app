@@ -42,6 +42,7 @@ import { Label } from '@/components/ui/label';
 import { useWalletBalances } from '@/hooks';
 
 interface WalletSendDialogProps {
+  /** The element that triggers the modal to open */
   trigger: ReactNode;
 }
 
@@ -66,16 +67,20 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
       .refine((amount) => isAmountWithinBalance(amount, usdcBalance), {
         message: 'Amount entered exceeds available balance',
       }),
-    recipientWalletAddress: z.string().max(42),
+    // No message here bc there are issues w the form animation height change on the first screen
+    // The label should describe what the input should be (that was the design for NEAR wallet)
+    // On input error, there is a red ring and border that shows up
+    recipientWalletAddress: z.string().max(42), 
   });
 
-  /** Checks if a user types in a balance that exceeds the amount available */
+  /** 
+   * function that checks if a user types in a balance that exceeds the amount available.
+   * Used in zod schema declaration.
+   */
   const isAmountWithinBalance = (amount: string, amountAvailable: string) => {
     if (Number(amount) > Number(amountAvailable)) return false;
     return true;
   };
-
-  type FormSchema = z.infer<typeof formSchema>;
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -100,6 +105,9 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
     // onError: () => {}, // TODO: handle whenever the transaction fails
   });
 
+  /**
+   * The function to request the transaction from the Privy wallet
+   */
   async function sendTransaction() {
     if (!provider) {
       return;
@@ -117,6 +125,10 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
     });
   }
 
+  /**
+   * Initializes provider from Privy. Need to clarify which wallet we want to use if a user has multiple wallets.
+   * Privy will return the most recently used wallet as the first item in the 'wallets' array
+   */
   useEffect(() => {
     async function initWalletProvider() {
       const wallet = wallets[0];
@@ -390,6 +402,7 @@ const Step2 = ({
 };
 
 interface Step3Props extends ScreenProps {
+  /** Transaction hash returned from the sendTransaction function via RQ mutation hook */
   transactionHash: string | undefined;
 }
 

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+/** RQ hook to fetch the exchange rate of USDC to USD via CoinGecko */
 export const USDCToUSD = () => {
   return useQuery({
     queryKey: ['USDCToUSDConversionRate'],
