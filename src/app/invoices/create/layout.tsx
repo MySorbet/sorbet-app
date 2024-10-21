@@ -1,7 +1,9 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import Authenticated from '@/app/authenticated';
-import { Header } from '@/components/header';
+import { CreateInvoicePageHeader } from '@/app/invoices/components/create/create-invoice-page-header';
 
 import { InvoiceFormProvider } from '../components/create/invoice-form-context';
 
@@ -12,10 +14,13 @@ export default function CreateInvoiceLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   return (
     <Authenticated>
-      <Header />
-      <InvoiceFormProvider>{children}</InvoiceFormProvider>
+      <main className='flex size-full flex-col'>
+        <CreateInvoicePageHeader onClose={() => router.push('/invoices')} />
+        <InvoiceFormProvider>{children}</InvoiceFormProvider>
+      </main>
     </Authenticated>
   );
 }
