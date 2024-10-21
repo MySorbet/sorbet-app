@@ -40,6 +40,7 @@ import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useWalletBalances } from '@/hooks';
+import { ethers } from 'ethers';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -70,15 +71,32 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
     // No message here bc there are issues w the form animation height change on the first screen
     // The label should describe what the input should be (that was the design for NEAR wallet)
     // On input error, there is a red ring and border that shows up
-    recipientWalletAddress: z.string().max(42), 
+    recipientWalletAddress: z
+      .string()
+      .max(42)
+      .refine((walletAddress) => isValidETHAddress(walletAddress)),
   });
 
-  /** 
+  /**
    * function that checks if a user types in a balance that exceeds the amount available.
    * Used in zod schema declaration.
    */
   const isAmountWithinBalance = (amount: string, amountAvailable: string) => {
     if (Number(amount) > Number(amountAvailable)) return false;
+    return true;
+  };
+
+  /**
+   * function that checks if an inputted wallet address is a valid ETH address.
+   * Used in zod schema declaration.
+   */
+  const isValidETHAddress = (address: string) => {
+    try {
+      ethers.getAddress(address);
+    } catch (error: unknown) {
+      console.error(error);
+      return false;
+    }
     return true;
   };
 
@@ -93,7 +111,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
   const recipientWalletAddress = form.watch('recipientWalletAddress');
 
   const { data: rate } = USDCToUSD();
-  const convertedUSD = String(rate * Number(amount));
+  const convertedUSD = String(rate * Number(amount || 0));
 
   // Perhaps we only want to run this fetch request once...
   const {
@@ -116,7 +134,8 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
     // TODO: look into to params object (to, value, data, gasLimit, etc)
     // https://docs.privy.io/guide/react/wallets/usage/requests#transactions
     const transactionRequest = {
-      to: '0xTheRecipientAddress',
+      to: recipientWalletAddress,
+      from: walletAddress,
       value: 10,
     };
     return await provider.request({
@@ -393,7 +412,7 @@ const Step2 = ({
           {sendTransactionLoading ? (
             <Loading02 className='animate-spin' />
           ) : (
-            'Send'
+            'Confirm send'
           )}
         </Button>
       </div>
