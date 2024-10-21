@@ -2,6 +2,7 @@
 
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Download01 } from '@untitled-ui/icons-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,7 @@ import {
 import { cn } from '@/lib/utils';
 
 import { CopyButton } from './copy-button';
+import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { Invoice } from './utils';
 import { formatCurrency, formatDate } from './utils';
@@ -43,6 +45,8 @@ export default function InvoiceSheet({
   onCancel?: () => void;
   onDownload?: () => void;
 }) {
+  const [cancelDrawerOpen, setCancelDrawerOpen] = useState(false);
+
   if (!invoice) return null;
 
   const invoiceLink = `${window.location.origin}/invoices/${invoice.id}`;
@@ -52,7 +56,13 @@ export default function InvoiceSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={open}
+      onOpenChange={(open) => {
+        if (!open) setCancelDrawerOpen(false);
+        setOpen(open);
+      }}
+    >
       <SheetContent className='flex h-full w-full flex-col justify-between gap-12 p-6'>
         <SheetHeader>
           <SheetTitle className='text-sm font-medium'>
@@ -127,7 +137,7 @@ export default function InvoiceSheet({
           <Button
             variant='outline'
             className='w-full'
-            onClick={onCancel}
+            onClick={() => setCancelDrawerOpen(true)}
             disabled={invoice.status === 'cancelled'}
           >
             Cancel Invoice
@@ -141,6 +151,13 @@ export default function InvoiceSheet({
             Edit Invoice
           </Button>
         </SheetFooter>
+
+        {/* Confirmation drawer for cancelling an invoice */}
+        <InvoiceSheetCancelDrawer
+          open={cancelDrawerOpen}
+          setOpen={setCancelDrawerOpen}
+          onCancel={onCancel}
+        />
       </SheetContent>
     </Sheet>
   );
