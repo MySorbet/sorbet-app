@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 import { Spinner } from '@/components/common';
 import { Button } from '@/components/ui/button';
 
+import { InvoiceDocument } from '../invoice-document';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import {
   CreateInvoiceHeader,
@@ -10,9 +11,8 @@ import {
 } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { InvoiceFormData } from './invoice-form-context';
-import { InvoiceDocument } from '../invoice-document';
 
-type InvoiceReview = {
+type InvoiceReviewProps = {
   onBack: () => void;
   onCreate: () => void;
   invoice: InvoiceFormData;
@@ -24,7 +24,7 @@ export const InvoiceReview = ({
   onCreate,
   invoice,
   isLoading,
-}: InvoiceReview) => {
+}: InvoiceReviewProps) => {
   return (
     <CreateInvoiceShell>
       <CreateInvoiceHeader>
