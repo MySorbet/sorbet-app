@@ -24,7 +24,14 @@ export const Header = () => {
     <div className='container mx-auto flex w-full justify-between bg-[#F2F3F7] py-4'>
       <div className='flex gap-6'>
         <Link href='/'>
-          <Image src='/svg/logo.svg' alt='logo' width={44} height={44} />
+          <Image
+            src='/svg/logo.svg'
+            width={44}
+            height={44}
+            className='size-11'
+            alt='Sorbet logo'
+            priority
+          />
         </Link>
       </div>
       {user && (
