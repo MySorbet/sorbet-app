@@ -41,6 +41,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useWalletBalances } from '@/hooks';
 import { ethers } from 'ethers';
+import { useToast } from '@/components/ui/use-toast';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -59,6 +60,8 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
   const [provider, setProvider] = useState<EIP1193Provider | null>(null);
 
   const { ready, wallets } = useWallets();
+
+  const { toast } = useToast();
 
   const { usdcBalance } = useWalletBalances(walletAddress);
   const formSchema = z.object({
@@ -110,17 +113,23 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
   const amount = form.watch('amount');
   const recipientWalletAddress = form.watch('recipientWalletAddress');
 
+  // Perhaps we only want to run this fetch request once...
   const { data: rate } = USDCToUSD();
   const convertedUSD = String(rate * Number(amount || 0));
 
-  // Perhaps we only want to run this fetch request once...
   const {
     data: transactionHash,
     mutateAsync: sendTransactionMutation,
     isPending: sendTransactionLoading,
   } = useMutation({
     mutationFn: async () => await sendTransaction(),
-    // onError: () => {}, // TODO: handle whenever the transaction fails
+    onError: () => {
+      toast({
+        title: 'Transaction failed',
+        description: 'Failed to send USDC',
+        variant: 'destructive',
+      });
+    },
   });
 
   /**
