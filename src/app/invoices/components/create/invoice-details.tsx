@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 import { formatCurrency } from '../dashboard/utils';
 import { CreateInvoiceFooter } from './create-invoice-footer';
@@ -134,6 +135,9 @@ export const InvoiceDetails = ({
                 item={item}
                 hideDelete={index === 0}
                 hideLabel={index !== 0}
+                className={
+                  cn(index !== 0 && 'animate-in slide-in-from-top-3 fade-in-0') // Animate in all but the first item
+                }
                 onDelete={() => {
                   form.setValue(
                     'items',
@@ -203,6 +207,7 @@ const InvoiceItem = ({
   onChange,
   hideLabel,
   index,
+  className,
 }: {
   item: InvoiceItemData;
   hideDelete?: boolean;
@@ -210,9 +215,10 @@ const InvoiceItem = ({
   onDelete?: () => void;
   onChange?: (item: InvoiceItemData) => void;
   index: number;
+  className?: string;
 }) => {
   return (
-    <div className='animate-in slide-in-from-top-3 fade-in-0 flex flex-row justify-between gap-6'>
+    <div className={cn(className, 'flex flex-row justify-between gap-6')}>
       <div className='grid w-full max-w-sm items-center gap-1.5'>
         {!hideLabel && (
           <Label htmlFor='item' className='flex-1 text-sm font-medium'>
