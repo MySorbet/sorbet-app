@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 import { sampleInvoices } from '@/app/invoices/components/dashboard/sample-invoices';
-import { Invoice } from '@/app/invoices/components/dashboard/utils';
+import {
+  calculateTotalAmount,
+  Invoice,
+} from '@/app/invoices/components/dashboard/utils';
 
 import { InvoiceFormData } from '../app/invoices/components/create/invoice-form-context';
 import { env } from '../lib/env';
@@ -16,13 +19,15 @@ export const createInvoice = async (
   //   invoice
   // );
   // return res;
+  // TODO: This should be done on the backend probably
+  const totalAmount = calculateTotalAmount(invoice.items ?? []);
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a',
         ...invoice,
         status: 'open',
-        totalAmount: 0,
+        totalAmount,
       });
     }, 2000);
   });
