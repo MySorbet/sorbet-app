@@ -190,10 +190,11 @@ export const WalletSendDialog = ({
         hideDefaultCloseButton={true}
       >
         <motion.div
-          // TODO: address this hacky solution for the first view. For some reason, the height is not being calculated correctly when the dialog is opened.
-          animate={{
-            height: contentHeight,
-          }}
+          // TODO: Come up with a solution for animating the height changes. Still having issues with the first render not being calculated correctly by useMeasure.
+          // TODO: Tried passing an anonymous function instead of reference, still didn't work. Was thinking of potentially creating a piece of state (boolean) to represent if the modal was just opened,
+          // TODO: and then changing it on each action, but that is not clean and hard to maintain.
+          // * As it stands, the only two screens that would ever be rendered for the first time are Step1 and Step2
+          // * Step1 via clicking on Send button and Step2 when a user closes the Privy modal
           className='overflow-hidden'
         >
           <div ref={contentRef}>
