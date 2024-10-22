@@ -17466,11 +17466,11 @@ __metadata:
   linkType: hard
 
 "qr-code-styling@npm:^1.7.2":
-  version: 1.8.1
-  resolution: "qr-code-styling@npm:1.8.1"
+  version: 1.8.4
+  resolution: "qr-code-styling@npm:1.8.4"
   dependencies:
     qrcode-generator: "npm:^1.4.4"
-  checksum: 10c0/6330fe01980622a092ef13fa17b9da524e40be5bf8a66ddfe5873394293c628772fbf42941830f9e7c973fea08dee14f2781fe54c3ba9906204af698d1571733
+  checksum: 10c0/1656833f0ebc7000b4376e1bbe9e1133699b391589f7917eb3b28eeeb32ed45c143f25c4a8a9d2feeb8b0724f1717b41019e012972ac1df022d559f55c6a2947
   languageName: node
   linkType: hard
 
