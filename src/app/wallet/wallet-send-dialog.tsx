@@ -46,7 +46,7 @@ import { useWalletBalances } from '@/hooks';
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
   trigger: ReactNode;
-  onSend: () => Promise<`0x${string}` | undefined>;
+  sendUSDC: () => Promise<`0x${string}` | undefined>;
 }
 
 type FormSchema = { amount: string; recipientWalletAddress: string };
@@ -56,7 +56,7 @@ type FormSchema = { amount: string; recipientWalletAddress: string };
  */
 export const WalletSendDialog = ({
   trigger,
-  onSend,
+  sendUSDC,
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
   const [contentRef, { height: contentHeight }] = useMeasure();
@@ -126,7 +126,7 @@ export const WalletSendDialog = ({
     mutateAsync: sendTransactionMutation,
     isPending: sendTransactionLoading,
   } = useMutation({
-    mutationFn: async () => await onSend(),
+    mutationFn: async () => await sendUSDC(),
     onError: () => {
       toast({
         title: 'Transaction failed',

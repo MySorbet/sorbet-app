@@ -132,7 +132,7 @@ export const WalletContainer = () => {
           title: 'Transaction Successful',
           description: 'Funds withdrawn successfully ',
         });
-        
+
         return transactionHash
       }
     } catch (e) {
@@ -198,7 +198,7 @@ export const WalletContainer = () => {
               ethBalance={ethBalance}
               usdcBalance={usdcBalance}
               onTopUp={handleTopUp}
-              onSend={handleSendUSDC}
+              sendUSDC={handleSendUSDC}
             />
           </div>
           <div className='lg:w-4/12'>
