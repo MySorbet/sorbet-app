@@ -7,6 +7,7 @@ interface WalletBalanceProps {
   ethBalance: string;
   usdcBalance: string;
   onTopUp?: () => void;
+  onSend: () => Promise<`0x${string}` | undefined>
 }
 
 /**
@@ -17,6 +18,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   ethBalance,
   usdcBalance,
   onTopUp,
+  onSend,
 }) => {
   return (
     <div className='min-h-[100%] min-w-80 rounded-3xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
@@ -40,6 +42,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
             />
 
             <WalletSendDialog
+              onSend={onSend}
               trigger={<CircleButton icon={<Send size={26} />} label='Send' />}
             />
           </div>

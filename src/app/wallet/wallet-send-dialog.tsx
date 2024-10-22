@@ -8,6 +8,7 @@ import {
   Loading02,
   X,
 } from '@untitled-ui/icons-react';
+import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -39,13 +40,13 @@ import {
 import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useWalletBalances } from '@/hooks';
-import { ethers } from 'ethers';
 import { useToast } from '@/components/ui/use-toast';
+import { useWalletBalances } from '@/hooks';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
   trigger: ReactNode;
+  onSend: () => Promise<`0x${string}` | undefined>;
 }
 
 type FormSchema = { amount: string; recipientWalletAddress: string };
@@ -53,7 +54,10 @@ type FormSchema = { amount: string; recipientWalletAddress: string };
 /**
  * This dialog is triggered when a user wants to send from their Privy wallet. Currently only functional for USDCc
  */
-export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
+export const WalletSendDialog = ({
+  trigger,
+  onSend,
+}: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
   const [contentRef, { height: contentHeight }] = useMeasure();
   const [walletAddress, setWalletAddress] = useState<string>('');
@@ -122,7 +126,7 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
     mutateAsync: sendTransactionMutation,
     isPending: sendTransactionLoading,
   } = useMutation({
-    mutationFn: async () => await sendTransaction(),
+    mutationFn: async () => await onSend(),
     onError: () => {
       toast({
         title: 'Transaction failed',
@@ -131,27 +135,6 @@ export const WalletSendDialog = ({ trigger }: WalletSendDialogProps) => {
       });
     },
   });
-
-  /**
-   * The function to request the transaction from the Privy wallet
-   */
-  async function sendTransaction() {
-    if (!provider) {
-      return;
-    }
-    // TODO: replace with proper recipient wallet address
-    // TODO: look into to params object (to, value, data, gasLimit, etc)
-    // https://docs.privy.io/guide/react/wallets/usage/requests#transactions
-    const transactionRequest = {
-      to: recipientWalletAddress,
-      from: walletAddress,
-      value: 10,
-    };
-    return await provider.request({
-      method: 'eth_sendTransaction',
-      params: [transactionRequest],
-    });
-  }
 
   /**
    * Initializes provider from Privy. Need to clarify which wallet we want to use if a user has multiple wallets.
@@ -356,7 +339,7 @@ interface Step2Props extends ScreenProps {
   amount: string;
   recipientWalletAddress: string;
   sendTransactionMutation: UseMutateAsyncFunction<
-    () => Promise<void>,
+    `0x${string}` | undefined,
     Error,
     void,
     unknown
