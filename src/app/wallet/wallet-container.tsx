@@ -191,6 +191,7 @@ export const WalletContainer = () => {
               usdcBalance={usdcBalance}
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
+              isBalanceLoading={balanceLoading}
             />
           </div>
           <div className='lg:w-4/12'>

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EIP1193Provider, useWallets } from '@privy-io/react-auth';
+import { useWallets } from '@privy-io/react-auth';
 import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
 import {
   ArrowNarrowLeft,
@@ -11,13 +11,7 @@ import {
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   FieldErrors,
   useForm,
@@ -31,11 +25,9 @@ import { USDCToUSD } from '@/app/wallet/USDCToUSDConversion';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -51,6 +43,7 @@ interface WalletSendDialogProps {
   ) => Promise<`0x${string}` | undefined>;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  usdcBalance: string;
 }
 
 type FormSchema = { amount: string; recipientWalletAddress: string };
@@ -62,18 +55,17 @@ export const WalletSendDialog = ({
   sendUSDC,
   open,
   setOpen,
+  usdcBalance,
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
 
   const [contentRef, { height: contentHeight }] = useMeasure();
   const [walletAddress, setWalletAddress] = useState<string>('');
-  const [provider, setProvider] = useState<EIP1193Provider | null>(null);
 
   const { ready, wallets } = useWallets();
 
   const { toast } = useToast();
 
-  const { usdcBalance } = useWalletBalances(walletAddress);
   const formSchema = z.object({
     amount: z
       .string()
@@ -165,15 +157,9 @@ export const WalletSendDialog = ({
    * Privy will return the most recently used wallet as the first item in the 'wallets' array
    */
   useEffect(() => {
-    async function initWalletProvider() {
-      const wallet = wallets[0];
-      const provider = await wallet.getEthereumProvider();
-      setProvider(provider);
-    }
     // When Privy is done finding the user's wallets, we set walletAddress and provider pieces of state
     if (ready) {
       setWalletAddress(wallets[0].address);
-      initWalletProvider();
     }
   }, [wallets, ready]);
 
