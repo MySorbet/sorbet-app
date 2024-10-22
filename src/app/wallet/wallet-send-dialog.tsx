@@ -342,7 +342,6 @@ const Step1 = ({
           <Button
             className='bg-sorbet border-sorbet-border mt-4 w-full border'
             type='submit'
-            // TODO: Add disabled condition for walletId. Just need to confirm w/ Rami what it should look like
             disabled={!isValid}
           >
             Continue
