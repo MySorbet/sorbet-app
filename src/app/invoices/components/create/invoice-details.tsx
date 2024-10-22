@@ -20,7 +20,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-import { formatCurrency } from '../dashboard/utils';
+import { calculateTotalAmount, formatCurrency } from '../dashboard/utils';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import {
   CreateInvoiceHeader,
@@ -75,9 +75,7 @@ export const InvoiceDetails = ({
   });
 
   const items = form.watch('items');
-  const formattedTotal = formatCurrency(
-    items.reduce((acc, item) => acc + item.amount * item.quantity, 0)
-  );
+  const formattedTotal = formatCurrency(calculateTotalAmount(items ?? []));
 
   const router = useRouter();
   const handleSubmit = form.handleSubmit((data, event) => {

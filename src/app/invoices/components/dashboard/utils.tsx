@@ -1,3 +1,4 @@
+import { InvoiceItemData } from '../create/invoice-details';
 import { InvoiceFormData } from '../create/invoice-form-context';
 
 export const InvoiceStatuses = [
@@ -12,6 +13,10 @@ export type Invoice = InvoiceFormData & {
   status: InvoiceStatus;
   totalAmount: number;
   id: string;
+};
+
+export const calculateTotalAmount = (items: InvoiceItemData[]) => {
+  return items.reduce((acc, item) => acc + item.amount * item.quantity, 0);
 };
 
 export const formatCurrency = (amount?: number) => {

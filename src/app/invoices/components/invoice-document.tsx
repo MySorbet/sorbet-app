@@ -1,7 +1,11 @@
 import { forwardRef } from 'react';
 
 import { InvoiceFormData } from './create/invoice-form-context';
-import { formatDate } from './dashboard/utils';
+import {
+  calculateTotalAmount,
+  formatCurrency,
+  formatDate,
+} from './dashboard/utils';
 
 export const InvoiceDocument = forwardRef<
   HTMLDivElement,
@@ -72,7 +76,7 @@ export const InvoiceDocument = forwardRef<
               <td className='py-3 text-xs'>{item.name}</td>
               <td className='py-3 text-right text-xs'>{item.quantity}</td>
               <td className='py-3 text-right text-xs'>
-                ${item.amount.toFixed(2)}
+                {formatCurrency(item.amount)}
               </td>
             </tr>
           ))}
@@ -82,10 +86,7 @@ export const InvoiceDocument = forwardRef<
       <div className='mb-20 flex items-baseline justify-between'>
         <span className='mr-4 text-sm font-semibold'>Total</span>
         <span className='text-lg font-semibold'>
-          $
-          {invoice.items
-            ?.reduce((acc, item) => acc + item.amount, 0)
-            .toFixed(2)}
+          {formatCurrency(calculateTotalAmount(invoice.items ?? []))}
         </span>
       </div>
 
