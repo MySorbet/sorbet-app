@@ -2,12 +2,17 @@ import { Plus, Send, Wallet } from 'lucide-react';
 
 import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { Send01 } from '@untitled-ui/icons-react';
 
 interface WalletBalanceProps {
   ethBalance: string;
   usdcBalance: string;
   onTopUp?: () => void;
-  sendUSDC: () => Promise<`0x${string}` | undefined>
+  sendUSDC: (
+    amount: string,
+    recipientWalletAddress: string
+  ) => Promise<`0x${string}` | undefined>;
 }
 
 /**
@@ -20,6 +25,8 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   onTopUp,
   sendUSDC,
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <div className='min-h-[100%] min-w-80 rounded-3xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
       <div className='flex flex-col gap-1'>
@@ -40,10 +47,21 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
               label='Top up'
               onClick={onTopUp}
             />
-
-            <WalletSendDialog
+            <CircleButton
+              icon={<Send01 className='size-6' />}
+              label='Top up'
+              onClick={() => setOpen(true)}
+            />
+            {/* <WalletSendDialog
               sendUSDC={sendUSDC}
-              trigger={<CircleButton icon={<Send size={26} />} label='Send' />}
+              // trigger={<CircleButton icon={<Send size={26} />} label='Send' />}
+              open={open}
+              setOpen={setOpen}
+            /> */}
+            <WalletSendDialog
+              open={open}
+              setOpen={setOpen}
+              sendUSDC={sendUSDC}
             />
           </div>
         </div>

@@ -45,8 +45,12 @@ import { useWalletBalances } from '@/hooks';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
-  trigger: ReactNode;
-  sendUSDC: () => Promise<`0x${string}` | undefined>;
+  sendUSDC: (
+    amount: string,
+    recipientWalletAddress: string
+  ) => Promise<`0x${string}` | undefined>;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 type FormSchema = { amount: string; recipientWalletAddress: string };
@@ -55,10 +59,12 @@ type FormSchema = { amount: string; recipientWalletAddress: string };
  * This dialog is triggered when a user wants to send from their Privy wallet. Currently only functional for USDCc
  */
 export const WalletSendDialog = ({
-  trigger,
   sendUSDC,
+  open,
+  setOpen,
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
+
   const [contentRef, { height: contentHeight }] = useMeasure();
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [provider, setProvider] = useState<EIP1193Provider | null>(null);
@@ -126,13 +132,31 @@ export const WalletSendDialog = ({
     mutateAsync: sendTransactionMutation,
     isPending: sendTransactionLoading,
   } = useMutation({
-    mutationFn: async () => await sendUSDC(),
-    onError: () => {
+    mutationFn: async () => {
+      setOpen(false);
+      return await sendUSDC(amount, recipientWalletAddress);
+    },
+    onError: (error: unknown) => {
+      if (
+        error instanceof Error &&
+        'details' in error &&
+        typeof error.details === 'object' &&
+        error.details !== null &&
+        'message' in error.details &&
+        error.details.message === 'User Rejected Request'
+      ) {
+        setOpen(true);
+        return;
+      }
       toast({
         title: 'Transaction failed',
         description: 'Failed to send USDC',
         variant: 'destructive',
       });
+    },
+    onSuccess: () => {
+      setStep(3);
+      setOpen(true);
     },
   });
 
@@ -153,15 +177,14 @@ export const WalletSendDialog = ({
     }
   }, [wallets, ready]);
 
+  const close = () => {
+    setOpen(false);
+    form.reset();
+    setStep(1);
+  };
+
   return (
-    <Dialog
-      onOpenChange={() => {
-        // Reset the form state whenever the modal is closed
-        setStep(1);
-        form.reset();
-      }}
-    >
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+    <Dialog open={open}>
       <DialogContent
         className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
         hideDefaultCloseButton={true}
@@ -169,7 +192,7 @@ export const WalletSendDialog = ({
         <motion.div
           // TODO: address this hacky solution for the first view. For some reason, the height is not being calculated correctly when the dialog is opened.
           animate={{
-            height: step === 1 ? '400px' : contentHeight,
+            height: contentHeight,
           }}
           className='overflow-hidden'
         >
@@ -177,6 +200,7 @@ export const WalletSendDialog = ({
             {step === 1 && (
               <FadeIn>
                 <Step1
+                  close={close}
                   setStep={setStep}
                   usdcBalance={usdcBalance}
                   convertedUSD={convertedUSD}
@@ -189,6 +213,7 @@ export const WalletSendDialog = ({
             {step === 2 && (
               <FadeIn>
                 <Step2
+                  close={() => setOpen(false)}
                   amount={amount}
                   setStep={setStep}
                   recipientWalletAddress={recipientWalletAddress}
@@ -199,7 +224,11 @@ export const WalletSendDialog = ({
             )}
             {step === 3 && (
               <FadeIn>
-                <Step3 setStep={setStep} transactionHash={transactionHash} />
+                <Step3
+                  close={close}
+                  setStep={setStep}
+                  transactionHash={transactionHash}
+                />
               </FadeIn>
             )}
           </div>
@@ -211,6 +240,7 @@ export const WalletSendDialog = ({
 
 interface ScreenProps {
   setStep: Dispatch<SetStateAction<number>>;
+  close: () => void;
 }
 
 interface Step1Props extends ScreenProps {
@@ -225,6 +255,7 @@ interface Step1Props extends ScreenProps {
  * Initial screen to get amount to send USDC from Privy wallet
  */
 const Step1 = ({
+  close,
   setStep,
   usdcBalance,
   convertedUSD,
@@ -242,9 +273,12 @@ const Step1 = ({
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Send
         </DialogTitle>
-        <DialogClose className='group fixed right-7'>
+        <button
+          className='group m-0 bg-transparent p-0 hover:bg-transparent'
+          onClick={close}
+        >
           <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
-        </DialogClose>
+        </button>
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -266,7 +300,10 @@ const Step1 = ({
                     />
                     <Button
                       className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
-                      onClick={() => form.setValue('amount', usdcBalance)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        form.setValue('amount', usdcBalance);
+                      }}
                     >
                       MAX
                     </Button>
@@ -315,8 +352,7 @@ const Step1 = ({
 
                   <Label className='text-sm font-normal text-[#667085]'>
                     {/* // TODO: Update this label text with appropriate text */}
-                    Replace this label with updated text (Was previously
-                    designed for NEAR chain)
+                    Please add a valid Ethereum wallet address
                   </Label>
                 </div>
               )}
@@ -340,7 +376,7 @@ interface Step2Props extends ScreenProps {
   recipientWalletAddress: string;
   sendTransactionMutation: UseMutateAsyncFunction<
     `0x${string}` | undefined,
-    Error,
+    unknown,
     void,
     unknown
   >;
@@ -351,6 +387,7 @@ interface Step2Props extends ScreenProps {
  * Confirmation screen with option to go back
  */
 const Step2 = ({
+  close,
   amount,
   recipientWalletAddress,
   setStep,
@@ -363,9 +400,12 @@ const Step2 = ({
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Confirm Send
         </DialogTitle>
-        <DialogClose className='group fixed right-7'>
+        <button
+          className='group m-0 bg-transparent p-0 hover:bg-transparent'
+          onClick={close}
+        >
           <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
-        </DialogClose>
+        </button>
       </DialogHeader>
       <div className='flex flex-col items-center gap-6'>
         <div className='flex w-full flex-col items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] py-6'>
@@ -422,7 +462,13 @@ interface Step3Props extends ScreenProps {
 const Step3 = ({
   // TODO: Update this with the proper transactionId from the sendTransaction call
   transactionHash,
+  close,
 }: Step3Props) => {
+  const basescanHref =
+    process.env.NODE_ENV === 'development'
+      ? `https://sepolia.basescan.org/tx/${transactionHash}`
+      : `https://basescan.org/tx/${transactionHash}`;
+
   return (
     <div className='flex flex-col gap-6 p-6'>
       <div className='flex flex-col items-center justify-center gap-[10px] py-6'>
@@ -437,17 +483,21 @@ const Step3 = ({
         </span>
         {/* //TODO: Have this link to the transaction hash on basescan (all we need to do is redirect the href link with the proper transaction hash) */}
         <a
-          className='hover:decoration-sorbet flex flex-row items-center gap-1 hover:cursor-pointer hover:underline'
+          className='hover:decoration-sorbet flex max-w-[calc(100%-40px)] flex-row items-center gap-1 hover:cursor-pointer hover:underline'
           target='_blank'
           rel='noopener noreferrer'
+          href={basescanHref}
         >
           <span className='text-sorbet truncate text-sm'>
             {transactionHash}
           </span>
-          <LinkExternal02 className='size-4 text-[#595B5A]' />
+          <LinkExternal02 className='size-6 text-[#595B5A]' />
         </a>
       </div>
-      <Button className='bg-sorbet border-sorbet-border mt-4 w-full border'>
+      <Button
+        className='bg-sorbet border-sorbet-border mt-4 w-full border'
+        onClick={close}
+      >
         Done
       </Button>
     </div>
