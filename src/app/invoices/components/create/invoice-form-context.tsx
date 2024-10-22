@@ -1,20 +1,37 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createSerializer,
+  parseAsArrayOf,
+  parseAsIsoDateTime,
+  parseAsJson,
+  parseAsString,
+  useQueryStates,
+} from 'nuqs';
+import React, { createContext, useContext } from 'react';
 
 import { ClientDetailsFormSchema } from './client-details';
-import { InvoiceDetailsFormSchema } from './invoice-details';
+import { InvoiceDetailsFormSchema, InvoiceItemData } from './invoice-details';
 import { PaymentDetailsFormData } from './payment-details';
-import { useMount } from './useMount';
 
-export type InvoiceFormData = Partial<
+type WithNull<T> = {
+  [P in keyof T]: T[P] | null;
+};
+
+// TODO: Address null vs Partial b/c other components want to use undefined
+export type InvoiceFormData = WithNull<
   InvoiceDetailsFormSchema & ClientDetailsFormSchema & PaymentDetailsFormData
 >;
 
 type InvoiceFormContextType = {
   formData: InvoiceFormData;
-  setFormData: (data: InvoiceFormData) => void;
+  setClientDetails: (data: ClientDetailsFormSchema) => void;
+  setInvoiceDetails: (data: InvoiceDetailsFormSchema) => void;
+  setPaymentDetails: (data: PaymentDetailsFormData) => void;
+  serializeClientDetails: (data: ClientDetailsFormSchema) => string;
+  serializeInvoiceDetails: (data: InvoiceDetailsFormSchema) => string;
+  serializePaymentDetails: (data: PaymentDetailsFormData) => string;
+  serializeFormData: (data: InvoiceFormData) => string;
 };
 
 const InvoiceFormContext = createContext<InvoiceFormContextType | null>(null);
@@ -25,10 +42,65 @@ export const InvoiceFormProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [formData, setFormData] = useQueryState<InvoiceFormData>();
+  // Client Details
+  const clientDetailsQueryState = {
+    fromName: parseAsString,
+    fromEmail: parseAsString,
+    toName: parseAsString,
+    toEmail: parseAsString,
+  };
+  const [clientDetails, setClientDetails] = useQueryStates(
+    clientDetailsQueryState
+  );
+  const serializeClientDetails = createSerializer(clientDetailsQueryState);
+
+  // Invoice details
+  const invoiceDetailsQueryState = {
+    projectName: parseAsString,
+    invoiceNumber: parseAsString,
+    items: parseAsArrayOf<InvoiceItemData>(parseAsJson()),
+  };
+  const serializeInvoiceDetails = createSerializer(invoiceDetailsQueryState);
+  const [invoiceDetails, setInvoiceDetails] = useQueryStates(
+    invoiceDetailsQueryState
+  );
+
+  // Payment details
+  const paymentDetailsQueryState = {
+    issueDate: parseAsIsoDateTime,
+    dueDate: parseAsIsoDateTime,
+    memo: parseAsString,
+  };
+  const [paymentDetails, setPaymentDetails] = useQueryStates(
+    paymentDetailsQueryState
+  );
+  const serializePaymentDetails = createSerializer(paymentDetailsQueryState);
+
+  const serializeFormData = createSerializer({
+    ...clientDetailsQueryState,
+    ...invoiceDetailsQueryState,
+    ...paymentDetailsQueryState,
+  });
+
+  const formData = {
+    ...clientDetails,
+    ...invoiceDetails,
+    ...paymentDetails,
+  };
 
   return (
-    <InvoiceFormContext.Provider value={{ formData, setFormData }}>
+    <InvoiceFormContext.Provider
+      value={{
+        formData,
+        setClientDetails,
+        setInvoiceDetails,
+        setPaymentDetails,
+        serializeClientDetails,
+        serializeInvoiceDetails,
+        serializePaymentDetails,
+        serializeFormData,
+      }}
+    >
       {children}
     </InvoiceFormContext.Provider>
   );
@@ -44,54 +116,4 @@ export const useInvoiceFormContext = () => {
     throw new Error('useFormContext must be used within a FormContextProvider');
   }
   return context;
-};
-
-/**
- * Custom hook to derive state from query parameters in the URL
- * @param initialState - Initial state for the query parameters
- * @returns A tuple containing the current state and a function to set the query parameters
- */
-export const useQueryState = <T extends Record<string, unknown>>(
-  initialState: T = {} as T
-) => {
-  const router = useRouter();
-  const params = useSearchParams();
-  const [state, setState] = useState<T>(initialState);
-  const pathname = usePathname();
-
-  // Throw the initial state into the query params
-  // Triggering the below effect to set the state
-  useMount(() => {
-    setQueryParams(initialState);
-  });
-
-  // Derive state from query parameters
-  // TODO: Revisit special handling of items
-  useEffect(() => {
-    const p = Object.fromEntries(params);
-    if (Object.keys(p).includes('items')) {
-      setState({ ...p, items: JSON.parse(p.items) } as unknown as T);
-    } else if (Object.keys(p).includes('issueDate')) {
-      setState({ ...p, issueDate: new Date(p.issueDate) } as unknown as T);
-    } else if (Object.keys(p).includes('dueDate')) {
-      setState({ ...p, dueDate: new Date(p.dueDate) } as unknown as T);
-    } else {
-      setState(p as T);
-    }
-  }, [params]);
-
-  const setQueryParams = (query: Partial<T>) => {
-    router.push(
-      `${pathname}?${new URLSearchParams({
-        ...Object.fromEntries(params),
-        ...Object.entries(query).reduce((acc, [key, value]) => {
-          acc[key] =
-            typeof value === 'object' ? JSON.stringify(value) : String(value);
-          return acc;
-        }, {} as Record<string, string>),
-      })}`
-    );
-  };
-
-  return [state, setQueryParams] as const;
 };

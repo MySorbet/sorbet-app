@@ -35,7 +35,7 @@ const InvoiceItemDataSchema = z.object({
   quantity: z.coerce.number().min(1),
   amount: z.coerce.number().min(0),
 });
-type InvoiceItemData = z.infer<typeof InvoiceItemDataSchema>;
+export type InvoiceItemData = z.infer<typeof InvoiceItemDataSchema>;
 
 const emptyInvoiceItemData: InvoiceItemData = {
   name: '',
@@ -64,7 +64,7 @@ export const InvoiceDetails = ({
   onBack?: () => void;
   invoiceNumber?: string;
 }) => {
-  const { formData, setFormData } = useInvoiceFormContext();
+  const { formData, serializeFormData } = useInvoiceFormContext();
   const form = useForm<InvoiceDetailsFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,13 +81,9 @@ export const InvoiceDetails = ({
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
     const newFormData = { ...formData, ...data };
-    const newFormDataForURL = { ...newFormData, items: JSON.stringify(items) };
-    setFormData(newFormData);
     onSubmit?.(newFormData);
     router.push(
-      `/invoices/create/payment-details?${new URLSearchParams(
-        newFormDataForURL as unknown as Record<string, string>
-      )}`
+      `/invoices/create/payment-details${serializeFormData(newFormData)}`
     );
   });
 

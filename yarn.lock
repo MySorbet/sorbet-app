@@ -15943,6 +15943,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitt@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mitt@npm:3.0.1"
+  checksum: 10c0/3ab4fdecf3be8c5255536faa07064d05caa3dd332bd318ff02e04621f7b3069ca1de9106cfe8e7ced675abfc2bec2ce4c4ef321c4a1bb1fb29df8ae090741913
+  languageName: node
+  linkType: hard
+
 "mkdirp@npm:^1.0.3":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
@@ -16384,6 +16391,17 @@ __metadata:
     bn.js: "npm:4.11.6"
     strip-hex-prefix: "npm:1.0.0"
   checksum: 10c0/83d1540173c4fc60ef4e91e88ed17f2c38418c8e5e62f469d62404527efba48d9c40f364da5c5e6857234a6c1154ff32b3642d80f873ba6cb8d2dd05fb6bc303
+  languageName: node
+  linkType: hard
+
+"nuqs@npm:^1.20.0":
+  version: 1.20.0
+  resolution: "nuqs@npm:1.20.0"
+  dependencies:
+    mitt: "npm:^3.0.1"
+  peerDependencies:
+    next: ">=13.4 <14.0.2 || ^14.0.3"
+  checksum: 10c0/8e1b67a96c6fda21023924db03b31f3eecf387097ee23685f35fbd1118ff202d1f8f3efd5e1e45bb5736e701a13da0d6cefc98cbe813315dc6462c2e38e2c93f
   languageName: node
   linkType: hard
 
@@ -19191,6 +19209,7 @@ __metadata:
     next-router-mock: "npm:^0.7.5"
     next-sitemap: "npm:^4.2.3"
     next-themes: "npm:^0.2.1"
+    nuqs: "npm:^1.20.0"
     octokit: "npm:^3.1.2"
     postcss: "npm:^8.4.31"
     prettier: "npm:^2.8.8"

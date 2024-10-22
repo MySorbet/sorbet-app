@@ -47,7 +47,7 @@ export const ClientDetails = ({
   name?: string;
   email?: string;
 }) => {
-  const { formData, setFormData } = useInvoiceFormContext();
+  const { formData, serializeFormData } = useInvoiceFormContext();
 
   const form = useForm<ClientDetailsFormSchema>({
     resolver: zodResolver(formSchema),
@@ -63,12 +63,9 @@ export const ClientDetails = ({
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
     const newFormData = { ...formData, ...data };
-    setFormData(newFormData);
     onSubmit?.(newFormData);
     router.push(
-      `/invoices/create/invoice-details?${new URLSearchParams(
-        newFormData as unknown as Record<string, string>
-      )}`
+      `/invoices/create/invoice-details${serializeFormData(newFormData)}`
     );
   });
 

@@ -67,7 +67,7 @@ type PaymentDetailsProps = {
  * Capture issue and due dates and memo
  */
 export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
-  const { formData, setFormData } = useInvoiceFormContext();
+  const { formData, serializeFormData } = useInvoiceFormContext();
 
   const form = useForm<PaymentDetailsFormData>({
     resolver: zodResolver(paymentDetailsSchema),
@@ -83,19 +83,8 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
     const newFormData = { ...formData, ...data };
-    const newFormDataForUrl = {
-      ...newFormData,
-      items: JSON.stringify(newFormData.items),
-      issueDate: data.issueDate.toISOString(),
-      dueDate: data.dueDate.toISOString(),
-    };
-    setFormData(newFormData);
     onSubmit?.(newFormData);
-    router.push(
-      `/invoices/create/review?${new URLSearchParams(
-        newFormDataForUrl as unknown as Record<string, string>
-      )}`
-    );
+    router.push(`/invoices/create/review${serializeFormData(newFormData)}`);
   });
 
   const { issueDate, dueDate } = form.watch();
