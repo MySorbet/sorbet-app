@@ -52,7 +52,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
             />
             <CircleButton
               icon={<Send01 className='size-6' />}
-              label='Top up'
+              label='Send'
               onClick={() => setOpen(true)}
             />
             <WalletSendDialog
