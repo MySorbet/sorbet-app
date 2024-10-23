@@ -13,7 +13,6 @@ const meta: Meta<typeof WalletBalance> = {
   args: {
     ethBalance: '0',
     onTopUp: fn(),
-    onSend: fn(),
   },
 };
 
