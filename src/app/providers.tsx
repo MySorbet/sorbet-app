@@ -11,28 +11,31 @@ import { Toaster } from '@/components/ui/toaster';
 const AuthProvider = dynamic(() => import('@/hooks/useAuth'), { ssr: false });
 import { env } from '@/lib/env';
 import { store } from '@/redux/store';
+import { PHProvider } from '@/app/posthog-provider';
 
 const queryClient = new QueryClient();
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <PrivyProvider
-      appId={env.NEXT_PUBLIC_PRIVY_APP_ID}
-      config={{
-        embeddedWallets: {
-          createOnLogin: 'all-users',
-        },
-        defaultChain: baseSepolia,
-      }}
-    >
-      <Provider store={store}>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-          <Toaster />
-        </AuthProvider>
-      </Provider>
-    </PrivyProvider>
+    <PHProvider>
+      <PrivyProvider
+        appId={env.NEXT_PUBLIC_PRIVY_APP_ID}
+        config={{
+          embeddedWallets: {
+            createOnLogin: 'all-users',
+          },
+          defaultChain: baseSepolia,
+        }}
+      >
+        <Provider store={store}>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
+            <Toaster />
+          </AuthProvider>
+        </Provider>
+      </PrivyProvider>
+    </PHProvider>
   );
 }
