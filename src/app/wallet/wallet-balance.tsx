@@ -55,12 +55,6 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
               label='Top up'
               onClick={() => setOpen(true)}
             />
-            {/* <WalletSendDialog
-              sendUSDC={sendUSDC}
-              // trigger={<CircleButton icon={<Send size={26} />} label='Send' />}
-              open={open}
-              setOpen={setOpen}
-            /> */}
             <WalletSendDialog
               open={open}
               setOpen={setOpen}
@@ -70,7 +64,6 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
           </div>
         </div>
         <div className='flex'>
-          {/* <div className='text-3xl font-semibold'>{ethBalance} ETH</div> */}
           {isBalanceLoading ? (
             <Skeleton className='h-[30px] w-32 bg-gray-300 leading-[38px]' />
           ) : (
