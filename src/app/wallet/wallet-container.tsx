@@ -25,16 +25,6 @@ import { TOKEN_ABI } from '@/constant/abis';
 import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
-import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
-import { base, baseSepolia } from 'viem/chains';
-import { env } from '@/lib/env';
-import {
-  useFundWallet,
-  useWallets,
-  ConnectedWallet,
-  getEmbeddedConnectedWallet,
-} from '@privy-io/react-auth';
-import { TOKEN_ABI } from '@/constant/abis';
 
 export const WalletContainer = () => {
   const { toast } = useToast();
