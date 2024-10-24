@@ -17723,6 +17723,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"posthog-node@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "posthog-node@npm:4.2.1"
+  dependencies:
+    axios: "npm:^1.7.4"
+    rusha: "npm:^0.8.14"
+  checksum: 10c0/f44c7ab3be782d8d056ae8a284079ae1eb1f4f98adf91ecd3c43f7da5bd2dea1be987bc581378dae5918cab8de4efb30166b7419391ec0a82abc715f1c3ab37b
+  languageName: node
+  linkType: hard
+
 "preact@npm:^10.16.0, preact@npm:^10.19.3":
   version: 10.24.3
   resolution: "preact@npm:10.24.3"
@@ -19043,6 +19053,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rusha@npm:^0.8.14":
+  version: 0.8.14
+  resolution: "rusha@npm:0.8.14"
+  checksum: 10c0/5009ac30a0f8d17886c54b0eaf4f316dbd3ae21c07f9d6827c4d73a2d26f270278a6a40e4e86d22932c4c4a785c0300f2232c3c2404bf670f69647f3a48ae8bc
+  languageName: node
+  linkType: hard
+
 "rxjs@npm:^7.5.5":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
@@ -19701,6 +19718,7 @@ __metadata:
     octokit: "npm:^3.1.2"
     postcss: "npm:^8.4.31"
     posthog-js: "npm:^1.174.3"
+    posthog-node: "npm:^4.2.1"
     prettier: "npm:^2.8.8"
     prettier-plugin-tailwindcss: "npm:^0.1.13"
     qr-code-styling: "npm:^1.7.2"

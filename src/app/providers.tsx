@@ -17,25 +17,25 @@ const queryClient = new QueryClient();
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <PHProvider>
-      <PrivyProvider
-        appId={env.NEXT_PUBLIC_PRIVY_APP_ID}
-        config={{
-          embeddedWallets: {
-            createOnLogin: 'all-users',
-          },
-          defaultChain: baseSepolia,
-        }}
-      >
-        <Provider store={store}>
-          <AuthProvider>
+    <PrivyProvider
+      appId={env.NEXT_PUBLIC_PRIVY_APP_ID}
+      config={{
+        embeddedWallets: {
+          createOnLogin: 'all-users',
+        },
+        defaultChain: baseSepolia,
+      }}
+    >
+      <Provider store={store}>
+        <AuthProvider>
+          <PHProvider>
             <QueryClientProvider client={queryClient}>
               {children}
             </QueryClientProvider>
-            <Toaster />
-          </AuthProvider>
-        </Provider>
-      </PrivyProvider>
-    </PHProvider>
+          </PHProvider>
+          <Toaster />
+        </AuthProvider>
+      </Provider>
+    </PrivyProvider>
   );
 }
