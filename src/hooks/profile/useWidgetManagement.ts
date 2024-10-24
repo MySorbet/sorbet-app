@@ -7,6 +7,7 @@ import {
 } from '@/hooks';
 import { WidgetLayoutItem, WidgetSize, WidgetDimensions } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
+import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 
 interface WidgetManagementProps {
   userId: string;
@@ -30,6 +31,7 @@ export const useWidgetManagement = ({
 
   const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
+  const { mutateAsync: useUpdateWidgetLinkAsync } = useUpdateWidgetLink();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
 
@@ -49,6 +51,7 @@ export const useWidgetManagement = ({
 
   const handleWidgetAdd = useCallback(
     async (url: string, image?: File) => {
+      console.log('layout', layout);
       setAddingWidget(true);
       let widgetUrl: string = url;
 
@@ -123,6 +126,34 @@ export const useWidgetManagement = ({
       setLayout,
       persistWidgetsLayoutOnChange,
     ]
+  );
+
+  const handleWidgetEditLink = useCallback(
+    async (key: string, url: string) => {
+      try {
+        console.log('layout', layout);
+        const existingItem = layout.find((item) => item.i === key);
+        console.log('here is key', key, existingItem);
+        if (existingItem) {
+          existingItem.redirectUrl = url;
+          const newObj = {
+            ...existingItem, // Spread all other properties
+            id: existingItem.i, // Replace 'i' with 'id'
+          };
+          await useUpdateWidgetLinkAsync(newObj);
+        } else {
+          throw new Error('No widget exists to edit');
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast({
+          title: `We couldn't update a widget`,
+          description: message,
+        });
+      }
+    },
+    [layout]
   );
 
   const handleFileDrop = useCallback(
@@ -232,6 +263,7 @@ export const useWidgetManagement = ({
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
+    handleWidgetEditLink,
     handleAddMultipleWidgets,
   };
 };

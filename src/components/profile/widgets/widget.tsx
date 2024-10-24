@@ -56,6 +56,7 @@ interface WidgetProps {
   showControls?: boolean;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
+  handleEditLink: (key: string, url: string) => void;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -68,9 +69,11 @@ export const Widget: React.FC<WidgetProps> = ({
   showControls = false,
   handleResize,
   handleRemove,
+  handleEditLink,
   draggedRef,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
@@ -78,6 +81,11 @@ export const Widget: React.FC<WidgetProps> = ({
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h, widgetSize);
     setWidgetSize(widgetSize);
+  };
+
+  const onWidgetLinkEdit = (url: string) => {
+    console.log('here now');
+    handleEditLink(identifier, url);
   };
 
   const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -271,10 +279,19 @@ export const Widget: React.FC<WidgetProps> = ({
           widgetContent
         )}
         {showControls && (
-          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+          <div
+            className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform ${
+              isPopoverOpen
+                ? ''
+                : 'opacity-0 transition-opacity duration-300 group-hover:opacity-100'
+            }`}
+          >
             <div className='flex flex-row gap-1'>
               <ResizeWidget
                 onResize={onWidgetResize}
+                onEditLink={onWidgetLinkEdit}
+                setPopoverOpen={setIsPopoverOpen}
+                popoverOpen={isPopoverOpen}
                 initialSize={initialSize}
               />
               <Button

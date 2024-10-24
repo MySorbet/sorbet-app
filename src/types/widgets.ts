@@ -183,5 +183,6 @@ export interface WidgetDto {
 /** This is a widget with extra properties for display in RGL */
 export type WidgetLayoutItem = Layout &
   Pick<WidgetDto, 'type' | 'size' | 'redirectUrl' | 'content'> & {
+    id?: string; // added for updating widgets
     loading?: boolean;
   };

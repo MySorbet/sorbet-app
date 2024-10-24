@@ -93,6 +93,34 @@ export const updateWidget = async (
   }
 };
 
+/** Updating the links of image widgets */
+export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
+  let payload: any = {
+    type: widgetLayoutItem.type,
+    content: widgetLayoutItem.content,
+    redirectUrl: widgetLayoutItem.redirectUrl,
+    layout: {
+      x: widgetLayoutItem.x,
+      y: widgetLayoutItem.y,
+      w: widgetLayoutItem.w,
+      h: widgetLayoutItem.h,
+    },
+  };
+
+  console.log(payload, widgetLayoutItem.content);
+
+  try {
+    const res = await axios.patch(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,
+      payload,
+      await withAuthHeader()
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(`Failed to update widget: ${error.response.data.message}`);
+  }
+};
+
 export const deleteWidget = async (id: string) => {
   try {
     const response = await axios.delete(

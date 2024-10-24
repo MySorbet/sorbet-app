@@ -55,6 +55,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
+    handleWidgetEditLink,
     handleAddMultipleWidgets,
   } = useWidgetManagement({
     userId,
@@ -123,6 +124,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   showControls={editMode}
                   handleResize={handleWidgetResize}
                   handleRemove={handleWidgetRemove}
+                  handleEditLink={handleWidgetEditLink}
                   content={item.content}
                   initialSize={item.size}
                   redirectUrl={item.redirectUrl}

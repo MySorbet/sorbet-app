@@ -82,6 +82,7 @@ export const useLayoutManagement = ({
           layout: { h: item.h, w: item.w, x: item.x, y: item.y },
           size: item.size,
         }));
+        console.log(payload);
         updateWidgetsBulk(payload);
       }
     },
