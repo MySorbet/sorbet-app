@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import posthog from 'posthog-js';
 import { useEffect, useRef } from 'react';
 
 import Confetti, { ConfettiRef } from '@/components/magicui/confetti';
@@ -22,6 +23,11 @@ const AllSet = () => {
     }, 0);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleContinue = () => {
+    router.push(`/${userData.handle}`)
+    posthog.startSessionRecording()
+  }
 
   return (
     <FormContainer>
@@ -45,7 +51,7 @@ const AllSet = () => {
         </div>
         <Button
           className='bg-sorbet w-full text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
-          onClick={() => router.push(`/${userData.handle}`)}
+          onClick={handleContinue}
         >
           Continue to your Profile
         </Button>
