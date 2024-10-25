@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
+import { featureFlags } from '@/lib/flags';
 
 interface SidebarProps {
   show: boolean;
@@ -81,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
               </div>
             </div>
             <div>
-              <div className='grid grid-cols-3 gap-2'>
+              <div className='grid grid-cols-2 gap-2'>
                 <div className='col-span-1'>
                   <Link href='/wallet'>
                     <SidebarHeaderOption
@@ -91,15 +92,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
                     />
                   </Link>
                 </div>
-                <div className='col-span-1'>
-                  <Link href='/gigs'>
-                    <SidebarHeaderOption
-                      label='Gigs'
-                      icon={<LayoutGrid />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
+                {featureFlags.gigs && (
+                  <div className='col-span-1'>
+                    <Link href='/gigs'>
+                      <SidebarHeaderOption
+                        label='Gigs'
+                        icon={<LayoutGrid />}
+                        onClick={() => handleSidebarClose()}
+                      />
+                    </Link>
+                  </div>
+                )}
                 <div className='col-span-1'>
                   <Link href={`/${user.handle}`}>
                     <SidebarHeaderOption

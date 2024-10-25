@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 
 import { ShareProfileDialog } from './share/share-profile-dialog';
+import { featureFlags } from '@/lib/flags';
 
 interface ProfileHeaderProps {
   canEdit: boolean;
@@ -104,13 +105,17 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               <span className='text-base text-[#344054]'>Edit Profile</span>
             </Button>
           ) : (
-            <Button
-              className='bg-[#573DF5] px-5 text-base'
-              onClick={onHireMeClick}
-              disabled={disableHireMe}
-            >
-              Hire Me
-            </Button>
+            <>
+              {featureFlags.gigs && (
+                <Button
+                  className='bg-[#573DF5] px-5 text-base'
+                  onClick={onHireMeClick}
+                  disabled={disableHireMe}
+                >
+                  Hire Me
+                </Button>
+              )}
+            </>
           )}
           {!hideShare && (
             <ShareProfileDialog
