@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 import {
   InstagramIcon,
@@ -27,10 +28,30 @@ export default function GigsPage() {
             </h1>
           </div>
           <div className='flex w-3/4 items-center justify-center gap-4'>
-            <a>
+            <a
+              href='https://mysorbet.xyz'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <Image
+                src='/svg/logo.svg'
+                height={52}
+                width={52}
+                alt='Sorbet logo'
+              />
+            </a>
+            <a
+              href='https://www.instagram.com/mysorbet.xyz/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
               <InstagramIcon />
             </a>
-            <a>
+            <a
+              href='https://x.com/mysorbetxyz'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
               <TwitterIcon />
             </a>
           </div>
