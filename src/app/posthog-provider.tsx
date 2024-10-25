@@ -31,7 +31,7 @@ const PostHogIdentityWrapper = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (user) {
       posthog.identify(user.id, {
-        email: user.email ?? null,
+        email: user.email ?? '',
       });
     } else {
       posthog.reset();
