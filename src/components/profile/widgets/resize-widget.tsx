@@ -7,12 +7,17 @@ import {
 } from 'lucide-react';
 import { WidgetDimensions, WidgetSize } from '@/types';
 import { AddLink } from '@/components/profile/widgets/add-link';
+import { CropImageDialog } from '@/components/profile/widgets/crop-image-dialog';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
   popoverOpen: boolean;
+  redirectUrl?: string;
   setPopoverOpen: (open: boolean) => void;
   onEditLink: (url: string) => void;
+  setActiveWidget: (identifier: string | null) => void;
+  activeWidget: string | null;
+  identifier: string;
   initialSize: WidgetSize;
 }
 
@@ -21,10 +26,16 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   popoverOpen,
   setPopoverOpen,
   onEditLink,
+  setActiveWidget,
+  redirectUrl,
+  identifier,
+  activeWidget,
   initialSize = 'A',
 }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
-  const [currentLink, setCurrentLink] = useState<string>('');
+  const [currentLink, setCurrentLink] = useState<string>(
+    redirectUrl ? redirectUrl : ''
+  );
   // const [popoverOpen, setPopoverOpen] = useState(false); // Track popover visibility
 
   const btnClass = 'h-4 w-7 flex items-center justify-center';
@@ -45,8 +56,15 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   const onSubmitLink = () => {
-    console.log('step one');
     onEditLink(currentLink);
+  };
+
+  const startCropping = () => {
+    if (activeWidget) {
+      setActiveWidget(null);
+    } else {
+      setActiveWidget(identifier);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -88,8 +106,13 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       </div>
 
       <div className={dividerClass} />
-
-      <div className={btnClass} onClick={(e) => onResizeClick(e, 'D')}>
+      <div
+        className={btnClass}
+        onClick={(e) => {
+          e.stopPropagation;
+          startCropping();
+        }}
+      >
         <Crop size={20} strokeWidth={2.5} />
       </div>
       <div className={btnClass}>

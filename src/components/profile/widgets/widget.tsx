@@ -42,6 +42,7 @@ import { SpotifySongWidget } from './widget-spotify-song';
 import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
+import Cropper, { Area } from 'react-easy-crop';
 
 interface WidgetProps {
   identifier: string;
@@ -57,6 +58,8 @@ interface WidgetProps {
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
   handleEditLink: (key: string, url: string) => void;
+  setActiveWidget: (widgetId: string | null) => void;
+  activeWidget: string | null;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -71,12 +74,19 @@ export const Widget: React.FC<WidgetProps> = ({
   handleRemove,
   handleEditLink,
   draggedRef,
+  setActiveWidget,
+  activeWidget,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+    console.log(croppedArea, croppedAreaPixels);
+  };
 
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h, widgetSize);
@@ -84,7 +94,6 @@ export const Widget: React.FC<WidgetProps> = ({
   };
 
   const onWidgetLinkEdit = (url: string) => {
-    console.log('here now');
     handleEditLink(identifier, url);
   };
 
@@ -266,7 +275,7 @@ export const Widget: React.FC<WidgetProps> = ({
           type !== 'Photo' && 'p-4'
         )}
         key={identifier}
-        onClick={onWidgetClick}
+        /** onClick={!isCropping ? onWidgetClick : () => {}} */
       >
         {loading ? (
           <Skeleton
@@ -275,10 +284,20 @@ export const Widget: React.FC<WidgetProps> = ({
               type === 'Photo' && 'rounded-3xl'
             )}
           />
+        ) : activeWidget || activeWidget === identifier ? (
+          <Cropper
+            image='https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000'
+            crop={crop}
+            zoom={zoom}
+            aspect={4 / 3}
+            onCropChange={setCrop}
+            onCropComplete={onCropComplete}
+            onZoomChange={setZoom}
+          />
         ) : (
           widgetContent
         )}
-        {showControls && (
+        {(showControls || activeWidget) && (
           <div
             className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform ${
               isPopoverOpen
@@ -288,11 +307,15 @@ export const Widget: React.FC<WidgetProps> = ({
           >
             <div className='flex flex-row gap-1'>
               <ResizeWidget
+                redirectUrl={redirectUrl}
                 onResize={onWidgetResize}
                 onEditLink={onWidgetLinkEdit}
                 setPopoverOpen={setIsPopoverOpen}
                 popoverOpen={isPopoverOpen}
                 initialSize={initialSize}
+                identifier={identifier}
+                activeWidget={activeWidget}
+                setActiveWidget={setActiveWidget}
               />
               <Button
                 variant='outline'

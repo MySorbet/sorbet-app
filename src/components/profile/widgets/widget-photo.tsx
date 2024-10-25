@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { PhotoWidgetContentType, WidgetSize } from '@/types';
-
+import Cropper, { Area } from 'react-easy-crop';
 import { ImageOverlay } from './image-overlay';
 
 interface PhotoWidgetType {

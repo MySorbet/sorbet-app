@@ -11,7 +11,7 @@ import { useToast } from '@/components/ui/use-toast';
 interface AddLinkProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmission: (value: string) => void;
+  onSubmission: () => void;
   popoverOpen: boolean;
   setPopoverOpen: (open: boolean) => void; // Prop for managing popover state
 }

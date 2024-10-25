@@ -17769,9 +17769,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-grid-layout@npm:^1.4.4":
-  version: 1.4.4
-  resolution: "react-grid-layout@npm:1.4.4"
+"react-grid-layout@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "react-grid-layout@npm:1.5.0"
   dependencies:
     clsx: "npm:^2.0.0"
     fast-equals: "npm:^4.0.3"
@@ -17782,7 +17782,7 @@ __metadata:
   peerDependencies:
     react: ">= 16.3.0"
     react-dom: ">= 16.3.0"
-  checksum: 10c0/3ff5715e2f19816d9c231053ca7e4d9c6c19893282d13b9dbfb3b748309d4c687d6bc9cffd6982a1e72df20d9f2560cf6ee87fde2442002a1b848fa9f9613d63
+  checksum: 10c0/7944c80167c5eea5b057a0915104d3736005541bb2847e8d41f18ad7f835de2f44cac8f8ae2cbabe12c2c03358be0d0670c540722671cfebd53737a2518b222a
   languageName: node
   linkType: hard
 
@@ -19215,7 +19215,7 @@ __metadata:
     react-error-boundary: "npm:^4.0.13"
     react-geocode: "npm:^1.0.0-alpha.1"
     react-google-autocomplete: "npm:^2.7.3"
-    react-grid-layout: "npm:^1.4.4"
+    react-grid-layout: "npm:^1.5.0"
     react-hook-form: "npm:^7.51.0"
     react-loader-spinner: "npm:^5.4.5"
     react-redux: "npm:^8.1.3"
