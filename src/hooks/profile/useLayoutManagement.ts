@@ -44,6 +44,23 @@ export const useLayoutManagement = ({
 
     if (!userWidgets || userWidgets.length < 1) return [];
 
+    console.log(
+      'check',
+      userWidgets.map((widget: WidgetDto) => ({
+        i: widget.id,
+        x: widget.layout.x,
+        y: widget.layout.y,
+        w: WidgetDimensions[widget.size].w,
+        h: WidgetDimensions[widget.size].h,
+        type: widget.type,
+        content: widget.content,
+        static: !editMode,
+        isResizable: false,
+        isDraggable: editMode,
+        redirectUrl: widget.redirectUrl,
+        size: widget.size,
+      }))
+    );
     return userWidgets.map((widget: WidgetDto) => ({
       i: widget.id,
       x: widget.layout.x,

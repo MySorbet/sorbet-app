@@ -2,7 +2,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
 import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
@@ -17,6 +17,7 @@ import { OnboardingDrawer } from './onboarding-drawer';
 import styles from './react-grid-layout-custom.module.css';
 import { Widget } from './widget';
 import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
+import { getWidgetDimensions, WidgetSize } from '@/types';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -35,6 +36,9 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 }) => {
   const draggedRef = useRef<boolean>(false);
   const [activeWidget, setActiveWidget] = useState<string | null>(null);
+
+  const gridRef = useRef<HTMLDivElement | null>(null); // Create a ref for the grid
+  const [gridWidth, setGridWidth] = useState<number>(0);
 
   const {
     layout,
@@ -74,7 +78,24 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     return <WidgetPlaceholderGrid loading className='px-[25px]' />;
   }
 
-  console.log(activeWidget);
+  const calculateWidgetPixelDimensions = (
+    size: WidgetSize,
+    cols: number
+  ): { width: number; height: number } => {
+    const { w, h } = getWidgetDimensions({ size });
+
+    return {
+      width: w * rowHeight, // Convert grid width to pixels
+      height: h * rowHeight, // Convert grid height to pixels
+    };
+  };
+
+  console.log(
+    rowHeight,
+    cols,
+    calculateWidgetPixelDimensions('A', cols),
+    gridWidth
+  );
   return (
     <>
       {editMode && layout.length < 1 && (
@@ -143,6 +164,11 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
             isDraggable={editMode} // Disable dragging if cropping
             isResizable={editMode}
             onDrag={() => (draggedRef.current = true)}
+            innerRef={(node) => {
+              if (node) {
+                setGridWidth(node.offsetWidth);
+              }
+            }}
             /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
             draggableCancel='.widget-motion-wrapper'
           >
@@ -151,36 +177,36 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               const shouldRender = !activeWidget || activeWidget === item.i;
 
               return (
-                shouldRender && (
-                  <motion.div
-                    className='widget-motion-wrapper'
-                    initial={false}
-                    animate={animationStyles[item.i]}
-                    style={{ width: '100%', height: '100%' }}
-                    key={item.i}
-                    data-grid={item}
-                    ref={(el) => {
-                      if (el) widgetRefs.current[item.i] = el;
-                    }}
-                  >
-                    <Widget
-                      identifier={item.i}
-                      w={item.w}
-                      h={item.h}
-                      type={item.type}
-                      showControls={editMode}
-                      handleResize={handleWidgetResize}
-                      handleRemove={handleWidgetRemove}
-                      handleEditLink={handleWidgetEditLink}
-                      content={item.content}
-                      initialSize={item.size}
-                      redirectUrl={item.redirectUrl}
-                      draggedRef={draggedRef}
-                      activeWidget={activeWidget}
-                      setActiveWidget={setActiveWidget}
-                    />
-                  </motion.div>
-                )
+                <motion.div
+                  className={`widget-motion-wrapper ${
+                    shouldRender ? '' : 'hidden'
+                  }`}
+                  initial={false}
+                  animate={animationStyles[item.i]}
+                  style={{ width: '100%', height: '100%' }}
+                  key={item.i}
+                  data-grid={item}
+                  ref={(el) => {
+                    if (el) widgetRefs.current[item.i] = el;
+                  }}
+                >
+                  <Widget
+                    identifier={item.i}
+                    w={item.w}
+                    h={item.h}
+                    type={item.type}
+                    showControls={editMode}
+                    handleResize={handleWidgetResize}
+                    handleRemove={handleWidgetRemove}
+                    handleEditLink={handleWidgetEditLink}
+                    content={item.content}
+                    initialSize={item.size}
+                    redirectUrl={item.redirectUrl}
+                    draggedRef={draggedRef}
+                    activeWidget={activeWidget}
+                    setActiveWidget={setActiveWidget}
+                  />
+                </motion.div>
               );
             })}
           </ReactGridLayout>

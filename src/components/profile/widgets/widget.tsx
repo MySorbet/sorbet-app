@@ -20,6 +20,7 @@ import {
   SubstackWidgetContentType,
   TwitterWidgetContentType,
   WidgetContentType,
+  WidgetDimensions,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -43,6 +44,7 @@ import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
 import Cropper, { Area } from 'react-easy-crop';
+import { ImageOverlay } from '@/components/profile/widgets/image-overlay';
 
 interface WidgetProps {
   identifier: string;
@@ -95,6 +97,16 @@ export const Widget: React.FC<WidgetProps> = ({
 
   const onWidgetLinkEdit = (url: string) => {
     handleEditLink(identifier, url);
+  };
+
+  const WidgetPixelDimensions: Record<
+    WidgetSize,
+    { width: number; height: number }
+  > = {
+    A: { width: 190, height: 265 },
+    B: { width: 2, height: 2 },
+    C: { width: 2, height: 2 },
+    D: { width: 2, height: 2 },
   };
 
   const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -285,15 +297,21 @@ export const Widget: React.FC<WidgetProps> = ({
             )}
           />
         ) : activeWidget || activeWidget === identifier ? (
-          <Cropper
-            image='https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000'
-            crop={crop}
-            zoom={zoom}
-            aspect={4 / 3}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-          />
+          <div className='relative h-full overflow-hidden rounded-3xl'>
+            <Cropper
+              image={(content as PhotoWidgetContentType)?.image}
+              crop={crop}
+              zoom={zoom}
+              aspect={3 / 3}
+              cropSize={{
+                width: 190, // edit to be adaptive
+                height: 265,
+              }}
+              onCropChange={setCrop}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+            />
+          </div>
         ) : (
           widgetContent
         )}
