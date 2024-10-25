@@ -12,6 +12,7 @@ import React, { useRef, useState } from 'react';
 import { NotificationToasts } from '@/components/notifications';
 import { useAuth } from '@/hooks';
 import { env } from '@/lib/env';
+import { featureFlags } from '@/lib/flags';
 
 export const Notifications = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -44,9 +45,12 @@ export const Notifications = () => {
             // TODO: i.e: if we put contract id in the url, the backend would populate the 'data' prop with the contract id
             // For now, it is a simple redirect to 'gigs' page. As we have that more solidified, we can then have more detailed/specific redirects
             onNotificationClick={(item) => {
-              console.log('onNotificationClick: ', item.data);
-              // TODO: look into why this works bc this isn't a client component at the moment
-              router.push('/gigs');
+              if (featureFlags.gigs) {
+                console.log('onNotificationClick: ', item.data);
+                // TODO: look into why this works bc this isn't a client component at the moment
+                router.push('/gigs');
+              }
+              return;
             }}
           />
           <NotificationToasts />
