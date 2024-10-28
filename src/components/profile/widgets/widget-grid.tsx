@@ -37,7 +37,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const draggedRef = useRef<boolean>(false);
   const [activeWidget, setActiveWidget] = useState<string | null>(null);
 
-  const gridRef = useRef<HTMLDivElement | null>(null); // Create a ref for the grid
+  // const gridRef = useRef<HTMLDivElement | null>(null); // Create a ref for the grid
   const [gridWidth, setGridWidth] = useState<number>(0);
 
   const {
@@ -46,6 +46,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     cols,
     animationStyles,
     widgetRefs,
+    currentBreakpoint,
     handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,
@@ -80,22 +81,29 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
   const calculateWidgetPixelDimensions = (
     size: WidgetSize,
-    cols: number
+    gridWith: number,
+    cols: number,
+    margins: number
   ): { width: number; height: number } => {
     const { w, h } = getWidgetDimensions({ size });
 
+    const columnWidths: { [key: number]: number } = {
+      2: gridWidth / 2, // Example width, adjust if needed
+      4: 603 / 2,
+      6: 393 / 2,
+      8: 289 / 2,
+    };
+
+    // calculations from: https://github.com/react-grid-layout/react-grid-layout/issues/1432
+
+    // 10/25: width needs to be refactored at a later point
+    // individual widgets widths at the moment are unimpacted by window size for some reason
     return {
-      width: w * rowHeight, // Convert grid width to pixels
-      height: h * rowHeight, // Convert grid height to pixels
+      width: w * columnWidths[cols as number] + margins * (w / 2 - 1),
+      height: h * rowHeight + margins * (h - 1),
     };
   };
 
-  console.log(
-    rowHeight,
-    cols,
-    calculateWidgetPixelDimensions('A', cols),
-    gridWidth
-  );
   return (
     <>
       {editMode && layout.length < 1 && (
@@ -203,6 +211,12 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                     initialSize={item.size}
                     redirectUrl={item.redirectUrl}
                     draggedRef={draggedRef}
+                    widgetDimensions={calculateWidgetPixelDimensions(
+                      item.size,
+                      gridWidth,
+                      cols,
+                      25
+                    )}
                     activeWidget={activeWidget}
                     setActiveWidget={setActiveWidget}
                   />

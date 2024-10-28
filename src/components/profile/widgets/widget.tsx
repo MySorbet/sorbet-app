@@ -62,6 +62,10 @@ interface WidgetProps {
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
   activeWidget: string | null;
+  widgetDimensions: {
+    width: number;
+    height: number;
+  };
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -78,6 +82,7 @@ export const Widget: React.FC<WidgetProps> = ({
   draggedRef,
   setActiveWidget,
   activeWidget,
+  widgetDimensions,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -85,7 +90,9 @@ export const Widget: React.FC<WidgetProps> = ({
     <>None</>
   );
   const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(2.75);
+
+  /** update image dimensions */
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
     console.log(croppedArea, croppedAreaPixels);
   };
@@ -97,16 +104,6 @@ export const Widget: React.FC<WidgetProps> = ({
 
   const onWidgetLinkEdit = (url: string) => {
     handleEditLink(identifier, url);
-  };
-
-  const WidgetPixelDimensions: Record<
-    WidgetSize,
-    { width: number; height: number }
-  > = {
-    A: { width: 190, height: 265 },
-    B: { width: 2, height: 2 },
-    C: { width: 2, height: 2 },
-    D: { width: 2, height: 2 },
   };
 
   const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -123,6 +120,35 @@ export const Widget: React.FC<WidgetProps> = ({
     // TODO: Maybe widgets should be anchors?
   };
 
+  const calculateScaleFactor = (content: PhotoWidgetContentType) => {
+    const containerRatio = widgetDimensions.width / widgetDimensions.height;
+    const image = new Image();
+    image.src = (content as PhotoWidgetContentType).image;
+    const imageRatio = image.width / image.height;
+
+    let scaleFactor = 1;
+
+    if (containerRatio > imageRatio) {
+      // Container is wider, scale based on height
+      scaleFactor = widgetDimensions.height / image.height;
+    } else {
+      // Container is taller, scale based on width
+      scaleFactor = widgetDimensions.width / image.width;
+    }
+
+    return scaleFactor;
+  };
+
+  const getImageRatio = (content: PhotoWidgetContentType) => {
+    const image = new Image();
+    image.src = (content as PhotoWidgetContentType).image;
+    const imageRatio = image.width / image.height;
+    if (imageRatio <= 1) {
+      return 'horizontal-cover';
+    } else {
+      return 'vertical-cover';
+    }
+  };
   useEffect(() => {
     switch (type) {
       case 'Dribbble':
@@ -296,7 +322,8 @@ export const Widget: React.FC<WidgetProps> = ({
               type === 'Photo' && 'rounded-3xl'
             )}
           />
-        ) : activeWidget || activeWidget === identifier ? (
+        ) : type === 'Photo' &&
+          /** activeWidget || */ activeWidget === identifier ? (
           <div className='relative h-full overflow-hidden rounded-3xl'>
             <Cropper
               image={(content as PhotoWidgetContentType)?.image}
@@ -304,12 +331,14 @@ export const Widget: React.FC<WidgetProps> = ({
               zoom={zoom}
               aspect={3 / 3}
               cropSize={{
-                width: 190, // edit to be adaptive
-                height: 265,
+                width: widgetDimensions.width,
+                height: widgetDimensions.height,
               }}
               onCropChange={setCrop}
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}
+              // objectFit={getImageRatio(content as PhotoWidgetContentType)}
+              maxZoom={10}
             />
           </div>
         ) : (

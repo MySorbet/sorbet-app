@@ -16,6 +16,10 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content }) => {
         src={content.image}
         alt='Photo content'
         className='relative h-full w-full object-cover'
+        style={{
+          transform: `translate(-${0}px, -${0}px)`,
+        }}
+        /** relative h-full w-full object-cover */
       />
       <ImageOverlay />
     </div>

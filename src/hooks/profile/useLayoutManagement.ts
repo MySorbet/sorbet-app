@@ -244,6 +244,7 @@ export const useLayoutManagement = ({
     cols,
     animationStyles,
     widgetRefs,
+    currentBreakpoint,
     handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,
