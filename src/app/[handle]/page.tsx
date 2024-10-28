@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import posthog from 'posthog-js';
 import { useEffect, useState } from 'react';
 
 import { createOffer } from '@/api/gigs';
@@ -16,7 +17,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 
 import { ClaimYourProfile } from './claim-your-profile';
-import posthog from 'posthog-js';
 
 const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
@@ -50,11 +50,14 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      posthog.stopSessionRecording();
-    }, 60000); // * For how long the session recording lasts
+    if (posthog.sessionRecordingStarted()) {
+      console.log('session recording in progress');
+      const timer = setTimeout(() => {
+        posthog.stopSessionRecording();
+      }, 60000); // * For how long the session recording lasts
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Query to get the freelancer's profile via the handle in the url
