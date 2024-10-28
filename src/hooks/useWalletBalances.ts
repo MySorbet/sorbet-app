@@ -9,6 +9,8 @@ export const useWalletBalances = (walletAddress: string) => {
   const [usdcBalance, setUsdcBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
 
+  // TODO: convert to RQ so we can invalidate whenever a usdc is sent or received
+
   useEffect(() => {
     (async () => {
       try {
