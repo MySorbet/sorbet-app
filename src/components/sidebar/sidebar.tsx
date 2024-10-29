@@ -80,37 +80,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
               </div>
             </div>
             <div>
-              <div className='grid grid-cols-2 grid-rows-2 gap-2'>
-                <Link href='/wallet'>
-                  <SidebarHeaderOption
-                    label='Wallet'
-                    icon={<WalletMinimal />}
-                    onClick={() => handleSidebarClose()}
-                  />
-                </Link>
+              <div className='grid grid-cols-3 gap-2'>
+                <SidebarHeaderOption
+                  label='Wallet'
+                  href='/wallet'
+                  icon={<WalletMinimal />}
+                />
                 {featureFlags.gigs && (
-                  <Link href='/gigs'>
-                    <SidebarHeaderOption
-                      label='Gigs'
-                      icon={<LayoutGrid />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
+                  <SidebarHeaderOption
+                    label='Gigs'
+                    href='/gigs'
+                    icon={<LayoutGrid />}
+                  />
                 )}
-                <Link href={`/${user.handle}`}>
-                  <SidebarHeaderOption
-                    label='Profile'
-                    icon={<CircleArrowRight />}
-                    onClick={() => handleSidebarClose()}
-                  />
-                </Link>
-                <Link href='/invoices'>
-                  <SidebarHeaderOption
-                    label='Invoices'
-                    icon={<Receipt />}
-                    onClick={() => handleSidebarClose()}
-                  />
-                </Link>
+                <SidebarHeaderOption
+                  label='Profile'
+                  icon={<CircleArrowRight />}
+                  href={`/${user.handle}`}
+                />
+                <SidebarHeaderOption
+                  label='Invoices'
+                  icon={<Receipt />}
+                  href='/invoices'
+                />
               </div>
               <Balances />
             </div>
@@ -144,8 +136,7 @@ const Balances: React.FC = () => {
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
       <div className='flex flex-row items-center justify-between'>
         <div className='text-muted-foreground text-sm'>Balances</div>
-        {/* Temporarily hiding as per request from Rami for demo 9/24/24 */}
-        {/* <WalletAddress /> */}
+        {featureFlags.walletAddressInSidebar && <WalletAddress />}
       </div>
       <div className='flex flex-col gap-3'>
         <div className='flex items-center gap-2 text-sm font-semibold'>
@@ -198,26 +189,23 @@ const WalletAddress: React.FC = () => {
   );
 };
 
+/**
+ * Local component for displaying a sidebar header option
+ */
 const SidebarHeaderOption: React.FC<{
   label: string;
   icon: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  comingSoon?: boolean;
-}> = ({ label, icon, comingSoon, onClick }) => {
+  href: string;
+}> = ({ label, icon, href }) => {
   return (
-    <div
-      className='border-1 relative cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
-      onClick={onClick}
+    <Link
+      href={href}
+      className='border-1 relative min-w-fit max-w-44 cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
     >
-      {comingSoon && (
-        <div className='bg-sorbet absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 rotate-45 transform rounded-xl px-1 py-1 text-xs font-semibold text-white'>
-          Soon
-        </div>
-      )}
       <div className='text-sorbet flex flex-col items-center justify-center gap-1 font-semibold'>
-        <div>{icon}</div>
+        {icon}
         <div className='text-sm'>{label}</div>
       </div>
-    </div>
+    </Link>
   );
 };
