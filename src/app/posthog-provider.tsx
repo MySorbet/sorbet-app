@@ -30,10 +30,14 @@ const PostHogIdentityWrapper = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (user) {
+
       posthog.identify(user.id, {
         email: user.email ?? '',
+        name: `${user.firstName} ${user.lastName}`,
+        sorbetId: user.id,
       });
     } else {
+      console.log('terminating connection to PostHog...');
       posthog.reset();
     }
   }, [user]);
