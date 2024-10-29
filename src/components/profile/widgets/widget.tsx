@@ -1,4 +1,5 @@
 import { Trash2 } from 'lucide-react';
+import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -45,6 +46,7 @@ import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
 import Cropper, { Area } from 'react-easy-crop';
 import { ImageOverlay } from '@/components/profile/widgets/image-overlay';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 
 interface WidgetProps {
   identifier: string;
@@ -66,6 +68,7 @@ interface WidgetProps {
     width: number;
     height: number;
   };
+  addUrl: any;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -83,6 +86,7 @@ export const Widget: React.FC<WidgetProps> = ({
   setActiveWidget,
   activeWidget,
   widgetDimensions,
+  addUrl,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -149,6 +153,7 @@ export const Widget: React.FC<WidgetProps> = ({
       return 'vertical-cover';
     }
   };
+
   useEffect(() => {
     switch (type) {
       case 'Dribbble':
@@ -232,6 +237,7 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Github':
         setWidgetContent(
           <GithubWidget
+            addUrl={addUrl}
             content={content as GithubWidgetContentType}
             size={widgetSize}
           />
@@ -268,6 +274,8 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Link':
         setWidgetContent(
           <LinkWidget
+            identifier={identifier}
+            addUrl={addUrl}
             content={content as LinkWidgetContentType}
             size={widgetSize}
           />

@@ -5,9 +5,17 @@ import {
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
-import { WidgetLayoutItem, WidgetSize, WidgetDimensions } from '@/types';
+import {
+  WidgetLayoutItem,
+  WidgetSize,
+  WidgetDimensions,
+  PhotoWidgetContentType,
+  LinkWidgetContentType,
+  LinkedInProfileWidgetContentType,
+} from '@/types';
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
+import { useUpdateWidgetImage } from '@/hooks/widgets/useUpdateWidgetImage';
 
 interface WidgetManagementProps {
   userId: string;
@@ -32,6 +40,7 @@ export const useWidgetManagement = ({
   const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: useUpdateWidgetLinkAsync } = useUpdateWidgetLink();
+  const { mutateAsync: useUpdateWidgetImageAsync } = useUpdateWidgetImage();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
 
@@ -104,6 +113,87 @@ export const useWidgetManagement = ({
           persistWidgetsLayoutOnChange(newLayout);
           return newLayout;
         });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast({
+          title: `We couldn't add a widget`,
+          description: message,
+        });
+      } finally {
+        setAddingWidget(false);
+      }
+    },
+    [
+      userId,
+      editMode,
+      layout,
+      cols,
+      uploadWidgetsImageAsync,
+      createWidget,
+      toast,
+      setLayout,
+      persistWidgetsLayoutOnChange,
+    ]
+  );
+
+  const handleNewImageAdd = useCallback(
+    async (key: string, image: File) => {
+      setAddingWidget(true);
+      console.log('hmmm');
+      let widgetUrl: string = '';
+
+      try {
+        const existingItem = layout.find((item) => item.i === key);
+
+        if (existingItem && image && image !== undefined) {
+          const fileExtension = image.name.split('.').pop()?.toLowerCase();
+          const imageFormData = new FormData();
+          imageFormData.append('file', image);
+          // fileType must be different for svgs to render correctly
+          if (fileExtension === 'svg') {
+            imageFormData.append('fileType', 'image/svg+xml');
+          } else {
+            imageFormData.append('fileType', 'image');
+          }
+          imageFormData.append('destination', 'widgets');
+          imageFormData.append('userId', '');
+          const response = await uploadWidgetsImageAsync(imageFormData);
+          if (response.data && response.data.fileUrl) {
+            widgetUrl = response.data.fileUrl;
+          } else {
+            throw new Error('Widget image not uploaded');
+          }
+
+          console.log(response);
+
+          let newObj;
+          switch (existingItem.type) {
+            /** Come back to this, does it make sesne to edit GitHub pictures for example */
+            case 'Photo':
+              (existingItem.content as PhotoWidgetContentType).image =
+                widgetUrl;
+              newObj = {
+                ...existingItem, // Spread all other properties
+                id: existingItem.i, // Replace 'i' with 'id'
+              };
+              await useUpdateWidgetImageAsync(newObj);
+              break;
+
+            case 'Link':
+              (existingItem.content as LinkWidgetContentType).heroImageUrl =
+                widgetUrl;
+              newObj = {
+                ...existingItem, // Spread all other properties
+                id: existingItem.i, // Replace 'i' with 'id'
+              };
+              await useUpdateWidgetImageAsync(newObj);
+              break;
+
+            default:
+              break;
+          }
+        }
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
@@ -264,6 +354,7 @@ export const useWidgetManagement = ({
     handleWidgetAdd,
     handleFileDrop,
     handleWidgetEditLink,
+    handleNewImageAdd,
     handleAddMultipleWidgets,
   };
 };

@@ -6,10 +6,13 @@ import { LinkWidgetContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 
 interface LinkWidgetProps {
   /** The content from link for the widget to render */
   content: LinkWidgetContentType;
+  addUrl: any;
+  identifier: string;
   /** The size of the widget to render */
   size: WidgetSize;
 }
@@ -17,7 +20,12 @@ interface LinkWidgetProps {
 /**
  * Render a link widget with the given content and size
  */
-export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
+export const LinkWidget: React.FC<LinkWidgetProps> = ({
+  content,
+  identifier,
+  addUrl,
+  size,
+}) => {
   const { title, iconUrl, heroImageUrl } = content;
 
   switch (size) {
@@ -28,7 +36,16 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={heroImageUrl} />
+          <div className='relative flex-grow'>
+            <ModifyImageWidget
+              identifier={identifier}
+              addUrl={addUrl}
+              className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+            />
+            <div className='overflow-hidden'>
+              <BannerImage src={heroImageUrl} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'B':
@@ -60,7 +77,14 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={heroImageUrl} />
+          <div className='relative flex-grow'>
+            <ModifyImageWidget
+              identifier={identifier}
+              addUrl={addUrl}
+              className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+            />
+            <BannerImage src={heroImageUrl} />
+          </div>
         </WidgetLayout>
       );
     default:
@@ -132,7 +156,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        'relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl', // TODO: overflow-hidden is a bandaid for SRBT-132. Fix this at the source
+        'items-center justify-center overflow-hidden rounded-2xl', // TODO: overflow-hidden is a bandaid for SRBT-132. Fix this at the source
         !src && 'bg-gray-200',
         className
       )}
@@ -142,7 +166,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
           <img
             src={src}
             alt='Banner image from url'
-            className='h-full w-full object-cover'
+            className='absolute inset-0 h-full w-full rounded-xl object-cover'
           />
           <ImageOverlay />
         </>

@@ -5,6 +5,7 @@ import { DribbbleWidgetContentType, WidgetSize } from '@/types';
 import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
 import { WidgetIcon } from './widget-icon';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 
 interface DribbbleWidgetType {
   content: DribbbleWidgetContentType;

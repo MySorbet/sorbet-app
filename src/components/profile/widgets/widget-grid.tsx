@@ -62,6 +62,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleWidgetAdd,
     handleFileDrop,
     handleWidgetEditLink,
+    handleNewImageAdd,
     handleAddMultipleWidgets,
   } = useWidgetManagement({
     userId,
@@ -219,6 +220,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                     )}
                     activeWidget={activeWidget}
                     setActiveWidget={setActiveWidget}
+                    addUrl={handleNewImageAdd}
+                    loading={addingWidget}
                   />
                 </motion.div>
               );
