@@ -12,7 +12,7 @@ export const UnderDevelopment = ({ featureName }: { featureName: string }) => {
       <div className='flex size-[600px] flex-col items-center justify-start md:size-3/4 '>
         <SorbetBlob className='size-3/4' />
         <h1 className='text-2xl text-black md:text-4xl'>
-          {featureName} are coming back soon!
+          {featureName} under development
         </h1>
       </div>
       <div className='flex w-3/4 items-center justify-center gap-4'>
