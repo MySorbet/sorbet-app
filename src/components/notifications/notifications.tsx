@@ -47,7 +47,6 @@ export const Notifications = () => {
             onNotificationClick={(item) => {
               if (featureFlags.gigs) {
                 console.log('onNotificationClick: ', item.data);
-                // TODO: look into why this works bc this isn't a client component at the moment
                 router.push('/gigs');
               }
               return;
