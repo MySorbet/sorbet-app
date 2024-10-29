@@ -1,13 +1,7 @@
-import { PrivyProvider } from '@privy-io/react-auth';
+import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
-import { Provider } from 'react-redux';
 
-import AuthProvider from '@/hooks/useAuth';
-import { env } from '@/lib/env';
-import { store } from '@/redux/store';
 import { OfferType } from '@/types';
 
 import { GigsDialog } from './gigs-dialog';
@@ -16,28 +10,23 @@ const meta: Meta<typeof GigsDialog> = {
   title: 'Gigs/GigsDialog',
   component: GigsDialog,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
     nextjs: {
       appDirectory: true,
     },
   },
-  decorators: [
-    (Story) => {
-      return (
-        <PrivyProvider appId={env.NEXT_PUBLIC_PRIVY_APP_ID}>
-          <QueryClientProvider client={new QueryClient()}>
-            <Provider store={store}>
-              <AuthProvider>
-                <div style={{ width: '100%', height: '100vh' }}>
-                  <Story />
-                </div>
-              </AuthProvider>
-            </Provider>
-          </QueryClientProvider>
-        </PrivyProvider>
-      );
-    },
-  ],
+  render: (args) => {
+    const [{ isOpen }, updateArgs] = useArgs();
+    const handleSetOpen = (isOpen: boolean) => {
+      updateArgs({ isOpen });
+    };
+    return (
+      <GigsDialog {...args} isOpen={isOpen} onOpenChange={handleSetOpen} />
+    );
+  },
+  args: {
+    isOpen: true,
+  },
 };
 
 export default meta;
@@ -57,18 +46,11 @@ const mockOffer: OfferType = {
 };
 
 export const Default: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(true);
-    return (
-      <GigsDialog
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        isClient={true}
-        currentOffer={mockOffer}
-        handleRejectOffer={fn()}
-        afterContractSubmitted={fn()}
-        currentOfferId={mockOffer.id}
-      />
-    );
+  args: {
+    isClient: true,
+    currentOffer: mockOffer,
+    handleRejectOffer: fn(),
+    afterContractSubmitted: fn(),
+    currentOfferId: mockOffer.id,
   },
 };
