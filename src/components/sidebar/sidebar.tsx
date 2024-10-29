@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { featureFlags } from '@/lib/flags';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -87,13 +88,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                     onClick={() => handleSidebarClose()}
                   />
                 </Link>
-                <Link href='/gigs'>
-                  <SidebarHeaderOption
-                    label='Gigs'
-                    icon={<LayoutGrid />}
-                    onClick={() => handleSidebarClose()}
-                  />
-                </Link>
+                {featureFlags.gigs && (
+                  <Link href='/gigs'>
+                    <SidebarHeaderOption
+                      label='Gigs'
+                      icon={<LayoutGrid />}
+                      onClick={() => handleSidebarClose()}
+                    />
+                  </Link>
+                )}
                 <Link href={`/${user.handle}`}>
                   <SidebarHeaderOption
                     label='Profile'

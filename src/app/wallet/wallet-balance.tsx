@@ -1,13 +1,20 @@
+import { Send01 } from '@untitled-ui/icons-react';
 import { Plus, Send, Wallet } from 'lucide-react';
-import React from 'react';
+import { useState } from 'react';
 
+import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface WalletBalanceProps {
   ethBalance: string;
   usdcBalance: string;
   onTopUp?: () => void;
-  onSend?: () => void;
+  sendUSDC: (
+    amount: string,
+    recipientWalletAddress: string
+  ) => Promise<`0x${string}` | undefined>;
+  isBalanceLoading: boolean;
 }
 
 /**
@@ -18,8 +25,11 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   ethBalance,
   usdcBalance,
   onTopUp,
-  onSend,
+  sendUSDC,
+  isBalanceLoading,
 }) => {
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <div className='min-h-[100%] min-w-80 rounded-3xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
       <div className='flex flex-col gap-1'>
@@ -41,15 +51,24 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
               onClick={onTopUp}
             />
             <CircleButton
-              icon={<Send size={26} />}
+              icon={<Send01 className='size-6' />}
               label='Send'
-              onClick={onSend}
+              onClick={() => setOpen(true)}
+            />
+            <WalletSendDialog
+              open={open}
+              setOpen={setOpen}
+              sendUSDC={sendUSDC}
+              usdcBalance={usdcBalance}
             />
           </div>
         </div>
         <div className='flex'>
-          {/* <div className='text-3xl font-semibold'>{ethBalance} ETH</div> */}
-          <div className='text-3xl font-semibold'>{usdcBalance} USDC</div>
+          {isBalanceLoading ? (
+            <Skeleton className='h-[30px] w-32 bg-gray-300 leading-[38px]' />
+          ) : (
+            <div className='text-3xl font-semibold'>{usdcBalance} USDC</div>
+          )}
         </div>
       </div>
     </div>
@@ -66,7 +85,6 @@ const CircleButton: React.FC<{
       <Button
         className='bg-sorbet flex size-12 items-center justify-center rounded-full p-0 text-white'
         onClick={onClick}
-        disabled // TODO: Enable when functionality is implemented
       >
         {icon}
       </Button>
