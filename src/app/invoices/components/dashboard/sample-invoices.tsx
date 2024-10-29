@@ -4,7 +4,7 @@ export const sampleInvoices: Invoice[] = [
   {
     id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a',
     invoiceNumber: 'INV001',
-    status: 'paid',
+    status: 'open',
     totalAmount: 250.0,
     issueDate: new Date('2024-03-15'),
     dueDate: new Date('2024-04-14'),
@@ -30,7 +30,7 @@ export const sampleInvoices: Invoice[] = [
   {
     id: 'c2d8f3a1-8f7b-4e3c-9d6a-8b7f9e2c1d3b',
     invoiceNumber: 'INV002',
-    status: 'open',
+    status: 'paid',
     totalAmount: 175.5,
     issueDate: new Date('2024-05-02'),
     dueDate: new Date('2024-06-01'),
