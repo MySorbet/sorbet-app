@@ -93,12 +93,13 @@ export const Widget: React.FC<WidgetProps> = ({
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(2.75);
+  const [zoom, setZoom] = useState(1);
 
   /** update image dimensions */
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    console.log(croppedArea, croppedAreaPixels);
+    console.log(zoom, croppedArea, croppedAreaPixels);
   };
 
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
@@ -126,32 +127,60 @@ export const Widget: React.FC<WidgetProps> = ({
 
   const calculateScaleFactor = (content: PhotoWidgetContentType) => {
     const containerRatio = widgetDimensions.width / widgetDimensions.height;
-    const image = new Image();
-    image.src = (content as PhotoWidgetContentType).image;
-    const imageRatio = image.width / image.height;
+    const img = new Image();
+    img.src = (content as PhotoWidgetContentType).image;
+
+    const imageRatio = img.width / img.height;
+    console.log(
+      widgetDimensions.width,
+      img.width,
+      widgetDimensions.height,
+      img.height
+    );
+
+    console.log(imageRatio, containerRatio);
 
     let scaleFactor = 1;
+    let offsets = { x: 0, y: 0 };
+    let widthRatio = 0;
+    let heightRatio = 0;
 
-    if (containerRatio > imageRatio) {
-      // Container is wider, scale based on height
-      scaleFactor = widgetDimensions.height / image.height;
+    if (img.height < widgetDimensions.height) {
+      heightRatio = widgetDimensions.height / img.height;
     } else {
-      // Container is taller, scale based on width
-      scaleFactor = widgetDimensions.width / image.width;
+      heightRatio = img.height / widgetDimensions.height;
     }
 
-    return scaleFactor;
-  };
-
-  const getImageRatio = (content: PhotoWidgetContentType) => {
-    const image = new Image();
-    image.src = (content as PhotoWidgetContentType).image;
-    const imageRatio = image.width / image.height;
-    if (imageRatio <= 1) {
-      return 'horizontal-cover';
+    if (img.width < widgetDimensions.width) {
+      widthRatio = widgetDimensions.width / img.width;
     } else {
-      return 'vertical-cover';
+      widthRatio = img.width / widgetDimensions.width;
     }
+
+    if (imageRatio < containerRatio) {
+      // Image is wider than container
+      offsets = { x: (img.width - img.height) / 2, y: 0 };
+    } else {
+      // Image is taller than container
+      offsets = { x: 0, y: (img.height - img.width) / 2 };
+    }
+
+    console.log(
+      widthRatio,
+      heightRatio,
+      img.width,
+      img.height,
+      widgetDimensions.width,
+      widgetDimensions.height
+    );
+
+    /** for handling lop-sided images */
+    setZoom(
+      Math.abs(widthRatio - heightRatio) < 0.1
+        ? Math.max(widthRatio, heightRatio)
+        : widthRatio * heightRatio
+    );
+    setCrop(offsets);
   };
 
   useEffect(() => {
@@ -263,8 +292,13 @@ export const Widget: React.FC<WidgetProps> = ({
         break;
 
       case 'Photo':
+        console.log(calculateScaleFactor(content as PhotoWidgetContentType));
+        calculateScaleFactor(content as PhotoWidgetContentType);
+
         setWidgetContent(
           <PhotoWidget
+            offsets={{ x: 0, y: 0 }}
+            zoom={1}
             content={content as PhotoWidgetContentType}
             size={widgetSize}
           />
