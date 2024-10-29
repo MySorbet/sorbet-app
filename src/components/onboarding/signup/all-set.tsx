@@ -25,8 +25,8 @@ const AllSet = () => {
   }, []);
 
   const handleContinue = () => {
-    router.push(`/${userData.handle}`)
     posthog.startSessionRecording()
+    router.push(`/${userData.handle}`)
   }
 
   return (

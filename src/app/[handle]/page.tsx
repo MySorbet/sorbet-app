@@ -49,6 +49,10 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
     },
   });
 
+  /** 
+   * This effect checks to see if a PostHog session recording is in progress.
+   * If it is, we set a 1 minute timer to record and then stop the recording after.
+   */
   useEffect(() => {
     if (posthog.sessionRecordingStarted()) {
       console.log('session recording in progress');
