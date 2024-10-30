@@ -205,17 +205,38 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [
-      userId,
-      editMode,
-      layout,
-      cols,
-      uploadWidgetsImageAsync,
-      createWidget,
-      toast,
-      setLayout,
-      persistWidgetsLayoutOnChange,
-    ]
+    [userId, editMode, layout, uploadWidgetsImageAsync, toast, setLayout]
+  );
+
+  const handleImageCropping = useCallback(
+    async (key: string, scale: number, offsets: { x: number; y: number }) => {
+      setAddingWidget(true);
+      let widgetUrl: string = '';
+
+      try {
+        const existingItem = layout.find((item) => item.i === key);
+
+        if (existingItem) {
+          (existingItem.content as PhotoWidgetContentType).scale = scale;
+          (existingItem.content as PhotoWidgetContentType).offsets = offsets;
+          const newObj = {
+            ...existingItem, // Spread all other properties
+            id: existingItem.i, // Replace 'i' with 'id'
+          };
+          await useUpdateWidgetImageAsync(newObj);
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast({
+          title: `We couldn't add a widget`,
+          description: message,
+        });
+      } finally {
+        setAddingWidget(false);
+      }
+    },
+    [userId, editMode, layout, toast, setLayout]
   );
 
   const handleWidgetEditLink = useCallback(
@@ -355,6 +376,7 @@ export const useWidgetManagement = ({
     handleFileDrop,
     handleWidgetEditLink,
     handleNewImageAdd,
+    handleImageCropping,
     handleAddMultipleWidgets,
   };
 };

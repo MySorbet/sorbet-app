@@ -23,6 +23,8 @@ export interface DribbbleWidgetContentType {
 
 export interface PhotoWidgetContentType {
   image: string;
+  offsets?: { x: number; y: number };
+  scale?: number;
 }
 
 export interface BehanceWidgetContentType {

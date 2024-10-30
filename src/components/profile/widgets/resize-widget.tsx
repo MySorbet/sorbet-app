@@ -18,6 +18,9 @@ interface ResizeWidgetProps {
   setActiveWidget: (identifier: string | null) => void;
   activeWidget: string | null;
   identifier: string;
+  // handleImageCropping: any;
+  // zoom: number;
+  // offsets: any;
   initialSize: WidgetSize;
 }
 
@@ -27,10 +30,13 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   setPopoverOpen,
   onEditLink,
   setActiveWidget,
+  // handleImageCropping,
   redirectUrl,
   identifier,
   activeWidget,
   initialSize = 'A',
+  // zoom,
+  // offsets,
 }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
   const [currentLink, setCurrentLink] = useState<string>(
@@ -61,6 +67,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
 
   const startCropping = () => {
     if (activeWidget) {
+      // handleImageCropping(identifier, zoom, offsets);
       setActiveWidget(null);
     } else {
       setActiveWidget(identifier);

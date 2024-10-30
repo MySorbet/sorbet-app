@@ -74,8 +74,15 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <div className='flex h-full flex-row justify-end gap-3 overflow-hidden'>
-            <BannerImage src={heroImageUrl} className='w-2/3 ' />
+          <div className='flex h-full flex-row justify-end gap-3'>
+            <div className='relative flex-grow'>
+              <ModifyImageWidget
+                identifier={identifier}
+                addUrl={addUrl}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+              <BannerImage src={heroImageUrl} />
+            </div>
           </div>
         </WidgetLayout>
       );

@@ -63,6 +63,7 @@ interface WidgetProps {
   handleRemove: (key: string) => void;
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
+  handleImageCropping: any;
   activeWidget: string | null;
   widgetDimensions: {
     width: number;
@@ -297,8 +298,8 @@ export const Widget: React.FC<WidgetProps> = ({
 
         setWidgetContent(
           <PhotoWidget
-            offsets={{ x: 0, y: 0 }}
-            zoom={1}
+            offsets={crop}
+            zoom={zoom}
             content={content as PhotoWidgetContentType}
             size={widgetSize}
           />
@@ -347,6 +348,7 @@ export const Widget: React.FC<WidgetProps> = ({
     }
   }, [type, widgetSize, content]);
 
+  console.log(document.getElementById(identifier)?.style.transform);
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div
@@ -354,6 +356,7 @@ export const Widget: React.FC<WidgetProps> = ({
           'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md',
           type !== 'Photo' && 'p-4'
         )}
+        id={identifier}
         key={identifier}
         /** onClick={!isCropping ? onWidgetClick : () => {}} */
       >
