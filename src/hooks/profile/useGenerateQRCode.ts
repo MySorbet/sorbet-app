@@ -44,7 +44,7 @@ export const useGenerateQRCode = (url: string) => {
       qrCode.append(qrCodeRef.current);
       setIsLoadingQRCode(false);
     }
-  }, []);
+  }, [qrCodeRef.current]);
 
   return {
     qrCodeRef,
