@@ -166,7 +166,13 @@ export default function InvoiceSheet({
 /**
  * Local component for displaying rows of invoice details
  */
-const InvoiceDetail = ({ label, value }: { label: string; value?: string }) => {
+const InvoiceDetail = ({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | null;
+}) => {
   return (
     <div className='flex justify-between'>
       <span className='text-muted-foreground text-sm font-medium'>{label}</span>

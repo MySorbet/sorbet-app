@@ -27,7 +27,7 @@ export const formatCurrency = (amount?: number) => {
   }).format(amount);
 };
 
-export const formatDate = (date?: Date) => {
+export const formatDate = (date?: Date | null) => {
   if (!date) return '';
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
