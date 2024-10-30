@@ -35,3 +35,10 @@ export const NoInvoice: Story = {
     isLoading: false,
   },
 };
+
+export const Freelancer: Story = {
+  args: {
+    ...Default.args,
+    isFreelancer: true,
+  },
+};

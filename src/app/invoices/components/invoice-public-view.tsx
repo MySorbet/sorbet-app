@@ -2,6 +2,7 @@
 
 import { Download01 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
@@ -16,17 +17,20 @@ import {
   CreateInvoiceTitle,
 } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
+import { CopyButton } from './dashboard/copy-button';
 import { InvoiceDocument } from './invoice-document';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
 
 type InvoicePublicViewProps = {
   invoice?: Invoice;
   isLoading?: boolean;
+  isFreelancer?: boolean;
 };
 
 export const InvoicePublicView = ({
   invoice,
   isLoading,
+  isFreelancer,
 }: InvoicePublicViewProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
@@ -43,6 +47,16 @@ export const InvoicePublicView = ({
     );
   }
 
+  const handleCopyInvoiceLink = () => {
+    if (invoice) {
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
+
+  const headerText = isFreelancer
+    ? 'Invoice details'
+    : `${invoice?.fromName} sent you an invoice`;
+
   return (
     <CreateInvoiceShell>
       <CreateInvoiceHeader>
@@ -50,22 +64,27 @@ export const InvoicePublicView = ({
           <Skeleton variant='lighter' className='h-6 w-40' />
         ) : (
           <div className='flex items-center gap-3'>
-            <Image
-              src='/svg/logo.svg'
-              height={40}
-              width={40}
-              className='size-10'
-              alt='Sorbet logo'
-            />
-            <CreateInvoiceTitle>
-              {invoice?.fromName} sent you an invoice
-            </CreateInvoiceTitle>
+            {!isFreelancer && (
+              <Image
+                src='/svg/logo.svg'
+                height={40}
+                className='size-10'
+                width={40}
+                alt='Sorbet logo'
+              />
+            )}
+            <CreateInvoiceTitle>{headerText}</CreateInvoiceTitle>
           </div>
         )}
 
-        <Button variant='outline' onClick={() => reactToPrintFn()}>
-          <Download01 className='mr-2 h-4 w-4' /> Download
-        </Button>
+        <div className='flex items-center gap-2'>
+          <Button variant='outline' onClick={() => reactToPrintFn()}>
+            <Download01 className='mr-2 h-4 w-4' /> Download
+          </Button>
+          <CopyButton onCopy={handleCopyInvoiceLink}>
+            Copy invoice link
+          </CopyButton>
+        </div>
       </CreateInvoiceHeader>
 
       {isLoading ? (
@@ -75,8 +94,14 @@ export const InvoicePublicView = ({
       )}
 
       <CreateInvoiceFooter className='justify-center'>
-        {/* TODO: Get the correct address from the invoice */}
-        <InvoicePayUsdc address='0x0000000000000000000000000000000000000000' />
+        {isFreelancer ? (
+          <Button variant='sorbet' asChild className='ml-auto'>
+            <Link href='/dashboard'>Back to dashboard</Link>
+          </Button>
+        ) : (
+          // TODO: Get the correct address from the invoice
+          <InvoicePayUsdc address='0x0000000000000000000000000000000000000000' />
+        )}
       </CreateInvoiceFooter>
     </CreateInvoiceShell>
   );
