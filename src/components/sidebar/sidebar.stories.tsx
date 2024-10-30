@@ -8,9 +8,6 @@ const meta = {
   component: Sidebar,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   render: (args) => {
     const [{ isOpen }, updateArgs] = useArgs();

@@ -13,9 +13,6 @@ const meta = {
   component: GigsColumn,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   args: args,
   decorators: [

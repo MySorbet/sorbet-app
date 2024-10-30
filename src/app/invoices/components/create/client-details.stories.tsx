@@ -14,11 +14,7 @@ const meta: Meta<typeof ClientDetails> = {
       </InvoiceFormProvider>
     ),
   ],
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
+  parameters: {},
   args: {
     onSubmit: fn(),
     name: 'John Doe',

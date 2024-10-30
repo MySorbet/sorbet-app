@@ -1,4 +1,4 @@
-import { Meta, } from '@storybook/react';
+import { Meta } from '@storybook/react';
 
 import { GigsCard } from '@/app/gigs/gigs-card';
 
@@ -16,9 +16,6 @@ const meta = {
   component: GigsCard,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   args: args,
   decorators: [
@@ -34,4 +31,4 @@ const meta = {
 
 export default meta;
 
-export const Default = {}
+export const Default = {};

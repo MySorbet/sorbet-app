@@ -14,11 +14,7 @@ const meta: Meta<typeof PaymentDetails> = {
       </InvoiceFormProvider>
     ),
   ],
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
+  parameters: {},
   args: {
     onBack: fn(),
     onSubmit: fn(),

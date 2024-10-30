@@ -8,9 +8,6 @@ const meta = {
   component: ProfileEditModal,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   render: (args) => {
     return <ProfileEditModal {...args} />;

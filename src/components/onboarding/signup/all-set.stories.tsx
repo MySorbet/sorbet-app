@@ -9,9 +9,6 @@ const meta = {
   component: AllSet,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   decorators: [UserSignUpDecorator],
 } satisfies Meta<typeof AllSet>;

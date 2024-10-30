@@ -11,9 +11,6 @@ const meta: Meta<typeof GigsDialog> = {
   component: GigsDialog,
   parameters: {
     layout: 'fullscreen',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   render: (args) => {
     const [{ isOpen }, updateArgs] = useArgs();
