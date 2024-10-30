@@ -82,7 +82,7 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
   // TODO: Can we share these submits?
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
-    const newFormData = { ...formData, ...data };
+    const newFormData = { ...formData, ...data, memo: data.memo ?? undefined }; // TODO: Can we remove this hack?
     onSubmit?.(newFormData);
     router.push(`/invoices/create/review${serializeFormData(newFormData)}`);
   });
