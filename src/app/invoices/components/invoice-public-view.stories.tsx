@@ -1,10 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InvoicePublicView } from './invoice-public-view';
+
 import { sampleInvoices } from './dashboard/sample-invoices';
+import { InvoicePublicView } from './invoice-public-view';
 
 const meta: Meta<typeof InvoicePublicView> = {
   title: 'Invoices/InvoicePublicView',
   component: InvoicePublicView,
+  parameters: {
+    layout: 'fullscreen',
+    backgrounds: {
+      default: 'sorbet',
+    },
+  },
 };
 
 export default meta;

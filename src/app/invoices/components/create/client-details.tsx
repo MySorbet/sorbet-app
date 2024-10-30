@@ -76,7 +76,7 @@ export const ClientDetails = ({
         <Stepper step={1} totalSteps={3} />
       </CreateInvoiceHeader>
       <Form {...form}>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
+        <form onSubmit={handleSubmit} className='flex w-full flex-col gap-12'>
           <Block label='From'>
             <FormField
               name='fromName'

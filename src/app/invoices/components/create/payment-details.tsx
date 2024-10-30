@@ -96,7 +96,7 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
         <Stepper step={3} totalSteps={3} />
       </CreateInvoiceHeader>
       <Form {...form}>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
+        <form onSubmit={handleSubmit} className='flex w-full flex-col gap-12'>
           <FormField
             control={form.control}
             name='issueDate'

@@ -6,7 +6,7 @@ export const CreateInvoiceShell = ({
   return (
     <div className='flex size-full justify-center'>
       {/* Cheap animation to make the form have a smooth transition */}
-      <div className='animate-in slide-in-from-right-3 fade-in-50 flex w-full min-w-96 max-w-[50rem] flex-col gap-4'>
+      <div className='animate-in slide-in-from-right-3 fade-in-50 flex w-full min-w-96 max-w-[50rem] flex-col items-center gap-4'>
         {children}
       </div>
     </div>

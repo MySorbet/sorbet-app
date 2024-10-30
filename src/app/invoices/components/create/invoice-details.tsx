@@ -94,7 +94,7 @@ export const InvoiceDetails = ({
         <Stepper step={2} totalSteps={3} />
       </CreateInvoiceHeader>
       <Form {...form}>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-12'>
+        <form onSubmit={handleSubmit} className='flex w-full flex-col gap-12'>
           <FormField
             name='projectName'
             control={form.control}

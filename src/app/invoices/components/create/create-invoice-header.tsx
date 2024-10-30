@@ -4,7 +4,7 @@ export const CreateInvoiceHeader = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className='mb-4 flex items-center justify-between border-b border-gray-200 py-4'>
+    <div className='mb-4 flex w-full items-center justify-between border-b border-gray-200 py-4'>
       {children}
     </div>
   );

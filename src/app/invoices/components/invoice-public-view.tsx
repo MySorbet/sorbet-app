@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { CreateInvoiceFooter } from '@/app/invoices/components/create/create-invoice-footer';
 import { InvoiceReceipt } from '@/app/invoices/components/invoice-receipt';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,6 +17,7 @@ import {
 } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
 import { InvoiceDocument } from './invoice-document';
+import { InvoicePayUsdc } from './invoice-pay-usdc';
 
 type InvoicePublicViewProps = {
   invoice?: Invoice;
@@ -60,12 +62,10 @@ export const InvoicePublicView = ({
             </CreateInvoiceTitle>
           </div>
         )}
-        <div className='flex gap-2'>
-          <Button variant='outline' onClick={() => reactToPrintFn()}>
-            <Download01 className='mr-2 h-4 w-4' /> Download
-          </Button>
-          <Button variant='sorbet'>Pay USDC</Button>
-        </div>
+
+        <Button variant='outline' onClick={() => reactToPrintFn()}>
+          <Download01 className='mr-2 h-4 w-4' /> Download
+        </Button>
       </CreateInvoiceHeader>
 
       {isLoading ? (
@@ -73,6 +73,11 @@ export const InvoicePublicView = ({
       ) : (
         invoice && <InvoiceDocument invoice={invoice} ref={contentRef} />
       )}
+
+      <CreateInvoiceFooter className='justify-center'>
+        {/* TODO: Get the correct address from the invoice */}
+        <InvoicePayUsdc address='0x0000000000000000000000000000000000000000' />
+      </CreateInvoiceFooter>
     </CreateInvoiceShell>
   );
 };
