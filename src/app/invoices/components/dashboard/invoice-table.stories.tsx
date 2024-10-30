@@ -5,7 +5,7 @@ import { InvoiceTable } from './invoice-table';
 import { sampleInvoices } from './sample-invoices';
 
 const meta: Meta<typeof InvoiceTable> = {
-  title: 'Invoicing/InvoiceTable',
+  title: 'Invoices/InvoiceTable',
   component: InvoiceTable,
   parameters: {
     layout: 'centered',

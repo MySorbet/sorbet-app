@@ -4,7 +4,7 @@ import { sampleInvoices } from './dashboard/sample-invoices';
 import { InvoiceDocument } from './invoice-document';
 
 const meta: Meta<typeof InvoiceDocument> = {
-  title: 'Invoicing/InvoiceDocument',
+  title: 'Invoices/InvoiceDocument',
   component: InvoiceDocument,
   parameters: {
     layout: 'centered',

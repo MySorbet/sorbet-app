@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SummaryCard from './summary-card';
 
 const meta: Meta<typeof SummaryCard> = {
-  title: 'Invoicing/SummaryCard',
+  title: 'Invoices/SummaryCard',
   component: SummaryCard,
   tags: ['autodocs'],
   parameters: {

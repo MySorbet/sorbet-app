@@ -5,7 +5,7 @@ import { fn } from '@storybook/test';
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 
 export default {
-  title: 'Invoicing/InvoiceSheetCancelDrawer',
+  title: 'Invoices/InvoiceSheetCancelDrawer',
   component: InvoiceSheetCancelDrawer,
   parameters: {},
   args: {

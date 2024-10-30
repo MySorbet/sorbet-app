@@ -6,7 +6,7 @@ import InvoiceSheet from './invoice-sheet';
 import { sampleInvoices } from './sample-invoices';
 
 const meta: Meta<typeof InvoiceSheet> = {
-  title: 'Invoicing/InvoiceSheet',
+  title: 'Invoices/InvoiceSheet',
   component: InvoiceSheet,
   parameters: {
     layout: 'centered',

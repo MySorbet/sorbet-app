@@ -3,7 +3,7 @@ import { InvoicePublicView } from './invoice-public-view';
 import { sampleInvoices } from './dashboard/sample-invoices';
 
 const meta: Meta<typeof InvoicePublicView> = {
-  title: 'Invoicing/InvoicePublicView',
+  title: 'Invoices/InvoicePublicView',
   component: InvoicePublicView,
 };
 

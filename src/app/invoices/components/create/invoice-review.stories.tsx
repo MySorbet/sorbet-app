@@ -5,7 +5,7 @@ import { sampleInvoices } from '../dashboard/sample-invoices';
 import { InvoiceReview } from './invoice-review';
 
 const meta: Meta<typeof InvoiceReview> = {
-  title: 'Invoicing/InvoiceReview',
+  title: 'Invoices/InvoiceReview',
   component: InvoiceReview,
   parameters: {
     layout: 'centered',

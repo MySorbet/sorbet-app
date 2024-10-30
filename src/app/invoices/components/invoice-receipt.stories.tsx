@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { InvoiceReceipt } from './invoice-receipt';
 
 const meta: Meta<typeof InvoiceReceipt> = {
-  title: 'Invoicing/InvoiceReceipt',
+  title: 'Invoices/InvoiceReceipt',
   component: InvoiceReceipt,
   parameters: {
     layout: 'centered',
