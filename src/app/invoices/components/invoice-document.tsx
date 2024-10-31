@@ -5,12 +5,29 @@ import {
   calculateTotalAmount,
   formatCurrency,
   formatDate,
+  Invoice,
 } from './dashboard/utils';
 
+/**
+ * Render a PDF-like document displaying the invoice details.
+ *
+ * Can accept either an
+ *
+ * - `InvoiceFormData` object (in the case you use it to review details). In this
+ * case, the `totalAmount` will be calculated on the frontend by totalling the items.
+ *
+ * - Or an `Invoice` object (in the case you use it to display a finalized invoice). In this
+ * case, the `totalAmount` from the object will be used.
+ */
 export const InvoiceDocument = forwardRef<
   HTMLDivElement,
-  { invoice: InvoiceFormData }
+  { invoice: InvoiceFormData | Invoice }
 >(({ invoice }, ref) => {
+  // Total amount is dependent on which type of invoice we get
+  const totalAmount =
+    'totalAmount' in invoice
+      ? invoice.totalAmount
+      : calculateTotalAmount(invoice.items ?? []);
   return (
     <div
       className='mx-auto min-w-[800px] max-w-4xl rounded-2xl bg-white p-16'
@@ -86,7 +103,7 @@ export const InvoiceDocument = forwardRef<
       <div className='mb-20 flex items-baseline justify-between'>
         <span className='mr-4 text-sm font-semibold'>Total</span>
         <span className='text-lg font-semibold'>
-          {formatCurrency(calculateTotalAmount(invoice.items ?? []))}
+          {formatCurrency(totalAmount)}
         </span>
       </div>
 
