@@ -96,7 +96,7 @@ export const InvoicePublicView = ({
       <CreateInvoiceFooter className='justify-center'>
         {isFreelancer ? (
           <Button variant='sorbet' asChild className='ml-auto'>
-            <Link href='/dashboard'>Back to dashboard</Link>
+            <Link href='/invoices'>Back to dashboard</Link>
           </Button>
         ) : (
           // TODO: Get the correct address from the invoice
