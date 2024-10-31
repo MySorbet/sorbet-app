@@ -7,6 +7,7 @@ import {
 } from '@/app/invoices/components/dashboard/utils';
 import { env } from '@/lib/env';
 
+/** Creates a new invoice. */
 export const createInvoice = async (invoice: InvoiceFormData) => {
   // TODO: total calculation should be done on the backend probably
   const totalAmount = calculateTotalAmount(invoice.items ?? []);
@@ -20,6 +21,7 @@ export const createInvoice = async (invoice: InvoiceFormData) => {
   return res.data;
 };
 
+/** Gets all invoices for the authenticated user. No need to send an id because the user is already authed. */
 export const getInvoices = async () => {
   const res = await axios.get<Invoice[]>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`
@@ -27,6 +29,7 @@ export const getInvoices = async () => {
   return res.data;
 };
 
+/** Gets a single invoice by id. */
 export const getInvoice = async (id: string) => {
   const res = await axios.get<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}`
