@@ -221,10 +221,9 @@ export const useWidgetManagement = ({
           (existingItem.content as PhotoWidgetContentType).croppedArea =
             croppedArea;
           const newObj = {
-            ...existingItem, // Spread all other properties
-            id: existingItem.i, // Replace 'i' with 'id'
+            ...existingItem,
+            id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
           };
-
           await useUpdateWidgetImageAsync(newObj);
         }
       } catch (error) {
@@ -244,14 +243,12 @@ export const useWidgetManagement = ({
   const handleWidgetEditLink = useCallback(
     async (key: string, url: string) => {
       try {
-        console.log('layout', layout);
         const existingItem = layout.find((item) => item.i === key);
-        console.log('here is key', key, existingItem);
         if (existingItem) {
           existingItem.redirectUrl = url;
           const newObj = {
-            ...existingItem, // Spread all other properties
-            id: existingItem.i, // Replace 'i' with 'id'
+            ...existingItem,
+            id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
           };
           await useUpdateWidgetLinkAsync(newObj);
         } else {

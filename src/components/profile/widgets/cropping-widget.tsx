@@ -136,19 +136,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     } else {
       // Image is taller than container
       offsets = { x: 0, y: (img.height - img.width) / 2 };
-      // offsets = { x: 0, y: 0 };
     }
-
-    /** for handling lop-sided images */
-    /** setZoom(
-      Math.abs(widthRatio - heightRatio) < 0.1
-        ? Math.max(widthRatio, heightRatio)
-        : widthRatio * heightRatio
-    ); */
-    /** if ((content as PhotoWidgetContentType).croppedArea === undefined) {
-      setZoom(Math.min(widthRatio, heightRatio));
-      setCrop(offsets);
-    } */
     setZoom(Math.min(widthRatio, heightRatio));
     setCrop(offsets);
     setHeight(img.height);
@@ -243,7 +231,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         onCropChange={setCrop}
         onCropComplete={onCropComplete}
         onZoomChange={setZoom}
-        // objectFit={getImageRatio(content as PhotoWidgetContentType)}
         maxZoom={10}
         initialCroppedAreaPercentages={
           (content as PhotoWidgetContentType).croppedArea

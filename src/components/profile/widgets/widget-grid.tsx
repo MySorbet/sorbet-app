@@ -38,7 +38,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const draggedRef = useRef<boolean>(false);
   const [activeWidget, setActiveWidget] = useState<string | null>(null);
 
-  // const gridRef = useRef<HTMLDivElement | null>(null); // Create a ref for the grid
   const [gridWidth, setGridWidth] = useState<number>(0);
   const [gridHeight, setGridHeight] = useState<number>(0);
 
@@ -85,14 +84,14 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
   const calculateWidgetPixelDimensions = (
     size: WidgetSize,
-    gridWith: number,
+    gridWidth: number,
     cols: number,
     margins: number
   ): { width: number; height: number } => {
     const { w, h } = getWidgetDimensions({ size });
 
     const columnWidths: { [key: number]: number } = {
-      2: gridWidth / 2, // Example width, adjust if needed
+      2: gridWidth / 2, // placeholder value, at the moment there's never 2 columns
       4: 603 / 2,
       6: 393 / 2,
       8: 289 / 2,
@@ -101,7 +100,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     // calculations from: https://github.com/react-grid-layout/react-grid-layout/issues/1432
 
     // 10/25: width needs to be refactored at a later point
-    // individual widgets widths at the moment are unimpacted by window size for some reason
+    // individual widgets widths at the moment are unimpacted by window size
     return {
       width: w * columnWidths[cols as number] + margins * (w / 2 - 1),
       height: h * rowHeight + margins * (h - 1),
@@ -110,7 +109,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
   const existingItem = layout.find((item) => item.i === activeWidget);
 
-  console.log('existingImte', existingItem);
   return (
     <>
       {editMode && layout.length < 1 && (
@@ -187,7 +185,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               {layout.map((item) => {
                 // Allow all widgets to render if not cropping
                 const shouldRender = !activeWidget || activeWidget === item.i;
-
                 return (
                   <motion.div
                     id={item.i}
@@ -237,7 +234,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
         {editMode && (
           <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
-            <div className='flex w-full max-w-96 flex-col items-center'>
+            <div className='flex w-full flex-col items-center'>
               {errorInvalidImage && (
                 <div className='animate-in slide-in-from-bottom-8 z-0 mb-2 w-full'>
                   <InvalidAlert
