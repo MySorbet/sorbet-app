@@ -7,10 +7,10 @@ import { Invoice } from './utils';
 
 // TODO: Match these colors exactly and sensibly
 const variants: Record<Invoice['status'], string> = {
-  paid: 'border-green-600/40 border-solid bg-green-100 text-green-600 hover:bg-green-200/80',
-  overdue: 'bg-red-100/40 border-red-600/40 text-red-600 hover:bg-red-200/80',
-  cancelled: 'bg-muted border-muted text-muted-foreground hover:bg-muted/80',
-  open: 'bg-sorbet/10 border-sorbet/30 text-sorbet hover:bg-sorbet/30',
+  Paid: 'border-green-600/40 border-solid bg-green-100 text-green-600 hover:bg-green-200/80',
+  Overdue: 'bg-red-100/40 border-red-600/40 text-red-600 hover:bg-red-200/80',
+  Cancelled: 'bg-muted border-muted text-muted-foreground hover:bg-muted/80',
+  Open: 'bg-sorbet/10 border-sorbet/30 text-sorbet hover:bg-sorbet/30',
 };
 
 const invoiceStatusBadgeVariants = cva(
@@ -20,7 +20,7 @@ const invoiceStatusBadgeVariants = cva(
       variant: variants,
     },
     defaultVariants: {
-      variant: 'open',
+      variant: 'Open',
     },
   }
 );

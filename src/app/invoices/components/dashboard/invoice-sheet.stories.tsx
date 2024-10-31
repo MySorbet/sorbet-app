@@ -39,7 +39,7 @@ export const Cancelled: Story = {
   args: {
     invoice: {
       ...sampleInvoices[0],
-      status: 'cancelled',
+      status: 'Cancelled',
     },
   },
 };

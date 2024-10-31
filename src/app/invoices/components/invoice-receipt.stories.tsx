@@ -13,7 +13,7 @@ const meta: Meta<typeof InvoiceReceipt> = {
   },
   argTypes: {
     status: {
-      options: ['paid', 'cancelled'],
+      options: ['Paid', 'Cancelled'],
       control: {
         type: 'select',
       },
@@ -26,12 +26,12 @@ type Story = StoryObj<typeof InvoiceReceipt>;
 
 export const Paid: Story = {
   args: {
-    status: 'paid',
+    status: 'Paid',
   },
 };
 
 export const Cancelled: Story = {
   args: {
-    status: 'cancelled',
+    status: 'Cancelled',
   },
 };

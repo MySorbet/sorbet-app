@@ -82,7 +82,7 @@ export default function InvoiceSheet({
             <div
               className={cn(
                 'mt-3 text-2xl font-semibold',
-                invoice.status === 'cancelled' && 'line-through'
+                invoice.status === 'Cancelled' && 'line-through'
               )}
             >
               {formatCurrency(invoice.totalAmount)}
@@ -138,7 +138,7 @@ export default function InvoiceSheet({
             variant='outline'
             className='w-full'
             onClick={() => setCancelDrawerOpen(true)}
-            disabled={invoice.status === 'cancelled'}
+            disabled={invoice.status === 'Cancelled'}
           >
             Cancel Invoice
           </Button>
@@ -146,7 +146,7 @@ export default function InvoiceSheet({
             variant='outline'
             className='w-full'
             onClick={onEdit}
-            disabled={invoice.status === 'cancelled'}
+            disabled={invoice.status === 'Cancelled'}
           >
             Edit Invoice
           </Button>

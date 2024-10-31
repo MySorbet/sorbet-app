@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { InvoiceStatusBadge } from './dashboard/invoice-status-badge';
 
 export type InvoiceReceiptProps = {
-  status: Extract<InvoiceStatus, 'paid' | 'cancelled'>;
+  status: Extract<InvoiceStatus, 'Paid' | 'Cancelled'>;
 };
 
 export const InvoiceReceipt = ({ status }: InvoiceReceiptProps) => {
@@ -30,7 +30,7 @@ export const InvoiceReceipt = ({ status }: InvoiceReceiptProps) => {
       <div className='space-y-3 text-center'>
         <InvoiceStatusBadge variant={status}>{status}</InvoiceStatusBadge>
         <h1 className='text-3xl font-semibold'>
-          {status === 'paid'
+          {status === 'Paid'
             ? 'This invoice has been paid'
             : 'This invoice is no longer active'}
         </h1>

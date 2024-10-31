@@ -43,7 +43,7 @@ export const InvoicePublicView = ({
     useWalletAddressByUserId(invoice?.userId ?? '');
 
   // Render closed receipts in the case of paid or cancelled invoices
-  if (invoice?.status === 'paid' || invoice?.status === 'cancelled') {
+  if (invoice?.status === 'Paid' || invoice?.status === 'Cancelled') {
     return (
       <div className='container flex size-full items-center justify-center'>
         <InvoiceReceipt status={invoice.status} />

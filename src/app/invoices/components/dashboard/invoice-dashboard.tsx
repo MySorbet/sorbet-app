@@ -25,11 +25,11 @@ export const InvoiceDashboard = ({
   onCreateNew,
   isLoading,
 }: InvoiceDashboardProps) => {
-  const openInvoices = invoices.filter((invoice) => invoice.status === 'open');
+  const openInvoices = invoices.filter((invoice) => invoice.status === 'Open');
   const overdueInvoices = invoices.filter(
-    (invoice) => invoice.status === 'overdue'
+    (invoice) => invoice.status === 'Overdue'
   );
-  const paidInvoices = invoices.filter((invoice) => invoice.status === 'paid');
+  const paidInvoices = invoices.filter((invoice) => invoice.status === 'Paid');
 
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
   const [open, setOpen] = useState(false);

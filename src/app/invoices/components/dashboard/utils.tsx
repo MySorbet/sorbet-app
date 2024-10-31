@@ -2,10 +2,10 @@ import { InvoiceItemData } from '../create/invoice-details';
 import { InvoiceFormData } from '../create/invoice-form-context';
 
 export const InvoiceStatuses = [
-  'open',
-  'cancelled',
-  'overdue',
-  'paid',
+  'Open',
+  'Cancelled',
+  'Overdue',
+  'Paid',
 ] as const;
 export type InvoiceStatus = (typeof InvoiceStatuses)[number];
 

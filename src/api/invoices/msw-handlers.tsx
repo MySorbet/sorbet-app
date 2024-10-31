@@ -39,7 +39,7 @@ export const mockCreateInvoiceHandler = http.post(
     return HttpResponse.json({
       ...invoice,
       id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a', // When an invoice is created, we mock adding an id...
-      status: 'open', // ... and a status
+      status: 'Open', // ... and a status
       userId: '123', // ... and a userId
       totalAmount: 100, // ... and a totalAmount
     });
