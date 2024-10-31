@@ -1,35 +1,26 @@
 import axios from 'axios';
 
 import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
-import {
-  calculateTotalAmount,
-  Invoice,
-} from '@/app/invoices/components/dashboard/utils';
+import { Invoice } from '@/app/invoices/components/dashboard/utils';
 import { env } from '@/lib/env';
+
+import { withAuthHeader } from '../withAuthHeader';
 
 /** Creates a new invoice. */
 export const createInvoice = async (invoice: InvoiceFormData) => {
-  // TODO: total calculation should be done on the backend probably
-  const totalAmount = calculateTotalAmount(invoice.items ?? []);
   const res = await axios.post<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
-    {
-      ...invoice,
-      totalAmount,
-    }
+    invoice,
+    await withAuthHeader()
   );
   return res.data;
 };
 
-/** Gets all invoices for the authenticated user. No need to send an id because the user is already authed. */
-export const getInvoices = async () => {
-  const res = await axios.get<Invoice[]>(
-    `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`
-  );
-  return res.data;
-};
-
-/** Gets a single invoice by id. */
+/**
+ * Gets a single invoice by id.
+ *
+ * Note: we do not send the auth header because this is a public endpoint
+ */
 export const getInvoice = async (id: string) => {
   const res = await axios.get<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}`
