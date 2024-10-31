@@ -149,6 +149,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       setZoom(Math.min(widthRatio, heightRatio));
       setCrop(offsets);
     } */
+    setZoom(Math.min(widthRatio, heightRatio));
+    setCrop(offsets);
     setHeight(img.height);
     setWidth(img.width);
   };
@@ -156,7 +158,9 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   useEffect(() => {
     switch (type) {
       case 'Photo':
-        calculateScaleFactor(content as PhotoWidgetContentType);
+        if (!(content as PhotoWidgetContentType).croppedArea) {
+          calculateScaleFactor(content as PhotoWidgetContentType);
+        }
 
         setWidgetContent(
           <PhotoWidget
