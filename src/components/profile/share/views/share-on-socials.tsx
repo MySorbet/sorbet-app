@@ -14,7 +14,7 @@ import { ViewProps } from '../share-profile-dialog';
 type ShareOnSocialsProps = ViewProps;
 
 // QR Code style for share on socials giving it a playful sorbet branded feel
-const qrSize = 184;
+const qrSize = 192; // w-48
 const qrCodeOptions: Options = {
   type: 'svg',
   width: qrSize,
@@ -85,7 +85,7 @@ export const ShareOnSocials = ({
       <Body>
         <div className='flex w-full items-center justify-center'>
           {isLoadingQRCode ? (
-            <Skeleton className={`size-[${qrSize}px]`} />
+            <Skeleton className='size-48' />
           ) : (
             <div ref={qrCodeRef} />
           )}

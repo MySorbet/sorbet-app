@@ -6,7 +6,7 @@ import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 
 // QR Code styles for the wallet address QR Code below
 const color = '#000000';
-const size = 184;
+const size = 192; // w-48
 const qrOptions: Options = {
   width: size,
   height: size,
@@ -35,7 +35,13 @@ const qrOptions: Options = {
 /**
  * Displays a QR code and a USDC address for clients to pay the invoice
  */
-export const InvoicePayUsdc = ({ address }: { address: string }) => {
+export const InvoicePayUsdc = ({
+  address,
+  isLoading,
+}: {
+  address: string;
+  isLoading?: boolean;
+}) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(address);
   };
@@ -43,16 +49,22 @@ export const InvoicePayUsdc = ({ address }: { address: string }) => {
   const { qrCodeRef, isLoadingQRCode } = useGenerateQRCode(address, qrOptions);
 
   return (
-    <div className='w-[31rem] rounded-xl bg-white p-4'>
-      <div className='flex max-w-[42ch] flex-col items-center gap-2 text-center'>
-        {isLoadingQRCode ? (
-          <Skeleton className={`size-[${size}px]`} />
+    <div className='flex w-[31rem] flex-col items-center justify-center rounded-xl bg-white p-4'>
+      <div className='flex max-w-[42ch] flex-col items-center justify-center gap-2 text-center'>
+        {isLoadingQRCode || isLoading ? (
+          <Skeleton className='size-48' />
         ) : (
           <div ref={qrCodeRef} />
         )}
-        <div className='text-sm font-medium'>{address}</div>
+        {isLoading ? (
+          <Skeleton className='h-5 w-[42ch]' />
+        ) : (
+          <div className='text-sm font-medium'>{address}</div>
+        )}
 
-        <CopyButton onCopy={handleCopy}>Copy address</CopyButton>
+        <CopyButton onCopy={handleCopy} disabled={isLoading}>
+          Copy address
+        </CopyButton>
 
         <span className='text-muted-foreground text-sm'>
           This address can only receive USDC on the{' '}

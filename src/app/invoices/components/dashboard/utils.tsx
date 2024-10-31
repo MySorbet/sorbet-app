@@ -13,6 +13,7 @@ export type Invoice = InvoiceFormData & {
   status: InvoiceStatus;
   totalAmount: number;
   id: string;
+  userId: string;
 };
 
 export const calculateTotalAmount = (items: InvoiceItemData[]) => {

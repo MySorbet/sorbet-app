@@ -1,7 +1,7 @@
 import { delay, http, HttpResponse } from 'msw';
 
-import { Invoice } from '@/app/invoices/components/dashboard/utils';
 import { sampleInvoices } from '@/app/invoices/components/dashboard/sample-invoices';
+import { Invoice } from '@/app/invoices/components/dashboard/utils';
 import { env } from '@/lib/env';
 
 /**
@@ -40,6 +40,20 @@ export const mockCreateInvoiceHandler = http.post(
       ...invoice,
       id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a', // When an invoice is created, we mock adding an id...
       status: 'open', // ... and a status
+      userId: '123', // ... and a userId
+      totalAmount: 100, // ... and a totalAmount
     });
+  }
+);
+
+/**
+ * Mock the data from the `/users/:userId/wallet` endpoint
+ * // TODO: This should live in a different file
+ */
+export const mockCurrentWalletAddressHandler = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/*/wallet`,
+  async () => {
+    await delay();
+    return HttpResponse.json('0x1234567890123456789012345678901234567890');
   }
 );

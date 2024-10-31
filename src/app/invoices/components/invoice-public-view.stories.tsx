@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { mockInvoiceHandler } from '@/api/invoices';
+import {
+  mockCurrentWalletAddressHandler,
+  mockInvoiceHandler,
+} from '@/api/invoices';
 import { useInvoice } from '@/app/invoices/hooks/useInvoice';
 
 import { sampleInvoices } from './dashboard/sample-invoices';
@@ -49,7 +52,7 @@ export const Freelancer: Story = {
 export const WithNetworkCall: Story = {
   parameters: {
     msw: {
-      handlers: [mockInvoiceHandler],
+      handlers: [mockInvoiceHandler, mockCurrentWalletAddressHandler],
     },
   },
   render: () => {

@@ -22,3 +22,10 @@ export const Default: Story = {
     address: '0x1234567890123456789012345678901234567890',
   },
 };
+
+export const Loading: Story = {
+  args: {
+    ...Default.args,
+    isLoading: true,
+  },
+};

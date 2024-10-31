@@ -42,13 +42,17 @@ export const getUserByPrivyId = async (id: string) => {
 /** Get the current wallet address of a user */
 export const getCurrentWalletAddressByUserId = async (userId: string) => {
   try {
-    const res = await axios.get(
+    const res = await axios.get<string>(
       `${API_URL}/users/${userId}/wallet`,
       await withAuthHeader()
     );
-    return res;
-  } catch (error: any) {
-    throw new Error(`Failed to get Address: ${error.response.data.message}`);
+    return res.data;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      throw new Error(`Failed to get Address: ${error.response?.data.message}`);
+    } else {
+      throw new Error(`Failed to get Address: ${error}`);
+    }
   }
 };
 
