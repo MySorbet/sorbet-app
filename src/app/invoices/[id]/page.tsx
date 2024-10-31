@@ -8,8 +8,7 @@ import { useInvoice } from '../hooks/useInvoice';
 export default function InvoicePage({ params }: { params: { id: string } }) {
   const { data, isLoading } = useInvoice(params.id);
   const { user } = useAuth();
-  // const isFreelancer = user?.id === data?.userId;
-  const isFreelancer = true;
+  const isFreelancer = user?.id === data?.userId;
 
   return (
     <InvoicePublicView
