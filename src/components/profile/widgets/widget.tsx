@@ -95,13 +95,7 @@ export const Widget: React.FC<WidgetProps> = ({
     <>None</>
   );
 
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-
   /** update image dimensions */
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    console.log(zoom, croppedArea, croppedAreaPixels);
-  };
 
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h, widgetSize);
@@ -124,64 +118,6 @@ export const Widget: React.FC<WidgetProps> = ({
       }
     }
     // TODO: Maybe widgets should be anchors?
-  };
-
-  const calculateScaleFactor = (content: PhotoWidgetContentType) => {
-    const containerRatio = widgetDimensions.width / widgetDimensions.height;
-    const img = new Image();
-    img.src = (content as PhotoWidgetContentType).image;
-
-    const imageRatio = img.width / img.height;
-    console.log(
-      widgetDimensions.width,
-      img.width,
-      widgetDimensions.height,
-      img.height
-    );
-
-    console.log(imageRatio, containerRatio);
-
-    let scaleFactor = 1;
-    let offsets = { x: 0, y: 0 };
-    let widthRatio = 0;
-    let heightRatio = 0;
-
-    if (img.height < widgetDimensions.height) {
-      heightRatio = widgetDimensions.height / img.height;
-    } else {
-      heightRatio = img.height / widgetDimensions.height;
-    }
-
-    if (img.width < widgetDimensions.width) {
-      widthRatio = widgetDimensions.width / img.width;
-    } else {
-      widthRatio = img.width / widgetDimensions.width;
-    }
-
-    if (imageRatio < containerRatio) {
-      // Image is wider than container
-      offsets = { x: (img.width - img.height) / 2, y: 0 };
-    } else {
-      // Image is taller than container
-      offsets = { x: 0, y: (img.height - img.width) / 2 };
-    }
-
-    console.log(
-      widthRatio,
-      heightRatio,
-      img.width,
-      img.height,
-      widgetDimensions.width,
-      widgetDimensions.height
-    );
-
-    /** for handling lop-sided images */
-    setZoom(
-      Math.abs(widthRatio - heightRatio) < 0.1
-        ? Math.max(widthRatio, heightRatio)
-        : widthRatio * heightRatio
-    );
-    setCrop(offsets);
   };
 
   useEffect(() => {
@@ -293,13 +229,13 @@ export const Widget: React.FC<WidgetProps> = ({
         break;
 
       case 'Photo':
-        console.log(calculateScaleFactor(content as PhotoWidgetContentType));
-        calculateScaleFactor(content as PhotoWidgetContentType);
-
         setWidgetContent(
           <PhotoWidget
-            offsets={crop}
-            zoom={zoom}
+            croppedArea={(content as PhotoWidgetContentType).croppedArea}
+            /* offsets={
+              (content as PhotoWidgetContentType).offsets
+            } */
+            // zoom={(content as PhotoWidgetContentType).scale}
             content={content as PhotoWidgetContentType}
             size={widgetSize}
           />
@@ -348,7 +284,7 @@ export const Widget: React.FC<WidgetProps> = ({
     }
   }, [type, widgetSize, content]);
 
-  console.log(document.getElementById(identifier)?.style.transform);
+  console.log('loading', loading, content);
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div
@@ -367,25 +303,6 @@ export const Widget: React.FC<WidgetProps> = ({
               type === 'Photo' && 'rounded-3xl'
             )}
           />
-        ) : type === 'Photo' &&
-          /** activeWidget || */ activeWidget === identifier ? (
-          <div className='relative h-full overflow-hidden rounded-3xl'>
-            <Cropper
-              image={(content as PhotoWidgetContentType)?.image}
-              crop={crop}
-              zoom={zoom}
-              aspect={3 / 3}
-              cropSize={{
-                width: widgetDimensions.width,
-                height: widgetDimensions.height,
-              }}
-              onCropChange={setCrop}
-              onCropComplete={onCropComplete}
-              onZoomChange={setZoom}
-              // objectFit={getImageRatio(content as PhotoWidgetContentType)}
-              maxZoom={10}
-            />
-          </div>
         ) : (
           widgetContent
         )}

@@ -125,6 +125,7 @@ export const updateWidgetImage = async (widgetLayoutItem: WidgetLayoutItem) => {
     content: widgetLayoutItem.content,
   };
 
+  console.log('plez work');
   try {
     const res = await axios.patch(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,

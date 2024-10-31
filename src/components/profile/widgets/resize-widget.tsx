@@ -22,6 +22,8 @@ interface ResizeWidgetProps {
   // zoom: number;
   // offsets: any;
   initialSize: WidgetSize;
+  croppedArea?: any;
+  handleImageCropping?: any;
 }
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
@@ -30,13 +32,12 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   setPopoverOpen,
   onEditLink,
   setActiveWidget,
-  // handleImageCropping,
+  handleImageCropping,
   redirectUrl,
   identifier,
   activeWidget,
   initialSize = 'A',
-  // zoom,
-  // offsets,
+  croppedArea,
 }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
   const [currentLink, setCurrentLink] = useState<string>(
@@ -65,9 +66,10 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
     onEditLink(currentLink);
   };
 
-  const startCropping = () => {
+  const startCropping = async () => {
     if (activeWidget) {
-      // handleImageCropping(identifier, zoom, offsets);
+      console.log('id check', identifier);
+      await handleImageCropping(identifier, croppedArea);
       setActiveWidget(null);
     } else {
       setActiveWidget(identifier);

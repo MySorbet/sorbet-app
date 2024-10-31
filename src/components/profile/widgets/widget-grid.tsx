@@ -108,8 +108,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     };
   };
 
-  console.log(gridHeight);
-
   const existingItem = layout.find((item) => item.i === activeWidget);
 
   console.log('existingImte', existingItem);
@@ -185,7 +183,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 }
               }}
               /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
-              draggableCancel='.widget-motion-wrapper'
             >
               {layout.map((item) => {
                 // Allow all widgets to render if not cropping

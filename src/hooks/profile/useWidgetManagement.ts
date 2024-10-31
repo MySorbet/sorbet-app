@@ -209,20 +209,22 @@ export const useWidgetManagement = ({
   );
 
   const handleImageCropping = useCallback(
-    async (key: string, scale: number, offsets: { x: number; y: number }) => {
+    async (key: string, croppedArea: any) => {
       setAddingWidget(true);
       let widgetUrl: string = '';
 
+      console.log('please');
       try {
         const existingItem = layout.find((item) => item.i === key);
 
         if (existingItem) {
-          (existingItem.content as PhotoWidgetContentType).scale = scale;
-          (existingItem.content as PhotoWidgetContentType).offsets = offsets;
+          (existingItem.content as PhotoWidgetContentType).croppedArea =
+            croppedArea;
           const newObj = {
             ...existingItem, // Spread all other properties
             id: existingItem.i, // Replace 'i' with 'id'
           };
+
           await useUpdateWidgetImageAsync(newObj);
         }
       } catch (error) {

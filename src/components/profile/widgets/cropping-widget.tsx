@@ -1,54 +1,20 @@
 import { Trash2 } from 'lucide-react';
-import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
 import React, { useEffect, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
 import {
-  BehanceWidgetContentType,
-  DribbbleWidgetContentType,
-  FigmaWidgetContentType,
-  GithubWidgetContentType,
-  InstagramWidgetContentType,
-  LinkedInProfileWidgetContentType,
   LinkWidgetContentType,
-  MediumArticleContentType,
   PhotoWidgetContentType,
-  SoundcloudTrackContentType,
-  SpotifyWidgetContentType,
-  SubstackWidgetContentType,
-  TwitterWidgetContentType,
   WidgetContentType,
-  WidgetDimensions,
   WidgetLayoutItem,
   WidgetSize,
   WidgetType,
-  YoutubeWidgetContentType,
 } from '@/types';
 
 import { ResizeWidget } from './resize-widget';
-import { BehanceWidget } from './widget-behance';
-import { DribbbleWidget } from './widget-dribbble';
-import { WidgetErrorFallback } from './widget-error-fallback';
-import { FigmaWidget } from './widget-figma';
-import { GithubWidget } from './widget-github';
-import { InstagramWidget } from './widget-instagram';
 import { LinkWidget } from './widget-link';
-import { LinkedInProfileWidget } from './widget-linkedin-profile';
-import { MediumWidget } from './widget-medium';
 import { PhotoWidget } from './widget-photo';
-import { SoundcloudWidget } from './widget-soundcloud';
-import { SpotifyAlbumWidget } from './widget-spotify-album';
-import { SpotifySongWidget } from './widget-spotify-song';
-import { SubstackWidget } from './widget-substack';
-import { TwitterWidget } from './widget-twitter';
-import { YouTubeWidget } from './widget-youtube';
 import Cropper, { Area } from 'react-easy-crop';
-import { ImageOverlay } from '@/components/profile/widgets/image-overlay';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import { max } from 'bn.js';
 
 interface CroppingWidgetProps {
   identifier: string;
@@ -64,6 +30,7 @@ interface CroppingWidgetProps {
   showControls?: boolean;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
+  handleImageCropping: any;
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
   activeWidget: string | null;
@@ -72,7 +39,6 @@ interface CroppingWidgetProps {
     height: number;
   };
   addUrl: any;
-  handleImageCropping: any;
   rowHeight: any;
   margins: any;
 }
@@ -87,12 +53,12 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   showControls = false,
   handleResize,
   handleRemove,
+  handleImageCropping,
   handleEditLink,
   draggedRef,
   setActiveWidget,
   activeWidget,
   widgetDimensions,
-  handleImageCropping,
   rowHeight,
   margins,
   item,
@@ -106,12 +72,16 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+
+  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+
   const [height, setHeight] = useState(1);
   const [width, setWidth] = useState(1);
 
   /** update image dimensions */
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    console.log(zoom, croppedArea, croppedAreaPixels);
+    console.log('here', croppedArea, zoom, crop);
+    setCroppedArea(croppedArea);
   };
 
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
@@ -143,14 +113,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     img.src = (content as PhotoWidgetContentType).image;
 
     const imageRatio = img.width / img.height;
-    console.log(
-      widgetDimensions.width,
-      img.width,
-      widgetDimensions.height,
-      img.height
-    );
-
-    console.log(imageRatio, containerRatio);
 
     let offsets = { x: 0, y: 0 };
     let widthRatio = 0;
@@ -174,16 +136,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     } else {
       // Image is taller than container
       offsets = { x: 0, y: (img.height - img.width) / 2 };
+      // offsets = { x: 0, y: 0 };
     }
-
-    console.log(
-      widthRatio,
-      heightRatio,
-      img.width,
-      img.height,
-      widgetDimensions.width,
-      widgetDimensions.height
-    );
 
     /** for handling lop-sided images */
     /** setZoom(
@@ -191,23 +145,26 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         ? Math.max(widthRatio, heightRatio)
         : widthRatio * heightRatio
     ); */
-    setZoom(Math.min(widthRatio, heightRatio));
-    setCrop(offsets);
+    /** if ((content as PhotoWidgetContentType).croppedArea === undefined) {
+      setZoom(Math.min(widthRatio, heightRatio));
+      setCrop(offsets);
+    } */
     setHeight(img.height);
     setWidth(img.width);
-    console.log('check', img.width, img.height);
   };
 
   useEffect(() => {
     switch (type) {
       case 'Photo':
-        console.log(calculateScaleFactor(content as PhotoWidgetContentType));
         calculateScaleFactor(content as PhotoWidgetContentType);
 
         setWidgetContent(
           <PhotoWidget
-            offsets={{ x: 0, y: 0 }}
-            zoom={1}
+            croppedArea={(content as PhotoWidgetContentType).croppedArea}
+            /* offsets={
+              (content as PhotoWidgetContentType).offsets
+            } */
+            // zoom={(content as PhotoWidgetContentType).scale}
             content={content as PhotoWidgetContentType}
             size={widgetSize}
           />
@@ -231,14 +188,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     }
   }, [type, widgetSize, content]);
 
-  console.log(
-    item,
-    widgetDimensions,
-    (item.x - item.w) * widgetDimensions.width,
-    (item.y - item.h) * widgetDimensions.height,
-    rowHeight,
-    widgetDimensions.height
-  );
+  console.log('cropper', zoom, crop);
+
   return (
     <div
       className={`rounded-3xl`}
@@ -261,8 +212,14 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         style={{
           containerStyle: {
             position: 'relative',
-            height: `${Math.max(widgetDimensions.height, height)}px`,
-            width: `${Math.max(widgetDimensions.width, width)}px`,
+            height: `${Math.min(
+              Math.max(widgetDimensions.height, height),
+              700
+            )}px`,
+            width: `${Math.min(
+              Math.max(widgetDimensions.width, width),
+              700
+            )}px`,
             borderRadius: '10px',
           },
           cropAreaStyle: {
@@ -284,6 +241,11 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         onZoomChange={setZoom}
         // objectFit={getImageRatio(content as PhotoWidgetContentType)}
         maxZoom={10}
+        initialCroppedAreaPercentages={
+          (content as PhotoWidgetContentType).croppedArea
+            ? (content as PhotoWidgetContentType).croppedArea
+            : undefined
+        }
       />
       <div
         className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform ${
@@ -302,6 +264,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
             initialSize={initialSize}
             identifier={identifier}
             activeWidget={activeWidget}
+            croppedArea={croppedArea}
+            handleImageCropping={handleImageCropping}
             setActiveWidget={setActiveWidget}
           />
           <Button

@@ -23,8 +23,9 @@ export interface DribbbleWidgetContentType {
 
 export interface PhotoWidgetContentType {
   image: string;
-  offsets?: { x: number; y: number };
-  scale?: number;
+  croppedArea?: { x: number; y: number; width: number; height: number };
+  // offsets?: { x: number; y: number };
+  // scale?: number;
 }
 
 export interface BehanceWidgetContentType {
