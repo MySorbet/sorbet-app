@@ -51,5 +51,29 @@ const PostHogIdentityWrapper = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
+  const isRecording = posthog.sessionRecordingStarted();
+  /**
+   * This effect checks to see if a PostHog session recording is in progress.
+   * If it is, we set a 1 minute timer to record and then stop the recording after.
+   */
+  useEffect(() => {
+    if (isRecording) {
+      console.log('session recording in progress...');
+      const timer = setTimeout(() => {
+        console.log('starting timer for session recording');
+        posthog.stopSessionRecording();
+        console.log('session recording ended');
+      }, 60000); // * For how long the session recording lasts
+
+      return () => {
+        clearTimeout(timer)
+        // This is a fallback in case for whatever reason, the session recording does not stop.
+        posthog.stopSessionRecording()
+      };
+    } else {
+      console.log('no session recording in progress');
+    }
+  }, [isRecording]);
+
   return children;
 };
