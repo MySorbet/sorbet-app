@@ -16,6 +16,15 @@ export const createInvoice = async (invoice: InvoiceFormData) => {
   return res.data;
 };
 
+/** Gets all invoices for the authenticated user. No need to send an id because the user is already authed. */
+export const getInvoices = async () => {
+  const res = await axios.get<Invoice[]>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
+    await withAuthHeader()
+  );
+  return res.data;
+};
+
 /**
  * Gets a single invoice by id.
  *
