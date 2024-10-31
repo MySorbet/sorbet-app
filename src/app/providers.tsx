@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { Provider } from 'react-redux';
 import { baseSepolia } from 'viem/chains';
 
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { Toaster } from '@/components/ui/toaster';
 // TODO: figure out how to use this without dynamic import
 const AuthProvider = dynamic(() => import('@/hooks/useAuth'), { ssr: false });
@@ -31,6 +32,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             {children}
           </QueryClientProvider>
           <Toaster />
+          <SonnerToaster />
         </AuthProvider>
       </Provider>
     </PrivyProvider>
