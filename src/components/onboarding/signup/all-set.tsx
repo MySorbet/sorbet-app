@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import Confetti, { ConfettiRef } from '@/components/magicui/confetti';
 import { useUserSignUp } from '@/components/onboarding/signup/signup';
 import { Button } from '@/components/ui/button';
+import { featureFlags } from '@/lib/flags';
 
 import { FormContainer } from '../form-container';
 
@@ -25,9 +26,11 @@ const AllSet = () => {
   }, []);
 
   const handleContinue = () => {
-    posthog.startSessionRecording()
-    router.push(`/${userData.handle}`)
-  }
+    if (featureFlags.sessionReplay) {
+      posthog.startSessionRecording();
+    }
+    router.push(`/${userData.handle}`);
+  };
 
   return (
     <FormContainer>
