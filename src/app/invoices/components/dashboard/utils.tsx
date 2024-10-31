@@ -27,7 +27,14 @@ export const formatCurrency = (amount?: number) => {
   }).format(amount);
 };
 
-export const formatDate = (date?: Date | null) => {
+export const formatDate = (date?: Date | string | null) => {
+  // TODO: When a JSON Invoice is serialized and sent to or from a server, the date is representing as a string
+  // Then when it is deserialized, it is a string. Ideally, we would handle this where the data is fetched, but this is a quick fix.
+  if (typeof date === 'string') {
+    console.log('formatting a date given as a string ', date);
+    date = new Date(date);
+  }
+
   if (!date) return '';
   return date.toLocaleDateString('en-US', {
     year: 'numeric',

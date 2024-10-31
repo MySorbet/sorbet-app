@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockInvoiceHandler } from '@/api/invoices';
+import { useInvoice } from '@/app/invoices/hooks/useInvoice';
+
 import { sampleInvoices } from './dashboard/sample-invoices';
 import { InvoicePublicView } from './invoice-public-view';
 
@@ -40,5 +43,17 @@ export const Freelancer: Story = {
   args: {
     ...Default.args,
     isFreelancer: true,
+  },
+};
+
+export const WithNetworkCall: Story = {
+  parameters: {
+    msw: {
+      handlers: [mockInvoiceHandler],
+    },
+  },
+  render: () => {
+    const { data: invoice, isLoading } = useInvoice('123');
+    return <InvoicePublicView invoice={invoice} isLoading={isLoading} />;
   },
 };

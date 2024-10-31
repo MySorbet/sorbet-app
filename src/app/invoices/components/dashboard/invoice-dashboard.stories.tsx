@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
+import { mockInvoicesHandler } from '@/api/invoices';
+import { useInvoices } from '@/app/invoices/hooks/useInvoices';
+
 import { InvoiceDashboard } from './invoice-dashboard';
 import { sampleInvoices } from './sample-invoices';
 
@@ -24,6 +27,24 @@ type Story = StoryObj<typeof InvoiceDashboard>;
 export const Default: Story = {
   args: {
     invoices: sampleInvoices,
+  },
+};
+
+export const WithNetworkCall: Story = {
+  parameters: {
+    msw: {
+      handlers: [mockInvoicesHandler],
+    },
+  },
+  render: () => {
+    const { data, isLoading } = useInvoices();
+    return (
+      <InvoiceDashboard
+        onCreateNew={fn()}
+        invoices={data ?? []}
+        isLoading={isLoading}
+      />
+    );
   },
 };
 

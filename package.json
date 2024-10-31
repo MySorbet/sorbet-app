@@ -170,6 +170,8 @@
     "ieee754": "^1.2.1",
     "jest": "^27.5.1",
     "lint-staged": "^12.5.0",
+    "msw": "^2.6.0",
+    "msw-storybook-addon": "^2.0.3",
     "next-router-mock": "^0.7.5",
     "next-sitemap": "^4.2.3",
     "postcss": "^8.4.31",
@@ -189,5 +191,10 @@
       "prettier -w"
     ]
   },
-  "packageManager": "yarn@4.4.1"
+  "packageManager": "yarn@4.4.1",
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }
