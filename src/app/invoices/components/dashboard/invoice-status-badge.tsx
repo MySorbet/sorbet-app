@@ -91,6 +91,7 @@ function InvoiceStatusBadge({
     );
 
   // Otherwise, we'll return a badge with a dropdown menu allowing the user to change the status
+  // TODO: Consider using popover instead of dropdown menu
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
