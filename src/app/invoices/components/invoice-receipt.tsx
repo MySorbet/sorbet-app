@@ -28,7 +28,7 @@ export const InvoiceReceipt = ({ status }: InvoiceReceiptProps) => {
 
       {/* Status */}
       <div className='space-y-3 text-center'>
-        <InvoiceStatusBadge variant={status}>{status}</InvoiceStatusBadge>
+        <InvoiceStatusBadge variant={status} />
         <h1 className='text-3xl font-semibold'>
           {status === 'Paid'
             ? 'This invoice has been paid'

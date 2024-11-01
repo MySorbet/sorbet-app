@@ -62,9 +62,7 @@ export const InvoiceTable = ({
               >
                 <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                 <TableCell>
-                  <InvoiceStatusBadge variant={invoice.status}>
-                    {invoice.status}
-                  </InvoiceStatusBadge>
+                  <InvoiceStatusBadge variant={invoice.status} interactive />
                 </TableCell>
                 <TableCell>{invoice.toName}</TableCell>
                 <TableCell className='text-right'>

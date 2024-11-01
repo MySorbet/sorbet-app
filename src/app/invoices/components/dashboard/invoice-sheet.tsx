@@ -85,9 +85,7 @@ export default function InvoiceSheet({
         <div className='flex flex-1 flex-col gap-12'>
           {/* Invoice status and total amount */}
           <div>
-            <InvoiceStatusBadge variant={invoice.status}>
-              {invoice.status}
-            </InvoiceStatusBadge>
+            <InvoiceStatusBadge variant={invoice.status} />
             <div
               className={cn(
                 'mt-3 text-2xl font-semibold',

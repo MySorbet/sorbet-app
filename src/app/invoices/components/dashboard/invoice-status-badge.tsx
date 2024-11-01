@@ -1,12 +1,20 @@
+import { ChevronDown } from '@untitled-ui/icons-react';
 import { type VariantProps, cva } from 'class-variance-authority';
 import * as React from 'react';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
-import { Invoice } from './utils';
+import { InvoiceStatus, InvoiceStatuses } from './utils';
 
 // TODO: Match these colors exactly and sensibly
-const variants: Record<Invoice['status'], string> = {
+const variants: Record<InvoiceStatus, string> = {
   Paid: 'border-green-600/40 border-solid bg-green-100 text-green-600 hover:bg-green-200/80',
   Overdue: 'bg-red-100/40 border-red-600/40 text-red-600 hover:bg-red-200/80',
   Cancelled: 'bg-muted border-muted text-muted-foreground hover:bg-muted/80',
@@ -14,7 +22,7 @@ const variants: Record<Invoice['status'], string> = {
 };
 
 const invoiceStatusBadgeVariants = cva(
-  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 capitalize',
+  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 capitalize group',
   {
     variants: {
       variant: variants,
@@ -26,18 +34,87 @@ const invoiceStatusBadgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof invoiceStatusBadgeVariants> {}
+  extends React.HTMLAttributes<HTMLButtonElement | HTMLDivElement>,
+    VariantProps<typeof invoiceStatusBadgeVariants> {
+  /** Function to call when the user selects a new status. Only called if interactive is true */
+  onValueChange?: (value: InvoiceStatus) => void;
+  /** Whether the badge is interactive with a dropdown menu */
+  interactive?: boolean;
+}
 
 /**
- * Copy of shadcn Badge with variants for invoice status
+ * Simple shadcn style badge without dropdown menu.
  */
-function InvoiceStatusBadge({ className, variant, ...props }: BadgeProps) {
+const InvoiceStatusBadgeSimple = ({
+  className,
+  variant,
+  children,
+  ...props
+}: BadgeProps) => {
   return (
     <div
       className={cn(invoiceStatusBadgeVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {children}
+      {variant}
+    </div>
+  );
+};
+
+/**
+ * Copy of shadcn Badge with variants for invoice status.
+ * Can be interactive with a dropdown menu or not.
+ */
+function InvoiceStatusBadge({
+  className,
+  variant,
+  children,
+  onValueChange,
+  interactive = false,
+  ...props
+}: BadgeProps) {
+  // If the badge is not interactive
+  // Return the classic shad style badge
+  if (!interactive)
+    return (
+      <InvoiceStatusBadgeSimple
+        variant={variant}
+        className={className}
+        {...props}
+      >
+        {children}
+      </InvoiceStatusBadgeSimple>
+    );
+
+  // Otherwise, we'll return a badge with a dropdown menu allowing the user to change the status
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className={cn(invoiceStatusBadgeVariants({ variant }), className)}
+          {...props}
+        >
+          {children}
+          {variant}
+          <ChevronDown className='ml-1 size-3 transition-transform group-hover:translate-y-0.5' />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuRadioGroup
+          value={variant ?? 'Open'}
+          onValueChange={(value) => onValueChange?.(value as InvoiceStatus)} // Cast is safe because all children are valid InvoiceStatus values
+        >
+          {InvoiceStatuses.map((status) => (
+            <DropdownMenuRadioItem key={status} value={status}>
+              <InvoiceStatusBadgeSimple
+                variant={status}
+              ></InvoiceStatusBadgeSimple>
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
