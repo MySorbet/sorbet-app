@@ -98,11 +98,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   icon={<CircleArrowRight />}
                   href={`/${user.handle}`}
                 />
-                <SidebarHeaderOption
-                  label='Invoices'
-                  icon={<Receipt />}
-                  href='/invoices'
-                />
+                {featureFlags.invoices && (
+                  <SidebarHeaderOption
+                    label='Invoices'
+                    icon={<Receipt />}
+                    href='/invoices'
+                  />
+                )}
               </div>
               <Balances />
             </div>
