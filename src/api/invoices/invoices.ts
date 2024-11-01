@@ -62,3 +62,18 @@ export const cancelInvoice = async (id: string) => {
   );
   return res.data;
 };
+
+/**
+ * Marks an invoice as paid.
+ *
+ * @param id - The id of the invoice to mark as paid
+ * @returns The paid invoice
+ */
+export const payInvoice = async (id: string) => {
+  const res = await axios.put<Invoice>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}/paid`,
+    {}, // No data on the put, just hitting the endpoint marks the invoice as paid
+    await withAuthHeader()
+  );
+  return res.data;
+};

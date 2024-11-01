@@ -64,6 +64,7 @@ export const InvoiceTable = ({
               >
                 <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                 <TableCell>
+                  {/* TODO: Render overdue badge based on date */}
                   <InvoiceStatusBadge
                     variant={invoice.status}
                     interactive

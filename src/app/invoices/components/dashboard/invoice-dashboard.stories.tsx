@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { mockCancelInvoiceHandler, mockInvoicesHandler } from '@/api/invoices';
+import {
+  mockCancelInvoiceHandler,
+  mockInvoicesHandler,
+  mockPayInvoiceHandler,
+} from '@/api/invoices';
 import { useInvoices } from '@/app/invoices/hooks/useInvoices';
 
 import { InvoiceDashboard } from './invoice-dashboard';
@@ -33,8 +37,12 @@ export const Default: Story = {
 export const WithNetworkCall: Story = {
   parameters: {
     msw: {
-      // Mock network calls for fetching invoices and cancelling an invoice
-      handlers: [mockInvoicesHandler, mockCancelInvoiceHandler],
+      // Mock network calls for fetching invoices, cancelling an invoice, and paying an invoice
+      handlers: [
+        mockInvoicesHandler,
+        mockCancelInvoiceHandler,
+        mockPayInvoiceHandler,
+      ],
     },
   },
   render: () => {

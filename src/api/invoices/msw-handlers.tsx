@@ -58,6 +58,17 @@ export const mockCancelInvoiceHandler = http.put(
 );
 
 /**
+ * Mock the data from the `/invoices/:id/paid` endpoint
+ */
+export const mockPayInvoiceHandler = http.put(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/*/paid`,
+  async () => {
+    await delay();
+    return HttpResponse.json({ ...sampleInvoices[0], status: 'Paid' });
+  }
+);
+
+/**
  * Mock the data from the `/users/:userId/wallet` endpoint
  * // TODO: This should live in a different file (like /user/msw-handlers.tsx)
  */

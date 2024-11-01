@@ -65,6 +65,8 @@ const InvoiceStatusBadgeSimple = ({
 /**
  * Copy of shadcn Badge with variants for invoice status.
  * Can be interactive with a dropdown menu or not.
+ *
+ * Badges with variant 'Cancelled' cannot be interactive since they cannot be reopened.
  */
 function InvoiceStatusBadge({
   className,
@@ -76,7 +78,8 @@ function InvoiceStatusBadge({
 }: BadgeProps) {
   // If the badge is not interactive
   // Return the classic shad style badge
-  if (!interactive)
+  // Since cancelled invoices may not be reopened, ignore interactive for cancelled
+  if (!interactive || variant === 'Cancelled')
     return (
       <InvoiceStatusBadgeSimple
         variant={variant}
@@ -106,7 +109,13 @@ function InvoiceStatusBadge({
           onClick={(e) => e.stopPropagation()} // Included to prevent the click event from bubbling up to UI behind the dropdown
           onValueChange={(value) => onValueChange?.(value as InvoiceStatus)} // Cast is safe because all children are valid InvoiceStatus values
         >
-          {InvoiceStatuses.map((status) => (
+          {/* Filter out the current variant (since you don't need to change it) */}
+          {/* Filter out overdue since it is cosmetic */}
+          {/* Filter out open since you may not reopen an invoice */}
+          {InvoiceStatuses.filter(
+            (status) =>
+              status !== variant && status !== 'Overdue' && status !== 'Open'
+          ).map((status) => (
             <DropdownMenuRadioItem key={status} value={status}>
               <InvoiceStatusBadgeSimple
                 variant={status}

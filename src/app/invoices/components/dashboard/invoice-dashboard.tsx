@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import { useCancelInvoice } from '@/app/invoices/hooks/useCancelInvoice';
 import { useInvoicePrinter } from '@/app/invoices/hooks/useInvoicePrinter';
+import { usePayInvoice } from '@/app/invoices/hooks/usePayInvoice';
 import { Button } from '@/components/ui/button';
 
 import InvoiceSheet from './invoice-sheet';
@@ -64,14 +65,21 @@ export const InvoiceDashboard = ({
   // Cancel the invoice using the mutation hook. When complete, invalidate the
   // invoices query
   // TODO: handle error
+  // TODO: Loading states
+  const { payInvoiceMutation, isPending: isPayingInvoice } = usePayInvoice();
   const handleInvoiceStatusChange = async (
     invoice: Invoice,
     status: InvoiceStatus
   ) => {
-    console.log('Invoice status changed', invoice, status);
-    if (status !== 'Cancelled') return; // Only cancelled invoices are allowed rn
-    // TODO: The other state changes
-    await cancelInvoiceMutation(invoice.id);
+    if (status === 'Cancelled') {
+      await cancelInvoiceMutation(invoice.id);
+    } else if (status === 'Paid') {
+      await payInvoiceMutation(invoice.id);
+    } else {
+      // Currently, you can only cancel or pay an invoice
+      // You cannot mark an invoice as open (reopen) and overdue is cosmetic
+      return;
+    }
 
     // Force the parent to re-fetch invoices
     queryClient.invalidateQueries({
