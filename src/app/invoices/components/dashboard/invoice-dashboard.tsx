@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 
@@ -46,12 +47,18 @@ export const InvoiceDashboard = ({
   };
 
   // Cancel an invoice using the mutation hook. When complete, set the selected
-  // invoice to the cancelled invoice. TODO: handle error
+  // invoice to the cancelled invoice and invalidate the invoices query
+  // TODO: handle error
   const { cancelInvoiceMutation, isPending } = useCancelInvoice();
+  const queryClient = useQueryClient();
   const handleCancelInvoice = async () => {
     if (!selectedInvoice) return;
     const cancelledInvoice = await cancelInvoiceMutation(selectedInvoice.id);
     setSelectedInvoice(cancelledInvoice);
+    // Force the parent to re-fetch invoices
+    queryClient.invalidateQueries({
+      queryKey: ['invoices'],
+    });
   };
 
   const { HiddenInvoiceDocument, print } = useInvoicePrinter(selectedInvoice);
