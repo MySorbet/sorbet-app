@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { cancelInvoice } from '@/api/invoices/invoices';
 
@@ -8,6 +9,9 @@ import { cancelInvoice } from '@/api/invoices/invoices';
 export const useCancelInvoice = () => {
   const { mutateAsync: cancelInvoiceMutation, isPending } = useMutation({
     mutationFn: cancelInvoice,
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
   return { cancelInvoiceMutation, isPending };
 };

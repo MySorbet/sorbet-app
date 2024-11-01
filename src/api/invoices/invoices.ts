@@ -57,6 +57,7 @@ export const getInvoice = async (id: string) => {
 export const cancelInvoice = async (id: string) => {
   const res = await axios.put<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}/cancel`,
+    {}, // No data on the put, just hitting the endpoint cancels the invoice
     await withAuthHeader()
   );
   return res.data;
