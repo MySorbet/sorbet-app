@@ -138,7 +138,8 @@ export default function InvoiceSheet({
             variant='outline'
             className='w-full'
             onClick={() => setCancelDrawerOpen(true)}
-            disabled={invoice.status === 'Cancelled'}
+            // disabled={invoice.status === 'Cancelled'}
+            disabled={true} // TODO: Implement cancel invoice
           >
             Cancel Invoice
           </Button>
@@ -146,7 +147,8 @@ export default function InvoiceSheet({
             variant='outline'
             className='w-full'
             onClick={onEdit}
-            disabled={invoice.status === 'Cancelled'}
+            // disabled={invoice.status === 'Cancelled'}
+            disabled={true} // TODO: Implement edit invoice
           >
             Edit Invoice
           </Button>
