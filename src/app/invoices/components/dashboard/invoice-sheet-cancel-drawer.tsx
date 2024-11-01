@@ -12,6 +12,8 @@ type InvoiceSheetCancelDrawerProps = {
   open?: boolean;
   /** Callback to set the open state */
   setOpen?: (open: boolean) => void;
+  /** Whether the drawer should display a loading state */
+  isLoading?: boolean;
 };
 
 /**
@@ -22,6 +24,7 @@ export const InvoiceSheetCancelDrawer = ({
   onCancel,
   open,
   setOpen,
+  isLoading,
 }: InvoiceSheetCancelDrawerProps) => {
   const [isVisible, setIsVisible] = useState(open);
 
@@ -59,8 +62,13 @@ export const InvoiceSheetCancelDrawer = ({
         <Button variant='outline' className='w-full' onClick={handleBack}>
           Go back
         </Button>
-        <Button variant='destructive' className='w-full' onClick={onCancel}>
-          Cancel invoice
+        <Button
+          variant='destructive'
+          className='w-full'
+          onClick={onCancel}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Cancelling...' : 'Cancel invoice'}
         </Button>
       </div>
     </div>

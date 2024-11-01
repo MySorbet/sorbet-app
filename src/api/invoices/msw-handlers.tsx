@@ -57,3 +57,15 @@ export const mockCurrentWalletAddressHandler = http.get(
     return HttpResponse.json('0x1234567890123456789012345678901234567890');
   }
 );
+
+/**
+ * Mock the data from the `/invoices/:id/cancel` endpoint
+ * // TODO: This should live in a different file
+ */
+export const mockCancelInvoiceHandler = http.put(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/*/cancel`,
+  async () => {
+    await delay();
+    return HttpResponse.json({ ...sampleInvoices[0], status: 'Cancelled' });
+  }
+);

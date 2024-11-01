@@ -2,7 +2,7 @@
 
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Download01 } from '@untitled-ui/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +37,7 @@ export default function InvoiceSheet({
   onEdit,
   onCancel,
   onDownload,
+  isUpdating,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -44,8 +45,16 @@ export default function InvoiceSheet({
   onEdit?: () => void;
   onCancel?: () => void;
   onDownload?: () => void;
+  isUpdating?: boolean;
 }) {
+  // Manage the open state of the cancel confirmation drawer
   const [cancelDrawerOpen, setCancelDrawerOpen] = useState(false);
+  // This effect closes the cancel confirmation drawer if the invoice is cancelled
+  useEffect(() => {
+    if (invoice?.status === 'Cancelled') {
+      setCancelDrawerOpen(false);
+    }
+  }, [invoice?.status]);
 
   if (!invoice) return null;
 
@@ -138,8 +147,7 @@ export default function InvoiceSheet({
             variant='outline'
             className='w-full'
             onClick={() => setCancelDrawerOpen(true)}
-            // disabled={invoice.status === 'Cancelled'}
-            disabled={true} // TODO: Implement cancel invoice
+            disabled={invoice.status === 'Cancelled'}
           >
             Cancel Invoice
           </Button>
@@ -159,6 +167,7 @@ export default function InvoiceSheet({
           open={cancelDrawerOpen}
           setOpen={setCancelDrawerOpen}
           onCancel={onCancel}
+          isLoading={isUpdating}
         />
       </SheetContent>
     </Sheet>

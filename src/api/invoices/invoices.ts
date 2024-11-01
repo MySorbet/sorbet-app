@@ -6,7 +6,12 @@ import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../withAuthHeader';
 
-/** Creates a new invoice. */
+/**
+ * Creates a new invoice.
+ *
+ * @param invoice - The invoice form data to create with
+ * @returns The created invoice
+ */
 export const createInvoice = async (invoice: InvoiceFormData) => {
   const res = await axios.post<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
@@ -16,7 +21,11 @@ export const createInvoice = async (invoice: InvoiceFormData) => {
   return res.data;
 };
 
-/** Gets all invoices for the authenticated user. No need to send an id because the user is already authed. */
+/**
+ * Gets all invoices for the authenticated user.
+ *
+ * No need to send an id because the user is already authed.
+ */
 export const getInvoices = async () => {
   const res = await axios.get<Invoice[]>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
@@ -28,11 +37,27 @@ export const getInvoices = async () => {
 /**
  * Gets a single invoice by id.
  *
+ * @param id - The id of the invoice to get
+ *
  * Note: we do not send the auth header because this is a public endpoint
  */
 export const getInvoice = async (id: string) => {
   const res = await axios.get<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}`
+  );
+  return res.data;
+};
+
+/**
+ * Cancels an invoice.
+ *
+ * @param id - The id of the invoice to cancel
+ * @returns The cancelled invoice
+ */
+export const cancelInvoice = async (id: string) => {
+  const res = await axios.put<Invoice>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}/cancel`,
+    await withAuthHeader()
   );
   return res.data;
 };

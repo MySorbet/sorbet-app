@@ -3,6 +3,7 @@
 import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 
+import { useCancelInvoice } from '@/app/invoices/hooks/useCancelInvoice';
 import { useInvoicePrinter } from '@/app/invoices/hooks/useInvoicePrinter';
 import { Button } from '@/components/ui/button';
 
@@ -44,6 +45,15 @@ export const InvoiceDashboard = ({
     }
   };
 
+  // Cancel an invoice using the mutation hook. When complete, set the selected
+  // invoice to the cancelled invoice. TODO: handle error
+  const { cancelInvoiceMutation, isPending } = useCancelInvoice();
+  const handleCancelInvoice = async () => {
+    if (!selectedInvoice) return;
+    const cancelledInvoice = await cancelInvoiceMutation(selectedInvoice.id);
+    setSelectedInvoice(cancelledInvoice);
+  };
+
   const { HiddenInvoiceDocument, print } = useInvoicePrinter(selectedInvoice);
 
   return (
@@ -57,6 +67,8 @@ export const InvoiceDashboard = ({
         setOpen={handleSetOpen}
         invoice={selectedInvoice}
         onDownload={print}
+        onCancel={handleCancelInvoice}
+        isUpdating={isPending}
       />
 
       <div className='flex w-full max-w-6xl flex-col gap-10'>
