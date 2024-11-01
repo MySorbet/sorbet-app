@@ -3,6 +3,7 @@
 import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 
+import { useInvoicePrinter } from '@/app/invoices/hooks/useInvoicePrinter';
 import { Button } from '@/components/ui/button';
 
 import InvoiceSheet from './invoice-sheet';
@@ -43,12 +44,19 @@ export const InvoiceDashboard = ({
     }
   };
 
+  const { HiddenInvoiceDocument, print } = useInvoicePrinter(selectedInvoice);
+
   return (
     <>
+      {/* Hidden invoice document for download */}
+      <HiddenInvoiceDocument />
+
+      {/* Invoice sheet displaying details when there is a selected invoice */}
       <InvoiceSheet
         open={open}
         setOpen={handleSetOpen}
         invoice={selectedInvoice}
+        onDownload={print}
       />
 
       <div className='flex w-full max-w-6xl flex-col gap-10'>
