@@ -10,9 +10,9 @@ import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { Toaster } from '@/components/ui/toaster';
 // TODO: figure out how to use this without dynamic import
 const AuthProvider = dynamic(() => import('@/hooks/useAuth'), { ssr: false });
+import { PHProvider } from '@/app/posthog-provider';
 import { env } from '@/lib/env';
 import { store } from '@/redux/store';
-import { PHProvider } from '@/app/posthog-provider';
 
 const queryClient = new QueryClient();
 

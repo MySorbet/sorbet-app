@@ -23,6 +23,7 @@ const preview: Preview = {
     },
     backgrounds: {
       values: [{ name: 'sorbet', value: '#f3f3f3' }],
+      default: 'sorbet',
     },
   },
   decorators: [ProvidersDecorator],

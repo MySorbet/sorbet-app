@@ -5,6 +5,11 @@ import { ReactNode, useCallback, useMemo } from 'react';
 import AuthProvider from '../../src/hooks/useAuth';
 import { UserWithId } from '../../src/types';
 
+/**
+ * This component stubs out the functions of an AuthProvider and then returns a mocked AuthProvider
+ * This is useful for testing components that use the AuthProvider without having to deal with the
+ * actual authentication flow
+ */
 export const MockAuthProvider = ({ children }: { children: ReactNode }) => {
   const mockUser: UserWithId = useMemo(
     () => ({
