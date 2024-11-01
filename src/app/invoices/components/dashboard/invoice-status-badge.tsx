@@ -118,9 +118,7 @@ function InvoiceStatusBadge({
               status !== variant && status !== 'Overdue' && status !== 'Open'
           ).map((status) => (
             <DropdownMenuRadioItem key={status} value={status}>
-              <InvoiceStatusBadgeSimple
-                variant={status}
-              ></InvoiceStatusBadgeSimple>
+              <InvoiceStatusBadgeSimple variant={status} />
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
