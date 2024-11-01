@@ -261,7 +261,7 @@ const InvoiceItem = ({
           onChange={(e) => {
             onChange?.({ ...item, amount: parseFloat(e.target.value) });
           }}
-          className='text-right'
+          className='no-spin-buttons text-right'
         />
       </div>
       {hideDelete ? (

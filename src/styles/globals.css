@@ -88,11 +88,14 @@
   /* Remove default number input styles */
   /* Use this on <input type="number" /> to hide spinner buttons */
   .no-spin-buttons::-webkit-outer-spin-button,
-  .no-spin-buttons::-webkit-inner-spin-button,
-  .no-spin-buttons {
+  .no-spin-buttons::-webkit-inner-spin-button {
     -webkit-appearance: none;
+    margin: 0;
+
+  }
+
+  .no-spin-buttons {
     -moz-appearance: textfield !important;
     appearance: textfield !important;
-    margin: 0;
   }
 }
