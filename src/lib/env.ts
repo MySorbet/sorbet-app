@@ -14,6 +14,8 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_USDC_ADDRESS: z.string(),
     NEXT_PUBLIC_BASESEPOLIA_EXPLORER: z.string().url(),
     NEXT_PUBLIC_BASE_RPC_URL: z.string(),
+    NEXT_PUBLIC_POSTHOG_KEY: z.string(),
+    NEXT_PUBLIC_POSTHOG_HOST: z.string().url(),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
@@ -31,6 +33,8 @@ export const env = createEnv({
     NEXT_PUBLIC_BASESEPOLIA_EXPLORER:
       process.env.NEXT_PUBLIC_BASESEPOLIA_EXPLORER,
     NEXT_PUBLIC_BASE_RPC_URL: process.env.NEXT_PUBLIC_BASE_RPC_URL,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST
   },
   // Why? https://env.t3.gg/docs/customization#treat-empty-strings-as-undefined
   emptyStringAsUndefined: true,

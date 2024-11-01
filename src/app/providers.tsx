@@ -12,6 +12,7 @@ import { Toaster } from '@/components/ui/toaster';
 const AuthProvider = dynamic(() => import('@/hooks/useAuth'), { ssr: false });
 import { env } from '@/lib/env';
 import { store } from '@/redux/store';
+import { PHProvider } from '@/app/posthog-provider';
 
 const queryClient = new QueryClient();
 
@@ -28,9 +29,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     >
       <Provider store={store}>
         <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
+          <PHProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
+          </PHProvider>
           <Toaster />
           <SonnerToaster />
         </AuthProvider>

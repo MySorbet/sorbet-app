@@ -1,5 +1,6 @@
-import { GigsContainer } from '../gigs-container';
 import type { Metadata } from 'next';
+
+import { GigsContainer } from '../gigs-container';
 
 export const metadata: Metadata = {
   title: 'Gigs',
