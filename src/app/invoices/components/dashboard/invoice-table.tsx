@@ -57,7 +57,7 @@ export const InvoiceTable = ({
           <TableBody>
             {invoices.map((invoice) => (
               <TableRow
-                key={invoice.invoiceNumber}
+                key={invoice.id}
                 onClick={() => onInvoiceClick?.(invoice)}
               >
                 <TableCell>{formatDate(invoice.dueDate)}</TableCell>
