@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import InvoiceSheet from './invoice-sheet';
 import { InvoiceTable } from './invoice-table';
 import SummaryCard from './summary-card';
-import { Invoice } from './utils';
+import { Invoice, InvoiceStatus } from './utils';
 
 type InvoiceDashboardProps = {
   invoices: Invoice[];
@@ -55,6 +55,24 @@ export const InvoiceDashboard = ({
     if (!selectedInvoice) return;
     const cancelledInvoice = await cancelInvoiceMutation(selectedInvoice.id);
     setSelectedInvoice(cancelledInvoice);
+    // Force the parent to re-fetch invoices
+    queryClient.invalidateQueries({
+      queryKey: ['invoices'],
+    });
+  };
+
+  // Cancel the invoice using the mutation hook. When complete, invalidate the
+  // invoices query
+  // TODO: handle error
+  const handleInvoiceStatusChange = async (
+    invoice: Invoice,
+    status: InvoiceStatus
+  ) => {
+    console.log('Invoice status changed', invoice, status);
+    if (status !== 'Cancelled') return; // Only cancelled invoices are allowed rn
+    // TODO: The other state changes
+    await cancelInvoiceMutation(invoice.id);
+
     // Force the parent to re-fetch invoices
     queryClient.invalidateQueries({
       queryKey: ['invoices'],
@@ -118,6 +136,7 @@ export const InvoiceDashboard = ({
             setOpen(true);
           }}
           isLoading={isLoading}
+          onInvoiceStatusChange={handleInvoiceStatusChange}
         />
       </div>
     </>

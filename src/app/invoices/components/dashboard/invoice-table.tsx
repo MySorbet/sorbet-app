@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { formatCurrency, formatDate, Invoice } from './utils';
+import { formatCurrency, formatDate, Invoice, InvoiceStatus } from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({
@@ -31,10 +31,12 @@ export const InvoiceTable = ({
   invoices,
   onInvoiceClick,
   isLoading,
+  onInvoiceStatusChange,
 }: {
   invoices: Invoice[];
   onInvoiceClick?: (invoice: Invoice) => void;
   isLoading?: boolean;
+  onInvoiceStatusChange?: (invoice: Invoice, status: InvoiceStatus) => void;
 }) => {
   return (
     <div className='rounded-2xl bg-white px-6 py-3'>
@@ -62,7 +64,13 @@ export const InvoiceTable = ({
               >
                 <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                 <TableCell>
-                  <InvoiceStatusBadge variant={invoice.status} interactive />
+                  <InvoiceStatusBadge
+                    variant={invoice.status}
+                    interactive
+                    onValueChange={(status) =>
+                      onInvoiceStatusChange?.(invoice, status)
+                    }
+                  />
                 </TableCell>
                 <TableCell>{invoice.toName}</TableCell>
                 <TableCell className='text-right'>

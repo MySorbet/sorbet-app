@@ -103,6 +103,7 @@ function InvoiceStatusBadge({
       <DropdownMenuContent>
         <DropdownMenuRadioGroup
           value={variant ?? 'Open'}
+          onClick={(e) => e.stopPropagation()} // Included to prevent the click event from bubbling up to UI behind the dropdown
           onValueChange={(value) => onValueChange?.(value as InvoiceStatus)} // Cast is safe because all children are valid InvoiceStatus values
         >
           {InvoiceStatuses.map((status) => (
