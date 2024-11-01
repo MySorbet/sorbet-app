@@ -4,7 +4,7 @@ import { PrivyProvider } from '@privy-io/react-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 
-import { MockAuthProvider } from './useAuth.mock';
+import { MockAuthProvider } from './use-auth.mock';
 import { env } from '../../src/lib/env';
 import { store } from '../../src/redux/store';
 import { Toaster } from '../../src/components/ui/toaster';
@@ -20,6 +20,8 @@ import { Toaster as SonnerToaster } from '../../src/components/ui/sonner';
  *
  * Redux Mocking: Not needed since we can just use the same store for testing
  * Auth Mocking: Handled by MockAuthProvider
+ *
+ * Posthog Mocking: Not needed since we don't care about posthog for these stories
  */
 export const ProvidersDecorator = (Story: any) => {
   return (
