@@ -43,26 +43,6 @@ export interface BadgeProps
 }
 
 /**
- * Simple shadcn style badge without dropdown menu.
- */
-const InvoiceStatusBadgeSimple = ({
-  className,
-  variant,
-  children,
-  ...props
-}: BadgeProps) => {
-  return (
-    <div
-      className={cn(invoiceStatusBadgeVariants({ variant }), className)}
-      {...props}
-    >
-      {children}
-      {variant}
-    </div>
-  );
-};
-
-/**
  * Copy of shadcn Badge with variants for invoice status.
  * Can be interactive with a dropdown menu or not.
  *
@@ -79,17 +59,17 @@ function InvoiceStatusBadge({
   // If the badge is not interactive
   // Return the classic shad style badge
   // Since cancelled invoices may not be reopened, ignore interactive for cancelled
-  if (!interactive || variant === 'Cancelled')
+  if (!interactive || variant === 'Cancelled') {
     return (
-      <InvoiceStatusBadgeSimple
-        variant={variant}
-        className={className}
+      <div
+        className={cn(invoiceStatusBadgeVariants({ variant }), className)}
         {...props}
       >
         {children}
-      </InvoiceStatusBadgeSimple>
+        {variant}
+      </div>
     );
-
+  }
   // Otherwise, we'll return a badge with a dropdown menu allowing the user to change the status
   // TODO: Consider using popover instead of dropdown menu
   return (
@@ -117,8 +97,8 @@ function InvoiceStatusBadge({
             (status) =>
               status !== variant && status !== 'Overdue' && status !== 'Open'
           ).map((status) => (
-            <DropdownMenuRadioItem key={status} value={status}>
-              <InvoiceStatusBadgeSimple variant={status} />
+            <DropdownMenuRadioItem key={status} value={status} className='pl-2'>
+              {status}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
