@@ -29,9 +29,13 @@ import { invoiceFormStringValidator } from './utils';
 
 const formSchema = z.object({
   fromName: invoiceFormStringValidator('Name'),
-  fromEmail: invoiceFormStringValidator('Email'),
+  fromEmail: invoiceFormStringValidator('Email').email({
+    message: 'Must be a valid email address',
+  }),
   toName: invoiceFormStringValidator('Name'),
-  toEmail: invoiceFormStringValidator('Email'),
+  toEmail: invoiceFormStringValidator('Email').email({
+    message: 'Must be a valid email address',
+  }),
 });
 
 export type ClientDetailsFormSchema = z.infer<typeof formSchema>;
@@ -101,7 +105,11 @@ export const ClientDetails = ({
                 <FormItem className='w-full max-w-md'>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder='Your email address' {...field} />
+                    <Input
+                      type='email'
+                      placeholder='Your email address'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -130,7 +138,11 @@ export const ClientDetails = ({
                 <FormItem className='w-full max-w-md'>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder='Client email address' {...field} />
+                    <Input
+                      type='email'
+                      placeholder='Client email address'
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
