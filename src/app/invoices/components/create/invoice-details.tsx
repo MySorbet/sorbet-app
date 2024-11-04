@@ -7,14 +7,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { InputAsRow } from '@/app/invoices/components/create/input-as-row';
 import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Button } from '@/components/ui/button';
 import {
   Form,
+  FormControl,
   FormField,
-  FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -28,10 +26,21 @@ import {
 } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { useInvoiceFormContext } from './invoice-form-context';
+import { LongFormItem } from './long-form-item';
 import { Stepper } from './stepper';
 
+const stringValidator = (name: string, min = 1, max = 50) =>
+  z
+    .string({
+      errorMap: () => ({
+        message: `${name} must be between ${min} and ${max} characters`,
+      }),
+    })
+    .min(min)
+    .max(max);
+
 const InvoiceItemDataSchema = z.object({
-  name: z.string().min(1).max(50),
+  name: stringValidator('Item name'),
   quantity: z.coerce.number().min(1),
   amount: z.coerce.number().min(0),
 });
@@ -44,8 +53,8 @@ const emptyInvoiceItemData: InvoiceItemData = {
 };
 
 const formSchema = z.object({
-  projectName: z.string().min(1).max(50),
-  invoiceNumber: z.string().min(1).max(50),
+  projectName: stringValidator('Project name'),
+  invoiceNumber: stringValidator('Invoice number'),
   items: z.array(InvoiceItemDataSchema),
 });
 
@@ -72,6 +81,7 @@ export const InvoiceDetails = ({
       invoiceNumber: invoiceNumber ?? formData.invoiceNumber ?? '',
       items: formData.items ?? [emptyInvoiceItemData],
     },
+    mode: 'all',
   });
 
   const items = form.watch('items');
@@ -99,26 +109,24 @@ export const InvoiceDetails = ({
             name='projectName'
             control={form.control}
             render={({ field }) => (
-              <InputAsRow>
-                <FormLabel>Project name</FormLabel>
-                <FormItem className='w-full max-w-md'>
-                  <Input placeholder='Project name' {...field} />
-                  <FormMessage />
-                </FormItem>
-              </InputAsRow>
+              <LongFormItem label='Project name'>
+                <FormControl>
+                  <Input placeholder='Enter name' {...field} />
+                </FormControl>
+                <FormMessage />
+              </LongFormItem>
             )}
           />
           <FormField
             name='invoiceNumber'
             control={form.control}
             render={({ field }) => (
-              <InputAsRow>
-                <FormLabel>Invoice number</FormLabel>
-                <FormItem className='w-full max-w-md'>
-                  <Input placeholder='Invoice number' {...field} />
-                  <FormMessage />
-                </FormItem>
-              </InputAsRow>
+              <LongFormItem label='Invoice number'>
+                <FormControl>
+                  <Input placeholder='Enter Invoice number' {...field} />
+                </FormControl>
+                <FormMessage />
+              </LongFormItem>
             )}
           />
           <div className='flex flex-col gap-3'>

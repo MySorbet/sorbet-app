@@ -13,8 +13,6 @@ import {
   Form,
   FormControl,
   FormField,
-  FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import {
@@ -31,8 +29,8 @@ import {
   CreateInvoiceTitle,
 } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
-import { InputAsRow } from './input-as-row';
 import { useInvoiceFormContext } from './invoice-form-context';
+import { LongFormItem } from './long-form-item';
 import { Stepper } from './stepper';
 
 // react-day-picker Matcher which allows any date after and including today
@@ -76,6 +74,7 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
       dueDate: formData.dueDate ?? addDays(new Date(), 7),
       memo: formData.memo ?? '',
     },
+    mode: 'all',
   });
 
   const router = useRouter();
@@ -101,61 +100,50 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
             control={form.control}
             name='issueDate'
             render={({ field }) => (
-              <FormItem>
-                <InputAsRow>
-                  <FormLabel>Issue date</FormLabel>
-                  <FormControl>
-                    <DatePicker
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        !isInTheFuture(date) || date > dueDate
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </InputAsRow>
-              </FormItem>
+              <LongFormItem label='Issue date'>
+                <FormControl>
+                  <DatePicker
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) => !isInTheFuture(date) || date > dueDate}
+                  />
+                </FormControl>
+                <FormMessage />
+              </LongFormItem>
             )}
           />
           <FormField
             control={form.control}
             name='dueDate'
             render={({ field }) => (
-              <FormItem>
-                <InputAsRow>
-                  <FormLabel>Due date</FormLabel>
-                  <FormControl>
-                    <DatePicker
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        !isInTheFuture(date) || date < issueDate
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </InputAsRow>
-              </FormItem>
+              <LongFormItem label='Due date'>
+                <FormControl>
+                  <DatePicker
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(date) =>
+                      !isInTheFuture(date) || date < issueDate
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </LongFormItem>
             )}
           />
           <FormField
             control={form.control}
             name='memo'
             render={({ field }) => (
-              <FormItem>
-                <InputAsRow>
-                  <FormLabel>Memo</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Payment terms or additional info'
-                      className='w-full max-w-md resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </InputAsRow>
-              </FormItem>
+              <LongFormItem label='Memo'>
+                <FormControl>
+                  <Textarea
+                    placeholder='Payment terms or additional info'
+                    className='w-full max-w-md resize-none'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </LongFormItem>
             )}
           />
           <CreateInvoiceFooter>
