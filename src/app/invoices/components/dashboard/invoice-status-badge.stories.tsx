@@ -32,6 +32,7 @@ export const Default: Story = {
     const [{ variant }, updateArgs] = useArgs();
     const handleValueChange = (value: InvoiceStatus) => {
       updateArgs({ variant: value });
+      args.onValueChange?.(value);
     };
     return (
       <InvoiceStatusBadge
