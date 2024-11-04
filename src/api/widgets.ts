@@ -364,6 +364,21 @@ const getLinkData: WidgetGetterFn = async (body) => {
   }
 };
 
+const getSectionTitleData: WidgetGetterFn = async (body) => {
+  try {
+    const response = await axios.post<WidgetDto>(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/section-title`,
+      body,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get generic link data: ${error.response.data.message}`
+    );
+  }
+};
+
 /** Map the supported widget types to their corresponding getter functions */
 const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Photo: getPhotoWidget,
@@ -380,6 +395,7 @@ const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Behance: getBehanceItem,
   Medium: getMediumArticleMetadata,
   Link: getLinkData,
+  SectionTitle: getSectionTitleData,
 };
 
 /** Get/create a widget with the given url and type */

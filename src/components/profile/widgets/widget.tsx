@@ -280,7 +280,6 @@ export const Widget: React.FC<WidgetProps> = ({
     }
   }, [type, widgetSize, content]);
 
-  console.log('loading', loading, content);
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div

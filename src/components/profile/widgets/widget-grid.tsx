@@ -65,6 +65,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleWidgetEditLink,
     handleNewImageAdd,
     handleImageCropping,
+    handleSectionTitleAdd,
     handleAddMultipleWidgets,
   } = useWidgetManagement({
     userId,
@@ -159,6 +160,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               handleImageCropping={handleImageCropping}
               addUrl={handleNewImageAdd}
               loading={addingWidget}
+              cols={cols}
             />
           </div>
         ) : (
@@ -250,7 +252,11 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   </InvalidAlert>
                 </div>
               )}
-              <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
+              <AddWidgets
+                addUrl={handleWidgetAdd}
+                addSectionTitle={handleSectionTitleAdd}
+                loading={addingWidget}
+              />
             </div>
           </div>
         )}

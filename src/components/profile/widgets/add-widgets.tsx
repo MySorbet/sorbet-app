@@ -24,6 +24,7 @@ import { isValidUrl, normalizeUrl, parseWidgetTypeFromUrl } from './util';
 interface AddWidgetsProps {
   /** Callback for when a url is added. `image` is defined if adding an image  */
   addUrl: (url: string, image?: File) => void;
+  addSectionTitle: () => void;
   /** Should the component be loading? */
   loading?: boolean;
 }
@@ -33,6 +34,7 @@ interface AddWidgetsProps {
  */
 export const AddWidgets: React.FC<AddWidgetsProps> = ({
   addUrl,
+  addSectionTitle,
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
@@ -205,13 +207,14 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <Image
+                onClick={addSectionTitle}
                 src='/svg/section-title.svg'
                 alt='add section title'
                 width={20}
                 height={20}
               />
             </TooltipTrigger>
-            <TooltipContent>Upload custom image as widget</TooltipContent>
+            <TooltipContent>Add section title</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>

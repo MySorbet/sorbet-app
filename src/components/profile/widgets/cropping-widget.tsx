@@ -14,7 +14,7 @@ import {
 import { ResizeWidget } from './resize-widget';
 import { LinkWidget } from './widget-link';
 import { PhotoWidget } from './widget-photo';
-import Cropper, { Area } from 'react-easy-crop';
+import Cropper, { Area, MediaSize } from 'react-easy-crop';
 
 interface CroppingWidgetProps {
   identifier: string;
@@ -41,6 +41,7 @@ interface CroppingWidgetProps {
   addUrl: any;
   rowHeight: any;
   margins: any;
+  cols: number;
 }
 
 export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
@@ -63,6 +64,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   margins,
   item,
   addUrl,
+  cols,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -107,6 +109,17 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     // TODO: Maybe widgets should be anchors?
   };
 
+  const calculateMarginOffset = (
+    margins: any,
+    item: WidgetLayoutItem,
+    cols: number
+  ) => {
+    if (cols - item.w === item.x) {
+      return Math.max(margins[0], margins[0] * (item.x - 2));
+    }
+    return Math.max(margins[0], margins[0] * (item.x + 1));
+  };
+
   const calculateScaleFactor = (content: PhotoWidgetContentType) => {
     const containerRatio = widgetDimensions.width / widgetDimensions.height;
     const img = new Image();
@@ -137,6 +150,13 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       // Image is taller than container
       offsets = { x: 0, y: (img.height - img.width) / 2 };
     }
+    console.log(
+      widthRatio,
+      heightRatio,
+      img.width / widgetDimensions.height,
+      widgetDimensions.width / img.height,
+      widgetDimensions.height / img.width
+    );
     setZoom(Math.min(widthRatio, heightRatio));
     setCrop(offsets);
     setHeight(img.height);
@@ -179,8 +199,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         break;
     }
   }, [type, widgetSize, content]);
-
-  console.log('cropper', zoom, crop);
+  console.log(zoom);
 
   return (
     <div
@@ -189,13 +208,13 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       style={{
         position: 'absolute',
         left: `${
-          Math.max(item.x - item.w, 0) * widgetDimensions.width +
-          Math.max(margins[0] * item.x, margins[0]) -
+          Math.max(item.x, 0) * (widgetDimensions.width / item.w) +
+          calculateMarginOffset(margins, item, cols) -
           Math.max(0, (width - widgetDimensions.width) / 2)
         }px`,
         top: `${
           item.y * rowHeight +
-          margins[1] * item.y -
+          margins[1] * Math.max(0, item.y + 1) -
           Math.max(0, (height - widgetDimensions.height) / 2)
         }px`,
       }}
@@ -231,6 +250,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         onCropChange={setCrop}
         onCropComplete={onCropComplete}
         onZoomChange={setZoom}
+        objectFit='vertical-cover'
         maxZoom={10}
         initialCroppedAreaPercentages={
           (content as PhotoWidgetContentType).croppedArea

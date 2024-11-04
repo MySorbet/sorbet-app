@@ -24,8 +24,6 @@ export interface DribbbleWidgetContentType {
 export interface PhotoWidgetContentType {
   image: string;
   croppedArea?: { x: number; y: number; width: number; height: number };
-  // offsets?: { x: number; y: number };
-  // scale?: number;
 }
 
 export interface BehanceWidgetContentType {
@@ -108,6 +106,10 @@ export interface LinkedInProfileWidgetContentType {
   profileImage: string;
 }
 
+export interface SectionTitleWidgetContentType {
+  title: string;
+}
+
 /** Widget Content can be any of the following types per widget */
 export type WidgetContentType =
   | DribbbleWidgetContentType
@@ -123,7 +125,8 @@ export type WidgetContentType =
   | InstagramWidgetContentType
   | SoundcloudTrackContentType
   | LinkWidgetContentType
-  | LinkedInProfileWidgetContentType;
+  | LinkedInProfileWidgetContentType
+  | SectionTitleWidgetContentType;
 
 export const WidgetTypes = [
   'Photo',
@@ -142,17 +145,19 @@ export const WidgetTypes = [
   'Medium',
   'Figma', // Currently unsupported
   'Link', // Catchall if nothing else matches
+  'SectionTitle',
 ] as const;
 
 export type WidgetType = (typeof WidgetTypes)[number];
 
-export type WidgetSize = 'A' | 'B' | 'C' | 'D';
+export type WidgetSize = 'A' | 'B' | 'C' | 'D' | 'Section';
 
 export const WidgetDimensions: Record<WidgetSize, { w: number; h: number }> = {
   A: { w: 2, h: 2 },
   B: { w: 4, h: 4 },
   C: { w: 4, h: 2 },
   D: { w: 2, h: 4 },
+  Section: { w: 4, h: 1 },
 };
 
 export const getWidgetDimensions = ({

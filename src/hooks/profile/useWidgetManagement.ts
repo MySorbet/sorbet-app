@@ -12,6 +12,7 @@ import {
   PhotoWidgetContentType,
   LinkWidgetContentType,
   LinkedInProfileWidgetContentType,
+  WidgetTypes,
 } from '@/types';
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
@@ -137,10 +138,58 @@ export const useWidgetManagement = ({
     ]
   );
 
+  const handleSectionTitleAdd = useCallback(async () => {
+    console.log('testing layout', layout);
+    setAddingWidget(true);
+    try {
+      const widget = await createWidget({ url: '', type: 'SectionTitle' });
+      if (!widget) {
+        throw new Error('Failed to add widget. Please try again.');
+      }
+      const widgetToAdd: WidgetLayoutItem = {
+        i: widget.id,
+        x: (layout.length * 2) % cols,
+        y: 0,
+        w: WidgetDimensions.Section.w,
+        h: WidgetDimensions.Section.h,
+        type: 'SectionTitle',
+        content: widget.content,
+        static: !editMode,
+        isResizable: false,
+        isDraggable: editMode,
+        loading: false,
+        size: 'Section',
+      };
+
+      setLayout((prevLayout) => {
+        const newLayout = [...prevLayout, widgetToAdd];
+        persistWidgetsLayoutOnChange(newLayout);
+        return newLayout;
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Something went wrong';
+      toast({
+        title: `We couldn't add a section title`,
+        description: message,
+      });
+    } finally {
+      setAddingWidget(false);
+    }
+  }, [
+    userId,
+    editMode,
+    layout,
+    cols,
+    createWidget,
+    toast,
+    setLayout,
+    persistWidgetsLayoutOnChange,
+  ]);
+
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
       setAddingWidget(true);
-      console.log('hmmm');
       let widgetUrl: string = '';
 
       try {
@@ -376,6 +425,7 @@ export const useWidgetManagement = ({
     handleWidgetEditLink,
     handleNewImageAdd,
     handleImageCropping,
+    handleSectionTitleAdd,
     handleAddMultipleWidgets,
   };
 };
