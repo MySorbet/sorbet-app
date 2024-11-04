@@ -63,7 +63,7 @@ export const ClientDetails = ({
       fromName: name ?? formData.fromName ?? '',
       fromEmail: email ?? formData.fromEmail ?? '',
     },
-    mode: 'all',
+    mode: 'onBlur',
   });
 
   const router = useRouter();
