@@ -33,37 +33,37 @@ export const WidgetPlaceholderGrid: React.FC<WidgetPlaceholderGridProps> = ({
     >
       <WidgetPlaceholder
         type='TwitterProfile'
-        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
+        className='col-span-1 row-span-1'
         onClick={onClick}
         loading={loading}
       />
       <WidgetPlaceholder
         type='Medium'
-        className={cn('col-span-1 row-span-2', loading && 'bg-slate-200')}
+        className='col-span-1 row-span-2'
         onClick={onClick}
         loading={loading}
       />
       <WidgetPlaceholder
         type='Behance'
-        className={cn('col-span-2 row-span-1', loading && 'bg-slate-200')}
+        className='col-span-2 row-span-1'
         onClick={onClick}
         loading={loading}
       />
       <WidgetPlaceholder
         type='LinkedInProfile'
-        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
+        className='col-span-1 row-span-1'
         onClick={onClick}
         loading={loading}
       />
       <WidgetPlaceholder
         type='InstagramProfile'
-        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
+        className='col-span-1 row-span-1'
         onClick={onClick}
         loading={loading}
       />
       <WidgetPlaceholder
         type='Github'
-        className={cn('col-span-1 row-span-1', loading && 'bg-slate-200')}
+        className='col-span-1 row-span-1'
         onClick={onClick}
         loading={loading}
       />

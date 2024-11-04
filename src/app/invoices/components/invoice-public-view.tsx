@@ -65,7 +65,7 @@ export const InvoicePublicView = ({
     <CreateInvoiceShell>
       <CreateInvoiceHeader>
         {isLoading ? (
-          <Skeleton variant='lighter' className='h-6 w-40' />
+          <Skeleton variant='darker' className='h-6 w-40' />
         ) : (
           <div className='flex items-center gap-3'>
             {!isFreelancer && (
@@ -92,7 +92,7 @@ export const InvoicePublicView = ({
       </CreateInvoiceHeader>
 
       {isLoading ? (
-        <Skeleton variant='lighter' className='h-[500px] w-[800px]' />
+        <Skeleton variant='darker' className='h-[500px] w-[800px]' />
       ) : (
         invoice && <InvoiceDocument invoice={invoice} ref={contentRef} />
       )}

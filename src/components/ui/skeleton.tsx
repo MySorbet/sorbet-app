@@ -8,7 +8,8 @@ const skeletonVariants = cva(
     variants: {
       variant: {
         default: "",
-        lighter:
+        /* Use the `darker` variant when placeholders are rendered against a greyish background to make them visible */
+        darker:
           'bg-slate-200',
       },
     },
