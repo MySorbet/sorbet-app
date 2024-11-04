@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { useInvoiceFormContext } from '../../components/create/invoice-form-context';
 import { InvoiceReview } from '../../components/create/invoice-review';
-import { useCreateInvoice } from '../../hooks/useCreateInvoice';
+import { useCreateInvoice } from '../../hooks/use-create-invoice';
 
 export default function ReviewPage() {
   const { formData } = useInvoiceFormContext();

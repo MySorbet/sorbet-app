@@ -4,9 +4,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 
-import { useCancelInvoice } from '@/app/invoices/hooks/useCancelInvoice';
-import { useInvoicePrinter } from '@/app/invoices/hooks/useInvoicePrinter';
-import { usePayInvoice } from '@/app/invoices/hooks/usePayInvoice';
+import { useCancelInvoice } from '@/app/invoices/hooks/use-cancel-invoice';
+import { useInvoicePrinter } from '@/app/invoices/hooks/use-invoice-printer';
+import { usePayInvoice } from '@/app/invoices/hooks/use-pay-invoice';
 import { Button } from '@/components/ui/button';
 
 import InvoiceSheet from './invoice-sheet';

@@ -10,7 +10,7 @@ import { CreateInvoiceFooter } from '@/app/invoices/components/create/create-inv
 import { InvoiceReceipt } from '@/app/invoices/components/invoice-receipt';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useWalletAddressByUserId } from '@/hooks/useWalletAddressByUserId';
+import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 import { Invoice } from '../components/dashboard/utils';
 import {

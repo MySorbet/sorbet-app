@@ -4,7 +4,7 @@ import {
   mockCurrentWalletAddressHandler,
   mockInvoiceHandler,
 } from '@/api/invoices';
-import { useInvoice } from '@/app/invoices/hooks/useInvoice';
+import { useInvoice } from '@/app/invoices/hooks/use-invoice';
 
 import { sampleInvoices } from './dashboard/sample-invoices';
 import { InvoicePublicView } from './invoice-public-view';

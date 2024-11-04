@@ -6,7 +6,7 @@ import {
   mockInvoicesHandler,
   mockPayInvoiceHandler,
 } from '@/api/invoices';
-import { useInvoices } from '@/app/invoices/hooks/useInvoices';
+import { useInvoices } from '@/app/invoices/hooks/use-invoices';
 
 import { InvoiceDashboard } from './invoice-dashboard';
 import { sampleInvoices } from './sample-invoices';
