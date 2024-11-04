@@ -28,19 +28,10 @@ import { CreateInvoiceShell } from './create-invoice-shell';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { LongFormItem } from './long-form-item';
 import { Stepper } from './stepper';
-
-const stringValidator = (name: string, min = 1, max = 50) =>
-  z
-    .string({
-      errorMap: () => ({
-        message: `${name} must be between ${min} and ${max} characters`,
-      }),
-    })
-    .min(min)
-    .max(max);
+import { invoiceFormStringValidator } from './utils';
 
 const InvoiceItemDataSchema = z.object({
-  name: stringValidator('Item name'),
+  name: invoiceFormStringValidator('Item name'),
   quantity: z.coerce.number().min(1),
   amount: z.coerce.number().min(0),
 });
@@ -53,8 +44,8 @@ const emptyInvoiceItemData: InvoiceItemData = {
 };
 
 const formSchema = z.object({
-  projectName: stringValidator('Project name'),
-  invoiceNumber: stringValidator('Invoice number'),
+  projectName: invoiceFormStringValidator('Project name'),
+  invoiceNumber: invoiceFormStringValidator('Invoice number'),
   items: z.array(InvoiceItemDataSchema),
 });
 

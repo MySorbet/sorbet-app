@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -24,12 +25,13 @@ import {
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { Stepper } from './stepper';
+import { invoiceFormStringValidator } from './utils';
 
 const formSchema = z.object({
-  fromName: z.string().min(2).max(50),
-  fromEmail: z.string().min(2).max(50),
-  toName: z.string().min(2).max(50),
-  toEmail: z.string().min(2).max(50),
+  fromName: invoiceFormStringValidator('Name'),
+  fromEmail: invoiceFormStringValidator('Email'),
+  toName: invoiceFormStringValidator('Name'),
+  toEmail: invoiceFormStringValidator('Email'),
 });
 
 export type ClientDetailsFormSchema = z.infer<typeof formSchema>;
@@ -57,6 +59,7 @@ export const ClientDetails = ({
       fromName: name ?? formData.fromName ?? '',
       fromEmail: email ?? formData.fromEmail ?? '',
     },
+    mode: 'all',
   });
 
   const router = useRouter();
@@ -84,7 +87,9 @@ export const ClientDetails = ({
               render={({ field }) => (
                 <FormItem className='w-full max-w-md'>
                   <FormLabel>Name</FormLabel>
-                  <Input placeholder='Your name' {...field} />
+                  <FormControl>
+                    <Input placeholder='Your name' {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -95,7 +100,9 @@ export const ClientDetails = ({
               render={({ field }) => (
                 <FormItem className='w-full max-w-md'>
                   <FormLabel>Email</FormLabel>
-                  <Input placeholder='Your email address' {...field} />
+                  <FormControl>
+                    <Input placeholder='Your email address' {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -109,7 +116,9 @@ export const ClientDetails = ({
               render={({ field }) => (
                 <FormItem className='w-full max-w-md'>
                   <FormLabel>Name</FormLabel>
-                  <Input placeholder='Client name' {...field} />
+                  <FormControl>
+                    <Input placeholder='Client name' {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -120,7 +129,9 @@ export const ClientDetails = ({
               render={({ field }) => (
                 <FormItem className='w-full max-w-md'>
                   <FormLabel>Email</FormLabel>
-                  <Input placeholder='Client email address' {...field} />
+                  <FormControl>
+                    <Input placeholder='Client email address' {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
