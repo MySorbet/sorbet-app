@@ -121,36 +121,32 @@ export const InvoiceDetails = ({
             )}
           />
           <div className='flex flex-col gap-3'>
-            {items.map((item, index) => (
-              <InvoiceItem
+            {items.map((_, index) => (
+              <FormField
                 key={index}
-                index={index}
-                item={item}
-                hideDelete={index === 0}
-                hideLabel={index !== 0}
-                className={
-                  cn(index !== 0 && 'animate-in slide-in-from-top-3 fade-in-0') // Animate in all but the first item
-                }
-                onDelete={() => {
-                  form.setValue(
-                    'items',
-                    items.filter((_, i) => i !== index),
-                    {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                    }
-                  );
-                }}
-                onChange={(item) => {
-                  form.setValue(
-                    'items',
-                    [...items.slice(0, index), item, ...items.slice(index + 1)],
-                    {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                    }
-                  );
-                }}
+                control={form.control}
+                name={`items.${index}`}
+                render={({ field }) => (
+                  <InvoiceItem
+                    index={index}
+                    item={field.value}
+                    hideDelete={index === 0} // Can't delete the first item
+                    hideLabel={index !== 0} // Only show label on the first item
+                    className={cn(
+                      index !== 0 && 'animate-in slide-in-from-top-3 fade-in-0'
+                    )}
+                    onDelete={() => {
+                      const newItems = [...items];
+                      newItems.splice(index, 1);
+                      form.setValue('items', newItems, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    onChange={(item) => {
+                      field.onChange(item);
+                    }}
+                  />
+                )}
               />
             ))}
             <Button
@@ -189,7 +185,7 @@ export const InvoiceDetails = ({
   );
 };
 
-// TODO: Revisit FormMessage errors for these items
+// TODO: Revisit FormItem, FormControl, FormMessage for these and how they fit into validation in general
 /**
  * Local component to display a single invoice item
  */
@@ -211,65 +207,70 @@ const InvoiceItem = ({
   className?: string;
 }) => {
   return (
-    <div className={cn(className, 'flex flex-row justify-between gap-6')}>
-      <div className='grid w-full max-w-sm items-center gap-1.5'>
-        {!hideLabel && (
-          <Label htmlFor='item' className='flex-1 text-sm font-medium'>
-            Item
-          </Label>
+    <div className={cn(className, 'flex flex-col gap-2')}>
+      <div className='flex justify-between gap-6'>
+        <div className='grid w-full max-w-sm items-center gap-1.5'>
+          {!hideLabel && (
+            <Label htmlFor='item' className='flex-1 text-sm font-medium'>
+              Item
+            </Label>
+          )}
+          <Input
+            id='item'
+            placeholder='Item name'
+            type='text'
+            value={item.name}
+            onChange={(e) => {
+              onChange?.({ ...item, name: e.target.value });
+            }}
+            autoFocus={index !== 0}
+          />
+        </div>
+        <div className='grid w-full max-w-32 items-center gap-1.5'>
+          {!hideLabel && (
+            <Label htmlFor='quantity' className='text-sm font-medium'>
+              Quantity
+            </Label>
+          )}
+          <Input
+            id='quantity'
+            placeholder='quantity'
+            type='number'
+            value={item.quantity}
+            onChange={(e) => {
+              onChange?.({ ...item, quantity: parseInt(e.target.value) });
+            }}
+            className='no-spin-buttons text-right'
+          />
+        </div>
+        <div className='grid w-full max-w-56 items-center gap-1.5'>
+          {!hideLabel && (
+            <Label htmlFor='amount' className='text-sm font-medium'>
+              Amount
+            </Label>
+          )}
+          <Input
+            id='amount'
+            type='number'
+            placeholder='amount'
+            value={item.amount}
+            onChange={(e) => {
+              onChange?.({ ...item, amount: parseFloat(e.target.value) });
+            }}
+            className='no-spin-buttons text-right'
+          />
+        </div>
+        {hideDelete ? (
+          // Take up the same amount of space as the delete button below
+          <div className='w-[3.2rem] flex-shrink-0' />
+        ) : (
+          <Button variant='ghost' type='button' onClick={onDelete}>
+            <Trash01 className='size-5' />
+          </Button>
         )}
-        <Input
-          id='item'
-          placeholder='Item name'
-          type='text'
-          value={item.name}
-          onChange={(e) => {
-            onChange?.({ ...item, name: e.target.value });
-          }}
-          autoFocus={index !== 0}
-        />
       </div>
-      <div className='grid w-full max-w-32 items-center gap-1.5'>
-        {!hideLabel && (
-          <Label htmlFor='quantity' className='text-sm font-medium'>
-            Quantity
-          </Label>
-        )}
-        <Input
-          id='quantity'
-          placeholder='quantity'
-          type='number'
-          value={item.quantity}
-          onChange={(e) => {
-            onChange?.({ ...item, quantity: parseInt(e.target.value) });
-          }}
-          className='no-spin-buttons text-right'
-        />
-      </div>
-      <div className='grid w-full max-w-56 items-center gap-1.5'>
-        {!hideLabel && (
-          <Label htmlFor='amount' className='text-sm font-medium'>
-            Amount
-          </Label>
-        )}
-        <Input
-          id='amount'
-          type='number'
-          placeholder='amount'
-          value={item.amount}
-          onChange={(e) => {
-            onChange?.({ ...item, amount: parseFloat(e.target.value) });
-          }}
-          className='no-spin-buttons text-right'
-        />
-      </div>
-      {hideDelete ? (
-        <div className='w-12 flex-shrink-0' />
-      ) : (
-        <Button variant='ghost' type='button' onClick={onDelete}>
-          <Trash01 className='size-5' />
-        </Button>
-      )}
+      {/* TODO: Revisit FormMessage errors for these items. Currently, they just say "undefined" */}
+      {/* <FormMessage /> */}
     </div>
   );
 };
