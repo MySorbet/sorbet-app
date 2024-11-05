@@ -80,7 +80,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
               </div>
             </div>
             <div>
-              <div className='grid grid-cols-3 gap-2'>
+              {/* TODO: Change to 3 columns when invoices are enabled */}
+              <div className='grid grid-cols-2 gap-2'>
                 <SidebarHeaderOption
                   label='Wallet'
                   href='/wallet'
