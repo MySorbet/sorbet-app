@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 import { InvoiceStatus, InvoiceStatuses } from './utils';
 
-// TODO: Match these colors exactly and sensibly
+// TODO: Match these colors exactly with design or sensibly if not
 const variants: Record<InvoiceStatus, string> = {
   Paid: 'border-green-600/40 border-solid bg-green-100 text-green-600 hover:bg-green-200/80',
   Overdue: 'bg-red-100/40 border-red-600/40 text-red-600 hover:bg-red-200/80',

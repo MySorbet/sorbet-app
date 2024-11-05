@@ -2,9 +2,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface SummaryCardProps {
+  /** What is this card about */
   label: string;
+  /** Monetary value of this card */
   value: number;
+  /** Number of invoices associated with this card */
   invoiceCount: number;
+  /** Whether the card is loading */
   isLoading?: boolean;
 }
 

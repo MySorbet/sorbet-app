@@ -17,8 +17,7 @@ type InvoiceSheetCancelDrawerProps = {
 };
 
 /**
- * Mini drawer component to confirm cancellation of an invoice (shown in the
- * invoice sheet)
+ * Mini drawer component to confirm cancellation of an invoice (shown in the invoice sheet)
  */
 export const InvoiceSheetCancelDrawer = ({
   onCancel,

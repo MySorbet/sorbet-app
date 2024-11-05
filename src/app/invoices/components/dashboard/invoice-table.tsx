@@ -27,17 +27,24 @@ const InvoiceTableHead = ({
   );
 };
 
+type InvoiceTableProps = {
+  /** The invoices to display */
+  invoices: Invoice[];
+  /** Called when an invoice is clicked */
+  onInvoiceClick?: (invoice: Invoice) => void;
+  /** Whether the table is loading */
+  isLoading?: boolean;
+  /** Called when the status of an invoice is changed (via the status badge) */
+  onInvoiceStatusChange?: (invoice: Invoice, status: InvoiceStatus) => void;
+};
+
+/** Renders a table of invoices */
 export const InvoiceTable = ({
   invoices,
   onInvoiceClick,
   isLoading,
   onInvoiceStatusChange,
-}: {
-  invoices: Invoice[];
-  onInvoiceClick?: (invoice: Invoice) => void;
-  isLoading?: boolean;
-  onInvoiceStatusChange?: (invoice: Invoice, status: InvoiceStatus) => void;
-}) => {
+}: InvoiceTableProps) => {
   return (
     <div className='rounded-2xl bg-white px-6 py-3'>
       <Table>
@@ -88,6 +95,7 @@ export const InvoiceTable = ({
   );
 };
 
+// TODO: Match this to design
 const EmptyInvoiceTableBody = () => {
   return (
     <TableBody>

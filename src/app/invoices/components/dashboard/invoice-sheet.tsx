@@ -27,6 +27,25 @@ import { formatCurrency, formatDate } from './utils';
 // TODO: Address scroll when there is not enough height
 // TODO: Use custom easing curves to improve the feel of the sheet open animation (match vaul?)
 
+type InvoiceSheetProps = {
+  /** Whether the sheet is open */
+  open: boolean;
+  /** Callback to set the open state */
+  setOpen: (open: boolean) => void;
+  /** The invoice to display. Returns `null` if no invoice is passed in. */
+  invoice?: Invoice;
+  /** Called when the edit button is clicked */
+  onEdit?: () => void;
+  /** Called when the cancel button is clicked (after confirmation) */
+  onCancel?: () => void;
+  /** Called when the download button is clicked */
+  onDownload?: () => void;
+  /** Whether the invoice is being updated */
+  isUpdating?: boolean;
+  /** Called when the invoice status is changed (via the status badge) */
+  onInvoiceStatusChange?: (status: InvoiceStatus) => void;
+};
+
 /**
  * Right side sheet that shows the invoice details and actions.
  */
@@ -39,19 +58,10 @@ export default function InvoiceSheet({
   onDownload,
   isUpdating,
   onInvoiceStatusChange,
-}: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  invoice?: Invoice;
-  onEdit?: () => void;
-  onCancel?: () => void;
-  onDownload?: () => void;
-  isUpdating?: boolean;
-  onInvoiceStatusChange?: (status: InvoiceStatus) => void;
-}) {
+}: InvoiceSheetProps) {
   // Manage the open state of the cancel confirmation drawer
+  // Effect closes the cancel confirmation drawer if the invoice is cancelled
   const [cancelDrawerOpen, setCancelDrawerOpen] = useState(false);
-  // This effect closes the cancel confirmation drawer if the invoice is cancelled
   useEffect(() => {
     if (invoice?.status === 'Cancelled') {
       setCancelDrawerOpen(false);

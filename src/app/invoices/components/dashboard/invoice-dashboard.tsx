@@ -36,10 +36,13 @@ export const InvoiceDashboard = ({
   const paidInvoices = invoices.filter((invoice) => invoice.status === 'Paid');
 
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
-  const [open, setOpen] = useState(false);
+  const [isInvoiceSheetOpen, setIsInvoiceSheetOpen] = useState(false);
 
-  const handleSetOpen = (open: boolean) => {
-    setOpen(open);
+  // Manage the open state of the invoice sheet
+  // When closing, wait for the animation to complete
+  // before clearing the selected invoice
+  const handleInvoiceSheetOpen = (open: boolean) => {
+    setIsInvoiceSheetOpen(open);
     if (!open) {
       setTimeout(() => {
         setSelectedInvoice(undefined);
@@ -96,8 +99,8 @@ export const InvoiceDashboard = ({
 
       {/* Invoice sheet displaying details when there is a selected invoice */}
       <InvoiceSheet
-        open={open}
-        setOpen={handleSetOpen}
+        open={isInvoiceSheetOpen}
+        setOpen={handleInvoiceSheetOpen}
         invoice={selectedInvoice}
         onDownload={print}
         onCancel={handleCancelInvoice}
@@ -147,7 +150,7 @@ export const InvoiceDashboard = ({
           invoices={invoices}
           onInvoiceClick={(invoice) => {
             setSelectedInvoice(invoice);
-            setOpen(true);
+            setIsInvoiceSheetOpen(true);
           }}
           isLoading={isLoading}
           onInvoiceStatusChange={handleInvoiceStatusChange}

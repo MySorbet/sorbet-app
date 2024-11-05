@@ -13,6 +13,8 @@ interface CopyButtonProps extends ButtonProps {
 }
 
 // TODO: Shall we figure out a way to combine this with the common copy button?
+// The difference is that the "common" copy button is just the tiny icon where as this is an outline button
+// Perhaps a `<CopyButton variant='outline' variant='tiny' />`?
 /**
  * Copy button that shows a checkmark for 1.5 seconds after copying.
  * You decide how to handle the copy action via `onCopy`.
