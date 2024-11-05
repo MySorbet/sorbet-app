@@ -23,7 +23,6 @@ interface CroppingWidgetProps {
   initialSize?: WidgetSize;
   redirectUrl?: string;
   draggedRef: React.MutableRefObject<boolean>;
-  showControls?: boolean;
   handleImageCropping: (key: string, croppedArea: Area) => Promise<void>;
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
@@ -32,8 +31,8 @@ interface CroppingWidgetProps {
     width: number;
     height: number;
   };
-  rowHeight: any;
-  margins: any;
+  rowHeight: number;
+  margins: [number, number];
   cols: number;
 }
 
@@ -43,9 +42,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   content,
   redirectUrl,
   initialSize = 'A',
-  showControls = false,
   handleImageCropping,
-  draggedRef,
   setActiveWidget,
   activeWidget,
   widgetDimensions,
@@ -105,14 +102,14 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   const onWidgetLinkEdit = (url: string) => {};
 
   const calculateMarginOffset = (
-    margins: any,
+    margins: [number, number],
     item: WidgetLayoutItem,
     cols: number
   ) => {
     if (cols - item.w === item.x) {
       return Math.max(margins[0], margins[0] * (item.x - 2));
     }
-    return Math.max(margins[0], margins[0] * (item.x + 1));
+    return Math.max(margins[0], margins[0] * item.x);
   };
 
   /** Calculates the initial values of the zoom and offset to match the display of the photo widget when croppping mode isn't active

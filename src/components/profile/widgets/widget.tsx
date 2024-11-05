@@ -114,7 +114,6 @@ export const Widget: React.FC<WidgetProps> = ({
         }
       }
     }
-    // TODO: Maybe widgets should be anchors?
   };
 
   useEffect(() => {
@@ -287,7 +286,7 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         id={identifier}
         key={identifier}
-        /** onClick={!isCropping ? onWidgetClick : () => {}} */
+        onClick={!showControls ? onWidgetClick : () => {}} // Don't redirect if editing dashboard, similar to Bento
       >
         {loading ? (
           <Skeleton

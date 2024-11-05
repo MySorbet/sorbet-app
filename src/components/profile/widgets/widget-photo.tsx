@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 import { PhotoWidgetContentType, WidgetSize } from '@/types';
 import { Area } from 'react-easy-crop';
 import { ImageOverlay } from './image-overlay';
@@ -14,6 +12,11 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({
   content,
   croppedArea,
 }) => {
+  // stylings for cropped images derived from official react-easy-crop examples
+  // reference: https://codesandbox.io/p/sandbox/react-easy-crop-with-live-output-kkqj0?file=%2Fsrc%2FApp.jsx%3A49%2C11
+  // this is the only approach that seems to handle images of any dimensions.
+
+  /** Calculates how an image should be transformed based on widget's croppedArea property, if it has it */
   const calculateStyles = (croppedArea: Area): React.CSSProperties => {
     const scale = 100 / croppedArea?.width;
     const transform = {
@@ -33,10 +36,6 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({
       transformOrigin: 'top left',
     };
   };
-
-  // stylings for cropped images derived from official react-easy-crop examples
-  // reference: https://codesandbox.io/p/sandbox/react-easy-crop-with-live-output-kkqj0?file=%2Fsrc%2FApp.jsx%3A49%2C11
-  // this is the only approach that seems to handle images of any dimensions.
   return (
     <div className='relative h-full overflow-hidden rounded-3xl'>
       <img
@@ -51,20 +50,3 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({
     </div>
   );
 };
-
-// reference from react-easy-crop
-/** 
-.output {
-  position: relative;
-  width: 300px;
-  overflow: hidden;
-  box-shadow: 0 0 32px rgba(0, 0, 0, 0.3);
-}
-
-.output img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: top left;
-}
-  */

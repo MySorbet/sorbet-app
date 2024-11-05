@@ -136,7 +136,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 w={existingItem.w}
                 h={existingItem.h}
                 type={existingItem.type}
-                showControls={editMode}
                 rowHeight={rowHeight}
                 margins={[25, 25]}
                 handleEditLink={handleWidgetEditLink}
@@ -258,7 +257,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
           margin={[25, 25]}
           cols={cols}
           onDragStop={handleWidgetDropStop}
-          isDraggable={editMode} // Disable dragging if cropping
+          isDraggable={editMode}
           isResizable={editMode}
           onDrag={() => (draggedRef.current = true)}
           innerRef={(node) => {
@@ -267,7 +266,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               setGridHeight(node.offsetHeight);
             }
           }}
-          /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
         >
           {layout.map((item) => {
             // Allow all widgets to render if not cropping
