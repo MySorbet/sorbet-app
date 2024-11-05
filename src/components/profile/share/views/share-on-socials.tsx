@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle, Download01 } from '@untitled-ui/icons-react';
+import { Options } from 'qr-code-styling';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,37 @@ import { ViewProps } from '../share-profile-dialog';
 
 type ShareOnSocialsProps = ViewProps;
 
+// QR Code style for share on socials giving it a playful sorbet branded feel
+const qrSize = 192; // w-48
+const qrCodeOptions: Options = {
+  type: 'svg',
+  width: qrSize,
+  height: qrSize,
+  margin: 0,
+  qrOptions: { typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' },
+  imageOptions: { hideBackgroundDots: false, imageSize: 0.4, margin: 0 },
+  dotsOptions: {
+    type: 'square',
+    color: '#6a1a4c',
+    gradient: {
+      type: 'radial',
+      rotation: 0,
+      colorStops: [
+        { offset: 0, color: '#d3ec30' },
+        { offset: 1, color: '#573df5' },
+      ],
+    },
+  },
+  backgroundOptions: { color: '#f9f7ff' },
+  image: '/svg/logo.svg',
+  cornersSquareOptions: {
+    type: 'extra-rounded',
+    color: '#573df5',
+    gradient: undefined,
+  },
+  cornersDotOptions: { type: 'square', color: '#d3ec30' },
+};
+
 /** Page rendered when a user want to share their Sorbet profile
  * and sent out a QR Code to it */
 export const ShareOnSocials = ({
@@ -21,7 +53,10 @@ export const ShareOnSocials = ({
 }: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
 
-  const { qrCodeRef, qrCode, isLoadingQRCode } = useGenerateQRCode(url);
+  const { qrCodeRef, qrCode, isLoadingQRCode } = useGenerateQRCode(
+    url,
+    qrCodeOptions
+  );
 
   const [isPngCopied, setIsPngCopied] = useState(false);
   const [isSvgCopied, setIsSvgCopied] = useState(false);
@@ -48,9 +83,9 @@ export const ShareOnSocials = ({
         navigateToPrevious={() => setActive('ShareYourProfile')}
       />
       <Body>
-        <div className='flex min-h-[256px] w-full items-center justify-center'>
+        <div className='flex w-full items-center justify-center'>
           {isLoadingQRCode ? (
-            <Skeleton className='h-[256px] w-[256px]' />
+            <Skeleton className='size-48' />
           ) : (
             <div ref={qrCodeRef} />
           )}

@@ -41,7 +41,7 @@ const Step1 = () => {
     lastName: z.string().min(1, { message: 'Last name is required' }),
     // TODO: eventually, update the user type to make handle required, because as it stands, a user cannot be created without a handle.
     // * This is a temporary fix due to mistyping of User type
-    handle: validateHandle(user?.handle ?? ''), 
+    handle: validateHandle(user?.handle ?? ''),
     location: z.string().optional(),
   });
 
@@ -130,7 +130,7 @@ const Step1 = () => {
                           prefix={`${hostname}/`}
                         />
                       </FormControl>
-                      <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                      <FormMessage />
                     </FormItem>
                   );
                 }}

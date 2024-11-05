@@ -2,6 +2,7 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
+import { cva, VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import {
   Controller,
@@ -140,10 +141,27 @@ const FormDescription = React.forwardRef<
 });
 FormDescription.displayName = 'FormDescription';
 
+
+const formMessageVariants = cva(
+  "text-sm font-normal text-destructive",
+  {
+    variants: {
+      animated: {
+        true: "animate-in slide-in-from-top-1 fade-in-0",
+        false: ""
+      }
+    },
+    defaultVariants: {
+      animated: true
+    }
+  }
+)
+
+
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
+  React.HTMLAttributes<HTMLParagraphElement> & VariantProps<typeof formMessageVariants>
+>(({ className, children, animated, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error?.message) : children;
 
@@ -155,7 +173,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn('text-sm font-normal text-destructive', className)}
+      className={cn(formMessageVariants({ animated, className }))}
       {...props}
     >
       {body}
