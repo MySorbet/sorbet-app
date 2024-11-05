@@ -1,9 +1,8 @@
 import { Trash2 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-  LinkWidgetContentType,
   PhotoWidgetContentType,
   WidgetContentType,
   WidgetLayoutItem,
@@ -12,8 +11,6 @@ import {
 } from '@/types';
 
 import { ResizeWidget } from './resize-widget';
-import { LinkWidget } from './widget-link';
-import { PhotoWidget } from './widget-photo';
 import Cropper, { Area, MediaSize } from 'react-easy-crop';
 
 interface CroppingWidgetProps {
@@ -30,7 +27,7 @@ interface CroppingWidgetProps {
   showControls?: boolean;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
-  handleImageCropping: any;
+  handleImageCropping: (key: string, croppedArea: Area) => Promise<void>;
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
   activeWidget: string | null;
@@ -66,11 +63,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   addUrl,
   cols,
 }) => {
-  const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
-    <>None</>
-  );
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -80,34 +73,47 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   const [height, setHeight] = useState(1);
   const [width, setWidth] = useState(1);
 
-  /** update image dimensions */
+  /** Update cropped image dimensions */
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
     console.log('here', croppedArea, zoom, crop);
     setCroppedArea(croppedArea);
   };
 
-  const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
-    // handleResize(identifier, w, h, widgetSize);
-    // setWidgetSize(widgetSize);
-  };
-
-  const onWidgetLinkEdit = (url: string) => {
-    // handleEditLink(identifier, url);
-  };
-
-  const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    const dragged = draggedRef.current;
-    draggedRef.current = false;
-    if (!dragged) {
-      if (redirectUrl) {
-        const newWindow = window.open(redirectUrl, '_blank');
-        if (newWindow) {
-          newWindow.opener = null;
-        }
+  /** Cancels the cropping session if the user clicks away from the active widget */
+  const handleClickAway = useCallback(
+    (event: MouseEvent) => {
+      if (activeWidget === identifier) {
+        setActiveWidget(null);
       }
-    }
-    // TODO: Maybe widgets should be anchors?
-  };
+    },
+    [activeWidget, identifier, setActiveWidget]
+  );
+
+  useEffect(() => {
+    /** Cancels the cropping session if the user clicks the escape button */
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && activeWidget === identifier) {
+        setActiveWidget(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', handleClickAway);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('click', handleClickAway);
+    };
+  }, [activeWidget, identifier]);
+
+  // Disable the functionality of the following three functions (clicking redirect urls, editing links, or resizing)
+  // if users are actively cropping
+
+  const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {};
+
+  const onWidgetLinkEdit = (url: string) => {};
+
+  const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {};
 
   const calculateMarginOffset = (
     margins: any,
@@ -120,6 +126,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     return Math.max(margins[0], margins[0] * (item.x + 1));
   };
 
+  /** Calculates the initial values of the zoom and offset to match the display of the photo widget when croppping mode isn't active
+   * (since 'object-cover' in react-easy-crop functions and warps ratios) */
   const calculateScaleFactor = (content: PhotoWidgetContentType) => {
     const containerRatio = widgetDimensions.width / widgetDimensions.height;
     const img = new Image();
@@ -169,36 +177,11 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         if (!(content as PhotoWidgetContentType).croppedArea) {
           calculateScaleFactor(content as PhotoWidgetContentType);
         }
-
-        setWidgetContent(
-          <PhotoWidget
-            croppedArea={(content as PhotoWidgetContentType).croppedArea}
-            /* offsets={
-              (content as PhotoWidgetContentType).offsets
-            } */
-            // zoom={(content as PhotoWidgetContentType).scale}
-            content={content as PhotoWidgetContentType}
-            size={widgetSize}
-          />
-        );
         break;
-
-      case 'Link':
-        setWidgetContent(
-          <LinkWidget
-            identifier={identifier}
-            addUrl={addUrl}
-            content={content as LinkWidgetContentType}
-            size={widgetSize}
-          />
-        );
-        break;
-
       default:
-        setWidgetContent(<>Unsupported widget type</>);
         break;
     }
-  }, [type, widgetSize, content]);
+  }, [type, content]);
   console.log(zoom);
 
   return (
@@ -206,6 +189,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       className={`rounded-3xl`}
       key={identifier}
       style={{
+        /** Styling must be absolute in order to get widget in the same position it was before cropping was active */
         position: 'absolute',
         left: `${
           Math.max(item.x, 0) * (widgetDimensions.width / item.w) +
@@ -221,16 +205,11 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     >
       <Cropper
         style={{
+          /** For the overflow dimensions, take the higher of either image's height/width or the widget's normal height/width */
           containerStyle: {
             position: 'relative',
-            height: `${Math.min(
-              Math.max(widgetDimensions.height, height),
-              700
-            )}px`,
-            width: `${Math.min(
-              Math.max(widgetDimensions.width, width),
-              700
-            )}px`,
+            height: `${Math.max(widgetDimensions.height, height)}px`,
+            width: `${Math.max(widgetDimensions.width, width)}px`,
             borderRadius: '10px',
           },
           cropAreaStyle: {
@@ -242,6 +221,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         crop={crop}
         zoom={zoom}
         aspect={3 / 3}
+        /** cropSize (the dimensions of the eventual cropped image) must always be the widget dimensions */
         cropSize={{
           width: widgetDimensions.width,
           height: widgetDimensions.height,
@@ -250,7 +230,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         onCropChange={setCrop}
         onCropComplete={onCropComplete}
         onZoomChange={setZoom}
-        objectFit='vertical-cover'
         maxZoom={10}
         initialCroppedAreaPercentages={
           (content as PhotoWidgetContentType).croppedArea
@@ -287,6 +266,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
               e.stopPropagation();
               handleRemove(identifier);
             }}
+            disabled={!!activeWidget}
           >
             <Trash2 size={18} />
           </Button>

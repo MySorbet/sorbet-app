@@ -17,6 +17,7 @@ import {
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import { useUpdateWidgetImage } from '@/hooks/widgets/useUpdateWidgetImage';
+import { Area } from 'react-easy-crop';
 
 interface WidgetManagementProps {
   userId: string;
@@ -138,55 +139,7 @@ export const useWidgetManagement = ({
     ]
   );
 
-  const handleSectionTitleAdd = useCallback(async () => {
-    console.log('testing layout', layout);
-    setAddingWidget(true);
-    try {
-      const widget = await createWidget({ url: '', type: 'SectionTitle' });
-      if (!widget) {
-        throw new Error('Failed to add widget. Please try again.');
-      }
-      const widgetToAdd: WidgetLayoutItem = {
-        i: widget.id,
-        x: (layout.length * 2) % cols,
-        y: 0,
-        w: WidgetDimensions.Section.w,
-        h: WidgetDimensions.Section.h,
-        type: 'SectionTitle',
-        content: widget.content,
-        static: !editMode,
-        isResizable: false,
-        isDraggable: editMode,
-        loading: false,
-        size: 'Section',
-      };
-
-      setLayout((prevLayout) => {
-        const newLayout = [...prevLayout, widgetToAdd];
-        persistWidgetsLayoutOnChange(newLayout);
-        return newLayout;
-      });
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : 'Something went wrong';
-      toast({
-        title: `We couldn't add a section title`,
-        description: message,
-      });
-    } finally {
-      setAddingWidget(false);
-    }
-  }, [
-    userId,
-    editMode,
-    layout,
-    cols,
-    createWidget,
-    toast,
-    setLayout,
-    persistWidgetsLayoutOnChange,
-  ]);
-
+  /** Handles the replacement of display images for Link and Photo Widgets */
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
       setAddingWidget(true);
@@ -199,6 +152,7 @@ export const useWidgetManagement = ({
           const fileExtension = image.name.split('.').pop()?.toLowerCase();
           const imageFormData = new FormData();
           imageFormData.append('file', image);
+
           // fileType must be different for svgs to render correctly
           if (fileExtension === 'svg') {
             imageFormData.append('fileType', 'image/svg+xml');
@@ -214,34 +168,25 @@ export const useWidgetManagement = ({
             throw new Error('Widget image not uploaded');
           }
 
-          console.log(response);
-
-          let newObj;
           switch (existingItem.type) {
-            /** Come back to this, does it make sesne to edit GitHub pictures for example */
             case 'Photo':
               (existingItem.content as PhotoWidgetContentType).image =
                 widgetUrl;
-              newObj = {
-                ...existingItem, // Spread all other properties
-                id: existingItem.i, // Replace 'i' with 'id'
-              };
-              await useUpdateWidgetImageAsync(newObj);
               break;
 
             case 'Link':
               (existingItem.content as LinkWidgetContentType).heroImageUrl =
                 widgetUrl;
-              newObj = {
-                ...existingItem, // Spread all other properties
-                id: existingItem.i, // Replace 'i' with 'id'
-              };
-              await useUpdateWidgetImageAsync(newObj);
               break;
 
             default:
               break;
           }
+          const newObj = {
+            ...existingItem,
+            id: existingItem.i, // Replace 'i' with 'id' for payload
+          };
+          await useUpdateWidgetImageAsync(newObj);
         }
       } catch (error) {
         const message =
@@ -257,12 +202,10 @@ export const useWidgetManagement = ({
     [userId, editMode, layout, uploadWidgetsImageAsync, toast, setLayout]
   );
 
+  /** Handles the cropping of images, the id of the image being cropped should be passed */
   const handleImageCropping = useCallback(
-    async (key: string, croppedArea: any) => {
+    async (key: string, croppedArea: Area) => {
       setAddingWidget(true);
-      let widgetUrl: string = '';
-
-      console.log('please');
       try {
         const existingItem = layout.find((item) => item.i === key);
 
@@ -279,7 +222,7 @@ export const useWidgetManagement = ({
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
         toast({
-          title: `We couldn't add a widget`,
+          title: `We couldn't crop this widget`,
           description: message,
         });
       } finally {
@@ -315,6 +258,7 @@ export const useWidgetManagement = ({
     [layout]
   );
 
+  /** Handles cases when the user drags an image over the profile page */
   const handleFileDrop = useCallback(
     async (file: File) => {
       const validExtensions = ['jpg', 'jpeg', 'png', 'svg', 'gif'];
@@ -425,7 +369,6 @@ export const useWidgetManagement = ({
     handleWidgetEditLink,
     handleNewImageAdd,
     handleImageCropping,
-    handleSectionTitleAdd,
     handleAddMultipleWidgets,
   };
 };

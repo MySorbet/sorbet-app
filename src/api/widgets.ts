@@ -93,18 +93,11 @@ export const updateWidget = async (
   }
 };
 
-/** Updating the links of image widgets */
+/** Updating the links of image widgets (only widget's redirectUrl should be updated) */
 export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
+  // redirectUrl should be set to what we want already in the payload
   let payload: any = {
-    type: widgetLayoutItem.type,
-    content: widgetLayoutItem.content,
     redirectUrl: widgetLayoutItem.redirectUrl,
-    layout: {
-      x: widgetLayoutItem.x,
-      y: widgetLayoutItem.y,
-      w: widgetLayoutItem.w,
-      h: widgetLayoutItem.h,
-    },
   };
 
   try {
@@ -119,13 +112,13 @@ export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
   }
 };
 
-/** Updating the links of image widgets */
+/** Updating the links of image widgets (only widget's content should be updated) */
 export const updateWidgetImage = async (widgetLayoutItem: WidgetLayoutItem) => {
+  // content should be set to what we want already in the payload
   let payload: any = {
     content: widgetLayoutItem.content,
   };
 
-  console.log('plez work');
   try {
     const res = await axios.patch(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,
@@ -364,21 +357,6 @@ const getLinkData: WidgetGetterFn = async (body) => {
   }
 };
 
-const getSectionTitleData: WidgetGetterFn = async (body) => {
-  try {
-    const response = await axios.post<WidgetDto>(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/section-title`,
-      body,
-      await withAuthHeader()
-    );
-    return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get generic link data: ${error.response.data.message}`
-    );
-  }
-};
-
 /** Map the supported widget types to their corresponding getter functions */
 const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Photo: getPhotoWidget,
@@ -395,7 +373,6 @@ const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Behance: getBehanceItem,
   Medium: getMediumArticleMetadata,
   Link: getLinkData,
-  SectionTitle: getSectionTitleData,
 };
 
 /** Get/create a widget with the given url and type */

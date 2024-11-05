@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { WidgetDimensions, WidgetSize } from '@/types';
 import { AddLink } from '@/components/profile/widgets/add-link';
-import { CropImageDialog } from '@/components/profile/widgets/crop-image-dialog';
+import { Area } from 'react-easy-crop';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
@@ -18,12 +18,9 @@ interface ResizeWidgetProps {
   setActiveWidget: (identifier: string | null) => void;
   activeWidget: string | null;
   identifier: string;
-  // handleImageCropping: any;
-  // zoom: number;
-  // offsets: any;
   initialSize: WidgetSize;
-  croppedArea?: any;
-  handleImageCropping?: any;
+  croppedArea?: Area | null;
+  handleImageCropping: (key: string, croppedArea: Area) => Promise<void>;
 }
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
@@ -45,7 +42,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   );
   // const [popoverOpen, setPopoverOpen] = useState(false); // Track popover visibility
 
-  const btnClass = 'h-4 w-7 flex items-center justify-center';
+  const btnClass = 'h-7 w-7 flex items-center justify-center';
   const dividerClass =
     'h-4 w-[2.5px] bg-[rgba(135,100,231,1)] rounded-full mx-2';
 
@@ -54,12 +51,14 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
     widgetSize: WidgetSize
   ) => {
     event.stopPropagation();
-    onResize(
-      WidgetDimensions[widgetSize].w,
-      WidgetDimensions[widgetSize].h,
-      widgetSize
-    );
-    setCurrentSize(widgetSize);
+    if (!activeWidget) {
+      onResize(
+        WidgetDimensions[widgetSize].w,
+        WidgetDimensions[widgetSize].h,
+        widgetSize
+      );
+      setCurrentSize(widgetSize);
+    }
   };
 
   const onSubmitLink = () => {
@@ -67,8 +66,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   const startCropping = async () => {
-    if (activeWidget) {
-      console.log('id check', identifier);
+    if (activeWidget && croppedArea) {
       await handleImageCropping(identifier, croppedArea);
       setActiveWidget(null);
     } else {
@@ -116,7 +114,9 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
 
       <div className={dividerClass} />
       <div
-        className={btnClass}
+        className={`${btnClass} ${
+          activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
+        }`}
         onClick={(e) => {
           e.stopPropagation;
           startCropping();

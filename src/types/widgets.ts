@@ -106,10 +106,6 @@ export interface LinkedInProfileWidgetContentType {
   profileImage: string;
 }
 
-export interface SectionTitleWidgetContentType {
-  title: string;
-}
-
 /** Widget Content can be any of the following types per widget */
 export type WidgetContentType =
   | DribbbleWidgetContentType
@@ -125,8 +121,7 @@ export type WidgetContentType =
   | InstagramWidgetContentType
   | SoundcloudTrackContentType
   | LinkWidgetContentType
-  | LinkedInProfileWidgetContentType
-  | SectionTitleWidgetContentType;
+  | LinkedInProfileWidgetContentType;
 
 export const WidgetTypes = [
   'Photo',
@@ -145,7 +140,6 @@ export const WidgetTypes = [
   'Medium',
   'Figma', // Currently unsupported
   'Link', // Catchall if nothing else matches
-  'SectionTitle',
 ] as const;
 
 export type WidgetType = (typeof WidgetTypes)[number];
