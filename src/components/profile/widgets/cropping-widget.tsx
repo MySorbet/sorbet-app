@@ -67,16 +67,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     setCroppedArea(croppedArea);
   };
 
-  /** Cancels the cropping session if the user clicks away from the active widget */
-  const handleClickAway = useCallback(
-    (event: MouseEvent) => {
-      if (activeWidget === identifier) {
-        setActiveWidget(null);
-      }
-    },
-    [activeWidget, identifier, setActiveWidget]
-  );
-
   useEffect(() => {
     /** Cancels the cropping session if the user clicks the escape button */
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -86,11 +76,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('click', handleClickAway);
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('click', handleClickAway);
     };
   }, [activeWidget, identifier]);
 
@@ -109,7 +96,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     if (cols - item.w === item.x) {
       return Math.max(margins[0], margins[0] * (item.x - 2));
     }
-    return Math.max(margins[0], margins[0] * item.x);
+    console.log(margins[0] * item.x, item.x, item.w);
+    return Math.max(margins[0], margins[0] * (item.x - 1));
   };
 
   /** Calculates the initial values of the zoom and offset to match the display of the photo widget when croppping mode isn't active
@@ -151,24 +139,18 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       widgetDimensions.width / img.height,
       widgetDimensions.height / img.width
     );
-    setZoom(Math.min(widthRatio, heightRatio));
-    setCrop(offsets);
+
+    if (!(content as PhotoWidgetContentType).croppedArea) {
+      setZoom(Math.min(widthRatio, heightRatio));
+      setCrop(offsets);
+    }
     setHeight(img.height);
     setWidth(img.width);
   };
 
   useEffect(() => {
-    switch (type) {
-      case 'Photo':
-        if (!(content as PhotoWidgetContentType).croppedArea) {
-          calculateScaleFactor(content as PhotoWidgetContentType);
-        }
-        break;
-      default:
-        break;
-    }
-  }, [type, content]);
-  console.log(zoom);
+    calculateScaleFactor(content as PhotoWidgetContentType);
+  }, [content]);
 
   return (
     <div

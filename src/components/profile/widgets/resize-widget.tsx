@@ -91,28 +91,28 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       <button className={btnClass} onClick={(e) => onResizeClick(e, 'A')}>
         <Square
           size={16}
-          fill={currentSize === 'A' ? '#fff' : 'transparent'}
+          fill={currentSize === 'A' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </button>
       <div className={btnClass} onClick={(e) => onResizeClick(e, 'B')}>
         <Square
           size={22}
-          fill={currentSize === 'B' ? '#fff' : 'transparent'}
+          fill={currentSize === 'B' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </div>
       <div className={btnClass} onClick={(e) => onResizeClick(e, 'C')}>
         <RectangleHorizontal
           size={16}
-          fill={currentSize === 'C' ? '#fff' : 'transparent'}
+          fill={currentSize === 'C' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </div>
       <div className={btnClass} onClick={(e) => onResizeClick(e, 'D')}>
         <RectangleVertical
           size={16}
-          fill={currentSize === 'D' ? '#fff' : 'transparent'}
+          fill={currentSize === 'D' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </div>
@@ -120,7 +120,6 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       {/** Only allow for widget links and cropping for Photos */}
       {type === 'Photo' && (
         <>
-          {' '}
           <div className={dividerClass} />
           <div
             className={`${btnClass} ${
