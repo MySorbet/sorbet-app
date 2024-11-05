@@ -26,7 +26,17 @@ import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
 
+import { usePrivy } from '@privy-io/react-auth';
+
 export const WalletContainer = () => {
+  const { user } = usePrivy();
+  const smartWallet = user?.linkedAccounts.find(
+    (account) => account.type === 'smart_wallet'
+  );
+  console.log('123', smartWallet?.address);
+  // Logs the smart wallet's address
+  console.log(smartWallet?.type);
+
   const { toast } = useToast();
   const { wallets } = useWallets();
   const walletAddress = useEmbeddedWalletAddress();
