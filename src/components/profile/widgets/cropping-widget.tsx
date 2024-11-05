@@ -63,7 +63,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
 
   /** Update cropped image dimensions */
   const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-    console.log('here', croppedArea, zoom, crop);
     setCroppedArea(croppedArea);
   };
 
@@ -88,6 +87,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
 
   const onWidgetLinkEdit = (url: string) => {};
 
+  /** For finding out how much to offset the widget on the left side */
   const calculateMarginOffset = (
     margins: [number, number],
     item: WidgetLayoutItem,
@@ -96,7 +96,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     if (cols - item.w === item.x) {
       return Math.max(margins[0], margins[0] * (item.x - 2));
     }
-    console.log(margins[0] * item.x, item.x, item.w);
     return Math.max(margins[0], margins[0] * (item.x - 1));
   };
 
@@ -132,13 +131,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       // Image is taller than container
       offsets = { x: 0, y: (img.height - img.width) / 2 };
     }
-    console.log(
-      widthRatio,
-      heightRatio,
-      img.width / widgetDimensions.height,
-      widgetDimensions.width / img.height,
-      widgetDimensions.height / img.width
-    );
 
     if (!(content as PhotoWidgetContentType).croppedArea) {
       setZoom(Math.min(widthRatio, heightRatio));
