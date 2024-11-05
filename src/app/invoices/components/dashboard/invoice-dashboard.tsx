@@ -62,10 +62,10 @@ export const InvoiceDashboard = ({
     });
   };
 
-  // Cancel the invoice using the mutation hook. When complete, invalidate the
-  // invoices query
+  // Cancel the invoice using the mutation hook. When complete, invalidate the invoices query
   // TODO: handle error
   // TODO: Loading states
+  // TODO: This could merge with cancel
   const { payInvoiceMutation, isPending: isPayingInvoice } = usePayInvoice();
   const handleInvoiceStatusChange = async (
     invoice: Invoice,
@@ -102,6 +102,12 @@ export const InvoiceDashboard = ({
         onDownload={print}
         onCancel={handleCancelInvoice}
         isUpdating={isPending}
+        onInvoiceStatusChange={(status) => {
+          if (!selectedInvoice) return;
+          // Optimistically update the status
+          setSelectedInvoice({ ...selectedInvoice, status });
+          handleInvoiceStatusChange(selectedInvoice, status);
+        }}
       />
 
       <div className='flex w-full max-w-6xl flex-col gap-10'>

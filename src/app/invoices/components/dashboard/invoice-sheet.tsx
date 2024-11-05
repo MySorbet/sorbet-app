@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 import { CopyButton } from './copy-button';
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { Invoice } from './utils';
+import { Invoice, InvoiceStatus } from './utils';
 import { formatCurrency, formatDate } from './utils';
 
 // TODO: Address scroll when there is not enough height
@@ -38,6 +38,7 @@ export default function InvoiceSheet({
   onCancel,
   onDownload,
   isUpdating,
+  onInvoiceStatusChange,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -46,6 +47,7 @@ export default function InvoiceSheet({
   onCancel?: () => void;
   onDownload?: () => void;
   isUpdating?: boolean;
+  onInvoiceStatusChange?: (status: InvoiceStatus) => void;
 }) {
   // Manage the open state of the cancel confirmation drawer
   const [cancelDrawerOpen, setCancelDrawerOpen] = useState(false);
@@ -78,14 +80,20 @@ export default function InvoiceSheet({
             {invoice.toName}
           </SheetTitle>
           <SheetDescription>
-            <VisuallyHidden>Description goes here</VisuallyHidden>
+            <VisuallyHidden>
+              {`Invoice details for ${invoice.toName} - ${invoice.invoiceNumber}`}
+            </VisuallyHidden>
           </SheetDescription>
         </SheetHeader>
 
         <div className='flex flex-1 flex-col gap-12'>
           {/* Invoice status and total amount */}
           <div>
-            <InvoiceStatusBadge variant={invoice.status} />
+            <InvoiceStatusBadge
+              variant={invoice.status}
+              interactive
+              onValueChange={onInvoiceStatusChange}
+            />
             <div
               className={cn(
                 'mt-3 text-2xl font-semibold',

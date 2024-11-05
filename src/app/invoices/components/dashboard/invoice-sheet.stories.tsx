@@ -17,6 +17,7 @@ const meta: Meta<typeof InvoiceSheet> = {
     onCancel: fn(),
     onEdit: fn(),
     onDownload: fn(),
+    onInvoiceStatusChange: fn(),
   },
 };
 
