@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { sampleInvoices } from '../dashboard/sample-invoices';
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
+
 import { InvoiceReview } from './invoice-review';
 
 const meta: Meta<typeof InvoiceReview> = {

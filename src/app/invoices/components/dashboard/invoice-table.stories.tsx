@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
+
 import { InvoiceTable } from './invoice-table';
-import { sampleInvoices } from './sample-invoices';
 
 const meta: Meta<typeof InvoiceTable> = {
   title: 'Invoices/InvoiceTable',

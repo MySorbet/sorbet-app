@@ -2,8 +2,9 @@ import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
+
 import InvoiceSheet from './invoice-sheet';
-import { sampleInvoices } from './sample-invoices';
 
 const meta: Meta<typeof InvoiceSheet> = {
   title: 'Invoices/InvoiceSheet',

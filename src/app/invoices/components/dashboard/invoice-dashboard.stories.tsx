@@ -6,10 +6,10 @@ import {
   mockInvoicesHandler,
   mockPayInvoiceHandler,
 } from '@/api/invoices';
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
 import { useInvoices } from '@/app/invoices/hooks/use-invoices';
 
 import { InvoiceDashboard } from './invoice-dashboard';
-import { sampleInvoices } from './sample-invoices';
 
 const meta: Meta<typeof InvoiceDashboard> = {
   title: 'Invoices/InvoiceDashboard',

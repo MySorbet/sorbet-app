@@ -1,5 +1,8 @@
-import { Invoice } from './utils';
+import { Invoice } from '@/app/invoices/components/dashboard/utils';
 
+/**
+ * Set of mock data for invoices. For use in development only.
+ */
 export const sampleInvoices: Invoice[] = [
   {
     id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a',

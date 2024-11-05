@@ -4,9 +4,9 @@ import {
   mockCurrentWalletAddressHandler,
   mockInvoiceHandler,
 } from '@/api/invoices';
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
 import { useInvoice } from '@/app/invoices/hooks/use-invoice';
 
-import { sampleInvoices } from './dashboard/sample-invoices';
 import { InvoicePublicView } from './invoice-public-view';
 
 const meta: Meta<typeof InvoicePublicView> = {

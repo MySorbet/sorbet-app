@@ -1,8 +1,9 @@
 import { delay, http, HttpResponse } from 'msw';
 
-import { sampleInvoices } from '@/app/invoices/components/dashboard/sample-invoices';
 import { Invoice } from '@/app/invoices/components/dashboard/utils';
 import { env } from '@/lib/env';
+
+import { sampleInvoices } from './sample-invoices';
 
 /**
  * Mock the data from the `/invoices` endpoint
