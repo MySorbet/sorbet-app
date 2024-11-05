@@ -91,16 +91,13 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     const { w, h } = getWidgetDimensions({ size });
 
     const columnWidths: { [key: number]: number } = {
-      2: gridWidth / 2, // placeholder value, at the moment there's never 2 columns
+      2: gridWidth / 2,
       4: 603 / 2,
       6: 393 / 2,
       8: 289 / 2,
     };
 
     // calculations from: https://github.com/react-grid-layout/react-grid-layout/issues/1432
-
-    // 10/25: width needs to be refactored at a later point
-    // individual widgets widths at the moment are unimpacted by window size
     return {
       width: w * columnWidths[cols as number] + margins * (w / 2 - 1),
       height: h * rowHeight + margins * (h - 1),
@@ -126,114 +123,111 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         onSubmit={handleOnboardingDrawerSubmit}
       />
       <DesktopOnlyAlert />
-      <div>
-        {activeWidget && existingItem !== undefined ? (
-          <div
-            className={`relative w-full`}
-            style={{ height: `${gridHeight}px` }}
-          >
-            <CroppingWidget
-              identifier={existingItem.i}
-              item={existingItem}
-              w={existingItem.w}
-              h={existingItem.h}
-              type={existingItem.type}
-              showControls={editMode}
-              rowHeight={rowHeight}
-              margins={[25, 25]}
-              handleResize={handleWidgetResize}
-              handleRemove={handleWidgetRemove}
-              handleEditLink={handleWidgetEditLink}
-              content={existingItem.content}
-              initialSize={existingItem.size}
-              redirectUrl={existingItem.redirectUrl}
-              draggedRef={draggedRef}
-              widgetDimensions={calculateWidgetPixelDimensions(
-                existingItem.size,
-                gridWidth,
-                cols,
-                25
-              )}
-              activeWidget={activeWidget}
-              setActiveWidget={setActiveWidget}
-              handleImageCropping={handleImageCropping}
-              addUrl={handleNewImageAdd}
-              loading={addingWidget}
-              cols={cols}
-            />
-          </div>
-        ) : (
-          <FileDropArea onFileDrop={handleFileDrop}>
-            <ReactGridLayout
-              layout={layout}
-              onLayoutChange={handleLayoutChange}
-              className={styles['react-grid-layout-custom']}
-              rowHeight={rowHeight}
-              margin={[25, 25]}
-              cols={cols}
-              onDragStop={handleWidgetDropStop}
-              isDraggable={editMode} // Disable dragging if cropping
-              isResizable={editMode}
-              onDrag={() => (draggedRef.current = true)}
-              innerRef={(node) => {
-                if (node) {
-                  setGridWidth(node.offsetWidth);
-                  setGridHeight(node.offsetHeight);
-                }
-              }}
-              /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
+      {editMode ? (
+        <div>
+          {activeWidget && existingItem !== undefined ? (
+            <div
+              className={`relative w-full`}
+              style={{ height: `${gridHeight}px` }}
             >
-              {layout.map((item) => {
-                // Allow all widgets to render if not cropping
-                const shouldRender = !activeWidget || activeWidget === item.i;
-                return (
-                  <motion.div
-                    id={item.i}
-                    className={`widget-motion-wrapper ${
-                      shouldRender ? '' : 'hidden'
-                    }`}
-                    initial={false}
-                    animate={animationStyles[item.i]}
-                    style={{ width: '100%', height: '100%' }}
-                    key={item.i}
-                    data-grid={item}
-                    ref={(el) => {
-                      if (el) widgetRefs.current[item.i] = el;
-                    }}
-                  >
-                    <Widget
-                      identifier={item.i}
-                      w={item.w}
-                      h={item.h}
-                      type={item.type}
-                      showControls={editMode}
-                      handleResize={handleWidgetResize}
-                      handleRemove={handleWidgetRemove}
-                      handleEditLink={handleWidgetEditLink}
-                      content={item.content}
-                      initialSize={item.size}
-                      redirectUrl={item.redirectUrl}
-                      draggedRef={draggedRef}
-                      widgetDimensions={calculateWidgetPixelDimensions(
-                        item.size,
-                        gridWidth,
-                        cols,
-                        25
-                      )}
-                      activeWidget={activeWidget}
-                      setActiveWidget={setActiveWidget}
-                      handleImageCropping={handleImageCropping}
-                      addUrl={handleNewImageAdd}
-                      loading={addingWidget}
-                    />
-                  </motion.div>
-                );
-              })}
-            </ReactGridLayout>
-          </FileDropArea>
-        )}
-
-        {editMode && (
+              <CroppingWidget
+                identifier={existingItem.i}
+                item={existingItem}
+                w={existingItem.w}
+                h={existingItem.h}
+                type={existingItem.type}
+                showControls={editMode}
+                rowHeight={rowHeight}
+                margins={[25, 25]}
+                handleEditLink={handleWidgetEditLink}
+                content={existingItem.content}
+                initialSize={existingItem.size}
+                redirectUrl={existingItem.redirectUrl}
+                draggedRef={draggedRef}
+                widgetDimensions={calculateWidgetPixelDimensions(
+                  existingItem.size,
+                  gridWidth,
+                  cols,
+                  25
+                )}
+                activeWidget={activeWidget}
+                setActiveWidget={setActiveWidget}
+                handleImageCropping={handleImageCropping}
+                cols={cols}
+              />
+            </div>
+          ) : (
+            <FileDropArea onFileDrop={handleFileDrop}>
+              <ReactGridLayout
+                layout={layout}
+                onLayoutChange={handleLayoutChange}
+                className={styles['react-grid-layout-custom']}
+                rowHeight={rowHeight}
+                margin={[25, 25]}
+                cols={cols}
+                onDragStop={handleWidgetDropStop}
+                isDraggable={editMode} // Disable dragging if cropping
+                isResizable={editMode}
+                onDrag={() => (draggedRef.current = true)}
+                innerRef={(node) => {
+                  if (node) {
+                    setGridWidth(node.offsetWidth);
+                    setGridHeight(node.offsetHeight);
+                  }
+                }}
+                /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
+              >
+                {layout.map((item) => {
+                  // Allow all widgets to render if not cropping
+                  const shouldRender = !activeWidget || activeWidget === item.i;
+                  return (
+                    <motion.div
+                      id={item.i}
+                      className={`widget-motion-wrapper ${
+                        shouldRender ? '' : 'hidden'
+                      }`}
+                      initial={false}
+                      animate={animationStyles[item.i]}
+                      style={{ width: '100%', height: '100%' }}
+                      key={item.i}
+                      data-grid={item}
+                      ref={(el) => {
+                        if (el) widgetRefs.current[item.i] = el;
+                      }}
+                    >
+                      <Widget
+                        identifier={item.i}
+                        w={item.w}
+                        h={item.h}
+                        type={item.type}
+                        showControls={editMode}
+                        handleResize={handleWidgetResize}
+                        handleRemove={handleWidgetRemove}
+                        handleEditLink={handleWidgetEditLink}
+                        content={item.content}
+                        initialSize={item.size}
+                        redirectUrl={item.redirectUrl}
+                        draggedRef={draggedRef}
+                        widgetDimensions={calculateWidgetPixelDimensions(
+                          item.size,
+                          gridWidth,
+                          cols,
+                          25
+                        )}
+                        activeWidget={activeWidget}
+                        setActiveWidget={setActiveWidget}
+                        handleImageCropping={handleImageCropping}
+                        addImage={handleNewImageAdd}
+                        loading={addingWidget}
+                        setErrorInvalidImage={setErrorInvalidImage}
+                      />
+                    </motion.div>
+                  );
+                })}
+              </ReactGridLayout>
+            </FileDropArea>
+          )}
+          {/** bottom bar where widgets can be added */}
           <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
             <div className='flex w-full flex-col items-center'>
               {errorInvalidImage && (
@@ -254,8 +248,76 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <ReactGridLayout
+          layout={layout}
+          onLayoutChange={handleLayoutChange}
+          className={styles['react-grid-layout-custom']}
+          rowHeight={rowHeight}
+          margin={[25, 25]}
+          cols={cols}
+          onDragStop={handleWidgetDropStop}
+          isDraggable={editMode} // Disable dragging if cropping
+          isResizable={editMode}
+          onDrag={() => (draggedRef.current = true)}
+          innerRef={(node) => {
+            if (node) {
+              setGridWidth(node.offsetWidth);
+              setGridHeight(node.offsetHeight);
+            }
+          }}
+          /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
+        >
+          {layout.map((item) => {
+            // Allow all widgets to render if not cropping
+            const shouldRender = !activeWidget || activeWidget === item.i;
+            return (
+              <motion.div
+                id={item.i}
+                className={`widget-motion-wrapper ${
+                  shouldRender ? '' : 'hidden'
+                }`}
+                initial={false}
+                animate={animationStyles[item.i]}
+                style={{ width: '100%', height: '100%' }}
+                key={item.i}
+                data-grid={item}
+                ref={(el) => {
+                  if (el) widgetRefs.current[item.i] = el;
+                }}
+              >
+                <Widget
+                  identifier={item.i}
+                  w={item.w}
+                  h={item.h}
+                  type={item.type}
+                  showControls={editMode}
+                  handleResize={handleWidgetResize}
+                  handleRemove={handleWidgetRemove}
+                  handleEditLink={handleWidgetEditLink}
+                  content={item.content}
+                  initialSize={item.size}
+                  redirectUrl={item.redirectUrl}
+                  draggedRef={draggedRef}
+                  widgetDimensions={calculateWidgetPixelDimensions(
+                    item.size,
+                    gridWidth,
+                    cols,
+                    25
+                  )}
+                  activeWidget={activeWidget}
+                  setActiveWidget={setActiveWidget}
+                  handleImageCropping={handleImageCropping}
+                  addImage={handleNewImageAdd}
+                  loading={addingWidget}
+                  setErrorInvalidImage={setErrorInvalidImage}
+                />
+              </motion.div>
+            );
+          })}
+        </ReactGridLayout>
+      )}
     </>
   );
 };

@@ -4,19 +4,12 @@ import { GithubWidgetContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-
 interface GithubWidgetType {
-  addUrl: any;
   content: GithubWidgetContentType;
   size: WidgetSize;
 }
 
-export const GithubWidget: React.FC<GithubWidgetType> = ({
-  content,
-  size,
-  addUrl,
-}) => {
+export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
   let widgetLayout;
   switch (size) {
     case 'A':
@@ -32,10 +25,6 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
             </div>
           </div>
           <div className='relative flex-grow'>
-            <ModifyImageWidget
-              addUrl={addUrl}
-              className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
-            />
             <div className='overflow-hidden'>
               <img
                 src={content.image}

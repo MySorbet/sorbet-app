@@ -1,5 +1,5 @@
 import { Link } from 'lucide-react';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import { cn } from '@/lib/utils';
 import { LinkWidgetContentType, WidgetSize } from '@/types';
@@ -10,9 +10,11 @@ import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-im
 
 interface LinkWidgetProps {
   /** The content from link for the widget to render */
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
   content: LinkWidgetContentType;
-  addUrl: any;
+  addImage: (key: string, image: File) => Promise<void>;
   identifier: string;
+  showControls?: boolean;
   /** The size of the widget to render */
   size: WidgetSize;
 }
@@ -21,9 +23,11 @@ interface LinkWidgetProps {
  * Render a link widget with the given content and size
  */
 export const LinkWidget: React.FC<LinkWidgetProps> = ({
+  setErrorInvalidImage,
   content,
   identifier,
-  addUrl,
+  addImage,
+  showControls,
   size,
 }) => {
   const { title, iconUrl, heroImageUrl } = content;
@@ -37,11 +41,14 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             <Title>{title}</Title>
           </WidgetHeader>
           <div className='relative flex-grow'>
-            <ModifyImageWidget
-              identifier={identifier}
-              addUrl={addUrl}
-              className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
-            />
+            {showControls && (
+              <ModifyImageWidget
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
             <div className='overflow-hidden'>
               <BannerImage src={heroImageUrl} />
             </div>
@@ -56,11 +63,14 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             <Title>{title}</Title>
           </WidgetHeader>
           <div className='relative flex-grow'>
-            <ModifyImageWidget
-              identifier={identifier}
-              addUrl={addUrl}
-              className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
-            />
+            {showControls && (
+              <ModifyImageWidget
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
             <div className='overflow-hidden'>
               <BannerImage src={heroImageUrl} />
             </div>
@@ -76,11 +86,14 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           </WidgetHeader>
           <div className='flex h-full flex-row justify-end gap-3'>
             <div className='relative flex-grow'>
-              <ModifyImageWidget
-                identifier={identifier}
-                addUrl={addUrl}
-                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
-              />
+              {showControls && (
+                <ModifyImageWidget
+                  setErrorInvalidImage={setErrorInvalidImage}
+                  identifier={identifier}
+                  addImage={addImage}
+                  className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+                />
+              )}
               <BannerImage src={heroImageUrl} />
             </div>
           </div>
@@ -94,11 +107,14 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             <Title>{title}</Title>
           </WidgetHeader>
           <div className='relative flex-grow'>
-            <ModifyImageWidget
-              identifier={identifier}
-              addUrl={addUrl}
-              className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
-            />
+            {showControls && (
+              <ModifyImageWidget
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
             <BannerImage src={heroImageUrl} />
           </div>
         </WidgetLayout>

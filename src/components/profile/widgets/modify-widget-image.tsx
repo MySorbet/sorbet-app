@@ -1,31 +1,20 @@
-import React, { useState } from 'react';
-import {
-  RectangleHorizontal,
-  RectangleVertical,
-  Square,
-  Crop,
-  Trash2,
-} from 'lucide-react';
-import { WidgetDimensions, WidgetSize } from '@/types';
-import { AddLink } from '@/components/profile/widgets/add-link';
-import { CropImageDialog } from '@/components/profile/widgets/crop-image-dialog';
+import { Trash2 } from 'lucide-react';
 import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
 import { cn } from '@/lib/utils';
+import { Dispatch, SetStateAction } from 'react';
 
 interface ModifyImageWidgetProps {
-  // setActiveWidget: (identifier: string | null) => void;
-  // activeWidget: string | null;
   identifier: string;
-  addUrl: any;
-
+  addImage: (key: string, image: File) => Promise<void>;
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
   className?: string;
 }
 
 export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
   identifier,
-  // activeWidget,
+  addImage,
+  setErrorInvalidImage,
   className,
-  addUrl,
 }) => {
   const btnClass = 'h-4 w-7 flex items-center justify-center';
   const dividerClass = 'h-4 w-[2.5px] bg-[#344054] rounded-full mx-2';
@@ -38,17 +27,16 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
       const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
       if (!fileExtension) {
-        // This condition is hit if there is no file extension
-        // showErrorInvalidImage(true);
         return;
       }
 
       if (validExtensions.includes(fileExtension) && fileSize <= 10) {
-        addUrl(identifier, file);
+        addImage(identifier, file);
       } else {
-        // showErrorInvalidImage(true);
-        console.error('bleh');
+        setErrorInvalidImage(true);
       }
+    } else {
+      setErrorInvalidImage(true);
     }
   };
 

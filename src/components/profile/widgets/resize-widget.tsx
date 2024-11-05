@@ -20,7 +20,7 @@ interface ResizeWidgetProps {
   identifier: string;
   initialSize: WidgetSize;
   croppedArea?: Area | null;
-  handleImageCropping: (key: string, croppedArea: Area) => Promise<void>;
+  handleImageCropping?: (key: string, croppedArea: Area) => Promise<void>;
 }
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
@@ -40,7 +40,6 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   const [currentLink, setCurrentLink] = useState<string>(
     redirectUrl ? redirectUrl : ''
   );
-  // const [popoverOpen, setPopoverOpen] = useState(false); // Track popover visibility
 
   const btnClass = 'h-7 w-7 flex items-center justify-center';
   const dividerClass =
@@ -66,7 +65,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   const startCropping = async () => {
-    if (activeWidget && croppedArea) {
+    if (activeWidget && croppedArea && handleImageCropping) {
       await handleImageCropping(identifier, croppedArea);
       setActiveWidget(null);
     } else {
@@ -124,7 +123,9 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       >
         <Crop size={20} strokeWidth={2.5} />
       </div>
-      <div className={btnClass}>
+      <div
+        className={`${btnClass} ${popoverOpen ? 'rounded-md bg-white' : ''}`}
+      >
         <AddLink
           value={currentLink}
           onChange={setCurrentLink}

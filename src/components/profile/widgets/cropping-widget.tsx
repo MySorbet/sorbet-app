@@ -20,13 +20,10 @@ interface CroppingWidgetProps {
   item: WidgetLayoutItem;
   h: number;
   content?: WidgetContentType;
-  loading?: boolean;
   initialSize?: WidgetSize;
   redirectUrl?: string;
   draggedRef: React.MutableRefObject<boolean>;
   showControls?: boolean;
-  handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
-  handleRemove: (key: string) => void;
   handleImageCropping: (key: string, croppedArea: Area) => Promise<void>;
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
@@ -35,7 +32,6 @@ interface CroppingWidgetProps {
     width: number;
     height: number;
   };
-  addUrl: any;
   rowHeight: any;
   margins: any;
   cols: number;
@@ -44,15 +40,11 @@ interface CroppingWidgetProps {
 export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   identifier,
   type,
-  loading,
   content,
   redirectUrl,
   initialSize = 'A',
   showControls = false,
-  handleResize,
-  handleRemove,
   handleImageCropping,
-  handleEditLink,
   draggedRef,
   setActiveWidget,
   activeWidget,
@@ -60,7 +52,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   rowHeight,
   margins,
   item,
-  addUrl,
   cols,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -106,14 +97,12 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     };
   }, [activeWidget, identifier]);
 
-  // Disable the functionality of the following three functions (clicking redirect urls, editing links, or resizing)
+  // Disable the functionality of the following functions (editing links, resizing)
   // if users are actively cropping
 
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {};
 
   const onWidgetLinkEdit = (url: string) => {};
-
-  const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {};
 
   const calculateMarginOffset = (
     margins: any,
@@ -262,10 +251,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
             variant='outline'
             size='icon'
             className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
-            onClick={(e) => {
-              e.stopPropagation();
-              handleRemove(identifier);
-            }}
             disabled={!!activeWidget}
           >
             <Trash2 size={18} />

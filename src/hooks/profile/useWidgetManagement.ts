@@ -62,7 +62,6 @@ export const useWidgetManagement = ({
 
   const handleWidgetAdd = useCallback(
     async (url: string, image?: File) => {
-      console.log('layout', layout);
       setAddingWidget(true);
       let widgetUrl: string = url;
 

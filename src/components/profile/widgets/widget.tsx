@@ -1,6 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,6 @@ import {
   SubstackWidgetContentType,
   TwitterWidgetContentType,
   WidgetContentType,
-  WidgetDimensions,
   WidgetSize,
   WidgetType,
   YoutubeWidgetContentType,
@@ -44,9 +43,6 @@ import { SpotifySongWidget } from './widget-spotify-song';
 import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
-import Cropper, { Area } from 'react-easy-crop';
-import { ImageOverlay } from '@/components/profile/widgets/image-overlay';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 
 interface WidgetProps {
   identifier: string;
@@ -69,7 +65,8 @@ interface WidgetProps {
     width: number;
     height: number;
   };
-  addUrl: any;
+  addImage: (key: string, image: File) => Promise<void>;
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -86,8 +83,8 @@ export const Widget: React.FC<WidgetProps> = ({
   draggedRef,
   setActiveWidget,
   activeWidget,
-  widgetDimensions,
-  addUrl,
+  setErrorInvalidImage,
+  addImage,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -96,12 +93,12 @@ export const Widget: React.FC<WidgetProps> = ({
   );
 
   /** update image dimensions */
-
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h, widgetSize);
     setWidgetSize(widgetSize);
   };
 
+  /** handles the update of widget redirect urls */
   const onWidgetLinkEdit = (url: string) => {
     handleEditLink(identifier, url);
   };
@@ -203,7 +200,6 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Github':
         setWidgetContent(
           <GithubWidget
-            addUrl={addUrl}
             content={content as GithubWidgetContentType}
             size={widgetSize}
           />
@@ -241,8 +237,10 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Link':
         setWidgetContent(
           <LinkWidget
+            setErrorInvalidImage={setErrorInvalidImage}
             identifier={identifier}
-            addUrl={addUrl}
+            addImage={addImage}
+            showControls={showControls}
             content={content as LinkWidgetContentType}
             size={widgetSize}
           />
