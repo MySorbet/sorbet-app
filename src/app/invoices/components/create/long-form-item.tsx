@@ -2,9 +2,18 @@ import { FormItem, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 
 /**
- * A shadcn `<FormItem/>` which renders children as a long row rather than a column.
+ * A shadcn `<FormItem/>` which renders as a width filling row rather than a column.
  *
- * Render the same children you would for a shadcn `<FormItem/>` except for the `<FormLabel/>`. Instead, use the `label` prop.
+ * Render the same children you would for a shadcn `<FormItem/>` except for the `<FormLabel/>`.
+ * Instead, use the `label` prop.
+ *
+ * @example
+ * <LongFormItem label='My label'>
+ *   <FormControl>
+ *     <Input {...field} />
+ *   </FormControl>
+ *   <FormMessage />
+ * </LongFormItem>
  */
 export const LongFormItem = ({
   children,
@@ -13,6 +22,7 @@ export const LongFormItem = ({
 }: {
   children: React.ReactNode;
   className?: string;
+  /** The label for the form item. Use this instead of `<FormLabel/>`. */
   label: string;
 }) => {
   return (

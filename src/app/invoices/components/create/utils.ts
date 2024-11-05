@@ -4,8 +4,8 @@ import { z } from 'zod';
  * Build a zod string validator with a custom error message for use in a RHF FormField
  *
  * @param name - The name of the field
- * @param min - The minimum length of the field
- * @param max - The maximum length of the field
+ * @param min - The minimum length of the field (default: 1)
+ * @param max - The maximum length of the field (default: 50)
  * @returns A zod string validator enforcing the above constraints
  */
 export const invoiceFormStringValidator = (name: string, min = 1, max = 50) =>

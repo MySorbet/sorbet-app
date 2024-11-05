@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, ArrowRight } from '@untitled-ui/icons-react';
 import { addDays, format, startOfDay } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -23,12 +22,14 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
+import { BackButton } from './back-button';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import {
   CreateInvoiceHeader,
   CreateInvoiceTitle,
 } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
+import { ForwardButton } from './forward-button';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { LongFormItem } from './long-form-item';
 import { Stepper } from './stepper';
@@ -147,17 +148,12 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
             )}
           />
           <CreateInvoiceFooter>
-            <Button variant='outline' type='button' onClick={onBack}>
-              <ArrowLeft className='mr-2 h-4 w-4' /> Back
-            </Button>
-            <Button
-              className='bg-sorbet'
-              type='submit'
+            <BackButton onClick={onBack}>Back</BackButton>
+            <ForwardButton
               disabled={form.formState.isSubmitting || !form.formState.isValid}
-              // TODO: The review button should be disabled if the form is not valid
             >
-              Review <ArrowRight className='ml-2 h-4 w-4' />
-            </Button>
+              Review
+            </ForwardButton>
           </CreateInvoiceFooter>
         </form>
       </Form>

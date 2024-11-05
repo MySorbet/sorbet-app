@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
-import { ArrowLeft, ArrowRight, Plus, Trash01 } from '@untitled-ui/icons-react';
+import { Plus, Trash01 } from '@untitled-ui/icons-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -19,12 +19,14 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 import { calculateTotalAmount, formatCurrency } from '../dashboard/utils';
+import { BackButton } from './back-button';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import {
   CreateInvoiceHeader,
   CreateInvoiceTitle,
 } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
+import { ForwardButton } from './forward-button';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { LongFormItem } from './long-form-item';
 import { Stepper } from './stepper';
@@ -168,16 +170,12 @@ export const InvoiceDetails = ({
             </TextMorph>
           </div>
           <CreateInvoiceFooter>
-            <Button variant='outline' type='button' onClick={onBack}>
-              <ArrowLeft className='mr-2 h-4 w-4' /> Back
-            </Button>
-            <Button
-              className='bg-sorbet'
-              type='submit'
+            <BackButton onClick={onBack}>Back</BackButton>
+            <ForwardButton
               disabled={form.formState.isSubmitting || !form.formState.isValid}
             >
-              Payment Details <ArrowRight className='ml-2 h-4 w-4' />
-            </Button>
+              Payment Details
+            </ForwardButton>
           </CreateInvoiceFooter>
         </form>
       </Form>

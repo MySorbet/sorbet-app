@@ -4,9 +4,13 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 type CreateInvoicePageHeaderProps = {
+  /** Called when the close button is clicked */
   onClose?: () => void;
 };
 
+/**
+ * Invoice creation features a header containing a logo and a close button.
+ */
 export const CreateInvoicePageHeader = ({
   onClose,
 }: CreateInvoicePageHeaderProps) => {

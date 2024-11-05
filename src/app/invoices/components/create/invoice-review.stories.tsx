@@ -24,3 +24,10 @@ export const Default: Story = {
     invoice: sampleInvoices[0],
   },
 };
+
+export const Loading: Story = {
+  args: {
+    ...Default.args,
+    isLoading: true,
+  },
+};

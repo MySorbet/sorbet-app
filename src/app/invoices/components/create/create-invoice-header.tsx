@@ -1,3 +1,8 @@
+/**
+ * A header component for the invoice creation form
+ *
+ * Renders children in a justify-between row with the appropriate separator on bottom
+ */
 export const CreateInvoiceHeader = ({
   children,
 }: {

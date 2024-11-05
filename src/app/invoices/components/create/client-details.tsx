@@ -1,12 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowRight } from '@untitled-ui/icons-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -23,6 +21,7 @@ import {
   CreateInvoiceTitle,
 } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
+import { ForwardButton } from './forward-button';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { Stepper } from './stepper';
 import { invoiceFormStringValidator } from './utils';
@@ -42,7 +41,7 @@ export type ClientDetailsFormSchema = z.infer<typeof formSchema>;
 
 /**
  * Create Invoice Step 1
- * Capture client name and email
+ * Capture client and freelancer details
  */
 export const ClientDetails = ({
   onSubmit,
@@ -150,13 +149,12 @@ export const ClientDetails = ({
             />
           </Block>
           <CreateInvoiceFooter>
-            <Button
-              className='bg-sorbet ml-auto'
-              type='submit'
+            <ForwardButton
+              className='ml-auto'
               disabled={form.formState.isSubmitting || !form.formState.isValid}
             >
-              Invoice Details <ArrowRight className='ml-2 h-4 w-4' />
-            </Button>
+              Invoice Details
+            </ForwardButton>
           </CreateInvoiceFooter>
         </form>
       </Form>
@@ -164,6 +162,9 @@ export const ClientDetails = ({
   );
 };
 
+/**
+ * Local component to render a single block of form fields. Used to group related fields together.
+ */
 const Block = ({
   label,
   children,

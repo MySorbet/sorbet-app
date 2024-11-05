@@ -24,19 +24,30 @@ export type InvoiceFormData = WithNull<
 >;
 
 type InvoiceFormContextType = {
+  /** The current invoice form data */
   formData: InvoiceFormData;
+  /** Set the client details */
   setClientDetails: (data: ClientDetailsFormSchema) => void;
+  /** Set the invoice details */
   setInvoiceDetails: (data: InvoiceDetailsFormSchema) => void;
+  /** Set the payment details */
   setPaymentDetails: (data: PaymentDetailsFormData) => void;
+  /** Serialize the client details */
   serializeClientDetails: (data: ClientDetailsFormSchema) => string;
+  /** Serialize the invoice details */
   serializeInvoiceDetails: (data: InvoiceDetailsFormSchema) => string;
+  /** Serialize the payment details */
   serializePaymentDetails: (data: PaymentDetailsFormData) => string;
+  /** Serialize the entire invoice form data */
   serializeFormData: (data: InvoiceFormData) => string;
 };
 
 const InvoiceFormContext = createContext<InvoiceFormContextType | null>(null);
 InvoiceFormContext.displayName = 'InvoiceFormContext';
 
+/**
+ * Wrap invoice form components in this provider to access the invoice form context
+ */
 export const InvoiceFormProvider = ({
   children,
 }: {
@@ -107,13 +118,16 @@ export const InvoiceFormProvider = ({
 };
 
 /**
- * Hook to access the invoice form context
- * @returns The form context
+ * Use this hook to access the invoice form context
+ *
+ * @throws If used outside of an `InvoiceFormProvider`
  */
 export const useInvoiceFormContext = () => {
   const context = useContext<InvoiceFormContextType | null>(InvoiceFormContext);
   if (!context) {
-    throw new Error('useFormContext must be used within a FormContextProvider');
+    throw new Error(
+      'useInvoiceFormContext must be used within a InvoiceFormProvider'
+    );
   }
   return context;
 };
