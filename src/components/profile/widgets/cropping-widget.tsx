@@ -243,6 +243,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
             croppedArea={croppedArea}
             handleImageCropping={handleImageCropping}
             setActiveWidget={setActiveWidget}
+            type={type}
           />
           <Button
             variant='outline'

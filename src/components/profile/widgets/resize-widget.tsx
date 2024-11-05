@@ -5,9 +5,10 @@ import {
   Square,
   Crop,
 } from 'lucide-react';
-import { WidgetDimensions, WidgetSize } from '@/types';
+import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 import { AddLink } from '@/components/profile/widgets/add-link';
 import { Area } from 'react-easy-crop';
+import { cn } from '@/lib/utils';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
@@ -21,6 +22,7 @@ interface ResizeWidgetProps {
   initialSize: WidgetSize;
   croppedArea?: Area | null;
   handleImageCropping?: (key: string, croppedArea: Area) => Promise<void>;
+  type: WidgetType;
 }
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
@@ -35,6 +37,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   activeWidget,
   initialSize = 'A',
   croppedArea,
+  type,
 }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
   const [currentLink, setCurrentLink] = useState<string>(
@@ -79,7 +82,10 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
 
   return (
     <div
-      className='align-center z-20 flex hidden min-w-[205px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#573DF5] text-white group-hover:flex md:flex'
+      className={cn(
+        'align-center z-20 flex hidden min-w-[205px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#573DF5] text-white group-hover:flex md:flex',
+        type === 'Photo' ? 'min-w-[205px]' : 'min-w-[140px]'
+      )}
       onMouseLeave={handleMouseLeave} // Close popover on mouse leave
     >
       <button className={btnClass} onClick={(e) => onResizeClick(e, 'A')}>
@@ -111,29 +117,37 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
         />
       </div>
 
-      <div className={dividerClass} />
-      <div
-        className={`${btnClass} ${
-          activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
-        }`}
-        onClick={(e) => {
-          e.stopPropagation;
-          startCropping();
-        }}
-      >
-        <Crop size={20} strokeWidth={2.5} />
-      </div>
-      <div
-        className={`${btnClass} ${popoverOpen ? 'rounded-md bg-white' : ''}`}
-      >
-        <AddLink
-          value={currentLink}
-          onChange={setCurrentLink}
-          onSubmission={onSubmitLink}
-          popoverOpen={popoverOpen}
-          setPopoverOpen={setPopoverOpen}
-        />
-      </div>
+      {/** Only allow for widget links and cropping for Photos */}
+      {type === 'Photo' && (
+        <>
+          {' '}
+          <div className={dividerClass} />
+          <div
+            className={`${btnClass} ${
+              activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
+            }`}
+            onClick={(e) => {
+              e.stopPropagation;
+              startCropping();
+            }}
+          >
+            <Crop size={20} strokeWidth={2.5} />
+          </div>
+          <div
+            className={`${btnClass} ${
+              popoverOpen ? 'rounded-md bg-white' : ''
+            }`}
+          >
+            <AddLink
+              value={currentLink}
+              onChange={setCurrentLink}
+              onSubmission={onSubmitLink}
+              popoverOpen={popoverOpen}
+              setPopoverOpen={setPopoverOpen}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

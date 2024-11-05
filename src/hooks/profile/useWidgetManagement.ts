@@ -191,7 +191,7 @@ export const useWidgetManagement = ({
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
         toast({
-          title: `We couldn't add a widget`,
+          title: `We couldn't update a widget`,
           description: message,
         });
       } finally {
@@ -199,6 +199,45 @@ export const useWidgetManagement = ({
       }
     },
     [userId, editMode, layout, uploadWidgetsImageAsync, toast, setLayout]
+  );
+
+  /** Handles the replacement of display images for Link and Photo Widgets */
+  const handleImageRemoval = useCallback(
+    async (key: string) => {
+      setAddingWidget(true);
+
+      try {
+        const existingItem = layout.find((item) => item.i === key);
+
+        if (existingItem) {
+          switch (existingItem.type) {
+            case 'Link':
+              (existingItem.content as LinkWidgetContentType).heroImageUrl =
+                undefined;
+              break;
+
+            default:
+              break;
+          }
+          const newObj = {
+            ...existingItem,
+            id: existingItem.i, // Replace 'i' with 'id' for payload
+          };
+          console.log(newObj);
+          await useUpdateWidgetImageAsync(newObj);
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast({
+          title: `We couldn't remove the picture`,
+          description: message,
+        });
+      } finally {
+        setAddingWidget(false);
+      }
+    },
+    [userId, editMode, layout, toast, setLayout]
   );
 
   /** Handles the cropping of images, the id of the image being cropped should be passed */
@@ -367,6 +406,7 @@ export const useWidgetManagement = ({
     handleFileDrop,
     handleWidgetEditLink,
     handleNewImageAdd,
+    handleImageRemoval,
     handleImageCropping,
     handleAddMultipleWidgets,
   };

@@ -13,6 +13,7 @@ interface LinkWidgetProps {
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
   content: LinkWidgetContentType;
   addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
   identifier: string;
   showControls?: boolean;
   /** The size of the widget to render */
@@ -27,10 +28,20 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
   content,
   identifier,
   addImage,
+  removeImage,
   showControls,
   size,
 }) => {
   const { title, iconUrl, heroImageUrl } = content;
+
+  const openWidgetLink = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (heroImageUrl) {
+      const newWindow = window.open(heroImageUrl, '_blank');
+      if (newWindow) {
+        newWindow.opener = null;
+      }
+    }
+  };
 
   switch (size) {
     case 'A':
@@ -43,13 +54,16 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageWidget
+                hasImage={heroImageUrl ? true : false}
+                openWidgetLink={openWidgetLink}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
+                removeImage={removeImage}
                 className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
               />
             )}
-            <div className='overflow-hidden'>
+            <div className='flex h-full flex-grow overflow-hidden'>
               <BannerImage src={heroImageUrl} />
             </div>
           </div>
@@ -65,13 +79,16 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageWidget
+                hasImage={heroImageUrl ? true : false}
+                openWidgetLink={openWidgetLink}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
+                removeImage={removeImage}
                 className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
               />
             )}
-            <div className='overflow-hidden'>
+            <div className='flex h-full flex-grow overflow-hidden'>
               <BannerImage src={heroImageUrl} />
             </div>
           </div>
@@ -85,12 +102,15 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             <Title>{title}</Title>
           </WidgetHeader>
           <div className='flex h-full flex-row justify-end gap-3'>
-            <div className='relative flex-grow'>
+            <div className='relative ml-auto w-2/3'>
               {showControls && (
                 <ModifyImageWidget
+                  hasImage={heroImageUrl ? true : false}
+                  openWidgetLink={openWidgetLink}
                   setErrorInvalidImage={setErrorInvalidImage}
                   identifier={identifier}
                   addImage={addImage}
+                  removeImage={removeImage}
                   className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
                 />
               )}
@@ -109,9 +129,12 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageWidget
+                hasImage={heroImageUrl ? true : false}
+                openWidgetLink={openWidgetLink}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
+                removeImage={removeImage}
                 className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
               />
             )}
@@ -188,7 +211,7 @@ const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        'items-center justify-center overflow-hidden rounded-2xl', // TODO: overflow-hidden is a bandaid for SRBT-132. Fix this at the source
+        'flex h-full w-full items-center justify-center overflow-hidden rounded-2xl',
         !src && 'bg-gray-200',
         className
       )}

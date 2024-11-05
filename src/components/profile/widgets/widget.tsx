@@ -66,6 +66,7 @@ interface WidgetProps {
     height: number;
   };
   addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -85,6 +86,7 @@ export const Widget: React.FC<WidgetProps> = ({
   activeWidget,
   setErrorInvalidImage,
   addImage,
+  removeImage,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -239,6 +241,7 @@ export const Widget: React.FC<WidgetProps> = ({
             setErrorInvalidImage={setErrorInvalidImage}
             identifier={identifier}
             addImage={addImage}
+            removeImage={removeImage}
             showControls={showControls}
             content={content as LinkWidgetContentType}
             size={widgetSize}
@@ -317,6 +320,7 @@ export const Widget: React.FC<WidgetProps> = ({
                 identifier={identifier}
                 activeWidget={activeWidget}
                 setActiveWidget={setActiveWidget}
+                type={type}
               />
               <Button
                 variant='outline'

@@ -1,19 +1,27 @@
 import { Trash2 } from 'lucide-react';
 import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
 import { cn } from '@/lib/utils';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction } from 'react';
+import { Button } from '@/components/ui/button';
+import { LinkWidgetContentType, WidgetType } from '@/types';
 
 interface ModifyImageWidgetProps {
   identifier: string;
+  hasImage: boolean;
   addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  openWidgetLink?: (event: React.MouseEvent<HTMLDivElement>) => void;
   className?: string;
 }
 
 export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
   identifier,
+  hasImage,
   addImage,
+  removeImage,
   setErrorInvalidImage,
+  openWidgetLink,
   className,
 }) => {
   const btnClass = 'h-4 w-7 flex items-center justify-center';
@@ -29,7 +37,6 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
       if (!fileExtension) {
         return;
       }
-
       if (validExtensions.includes(fileExtension) && fileSize <= 10) {
         addImage(identifier, file);
       } else {
@@ -40,10 +47,14 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
     }
   };
 
+  const handleImageRemove = () => {
+    removeImage(identifier);
+  };
+
   return (
     <div
       className={cn(
-        'align-center z-20 flex hidden min-h-[36px] min-w-[112px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#667085] text-white',
+        'align-center z-20 flex hidden min-h-[36px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#667085] px-2 text-white',
         className
       )}
     >
@@ -55,17 +66,38 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
             onChange={handleImageUpload}
             accept='image/*'
           />
-          <Image03 width={16} height={16} strokeWidth={2.5} />
+          <Image03 width={18} height={18} strokeWidth={2.5} />
         </label>
       </div>
-      <div className={btnClass}>
-        <LinkExternal02 width={16} height={16} strokeWidth={2.5} />
-      </div>
+      {hasImage ? (
+        <>
+          <div className={btnClass} onClick={openWidgetLink}>
+            <LinkExternal02
+              color={hasImage ? 'white' : '#344054'}
+              width={18}
+              height={18}
+              strokeWidth={2.5}
+            />
+          </div>
 
-      <div className={dividerClass} />
-      <div className={btnClass}>
-        <Trash2 size={18} />
-      </div>
+          <div className={dividerClass} />
+          <div className={btnClass} onClick={handleImageRemove}>
+            <Trash2 size={18} />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={dividerClass} />
+          <div className={btnClass} onClick={openWidgetLink}>
+            <LinkExternal02
+              color={hasImage ? 'white' : '#344054'}
+              width={18}
+              height={18}
+              strokeWidth={2.5}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

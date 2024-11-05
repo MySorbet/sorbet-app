@@ -64,6 +64,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleFileDrop,
     handleWidgetEditLink,
     handleNewImageAdd,
+    handleImageRemoval,
     handleImageCropping,
     handleAddMultipleWidgets,
   } = useWidgetManagement({
@@ -217,6 +218,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         setActiveWidget={setActiveWidget}
                         handleImageCropping={handleImageCropping}
                         addImage={handleNewImageAdd}
+                        removeImage={handleImageRemoval}
                         loading={addingWidget}
                         setErrorInvalidImage={setErrorInvalidImage}
                       />
@@ -308,6 +310,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   setActiveWidget={setActiveWidget}
                   handleImageCropping={handleImageCropping}
                   addImage={handleNewImageAdd}
+                  removeImage={handleImageRemoval}
                   loading={addingWidget}
                   setErrorInvalidImage={setErrorInvalidImage}
                 />
