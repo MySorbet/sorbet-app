@@ -13,11 +13,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 import { Invoice } from '../components/dashboard/utils';
-import {
-  CreateInvoiceHeader,
-  CreateInvoiceTitle,
-} from './create/create-invoice-header';
+import { CreateInvoiceHeader } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
+import { CreateInvoiceTitle } from './create/create-invoice-title';
 import { CopyButton } from './dashboard/copy-button';
 import { InvoiceDocument } from './invoice-document';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
