@@ -1,11 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import posthog from 'posthog-js';
 import { useEffect, useRef } from 'react';
 
 import Confetti, { ConfettiRef } from '@/components/magicui/confetti';
 import { useUserSignUp } from '@/components/onboarding/signup/signup';
 import { Button } from '@/components/ui/button';
+import { featureFlags } from '@/lib/flags';
 
 import { FormContainer } from '../form-container';
 
@@ -22,6 +24,13 @@ const AllSet = () => {
     }, 0);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleContinue = () => {
+    if (featureFlags.sessionReplay) {
+      posthog.startSessionRecording();
+    }
+    router.push(`/${userData.handle}`);
+  };
 
   return (
     <FormContainer>
@@ -45,7 +54,7 @@ const AllSet = () => {
         </div>
         <Button
           className='bg-sorbet w-full text-base font-semibold text-white shadow-sm shadow-[#1018280D]'
-          onClick={() => router.push(`/${userData.handle}`)}
+          onClick={handleContinue}
         >
           Continue to your Profile
         </Button>
