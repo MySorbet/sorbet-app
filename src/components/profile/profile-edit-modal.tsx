@@ -303,7 +303,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       error={errors.handle}
                     />
                   </FormControl>
-                  <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -324,7 +324,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         className='text-textPlaceholder w-full focus:outline-none focus:ring-0'
                       />
                     </FormControl>
-                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -344,7 +344,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         className='text-textPlaceholder focus:outline-none focus:ring-0'
                       />
                     </FormControl>
-                    <FormMessage className='animate-in slide-in-from-top-1 fade-in-0' />
+                    <FormMessage />
                   </FormItem>
                 )}
               />

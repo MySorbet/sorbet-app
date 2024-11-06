@@ -30,6 +30,7 @@ export const WidgetPlaceholder = ({
   if (loading) {
     return (
       <Skeleton
+        variant='darker' // Use the lighter variant since loading placeholders are rendered against a darker sorbet background in the profile
         className={cn('size-full min-h-28 min-w-28 rounded-3xl', className)}
       />
     );

@@ -19,7 +19,6 @@ const useCopy = (onCopy: () => void) => {
 
     timeoutRef.current = setTimeout(() => {
       setIsCopied(false);
-      console.log('timeout cleared');
       timeoutRef.current = null;
     }, 1500);
 
