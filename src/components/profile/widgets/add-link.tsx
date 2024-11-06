@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import { Link03 } from '@untitled-ui/icons-react';
+import { useState } from 'react';
+
+import { isValidUrl } from '@/components/profile/widgets/util';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Link03 } from '@untitled-ui/icons-react';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { isValidUrl } from '@/components/profile/widgets/util';
 
 interface AddLinkProps {
   value: string;
@@ -54,7 +55,10 @@ export const AddLink = ({
   };
 
   return (
-    <Popover open={popoverOpen} onOpenChange={(open) => setPopoverOpen(open)}>
+    <Popover
+      open={popoverOpen}
+      onOpenChange={(open: boolean) => setPopoverOpen(open)}
+    >
       <PopoverTrigger asChild>
         <div onClick={handleIconClick}>
           <Link03

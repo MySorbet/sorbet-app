@@ -1,5 +1,4 @@
 import { Trash2 } from 'lucide-react';
-import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 

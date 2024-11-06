@@ -1,23 +1,21 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { Area } from 'react-easy-crop';
+
+import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useCreateWidget,
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
-import {
-  WidgetLayoutItem,
-  WidgetSize,
-  WidgetDimensions,
-  PhotoWidgetContentType,
-  LinkWidgetContentType,
-  LinkedInProfileWidgetContentType,
-  WidgetTypes,
-} from '@/types';
-import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
-import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import { useUpdateWidgetImage } from '@/hooks/widgets/useUpdateWidgetImage';
-import { Area } from 'react-easy-crop';
+import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
+import {
+  LinkWidgetContentType,
+  PhotoWidgetContentType,
+  WidgetDimensions,
+  WidgetLayoutItem,
+} from '@/types';
 
 interface WidgetManagementProps {
   userId: string;
@@ -41,8 +39,8 @@ export const useWidgetManagement = ({
 
   const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
-  const { mutateAsync: useUpdateWidgetLinkAsync } = useUpdateWidgetLink();
-  const { mutateAsync: useUpdateWidgetImageAsync } = useUpdateWidgetImage();
+  const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
+  const { mutateAsync: updateWidgetImageAsync } = useUpdateWidgetImage();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
 
@@ -63,7 +61,7 @@ export const useWidgetManagement = ({
   const handleWidgetAdd = useCallback(
     async (url: string, image?: File) => {
       setAddingWidget(true);
-      let widgetUrl: string = url;
+      let widgetUrl = url;
 
       try {
         const type = parseWidgetTypeFromUrl(url);
@@ -126,7 +124,6 @@ export const useWidgetManagement = ({
       }
     },
     [
-      userId,
       editMode,
       layout,
       cols,
@@ -142,7 +139,7 @@ export const useWidgetManagement = ({
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
       setAddingWidget(true);
-      let widgetUrl: string = '';
+      let widgetUrl = '';
 
       try {
         const existingItem = layout.find((item) => item.i === key);
@@ -185,7 +182,7 @@ export const useWidgetManagement = ({
             ...existingItem,
             id: existingItem.i, // Replace 'i' with 'id' for payload
           };
-          await useUpdateWidgetImageAsync(newObj);
+          await updateWidgetImageAsync(newObj);
         }
       } catch (error) {
         const message =
@@ -198,7 +195,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, editMode, layout, uploadWidgetsImageAsync, toast, setLayout]
+    [layout, updateWidgetImageAsync, uploadWidgetsImageAsync, toast]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */
@@ -224,7 +221,7 @@ export const useWidgetManagement = ({
             id: existingItem.i, // Replace 'i' with 'id' for payload
           };
           console.log(newObj);
-          await useUpdateWidgetImageAsync(newObj);
+          await updateWidgetImageAsync(newObj);
         }
       } catch (error) {
         const message =
@@ -237,7 +234,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, editMode, layout, toast, setLayout]
+    [layout, updateWidgetImageAsync, toast]
   );
 
   /** Handles the cropping of images, the id of the image being cropped should be passed */
@@ -254,7 +251,7 @@ export const useWidgetManagement = ({
             ...existingItem,
             id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
           };
-          await useUpdateWidgetImageAsync(newObj);
+          await updateWidgetImageAsync(newObj);
         }
       } catch (error) {
         const message =
@@ -267,7 +264,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, editMode, layout, toast, setLayout]
+    [layout, updateWidgetImageAsync, toast]
   );
 
   const handleWidgetEditLink = useCallback(
@@ -280,7 +277,7 @@ export const useWidgetManagement = ({
             ...existingItem,
             id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
           };
-          await useUpdateWidgetLinkAsync(newObj);
+          await updateWidgetLinkAsync(newObj);
         } else {
           throw new Error('No widget exists to edit');
         }
@@ -293,7 +290,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout]
+    [updateWidgetImageAsync, toast, layout]
   );
 
   /** Handles cases when the user drags an image over the profile page */
@@ -336,7 +333,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, uploadWidgetsImageAsync, handleWidgetAdd]
+    [uploadWidgetsImageAsync, handleWidgetAdd]
   );
 
   const handleAddMultipleWidgets = useCallback(

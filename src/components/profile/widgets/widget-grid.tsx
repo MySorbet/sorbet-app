@@ -2,14 +2,16 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import RGL, { WidthProvider } from 'react-grid-layout';
 
+import { CroppingWidget } from '@/components/profile/widgets/cropping-widget';
 import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
 import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
 import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
 import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
+import { getWidgetDimensions, WidgetSize } from '@/types';
 
 import { AddWidgets } from './add-widgets';
 import { DesktopOnlyAlert } from './desktop-only-alert';
@@ -17,8 +19,6 @@ import { OnboardingDrawer } from './onboarding-drawer';
 import styles from './react-grid-layout-custom.module.css';
 import { Widget } from './widget';
 import { WidgetPlaceholderGrid } from './widget-placeholder-grid';
-import { getWidgetDimensions, WidgetSize } from '@/types';
-import { CroppingWidget } from '@/components/profile/widgets/cropping-widget';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -128,7 +128,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         <div>
           {activeWidget && existingItem !== undefined ? (
             <div
-              className={`relative w-full`}
+              className="relative w-full"
               style={{ height: `${gridHeight}px` }}
             >
               <CroppingWidget

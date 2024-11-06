@@ -11,7 +11,7 @@ export const useUpdateWidgetLink = () => {
   return useMutation({
     mutationFn: async (widgetLayoutItem: WidgetLayoutItem) =>
       await updateWidgetLink(widgetLayoutItem),
-    onError: (error) =>
+    onError: () =>
       toast({
         title: 'Failed to update widget',
         description: 'If the issue persists, contact support',

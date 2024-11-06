@@ -1,12 +1,12 @@
 import { Link } from 'lucide-react';
 import React, { Dispatch, SetStateAction } from 'react';
 
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import { cn } from '@/lib/utils';
 import { LinkWidgetContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 
 interface LinkWidgetProps {
   /** The content from link for the widget to render */

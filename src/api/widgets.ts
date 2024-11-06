@@ -96,7 +96,7 @@ export const updateWidget = async (
 /** Updating the links of image widgets (only widget's redirectUrl should be updated) */
 export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
   // redirectUrl should be set to what we want already in the payload
-  let payload: any = {
+  const payload: any = {
     redirectUrl: widgetLayoutItem.redirectUrl,
   };
 
@@ -115,7 +115,7 @@ export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
 /** Updating the links of image widgets (only widget's content should be updated) */
 export const updateWidgetImage = async (widgetLayoutItem: WidgetLayoutItem) => {
   // content should be set to what we want already in the payload
-  let payload: any = {
+  const payload: any = {
     content: widgetLayoutItem.content,
   };
 

@@ -1,5 +1,6 @@
 import { Trash2 } from 'lucide-react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Cropper, { Area } from 'react-easy-crop';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +12,6 @@ import {
 } from '@/types';
 
 import { ResizeWidget } from './resize-widget';
-import Cropper, { Area, MediaSize } from 'react-easy-crop';
 
 interface CroppingWidgetProps {
   identifier: string;
@@ -146,7 +146,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
 
   return (
     <div
-      className={`rounded-3xl`}
+      className="rounded-3xl"
       key={identifier}
       style={{
         /** Styling must be absolute in order to get widget in the same position it was before cropping was active */

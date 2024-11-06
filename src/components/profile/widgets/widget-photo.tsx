@@ -1,5 +1,7 @@
-import { PhotoWidgetContentType, WidgetSize } from '@/types';
 import { Area } from 'react-easy-crop';
+
+import { PhotoWidgetContentType, WidgetSize } from '@/types';
+
 import { ImageOverlay } from './image-overlay';
 
 interface PhotoWidgetType {

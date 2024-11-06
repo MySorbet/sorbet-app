@@ -1,7 +1,8 @@
-import { Trash2 } from 'lucide-react';
 import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
-import { cn } from '@/lib/utils';
+import { Trash2 } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface ModifyImageWidgetProps {
   identifier: string;

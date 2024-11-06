@@ -9,7 +9,7 @@ export const useDeleteWidget = () => {
 
   return useMutation({
     mutationFn: async (id: string) => await deleteWidget(id),
-    onError: (error) =>
+    onError: () =>
       toast({
         title: 'Failed to remove widget',
         description: 'If the issue persists, contact support',
