@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { Area } from 'react-easy-crop';
+import { toast } from 'sonner';
 
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
-import { useToast } from '@/components/ui/use-toast';
 import {
   useCreateWidget,
   useDeleteWidget,
@@ -37,7 +37,6 @@ export const useWidgetManagement = ({
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
 
-  const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
   const { mutateAsync: updateWidgetImageAsync } = useUpdateWidgetImage();
@@ -115,8 +114,7 @@ export const useWidgetManagement = ({
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast({
-          title: `We couldn't add a widget`,
+        toast(`We couldn't add a widget`, {
           description: message,
         });
       } finally {
@@ -188,8 +186,7 @@ export const useWidgetManagement = ({
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast({
-          title: `We couldn't update a widget`,
+        toast(`We couldn't update a widget`, {
           description: message,
         });
       } finally {
@@ -227,8 +224,7 @@ export const useWidgetManagement = ({
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast({
-          title: `We couldn't remove the picture`,
+        toast(`We couldn't remove the picture`, {
           description: message,
         });
       } finally {
@@ -257,8 +253,7 @@ export const useWidgetManagement = ({
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast({
-          title: `We couldn't crop this widget`,
+        toast(`We couldn't crop this widget`, {
           description: message,
         });
       } finally {
@@ -285,8 +280,7 @@ export const useWidgetManagement = ({
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast({
-          title: `We couldn't update a widget`,
+        toast(`We couldn't update a widget`, {
           description: message,
         });
       }
@@ -369,8 +363,7 @@ export const useWidgetManagement = ({
             } catch (error) {
               const message =
                 error instanceof Error ? error.message : 'Something went wrong';
-              toast({
-                title: `We couldn't add a widget`,
+              toast(`We couldn't add a widget`, {
                 description: message,
               });
             }

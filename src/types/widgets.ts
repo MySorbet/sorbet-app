@@ -144,14 +144,13 @@ export const WidgetTypes = [
 
 export type WidgetType = (typeof WidgetTypes)[number];
 
-export type WidgetSize = 'A' | 'B' | 'C' | 'D' | 'Section';
+export type WidgetSize = 'A' | 'B' | 'C' | 'D';
 
 export const WidgetDimensions: Record<WidgetSize, { w: number; h: number }> = {
   A: { w: 2, h: 2 },
   B: { w: 4, h: 4 },
   C: { w: 4, h: 2 },
   D: { w: 2, h: 4 },
-  Section: { w: 4, h: 1 },
 };
 
 export const getWidgetDimensions = ({

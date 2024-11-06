@@ -85,7 +85,7 @@ export const updateWidget = async (
   widgetLayoutItem: WidgetLayoutItem,
   widgetSize?: WidgetSize
 ) => {
-  let payload: any = {
+  let payload: Partial<WidgetDto> = {
     type: widgetLayoutItem.type,
     content: widgetLayoutItem.content,
     layout: {
