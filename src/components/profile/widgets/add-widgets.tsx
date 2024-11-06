@@ -150,7 +150,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 
       <div
         className={cn(
-          'z-10 flex w-full flex-row gap-2 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
+          'z-10 flex h-[70px] w-full flex-row gap-2 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
           loading && loadingClasses
         )}
       >

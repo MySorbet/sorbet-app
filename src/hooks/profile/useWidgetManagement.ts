@@ -124,6 +124,7 @@ export const useWidgetManagement = ({
       }
     },
     [
+      userId,
       editMode,
       layout,
       cols,
@@ -195,7 +196,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [layout, updateWidgetImageAsync, uploadWidgetsImageAsync, toast]
+    [userId, editMode, layout, uploadWidgetsImageAsync, toast, setLayout]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */
@@ -234,7 +235,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [layout, updateWidgetImageAsync, toast]
+    [userId, editMode, layout, toast, setLayout]
   );
 
   /** Handles the cropping of images, the id of the image being cropped should be passed */
@@ -264,7 +265,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [layout, updateWidgetImageAsync, toast]
+    [userId, editMode, layout, toast, setLayout]
   );
 
   const handleWidgetEditLink = useCallback(
@@ -290,7 +291,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [updateWidgetImageAsync, toast, layout]
+    [layout]
   );
 
   /** Handles cases when the user drags an image over the profile page */
@@ -333,7 +334,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [uploadWidgetsImageAsync, handleWidgetAdd]
+    [userId, uploadWidgetsImageAsync, handleWidgetAdd]
   );
 
   const handleAddMultipleWidgets = useCallback(
