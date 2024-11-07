@@ -17,9 +17,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useWalletBalances } from '@/hooks';
+import { featureFlags } from '@/lib/flags';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
-import { featureFlags } from '@/lib/flags';
 
 interface SidebarProps {
   show: boolean;
