@@ -266,10 +266,9 @@ export const GigsDialog = ({
     index: number
   ) => {
     try {
-      const freelancerResponse = await getCurrentWalletAddressByUserId(
+      const freelancerAddress = await getCurrentWalletAddressByUserId(
         contractData?.freelanceId
       );
-      const freelancerAddress = freelancerResponse?.data;
       if (!freelancerAddress || freelancerAddress === '') {
         toast({
           title: 'Freelancer address not found',

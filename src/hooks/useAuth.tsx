@@ -44,7 +44,12 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+type AuthProviderProps = {
+  children: ReactNode /* The children to render within the auth provider */;
+  value?: AuthContextType /* The value to pass to the auth context. Usually you won't use this, but can be helpful for mocking in tests and storybook */;
+};
+
+export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
   const [user, setUser] = useLocalStorage<UserWithId | null>('user', null);
   const [loading, setLoading] = useState(false);
@@ -188,7 +193,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(false);
   }, [dispatch, logoutPrivy, setUser]);
 
-  const value = useMemo(
+  const memoizedValue = useMemo(
     () => ({
       user,
       loading,
@@ -198,7 +203,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [user, loading, login, logout]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value ?? memoizedValue}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 /** Use this hook to get access to the currently logged in sorbet user and methods to log them in and out */

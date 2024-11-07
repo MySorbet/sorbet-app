@@ -1,5 +1,5 @@
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
-import { User01 } from '@untitled-ui/icons-react';
+import { Receipt,User01 } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
   LayoutGrid,
@@ -18,16 +18,14 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
-import { useAppDispatch } from '@/redux/hook';
-import { setOpenSidebar } from '@/redux/userSlice';
 
 interface SidebarProps {
-  show: boolean;
+  isOpen: boolean;
+  onIsOpenChange: (open: boolean) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const { user, logout } = useAuth();
 
   if (!user) {
@@ -43,19 +41,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
   };
 
   const handleSidebarClose = () => {
-    dispatch(setOpenSidebar(false));
+    onIsOpenChange(false);
   };
 
   return (
     <div
       className={`fixed z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 lg:left-0 ${
-        show ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
+        isOpen ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
       }`}
-      onClick={() => dispatch(setOpenSidebar(false))}
+      onClick={handleSidebarClose}
     >
       <div
         className={`right-0 z-40 flex h-full w-full flex-col items-start justify-between gap-6 overflow-y-auto bg-[#F9FAFB] p-8 text-black lg:m-6 lg:h-[calc(100%-48px)] lg:w-[420px] lg:rounded-[32px] ${
-          show ? 'fixed' : 'hidden'
+          isOpen ? 'fixed' : 'hidden'
         }`}
         onClick={(e) => {
           e.stopPropagation();
@@ -83,34 +81,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
               </div>
             </div>
             <div>
-              <div className='grid grid-cols-3 gap-2'>
-                <div className='col-span-1'>
-                  <Link href='/wallet'>
-                    <SidebarHeaderOption
-                      label='Wallet'
-                      icon={<WalletMinimal />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
-                <div className='col-span-1'>
-                  <Link href='/gigs'>
-                    <SidebarHeaderOption
-                      label='Gigs'
-                      icon={<LayoutGrid />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
-                <div className='col-span-1'>
-                  <Link href={`/${user.handle}`}>
-                    <SidebarHeaderOption
-                      label='Profile'
-                      icon={<CircleArrowRight />}
-                      onClick={() => handleSidebarClose()}
-                    />
-                  </Link>
-                </div>
+              {/* TODO: Change to 3 columns when invoices are enabled */}
+              <div className='grid grid-cols-2 gap-2'>
+                <SidebarHeaderOption
+                  label='Wallet'
+                  href='/wallet'
+                  icon={<WalletMinimal />}
+                />
+                {featureFlags.gigs && (
+                  <SidebarHeaderOption
+                    label='Gigs'
+                    href='/gigs'
+                    icon={<LayoutGrid />}
+                  />
+                )}
+                <SidebarHeaderOption
+                  label='Profile'
+                  icon={<CircleArrowRight />}
+                  href={`/${user.handle}`}
+                />
+                {featureFlags.invoices && (
+                  <SidebarHeaderOption
+                    label='Invoices'
+                    icon={<Receipt />}
+                    href='/invoices'
+                  />
+                )}
               </div>
               <Balances />
             </div>
@@ -147,7 +143,6 @@ const Balances: React.FC = () => {
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
       <div className='flex flex-row items-center justify-between'>
         <div className='text-muted-foreground text-sm'>Balances</div>
-        {/* Temporarily hiding as per request from Rami for demo 9/24/24 */}
         {featureFlags.walletAddressInSidebar && <WalletAddress />}
       </div>
       <div className='flex flex-col gap-3'>
@@ -204,26 +199,23 @@ const WalletAddress: React.FC = () => {
   );
 };
 
+/**
+ * Local component for displaying a sidebar header option
+ */
 const SidebarHeaderOption: React.FC<{
   label: string;
   icon: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  comingSoon?: boolean;
-}> = ({ label, icon, comingSoon, onClick }) => {
+  href: string;
+}> = ({ label, icon, href }) => {
   return (
-    <div
-      className='border-1 relative cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
-      onClick={onClick}
+    <Link
+      href={href}
+      className='border-1 relative min-w-fit max-w-44 cursor-pointer rounded-xl border border-gray-200 bg-[#FEFEFE] p-3 hover:bg-gray-100'
     >
-      {comingSoon && (
-        <div className='bg-sorbet absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 rotate-45 transform rounded-xl px-1 py-1 text-xs font-semibold text-white'>
-          Soon
-        </div>
-      )}
       <div className='text-sorbet flex flex-col items-center justify-center gap-1 font-semibold'>
-        <div>{icon}</div>
+        {icon}
         <div className='text-sm'>{label}</div>
       </div>
-    </div>
+    </Link>
   );
 };

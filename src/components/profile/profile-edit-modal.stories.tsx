@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import Providers from '@/app/providers';
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 
 const meta = {
@@ -9,19 +8,7 @@ const meta = {
   component: ProfileEditModal,
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
-  decorators: [
-    (Story) => {
-      return (
-        <Providers>
-          <Story />
-        </Providers>
-      );
-    },
-  ],
   render: (args) => {
     return <ProfileEditModal {...args} />;
   },

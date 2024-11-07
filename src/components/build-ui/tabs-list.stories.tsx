@@ -14,9 +14,6 @@ const meta = {
   },
   parameters: {
     layout: 'centered',
-    nextjs: {
-      appDirectory: true,
-    },
   },
   decorators: [
     (Story) => {
