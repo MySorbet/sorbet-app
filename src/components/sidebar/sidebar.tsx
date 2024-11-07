@@ -1,3 +1,4 @@
+import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { User01 } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
@@ -135,8 +136,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ show }) => {
  * Local component for displaying wallet balances
  */
 const Balances: React.FC = () => {
-  const address = useEmbeddedWalletAddress();
-  const { ethBalance, usdcBalance, loading } = useWalletBalances(address ?? '');
+  const { client } = useSmartWallets();
+  const { ethBalance, usdcBalance, loading } = useWalletBalances(
+    client?.account.address ?? '',
+    false
+  );
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>

@@ -1,22 +1,11 @@
 'use client';
 
-import {
-  ConnectedWallet,
-  getEmbeddedConnectedWallet,
-  useFundWallet,
-  useWallets,
-} from '@privy-io/react-auth';
+import { useFundWallet } from '@privy-io/react-auth';
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { MoveDown, MoveUp } from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import {
-  encodeFunctionData,
-  formatUnits,
-  hexToBigInt,
-  parseUnits,
-  parseGwei,
-} from 'viem';
+import React, { useCallback, useEffect, useState } from 'react';
+import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
@@ -29,19 +18,14 @@ import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
 import { useToast } from '@/components/ui/use-toast';
 import { TOKEN_ABI } from '@/constant/abis';
-import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
 
-import { usePrivy } from '@privy-io/react-auth';
-
 export const WalletContainer = () => {
-  const { user } = usePrivy();
   const [reload, setReload] = useState(false);
   const { client } = useSmartWallets();
   const { toast } = useToast();
-  const { wallets } = useWallets();
-  // const walletAddress = useEmbeddedWalletAddress();
   const walletAddress = client?.account.address;
   const {
     ethBalance,
@@ -61,16 +45,19 @@ export const WalletContainer = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchTransactions = async (last_days = 30) => {
-    if (walletAddress) {
-      setLoading(true);
-      const response = await getOverview(walletAddress, last_days);
-      if (response && response.data) {
-        setTransactions(response.data.transactions);
+  const fetchTransactions = useCallback(
+    async (last_days = 30) => {
+      if (walletAddress) {
+        setLoading(true);
+        const response = await getOverview(walletAddress, last_days);
+        if (response && response.data) {
+          setTransactions(response.data.transactions);
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
-  };
+    },
+    [walletAddress]
+  );
   const handleTxnDurationChange = (value: string) => {
     const last_days = parseInt(value, 10);
     fetchTransactions(last_days);
@@ -100,8 +87,6 @@ export const WalletContainer = () => {
     amount: string,
     recipientWalletAddress: string
   ) => {
-    const wallet = getEmbeddedConnectedWallet(wallets);
-
     console.log('current user wallet', client);
 
     if (client) {
@@ -133,48 +118,11 @@ export const WalletContainer = () => {
     }
   };
 
-  async function sendTransaction(
-    wallet: ConnectedWallet,
-    contractAddress: string,
-    abi: any[],
-    functionName: string,
-    args: any[]
-  ): Promise<`0x${string}`> {
-    const provider = await wallet.getEthereumProvider();
-    // Encode the function data
-    const data = encodeFunctionData({
-      abi: abi,
-      functionName: functionName,
-      args: args,
-    });
-
-    // Create the transaction request
-    const transactionRequest = {
-      from: wallet.address as `0x${string}`,
-      to: contractAddress as `0x${string}`,
-      data: data,
-      value: '0x0' as `0x${string}`,
-    };
-
-    try {
-      // Send the transaction
-      const transactionHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [transactionRequest],
-      });
-
-      return transactionHash;
-    } catch (error) {
-      console.error('Error sending transaction:', error);
-      throw error;
-    }
-  }
-
   useEffect(() => {
     (async () => {
       await fetchTransactions();
     })();
-  }, [walletAddress, reload]);
+  }, [walletAddress, reload, fetchTransactions]);
 
   return (
     <Authenticated>
