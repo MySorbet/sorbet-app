@@ -26,13 +26,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         defaultChain: baseSepolia,
       }}
     >
-      <SmartWalletsProvider
-        config={{
-          paymasterContext: {
-            policyId: '153dc2d0-1368-42f5-bc0c-7a130927d183',
-          },
-        }}
-      >
+      <SmartWalletsProvider>
         <Provider store={store}>
           <AuthProvider>
             <QueryClientProvider client={queryClient}>

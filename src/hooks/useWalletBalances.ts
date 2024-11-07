@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { TOKEN_ABI } from '@/constant/abis';
 import { env } from '@/lib/env';
 
-export const useWalletBalances = (walletAddress: string) => {
+export const useWalletBalances = (walletAddress: string, reload: boolean) => {
   const [ethBalance, setEthBalance] = useState<string>('0');
   const [usdcBalance, setUsdcBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ export const useWalletBalances = (walletAddress: string) => {
         setLoading(false);
       }
     })();
-  }, [walletAddress]);
+  }, [walletAddress, reload]);
 
   return { ethBalance, usdcBalance, loading };
 };
