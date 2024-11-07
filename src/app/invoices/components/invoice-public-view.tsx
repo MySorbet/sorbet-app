@@ -10,14 +10,17 @@ import { CreateInvoiceFooter } from '@/app/invoices/components/create/create-inv
 import { InvoiceReceipt } from '@/app/invoices/components/invoice-receipt';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 import { Invoice } from '../components/dashboard/utils';
+import { useACHWireDetails } from '../hooks/use-ach-wire-details';
 import { CreateInvoiceHeader } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
 import { CreateInvoiceTitle } from './create/create-invoice-title';
 import { CopyButton } from './dashboard/copy-button';
 import { InvoiceDocument } from './invoice-document';
+import { InvoicePayAchWire } from './invoice-pay-ach-wire';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
 
 type InvoicePublicViewProps = {
@@ -39,6 +42,9 @@ export const InvoicePublicView = ({
 
   const { data: walletAddress, isLoading: isLoadingWalletAddress } =
     useWalletAddressByUserId(invoice?.userId ?? '');
+
+  const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
+    useACHWireDetails(invoice?.userId ?? '');
 
   // Render closed receipts in the case of paid or cancelled invoices
   if (invoice?.status === 'Paid' || invoice?.status === 'Cancelled') {
@@ -101,10 +107,31 @@ export const InvoicePublicView = ({
             <Link href='/invoices'>Back to dashboard</Link>
           </Button>
         ) : (
-          <InvoicePayUsdc
-            address={walletAddress ?? ''}
-            isLoading={isLoadingWalletAddress}
-          />
+          <Tabs
+            defaultValue='usdc'
+            className='flex max-w-[31rem] flex-col items-center'
+          >
+            <TabsList>
+              <TabsTrigger value='usdc'>Pay USDC</TabsTrigger>
+              <TabsTrigger value='ach'>ACH/Wire</TabsTrigger>
+            </TabsList>
+            <TabsContent value='usdc'>
+              <InvoicePayUsdc
+                address={walletAddress ?? ''}
+                isLoading={isLoadingWalletAddress}
+              />
+            </TabsContent>
+            <TabsContent value='ach'>
+              {achWireDetails && (
+                <InvoicePayAchWire
+                  routingNumber={achWireDetails.routingNumber}
+                  accountNumber={achWireDetails.accountNumber}
+                  beneficiary={achWireDetails.beneficiary}
+                  bank={achWireDetails.bank}
+                />
+              )}
+            </TabsContent>
+          </Tabs>
         )}
       </CreateInvoiceFooter>
     </CreateInvoiceShell>
