@@ -16,9 +16,10 @@ import { CopyButton, Spinner } from '@/components/common';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { useAuth, useWalletBalances } from '@/hooks';
 import { useAppDispatch } from '@/redux/hook';
 import { setOpenSidebar } from '@/redux/userSlice';
+import { featureFlags } from '@/lib/flags';
 
 interface SidebarProps {
   show: boolean;
@@ -147,7 +148,7 @@ const Balances: React.FC = () => {
       <div className='flex flex-row items-center justify-between'>
         <div className='text-muted-foreground text-sm'>Balances</div>
         {/* Temporarily hiding as per request from Rami for demo 9/24/24 */}
-        {/* <WalletAddress /> */}
+        {featureFlags.walletAddressInSidebar && <WalletAddress />}
       </div>
       <div className='flex flex-col gap-3'>
         <div className='flex items-center gap-2 text-sm font-semibold'>
@@ -180,20 +181,23 @@ const Balances: React.FC = () => {
  * Local component for displaying wallet address with a copy button
  */
 const WalletAddress: React.FC = () => {
-  const address = useEmbeddedWalletAddress();
+  const { client } = useSmartWallets();
 
   // If we don't have an address yet, we should show a skeleton
-  if (!address) {
+  if (!client?.account.address) {
     return <Skeleton className='h-4 w-24' />;
   }
 
-  const truncatedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
+  const truncatedAddress = `${client.account.address.slice(
+    0,
+    5
+  )}...${client.account.address.slice(-5)}`;
   return (
     <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
       <span>{truncatedAddress}</span>
       <CopyButton
         onCopy={() => {
-          navigator.clipboard.writeText(address);
+          navigator.clipboard.writeText(client.account.address);
         }}
       />
     </div>
