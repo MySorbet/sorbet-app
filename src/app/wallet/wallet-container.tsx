@@ -1,8 +1,23 @@
 'use client';
 
+import {
+  ConnectedWallet,
+  getEmbeddedConnectedWallet,
+  useFundWallet,
+  useWallets,
+} from '@privy-io/react-auth';
+import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { MoveDown, MoveUp } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import {
+  encodeFunctionData,
+  formatUnits,
+  hexToBigInt,
+  parseUnits,
+  parseGwei,
+} from 'viem';
+import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
@@ -13,28 +28,26 @@ import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
 import { useToast } from '@/components/ui/use-toast';
-import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
-import { Transaction, Transactions } from '@/types/transactions';
-import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
-import { base, baseSepolia } from 'viem/chains';
-import { env } from '@/lib/env';
-import {
-  useFundWallet,
-  useWallets,
-  ConnectedWallet,
-  getEmbeddedConnectedWallet,
-} from '@privy-io/react-auth';
 import { TOKEN_ABI } from '@/constant/abis';
+import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { env } from '@/lib/env';
+import { Transaction, Transactions } from '@/types/transactions';
+
+import { usePrivy } from '@privy-io/react-auth';
 
 export const WalletContainer = () => {
+  const { user } = usePrivy();
+  const [reload, setReload] = useState(false);
+  const { client } = useSmartWallets();
   const { toast } = useToast();
   const { wallets } = useWallets();
-  const walletAddress = useEmbeddedWalletAddress();
+  // const walletAddress = useEmbeddedWalletAddress();
+  const walletAddress = client?.account.address;
   const {
     ethBalance,
     usdcBalance,
     loading: balanceLoading,
-  } = useWalletBalances(walletAddress ?? '');
+  } = useWalletBalances(walletAddress ?? '', reload);
 
   const { fundWallet } = useFundWallet();
 
@@ -65,7 +78,7 @@ export const WalletContainer = () => {
 
   const handleTopUp = async () => {
     try {
-      const defaultFundAmount: string = '0.01';
+      const defaultFundAmount = '0.01';
       if (walletAddress) {
         await fundWallet(walletAddress, {
           chain: baseSepolia,
@@ -83,63 +96,40 @@ export const WalletContainer = () => {
     }
   };
 
-  const handleSendUSDC = async () => {
-    try {
-      const amount = 0.1;
-      const receiverAddress = '0x1fCe61e4adF6A071FB345F5a5f9FF8ddaC12f7f1';
-      const wallet = getEmbeddedConnectedWallet(wallets);
-      if (wallet) {
-        const provider = await wallet.getEthereumProvider();
-        console.log('current user wallet', wallet);
-        const balanceOfData = encodeFunctionData({
-          abi: TOKEN_ABI,
-          functionName: 'balanceOf',
-          args: [wallet.address],
-        });
+  const handleSendUSDC = async (
+    amount: string,
+    recipientWalletAddress: string
+  ) => {
+    const wallet = getEmbeddedConnectedWallet(wallets);
 
-        const balanceResult = await provider.request({
-          method: 'eth_call',
-          params: [
-            {
-              to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
-              data: balanceOfData,
-            },
-          ],
-        });
+    console.log('current user wallet', client);
 
-        if (hexToBigInt(balanceResult) < parseUnits(amount.toString(), 6)) {
-          toast({
-            title: 'Insufficient balance',
-            description: `You need at least ${amount} USDC to perform this action. Only ${formatUnits(
-              hexToBigInt(balanceResult),
-              6
-            )} USDC was detected`,
-          });
-          return;
-        }
-
-        const transactionHash = await sendTransaction(
-          wallet,
-          env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
-          TOKEN_ABI,
-          'transfer',
-          [receiverAddress, parseUnits(amount.toString(), 6)]
-        );
-
-        console.log('transactionHash', transactionHash);
-
-        toast({
-          title: 'Transaction Successful',
-          description: 'Funds withdrawn successfully ',
-        });
-      }
-    } catch (e) {
-      toast({
-        title: 'Something went wrong',
-        description:
-          'Your Privy wallet has something problem. Please try again',
-        variant: 'destructive',
+    if (client) {
+      await client.switchChain({
+        id: baseSepolia.id,
       });
+
+      // Transfer transaction
+      const transferData = encodeFunctionData({
+        abi: TOKEN_ABI,
+        functionName: 'transfer',
+        args: [recipientWalletAddress, parseUnits(amount.toString(), 6)],
+      });
+
+      const transferTransactionHash = await client.sendTransaction({
+        account: client.account,
+        to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS as `0x${string}`,
+        data: transferData,
+      });
+
+      console.log('Transfer transaction hash:', transferTransactionHash);
+
+      toast({
+        title: 'Transaction Successful',
+        description: 'Funds sent successfully ',
+      });
+      setReload(!reload);
+      return transferTransactionHash;
     }
   };
 
@@ -184,7 +174,7 @@ export const WalletContainer = () => {
     (async () => {
       await fetchTransactions();
     })();
-  }, [walletAddress]);
+  }, [walletAddress, reload]);
 
   return (
     <Authenticated>
@@ -196,7 +186,8 @@ export const WalletContainer = () => {
               ethBalance={ethBalance}
               usdcBalance={usdcBalance}
               onTopUp={handleTopUp}
-              onSend={handleSendUSDC}
+              sendUSDC={handleSendUSDC}
+              isBalanceLoading={balanceLoading}
             />
           </div>
           <div className='lg:w-4/12'>

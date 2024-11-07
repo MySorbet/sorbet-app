@@ -1,6 +1,7 @@
 'use client';
 
 import { PrivyProvider } from '@privy-io/react-auth';
+import { SmartWalletsProvider } from '@privy-io/react-auth/smart-wallets';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { Provider } from 'react-redux';
@@ -25,14 +26,16 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         defaultChain: baseSepolia,
       }}
     >
-      <Provider store={store}>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-          <Toaster />
-        </AuthProvider>
-      </Provider>
+      <SmartWalletsProvider>
+        <Provider store={store}>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
+            <Toaster />
+          </AuthProvider>
+        </Provider>
+      </SmartWalletsProvider>
     </PrivyProvider>
   );
 }
