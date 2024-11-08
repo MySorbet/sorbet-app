@@ -85,11 +85,11 @@ export default function InvoiceSheet({
           <SheetTitle className='text-sm font-medium'>
             {invoice.toName}
           </SheetTitle>
-          <SheetDescription>
-            <VisuallyHidden>
+          <VisuallyHidden asChild>
+            <SheetDescription>
               {`Invoice details for ${invoice.toName} - ${invoice.invoiceNumber}`}
-            </VisuallyHidden>
-          </SheetDescription>
+            </SheetDescription>
+          </VisuallyHidden>
         </SheetHeader>
 
         <div className='flex flex-1 flex-col gap-12'>
