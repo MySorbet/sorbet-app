@@ -107,12 +107,6 @@ export const WalletContainer = () => {
         data: transferData,
       });
 
-      console.log('Transfer transaction hash:', transferTransactionHash);
-
-      toast({
-        title: 'Transaction Successful',
-        description: 'Funds sent successfully ',
-      });
       setReload(!reload);
       return transferTransactionHash;
     }
