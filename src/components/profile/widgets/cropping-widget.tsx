@@ -89,26 +89,23 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
 
   const onWidgetLinkEdit = (url: string) => {};
 
-  /** Calculates the initial values of the zoom and offset to match the display of the photo widget when croppping mode isn't active
-   * (since 'object-cover' in react-easy-crop functions and warps ratios) */
+  /** Calculates dimensions of image */
   const calculateDimensions = (content: PhotoWidgetContentType) => {
     const img = new Image();
     img.src = (content as PhotoWidgetContentType).image;
-    let initialZoom = 1;
-    let heightRatio = 0;
-    let widthRatio = 0;
 
-    if (img.height > widgetDimensions.height) {
-      heightRatio = widgetDimensions.height / img.height;
-    } else {
-      heightRatio = img.height / widgetDimensions.height;
-      initialZoom = widgetDimensions.height / img.height;
+    if (
+      img.width < widgetDimensions.width &&
+      img.height >= widgetDimensions.height
+    ) {
+      setZoom(widgetDimensions.width / img.width);
     }
 
     setHeight(img.height);
     setWidth(img.width);
   };
 
+  /** Calculates height ratio of image relative to widget dimensions */
   const calculateHeightRatio = (height: number) => {
     if (height > widgetDimensions.height) {
       return widgetDimensions.height / height;
@@ -116,11 +113,13 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     return height / widgetDimensions.height;
   };
 
+  /** In the event the image needs to be scaled up */
   const calculateScaleFactor = (height: number) => {
+    let scaleFactor = 1;
     if (height <= widgetDimensions.height) {
-      return widgetDimensions.height / height;
+      scaleFactor *= widgetDimensions.height / height;
     }
-    return 1;
+    return scaleFactor;
   };
 
   useEffect(() => {
@@ -142,14 +141,12 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
             margins[0]
           }px`,
           top: `${
-            item.y * rowHeight +
-            margins[1] * Math.max(0, item.y + 1) -
-            Math.max(
-              0,
-              (height * calculateHeightRatio(height) -
-                widgetDimensions.height) /
-                2
-            )
+            Math.max(item.y, 0) * (widgetDimensions.height / item.h) -
+            height *
+              calculateHeightRatio(height) *
+              calculateScaleFactor(height) +
+            widgetDimensions.height / 2 +
+            margins[0]
           }px`,
         }}
       >
@@ -160,12 +157,16 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
               position: 'relative',
               height: `${Math.max(
                 widgetDimensions.height,
-                height * calculateHeightRatio(height)
+                height *
+                  calculateHeightRatio(height) *
+                  calculateScaleFactor(height) *
+                  2
               )}px`,
-              width: `${width * calculateScaleFactor(height) * 2}px`,
+              width: `${Math.max(
+                widgetDimensions.width,
+                width * calculateScaleFactor(height) * 2
+              )}px`,
               background: 'transparent',
-              // borderRadius: '1.5rem',
-              // border: '3px solid black',
             },
             cropAreaStyle: {
               border: '3px solid black',
@@ -200,7 +201,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           }
         />
         <div
-          className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform ${
+          className={`absolute left-1/2 top-3/4 -translate-x-1/2 -translate-y-1/2 transform ${
             isPopoverOpen
               ? ''
               : 'opacity-0 transition-opacity duration-300 hover:opacity-100'

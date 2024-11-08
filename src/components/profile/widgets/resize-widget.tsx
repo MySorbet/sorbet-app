@@ -89,6 +89,15 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
     setPopoverOpen(false); // Close the popover when the widget is no longer hovered
   };
 
+  /** Similar to Bento, don't let users crop images if it's a square image + widget */
+  const isSquare = () => {
+    return (
+      photoDimensions &&
+      photoDimensions.w === photoDimensions.h &&
+      (initialSize === 'A' || initialSize === 'B')
+    );
+  };
+  console.log(initialSize);
   return (
     <div
       className={cn(
@@ -131,7 +140,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
         <>
           <div className={dividerClass} />
           <>
-            {photoDimensions && photoDimensions.w === photoDimensions.h ? (
+            {isSquare() ? (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
