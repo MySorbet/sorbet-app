@@ -1,3 +1,4 @@
+import { featureFlags } from '@/lib/flags';
 import { useQuery } from '@tanstack/react-query';
 
 /** RQ hook to fetch the exchange rate of USDC to USD via CoinGecko */
@@ -17,5 +18,6 @@ export const USDCToUSD = () => {
         return 1;
       }
     },
+    enabled: featureFlags.coinGeckoApi,
   });
 };
