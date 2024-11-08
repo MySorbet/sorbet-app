@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useWallets } from '@privy-io/react-auth';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
 import {
@@ -13,7 +12,7 @@ import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
   FieldErrors,
   useForm,
@@ -62,9 +61,6 @@ export const WalletSendDialog = ({
   const [step, setStep] = useState<number>(1);
 
   const [contentRef, { height: contentHeight }] = useMeasure();
-  const [walletAddress, setWalletAddress] = useState<string>('');
-
-  const { ready, wallets } = useWallets();
 
   const { toast } = useToast();
 
@@ -98,14 +94,12 @@ export const WalletSendDialog = ({
    * Used in zod schema declaration.
    */
   const isValidETHAddress = (address: string) => {
-    if (ready) {
-      try {
-        ethers.getAddress(address);
-      } catch (error: unknown) {
-        return false;
-      }
-      return true;
+    try {
+      ethers.getAddress(address);
+    } catch (error: unknown) {
+      return false;
     }
+    return true;
   };
 
   const form = useForm<FormSchema>({
@@ -158,17 +152,6 @@ export const WalletSendDialog = ({
       setOpen(true);
     },
   });
-
-  /**
-   * Initializes provider from Privy. Need to clarify which wallet we want to use if a user has multiple wallets.
-   * Privy will return the most recently used wallet as the first item in the 'wallets' array
-   */
-  useEffect(() => {
-    // When Privy is done finding the user's wallets, we set walletAddress and provider pieces of state
-    if (ready) {
-      setWalletAddress(wallets[0].address);
-    }
-  }, [wallets, ready]);
 
   const close = () => {
     setOpen(false);
