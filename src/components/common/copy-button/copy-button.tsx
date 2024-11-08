@@ -1,3 +1,5 @@
+'use client';
+
 import { CheckCircle, Copy06 } from '@untitled-ui/icons-react';
 import React from 'react';
 
