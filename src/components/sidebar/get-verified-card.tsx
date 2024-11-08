@@ -35,7 +35,7 @@ export default function GetVerifiedCard({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className='p-4'>
         <CardTitle className='text-sm font-medium'>{header}</CardTitle>
         <CardDescription className='text-xs'>{description}</CardDescription>
       </CardHeader>
@@ -43,10 +43,10 @@ export default function GetVerifiedCard({
       {/* Only show the remaining steps if the user hasn't completed the verification process */}
       {!isComplete && (
         <>
-          <CardContent className='space-y-4'>
+          <CardContent className='space-y-4 p-4 pt-3'>
             <Progress value={progress} className='[&>*]:bg-sorbet h-2' />
 
-            <div className='space-y-3'>
+            <div className='space-y-2'>
               <CheckItem completed={termsAccepted}>
                 Accept terms of service
               </CheckItem>
@@ -55,7 +55,7 @@ export default function GetVerifiedCard({
               </CheckItem>
             </div>
           </CardContent>
-          <CardFooter className='flex justify-between'>
+          <CardFooter className='flex justify-between gap-4 p-4 pt-0'>
             <Button variant='ghost' asChild>
               <a href='https://docs.mysorbet.xyz'>Learn more</a>
             </Button>
@@ -80,13 +80,13 @@ const CheckItem = ({
   completed: boolean;
 }) => {
   return (
-    <div className='flex items-center gap-3'>
+    <div className='flex items-center gap-2'>
       {completed ? (
-        <CheckCircle className='text-sorbet size-5' />
+        <CheckCircle className='text-sorbet animate-in fade-in zoom-in-0 size-4' />
       ) : (
-        <Circle className='text-muted-foreground size-5' />
+        <Circle className='text-muted-foreground size-4' />
       )}
-      {children}
+      <span className='text-sm font-medium'>{children}</span>
     </div>
   );
 };
