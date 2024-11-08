@@ -9,14 +9,14 @@ import { DateRange } from 'react-day-picker';
 import { getTransactions } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import { Header } from '@/components/header';
-import { useAuth, useEmbeddedWalletAddress } from '@/hooks';
+import { useAuth, useSmartWalletAddress } from '@/hooks';
 import { Transaction } from '@/types/transactions';
 
 import TransactionsTable, { TableTransaction } from './transactions-table';
 
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();
-  const walletAddress = useEmbeddedWalletAddress();
+  const { smartWalletAddress } = useSmartWalletAddress();
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [searchValue, setSearchValue] = useState<string>('');
   const [transactionsData, setTransactionsData] = useState<TableTransaction[]>(
@@ -46,11 +46,11 @@ export const TransactionsBrowser: React.FC = () => {
     after_date?: string,
     before_date?: string
   ) => {
-    if (!walletAddress) return;
+    if (!smartWalletAddress) return;
     const cursor = getCurrentCursor(currentPage);
     setIsLoading(true);
     const res = await getTransactions(
-      walletAddress,
+      smartWalletAddress,
       cursor,
       10,
       'DESC',
@@ -96,10 +96,10 @@ export const TransactionsBrowser: React.FC = () => {
   };
 
   useEffect(() => {
-    if (walletAddress) {
+    if (smartWalletAddress) {
       fetchTransactions();
     }
-  }, [currentPage, walletAddress]);
+  }, [currentPage, smartWalletAddress]);
 
   useEffect(() => {
     if (dateRange?.from && dateRange?.to) {

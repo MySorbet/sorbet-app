@@ -18,7 +18,7 @@ import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
 import { useToast } from '@/components/ui/use-toast';
 import { TOKEN_ABI } from '@/constant/abis';
-import { useWalletBalances } from '@/hooks';
+import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
 
@@ -26,7 +26,7 @@ export const WalletContainer = () => {
   const [reload, setReload] = useState(false);
   const { client } = useSmartWallets();
   const { toast } = useToast();
-  const walletAddress = client?.account.address;
+  const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
   const {
     ethBalance,
     usdcBalance,

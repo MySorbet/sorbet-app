@@ -1,6 +1,7 @@
 import { getEmbeddedConnectedWallet, useWallets } from '@privy-io/react-auth';
 import { useEffect, useState } from 'react';
 
+// !No longer used as we are migrating towards smart wallets
 /**
  * Returns the address of the embedded wallet if it exists, otherwise null.
  * We need a hook like this because privy useWallets will tell use about browser wallets too.

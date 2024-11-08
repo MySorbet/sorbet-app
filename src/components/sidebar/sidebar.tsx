@@ -1,4 +1,3 @@
-import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { Receipt,User01 } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
@@ -16,7 +15,7 @@ import { CopyButton, Spinner } from '@/components/common';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useWalletBalances } from '@/hooks';
+import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
 
 interface SidebarProps {
@@ -133,9 +132,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
  * Local component for displaying wallet balances
  */
 const Balances: React.FC = () => {
-  const { client } = useSmartWallets();
+  const { smartWalletAddress } = useSmartWalletAddress();
   const { ethBalance, usdcBalance, loading } = useWalletBalances(
-    client?.account.address ?? '',
+    smartWalletAddress?? '',
     false
   );
 
@@ -176,23 +175,23 @@ const Balances: React.FC = () => {
  * Local component for displaying wallet address with a copy button
  */
 const WalletAddress: React.FC = () => {
-  const { client } = useSmartWallets();
+  const { smartWalletAddress } = useSmartWalletAddress();
 
   // If we don't have an address yet, we should show a skeleton
-  if (!client?.account.address) {
+  if (!smartWalletAddress) {
     return <Skeleton className='h-4 w-24' />;
   }
 
-  const truncatedAddress = `${client.account.address.slice(
+  const truncatedAddress = `${smartWalletAddress.slice(
     0,
     5
-  )}...${client.account.address.slice(-5)}`;
+  )}...${smartWalletAddress.slice(-5)}`;
   return (
     <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
       <span>{truncatedAddress}</span>
       <CopyButton
         onCopy={() => {
-          navigator.clipboard.writeText(client.account.address);
+          navigator.clipboard.writeText(smartWalletAddress);
         }}
       />
     </div>
