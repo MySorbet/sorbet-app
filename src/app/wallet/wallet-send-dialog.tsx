@@ -124,7 +124,7 @@ export const WalletSendDialog = ({
 
   // Perhaps we only want to run this fetch request once...
   const { data: rate } = USDCToUSD();
-  const convertedUSD = String(rate * Number(amount || 0));
+  const convertedUSD = String(rate ?? 1 * Number(amount || 0));
 
   const {
     data: transactionHash,
