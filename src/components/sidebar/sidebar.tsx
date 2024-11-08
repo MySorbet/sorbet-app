@@ -18,6 +18,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
 
+import GetVerifiedCard from './get-verified-card';
+
 interface SidebarProps {
   isOpen: boolean;
   onIsOpenChange: (open: boolean) => void;
@@ -111,17 +113,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
             </div>
           </div>
 
-          <Button
-            onClick={handleLogout}
-            variant='ghost'
-            className='w-fit text-lg font-semibold'
-            disabled={isLoggingOut}
-          >
-            <div className='mr-2'>
-              {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
-            </div>
-            {isLoggingOut ? 'Logging out' : 'Logout'}
-          </Button>
+          {/* Verification and logout */}
+          <div className='flex flex-col gap-2'>
+            <GetVerifiedCard
+              termsAccepted={false}
+              detailsAdded={false}
+              onComplete={() => console.log('Complete verification clicked')}
+            />
+            <Button
+              onClick={handleLogout}
+              variant='ghost'
+              className='w-fit text-lg font-semibold'
+              disabled={isLoggingOut}
+            >
+              <div className='mr-2'>
+                {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
+              </div>
+              {isLoggingOut ? 'Logging out' : 'Logout'}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
