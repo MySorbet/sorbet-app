@@ -2,11 +2,11 @@ import './styles.css';
 
 import React, { useState } from 'react';
 import type { Focused } from 'react-credit-cards';
-import Cards from 'react-credit-cards';
 
 import { Button } from '@/components/ui/button';
 
 import { CreditCardDialog } from './credit-card-dialog';
+import { CreditCardPreview } from '@/app/wallet/credit-card-preview';
 
 export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);
@@ -43,16 +43,23 @@ export const CreditCardForm = () => {
 
   return (
     <>
-      <div className='credit-card-form flex flex-col gap-8 rounded-3xl bg-white px-4 py-8 shadow-[0px_10px_30px_0px_#00000014] lg:p-12'>
+      <div className='credit-card-form flex flex-col items-center gap-8 rounded-3xl bg-white px-4 py-8 shadow-[0px_10px_30px_0px_#00000014] lg:p-12'>
         <div className=''>
-          <Cards
+          <CreditCardPreview
+            number={cardData.cardNumber}
+            name={cardData.cardName}
+            expiry={cardData.expiry}
+            cvc={cardData.cvc}
+          />
+
+          {/** <Cards
             number={cardData.cardNumber}
             name={cardData.cardName}
             issuer={undefined}
             expiry={cardData.expiry}
             cvc={cardData.cvc}
             focused={focus}
-          />
+          /> */}
         </div>
         <Button
           className={`gap-1 ${

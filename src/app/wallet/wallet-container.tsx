@@ -20,14 +20,13 @@ import { FundsFlow } from '@/app/wallet/funds-flow';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
-import { useToast } from '@/components/ui/use-toast';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
+import { toast } from 'sonner';
 
 export const WalletContainer = () => {
-  const { toast } = useToast();
   const { wallets } = useWallets();
   const walletAddress = useEmbeddedWalletAddress();
   const {
@@ -38,7 +37,100 @@ export const WalletContainer = () => {
 
   const { fundWallet } = useFundWallet();
 
+  const mockTransactions: Transactions = {
+    money_in: [
+      {
+        sender: '0xSender1',
+        receiver: '0xSender1',
+        value: '100',
+        timestamp: '01/01/2023, 12:00:00 AM',
+        hash: '0xHash1',
+      },
+      {
+        sender: '0xSender1',
+        receiver: '0xReceiver1',
+        value: '100',
+        timestamp: '01/01/2023, 12:00:00 AM',
+        hash: '0xHash1',
+      },
+      {
+        sender: '0xSender2',
+        receiver: '0xReceiver2',
+        value: '200',
+        timestamp: '01/02/2023, 12:00:00 AM',
+        hash: '0xHash2',
+      },
+      {
+        sender: '0xSender2',
+        receiver: '0xReceiver2',
+        value: '500',
+        timestamp: '01/02/2023, 12:00:00 AM',
+        hash: '0xHash2',
+      },
+      {
+        sender: '0xSender2',
+        receiver: '0xReceiver2',
+        value: '100',
+        timestamp: '01/03/2023, 12:00:00 AM',
+        hash: '0xHash2',
+      },
+    ],
+    money_out: [
+      {
+        sender: '0xSender3',
+        receiver: '0xReceiver3',
+        value: '150',
+        timestamp: '01/03/2023, 12:00:00 AM',
+        hash: '0xHash3',
+      },
+      {
+        sender: '0xSender4',
+        receiver: '0xReceiver4',
+        value: '250',
+        timestamp: '01/04/2023, 12:00:00 AM',
+        hash: '0xHash4',
+      },
+    ],
+    transactions: [
+      {
+        sender: '0xSender1',
+        receiver: '0xReceiver1',
+        value: '100',
+        timestamp: '01/01/2023, 12:00:00 AM',
+        hash: '0xHash1',
+      },
+      {
+        sender: '0xSender2',
+        receiver: '0xReceiver2',
+        value: '200',
+        timestamp: '01/02/2023, 12:00:00 AM',
+        hash: '0xHash2',
+      },
+      {
+        sender: '0xSender3',
+        receiver: '0xReceiver3',
+        value: '150',
+        timestamp: '01/03/2023, 12:00:00 AM',
+        hash: '0xHash3',
+      },
+      {
+        sender: '0xSender4',
+        receiver: '0xReceiver4',
+        value: '250',
+        timestamp: '01/04/2023, 12:00:00 AM',
+        hash: '0xHash4',
+      },
+    ],
+    total_money_in: '300',
+    total_money_out: '400',
+  };
+
   // TODO: Move transactions to base
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [selectedDuration, setSelectedDuration] = useState<string>('30'); // New state for selected duration
+
   const [transactions, setTransactions] = useState<Transactions>({
     money_in: [],
     money_out: [],
@@ -46,18 +138,20 @@ export const WalletContainer = () => {
     total_money_in: '',
     total_money_out: '',
   });
-  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchTransactions = async (last_days = 30) => {
     if (walletAddress) {
       setLoading(true);
+      // only gets the latest 5 transactions here over the time span
       const response = await getOverview(walletAddress, last_days);
       if (response && response.data) {
-        setTransactions(response.data.transactions);
+        // setTransactions(response.data.transactions);
+        setTransactions(mockTransactions); //
       }
       setLoading(false);
     }
   };
+
   const handleTxnDurationChange = (value: string) => {
     const last_days = parseInt(value, 10);
     fetchTransactions(last_days);
@@ -74,11 +168,9 @@ export const WalletContainer = () => {
         });
       }
     } catch (e) {
-      toast({
-        title: 'Something went wrong',
+      toast('Something went wrong', {
         description:
           'Your Privy wallet has something problem. Please try again',
-        variant: 'destructive',
       });
     }
   };
@@ -108,8 +200,7 @@ export const WalletContainer = () => {
       });
 
       if (hexToBigInt(balanceResult) < parseUnits(amount.toString(), 6)) {
-        toast({
-          title: 'Insufficient balance',
+        toast('Insufficient balance', {
           description: `You need at least ${amount} USDC to perform this action. Only ${formatUnits(
             hexToBigInt(balanceResult),
             6
@@ -126,10 +217,7 @@ export const WalletContainer = () => {
         [recipientWalletAddress, parseUnits(amount.toString(), 6)]
       );
 
-      console.log('transactionHash', transactionHash);
-
-      toast({
-        title: 'Transaction Successful',
+      toast('Transaction Successful', {
         description: 'Funds sent successfully ',
       });
 
@@ -183,15 +271,25 @@ export const WalletContainer = () => {
   return (
     <Authenticated>
       <Header />
-      <div className='container my-16'>
+      <div className='container my-16 pb-8'>
         <div className='flex flex-col gap-6 lg:flex-row'>
           <div className='lg:w-8/12'>
             <WalletBalance
+              balanceHistory={
+                !transactions.money_in
+                  ? undefined
+                  : transactions.money_in.map((transaction: Transaction) => ({
+                      date: transaction.timestamp,
+                      balance: transaction.value,
+                    }))
+              }
               ethBalance={ethBalance}
               usdcBalance={usdcBalance}
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
               isBalanceLoading={balanceLoading}
+              selectedDuration={selectedDuration}
+              onTxnDurationChange={setSelectedDuration}
             />
           </div>
           <div className='lg:w-4/12'>

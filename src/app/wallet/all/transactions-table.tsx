@@ -69,19 +69,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
               className='w-full rounded-md border border-gray-300 px-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
           </div>
-          {/* <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className='text-md text-muted-foreground flex w-full items-center justify-center rounded-md border border-gray-300 px-4 py-2 focus:outline-none'>
-                    Amount
-                    <ChevronDown size={16} className='ml-1' />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Coming soon!</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div> */}
+
           <div className='relative col-span-12 md:col-span-4 lg:col-span-2'>
             {onDateRangeChange && (
               <DatePickerWithRange
@@ -111,19 +99,19 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           <tr>
             <th
               scope='col'
-              className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'
+              className='w-2/5 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'
             >
               To/From
             </th>
             <th
               scope='col'
-              className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'
+              className='w-1/5 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500'
             >
               Date
             </th>
             <th
               scope='col'
-              className='px-6 py-3 text-left text-right text-xs font-medium uppercase tracking-wider text-gray-500'
+              className='w-1/5 px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500'
             >
               Amount
             </th>
@@ -133,7 +121,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           {transactions &&
             transactions.map((transaction, index) => (
               <tr key={index}>
-                <td className='whitespace-nowrap px-6 py-4'>
+                <td className='w-2/5 whitespace-nowrap px-6 py-4'>
                   <div className='flex items-center'>
                     <div className='h-10 w-10 flex-shrink-0'>
                       <span
@@ -156,17 +144,19 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                     </div>
                   </div>
                 </td>
-                <td className='whitespace-nowrap px-6 py-4'>
+                <td className='w-1/5 whitespace-nowrap px-6 py-4'>
                   <div className='text-sm text-gray-900'>
                     {transaction.date}
                   </div>
                 </td>
                 <td
-                  className='flex cursor-pointer items-center justify-end gap-2 whitespace-nowrap px-6 py-4'
+                  className='w-1/5 cursor-pointer whitespace-nowrap px-6 py-4'
                   onClick={() => handleTxnClick(transaction.hash)}
                 >
-                  <div className={`text-sm`}>{transaction.amount}</div>
-                  <MessageSquareShare size={18} />
+                  <div className='flex items-center justify-end gap-2'>
+                    <div className='text-sm'>{transaction.amount}</div>
+                    <MessageSquareShare size={18} />
+                  </div>
                 </td>
               </tr>
             ))}

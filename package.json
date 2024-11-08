@@ -120,6 +120,7 @@
     "react-tag-input-component": "^2.0.2",
     "react-to-print": "^3.0.2",
     "react-use-measure": "^2.1.1",
+    "recharts": "^2.13.3",
     "recoil": "^0.7.7",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
