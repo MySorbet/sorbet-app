@@ -1,8 +1,9 @@
 import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Sidebar } from './sidebar';
 import { Button } from '@/components/ui/button';
+
+import { Sidebar } from './sidebar';
 
 const meta = {
   title: 'Sidebar',
