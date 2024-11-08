@@ -204,17 +204,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Image
-                src='/svg/section-title.svg'
-                alt='add section title'
-                width={20}
-                height={20}
-              />
-            </TooltipTrigger>
-            <TooltipContent>Add section title</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
               <label
                 className={cn(
                   'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',

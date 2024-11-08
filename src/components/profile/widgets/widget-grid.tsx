@@ -128,7 +128,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
         <div>
           {activeWidget && existingItem !== undefined ? (
             <div
-              className="relative w-full"
+              className='relative w-full'
               style={{ height: `${gridHeight}px` }}
             >
               <CroppingWidget
@@ -175,7 +175,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                     setGridHeight(node.offsetHeight);
                   }
                 }}
-                /** draggableCancel='.widget-motion-wrapper' <-- this successfully freezes the grid */
               >
                 {layout.map((item) => {
                   // Allow all widgets to render if not cropping

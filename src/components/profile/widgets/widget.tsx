@@ -92,6 +92,10 @@ export const Widget: React.FC<WidgetProps> = ({
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
+  const [photoDimensions, setPhotoDimensions] = useState<{
+    w: number;
+    h: number;
+  }>();
 
   /** update image dimensions */
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
@@ -117,6 +121,7 @@ export const Widget: React.FC<WidgetProps> = ({
     }
   };
 
+  /** For setting the content of the widgets dynamically */
   useEffect(() => {
     switch (type) {
       case 'Dribbble':
@@ -279,6 +284,19 @@ export const Widget: React.FC<WidgetProps> = ({
     }
   }, [type, widgetSize, content]);
 
+  /** For photo widgets to disable cropping for square images */
+  useEffect(() => {
+    if (type === 'Photo') {
+      const img = new Image();
+      img.src = (content as PhotoWidgetContentType).image; // Set the image source URL
+
+      // Once the image is loaded, update the state with its dimensions
+      img.onload = () => {
+        setPhotoDimensions({ w: img.width, h: img.height });
+      };
+    }
+  }, [type, content]);
+
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div
@@ -320,6 +338,7 @@ export const Widget: React.FC<WidgetProps> = ({
                 activeWidget={activeWidget}
                 setActiveWidget={setActiveWidget}
                 type={type}
+                photoDimensions={photoDimensions ? photoDimensions : undefined}
               />
               <Button
                 variant='outline'

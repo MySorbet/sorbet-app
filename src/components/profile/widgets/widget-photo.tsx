@@ -38,13 +38,14 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({
       transformOrigin: 'top left',
     };
   };
+
   return (
     <div className='relative h-full overflow-hidden rounded-3xl'>
       <img
         src={content.image}
         alt='Photo content'
         className={
-          croppedArea ? 'absolute' : 'relative h-full w-full object-cover'
+          croppedArea ? 'absolute' : `relative h-full w-full object-cover`
         }
         style={croppedArea ? calculateStyles(croppedArea) : {}}
       />

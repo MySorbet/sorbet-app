@@ -10,6 +10,12 @@ import { Area } from 'react-easy-crop';
 import { AddLink } from '@/components/profile/widgets/add-link';
 import { cn } from '@/lib/utils';
 import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
+import {
+  TooltipProvider,
+  TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
@@ -24,6 +30,7 @@ interface ResizeWidgetProps {
   croppedArea?: Area | null;
   handleImageCropping?: (key: string, croppedArea: Area) => Promise<void>;
   type: WidgetType;
+  photoDimensions?: { w: number; h: number };
 }
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
@@ -39,6 +46,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   initialSize = 'A',
   croppedArea,
   type,
+  photoDimensions,
 }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
   const [currentLink, setCurrentLink] = useState<string>(
@@ -122,17 +130,36 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       {type === 'Photo' && (
         <>
           <div className={dividerClass} />
-          <div
-            className={`${btnClass} ${
-              activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
-            }`}
-            onClick={(e) => {
-              e.stopPropagation;
-              startCropping();
-            }}
-          >
-            <Crop size={20} strokeWidth={2.5} />
-          </div>
+          <>
+            {photoDimensions && photoDimensions.w === photoDimensions.h ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div
+                      className={`${btnClass} ${
+                        activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
+                      }`}
+                    >
+                      <Crop size={20} strokeWidth={2.5} color='#667085' />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Image fits already.</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <div
+                className={`${btnClass} ${
+                  activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  startCropping();
+                }}
+              >
+                <Crop size={20} strokeWidth={2.5} />
+              </div>
+            )}
+          </>
           <div
             className={`${btnClass} ${
               popoverOpen ? 'rounded-md bg-white' : ''
