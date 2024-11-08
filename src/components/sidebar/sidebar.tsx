@@ -11,7 +11,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { CopyButton, Spinner } from '@/components/common';
+import { Spinner } from '@/components/common';
+import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -193,7 +194,7 @@ const WalletAddress: React.FC = () => {
   return (
     <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
       <span>{truncatedAddress}</span>
-      <CopyButton
+      <CopyIconButton
         onCopy={() => {
           navigator.clipboard.writeText(address);
         }}

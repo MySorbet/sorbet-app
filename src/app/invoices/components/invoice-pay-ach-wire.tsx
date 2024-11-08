@@ -1,6 +1,6 @@
-import { CopyButton } from '@/app/invoices/components/dashboard/copy-button';
+import { kebabCase } from 'lodash';
 
-import { handleCopy } from './utils';
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Label } from '@/components/ui/label';
 
 type Beneficiary = {
@@ -15,7 +15,6 @@ type Bank = {
 };
 
 type InvoicePayAchWireProps = {
-  isLoading?: boolean;
   routingNumber: string;
   accountNumber: string;
   beneficiary: Beneficiary;
@@ -23,7 +22,6 @@ type InvoicePayAchWireProps = {
 };
 
 export const InvoicePayAchWire = ({
-  isLoading,
   routingNumber,
   accountNumber,
   beneficiary,
@@ -33,18 +31,8 @@ export const InvoicePayAchWire = ({
     <div className='flex max-w-[32rem] flex-col justify-center gap-6 rounded-xl bg-white p-4'>
       <span>Use these details to send domestic wires and ACH transfers</span>
       <div className='flex w-full justify-between gap-4'>
-        <ACHWireCopyButton
-          id='account-number'
-          onCopy={() => handleCopy(accountNumber)}
-          value={accountNumber}
-          label='Account number'
-        />
-        <ACHWireCopyButton
-          id='routing-number'
-          onCopy={() => handleCopy(routingNumber)}
-          value={routingNumber}
-          label='Routing number'
-        />
+        <ACHWireCopyButton value={accountNumber} label='Account number' />
+        <ACHWireCopyButton value={routingNumber} label='Routing number' />
       </div>
       <Block label='Beneficiary'>
         <Detail label='Beneficiary name' value={beneficiary.name} />
@@ -63,24 +51,23 @@ export const InvoicePayAchWire = ({
  * Local component for displaying a copy button for ach/wire details
  */
 const ACHWireCopyButton = ({
-  id,
-  onCopy,
   value,
   label,
 }: {
-  id: string;
-  onCopy: () => void;
   value: string;
   label: string;
 }) => {
   return (
     <div>
-      <Label htmlFor={id} className='text-muted-foreground font-normal'>
+      <Label
+        htmlFor={kebabCase(label)}
+        className='text-muted-foreground font-normal'
+      >
         {label}
       </Label>
       <CopyButton
-        id={id}
-        onCopy={onCopy}
+        id={kebabCase(label)}
+        stringToCopy={value}
         className='text-muted-foreground mt-2 min-w-56 flex-row-reverse justify-between font-normal'
         // TODO: Fix the color of the copy icon
       >

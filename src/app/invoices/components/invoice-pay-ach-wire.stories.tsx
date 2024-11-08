@@ -15,7 +15,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    isLoading: false,
     routingNumber: '123456789',
     accountNumber: '123456789',
     beneficiary: {

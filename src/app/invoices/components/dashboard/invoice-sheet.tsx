@@ -4,6 +4,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Download01 } from '@untitled-ui/icons-react';
 import { useEffect, useState } from 'react';
 
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,7 +19,6 @@ import {
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
-import { CopyButton } from './copy-button';
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { Invoice, InvoiceStatus } from './utils';
@@ -71,10 +71,6 @@ export default function InvoiceSheet({
   if (!invoice) return null;
 
   const invoiceLink = `${window.location.origin}/invoices/${invoice.id}`;
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(invoiceLink);
-  };
 
   return (
     <Sheet
@@ -147,7 +143,7 @@ export default function InvoiceSheet({
               </Button>
               <CopyButton
                 className='w-full'
-                onCopy={handleCopy}
+                stringToCopy={invoiceLink}
                 copyIconClassName='size-4'
                 checkIconClassName='size-4'
               >

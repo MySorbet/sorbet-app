@@ -1,6 +1,6 @@
 import { Options } from 'qr-code-styling';
 
-import { CopyButton } from '@/app/invoices/components/dashboard/copy-button';
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 
@@ -42,10 +42,6 @@ export const InvoicePayUsdc = ({
   address: string;
   isLoading?: boolean;
 }) => {
-  const handleCopy = () => {
-    navigator.clipboard.writeText(address);
-  };
-
   const { qrCodeRef, isLoadingQRCode } = useGenerateQRCode(address, qrOptions);
 
   return (
@@ -62,9 +58,7 @@ export const InvoicePayUsdc = ({
           <div className='text-sm font-medium'>{address}</div>
         )}
 
-        <CopyButton onCopy={handleCopy} disabled={isLoading}>
-          Copy address
-        </CopyButton>
+        <CopyButton stringToCopy={address}>Copy address</CopyButton>
 
         <span className='text-muted-foreground text-sm'>
           This address can only receive USDC on the{' '}
