@@ -32,7 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Form, FormField } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
@@ -286,46 +286,48 @@ const Step1 = ({
               name='amount'
               render={({ field }) => (
                 <div className='flex flex-col gap-[6px]'>
-                  <Label className='text-sm font-normal text-[#344054]'>
+                  <FormLabel className='text-sm font-normal text-[#344054]'>
                     Amount
-                  </Label>
-                  <div className='relative'>
-                    <Input
-                      {...field}
-                      placeholder='0.0'
-                      className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
-                      type='number'
-                      autoFocus
-                    />
-                    <Button
-                      className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
-                      onClick={(e) => {
-                        e.preventDefault();
-                        form.setValue('amount', usdcBalance);
-                      }}
-                    >
-                      MAX
-                    </Button>
-                    <span className='absolute right-3 top-[14px] text-base font-semibold text-[#D0D5DD]'>
-                      USDC
-                    </span>
-                  </div>
+                  </FormLabel>
+                  <FormControl>
+                    <div className='relative'>
+                      <Input
+                        {...field}
+                        placeholder='0.0'
+                        className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
+                        type='number'
+                        autoFocus
+                      />
+                      <Button
+                        className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          form.setValue('amount', usdcBalance);
+                        }}
+                      >
+                        MAX
+                      </Button>
+                      <span className='absolute right-3 top-[14px] text-base font-semibold text-[#D0D5DD]'>
+                        USDC
+                      </span>
+                    </div>
+                  </FormControl>
                   <div className='flex justify-between'>
                     {errors.amount ? (
-                      <Label className='animate-in slide-in-from-top-1 fade-in-0 text-xs font-semibold text-red-500'>
+                      <FormLabel className='animate-in slide-in-from-top-1 fade-in-0 text-xs font-semibold text-red-500'>
                         {errors.amount.message}
-                      </Label>
+                      </FormLabel>
                     ) : (
-                      <Label className='text-xs font-semibold text-[#667085]'>
+                      <FormLabel className='text-xs font-semibold text-[#667085]'>
                         ~ {convertedUSD} USD
-                      </Label>
+                      </FormLabel>
                     )}
-                    <Label className='flex gap-1 text-xs font-semibold text-[#667085]'>
+                    <FormLabel className='flex gap-1 text-xs font-semibold text-[#667085]'>
                       <span className='font-normal'>Available</span>
                       <span className='font-semibold text-[#344054]'>
                         {usdcBalance} USDC
                       </span>
-                    </Label>
+                    </FormLabel>
                   </div>
                 </div>
               )}
@@ -336,23 +338,23 @@ const Step1 = ({
               name='recipientWalletAddress'
               render={({ field }) => (
                 <div className='flex flex-col gap-[6px]'>
-                  <Label className='text-sm font-normal text-[#344054]'>
+                  <FormLabel className='text-sm font-normal text-[#344054]'>
                     Send to
-                  </Label>
-                  <Input
-                    {...field}
-                    type='text'
-                    placeholder='0xTheRecipientAddress'
-                    className={
-                      errors.recipientWalletAddress &&
-                      'border border-red-500 focus-visible:ring-red-500'
-                    }
-                  />
-
-                  <Label className='text-sm font-normal text-[#667085]'>
-                    {/* // TODO: Update this label text with appropriate text */}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type='text'
+                      placeholder='0xTheRecipientAddress'
+                      className={
+                        errors.recipientWalletAddress &&
+                        'border border-red-500 focus-visible:ring-red-500'
+                      }
+                    />
+                  </FormControl>
+                  <FormLabel className='text-sm font-normal text-[#667085]'>
                     Please add a valid Ethereum wallet address
-                  </Label>
+                  </FormLabel>
                 </div>
               )}
             />
