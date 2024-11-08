@@ -69,7 +69,7 @@ const ACHWireCopyButton = ({
         id={kebabCase(label)}
         stringToCopy={value}
         className='text-muted-foreground mt-2 min-w-56 flex-row-reverse justify-between font-normal'
-        // TODO: Fix the color of the copy icon
+        copyIconClassName='text-muted-foreground'
       >
         {value}
       </CopyButton>
