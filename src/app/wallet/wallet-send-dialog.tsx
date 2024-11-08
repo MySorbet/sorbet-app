@@ -98,13 +98,14 @@ export const WalletSendDialog = ({
    * Used in zod schema declaration.
    */
   const isValidETHAddress = (address: string) => {
-    try {
-      ethers.getAddress(address);
-    } catch (error: unknown) {
-      console.error(error);
-      return false;
+    if (ready) {
+      try {
+        ethers.getAddress(address);
+      } catch (error: unknown) {
+        return false;
+      }
+      return true;
     }
-    return true;
   };
 
   const form = useForm<FormSchema>({
