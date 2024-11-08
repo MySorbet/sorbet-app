@@ -10,5 +10,5 @@ export const featureFlags: FeatureFlags = {
   walletAddressInSidebar: false, // Temporarily hiding as per request from Rami for demo 9/24/24
   sessionReplay: process.env.NODE_ENV === 'production',
   invoices: false,
-  coinGeckoApi: process.env.NODE_ENV === 'production', // Api for getting exchange rates to USD. enabling only for production
+  coinGeckoApi: process.env.NODE_ENV === 'production', // Api for getting exchange rates to USD. Enabling only for production.
 };
