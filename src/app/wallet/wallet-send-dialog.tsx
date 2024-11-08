@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useWallets } from '@privy-io/react-auth';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
 import {
   ArrowNarrowLeft,
@@ -11,6 +12,7 @@ import {
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   FieldErrors,
@@ -26,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -33,8 +36,6 @@ import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { useWalletBalances } from '@/hooks';
-import { useRouter } from 'next/navigation';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -43,7 +44,7 @@ interface WalletSendDialogProps {
     recipientWalletAddress: string
   ) => Promise<`0x${string}` | undefined>;
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpen: (open: boolean) => void;
   usdcBalance: string;
 }
 
@@ -108,6 +109,10 @@ export const WalletSendDialog = ({
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      amount: '',
+      recipientWalletAddress: '',
+    },
     mode: 'all',
   });
 
@@ -171,7 +176,7 @@ export const WalletSendDialog = ({
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
         className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
         hideDefaultCloseButton={true}
@@ -261,6 +266,11 @@ const Step1 = ({
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Send
         </DialogTitle>
+        <VisuallyHidden asChild>
+          <DialogDescription>
+            Send USDC from your Privy wallet
+          </DialogDescription>
+        </VisuallyHidden>
         <button
           className='group m-0 bg-transparent p-0 hover:bg-transparent'
           onClick={close}
@@ -285,6 +295,7 @@ const Step1 = ({
                       placeholder='0.0'
                       className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
                       type='number'
+                      autoFocus
                     />
                     <Button
                       className='text-sorbet absolute right-[70px] top-[6px] bg-transparent p-0 text-base font-semibold hover:scale-105 hover:bg-transparent'
