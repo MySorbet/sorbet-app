@@ -31,7 +31,7 @@ export const WalletContainer = () => {
     ethBalance,
     usdcBalance,
     loading: balanceLoading,
-  } = useWalletBalances(walletAddress ?? '', reload);
+  } = useWalletBalances(walletAddress, reload);
 
   const { fundWallet } = useFundWallet();
 

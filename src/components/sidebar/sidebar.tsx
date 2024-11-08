@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 const Balances: React.FC = () => {
   const { smartWalletAddress } = useSmartWalletAddress();
   const { ethBalance, usdcBalance, loading } = useWalletBalances(
-    smartWalletAddress ?? '',
+    smartWalletAddress,
     false
   );
 

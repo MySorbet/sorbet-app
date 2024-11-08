@@ -11,7 +11,7 @@ import { env } from '@/lib/env';
  * @returns - Object containing ethBalance, usdcBalance, and loading
  */
 export const useWalletBalances = (
-  walletAddress: string,
+  walletAddress: string | null,
   reload: boolean
 ) => {
   const [ethBalance, setEthBalance] = useState<string>('0');
