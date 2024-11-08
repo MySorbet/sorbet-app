@@ -1,4 +1,4 @@
-import { Receipt,User01 } from '@untitled-ui/icons-react';
+import { Receipt, User01 } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
   LayoutGrid,
@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 const Balances: React.FC = () => {
   const { smartWalletAddress } = useSmartWalletAddress();
   const { ethBalance, usdcBalance, loading } = useWalletBalances(
-    smartWalletAddress?? '',
+    smartWalletAddress ?? '',
     false
   );
 
@@ -175,10 +175,11 @@ const Balances: React.FC = () => {
  * Local component for displaying wallet address with a copy button
  */
 const WalletAddress: React.FC = () => {
-  const { smartWalletAddress } = useSmartWalletAddress();
+  const { smartWalletAddress, isLoading: isSmartWalletAddressLoading } =
+    useSmartWalletAddress();
 
   // If we don't have an address yet, we should show a skeleton
-  if (!smartWalletAddress) {
+  if (isSmartWalletAddressLoading || !smartWalletAddress) {
     return <Skeleton className='h-4 w-24' />;
   }
 
