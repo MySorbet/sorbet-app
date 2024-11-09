@@ -10,7 +10,7 @@ import { CreateInvoiceFooter } from '@/app/invoices/components/create/create-inv
 import { InvoiceReceipt } from '@/app/invoices/components/invoice-receipt';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
+import { useSmartWalletAddress } from '@/hooks';
 
 import { Invoice } from '../components/dashboard/utils';
 import { CreateInvoiceHeader } from './create/create-invoice-header';
@@ -37,8 +37,10 @@ export const InvoicePublicView = ({
     documentTitle: `sorbet-invoice-${invoice?.invoiceNumber}`,
   });
 
-  const { data: walletAddress, isLoading: isLoadingWalletAddress } =
-    useWalletAddressByUserId(invoice?.userId ?? '');
+  const {
+    smartWalletAddress: walletAddress,
+    isLoading: isLoadingWalletAddress,
+  } = useSmartWalletAddress();
 
   // Render closed receipts in the case of paid or cancelled invoices
   if (invoice?.status === 'Paid' || invoice?.status === 'Cancelled') {
