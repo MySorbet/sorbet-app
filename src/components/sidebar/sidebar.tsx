@@ -50,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   return (
     <Sheet open={isOpen} onOpenChange={onIsOpenChange}>
       <SheetContent
-        className='inset-y-6 right-6 h-auto rounded-2xl'
+        className='inset-y-6 right-6 h-auto rounded-2xl bg-[#F9FAFB]'
         hideDefaultCloseButton
       >
         <div className='flex h-full w-full flex-col justify-between gap-10 text-[#101828]'>
