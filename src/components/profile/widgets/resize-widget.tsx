@@ -8,14 +8,14 @@ import React, { useState } from 'react';
 import { Area } from 'react-easy-crop';
 
 import { AddLink } from '@/components/profile/widgets/add-link';
-import { cn } from '@/lib/utils';
-import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 import {
-  TooltipProvider,
-  TooltipTrigger,
   Tooltip,
   TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 
 interface ResizeWidgetProps {
   onResize: (w: number, h: number, widgetSize: WidgetSize) => void;

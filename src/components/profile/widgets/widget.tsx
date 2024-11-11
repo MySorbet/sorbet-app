@@ -42,6 +42,7 @@ import { SpotifySongWidget } from './widget-spotify-song';
 import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
+import { Area } from 'react-easy-crop';
 
 interface WidgetProps {
   identifier: string;
@@ -58,7 +59,6 @@ interface WidgetProps {
   handleRemove: (key: string) => void;
   handleEditLink: (key: string, url: string) => void;
   setActiveWidget: (widgetId: string | null) => void;
-  handleImageCropping: any;
   activeWidget: string | null;
   widgetDimensions: {
     width: number;
@@ -108,7 +108,7 @@ export const Widget: React.FC<WidgetProps> = ({
     handleEditLink(identifier, url);
   };
 
-  const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onWidgetClick = () => {
     const dragged = draggedRef.current;
     draggedRef.current = false;
     if (!dragged) {
@@ -119,6 +119,7 @@ export const Widget: React.FC<WidgetProps> = ({
         }
       }
     }
+    // TODO: Maybe widgets should be anchors?
   };
 
   /** For setting the content of the widgets dynamically */

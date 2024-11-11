@@ -27,7 +27,6 @@ interface WidgetManagementProps {
 }
 
 export const useWidgetManagement = ({
-  userId,
   editMode,
   layout,
   setLayout,
@@ -122,13 +121,11 @@ export const useWidgetManagement = ({
       }
     },
     [
-      userId,
       editMode,
       layout,
       cols,
       uploadWidgetsImageAsync,
       createWidget,
-      toast,
       setLayout,
       persistWidgetsLayoutOnChange,
     ]
@@ -193,7 +190,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, editMode, layout, uploadWidgetsImageAsync, toast, setLayout]
+    [layout, uploadWidgetsImageAsync, updateWidgetImageAsync]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */
@@ -231,7 +228,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, editMode, layout, toast, setLayout]
+    [layout, updateWidgetImageAsync]
   );
 
   /** Handles the cropping of images, the id of the image being cropped should be passed */
@@ -260,7 +257,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, editMode, layout, toast, setLayout]
+    [layout, updateWidgetImageAsync]
   );
 
   const handleWidgetEditLink = useCallback(
@@ -285,7 +282,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout]
+    [layout, updateWidgetLinkAsync]
   );
 
   /** Handles cases when the user drags an image over the profile page */
@@ -328,7 +325,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, uploadWidgetsImageAsync, handleWidgetAdd]
+    [uploadWidgetsImageAsync, handleWidgetAdd]
   );
 
   const handleAddMultipleWidgets = useCallback(
@@ -378,14 +375,7 @@ export const useWidgetManagement = ({
       });
       setAddingWidget(false);
     },
-    [
-      cols,
-      editMode,
-      createWidget,
-      toast,
-      setLayout,
-      persistWidgetsLayoutOnChange,
-    ]
+    [cols, editMode, createWidget, setLayout, persistWidgetsLayoutOnChange]
   );
 
   return {

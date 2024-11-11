@@ -10,7 +10,7 @@ export const useDeleteProfileImage = () => {
     mutationFn: async (userId: string) => {
       return await deleteProfileImageAsync(userId);
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: 'Profile image not deleted',
         description: 'Your profile image could not be deleted due to an error',

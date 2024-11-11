@@ -34,7 +34,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
 }) => {
   const { title, iconUrl, heroImageUrl } = content;
 
-  const openWidgetLink = (event: React.MouseEvent<HTMLDivElement>) => {
+  const openWidgetLink = () => {
     if (heroImageUrl) {
       const newWindow = window.open(heroImageUrl, '_blank');
       if (newWindow) {

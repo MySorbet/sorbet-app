@@ -1,6 +1,5 @@
 import { HelpCircle, Link03 } from '@untitled-ui/icons-react';
 import { ImagePlus } from 'lucide-react';
-import Image from 'next/image';
 import React, { useState } from 'react';
 
 import { Spinner } from '@/components/common';

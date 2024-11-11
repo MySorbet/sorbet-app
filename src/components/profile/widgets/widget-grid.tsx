@@ -215,7 +215,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         )}
                         activeWidget={activeWidget}
                         setActiveWidget={setActiveWidget}
-                        handleImageCropping={handleImageCropping}
                         addImage={handleNewImageAdd}
                         removeImage={handleImageRemoval}
                         loading={addingWidget}
@@ -307,7 +306,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   )}
                   activeWidget={activeWidget}
                   setActiveWidget={setActiveWidget}
-                  handleImageCropping={handleImageCropping}
                   addImage={handleNewImageAdd}
                   removeImage={handleImageRemoval}
                   loading={addingWidget}

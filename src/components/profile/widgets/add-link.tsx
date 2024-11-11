@@ -1,5 +1,7 @@
 import { Link03 } from '@untitled-ui/icons-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { isValidUrl } from '@/components/profile/widgets/util';
 import { Input } from '@/components/ui/input';
@@ -8,8 +10,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { toast } from 'sonner';
-import Image from 'next/image';
 
 interface AddLinkProps {
   value: string;
@@ -90,7 +90,7 @@ export const AddLink = ({
         sideOffset={16}
         align='center' // Change alignment to start to shift the popover to the right
         data-align='center'
-        className='ml-20 w-[170px] rounded-xl border-0 bg-[rgba(34,36,35,1)] p-2'
+        className='ml-20 w-[170px] rounded-xl border-0 bg-[rgba(34,36,35,1)] p-1.5'
       >
         <Input
           type='text'
@@ -102,8 +102,8 @@ export const AddLink = ({
           }}
           onKeyDown={handleKeyDown}
           placeholder='Enter link here'
-          noRing={true}
-          className={`text-md h-9 w-full py-0.5 ${
+          variant='noRing'
+          className={`h-7 w-full py-0.5 pl-1.5 text-sm ${
             isValid ? 'border-[rgba(34,36,35,1)]' : 'border-red-500' // Display invalidity
           } bg-[#344054] text-gray-300`}
         />

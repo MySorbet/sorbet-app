@@ -1,7 +1,7 @@
+import { Transition } from '@headlessui/react';
 import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
-import { Transition } from '@headlessui/react';
 
 import { Button } from '@/components/ui/button';
 import {
