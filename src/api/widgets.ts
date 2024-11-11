@@ -20,7 +20,7 @@ export const getWidgetsByUsername = async (username: string) => {
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get widgets for ${username} ${error.response?.data.message}`
@@ -41,7 +41,7 @@ export const getWidgetsForUser = async (userId: string) => {
         await withAuthHeader()
       );
       return response.data;
-    } catch (error: unknown) {
+    } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
           `Axios error: Failed to fetch widgets for user: ${error.response?.data.message}`
@@ -67,7 +67,7 @@ export const updateWidgetsBulk = async (
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to update widgets in bulk: ${error.response?.data.message}`
@@ -107,7 +107,7 @@ export const updateWidget = async (
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to update widget: ${error.response?.data.message}`
@@ -132,7 +132,7 @@ export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to update widget link: ${error.response?.data.message}`
@@ -159,7 +159,7 @@ export const updateWidgetImage = async (widgetLayoutItem: WidgetLayoutItem) => {
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to update widget image: ${error.response?.data.message}`
@@ -179,7 +179,7 @@ export const deleteWidget = async (id: string) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to delete widget: ${error.response?.data.message}`
@@ -200,7 +200,7 @@ const getDribbleShot: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get DribbleShot: ${error.response?.data.message}`
@@ -219,7 +219,7 @@ const getBehanceItem: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Behance Item: ${error.response?.data.message}`
@@ -238,7 +238,7 @@ const getMediumArticleMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Medium article metadata: ${error.response?.data.message}`
@@ -259,7 +259,7 @@ const getYouTubeVideoMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Youtube metadata: ${error.response?.data.message}`
@@ -280,7 +280,7 @@ const getSubstackMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Substack metadata: ${error.response?.data.message}`
@@ -301,7 +301,7 @@ const getSpotifyAlbumDetails: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Spotify album details: ${error.response?.data.message}`
@@ -322,7 +322,7 @@ const getSpotifySongDetails: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Spotify song details: ${error.response?.data.message}`
@@ -343,7 +343,7 @@ const getSoundcloudTrackDetails: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Soundcloud track details: ${error.response?.data.message}`
@@ -364,7 +364,7 @@ const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data.message);
     } else {
@@ -375,13 +375,14 @@ const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
 
 const getPhotoWidget: WidgetGetterFn = async (body) => {
   try {
+    console.log(body);
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/photo`,
       body,
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get photo widget: ${error.response?.data.message}`
@@ -400,7 +401,7 @@ const getGithubProfile: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Github profile data: ${error.response?.data.message}`
@@ -421,7 +422,7 @@ const getTwitterProfile: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get Twitter profile data: ${error.response?.data.message}`
@@ -442,7 +443,7 @@ const getLinkedInProfile: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get LinkedIn profile data: ${error.response?.data.message}`
@@ -463,7 +464,7 @@ const getLinkData: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         `Axios error: Failed to get generic link data: ${error.response?.data.message}`

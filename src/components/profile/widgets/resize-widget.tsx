@@ -86,7 +86,9 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   const handleMouseLeave = () => {
-    setPopoverOpen(false); // Close the popover when the widget is no longer hovered
+    if (!popoverOpen) {
+      setPopoverOpen(false); // Close the popover when the widget is no longer hovered
+    }
   };
 
   /** Similar to Bento, don't let users crop images if it's a square image + widget */
@@ -101,8 +103,9 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   return (
     <div
       className={cn(
-        'align-center z-20 flex hidden min-w-[205px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#573DF5] text-white group-hover:flex md:flex',
-        type === 'Photo' ? 'min-w-[205px]' : 'min-w-[140px]'
+        'align-center z-20 flex flex-row items-center justify-center rounded-full bg-[#573DF5] text-white md:flex',
+        type === 'Photo' ? 'min-w-[205px]' : 'min-w-[140px]',
+        popoverOpen ? 'opacity-100' : '' // Control visibility based on popover state
       )}
       onMouseLeave={handleMouseLeave} // Close popover on mouse leave
     >

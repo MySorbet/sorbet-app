@@ -320,10 +320,10 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         {(showControls || activeWidget) && (
           <div
-            className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform ${
+            className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 ${
               isPopoverOpen
                 ? ''
-                : 'opacity-0 transition-opacity duration-300 group-hover:opacity-100'
+                : 'transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'
             }`}
           >
             <div className='flex flex-row gap-1'>
