@@ -10,4 +10,5 @@ export const featureFlags: FeatureFlags = {
   walletAddressInSidebar: false, // Temporarily hiding as per request from Rami for demo 9/24/24
   sessionReplay: process.env.NODE_ENV === 'production',
   invoices: false,
+  verification: false,
 };

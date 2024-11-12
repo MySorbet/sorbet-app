@@ -111,11 +111,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
           {/* Verification and logout */}
           <div className='flex flex-col gap-2'>
-            <GetVerifiedCard
-              termsAccepted={false}
-              detailsAdded={false}
-              onComplete={() => console.log('Complete verification clicked')}
-            />
+            {featureFlags.verification && (
+              <GetVerifiedCard
+                termsAccepted={false}
+                detailsAdded={false}
+                onComplete={() => console.log('Complete verification clicked')}
+              />
+            )}
             <Button
               onClick={handleLogout}
               variant='ghost'
