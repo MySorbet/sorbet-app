@@ -31,9 +31,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormLabel } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 
 interface WalletSendDialogProps {
@@ -269,7 +274,7 @@ const Step1 = ({
               control={form.control}
               name='amount'
               render={({ field }) => (
-                <div className='flex flex-col gap-[6px]'>
+                <FormItem className='flex flex-col gap-[6px] space-y-0'>
                   <FormLabel className='text-sm font-normal text-[#344054]'>
                     Amount
                   </FormLabel>
@@ -313,7 +318,7 @@ const Step1 = ({
                       </span>
                     </FormLabel>
                   </div>
-                </div>
+                </FormItem>
               )}
             />
 
@@ -321,7 +326,7 @@ const Step1 = ({
               control={form.control}
               name='recipientWalletAddress'
               render={({ field }) => (
-                <div className='flex flex-col gap-[6px]'>
+                <FormItem className='flex flex-col gap-[6px] space-y-0'>
                   <FormLabel className='text-sm font-normal text-[#344054]'>
                     Send to
                   </FormLabel>
@@ -339,7 +344,7 @@ const Step1 = ({
                   <FormLabel className='text-sm font-normal text-[#667085]'>
                     Please add a valid Ethereum wallet address
                   </FormLabel>
-                </div>
+                </FormItem>
               )}
             />
           </div>
