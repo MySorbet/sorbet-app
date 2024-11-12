@@ -20,7 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
 
-import GetVerifiedCard from './get-verified-card';
+import { GetVerifiedCard } from './get-verified-card';
 
 interface SidebarProps {
   isOpen: boolean;

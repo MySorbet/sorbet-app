@@ -24,12 +24,12 @@ interface GetVerifiedCardProps {
   disabled?: boolean;
 }
 
-export default function GetVerifiedCard({
+export const GetVerifiedCard = ({
   termsAccepted = false,
   detailsAdded = false,
   onComplete,
   disabled = false,
-}: GetVerifiedCardProps) {
+}: GetVerifiedCardProps) => {
   // Progress starts with a little full, goes to 50 with accepted terms, and to 100 when details are added
   const progress =
     (0.2 + Number(termsAccepted) * 0.3 + Number(detailsAdded) * 0.5) * 100;
@@ -93,7 +93,7 @@ export default function GetVerifiedCard({
       )}
     </Card>
   );
-}
+};
 
 /**
  * Local component to display a single step in the verification process and whether it has been completed
