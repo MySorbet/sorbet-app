@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,11 @@ const meta = {
   component: WalletSendDialog,
   parameters: {
     layout: 'centered',
+  },
+  args: {
+    open: true,
+    usdcBalance: '100',
+    sendUSDC: fn(),
   },
 } satisfies Meta<typeof WalletSendDialog>;
 
@@ -28,10 +34,5 @@ export const Default: Story = {
         <WalletSendDialog {...args} open={open} setOpen={handleOpenChange} />
       </>
     );
-  },
-  args: {
-    usdcBalance: '100',
-    sendUSDC: (amount: string, recipientWalletAddress: string) =>
-      Promise.resolve('0x123'),
   },
 };
