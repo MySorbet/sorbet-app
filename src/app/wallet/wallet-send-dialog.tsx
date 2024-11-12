@@ -22,7 +22,7 @@ import {
 import useMeasure from 'react-use-measure';
 import { z } from 'zod';
 
-import { USDCToUSD } from '@/app/wallet/USDCToUSDConversion';
+import { USDCToUSD } from '@/app/wallet/usdc-to-usd-conversion';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

@@ -1,5 +1,6 @@
-import { featureFlags } from '@/lib/flags';
 import { useQuery } from '@tanstack/react-query';
+
+import { featureFlags } from '@/lib/flags';
 
 /** RQ hook to fetch the exchange rate of USDC to USD via CoinGecko */
 export const USDCToUSD = () => {
