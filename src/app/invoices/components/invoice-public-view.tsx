@@ -6,19 +6,22 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-import { CreateInvoiceFooter } from '@/app/invoices/components/create/create-invoice-footer';
-import { InvoiceReceipt } from '@/app/invoices/components/invoice-receipt';
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSmartWalletAddress } from '@/hooks';
 
-import { Invoice } from '../components/dashboard/utils';
+import { useACHWireDetails } from '../hooks/use-ach-wire-details';
+import { CreateInvoiceFooter } from './create/create-invoice-footer';
 import { CreateInvoiceHeader } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
 import { CreateInvoiceTitle } from './create/create-invoice-title';
-import { CopyButton } from './dashboard/copy-button';
+import { Invoice } from './dashboard/utils';
 import { InvoiceDocument } from './invoice-document';
+import { InvoicePayAchWire } from './invoice-pay-ach-wire';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
+import { InvoiceReceipt } from './invoice-receipt';
 
 type InvoicePublicViewProps = {
   invoice?: Invoice;
@@ -42,6 +45,9 @@ export const InvoicePublicView = ({
     isLoading: isLoadingWalletAddress,
   } = useSmartWalletAddress();
 
+  const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
+    useACHWireDetails(invoice?.userId ?? '');
+
   // Render closed receipts in the case of paid or cancelled invoices
   if (invoice?.status === 'Paid' || invoice?.status === 'Cancelled') {
     return (
@@ -50,12 +56,6 @@ export const InvoicePublicView = ({
       </div>
     );
   }
-
-  const handleCopyInvoiceLink = () => {
-    if (invoice) {
-      navigator.clipboard.writeText(window.location.href);
-    }
-  };
 
   const headerText = isFreelancer
     ? 'Invoice details'
@@ -85,7 +85,7 @@ export const InvoicePublicView = ({
           <Button variant='outline' onClick={() => reactToPrintFn()}>
             <Download01 className='mr-2 h-4 w-4' /> Download
           </Button>
-          <CopyButton onCopy={handleCopyInvoiceLink}>
+          <CopyButton stringToCopy={window.location.href}>
             Copy invoice link
           </CopyButton>
         </div>
@@ -103,10 +103,31 @@ export const InvoicePublicView = ({
             <Link href='/invoices'>Back to dashboard</Link>
           </Button>
         ) : (
-          <InvoicePayUsdc
-            address={walletAddress ?? ''}
-            isLoading={isLoadingWalletAddress}
-          />
+          <Tabs
+            defaultValue='usdc'
+            className='flex max-w-[31rem] flex-col items-center'
+          >
+            <TabsList>
+              <TabsTrigger value='usdc'>Pay USDC</TabsTrigger>
+              <TabsTrigger value='ach'>ACH/Wire</TabsTrigger>
+            </TabsList>
+            <TabsContent value='usdc'>
+              <InvoicePayUsdc
+                address={walletAddress ?? ''}
+                isLoading={isLoadingWalletAddress}
+              />
+            </TabsContent>
+            <TabsContent value='ach'>
+              {achWireDetails && (
+                <InvoicePayAchWire
+                  routingNumber={achWireDetails.routingNumber}
+                  accountNumber={achWireDetails.accountNumber}
+                  beneficiary={achWireDetails.beneficiary}
+                  bank={achWireDetails.bank}
+                />
+              )}
+            </TabsContent>
+          </Tabs>
         )}
       </CreateInvoiceFooter>
     </CreateInvoiceShell>

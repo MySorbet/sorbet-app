@@ -11,4 +11,5 @@ export const featureFlags: FeatureFlags = {
   sessionReplay: process.env.NODE_ENV === 'production',
   invoices: false,
   coinGeckoApi: process.env.NODE_ENV === 'production', // Api for getting exchange rates to USD. Enabling only for production.
+  verification: false,
 };
