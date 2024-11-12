@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
 
 import { GetVerifiedCard } from './get-verified-card';
@@ -140,8 +140,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
  * Local component for displaying wallet balances
  */
 const Balances: React.FC = () => {
-  const address = useEmbeddedWalletAddress();
-  const { ethBalance, usdcBalance, loading } = useWalletBalances(address ?? '');
+  const { smartWalletAddress } = useSmartWalletAddress();
+  const { ethBalance, usdcBalance, loading } = useWalletBalances(
+    smartWalletAddress,
+    false
+  );
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
@@ -180,20 +183,24 @@ const Balances: React.FC = () => {
  * Local component for displaying wallet address with a copy button
  */
 const WalletAddress: React.FC = () => {
-  const address = useEmbeddedWalletAddress();
+  const { smartWalletAddress, isLoading: isSmartWalletAddressLoading } =
+    useSmartWalletAddress();
 
   // If we don't have an address yet, we should show a skeleton
-  if (!address) {
+  if (isSmartWalletAddressLoading || !smartWalletAddress) {
     return <Skeleton className='h-4 w-24' />;
   }
 
-  const truncatedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
+  const truncatedAddress = `${smartWalletAddress.slice(
+    0,
+    5
+  )}...${smartWalletAddress.slice(-5)}`;
   return (
     <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
       <span>{truncatedAddress}</span>
       <CopyIconButton
         onCopy={() => {
-          navigator.clipboard.writeText(address);
+          navigator.clipboard.writeText(smartWalletAddress);
         }}
       />
     </div>
