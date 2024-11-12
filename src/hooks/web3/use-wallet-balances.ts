@@ -12,7 +12,7 @@ import { env } from '@/lib/env';
  */
 export const useWalletBalances = (
   walletAddress: string | null,
-  reload: boolean
+  reload?: boolean
 ) => {
   const [ethBalance, setEthBalance] = useState<string>('0');
   const [usdcBalance, setUsdcBalance] = useState<string>('0');
