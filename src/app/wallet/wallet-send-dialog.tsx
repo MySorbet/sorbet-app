@@ -252,7 +252,7 @@ const Step1 = ({
         </DialogTitle>
         <VisuallyHidden asChild>
           <DialogDescription>
-            Send USDC from your Privy wallet
+            Send USDC from your Sorbet wallet
           </DialogDescription>
         </VisuallyHidden>
         <button
