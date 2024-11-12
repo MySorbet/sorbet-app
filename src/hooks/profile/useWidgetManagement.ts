@@ -215,7 +215,6 @@ export const useWidgetManagement = ({
             ...existingItem,
             id: existingItem.i, // Replace 'i' with 'id' for payload
           };
-          console.log(newObj);
           await updateWidgetImageAsync(newObj);
         }
       } catch (error) {

@@ -99,7 +99,6 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       (initialSize === 'A' || initialSize === 'B')
     );
   };
-  console.log(initialSize);
   return (
     <div
       className={cn(

@@ -129,7 +129,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
           {activeWidget && existingItem !== undefined ? (
             <div
               className='relative w-full'
-              style={{ height: `${gridHeight}px` }}
+              style={{ minHeight: `${gridHeight}px` }}
             >
               <CroppingWidget
                 identifier={existingItem.i}

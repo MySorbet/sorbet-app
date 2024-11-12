@@ -53,10 +53,9 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   cols,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  // const [isShowing, setIsShowing] = useState(false);
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(1); // used to match the initial zoom caused for all photos from `object-cover` in widget-photo.tsx
 
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
 
@@ -68,8 +67,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     setCroppedArea(croppedArea);
   };
 
+  /** Cancels the cropping session if the user clicks the escape button */
   useEffect(() => {
-    /** Cancels the cropping session if the user clicks the escape button */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && activeWidget === identifier) {
         setActiveWidget(null);
@@ -106,7 +105,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   };
 
   /** Calculates height ratio of image relative to widget dimensions */
-  const calculateHeightRatio = (height: number) => {
+  const calculateHeightRatio = () => {
     if (height > widgetDimensions.height) {
       return widgetDimensions.height / height;
     }
@@ -126,6 +125,13 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     calculateDimensions(content as PhotoWidgetContentType);
   }, [content]);
 
+  console.log(
+    height,
+    calculateHeightRatio(),
+    calculateScaleFactor(height),
+    widgetDimensions.height,
+    height / widgetDimensions.height
+  );
   return (
     <Transition appear={true} show={true}>
       <div
@@ -142,9 +148,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           }px`,
           top: `${
             Math.max(item.y, 0) * (widgetDimensions.height / item.h) -
-            height *
-              calculateHeightRatio(height) *
-              calculateScaleFactor(height) +
+            height * calculateScaleFactor(height) * zoom +
             widgetDimensions.height / 2 +
             margins[0]
           }px`,
@@ -152,15 +156,12 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       >
         <Cropper
           style={{
-            // For the overflow dimensions, take the higher of either image's height/width or the widget's normal height/width
+            // we increase the container size by 2x so upscaled image isn't cropped at any point
             containerStyle: {
               position: 'relative',
               height: `${Math.max(
                 widgetDimensions.height,
-                height *
-                  calculateHeightRatio(height) *
-                  calculateScaleFactor(height) *
-                  2
+                height * calculateScaleFactor(height) * zoom * 2
               )}px`,
               width: `${Math.max(
                 widgetDimensions.width,
@@ -173,16 +174,17 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
               borderRadius: '1.5rem',
               color: 'transparent',
             },
+            // we need to resize the image manually with mediaStyle to have the overflow appear similar to Bento
             mediaStyle: {
-              height: `${height * calculateScaleFactor(height)}px`,
-              width: `${width * calculateScaleFactor(height)}px`,
+              height: `${height * calculateScaleFactor(height) * zoom}px`,
+              width: `${width * calculateScaleFactor(height) * zoom}px`,
               borderRadius: '1.5rem',
             },
           }}
           image={(content as PhotoWidgetContentType)?.image}
           crop={crop}
-          // zooming is disabled, but an initial zoom is still needed to visually match initial image views
-          zoom={zoom}
+          // zooming is disabled
+          zoom={1}
           aspect={3 / 3}
           // cropSize (the dimensions of the eventual cropped image) must always be the widget dimensions
           cropSize={{
@@ -191,8 +193,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           }}
           showGrid={false}
           onCropChange={setCrop}
-          //  minZoom={-1}
-          // onZoomChange={setZoom}
           onCropComplete={onCropComplete}
           initialCroppedAreaPercentages={
             (content as PhotoWidgetContentType).croppedArea
@@ -201,11 +201,14 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           }
         />
         <div
-          className={`absolute left-1/2 top-3/4 -translate-x-1/2 -translate-y-1/2 transform ${
+          className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform ${
             isPopoverOpen
               ? ''
               : 'opacity-0 transition-opacity duration-300 hover:opacity-100'
           }`}
+          style={{
+            top: `calc(50% + ${widgetDimensions.height / 2}px)`, // Adjusting the top position
+          }}
         >
           <div className='flex flex-row gap-1'>
             <ResizeWidget
