@@ -34,9 +34,11 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -75,6 +77,9 @@ export const WalletSendDialog = ({
       .min(1, { message: 'An amount must be entered' })
       .refine((amount) => isAmountWithinBalance(amount, usdcBalance), {
         message: 'Amount entered exceeds available balance',
+      })
+      .refine((amount) => Number(amount) > 0, {
+        message: 'Amount must be greater than 0',
       }),
     // No message here bc there are issues w the form animation height change on the first screen
     // The label should describe what the input should be (that was the design for NEAR wallet)
@@ -303,9 +308,9 @@ const Step1 = ({
                   </FormControl>
                   <div className='flex justify-between'>
                     {errors.amount ? (
-                      <FormLabel className='animate-in slide-in-from-top-1 fade-in-0 text-xs font-semibold text-red-500'>
+                      <FormMessage className='text-xs font-semibold'>
                         {errors.amount.message}
-                      </FormLabel>
+                      </FormMessage>
                     ) : (
                       <FormLabel className='text-xs font-semibold text-[#667085]'>
                         ~ {convertedUSD} USD
@@ -341,9 +346,9 @@ const Step1 = ({
                       }
                     />
                   </FormControl>
-                  <FormLabel className='text-sm font-normal text-[#667085]'>
+                  <FormDescription className='text-sm font-normal text-[#667085]'>
                     Please add a valid Ethereum wallet address
-                  </FormLabel>
+                  </FormDescription>
                 </FormItem>
               )}
             />
