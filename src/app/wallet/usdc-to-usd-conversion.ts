@@ -7,7 +7,7 @@ export const USDCToUSD = () => {
   return useQuery({
     queryKey: ['USDCToUSDConversionRate'],
     queryFn: async () => {
-      if (!featureFlags.coinGeckoApi) {
+      if (featureFlags.coinGeckoApi) {
         try {
           const response = await fetch(
             'https://api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=usd'
@@ -20,6 +20,7 @@ export const USDCToUSD = () => {
           return 1;
         }
       }
+      return 1;
     },
   });
 };
