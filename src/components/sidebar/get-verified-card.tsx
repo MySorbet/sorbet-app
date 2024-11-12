@@ -10,17 +10,25 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface GetVerifiedCardProps {
   termsAccepted?: boolean;
   detailsAdded?: boolean;
   onComplete?: () => void;
+  disabled?: boolean;
 }
 
 export default function GetVerifiedCard({
   termsAccepted = false,
   detailsAdded = false,
   onComplete,
+  disabled = false,
 }: GetVerifiedCardProps) {
   // Progress starts with a little full, goes to 50 with accepted terms, and to 100 when details are added
   const progress =
@@ -59,9 +67,27 @@ export default function GetVerifiedCard({
             <Button variant='ghost' asChild>
               <a href='https://docs.mysorbet.xyz'>Learn more</a>
             </Button>
-            <Button onClick={onComplete} variant='sorbet'>
-              Complete Verification
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={onComplete}
+                    variant='sorbet'
+                    disabled={disabled}
+                  >
+                    Complete Verification
+                  </Button>
+                </TooltipTrigger>
+                {disabled && (
+                  <TooltipContent>
+                    <p>
+                      You must have an email associated with your sorbet account
+                      to get verified d
+                    </p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </CardFooter>
         </>
       )}
