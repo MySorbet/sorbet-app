@@ -10,7 +10,7 @@ import { baseSepolia } from 'viem/chains';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { Toaster } from '@/components/ui/toaster';
 // TODO: figure out how to use this without dynamic import
-const AuthProvider = dynamic(() => import('@/hooks/useAuth'), { ssr: false });
+const AuthProvider = dynamic(() => import('@/hooks/use-auth'), { ssr: false });
 import { PHProvider } from '@/app/posthog-provider';
 import { env } from '@/lib/env';
 import { store } from '@/redux/store';

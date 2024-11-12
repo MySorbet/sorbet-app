@@ -14,7 +14,7 @@ import {
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useToast } from '@/components/ui/use-toast';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/use-auth';
 
 import { ClaimYourProfile } from './claim-your-profile';
 

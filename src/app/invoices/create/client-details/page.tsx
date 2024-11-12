@@ -1,7 +1,7 @@
 'use client';
 
 import { ClientDetails } from '@/app/invoices/components/create/client-details';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/use-auth';
 import { User } from '@/types';
 
 export default function CreateDetailsPage() {
