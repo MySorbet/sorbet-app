@@ -1,17 +1,13 @@
 'use client';
 
-import {
-  ConnectedWallet,
-  getEmbeddedConnectedWallet,
-  useFundWallet,
-  useWallets,
-} from '@privy-io/react-auth';
 import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
 import { baseSepolia } from 'viem/chains';
+import { useFundWallet } from '@privy-io/react-auth';
+import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
+import { useCallback, useEffect, useState } from 'react';
+import { encodeFunctionData, parseUnits } from 'viem';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
@@ -21,18 +17,19 @@ import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
 import { TOKEN_ABI } from '@/constant/abis';
-import { useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
 
 export const WalletContainer = () => {
-  const { wallets } = useWallets();
-  const walletAddress = useEmbeddedWalletAddress();
+  const [reload, setReload] = useState(false);
+  const { client } = useSmartWallets();
+  const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
   const {
     ethBalance,
     usdcBalance,
     loading: balanceLoading,
-  } = useWalletBalances(walletAddress ?? '');
+  } = useWalletBalances(walletAddress, reload);
 
   const { fundWallet } = useFundWallet();
 
@@ -50,17 +47,19 @@ export const WalletContainer = () => {
     total_money_out: '',
   });
 
-  const fetchTransactions = async (last_days = 30) => {
-    if (walletAddress) {
-      setLoading(true);
-      // only gets the latest 5 transactions here over the time span
-      const response = await getOverview(walletAddress, last_days);
-      if (response && response.data) {
-        setTransactions(response.data.transactions);
+  const fetchTransactions = useCallback(
+    async (last_days = 30) => {
+      if (walletAddress) {
+        setLoading(true);
+        const response = await getOverview(walletAddress, last_days);
+        if (response && response.data) {
+          setTransactions(response.data.transactions);
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    }
-  };
+    },
+    [walletAddress]
+  );
 
   const handleTopUp = async () => {
     try {
@@ -84,93 +83,36 @@ export const WalletContainer = () => {
     amount: string,
     recipientWalletAddress: string
   ) => {
-    const wallet = getEmbeddedConnectedWallet(wallets);
-    if (wallet) {
-      const provider = await wallet.getEthereumProvider();
-      const balanceOfData = encodeFunctionData({
+    console.log('current user wallet', client);
+
+    if (client) {
+      await client.switchChain({
+        id: baseSepolia.id,
+      });
+
+      // Transfer transaction
+      const transferData = encodeFunctionData({
         abi: TOKEN_ABI,
-        functionName: 'balanceOf',
-        args: [wallet.address],
+        functionName: 'transfer',
+        args: [recipientWalletAddress, parseUnits(amount.toString(), 6)],
       });
 
-      const balanceResult = await provider.request({
-        method: 'eth_call',
-        params: [
-          {
-            to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
-            data: balanceOfData,
-          },
-        ],
+      const transferTransactionHash = await client.sendTransaction({
+        account: client.account,
+        to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS as `0x${string}`,
+        data: transferData,
       });
 
-      if (hexToBigInt(balanceResult) < parseUnits(amount.toString(), 6)) {
-        toast('Insufficient balance', {
-          description: `You need at least ${amount} USDC to perform this action. Only ${formatUnits(
-            hexToBigInt(balanceResult),
-            6
-          )} USDC was detected`,
-        });
-        return;
-      }
-
-      const transactionHash = await sendTransaction(
-        wallet,
-        env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
-        TOKEN_ABI,
-        'transfer',
-        [recipientWalletAddress, parseUnits(amount.toString(), 6)]
-      );
-
-      toast('Transaction Successful', {
-        description: 'Funds sent successfully ',
-      });
-
-      return transactionHash;
+      setReload(!reload);
+      return transferTransactionHash;
     }
   };
-
-  async function sendTransaction(
-    wallet: ConnectedWallet,
-    contractAddress: string,
-    abi: any[],
-    functionName: string,
-    args: any[]
-  ): Promise<`0x${string}`> {
-    const provider = await wallet.getEthereumProvider();
-    // Encode the function data
-    const data = encodeFunctionData({
-      abi: abi,
-      functionName: functionName,
-      args: args,
-    });
-
-    // create the transaction request
-    const transactionRequest = {
-      from: wallet.address as `0x${string}`,
-      to: contractAddress as `0x${string}`,
-      data: data,
-      value: '0x0' as `0x${string}`,
-    };
-
-    try {
-      // send the transaction
-      const transactionHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [transactionRequest],
-      });
-
-      return transactionHash;
-    } catch (error) {
-      console.error('Error sending transaction:', error);
-      throw error;
-    }
-  }
 
   useEffect(() => {
     (async () => {
       await fetchTransactions();
     })();
-  }, [walletAddress]);
+  }, [walletAddress, reload, fetchTransactions]);
 
   useEffect(() => {
     (async () => {
