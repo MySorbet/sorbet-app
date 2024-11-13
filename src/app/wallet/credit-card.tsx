@@ -3,10 +3,10 @@ import './styles.css';
 import React, { useState } from 'react';
 import type { Focused } from 'react-credit-cards';
 
+import { CreditCardPreview } from '@/app/wallet/credit-card-preview';
 import { Button } from '@/components/ui/button';
 
 import { CreditCardDialog } from './credit-card-dialog';
-import { CreditCardPreview } from '@/app/wallet/credit-card-preview';
 
 export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);

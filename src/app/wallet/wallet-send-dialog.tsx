@@ -11,6 +11,7 @@ import {
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   FieldErrors,
@@ -33,8 +34,6 @@ import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { useWalletBalances } from '@/hooks';
-import { useRouter } from 'next/navigation';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */

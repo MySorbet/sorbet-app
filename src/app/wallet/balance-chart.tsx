@@ -1,8 +1,8 @@
 import { parse } from 'date-fns';
-import { ResponsiveContainer, XAxis, YAxis, Area, AreaChart } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 interface BalanceChartProps {
-  balanceHistory: { date: string; balance: string }[] | undefined;
+  balanceHistory: { date: string; balance: number }[] | undefined;
 }
 
 /** The graph of balance history underneath the balance widget in the wallet page */
@@ -16,6 +16,11 @@ export const BalanceChart: React.FC<BalanceChartProps> = ({
     const dateB = parse(b.date, 'M/d/yyyy, h:mm:ss a', new Date());
     return dateA.getTime() - dateB.getTime();
   });
+
+  // get highest balance value for setting y axis domain
+  const maxBalance = Math.max(
+    ...(sortedBalanceHistory?.map((item) => item.balance) || [0])
+  );
 
   return (
     <ResponsiveContainer width='100%' height={200}>
@@ -31,7 +36,7 @@ export const BalanceChart: React.FC<BalanceChartProps> = ({
         </defs>
 
         <XAxis dataKey='date' tick={false} axisLine={false} />
-        <YAxis tick={false} axisLine={false} />
+        <YAxis axisLine={false} tick={false} domain={[0, maxBalance + 100]} />
 
         <Area
           type='monotone'

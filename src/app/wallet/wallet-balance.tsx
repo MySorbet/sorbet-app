@@ -1,15 +1,13 @@
-import { Send01 } from '@untitled-ui/icons-react';
-import { Plus, Send, Wallet } from 'lucide-react';
+import { Send01, TrendDown01, TrendUp01 } from '@untitled-ui/icons-react';
+import { Plus, Wallet } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
+import { BalanceChart } from '@/app/wallet/balance-chart';
+import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-
-import { SelectDuration } from '@/app/wallet/select-duration';
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-import { Transactions } from '@/types/transactions';
-import { BalanceChart } from '@/app/wallet/balance-chart';
+import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
 
 interface WalletBalanceProps {
   ethBalance: string;
@@ -20,27 +18,30 @@ interface WalletBalanceProps {
     recipientWalletAddress: string
   ) => Promise<`0x${string}` | undefined>;
   isBalanceLoading: boolean;
-  balanceHistory: { date: string; balance: string }[] | undefined;
+  balanceHistoryIn: { date: string; balance: string }[] | undefined;
+  balanceHistoryOut: { date: string; balance: string }[] | undefined;
   selectedDuration: string;
   onTxnDurationChange: Dispatch<SetStateAction<string>>;
 }
 
-/**
- * Renders a users wallet balance and provides options to top up or send funds
- * Currently, top up and send are disabled
- */
 export const WalletBalance: React.FC<WalletBalanceProps> = ({
   ethBalance,
   usdcBalance,
   onTopUp,
   sendUSDC,
   isBalanceLoading,
-  balanceHistory,
+  selectedDuration,
+  onTxnDurationChange,
+  balanceHistoryIn,
+  balanceHistoryOut,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const handleTxnDurationChange = (value: string) => {
-    console.log('changed');
-  };
+
+  const { percentChange, cumulativeBalanceHistory } = useCombinedBalance(
+    usdcBalance,
+    balanceHistoryIn,
+    balanceHistoryOut
+  );
 
   return (
     <div className='min-h-[100%] min-w-80 rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
@@ -54,12 +55,32 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
               <span className='text-md font-medium text-[#595B5A]'>
                 BALANCE
               </span>
+              {percentChange !== 0 && (
+                <div className='ml-2 flex'>
+                  {percentChange > 0 ? (
+                    <TrendUp01 color='#079455' />
+                  ) : (
+                    <TrendDown01 color='#dc2626' />
+                  )}
+                  <div
+                    className={`text-md ml-1 ${
+                      percentChange > 0 ? 'text-[#079455]' : 'text-red-600'
+                    }`}
+                  >
+                    {percentChange > 0
+                      ? `+${percentChange.toFixed(2)}%`
+                      : `-${percentChange.toFixed(2)}%`}
+                  </div>
+                </div>
+              )}
             </div>
             <div className='mt-2 flex'>
               {isBalanceLoading ? (
                 <Skeleton className='h-[30px] w-32 bg-gray-300 leading-[38px]' />
               ) : (
-                <div className='text-3xl font-semibold'>{usdcBalance} USDC</div>
+                <div className='text-3xl font-semibold'>
+                  {Number(usdcBalance).toLocaleString()} USDC
+                </div>
               )}
             </div>
           </div>
@@ -84,11 +105,11 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
         </div>
         <div className='mb-2 ml-6 mt-2'>
           <SelectDuration
-            selectedValue='30'
-            onChange={handleTxnDurationChange}
+            selectedValue={selectedDuration}
+            onChange={(value) => onTxnDurationChange(value)}
           />
         </div>
-        <BalanceChart balanceHistory={balanceHistory} />
+        <BalanceChart balanceHistory={cumulativeBalanceHistory} />
       </div>
     </div>
   );

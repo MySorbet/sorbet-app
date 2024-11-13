@@ -19,15 +19,15 @@ export const SelectDuration: React.FC<SelectDurationProps> = ({
   onChange,
 }) => {
   return (
-    <Select defaultValue={selectedValue} onValueChange={onChange}>
-      <SelectTrigger className='w-[180px]'>
+    <Select value={selectedValue} onValueChange={onChange}>
+      <SelectTrigger className='w-[140px] border border-[#D7D7D7] font-medium'>
         <SelectValue placeholder='Select Duration' />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value='30'>Last 30 Days</SelectItem>
-          <SelectItem value='7'>Last 7 Days</SelectItem>
           <SelectItem value='3'>Last 3 Days</SelectItem>
+          <SelectItem value='7'>Last 7 Days</SelectItem>
+          <SelectItem value='30'>Last 30 Days</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
