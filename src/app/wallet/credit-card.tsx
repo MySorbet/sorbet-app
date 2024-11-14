@@ -2,16 +2,24 @@ import './styles.css';
 
 import React, { useState } from 'react';
 import type { Focused } from 'react-credit-cards';
-import Cards from 'react-credit-cards';
 
+import { CreditCardPreview } from '@/app/wallet/credit-card-preview';
 import { Button } from '@/components/ui/button';
 
 import { CreditCardDialog } from './credit-card-dialog';
 
+interface CardData {
+  cardName: string;
+  cardNumber: string;
+  expiry: string;
+  cvc: string;
+  zipCode: string;
+}
+
 export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);
   const [focus, setFocus] = useState<Focused | undefined>(undefined);
-  const [cardData, setCardData] = useState({
+  const [cardData, setCardData] = useState<CardData>({
     cardName: '',
     cardNumber: '',
     expiry: '',
@@ -19,7 +27,7 @@ export const CreditCardForm = () => {
     zipCode: '',
   });
 
-  const handleInputFocus = (e: any) => {
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const allowedFocusFields = [
       'cardNumber',
       'cardName',
@@ -29,29 +37,27 @@ export const CreditCardForm = () => {
     ];
     const focusValue = e.target.name;
     if (allowedFocusFields.includes(focusValue)) {
-      setFocus(focusValue);
+      setFocus(focusValue as Focused);
     } else {
       console.error(`Invalid focus field: ${focusValue}`);
       setFocus(undefined);
     }
   };
 
-  const handleDialogSubmit = (data: any) => {
+  const handleDialogSubmit = (data: CardData) => {
     setCardData(data);
     setIsCardAdded(false);
   };
 
   return (
     <>
-      <div className='credit-card-form flex flex-col gap-8 rounded-3xl bg-white px-4 py-8 shadow-[0px_10px_30px_0px_#00000014] lg:p-12'>
+      <div className='credit-card-form flex flex-col items-center gap-8 rounded-3xl bg-white px-4 py-8 shadow-[0px_10px_30px_0px_#00000014] lg:p-12'>
         <div className=''>
-          <Cards
+          <CreditCardPreview
             number={cardData.cardNumber}
             name={cardData.cardName}
-            issuer={undefined}
             expiry={cardData.expiry}
             cvc={cardData.cvc}
-            focused={focus}
           />
         </div>
         <Button
