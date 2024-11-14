@@ -240,6 +240,7 @@ export const useWidgetManagement = ({
         if (existingItem) {
           (existingItem.content as PhotoWidgetContentType).croppedArea =
             croppedArea;
+          (existingItem.content as PhotoWidgetContentType).isCropped = true;
           const newObj = {
             ...existingItem,
             id: existingItem.i, // Replace 'i' with 'id' for patch endpoint

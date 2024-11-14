@@ -1,16 +1,18 @@
-import { useCallback, useEffect, useRef,useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout } from 'react-grid-layout';
 
 import { WidgetGridProps } from '@/components/profile/widgets/widget-grid';
 import { useGetWidgetsForUser, useUpdateWidgetsBulk } from '@/hooks';
 import {
   getWidgetDimensions,
+  PhotoWidgetContentType,
   UpdateWidgetsBulkDto,
   WidgetDimensions,
   WidgetDto,
   WidgetLayoutItem,
   WidgetSize,
 } from '@/types';
+import { Content } from 'next/font/google';
 
 const breakpoints = {
   xxs: 240,
@@ -75,14 +77,24 @@ export const useLayoutManagement = ({
   );
 
   const persistWidgetsLayoutOnChange = useCallback(
-    (items?: WidgetLayoutItem[]) => {
+    (items?: WidgetLayoutItem[], key?: string) => {
       const itemsToUse = items && items.length > 0 ? items : layout;
       if (itemsToUse.length > 0 && editMode) {
-        const payload: UpdateWidgetsBulkDto[] = itemsToUse.map((item) => ({
-          id: item.i,
-          layout: { h: item.h, w: item.w, x: item.x, y: item.y },
-          size: item.size,
-        }));
+        const payload: UpdateWidgetsBulkDto[] = itemsToUse.map((item) => {
+          if (key && item.i === key) {
+            return {
+              id: item.i,
+              layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+              size: item.size,
+              content: { ...item.content, isCropped: false },
+            };
+          }
+          return {
+            id: item.i,
+            layout: { h: item.h, w: item.w, x: item.x, y: item.y },
+            size: item.size,
+          };
+        });
         updateWidgetsBulk(payload);
       }
     },
@@ -109,13 +121,27 @@ export const useLayoutManagement = ({
   const handleWidgetResize = useCallback(
     (key: string, w: number, h: number, widgetSize: WidgetSize) => {
       setLayout((prevLayout) => {
+        let resetPhotoWidgetId = ''; // preserve id for resetting crop
         const newLayout = prevLayout.map((item) => {
           if (item.i === key) {
+            if (
+              item.type === 'Photo' &&
+              (item.content as PhotoWidgetContentType).isCropped
+            ) {
+              resetPhotoWidgetId = item.i;
+              const newContent = { ...item.content, isCropped: false };
+              return { ...item, w, h, content: newContent, size: widgetSize };
+            }
             return { ...item, w, h, size: widgetSize };
           }
           return item;
         });
-        persistWidgetsLayoutOnChange(newLayout);
+        if (resetPhotoWidgetId) {
+          console.log('here', resetPhotoWidgetId);
+          persistWidgetsLayoutOnChange(newLayout, resetPhotoWidgetId);
+        } else {
+          persistWidgetsLayoutOnChange(newLayout);
+        }
         return newLayout;
       });
     },

@@ -23,6 +23,7 @@ export interface DribbbleWidgetContentType {
 
 export interface PhotoWidgetContentType {
   image: string;
+  isCropped?: boolean;
   croppedArea?: { x: number; y: number; width: number; height: number };
 }
 
@@ -166,6 +167,7 @@ export interface UpdateWidgetsBulkDto {
   id: string;
   layout: { x: number; y: number; w: number; h: number };
   size: string;
+  content?: WidgetContentType; // for resetting photo cropping
 }
 
 /** This should match sorbet-api Widget in schema.prisma */
