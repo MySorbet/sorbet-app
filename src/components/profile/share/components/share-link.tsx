@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 import Logo from '@/../public/images/logo.png';
-import { CopyButton } from '@/components/common';
+import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 
 export const ShareLink = ({
   username,
@@ -28,7 +28,7 @@ export const ShareLink = ({
           {`${hostname}/${username}`}
         </p>
       </div>
-      <CopyButton
+      <CopyIconButton
         onCopy={handleUrlToClipboard}
         copyIconClassName='size-7 text-[#101828]'
         checkIconClassName='size-7'

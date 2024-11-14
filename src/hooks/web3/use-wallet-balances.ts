@@ -4,7 +4,16 @@ import { useEffect, useState } from 'react';
 import { TOKEN_ABI } from '@/constant/abis';
 import { env } from '@/lib/env';
 
-export const useWalletBalances = (walletAddress: string) => {
+/**
+ * Hook to fetch wallet balances
+ * @param walletAddress - Wallet address to fetch balances for
+ * @param reload - Boolean to trigger a reload of balances
+ * @returns - Object containing ethBalance, usdcBalance, and loading
+ */
+export const useWalletBalances = (
+  walletAddress: string | null,
+  reload?: boolean
+) => {
   const [ethBalance, setEthBalance] = useState<string>('0');
   const [usdcBalance, setUsdcBalance] = useState<string>('0');
   const [loading, setLoading] = useState(true);
@@ -46,7 +55,7 @@ export const useWalletBalances = (walletAddress: string) => {
         setLoading(false);
       }
     })();
-  }, [walletAddress]);
+  }, [walletAddress, reload]);
 
   return { ethBalance, usdcBalance, loading };
 };

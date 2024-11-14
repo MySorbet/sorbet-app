@@ -7,6 +7,7 @@ import { ReactNode, useEffect } from 'react';
 import { useAuth } from '@/hooks';
 import { env } from '@/lib/env';
 import { featureFlags } from '@/lib/flags';
+import { SESSION_REPLAY_DURATION } from '@/constant';
 
 export function PHProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -65,7 +66,7 @@ const PostHogIdentityWrapper = ({ children }: { children: ReactNode }) => {
           console.log('starting timer for session recording');
           posthog.stopSessionRecording();
           console.log('session recording ended');
-        }, 60000); // * For how long the session recording lasts
+        }, SESSION_REPLAY_DURATION); // * For how long the session recording lasts
 
         return () => {
           clearTimeout(timer);

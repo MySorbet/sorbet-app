@@ -2,7 +2,7 @@ import React from 'react';
 import { fn } from '@storybook/test';
 import { ReactNode, useCallback, useMemo } from 'react';
 
-import AuthProvider from '../../src/hooks/useAuth';
+import AuthProvider from '../../src/hooks/use-auth';
 import { UserWithId } from '../../src/types';
 
 /**

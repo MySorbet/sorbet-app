@@ -1,22 +1,26 @@
 import { Receipt, User01 } from '@untitled-ui/icons-react';
+import { X } from '@untitled-ui/icons-react';
 import {
   CircleArrowRight,
   LayoutGrid,
   LogOut,
   WalletMinimal,
-  X,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { CopyButton, Spinner } from '@/components/common';
+import { Spinner } from '@/components/common';
+import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useEmbeddedWalletAddress, useWalletBalances } from '@/hooks';
+import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
+
+import { GetVerifiedCard } from './get-verified-card';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -44,22 +48,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   };
 
   return (
-    <div
-      className={`fixed z-40 h-[100v] w-screen overflow-y-auto transition-opacity duration-300 lg:left-0 ${
-        isOpen ? 'inset-0 bg-[#0C111D70] opacity-100' : 'opacity-0'
-      }`}
-      onClick={handleSidebarClose}
-    >
-      <div
-        className={`right-0 z-40 flex h-full w-full flex-col items-start justify-between gap-6 overflow-y-auto bg-[#F9FAFB] p-8 text-black lg:m-6 lg:h-[calc(100%-48px)] lg:w-[420px] lg:rounded-[32px] ${
-          isOpen ? 'fixed' : 'hidden'
-        }`}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+    <Sheet open={isOpen} onOpenChange={onIsOpenChange}>
+      <SheetContent
+        className='inset-y-6 right-6 h-auto rounded-3xl bg-[#F9FAFB] data-[state=closed]:right-0'
+        hideDefaultCloseButton
       >
         <div className='flex h-full w-full flex-col justify-between gap-10 text-[#101828]'>
           <div className='flex w-full flex-col gap-10'>
+            {/* Header */}
             <div className='flex w-full flex-row items-center justify-between'>
               <div className='flex flex-row items-center justify-between gap-2'>
                 <Avatar className='border-primary-default size-12 border-2'>
@@ -75,10 +71,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   <div className='text-base'>{user.handle}</div>
                 </div>
               </div>
-              <div className='cursor-pointer' onClick={handleSidebarClose}>
+              <Button variant='ghost' onClick={handleSidebarClose} size='icon'>
                 <X />
-              </div>
+              </Button>
             </div>
+
+            {/* Navigation and Balances */}
             <div>
               {/* TODO: Change to 3 columns when invoices are enabled */}
               <div className='grid grid-cols-2 gap-2'>
@@ -111,20 +109,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
             </div>
           </div>
 
-          <Button
-            onClick={handleLogout}
-            variant='ghost'
-            className='w-fit text-lg font-semibold'
-            disabled={isLoggingOut}
-          >
-            <div className='mr-2'>
-              {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
-            </div>
-            {isLoggingOut ? 'Logging out' : 'Logout'}
-          </Button>
+          {/* Verification and logout */}
+          <div className='flex flex-col gap-2'>
+            {featureFlags.verification && (
+              <GetVerifiedCard
+                termsAccepted={false}
+                detailsAdded={false}
+                onComplete={() => console.log('Complete verification clicked')}
+              />
+            )}
+            <Button
+              onClick={handleLogout}
+              variant='ghost'
+              className='w-fit text-lg font-semibold'
+              disabled={isLoggingOut}
+            >
+              <div className='mr-2'>
+                {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
+              </div>
+              {isLoggingOut ? 'Logging out' : 'Logout'}
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 
@@ -132,8 +140,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
  * Local component for displaying wallet balances
  */
 const Balances: React.FC = () => {
-  const address = useEmbeddedWalletAddress();
-  const { ethBalance, usdcBalance, loading } = useWalletBalances(address ?? '');
+  const { smartWalletAddress } = useSmartWalletAddress();
+  const { ethBalance, usdcBalance, loading } = useWalletBalances(
+    smartWalletAddress,
+    false
+  );
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
@@ -172,20 +183,24 @@ const Balances: React.FC = () => {
  * Local component for displaying wallet address with a copy button
  */
 const WalletAddress: React.FC = () => {
-  const address = useEmbeddedWalletAddress();
+  const { smartWalletAddress, isLoading: isSmartWalletAddressLoading } =
+    useSmartWalletAddress();
 
   // If we don't have an address yet, we should show a skeleton
-  if (!address) {
+  if (isSmartWalletAddressLoading || !smartWalletAddress) {
     return <Skeleton className='h-4 w-24' />;
   }
 
-  const truncatedAddress = `${address.slice(0, 5)}...${address.slice(-5)}`;
+  const truncatedAddress = `${smartWalletAddress.slice(
+    0,
+    5
+  )}...${smartWalletAddress.slice(-5)}`;
   return (
     <div className='text-muted-foreground flex flex-row items-center gap-1 text-xs'>
       <span>{truncatedAddress}</span>
-      <CopyButton
+      <CopyIconButton
         onCopy={() => {
-          navigator.clipboard.writeText(address);
+          navigator.clipboard.writeText(smartWalletAddress);
         }}
       />
     </div>

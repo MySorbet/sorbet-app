@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset, updateUserData } from '@/redux/userSlice';
 import { User, UserWithId } from '@/types';
 
-import { useLocalStorage } from './useLocalStorage';
+import { useLocalStorage } from './use-local-storage';
 
 type LoginResultFailed = {
   status: 'failed';
