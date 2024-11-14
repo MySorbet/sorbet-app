@@ -1,3 +1,5 @@
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useQueryClient } from '@tanstack/react-query';
 import { Receipt, User01 } from '@untitled-ui/icons-react';
 import { X } from '@untitled-ui/icons-react';
 import {
@@ -15,10 +17,18 @@ import { Spinner } from '@/components/common';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge';
+import { useVerify } from '@/hooks/profile/use-verify';
 import { featureFlags } from '@/lib/flags';
+import { BridgeCustomer } from '@/types';
 
 import { GetVerifiedCard } from './get-verified-card';
 
@@ -47,12 +57,46 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     onIsOpenChange(false);
   };
 
+  const queryClient = useQueryClient();
+
+  const openLinkInNewTabWithInvalidation = (link: string) => {
+    const newWindow = window.open(link, '_blank');
+
+    // Add window event listener to detect when popup closes
+    const checkWindow = setInterval(() => {
+      if (newWindow?.closed) {
+        clearInterval(checkWindow);
+        console.log('New window closed');
+        queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
+      }
+    }, 1000);
+  };
+
+  const {
+    mutate: verifyUser,
+    isPending: isVerifyingUser,
+    data: verifyUserResponse,
+  } = useVerify({
+    onSuccess: (data) => {
+      openLinkInNewTabWithInvalidation((data as BridgeCustomer).tos_link);
+    },
+  });
+
+  const { data: bridgeCustomer } = useBridgeCustomer();
+
   return (
     <Sheet open={isOpen} onOpenChange={onIsOpenChange}>
       <SheetContent
         className='inset-y-6 right-6 h-auto rounded-3xl bg-[#F9FAFB] data-[state=closed]:right-0'
         hideDefaultCloseButton
       >
+        <VisuallyHidden>
+          <SheetTitle>{`Sidebar for ${user.handle}`}</SheetTitle>
+          <SheetDescription>
+            Displaying balances and navigation options
+          </SheetDescription>
+        </VisuallyHidden>
+
         <div className='flex h-full w-full flex-col justify-between gap-10 text-[#101828]'>
           <div className='flex w-full flex-col gap-10'>
             {/* Header */}
@@ -113,9 +157,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
           <div className='flex flex-col gap-2'>
             {featureFlags.verification && (
               <GetVerifiedCard
-                termsAccepted={false}
-                detailsAdded={false}
-                onComplete={() => console.log('Complete verification clicked')}
+                tosStatus={bridgeCustomer?.tos_status}
+                kycStatus={bridgeCustomer?.kyc_status}
+                disabled={isVerifyingUser}
+                onComplete={() => {
+                  // If there is no bridge customer, we need to to kick off the verification process
+                  if (!bridgeCustomer) {
+                    verifyUser();
+                    return;
+                  }
+                  // If the user has not accepted the terms of service,
+                  // open the terms of service link
+                  if (bridgeCustomer?.tos_status !== 'approved') {
+                    openLinkInNewTabWithInvalidation(bridgeCustomer.tos_link);
+                  } else {
+                    // If the user has accepted the terms of service,
+                    // open the KYC link in a new tab
+                    openLinkInNewTabWithInvalidation(bridgeCustomer.kyc_link);
+                  }
+                  // TODO: There are now more cases to handle here like "try again" and "close"
+                }}
               />
             )}
             <Button

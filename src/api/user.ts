@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { env } from '@/lib/env';
-import { User, UserWithId } from '@/types';
+import { BridgeCustomer, User, UserWithId } from '@/types';
 
 import { withAuthHeader } from './withAuthHeader';
 
@@ -96,4 +96,29 @@ export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   } catch (error: any) {
     throw new Error(`Failed to update user: ${error.response.data.message}`);
   }
+};
+
+/** Kick off a verification process for a user. This will retur*/
+export const verifyUser = async () => {
+  try {
+    const response = await axios.post<BridgeCustomer>(
+      `${API_URL}/users/verify`,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(`Failed to verify user: ${error.response?.data.message}`);
+    } else {
+      throw new Error(`Failed to verify user: ${error}`);
+    }
+  }
+};
+
+export const getBridgeCustomer = async () => {
+  const response = await axios.get<BridgeCustomer>(
+    `${API_URL}/users/bridge/customer`,
+    await withAuthHeader()
+  );
+  return response.data;
 };
