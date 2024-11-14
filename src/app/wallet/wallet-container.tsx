@@ -25,11 +25,10 @@ export const WalletContainer = () => {
   const [reload, setReload] = useState(false);
   const { client } = useSmartWallets();
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
-  const {
-    ethBalance,
-    usdcBalance,
-    loading: balanceLoading,
-  } = useWalletBalances(walletAddress, reload);
+  const { usdcBalance, loading: balanceLoading } = useWalletBalances(
+    walletAddress,
+    reload
+  );
 
   const { fundWallet } = useFundWallet();
 
@@ -68,6 +67,7 @@ export const WalletContainer = () => {
           amount: defaultFundAmount,
           asset: 'USDC',
         });
+        setReload(!reload); // trigger reload to refresh wallet amount
       }
     } catch (e) {
       toast('Something went wrong', {
