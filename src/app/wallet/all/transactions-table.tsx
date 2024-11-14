@@ -44,6 +44,11 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
 
   return (
     <div className='relative min-h-[100%] rounded-xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
+      {isLoading && (
+        <div className='absolute inset-0 z-30 flex items-center justify-center rounded-3xl bg-white bg-opacity-75'>
+          <Spinner />
+        </div>
+      )}
       {!minimalMode && (
         <div className='mb-4 grid grid-cols-12 gap-4'>
           <div className='relative col-span-12 lg:col-span-8'>
@@ -107,11 +112,6 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           </tr>
         </thead>
         <tbody className='bg-white'>
-          {isLoading && (
-            <div className='absolute inset-0 flex items-center justify-center rounded-3xl bg-white bg-opacity-75'>
-              <Spinner />
-            </div>
-          )}
           {transactions &&
             transactions.map((transaction, index) => (
               <tr key={index}>
