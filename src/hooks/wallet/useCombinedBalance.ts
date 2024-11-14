@@ -64,8 +64,6 @@ export const useCombinedBalance = (
     const originalBalance =
       parseFloat(usdcBalance) + totalMoneyOut - totalMoneyIn;
 
-    console.log(originalBalance, usdcBalance);
-
     if (originalBalance > 0) {
       const change =
         ((parseFloat(usdcBalance) - originalBalance) / originalBalance) * 100;

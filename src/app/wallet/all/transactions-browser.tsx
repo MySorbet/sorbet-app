@@ -107,14 +107,14 @@ export const TransactionsBrowser: React.FC = () => {
       const before_date = format(dateRange.to, 'yyyy-MM-dd');
       fetchTransactions(after_date, before_date);
     }
-  }, [dateRange]);
+  }, [dateRange, fetchTransactions]);
 
   useEffect(() => {
     const filtered = transactionsData.filter((transaction) =>
       transaction.account.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredTransactions(filtered);
-  }, [searchValue, transactionsData]);
+  }, [searchValue, transactionsData, fetchTransactions]);
 
   const handleNextPage = () => {
     if (hasNextPage) {

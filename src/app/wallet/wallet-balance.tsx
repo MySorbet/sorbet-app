@@ -1,8 +1,9 @@
-import { Send01, TrendDown01, TrendUp01 } from '@untitled-ui/icons-react';
+import { Send01 } from '@untitled-ui/icons-react';
 import { Plus, Wallet } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { BalanceChart } from '@/app/wallet/balance-chart';
+import { PercentageChange } from '@/app/wallet/percent-change';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
 
 interface WalletBalanceProps {
-  ethBalance: string;
   usdcBalance: string;
   onTopUp?: () => void;
   sendUSDC: (
@@ -25,7 +25,6 @@ interface WalletBalanceProps {
 }
 
 export const WalletBalance: React.FC<WalletBalanceProps> = ({
-  ethBalance,
   usdcBalance,
   onTopUp,
   sendUSDC,
@@ -56,22 +55,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
                 BALANCE
               </span>
               {percentChange !== 0 && (
-                <div className='ml-2 flex'>
-                  {percentChange > 0 ? (
-                    <TrendUp01 color='#079455' />
-                  ) : (
-                    <TrendDown01 color='#dc2626' />
-                  )}
-                  <div
-                    className={`text-md ml-1 ${
-                      percentChange > 0 ? 'text-[#079455]' : 'text-red-600'
-                    }`}
-                  >
-                    {percentChange > 0
-                      ? `+${percentChange.toFixed(2)}%`
-                      : `-${percentChange.toFixed(2)}%`}
-                  </div>
-                </div>
+                <PercentageChange percentChange={percentChange} />
               )}
             </div>
             <div className='mt-2 flex'>

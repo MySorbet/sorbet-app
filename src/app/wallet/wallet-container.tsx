@@ -1,13 +1,13 @@
 'use client';
 
-import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import { baseSepolia } from 'viem/chains';
 import { useFundWallet } from '@privy-io/react-auth';
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
+import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
+import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
+import { baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
@@ -32,8 +32,6 @@ export const WalletContainer = () => {
   } = useWalletBalances(walletAddress, reload);
 
   const { fundWallet } = useFundWallet();
-
-  // TODO: Move transactions to base
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -83,8 +81,6 @@ export const WalletContainer = () => {
     amount: string,
     recipientWalletAddress: string
   ) => {
-    console.log('current user wallet', client);
-
     if (client) {
       await client.switchChain({
         id: baseSepolia.id,
@@ -118,7 +114,7 @@ export const WalletContainer = () => {
     (async () => {
       fetchTransactions(parseInt(selectedDuration, 10));
     })();
-  }, [selectedDuration]);
+  }, [selectedDuration, fetchTransactions]);
 
   return (
     <Authenticated>
@@ -143,7 +139,6 @@ export const WalletContainer = () => {
                       balance: transaction.value,
                     }))
               }
-              ethBalance={ethBalance}
               usdcBalance={usdcBalance}
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
