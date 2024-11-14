@@ -104,15 +104,15 @@ export const updateWidget = async (
 };
 
 /** Updating the links of image widgets (only widget's redirectUrl should be updated) */
-export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
+export const updateWidgetLink = async (key: string, url: string) => {
   // redirectUrl should be set to what we want already in the payload
   const payload: { redirectUrl: string | undefined } = {
-    redirectUrl: widgetLayoutItem.redirectUrl,
+    redirectUrl: url,
   };
 
   try {
     const res = await axios.patch(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,
       await withAuthHeader()
     );
@@ -120,21 +120,24 @@ export const updateWidgetLink = async (widgetLayoutItem: WidgetLayoutItem) => {
   } catch (error) {
     catchAndRethrowWidgetError(
       error,
-      `Failed to update widget link with ID ${widgetLayoutItem.id}`
+      `Failed to update widget link with ID ${key}`
     );
   }
 };
 
-/** Updating the links of image widgets (only widget's content should be updated) */
-export const updateWidgetImage = async (widgetLayoutItem: WidgetLayoutItem) => {
+/** Updating the content of widgets */
+export const updateWidgetContent = async (
+  key: string,
+  content: WidgetContentType
+) => {
   // content should be set to what we want already in the payload
   const payload: { content: WidgetContentType } = {
-    content: widgetLayoutItem.content,
+    content: content,
   };
 
   try {
     const res = await axios.patch(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,
       await withAuthHeader()
     );
@@ -142,7 +145,7 @@ export const updateWidgetImage = async (widgetLayoutItem: WidgetLayoutItem) => {
   } catch (error) {
     catchAndRethrowWidgetError(
       error,
-      `Failed to update widget image with ID ${widgetLayoutItem.id}`
+      `Failed to update widget image with ID ${key}`
     );
   }
 };

@@ -8,7 +8,7 @@ import {
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
-import { useUpdateWidgetImage } from '@/hooks/widgets/useUpdateWidgetImage';
+import { useUpdateWidgetContent } from '@/hooks/widgets/useUpdateWidgetContent';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import {
   LinkWidgetContentType,
@@ -38,7 +38,7 @@ export const useWidgetManagement = ({
 
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
-  const { mutateAsync: updateWidgetImageAsync } = useUpdateWidgetImage();
+  const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
 
@@ -174,11 +174,10 @@ export const useWidgetManagement = ({
             default:
               break;
           }
-          const newObj = {
-            ...existingItem,
-            id: existingItem.i, // Replace 'i' with 'id' for payload
-          };
-          await updateWidgetImageAsync(newObj);
+          await updateWidgetContentAsync({
+            key: existingItem.i,
+            content: existingItem.content,
+          });
         }
       } catch (error) {
         const message =
@@ -190,7 +189,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [layout, uploadWidgetsImageAsync, updateWidgetImageAsync]
+    [layout, uploadWidgetsImageAsync, updateWidgetContentAsync]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */
@@ -211,11 +210,10 @@ export const useWidgetManagement = ({
             default:
               break;
           }
-          const newObj = {
-            ...existingItem,
-            id: existingItem.i, // Replace 'i' with 'id' for payload
-          };
-          await updateWidgetImageAsync(newObj);
+          await updateWidgetContentAsync({
+            key: existingItem.i,
+            content: existingItem.content,
+          });
         }
       } catch (error) {
         const message =
@@ -227,7 +225,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [layout, updateWidgetImageAsync]
+    [layout, updateWidgetContentAsync]
   );
 
   /** Handles the cropping of images, the id of the image being cropped should be passed */
@@ -241,11 +239,10 @@ export const useWidgetManagement = ({
           (existingItem.content as PhotoWidgetContentType).croppedArea =
             croppedArea;
           (existingItem.content as PhotoWidgetContentType).isCropped = true;
-          const newObj = {
-            ...existingItem,
-            id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
-          };
-          await updateWidgetImageAsync(newObj);
+          await updateWidgetContentAsync({
+            key: existingItem.i,
+            content: existingItem.content,
+          });
         }
       } catch (error) {
         const message =
@@ -257,7 +254,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [layout, updateWidgetImageAsync]
+    [layout, updateWidgetContentAsync]
   );
 
   const handleWidgetEditLink = useCallback(
@@ -265,12 +262,7 @@ export const useWidgetManagement = ({
       try {
         const existingItem = layout.find((item) => item.i === key);
         if (existingItem) {
-          existingItem.redirectUrl = url;
-          const newObj = {
-            ...existingItem,
-            id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
-          };
-          await updateWidgetLinkAsync(newObj);
+          await updateWidgetLinkAsync({ key: key, url: url });
         } else {
           throw new Error('No widget exists to edit');
         }

@@ -12,7 +12,6 @@ import {
   WidgetLayoutItem,
   WidgetSize,
 } from '@/types';
-import { Content } from 'next/font/google';
 
 const breakpoints = {
   xxs: 240,
