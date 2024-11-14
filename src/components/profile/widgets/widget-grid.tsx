@@ -11,7 +11,7 @@ import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
 import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
 import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
-import { getWidgetDimensions, WidgetSize } from '@/types';
+import { getWidgetDimensions, WidgetLayoutItem, WidgetSize } from '@/types';
 
 import { AddWidgets } from './add-widgets';
 import { DesktopOnlyAlert } from './desktop-only-alert';
@@ -26,7 +26,7 @@ export interface WidgetGridProps {
   rowHeight?: number;
   editMode: boolean;
   userId: string;
-  onLayoutChange?: (layout: any) => void;
+  onLayoutChange?: (layout: WidgetLayoutItem[]) => void;
 }
 
 export const WidgetGrid: React.FC<WidgetGridProps> = ({
@@ -47,7 +47,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     cols,
     animationStyles,
     widgetRefs,
-    currentBreakpoint,
     handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,

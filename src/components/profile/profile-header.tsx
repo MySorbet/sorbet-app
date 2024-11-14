@@ -3,10 +3,10 @@ import React from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { featureFlags } from '@/lib/flags';
 import { User } from '@/types';
 
 import { ShareProfileDialog } from './share/share-profile-dialog';
-import { featureFlags } from '@/lib/flags';
 
 interface ProfileHeaderProps {
   canEdit: boolean;

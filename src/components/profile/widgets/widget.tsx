@@ -42,7 +42,6 @@ import { SpotifySongWidget } from './widget-spotify-song';
 import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
-import { Area } from 'react-easy-crop';
 
 interface WidgetProps {
   identifier: string;
@@ -283,7 +282,17 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(<>Unsupported widget type</>);
         break;
     }
-  }, [type, widgetSize, content]);
+  }, [
+    type,
+    widgetSize,
+    content,
+    addImage,
+    identifier,
+    redirectUrl,
+    removeImage,
+    setErrorInvalidImage,
+    showControls,
+  ]);
 
   /** For photo widgets to disable cropping for square images */
   useEffect(() => {
