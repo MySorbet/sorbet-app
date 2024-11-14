@@ -31,10 +31,6 @@ export const TransactionsBrowser: React.FC = () => {
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
 
-  const getCurrentCursor = (page: number): string => {
-    return cursorsMap[page] || '';
-  };
-
   const handleClearAll = () => {
     setDateRange(undefined);
     setSearchValue('');
@@ -45,6 +41,12 @@ export const TransactionsBrowser: React.FC = () => {
   const fetchTransactions = useCallback(
     async (after_date?: string, before_date?: string) => {
       if (!smartWalletAddress) return;
+
+      // to appease linting errors and avoid un-necessary re-renders
+      const getCurrentCursor = (page: number): string => {
+        return cursorsMap[page] || '';
+      };
+
       const cursor = getCurrentCursor(currentPage);
       setIsLoading(true);
       const res = await getTransactions(
@@ -120,14 +122,14 @@ export const TransactionsBrowser: React.FC = () => {
       const before_date = format(dateRange.to, 'yyyy-MM-dd');
       fetchTransactions(after_date, before_date);
     }
-  }, [dateRange]);
+  }, [dateRange, fetchTransactions]);
 
   useEffect(() => {
     const filtered = transactionsData.filter((transaction) =>
       transaction.account.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredTransactions(filtered);
-  }, [searchValue, transactionsData, fetchTransactions]);
+  }, [searchValue, transactionsData]);
 
   const handleNextPage = () => {
     if (hasNextPage) {
