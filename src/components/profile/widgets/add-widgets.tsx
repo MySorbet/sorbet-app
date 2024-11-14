@@ -1,5 +1,6 @@
 import { HelpCircle, Link03 } from '@untitled-ui/icons-react';
 import { ImagePlus } from 'lucide-react';
+import Image from 'next/image';
 import React, { useState } from 'react';
 
 import { Spinner } from '@/components/common';
@@ -23,6 +24,7 @@ import { isValidUrl, normalizeUrl, parseWidgetTypeFromUrl } from './util';
 interface AddWidgetsProps {
   /** Callback for when a url is added. `image` is defined if adding an image  */
   addUrl: (url: string, image?: File) => void;
+  addSectionTitle: () => void;
   /** Should the component be loading? */
   loading?: boolean;
 }
@@ -32,6 +34,7 @@ interface AddWidgetsProps {
  */
 export const AddWidgets: React.FC<AddWidgetsProps> = ({
   addUrl,
+  addSectionTitle,
   loading = false,
 }) => {
   const [url, setUrl] = useState<string>('');
@@ -113,7 +116,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   return (
     <div
       className={cn(
-        'isolate hidden max-w-96 md:block',
+        'isolate hidden w-[400px] md:block',
         loading && loadingClasses
       )}
     >
@@ -149,13 +152,13 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 
       <div
         className={cn(
-          'z-10 flex w-full flex-row gap-4 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
+          'z-10 flex w-full flex-row gap-2 rounded-2xl bg-white px-4 py-3 drop-shadow-xl',
           loading && loadingClasses
         )}
       >
         <div
           className={cn(
-            'flex flex-grow items-center rounded-lg border-2 px-3 py-2',
+            'mr-1 flex flex-grow items-center rounded-lg border-2 px-3 py-2',
             error ? 'border-red-500' : 'border-gray-300'
           )}
         >
@@ -166,7 +169,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               e.preventDefault();
               handleUrlSubmit();
             }}
-            className='flex w-full flex-grow items-center justify-between'
+            className='flex w-full max-w-[280px] flex-grow items-center justify-between'
           >
             <input
               type='text'
@@ -203,6 +206,18 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
+              <Image
+                onClick={addSectionTitle}
+                src='/svg/section-title.svg'
+                alt='add section title'
+                width={20}
+                height={20}
+              />
+            </TooltipTrigger>
+            <TooltipContent>Add section title</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
               <label
                 className={cn(
                   'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
@@ -216,7 +231,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                   disabled={loading}
                   accept='image/*'
                 />
-                <ImagePlus size={20} />
+                <ImagePlus size={22} />
               </label>
             </TooltipTrigger>
             <TooltipContent>Upload custom image as widget</TooltipContent>

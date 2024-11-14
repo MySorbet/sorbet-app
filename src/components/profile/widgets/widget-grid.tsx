@@ -55,6 +55,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
+    handleSectionTitleAdd,
+    handleSectionTitleUpdate,
     handleAddMultipleWidgets,
   } = useWidgetManagement({
     userId,
@@ -126,6 +128,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   content={item.content}
                   initialSize={item.size}
                   redirectUrl={item.redirectUrl}
+                  handleTitleUpdate={handleSectionTitleUpdate}
                   draggedRef={draggedRef}
                 />
               </motion.div>
@@ -151,7 +154,11 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   </InvalidAlert>
                 </div>
               )}
-              <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
+              <AddWidgets
+                addUrl={handleWidgetAdd}
+                addSectionTitle={handleSectionTitleAdd}
+                loading={addingWidget}
+              />
             </div>
           </div>
         )}

@@ -15,6 +15,7 @@ import {
   LinkWidgetContentType,
   MediumArticleContentType,
   PhotoWidgetContentType,
+  SectionTitleWidgetContentType,
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
@@ -42,6 +43,7 @@ import { SpotifySongWidget } from './widget-spotify-song';
 import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
+import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
 
 interface WidgetProps {
   identifier: string;
@@ -56,6 +58,7 @@ interface WidgetProps {
   showControls?: boolean;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
+  handleTitleUpdate: any;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -68,6 +71,7 @@ export const Widget: React.FC<WidgetProps> = ({
   showControls = false,
   handleResize,
   handleRemove,
+  handleTitleUpdate,
   draggedRef,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
@@ -92,6 +96,10 @@ export const Widget: React.FC<WidgetProps> = ({
       }
     }
     // TODO: Maybe widgets should be anchors?
+  };
+
+  const updateTitle = (title: string) => {
+    handleTitleUpdate(identifier, title);
   };
 
   useEffect(() => {
@@ -244,6 +252,15 @@ export const Widget: React.FC<WidgetProps> = ({
         break;
       }
 
+      case 'SectionTitle':
+        setWidgetContent(
+          <SectionTitleWidget
+            title={(content as SectionTitleWidgetContentType).title}
+            updateTitle={updateTitle}
+          />
+        );
+        break;
+
       default:
         setWidgetContent(<>Unsupported widget type</>);
         break;
@@ -254,8 +271,10 @@ export const Widget: React.FC<WidgetProps> = ({
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div
         className={cn(
-          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md',
-          type !== 'Photo' && 'p-4'
+          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl drop-shadow-md',
+          type !== 'Photo' && type !== 'SectionTitle' && 'p-4',
+          type !== 'SectionTitle' && 'bg-white',
+          type === 'SectionTitle' && 'py-4'
         )}
         key={identifier}
         onClick={onWidgetClick}
@@ -273,10 +292,12 @@ export const Widget: React.FC<WidgetProps> = ({
         {showControls && (
           <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
             <div className='flex flex-row gap-1'>
-              <ResizeWidget
-                onResize={onWidgetResize}
-                initialSize={initialSize}
-              />
+              {type !== 'SectionTitle' && (
+                <ResizeWidget
+                  onResize={onWidgetResize}
+                  initialSize={initialSize}
+                />
+              )}
               <Button
                 variant='outline'
                 size='icon'

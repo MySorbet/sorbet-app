@@ -1,12 +1,18 @@
 import { useState, useCallback } from 'react';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import {
   useCreateWidget,
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
-import { WidgetLayoutItem, WidgetSize, WidgetDimensions } from '@/types';
+import {
+  WidgetLayoutItem,
+  WidgetSize,
+  WidgetDimensions,
+  SectionTitleWidgetContentType,
+} from '@/types';
 import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
+import { useUpdateWidgetContent } from '@/hooks/profile/useUpdateWidgetContent';
 
 interface WidgetManagementProps {
   userId: string;
@@ -28,10 +34,10 @@ export const useWidgetManagement = ({
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
 
-  const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
+  const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
@@ -104,8 +110,7 @@ export const useWidgetManagement = ({
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast({
-          title: `We couldn't add a widget`,
+        toast(`We couldn't add a widget`, {
           description: message,
         });
       } finally {
@@ -167,6 +172,81 @@ export const useWidgetManagement = ({
     [userId, uploadWidgetsImageAsync, handleWidgetAdd]
   );
 
+  const handleSectionTitleAdd = useCallback(async () => {
+    console.log('testing layout', layout);
+    setAddingWidget(true);
+    try {
+      const widget = await createWidget({ url: '', type: 'SectionTitle' });
+      if (!widget) {
+        throw new Error('Failed to add widget. Please try again.');
+      }
+      const widgetToAdd: WidgetLayoutItem = {
+        i: widget.id,
+        x: (layout.length * 2) % cols,
+        y: 0,
+        w: WidgetDimensions.Section.w,
+        h: WidgetDimensions.Section.h,
+        type: 'SectionTitle',
+        content: widget.content,
+        static: !editMode,
+        isResizable: false,
+        isDraggable: editMode,
+        loading: false,
+        size: 'Section',
+      };
+
+      setLayout((prevLayout) => {
+        const newLayout = [...prevLayout, widgetToAdd];
+        persistWidgetsLayoutOnChange(newLayout);
+        return newLayout;
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Something went wrong';
+      toast(`We couldn't add a section title`, {
+        description: message,
+      });
+    } finally {
+      setAddingWidget(false);
+    }
+  }, [
+    userId,
+    editMode,
+    layout,
+    cols,
+    createWidget,
+    toast,
+    setLayout,
+    persistWidgetsLayoutOnChange,
+  ]);
+
+  const handleSectionTitleUpdate = useCallback(
+    async (key: string, title: string) => {
+      try {
+        const existingItem = layout.find((item) => item.i === key);
+        console.log(existingItem);
+        if (existingItem && existingItem.type === 'SectionTitle') {
+          (existingItem.content as SectionTitleWidgetContentType).title = title;
+          const newObj = {
+            ...existingItem,
+            id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
+          };
+          console.log(newObj);
+          await updateWidgetContentAsync(newObj);
+        } else {
+          throw new Error(`Couldn't edit widget's title`);
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast(`We couldn't update a widget`, {
+          description: message,
+        });
+      }
+    },
+    [layout, updateWidgetContentAsync]
+  );
+
   const handleAddMultipleWidgets = useCallback(
     async (urls: string[]) => {
       setAddingWidget(true);
@@ -199,8 +279,7 @@ export const useWidgetManagement = ({
             } catch (error) {
               const message =
                 error instanceof Error ? error.message : 'Something went wrong';
-              toast({
-                title: `We couldn't add a widget`,
+              toast(`We couldn't add a widget`, {
                 description: message,
               });
             }
@@ -232,6 +311,8 @@ export const useWidgetManagement = ({
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
+    handleSectionTitleAdd,
+    handleSectionTitleUpdate,
     handleAddMultipleWidgets,
   };
 };

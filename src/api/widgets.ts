@@ -4,6 +4,7 @@ import { env } from '@/lib/env';
 import {
   GetWidgetBody,
   UpdateWidgetsBulkDto,
+  WidgetContentType,
   WidgetDto,
   WidgetLayoutItem,
   WidgetSize,
@@ -90,6 +91,35 @@ export const updateWidget = async (
     return res.data;
   } catch (error: any) {
     throw new Error(`Failed to update widget: ${error.response.data.message}`);
+  }
+};
+
+/** Updating the only the content of a widget */
+export const updateWidgetContent = async (
+  widgetLayoutItem: WidgetLayoutItem
+) => {
+  // content should be set to what we want already in the payload
+  const payload: { content: WidgetContentType } = {
+    content: widgetLayoutItem.content,
+  };
+
+  try {
+    const res = await axios.patch(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,
+      payload,
+      await withAuthHeader()
+    );
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Axios error: Failed to update widget image: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(
+        `Non-axios error: Failed to update widget image: ${error}`
+      );
+    }
   }
 };
 
@@ -319,6 +349,21 @@ const getLinkData: WidgetGetterFn = async (body) => {
   }
 };
 
+const getSectionTitleData: WidgetGetterFn = async (body) => {
+  try {
+    const response = await axios.post<WidgetDto>(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/section-title`,
+      body,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get generic link data: ${error.response.data.message}`
+    );
+  }
+};
+
 /** Map the supported widget types to their corresponding getter functions */
 const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Photo: getPhotoWidget,
@@ -335,6 +380,7 @@ const widgetGetters: Record<SupportedWidgetTypes, WidgetGetterFn> = {
   Behance: getBehanceItem,
   Medium: getMediumArticleMetadata,
   Link: getLinkData,
+  SectionTitle: getSectionTitleData,
 };
 
 /** Get/create a widget with the given url and type */
