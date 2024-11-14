@@ -136,7 +136,6 @@ export const useLayoutManagement = ({
           return item;
         });
         if (resetPhotoWidgetId) {
-          console.log('here', resetPhotoWidgetId);
           persistWidgetsLayoutOnChange(newLayout, resetPhotoWidgetId);
         } else {
           persistWidgetsLayoutOnChange(newLayout);

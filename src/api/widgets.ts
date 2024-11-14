@@ -302,7 +302,6 @@ const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
 
 const getPhotoWidget: WidgetGetterFn = async (body) => {
   try {
-    console.log(body);
     const response = await axios.post<WidgetDto>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/photo`,
       body,

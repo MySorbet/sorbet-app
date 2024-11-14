@@ -79,14 +79,14 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [activeWidget, identifier]);
+  }, [activeWidget, identifier, setActiveWidget]);
 
   // Disable the functionality of the following functions (editing links, resizing)
   // if users are actively cropping
 
-  const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {};
+  const onWidgetResize = () => {};
 
-  const onWidgetLinkEdit = (url: string) => {};
+  const onWidgetLinkEdit = () => {};
 
   /** Calculates dimensions of image */
   const calculateDimensions = (content: PhotoWidgetContentType) => {
@@ -123,15 +123,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
 
   useEffect(() => {
     calculateDimensions(content as PhotoWidgetContentType);
-  }, [content]);
+  }, [content, calculateDimensions]);
 
-  console.log(
-    height,
-    calculateHeightRatio(),
-    calculateScaleFactor(height),
-    widgetDimensions.height,
-    height / widgetDimensions.height
-  );
   return (
     <Transition appear={true} show={true}>
       <div

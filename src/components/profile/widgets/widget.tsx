@@ -232,7 +232,6 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Photo':
         setWidgetContent(
           <PhotoWidget
-            croppedArea={(content as PhotoWidgetContentType).croppedArea}
             content={content as PhotoWidgetContentType}
             size={widgetSize}
           />

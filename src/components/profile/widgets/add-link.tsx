@@ -31,7 +31,7 @@ export const AddLink = ({
 
   useEffect(() => {
     setInitialValue(value);
-  }, [popoverOpen]);
+  }, [popoverOpen, value]);
 
   /** Necessary to not conflict with widget redirects */
   const handleIconClick = (event: React.MouseEvent<HTMLElement>) => {
