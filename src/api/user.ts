@@ -98,11 +98,11 @@ export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
   }
 };
 
-/** Kick off a verification process for a user. This will retur*/
+/** Kick off a verification process for a user. This will return a BridgeCustomer object*/
 export const verifyUser = async () => {
   try {
     const response = await axios.post<BridgeCustomer>(
-      `${API_URL}/users/verify`,
+      `${API_URL}/users/bridge/verify`,
       await withAuthHeader()
     );
     return response;
@@ -115,6 +115,7 @@ export const verifyUser = async () => {
   }
 };
 
+/** Get the bridge customer for the authed user */
 export const getBridgeCustomer = async () => {
   const response = await axios.get<BridgeCustomer>(
     `${API_URL}/users/bridge/customer`,
