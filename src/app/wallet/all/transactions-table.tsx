@@ -5,6 +5,7 @@ import { DateRange } from 'react-day-picker';
 
 import { Spinner } from '@/components/common';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
+import { env } from '@/lib/env';
 
 export interface TableTransaction {
   account: string;
@@ -36,10 +37,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
   minimalMode = false,
 }) => {
   const handleTxnClick = (hash: string) => {
-    window.open(
-      `${process.env.NEXT_PUBLIC_BASESEPOLIA_EXPLORER}/tx/${hash}`,
-      '_blank'
-    );
+    window.open(`${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}`, '_blank');
   };
 
   return (
