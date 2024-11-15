@@ -313,7 +313,7 @@ const Step1 = ({
                       </FormMessage>
                     ) : (
                       <FormLabel className='text-xs font-semibold text-[#667085]'>
-                        ~ {convertedUSD} USD
+                        ~ {Math.round(Number(convertedUSD))} USD
                       </FormLabel>
                     )}
                     <FormLabel className='flex gap-1 text-xs font-semibold text-[#667085]'>
@@ -339,7 +339,7 @@ const Step1 = ({
                     <Input
                       {...field}
                       type='text'
-                      placeholder='0xTheRecipientAddress'
+                      placeholder='0x...'
                       className={
                         errors.recipientWalletAddress &&
                         'border border-red-500 focus-visible:ring-red-500'
