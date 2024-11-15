@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight, MoveLeft } from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { getTransactions } from '@/api/transactions';
@@ -31,10 +31,6 @@ export const TransactionsBrowser: React.FC = () => {
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
 
-  const getCurrentCursor = (page: number): string => {
-    return cursorsMap[page] || '';
-  };
-
   const handleClearAll = () => {
     setDateRange(undefined);
     setSearchValue('');
@@ -42,64 +38,83 @@ export const TransactionsBrowser: React.FC = () => {
     fetchTransactions();
   };
 
-  const fetchTransactions = async (
-    after_date?: string,
-    before_date?: string
-  ) => {
-    if (!smartWalletAddress) return;
-    const cursor = getCurrentCursor(currentPage);
-    setIsLoading(true);
-    const res = await getTransactions(
-      smartWalletAddress,
-      cursor,
-      10,
-      'DESC',
-      after_date,
-      before_date
-    );
-    if (res.status === 200 && res.data) {
-      const formattedTransactions = res.data.transactions.transactions.map(
-        (transaction: Transaction) => {
-          const type =
-            transaction.sender !== transaction.receiver
-              ? transaction.sender === user?.accountId
-                ? 'Sent'
-                : 'Received'
-              : 'Self-transfer';
-          const account =
-            transaction.sender !== transaction.receiver
-              ? transaction.sender === user?.accountId
-                ? transaction.receiver
-                : transaction.sender
-              : user?.accountId;
-          return {
-            account,
-            date: transaction.timestamp,
-            amount: transaction.value,
-            hash: transaction.hash,
-            type,
-          };
-        }
+  const fetchTransactions = useCallback(
+    async (after_date?: string, before_date?: string) => {
+      if (!smartWalletAddress) return;
+
+      // to appease linting errors and avoid un-necessary re-renders
+      const getCurrentCursor = (page: number): string => {
+        return cursorsMap[page] || '';
+      };
+
+      const cursor = getCurrentCursor(currentPage);
+      setIsLoading(true);
+      const res = await getTransactions(
+        smartWalletAddress,
+        cursor,
+        10,
+        'DESC',
+        after_date,
+        before_date
       );
-      const cursor_data = res.data.transactions.cursor;
-      if (cursor_data) {
-        setCursorsMap((prev) => ({ ...prev, [currentPage + 1]: cursor_data }));
-        setHasNextPage(true);
-      } else {
-        setHasNextPage(false);
+      if (res.status === 200 && res.data) {
+        const formattedTransactions = res.data.transactions.transactions.map(
+          (transaction: Transaction) => {
+            const type =
+              transaction.sender !== transaction.receiver
+                ? transaction.sender === user?.accountId
+                  ? 'Sent'
+                  : 'Received'
+                : 'Self-transfer';
+            const account =
+              transaction.sender !== transaction.receiver
+                ? transaction.sender === user?.accountId
+                  ? transaction.receiver
+                  : transaction.sender
+                : user?.accountId;
+            return {
+              account,
+              date: transaction.timestamp,
+              amount: transaction.value,
+              hash: transaction.hash,
+              type,
+            };
+          }
+        );
+        const cursor_data = res.data.transactions.cursor;
+        if (cursor_data) {
+          setCursorsMap((prev) => ({
+            ...prev,
+            [currentPage + 1]: cursor_data,
+          }));
+          setHasNextPage(true);
+        } else {
+          setHasNextPage(false);
+        }
+        setTransactionsData(formattedTransactions);
+        setFilteredTransactions(formattedTransactions);
+        setHasPrevPage(currentPage > 1);
       }
-      setTransactionsData(formattedTransactions);
-      setFilteredTransactions(formattedTransactions);
-      setHasPrevPage(currentPage > 1);
-    }
-    setIsLoading(false);
-  };
+      setIsLoading(false);
+    },
+    [
+      smartWalletAddress,
+      currentPage,
+      user,
+      setIsLoading,
+      setTransactionsData,
+      setFilteredTransactions,
+      setHasNextPage,
+      setCursorsMap,
+      setHasPrevPage,
+    ]
+  );
 
   useEffect(() => {
     if (smartWalletAddress) {
       fetchTransactions();
     }
-  }, [currentPage, smartWalletAddress]);
+  }, [currentPage, smartWalletAddress, fetchTransactions]);
 
   useEffect(() => {
     if (dateRange?.from && dateRange?.to) {
@@ -114,7 +129,7 @@ export const TransactionsBrowser: React.FC = () => {
       transaction.account.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredTransactions(filtered);
-  }, [searchValue, transactionsData, fetchTransactions]);
+  }, [searchValue, transactionsData]);
 
   const handleNextPage = () => {
     if (hasNextPage) {

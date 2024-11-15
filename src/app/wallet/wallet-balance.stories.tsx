@@ -11,7 +11,6 @@ const meta: Meta<typeof WalletBalance> = {
   },
   tags: ['autodocs'],
   args: {
-    ethBalance: '0',
     onTopUp: fn(),
   },
 };
