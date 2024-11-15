@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { env } from '@/lib/env';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -459,10 +460,9 @@ const Step3 = ({
   transactionHash,
   close,
 }: Step3Props) => {
-  const basescanHref =
-    process.env.NODE_ENV === 'development'
-      ? `https://sepolia.basescan.org/tx/${transactionHash}`
-      : `https://basescan.org/tx/${transactionHash}`;
+  const basescanHref = env.NEXT_PUBLIC_TESTNET
+    ? `https://sepolia.basescan.org/tx/${transactionHash}`
+    : `https://basescan.org/tx/${transactionHash}`;
 
   const router = useRouter();
   return (
