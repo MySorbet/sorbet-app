@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
@@ -59,11 +59,12 @@ export const WalletContainer = () => {
   );
 
   const handleTopUp = async () => {
+    const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     try {
       const defaultFundAmount = '1.00';
       if (walletAddress) {
         await fundWallet(walletAddress, {
-          chain: baseSepolia,
+          chain,
           amount: defaultFundAmount,
           asset: 'USDC',
         });
@@ -81,9 +82,10 @@ export const WalletContainer = () => {
     amount: string,
     recipientWalletAddress: string
   ) => {
+    const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     if (client) {
       await client.switchChain({
-        id: baseSepolia.id,
+        id: chain.id,
       });
 
       // Transfer transaction
