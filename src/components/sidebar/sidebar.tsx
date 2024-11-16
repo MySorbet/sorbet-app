@@ -1,5 +1,4 @@
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { useQueryClient } from '@tanstack/react-query';
 import { Receipt, User01 } from '@untitled-ui/icons-react';
 import { X } from '@untitled-ui/icons-react';
 import {
@@ -15,6 +14,7 @@ import { useState } from 'react';
 
 import { Spinner } from '@/components/common';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { useOpenPollAndInvalidate } from '@/components/sidebar/use-open-poll-and-invalidate';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -57,20 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     onIsOpenChange(false);
   };
 
-  const queryClient = useQueryClient();
-
-  const openLinkInNewTabWithInvalidation = (link: string) => {
-    const newWindow = window.open(link, '_blank');
-
-    // Add window event listener to detect when popup closes
-    const checkWindow = setInterval(() => {
-      if (newWindow?.closed) {
-        clearInterval(checkWindow);
-        console.log('New window closed');
-        queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
-      }
-    }, 1000);
-  };
+  const { open } = useOpenPollAndInvalidate();
 
   const {
     mutate: verifyUser,
@@ -78,7 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     data: verifyUserResponse,
   } = useVerify({
     onSuccess: (data) => {
-      openLinkInNewTabWithInvalidation((data as BridgeCustomer).tos_link);
+      open((data as BridgeCustomer).tos_link, 'bridgeCustomer');
     },
   });
 
@@ -169,11 +156,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   // If the user has not accepted the terms of service,
                   // open the terms of service link
                   if (bridgeCustomer?.tos_status !== 'approved') {
-                    openLinkInNewTabWithInvalidation(bridgeCustomer.tos_link);
+                    open(bridgeCustomer.tos_link, 'bridgeCustomer');
                   } else {
                     // If the user has accepted the terms of service,
                     // open the KYC link in a new tab
-                    openLinkInNewTabWithInvalidation(bridgeCustomer.kyc_link);
+                    open(bridgeCustomer.kyc_link, 'bridgeCustomer');
                   }
                   // TODO: There are now more cases to handle here like "try again" and "close"
                 }}
