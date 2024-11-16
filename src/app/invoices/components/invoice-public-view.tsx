@@ -10,7 +10,7 @@ import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSmartWalletAddress } from '@/hooks';
+import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 import { useACHWireDetails } from '../hooks/use-ach-wire-details';
 import { CreateInvoiceFooter } from './create/create-invoice-footer';
@@ -40,10 +40,8 @@ export const InvoicePublicView = ({
     documentTitle: `sorbet-invoice-${invoice?.invoiceNumber}`,
   });
 
-  const {
-    smartWalletAddress: walletAddress,
-    isLoading: isLoadingWalletAddress,
-  } = useSmartWalletAddress();
+  const { data: walletAddress, isLoading: isLoadingWalletAddress } =
+    useWalletAddressByUserId(invoice?.userId ?? '');
 
   const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
     useACHWireDetails(invoice?.userId ?? '');
