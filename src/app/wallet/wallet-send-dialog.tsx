@@ -106,7 +106,7 @@ export const WalletSendDialog = ({
    */
   const isValidETHAddress = (address: string) => {
     try {
-      ethers.getAddress(address);
+      ethers.utils.getAddress(address);
     } catch (error: unknown) {
       return false;
     }
