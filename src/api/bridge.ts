@@ -11,9 +11,10 @@ const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 export const verifyUser = async () => {
   const response = await axios.post<BridgeCustomer>(
     `${API_URL}/users/bridge/verify`,
+    {},
     await withAuthHeader()
   );
-  return response;
+  return response.data;
 };
 
 /** Get the bridge customer for the authed user */
