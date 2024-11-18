@@ -1,15 +1,16 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout } from 'react-grid-layout';
+
+import { WidgetGridProps } from '@/components/profile/widgets/widget-grid';
 import { useGetWidgetsForUser, useUpdateWidgetsBulk } from '@/hooks';
 import {
-  WidgetLayoutItem,
-  UpdateWidgetsBulkDto,
-  WidgetDto,
-  WidgetDimensions,
-  WidgetSize,
   getWidgetDimensions,
+  UpdateWidgetsBulkDto,
+  WidgetDimensions,
+  WidgetDto,
+  WidgetLayoutItem,
+  WidgetSize,
 } from '@/types';
-import { WidgetGridProps } from '@/components/profile/widgets/widget-grid';
 
 const breakpoints = {
   xxs: 240,
@@ -58,7 +59,7 @@ export const useLayoutManagement = ({
       redirectUrl: widget.redirectUrl,
       size: widget.size,
     }));
-  }, [userId, editMode, userWidgetData]);
+  }, [editMode, userWidgetData]);
 
   const handleLayoutChange = useCallback(
     (newLayout: WidgetLayoutItem[]) => {

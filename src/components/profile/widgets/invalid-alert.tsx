@@ -1,5 +1,4 @@
 import { CircleAlert, X } from 'lucide-react';
-import Link from 'next/link';
 import React, { ReactNode } from 'react';
 
 interface InvalidAlertProps {

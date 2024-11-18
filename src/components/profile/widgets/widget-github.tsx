@@ -18,7 +18,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
         <div className='flex h-full flex-col gap-2'>
           <div className='flex flex-row gap-2'>
             <div className='w-10'>
-              <WidgetIcon type={'Github'} />
+              <WidgetIcon type='Github' />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -40,7 +40,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='flex h-full flex-col gap-2'>
           <div>
-            <WidgetIcon type={'Github'} className='m-0' />
+            <WidgetIcon type='Github' className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -61,11 +61,11 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
       widgetLayout = (
         <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
-            <WidgetIcon type={'Github'} />
+            <WidgetIcon type='Github' />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>
           </div>
-          <div className={`relative w-3/5 overflow-hidden rounded-xl`}>
+          <div className='relative w-3/5 overflow-hidden rounded-xl'>
             <img
               src={content.image}
               alt='Github content'
@@ -80,12 +80,12 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
     case 'D':
       widgetLayout = (
         <div className='flex h-full flex-col gap-2'>
-          <WidgetIcon type={'Github'} className='m-0' />
+          <WidgetIcon type='Github' className='m-0' />
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>
           </div>
-          <div className={`relative h-full w-full overflow-hidden rounded-xl`}>
+          <div className='relative h-full w-full overflow-hidden rounded-xl'>
             <img
               src={content.image}
               alt='Github content'

@@ -1,18 +1,18 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
+
+import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import {
   useCreateWidget,
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
-import {
-  WidgetLayoutItem,
-  WidgetSize,
-  WidgetDimensions,
-  SectionTitleWidgetContentType,
-} from '@/types';
-import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import { useUpdateWidgetContent } from '@/hooks/profile/useUpdateWidgetContent';
+import {
+  SectionTitleWidgetContentType,
+  WidgetDimensions,
+  WidgetLayoutItem,
+} from '@/types';
 
 interface WidgetManagementProps {
   userId: string;
@@ -118,13 +118,11 @@ export const useWidgetManagement = ({
       }
     },
     [
-      userId,
       editMode,
       layout,
       cols,
       uploadWidgetsImageAsync,
       createWidget,
-      toast,
       setLayout,
       persistWidgetsLayoutOnChange,
     ]
@@ -169,7 +167,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, uploadWidgetsImageAsync, handleWidgetAdd]
+    [uploadWidgetsImageAsync, handleWidgetAdd]
   );
 
   const handleSectionTitleAdd = useCallback(async () => {
@@ -210,12 +208,10 @@ export const useWidgetManagement = ({
       setAddingWidget(false);
     }
   }, [
-    userId,
     editMode,
     layout,
     cols,
     createWidget,
-    toast,
     setLayout,
     persistWidgetsLayoutOnChange,
   ]);
@@ -231,7 +227,6 @@ export const useWidgetManagement = ({
             ...existingItem,
             id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
           };
-          console.log(newObj);
           await updateWidgetContentAsync(newObj);
         } else {
           throw new Error(`Couldn't edit widget's title`);
@@ -294,14 +289,7 @@ export const useWidgetManagement = ({
       });
       setAddingWidget(false);
     },
-    [
-      cols,
-      editMode,
-      createWidget,
-      toast,
-      setLayout,
-      persistWidgetsLayoutOnChange,
-    ]
+    [cols, editMode, createWidget, setLayout, persistWidgetsLayoutOnChange]
   );
 
   return {

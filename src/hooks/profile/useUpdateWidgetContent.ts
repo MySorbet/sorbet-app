@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { updateWidgetContent } from '@/api/widgets';
 import { useToast } from '@/components/ui/use-toast';
 import { WidgetLayoutItem } from '@/types';
-import { updateWidgetContent } from '@/api/widgets';
 
 export const useUpdateWidgetContent = () => {
   const queryClient = useQueryClient();

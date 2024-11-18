@@ -2,6 +2,7 @@ import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -43,7 +44,6 @@ import { SpotifySongWidget } from './widget-spotify-song';
 import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
-import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
 
 interface WidgetProps {
   identifier: string;
@@ -265,6 +265,8 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(<>Unsupported widget type</>);
         break;
     }
+    // disabling here because 'redirectUrl' and 'updateTitle' being dependencies will cause massive re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, widgetSize, content]);
 
   return (
@@ -290,7 +292,13 @@ export const Widget: React.FC<WidgetProps> = ({
           widgetContent
         )}
         {showControls && (
-          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+          <div
+            className={cn(
+              'absolute bottom-0 left-1/2 -translate-x-1/2 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100',
+              type !== 'SectionTitle' && 'translate-y-5',
+              type === 'SectionTitle' && '-translate-y-1' // to account for margins on the background of section titles
+            )}
+          >
             <div className='flex flex-row gap-1'>
               {type !== 'SectionTitle' && (
                 <ResizeWidget
