@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
@@ -25,11 +25,10 @@ export const WalletContainer = () => {
   const [reload, setReload] = useState(false);
   const { client } = useSmartWallets();
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
-  const {
-    ethBalance,
-    usdcBalance,
-    loading: balanceLoading,
-  } = useWalletBalances(walletAddress, reload);
+  const { usdcBalance, loading: balanceLoading } = useWalletBalances(
+    walletAddress,
+    reload
+  );
 
   const { fundWallet } = useFundWallet();
 
@@ -60,14 +59,16 @@ export const WalletContainer = () => {
   );
 
   const handleTopUp = async () => {
+    const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     try {
-      const defaultFundAmount = '0.01';
+      const defaultFundAmount = '1.00';
       if (walletAddress) {
         await fundWallet(walletAddress, {
-          chain: baseSepolia,
+          chain,
           amount: defaultFundAmount,
           asset: 'USDC',
         });
+        setReload(!reload); // trigger reload to refresh wallet amount
       }
     } catch (e) {
       toast('Something went wrong', {
@@ -81,9 +82,10 @@ export const WalletContainer = () => {
     amount: string,
     recipientWalletAddress: string
   ) => {
+    const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     if (client) {
       await client.switchChain({
-        id: baseSepolia.id,
+        id: chain.id,
       });
 
       // Transfer transaction
@@ -120,8 +122,8 @@ export const WalletContainer = () => {
     <Authenticated>
       <Header />
       <div className='container my-16 pb-8'>
-        <div className='flex flex-col gap-6 lg:flex-row'>
-          <div className='w-full'>
+        <div className='flex flex-col items-center justify-center gap-6 lg:flex-row'>
+          <div className='lg:w-8/12'>
             <WalletBalance
               balanceHistoryIn={
                 !transactions.money_in
