@@ -100,7 +100,7 @@ export const GetVerifiedCard = ({
               <Button
                 onClick={onComplete}
                 variant='sorbet'
-                disabled={disabled || inReview}
+                disabled={disabled || inReview || isApproved}
                 className='min-w-44'
               >
                 {isApproved
