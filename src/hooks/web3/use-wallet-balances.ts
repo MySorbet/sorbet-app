@@ -26,14 +26,14 @@ export const useWalletBalances = (
         // Ignore empty string wallet address
         if (!walletAddress) return;
 
-        const provider = new ethers.JsonRpcProvider(
+        const provider = new ethers.providers.JsonRpcProvider(
           env.NEXT_PUBLIC_BASE_RPC_URL
         );
 
         const ethBalanceWei = await provider.getBalance(walletAddress);
         // TODO: Perhaps there is a better way to format this
         const ethBalanceInEth = parseFloat(
-          ethers.formatEther(ethBalanceWei)
+          ethers.utils.formatEther(ethBalanceWei)
         ).toFixed(4);
         setEthBalance(ethBalanceInEth);
 
@@ -44,7 +44,7 @@ export const useWalletBalances = (
         );
         const usdcBalanceRaw = await usdcContract.balanceOf(walletAddress);
         const usdcDecimals = await usdcContract.decimals();
-        const usdcBalanceFormatted = ethers.formatUnits(
+        const usdcBalanceFormatted = ethers.utils.formatUnits(
           usdcBalanceRaw,
           usdcDecimals
         );
