@@ -2,21 +2,20 @@
 
 import { useFundWallet } from '@privy-io/react-auth';
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
-import { MoveDown, MoveUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
 import Link from 'next/link';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
-import { CreditCardForm } from '@/app/wallet/credit-card';
 import { FundsFlow } from '@/app/wallet/funds-flow';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
-import { useToast } from '@/components/ui/use-toast';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
@@ -25,17 +24,18 @@ import { Transaction, Transactions } from '@/types/transactions';
 export const WalletContainer = () => {
   const [reload, setReload] = useState(false);
   const { client } = useSmartWallets();
-  const { toast } = useToast();
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
-  const {
-    ethBalance,
-    usdcBalance,
-    loading: balanceLoading,
-  } = useWalletBalances(walletAddress, reload);
+  const { usdcBalance, loading: balanceLoading } = useWalletBalances(
+    walletAddress,
+    reload
+  );
 
   const { fundWallet } = useFundWallet();
 
-  // TODO: Move transactions to base
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [selectedDuration, setSelectedDuration] = useState<string>('30');
+
   const [transactions, setTransactions] = useState<Transactions>({
     money_in: [],
     money_out: [],
@@ -43,7 +43,6 @@ export const WalletContainer = () => {
     total_money_in: '',
     total_money_out: '',
   });
-  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchTransactions = useCallback(
     async (last_days = 30) => {
@@ -58,27 +57,23 @@ export const WalletContainer = () => {
     },
     [walletAddress]
   );
-  const handleTxnDurationChange = (value: string) => {
-    const last_days = parseInt(value, 10);
-    fetchTransactions(last_days);
-  };
 
   const handleTopUp = async () => {
+    const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     try {
-      const defaultFundAmount = '0.01';
+      const defaultFundAmount = '1.00';
       if (walletAddress) {
         await fundWallet(walletAddress, {
-          chain: baseSepolia,
+          chain,
           amount: defaultFundAmount,
           asset: 'USDC',
         });
+        setReload(!reload); // trigger reload to refresh wallet amount
       }
     } catch (e) {
-      toast({
-        title: 'Something went wrong',
+      toast('Something went wrong', {
         description:
           'Your Privy wallet has something problem. Please try again',
-        variant: 'destructive',
       });
     }
   };
@@ -87,11 +82,10 @@ export const WalletContainer = () => {
     amount: string,
     recipientWalletAddress: string
   ) => {
-    console.log('current user wallet', client);
-
+    const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     if (client) {
       await client.switchChain({
-        id: baseSepolia.id,
+        id: chain.id,
       });
 
       // Transfer transaction
@@ -118,30 +112,56 @@ export const WalletContainer = () => {
     })();
   }, [walletAddress, reload, fetchTransactions]);
 
+  useEffect(() => {
+    (async () => {
+      fetchTransactions(parseInt(selectedDuration, 10));
+    })();
+  }, [selectedDuration, fetchTransactions]);
+
   return (
     <Authenticated>
       <Header />
-      <div className='container my-16'>
-        <div className='flex flex-col gap-6 lg:flex-row'>
+      <div className='container my-16 pb-8'>
+        <div className='flex flex-col items-center justify-center gap-6 lg:flex-row'>
           <div className='lg:w-8/12'>
             <WalletBalance
-              ethBalance={ethBalance}
+              balanceHistoryIn={
+                !transactions.money_in
+                  ? undefined
+                  : transactions.money_in.map((transaction: Transaction) => ({
+                      date: transaction.timestamp,
+                      balance: transaction.value,
+                    }))
+              }
+              balanceHistoryOut={
+                !transactions.money_out
+                  ? undefined
+                  : transactions.money_out.map((transaction: Transaction) => ({
+                      date: transaction.timestamp,
+                      balance: transaction.value,
+                    }))
+              }
               usdcBalance={usdcBalance}
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
               isBalanceLoading={balanceLoading}
+              selectedDuration={selectedDuration}
+              onTxnDurationChange={setSelectedDuration}
             />
           </div>
+          {/** 
+          // commenting out until cards implemented
           <div className='lg:w-4/12'>
             <CreditCardForm />
-          </div>
+          </div> 
+           */}
         </div>
         <div className='mb-6 mt-12 flex justify-between'>
           <div className='text-2xl font-semibold'>Money Movements</div>
           <div>
             <SelectDuration
-              selectedValue='30'
-              onChange={handleTxnDurationChange}
+              selectedValue={selectedDuration}
+              onChange={(value) => setSelectedDuration(value)}
             />
           </div>
         </div>
@@ -151,16 +171,26 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money In'
               balance={transactions.total_money_in}
-              icon={<MoveDown size={16} />}
+              icon={<ArrowDown size={14} color='white' />}
               items={
                 !transactions.money_in
                   ? undefined
-                  : transactions.money_in.map((transaction: Transaction) => ({
-                      icon: <MoveDown size={20} />,
-                      label: 'Received',
-                      account: transaction.sender,
-                      balance: transaction.value,
-                    }))
+                  : transactions.money_in.map((transaction: Transaction) => {
+                      // check if this is a user adding funds to their account
+                      const isAdded =
+                        transaction.sender.toLowerCase() ===
+                        walletAddress?.toLowerCase();
+                      return {
+                        icon: isAdded ? (
+                          <Plus size={24} color='white' />
+                        ) : (
+                          <ArrowDown size={24} color='white' />
+                        ),
+                        label: isAdded ? 'Added' : 'Received',
+                        account: transaction.sender,
+                        balance: transaction.value,
+                      };
+                    })
               }
             />
           </div>
@@ -169,12 +199,12 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money Out'
               balance={transactions.total_money_out}
-              icon={<MoveUp size={16} />}
+              icon={<ArrowUp size={14} color='white' />}
               items={
                 !transactions.money_out
                   ? undefined
                   : transactions.money_out.map((transaction: Transaction) => ({
-                      icon: <MoveUp size={16} />,
+                      icon: <ArrowUp size={24} color='white' />,
                       label: 'Sent',
                       account: transaction.receiver,
                       balance: transaction.value,
@@ -184,10 +214,10 @@ export const WalletContainer = () => {
           </div>
         </div>
         <div className='mt-12 flex flex-col'>
-          <div className='mb-6 flex items-center justify-between'>
+          <div className='mb-6 flex items-center'>
             <div className='text-2xl font-semibold'>Recent Transactions</div>
             <Link href='/wallet/all'>
-              <div className='text-sorbet cursor-pointer text-right text-sm font-semibold'>
+              <div className='text-sorbet ml-4 cursor-pointer text-right text-sm font-semibold'>
                 View all
               </div>
             </Link>

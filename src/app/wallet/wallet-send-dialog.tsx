@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { env } from '@/lib/env';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -313,7 +314,7 @@ const Step1 = ({
                       </FormMessage>
                     ) : (
                       <FormLabel className='text-xs font-semibold text-[#667085]'>
-                        ~ {convertedUSD} USD
+                        ~ {Math.round(Number(convertedUSD))} USD
                       </FormLabel>
                     )}
                     <FormLabel className='flex gap-1 text-xs font-semibold text-[#667085]'>
@@ -339,7 +340,7 @@ const Step1 = ({
                     <Input
                       {...field}
                       type='text'
-                      placeholder='0xTheRecipientAddress'
+                      placeholder='0x...'
                       className={
                         errors.recipientWalletAddress &&
                         'border border-red-500 focus-visible:ring-red-500'
@@ -459,10 +460,9 @@ const Step3 = ({
   transactionHash,
   close,
 }: Step3Props) => {
-  const basescanHref =
-    process.env.NODE_ENV === 'development'
-      ? `https://sepolia.basescan.org/tx/${transactionHash}`
-      : `https://basescan.org/tx/${transactionHash}`;
+  const basescanHref = env.NEXT_PUBLIC_TESTNET
+    ? `https://sepolia.basescan.org/tx/${transactionHash}`
+    : `https://basescan.org/tx/${transactionHash}`;
 
   const router = useRouter();
   return (
