@@ -6,6 +6,7 @@ import { GithubWidgetContentType, WidgetSize } from '@/types';
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { restoreWidgetImage } from '@/api/widgets';
 
 interface GithubWidgetType {
   identifier: string;
@@ -13,6 +14,7 @@ interface GithubWidgetType {
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
+  redirectUrl?: string;
   content: GithubWidgetContentType;
   size: WidgetSize;
 }
@@ -23,17 +25,18 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
   setErrorInvalidImage,
   addImage,
   removeImage,
+  redirectUrl,
   content,
   size,
 }) => {
   let widgetLayout;
 
-  const openWidgetLink = () => {
-    if (content.image) {
-      const newWindow = window.open(content.image, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
+  const restoreImage = async () => {
+    try {
+      await restoreWidgetImage(identifier, 'Github', redirectUrl, content); // Call the mutation with the image URL
+      console.log('here');
+    } catch (error) {
+      console.error('Error restoring image:', error);
     }
   };
 
@@ -54,7 +57,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -88,7 +91,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -115,7 +118,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -140,7 +143,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}

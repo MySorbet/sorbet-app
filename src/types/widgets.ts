@@ -16,7 +16,7 @@ export interface Widget {
 }
 
 export interface DribbbleWidgetContentType {
-  image: string;
+  image: string | undefined;
   title: string;
   description: string;
 }
@@ -28,27 +28,27 @@ export interface PhotoWidgetContentType {
 }
 
 export interface BehanceWidgetContentType {
-  image: string;
+  image: string | undfined;
   title: string;
   description: string;
 }
 
 export interface MediumArticleContentType {
   title: string;
-  image: string;
+  image: string | undefined;
   host: string;
 }
 
 export interface GithubWidgetContentType {
   title: string;
-  image: string;
+  image: string | undefined;
 }
 
 export interface TwitterWidgetContentType {
   name: string;
   handle: string;
   bio: string;
-  bannerImage: string;
+  bannerImage: string | undefined;
   profileImage: string;
 }
 
@@ -60,13 +60,13 @@ export interface FigmaWidgetContentType {
 
 export interface YoutubeWidgetContentType {
   title: string;
-  thumbnail: string;
+  thumbnail: string | undefined;
   url: string;
 }
 
 export interface SubstackWidgetContentType {
   title: string;
-  image: string;
+  image: string | undefined;
   host: string;
 }
 
@@ -86,7 +86,7 @@ export interface InstagramWidgetContentType {
 
 export interface SoundcloudTrackContentType {
   title: string;
-  artwork: string;
+  artwork: string | undefined;
   trackUrl: string;
   artist: string;
 }

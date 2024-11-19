@@ -131,12 +131,12 @@ export const Widget: React.FC<WidgetProps> = ({
    * - Behance
    * - Substack
    * - Youtube
+   * - LinkedIn
    *
    * List of components that don't support image replacement:
    * - Instagram Profiles (too many pictures)
    * - Figma (not implemented)
    * - Spotify Song/Album (Bento doesn't allow it + iframes)
-   * - LinkedIn
    */
   useEffect(() => {
     switch (type) {
@@ -150,6 +150,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as DribbbleWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -163,6 +164,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as BehanceWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -176,6 +178,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as MediumArticleContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -189,6 +192,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as YoutubeWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -203,6 +207,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as SubstackWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -235,6 +240,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as SoundcloudTrackContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -244,6 +250,7 @@ export const Widget: React.FC<WidgetProps> = ({
           <InstagramWidget
             content={content as InstagramWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -258,6 +265,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as GithubWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;
@@ -282,6 +290,7 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as TwitterWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
           />
         );
         break;

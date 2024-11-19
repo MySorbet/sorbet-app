@@ -11,10 +11,17 @@ import {
 import { useUpdateWidgetContent } from '@/hooks/widgets/useUpdateWidgetContent';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import {
+  BehanceWidgetContentType,
+  GithubWidgetContentType,
   LinkWidgetContentType,
   PhotoWidgetContentType,
+  SoundcloudTrackContentType,
+  SubstackWidgetContentType,
+  TwitterWidgetContentType,
   WidgetDimensions,
   WidgetLayoutItem,
+  YoutubeWidgetContentType,
+  DribbbleWidgetContentType,
 } from '@/types';
 
 interface WidgetManagementProps {
@@ -131,7 +138,7 @@ export const useWidgetManagement = ({
     ]
   );
 
-  /** Handles the replacement of display images for Link and Photo Widgets */
+  /** Handles the replacement of display images for widgets */
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
       setAddingWidget(true);
@@ -170,6 +177,39 @@ export const useWidgetManagement = ({
               (existingItem.content as LinkWidgetContentType).heroImageUrl =
                 widgetUrl;
               break;
+            case 'SoundcloudSong':
+              (existingItem.content as SoundcloudTrackContentType).artwork =
+                widgetUrl;
+              break;
+            case 'Substack':
+              (existingItem.content as SubstackWidgetContentType).image =
+                widgetUrl;
+              break;
+            case 'Github':
+              (existingItem.content as GithubWidgetContentType).image =
+                widgetUrl;
+              break;
+            case 'Behance':
+              (existingItem.content as BehanceWidgetContentType).image =
+                widgetUrl;
+              break;
+            case 'Medium':
+              (existingItem.content as GithubWidgetContentType).image =
+                widgetUrl;
+
+              break;
+            case 'TwitterProfile':
+              (existingItem.content as TwitterWidgetContentType).bannerImage =
+                widgetUrl;
+              break;
+            case 'Youtube':
+              (existingItem.content as YoutubeWidgetContentType).thumbnail =
+                widgetUrl;
+              break;
+            case 'Dribbble':
+              (existingItem.content as DribbbleWidgetContentType).image =
+                widgetUrl;
+              break;
 
             default:
               break;
@@ -204,6 +244,38 @@ export const useWidgetManagement = ({
           switch (existingItem.type) {
             case 'Link':
               (existingItem.content as LinkWidgetContentType).heroImageUrl =
+                undefined;
+              break;
+            case 'SoundcloudSong':
+              (existingItem.content as SoundcloudTrackContentType).artwork =
+                undefined;
+              break;
+            case 'Substack':
+              (existingItem.content as SubstackWidgetContentType).image =
+                undefined;
+              break;
+            case 'Github':
+              (existingItem.content as GithubWidgetContentType).image =
+                undefined;
+              break;
+            case 'Behance':
+              (existingItem.content as BehanceWidgetContentType).image =
+                undefined;
+              break;
+            case 'Medium':
+              (existingItem.content as GithubWidgetContentType).image =
+                undefined;
+              break;
+            case 'TwitterProfile':
+              (existingItem.content as TwitterWidgetContentType).bannerImage =
+                undefined;
+              break;
+            case 'Youtube':
+              (existingItem.content as YoutubeWidgetContentType).thumbnail =
+                undefined;
+              break;
+            case 'Dribbble':
+              (existingItem.content as DribbbleWidgetContentType).image =
                 undefined;
               break;
 

@@ -103,6 +103,30 @@ export const updateWidget = async (
   }
 };
 
+export const restoreWidgetImage = async (
+  widgetId: string,
+  type: WidgetType,
+  redirectUrl: string,
+  content: WidgetContentType
+) => {
+  try {
+    const payload: Partial<WidgetDto> = {
+      id: widgetId,
+      type: type,
+      redirectUrl: redirectUrl,
+      content: content,
+    };
+    const response = await axios.patch(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/restore-image`,
+      payload,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error) {
+    catchAndRethrowWidgetError(error, `Failed to update widgets in bulk`);
+  }
+};
+
 /** Updating the links of image widgets (only widget's redirectUrl should be updated) */
 export const updateWidgetLink = async (key: string, url: string) => {
   // redirectUrl should be set to what we want already in the payload

@@ -11,7 +11,7 @@ interface ModifyImageWidgetProps {
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  openWidgetLink?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  restoreImage?: (event: React.MouseEvent<HTMLDivElement>) => void;
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
   addImage,
   removeImage,
   setErrorInvalidImage,
-  openWidgetLink,
+  restoreImage,
   className,
 }) => {
   const btnClass = 'h-4 w-7 flex items-center justify-center';
@@ -71,7 +71,7 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
       </div>
       {hasImage ? (
         <>
-          <div className={btnClass} onClick={openWidgetLink}>
+          <div className={btnClass} onClick={restoreImage}>
             <LinkedPictureIcon className='text-white' />
           </div>
 
@@ -83,7 +83,7 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
       ) : (
         <>
           <div className={dividerClass} />
-          <div className={btnClass} onClick={openWidgetLink}>
+          <div className={btnClass} onClick={restoreImage}>
             <LinkedPictureIcon className='text-[#344054]' />
           </div>
         </>
