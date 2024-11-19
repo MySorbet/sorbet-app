@@ -61,7 +61,7 @@ export const WalletContainer = () => {
   const handleTopUp = async () => {
     const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     try {
-      const defaultFundAmount = '0.01';
+      const defaultFundAmount = '1.00';
       if (walletAddress) {
         await fundWallet(walletAddress, {
           chain,
@@ -122,8 +122,8 @@ export const WalletContainer = () => {
     <Authenticated>
       <Header />
       <div className='container my-16 pb-8'>
-        <div className='flex flex-col gap-6 lg:flex-row'>
-          <div className='w-full'>
+        <div className='flex flex-col items-center justify-center gap-6 lg:flex-row'>
+          <div className='lg:w-8/12'>
             <WalletBalance
               balanceHistoryIn={
                 !transactions.money_in
