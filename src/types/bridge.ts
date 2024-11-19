@@ -31,7 +31,7 @@ export type SourceDepositInstructions = {
   bank_routing_number: string;
   bank_account_number: string;
   bank_beneficiary_name: string;
-  bank_beneficiary_address: string | null;
+  bank_beneficiary_address: string;
   payment_rail: string;
   payment_rails: string[];
 };

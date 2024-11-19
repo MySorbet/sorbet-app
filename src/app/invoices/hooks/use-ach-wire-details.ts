@@ -40,8 +40,7 @@ const mapToACHWireDetails = (
   beneficiary: {
     name: instructions.bank_beneficiary_name,
     accountType: 'Checking', // Defaulting to "Checking" since it's not provided in the source data
-    // TODO: Address the fact that we don't have this
-    address: instructions.bank_beneficiary_address || 'N/A',
+    address: instructions.bank_beneficiary_address,
   },
   bank: {
     name: instructions.bank_name,
