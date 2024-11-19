@@ -18,19 +18,19 @@ import {
 } from '@/components/ui/tooltip';
 import { KYCStatus, TOSStatus } from '@/types';
 
-interface GetVerifiedCardProps {
+interface VerificationCardProps {
   tosStatus?: TOSStatus;
   kycStatus?: KYCStatus;
   onComplete?: () => void;
   disabled?: boolean;
 }
 
-export const GetVerifiedCard = ({
+export const VerificationCard = ({
   tosStatus,
   kycStatus,
   onComplete,
   disabled = false,
-}: GetVerifiedCardProps) => {
+}: VerificationCardProps) => {
   // Convenience approved states
   const termsAccepted = tosStatus === 'approved';
   const kycApproved = kycStatus === 'approved';

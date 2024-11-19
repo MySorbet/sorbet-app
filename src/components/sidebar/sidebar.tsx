@@ -31,7 +31,7 @@ import { useVerify } from '@/hooks/profile/use-verify';
 import { featureFlags } from '@/lib/flags';
 import { BridgeCustomer } from '@/types';
 
-import { GetVerifiedCard } from './get-verified-card';
+import { VerificationCard } from './verification-card';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -144,7 +144,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
           {/* Verification and logout */}
           <div className='flex flex-col gap-2'>
             {featureFlags.verification && (
-              <GetVerifiedCard
+              <VerificationCard
                 tosStatus={bridgeCustomer?.tos_status}
                 kycStatus={bridgeCustomer?.kyc_status}
                 disabled={isVerifyingUser}

@@ -1,11 +1,11 @@
 import { StoryObj } from '@storybook/react';
 import { Meta } from '@storybook/react';
 
-import { GetVerifiedCard } from './get-verified-card';
+import { VerificationCard } from './verification-card';
 
 const meta = {
   title: 'Sidebar/Get Verified Card',
-  component: GetVerifiedCard,
+  component: VerificationCard,
   parameters: {
     layout: 'centered',
   },
@@ -16,7 +16,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof GetVerifiedCard>;
+} satisfies Meta<typeof VerificationCard>;
 
 export default meta;
 
@@ -33,21 +33,21 @@ export const BeginVerification: Story = {
 
 export const Approved: Story = {
   args: {
-    tosStatus: "approved",
-    kycStatus: "approved"
-  }
+    tosStatus: 'approved',
+    kycStatus: 'approved',
+  },
 };
 
 export const Rejected: Story = {
   args: {
-    tosStatus: "approved",
-    kycStatus: "rejected"
-  }
+    tosStatus: 'approved',
+    kycStatus: 'rejected',
+  },
 };
 
 export const InReview: Story = {
   args: {
-    tosStatus: "approved",
-    kycStatus: "under_review"
-  }
+    tosStatus: 'approved',
+    kycStatus: 'under_review',
+  },
 };
