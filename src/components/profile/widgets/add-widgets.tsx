@@ -242,11 +242,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   );
 };
 
-interface SectionTitleIconProps {
-  onClick?: () => void;
-  className?: string;
-}
-
 /** Local component for achieving purple effect on a custom icon */
 interface SectionTitleIconProps {
   onClick?: () => void;
