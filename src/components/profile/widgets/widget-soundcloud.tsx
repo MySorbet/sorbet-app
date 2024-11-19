@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import { SoundcloudTrackContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
@@ -7,11 +9,21 @@ import { PlayButton } from './play-button';
 import { WidgetIcon } from './widget-icon';
 
 interface SoundcloudWidgetType {
+  identifier: string;
+  showControls?: boolean;
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
   content: SoundcloudTrackContentType;
   size: WidgetSize;
 }
 
 export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
   content,
   size,
 }) => {
@@ -24,6 +36,15 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
     </>
   );
 
+  const openWidgetLink = () => {
+    if (content.artwork) {
+      const newWindow = window.open(content.artwork, '_blank');
+      if (newWindow) {
+        newWindow.opener = null;
+      }
+    }
+  };
+
   switch (size) {
     case 'A':
       widgetLayout = (
@@ -33,13 +54,26 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             <PlayButton />
           </div>
           <div>{localHeader}</div>
-          <div className='relative flex-grow overflow-hidden rounded-xl'>
-            <img
-              src={content.artwork}
-              alt='Soundcloud Content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.artwork ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='overflow-hidden'>
+              <img
+                src={content.artwork}
+                alt='Github content'
+                className='absolute inset-0 h-full w-full rounded-xl object-cover'
+              />
+              <ImageOverlay />
+            </div>
           </div>
         </div>
       );
@@ -52,13 +86,21 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             <PlayButton />
           </div>
           <div>{localHeader}</div>
-          <div className='relative mt-6 h-full w-full overflow-hidden rounded-xl bg-white text-black'>
-            <img
-              src={content.artwork}
-              alt='Soundcloud Content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.artwork ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={content.artwork} />
+            </div>
           </div>
         </div>
       );
@@ -75,13 +117,19 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
               </div>
             </div>
           </div>
-          <div className='relative h-full w-4/5 overflow-hidden rounded-xl'>
-            <img
-              src={content.artwork}
-              alt='Soundcloud Content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.artwork ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={content.artwork} />
           </div>
         </div>
       );
@@ -94,14 +142,19 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             <PlayButton />
           </div>
           <div>{localHeader}</div>
-          <div className='relative mt-6 h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.artwork}
-              alt='Soundcloud Content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.artwork ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={content.artwork} />
           </div>
         </div>
       );

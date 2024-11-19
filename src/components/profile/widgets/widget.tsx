@@ -121,12 +121,33 @@ export const Widget: React.FC<WidgetProps> = ({
     // TODO: Maybe widgets should be anchors?
   };
 
-  /** For setting the content of the widgets dynamically */
+  /** For setting the content of the widgets dynamically
+   * List of components that support image replacement
+   * - GitHub
+   * - Twitter
+   * - Soundcloud
+   * - Medium
+   * - Dribble
+   * - Behance
+   * - Substack
+   * - Youtube
+   *
+   * List of components that don't support image replacement:
+   * - Instagram Profiles (too many pictures)
+   * - Figma (not implemented)
+   * - Spotify Song/Album (Bento doesn't allow it + iframes)
+   * - LinkedIn
+   */
   useEffect(() => {
     switch (type) {
       case 'Dribbble':
         setWidgetContent(
           <DribbbleWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as DribbbleWidgetContentType}
             size={widgetSize}
           />
@@ -135,6 +156,11 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Behance':
         setWidgetContent(
           <BehanceWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as BehanceWidgetContentType}
             size={widgetSize}
           />
@@ -143,6 +169,11 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Medium':
         setWidgetContent(
           <MediumWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as MediumArticleContentType}
             size={widgetSize}
           />
@@ -151,6 +182,11 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Youtube':
         setWidgetContent(
           <YouTubeWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as YoutubeWidgetContentType}
             size={widgetSize}
           />
@@ -160,6 +196,11 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Substack':
         setWidgetContent(
           <SubstackWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as SubstackWidgetContentType}
             size={widgetSize}
           />
@@ -187,6 +228,11 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'SoundcloudSong':
         setWidgetContent(
           <SoundcloudWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as SoundcloudTrackContentType}
             size={widgetSize}
           />
@@ -205,12 +251,18 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Github':
         setWidgetContent(
           <GithubWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as GithubWidgetContentType}
             size={widgetSize}
           />
         );
         break;
 
+      /** not supported yet */
       case 'Figma':
         setWidgetContent(
           <FigmaWidget
@@ -223,6 +275,11 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'TwitterProfile':
         setWidgetContent(
           <TwitterWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as TwitterWidgetContentType}
             size={widgetSize}
           />
@@ -265,6 +322,11 @@ export const Widget: React.FC<WidgetProps> = ({
 
         setWidgetContent(
           <LinkedInProfileWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={
               {
                 ...content,

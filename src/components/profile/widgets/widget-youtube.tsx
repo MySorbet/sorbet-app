@@ -4,13 +4,25 @@ import { WidgetSize, YoutubeWidgetContentType } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
+import { BannerImage } from '@/components/profile/widgets/banner-image';
 
 interface YouTubeWidgetType {
+  identifier: string;
+  showControls?: boolean;
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
   content: YoutubeWidgetContentType;
   size: WidgetSize;
 }
 
 export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
   content,
   size,
 }) => {
@@ -23,6 +35,15 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
     </>
   );
 
+  const openWidgetLink = () => {
+    if (content.thumbnail) {
+      const newWindow = window.open(content.thumbnail, '_blank');
+      if (newWindow) {
+        newWindow.opener = null;
+      }
+    }
+  };
+
   switch (size) {
     case 'A':
       widgetLayout = (
@@ -33,13 +54,26 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             </div>
             <div>{localHeader}</div>
           </div>
-          <div className='relative flex-grow overflow-hidden rounded-xl'>
-            <img
-              src={content.thumbnail}
-              alt='Medium content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.thumbnail ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='overflow-hidden'>
+              <img
+                src={content.thumbnail}
+                alt='Youtube content'
+                className='absolute inset-0 h-full w-full rounded-xl object-cover'
+              />
+              <ImageOverlay />
+            </div>
           </div>
         </div>
       );
@@ -51,13 +85,21 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             <WidgetIcon type='Youtube' className='m-0' />
           </div>
           <div>{localHeader}</div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.thumbnail}
-              alt='Medium content'
-              className='h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.thumbnail ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={content.thumbnail} />
+            </div>
           </div>
         </div>
       );
@@ -69,14 +111,19 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             <WidgetIcon type='Youtube' />
             {localHeader}
           </div>
-          <div className='relative w-3/5 overflow-hidden rounded-xl'>
-            <img
-              src={content.thumbnail}
-              alt='Medium content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.thumbnail ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={content.thumbnail} />
           </div>
         </div>
       );
@@ -86,14 +133,19 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
         <div className='flex h-full flex-col gap-2'>
           <WidgetIcon type='Youtube' className='m-0' />
           <div>{localHeader}</div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.thumbnail}
-              alt='Medium content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageWidget
+                hasImage={content.thumbnail ? true : false}
+                openWidgetLink={openWidgetLink}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={content.thumbnail} />
           </div>
         </div>
       );
