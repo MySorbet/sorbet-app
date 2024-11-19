@@ -176,12 +176,11 @@ const DynamicCardTitle = ({
 };
 
 const descriptionContent = {
-  notStarted:
-    'Verify your account to accept payments via ACH/Wire or Credit Card',
+  notStarted: 'Verify your account to accept payments via ACH/Wire',
   tosAccepted:
-    'Complete your account verification to accept payments via ACH/Wire or Credit Card',
+    'Complete your account verification to accept payments via ACH/Wire',
   pending: 'Account verification under review. Please check back shortly.',
-  approved: 'You can now accept payments via ACH/Wire or Credit Card',
+  approved: 'You can now accept payments via ACH/Wire',
   rejected: 'Kyc verification failed', // TODO: Accept and render a reason
 };
 
