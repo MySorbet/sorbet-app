@@ -20,6 +20,7 @@ import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
+import { MyAccounts } from '@/app/wallet/my-accounts';
 
 export const WalletContainer = () => {
   const [reload, setReload] = useState(false);
@@ -122,7 +123,7 @@ export const WalletContainer = () => {
     <Authenticated>
       <Header />
       <div className='container my-16 pb-8'>
-        <div className='flex flex-col items-center justify-center gap-6 lg:flex-row'>
+        <div className='flex flex-col gap-6 lg:flex-row'>
           <div className='lg:w-8/12'>
             <WalletBalance
               balanceHistoryIn={
@@ -149,12 +150,9 @@ export const WalletContainer = () => {
               onTxnDurationChange={setSelectedDuration}
             />
           </div>
-          {/** 
-          // commenting out until cards implemented
           <div className='lg:w-4/12'>
-            <CreditCardForm />
-          </div> 
-           */}
+            <MyAccounts usdcBalance={usdcBalance} />
+          </div>
         </div>
         <div className='mb-6 mt-12 flex justify-between'>
           <div className='text-2xl font-semibold'>Money Movements</div>

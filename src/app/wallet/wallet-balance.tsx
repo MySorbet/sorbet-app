@@ -1,5 +1,5 @@
-import { Send01 } from '@untitled-ui/icons-react';
-import { Plus, Wallet } from 'lucide-react';
+import { Send01, Wallet03 } from '@untitled-ui/icons-react';
+import { Plus } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { BalanceChart } from '@/app/wallet/balance-chart';
@@ -49,7 +49,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
           <div>
             <div className='flex items-center gap-2'>
               <span className='rounded-full bg-black p-2 text-white'>
-                <Wallet size={18} />
+                <Wallet03 width={18} height={18} />
               </span>
               <span className='text-md font-medium text-[#595B5A]'>
                 BALANCE
