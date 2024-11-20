@@ -9,6 +9,7 @@ import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
+import { formatCurrency } from '@/app/wallet/utils';
 
 interface WalletBalanceProps {
   usdcBalance: string;
@@ -43,7 +44,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   );
 
   return (
-    <div className='min-h-[100%] min-w-80 rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
+    <div className='min-h-[100%] rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
       <div className='flex flex-col gap-1'>
         <div className='flex items-center justify-between p-6 pb-0'>
           <div>
@@ -63,7 +64,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
                 <Skeleton className='h-[30px] w-32 bg-gray-300 leading-[38px]' />
               ) : (
                 <div className='text-3xl font-semibold'>
-                  {Number(usdcBalance).toLocaleString()} USDC
+                  {formatCurrency(usdcBalance)} USDC
                 </div>
               )}
             </div>
