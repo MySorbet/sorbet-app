@@ -6,7 +6,11 @@ import { DateRange } from 'react-day-picker';
 import { Spinner } from '@/components/common';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
 import { env } from '@/lib/env';
-import { formatWalletAddress } from '@/app/wallet/utils';
+import {
+  formatCurrency,
+  formatTransactionDate,
+  formatWalletAddress,
+} from '@/app/wallet/utils';
 
 export interface TableTransaction {
   account: string;
@@ -143,7 +147,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                 </td>
                 <td className='w-1/5 whitespace-nowrap py-4'>
                   <div className='text-sm font-medium text-gray-900'>
-                    {transaction.date.split(',')[0]}
+                    {formatTransactionDate(transaction.date)}
                   </div>
                 </td>
                 <td
@@ -153,7 +157,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                   <div className='flex items-center justify-end gap-2'>
                     <div className='text-sm font-medium'>
                       {transaction.type === 'Sent' ? '-' : '+'}{' '}
-                      {Number(transaction.amount).toLocaleString()} USDC
+                      {formatCurrency(transaction.amount)} USDC
                     </div>
                     <LinkExternal02 width={18} height={18} color='#595B5A' />
                   </div>

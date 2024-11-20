@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import { Spinner } from '@/components/common';
-import { formatWalletAddress } from '@/app/wallet/utils';
+import { formatCurrency, formatWalletAddress } from '@/app/wallet/utils';
 
 interface FundsFlowProps {
   icon: React.ReactNode;
@@ -37,7 +37,7 @@ const BalanceItem: React.FC<BalanceItemProps> = ({
         </div>
       </div>
       <span className='text-sm font-medium'>
-        {Number(balance).toLocaleString()} USDC
+        {formatCurrency(balance)} USDC
       </span>
     </div>
   );
@@ -64,7 +64,7 @@ export const FundsFlow: React.FC<
             </span>
           </div>
           <div className='text-xl font-semibold'>
-            {Number(balance).toLocaleString()} USDC
+            {formatCurrency(balance)} USDC
           </div>
         </div>
 
