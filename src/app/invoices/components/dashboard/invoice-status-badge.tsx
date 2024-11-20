@@ -58,8 +58,7 @@ function InvoiceStatusBadge({
 }: BadgeProps) {
   // If the badge is not interactive
   // Return the classic shad style badge
-  // Since cancelled invoices may not be reopened, ignore interactive for cancelled
-  if (!interactive || variant === 'Cancelled') {
+  if (!interactive) {
     return (
       <div
         className={cn(invoiceStatusBadgeVariants({ variant }), className)}
