@@ -98,27 +98,37 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
       img.height >= widgetDimensions.height
     ) {
       setZoom(widgetDimensions.width / img.width);
+    } else if (
+      img.height < widgetDimensions.height &&
+      img.width >= widgetDimensions.width
+    ) {
+      setZoom(widgetDimensions.height / img.height);
     }
 
     setHeight(img.height);
     setWidth(img.width);
   };
 
-  /** Calculates height ratio of image relative to widget dimensions */
-  const calculateHeightRatio = () => {
-    if (height > widgetDimensions.height) {
-      return widgetDimensions.height / height;
+  /**
+  const calculateDimensions = (content: PhotoWidgetContentType) => {
+    const img = new Image();
+    img.src = (content as PhotoWidgetContentType).image;
+
+    if (
+      img.width < widgetDimensions.width &&
+      img.height >= widgetDimensions.height
+    ) {
+      setZoom(widgetDimensions.width / img.width);
     }
-    return height / widgetDimensions.height;
+
+    setHeight(img.height);
+    setWidth(img.width);
   };
+  */
 
   /** In the event the image needs to be scaled up */
   const calculateScaleFactor = (height: number) => {
-    let scaleFactor = 1;
-    if (height <= widgetDimensions.height) {
-      scaleFactor *= widgetDimensions.height / height;
-    }
-    return scaleFactor;
+    return widgetDimensions.height / (height * zoom);
   };
 
   useEffect(() => {
@@ -142,7 +152,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           top: `${
             Math.max(item.y, 0) * (widgetDimensions.height / item.h) -
             height * calculateScaleFactor(height) * zoom +
-            widgetDimensions.height / 2 +
+            widgetDimensions.height +
             margins[0]
           }px`,
         }}
@@ -152,14 +162,22 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
             // we increase the container size by 2x so upscaled image isn't cropped at any point
             containerStyle: {
               position: 'relative',
-              height: `${Math.max(
-                widgetDimensions.height,
-                height * calculateScaleFactor(height) * zoom * 2
-              )}px`,
-              width: `${Math.max(
-                widgetDimensions.width,
-                width * calculateScaleFactor(height) * 2
-              )}px`,
+              height: `${
+                width < height
+                  ? Math.max(
+                      widgetDimensions.height,
+                      height * calculateScaleFactor(height) * zoom * 2
+                    )
+                  : widgetDimensions.height
+              }px`,
+              width: `${
+                width > height
+                  ? Math.max(
+                      widgetDimensions.width,
+                      width * calculateScaleFactor(height) * 2
+                    )
+                  : widgetDimensions.width
+              }px`,
               background: 'transparent',
             },
             cropAreaStyle: {
