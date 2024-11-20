@@ -99,6 +99,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       (initialSize === 'A' || initialSize === 'B')
     );
   };
+
   return (
     <div
       className={cn(
@@ -154,7 +155,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
                       <Crop size={20} strokeWidth={2.5} color='#667085' />
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent>Image fits already.</TooltipContent>
+                  <TooltipContent>Fits perfectly already</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             ) : (

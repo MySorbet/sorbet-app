@@ -1,5 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import {
   WidgetContentType,
   WidgetSize,
@@ -9,8 +11,6 @@ import {
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import { BannerImage } from '@/components/profile/widgets/banner-image';
 
 interface YouTubeWidgetType {
   identifier: string;

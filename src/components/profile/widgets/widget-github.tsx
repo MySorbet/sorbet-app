@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
 import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import {
   GithubWidgetContentType,
@@ -10,7 +11,6 @@ import {
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
-import { BannerImage } from '@/components/profile/widgets/banner-image';
 
 interface GithubWidgetType {
   identifier: string;

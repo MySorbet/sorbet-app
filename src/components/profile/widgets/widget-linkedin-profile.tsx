@@ -5,7 +5,6 @@ import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-im
 import { cn } from '@/lib/utils';
 import { LinkedInProfileWidgetContentType, WidgetSize } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
 import { WidgetIcon } from './widget-icon';
 

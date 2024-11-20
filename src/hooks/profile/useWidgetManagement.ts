@@ -8,26 +8,24 @@ import {
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
+import { useRestoreWidgetImage } from '@/hooks/widgets/useRestoreWidgetImage';
 import { useUpdateWidgetContent } from '@/hooks/widgets/useUpdateWidgetContent';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import {
   BehanceWidgetContentType,
+  DribbbleWidgetContentType,
   GithubWidgetContentType,
   LinkWidgetContentType,
   PhotoWidgetContentType,
   SoundcloudTrackContentType,
   SubstackWidgetContentType,
   TwitterWidgetContentType,
+  WidgetContentType,
   WidgetDimensions,
   WidgetLayoutItem,
-  YoutubeWidgetContentType,
-  DribbbleWidgetContentType,
   WidgetType,
-  WidgetContentType,
+  YoutubeWidgetContentType,
 } from '@/types';
-
-import { restoreWidgetImage } from '@/api/widgets';
-import { useRestoreWidgetImage } from '@/hooks/widgets/useRestoreWidgetImage';
 
 interface WidgetManagementProps {
   userId: string;
@@ -176,7 +174,6 @@ export const useWidgetManagement = ({
               (existingItem.content as PhotoWidgetContentType).image =
                 widgetUrl;
               break;
-
             case 'Link':
               (existingItem.content as LinkWidgetContentType).heroImageUrl =
                 widgetUrl;
@@ -242,6 +239,11 @@ export const useWidgetManagement = ({
       content: WidgetContentType
     ) => {
       try {
+        const existingItem = layout.find((item) => item.i === key);
+        if (!existingItem) {
+          throw new Error('Failed to find widget to update.');
+        }
+
         await restoreWidgetImageAsync({
           key,
           type,
@@ -256,7 +258,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout, updateWidgetContentAsync]
+    [layout, restoreWidgetImageAsync]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */

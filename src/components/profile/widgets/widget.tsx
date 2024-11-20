@@ -230,7 +230,6 @@ export const Widget: React.FC<WidgetProps> = ({
           <SpotifyAlbumWidget
             content={content as SpotifyWidgetContentType}
             size={widgetSize}
-            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -240,7 +239,6 @@ export const Widget: React.FC<WidgetProps> = ({
           <SpotifySongWidget
             content={content as SpotifyWidgetContentType}
             size={widgetSize}
-            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -266,7 +264,6 @@ export const Widget: React.FC<WidgetProps> = ({
           <InstagramWidget
             content={content as InstagramWidgetContentType}
             size={widgetSize}
-            redirectUrl={redirectUrl}
           />
         );
         break;

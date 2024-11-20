@@ -1,5 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -10,11 +12,8 @@ import {
   WidgetType,
 } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
 import { WidgetIcon } from './widget-icon';
-import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 
 interface TwitterWidgetProps {
   identifier: string;
@@ -48,15 +47,6 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   handleRestoreImage,
 }) => {
   const { handle, bio, bannerImage, profileImage } = content;
-
-  const openWidgetLink = () => {
-    if (bannerImage) {
-      const newWindow = window.open(bannerImage, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-    }
-  };
 
   const restoreImage = async () => {
     await handleRestoreImage(

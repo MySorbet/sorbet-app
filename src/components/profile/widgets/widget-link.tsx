@@ -1,13 +1,17 @@
 import { Link } from 'lucide-react';
 import React, { Dispatch, SetStateAction } from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
 import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import { cn } from '@/lib/utils';
-import { LinkWidgetContentType, WidgetSize } from '@/types';
+import {
+  LinkWidgetContentType,
+  WidgetContentType,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
-import { BannerImage } from '@/components/profile/widgets/banner-image';
 
 interface LinkWidgetProps {
   /** The content from link for the widget to render */
@@ -19,6 +23,13 @@ interface LinkWidgetProps {
   showControls?: boolean;
   /** The size of the widget to render */
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 /**
@@ -32,16 +43,13 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
   removeImage,
   showControls,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   const { title, iconUrl, heroImageUrl } = content;
 
-  const openWidgetLink = () => {
-    if (heroImageUrl) {
-      const newWindow = window.open(heroImageUrl, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-    }
+  const restoreImage = async () => {
+    await handleRestoreImage(identifier, 'Link', redirectUrl ?? '', content); // Call the mutation with the image URL
   };
 
   switch (size) {
@@ -56,7 +64,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={heroImageUrl ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -81,7 +89,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={heroImageUrl ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -107,7 +115,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
               {showControls && (
                 <ModifyImageWidget
                   hasImage={heroImageUrl ? true : false}
-                  openWidgetLink={openWidgetLink}
+                  restoreImage={restoreImage}
                   setErrorInvalidImage={setErrorInvalidImage}
                   identifier={identifier}
                   addImage={addImage}
@@ -131,7 +139,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={heroImageUrl ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}

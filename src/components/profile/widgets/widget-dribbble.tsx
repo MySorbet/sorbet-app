@@ -1,5 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import {
   DribbbleWidgetContentType,
   WidgetContentType,
@@ -10,8 +12,6 @@ import {
 import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
 import { WidgetIcon } from './widget-icon';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import { BannerImage } from '@/components/profile/widgets/banner-image';
 
 interface DribbbleWidgetType {
   identifier: string;

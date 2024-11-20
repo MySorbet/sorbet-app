@@ -11,11 +11,14 @@ export const BannerImage: React.FC<{ src?: string; className?: string }> = ({
   return (
     <div
       className={cn(
-        'flex h-full w-full items-center justify-center overflow-hidden rounded-2xl',
-        !src && 'bg-gray-200',
+        'relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl',
+        !src && 'bg-gray-100',
         className
       )}
     >
+      {!src && (
+        <div className='absolute inset-0 bg-[url("/svg/empty-widget-background.svg")] bg-cover bg-center opacity-50' />
+      )}
       {src && src !== '' ? (
         <>
           <img
@@ -26,7 +29,7 @@ export const BannerImage: React.FC<{ src?: string; className?: string }> = ({
           <ImageOverlay />
         </>
       ) : (
-        <span className='text-muted-foreground text-sm font-semibold'>
+        <span className='text-sm font-semibold text-[#344054]'>
           Nothing to see here
         </span>
       )}

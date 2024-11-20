@@ -1,8 +1,14 @@
-import { Image03, LinkExternal02 } from '@untitled-ui/icons-react';
+import { Image03 } from '@untitled-ui/icons-react';
 import { Trash2 } from 'lucide-react';
-import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface ModifyImageWidgetProps {
@@ -58,41 +64,66 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
         className
       )}
     >
-      <div className={btnClass}>
-        <label>
-          <input
-            type='file'
-            className='hidden'
-            onChange={handleImageUpload}
-            accept='image/*'
-          />
-          <Image03 width={24} height={24} strokeWidth={2.5} />
-        </label>
-      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className={btnClass}>
+              <label>
+                <input
+                  type='file'
+                  className='hidden'
+                  onChange={handleImageUpload}
+                  accept='image/*'
+                />
+                <Image03 width={24} height={24} strokeWidth={2.5} />
+              </label>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>Add custom picture</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       {hasImage ? (
         <>
-          <div className={btnClass} onClick={restoreImage}>
-            <LinkedPictureIcon className='text-white' />
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className={btnClass} onClick={restoreImage}>
+                  <LinkedPictureIcon className='text-white' />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>Use website picture</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           <div className={dividerClass} />
-          <div className={btnClass} onClick={handleImageRemove}>
-            <Trash2 size={18} />
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className={btnClass} onClick={handleImageRemove}>
+                  <Trash2 size={18} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>Delete picture</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </>
       ) : (
         <>
-          <div className={dividerClass} />
-          <div className={btnClass} onClick={restoreImage}>
-            <LinkedPictureIcon className='text-[#344054]' />
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className={btnClass} onClick={restoreImage}>
+                  <LinkedPictureIcon className='text-white' />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>Use website picture</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </>
       )}
     </div>
   );
 };
-
-import React from 'react';
 
 interface LinkedPictureIconProps {
   className?: string;

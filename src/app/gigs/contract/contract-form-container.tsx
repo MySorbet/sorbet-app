@@ -1,3 +1,6 @@
+import { CircleCheckBig } from 'lucide-react';
+import React from 'react';
+
 import {
   ContractFormFixedPrice,
   ContractFormFixedPriceData,
@@ -7,8 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { OfferType } from '@/types';
-import { CircleCheckBig } from 'lucide-react';
-import React from 'react';
 
 export interface ContractContainerProps {
   tab: string;
@@ -55,13 +56,13 @@ export const ContractFormContainer = ({
           <TabsList className='grid w-full grid-cols-2 bg-[#FAFAFA] rounded-full h-12 shadow-[0px_1px_2px_0px_#1018280D] w-[85%] lg:w-[60%]'>
             <TabsTrigger
               value='milestones'
-              className={`rounded-full data-[state=active]:bg-sorbet data-[state=active]:text-white h-10`}
+              className="rounded-full data-[state=active]:bg-sorbet data-[state=active]:text-white h-10"
             >
               Milestones
             </TabsTrigger>
             <TabsTrigger
               value='fixed-price'
-              className={`rounded-full data-[state=active]:bg-sorbet data-[state=active]:text-white h-10`}
+              className="rounded-full data-[state=active]:bg-sorbet data-[state=active]:text-white h-10"
             >
               Fixed Price
             </TabsTrigger>
