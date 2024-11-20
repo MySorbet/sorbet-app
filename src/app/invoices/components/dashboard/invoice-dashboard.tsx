@@ -154,6 +154,7 @@ export const InvoiceDashboard = ({
           }}
           isLoading={isLoading}
           onInvoiceStatusChange={handleInvoiceStatusChange}
+          onCreateInvoice={onCreateNew}
         />
       </div>
     </>
