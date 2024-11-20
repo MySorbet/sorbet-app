@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
-import { WidgetSize, YoutubeWidgetContentType } from '@/types';
+import {
+  WidgetContentType,
+  WidgetSize,
+  WidgetType,
+  YoutubeWidgetContentType,
+} from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
@@ -15,6 +20,13 @@ interface YouTubeWidgetType {
   removeImage: (key: string) => Promise<void>;
   content: YoutubeWidgetContentType;
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
@@ -25,6 +37,8 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
   removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   let widgetLayout;
 
@@ -35,13 +49,8 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
     </>
   );
 
-  const openWidgetLink = () => {
-    if (content.thumbnail) {
-      const newWindow = window.open(content.thumbnail, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-    }
+  const restoreImage = async () => {
+    await handleRestoreImage(identifier, 'Youtube', redirectUrl ?? '', content); // Call the mutation with the image URL
   };
 
   switch (size) {
@@ -58,7 +67,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.thumbnail ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -89,7 +98,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.thumbnail ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -115,7 +124,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.thumbnail ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -137,7 +146,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.thumbnail ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}

@@ -3,7 +3,12 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { TwitterWidgetContentType, WidgetSize } from '@/types';
+import {
+  TwitterWidgetContentType,
+  WidgetContentType,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
@@ -19,6 +24,13 @@ interface TwitterWidgetProps {
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 /**
@@ -32,6 +44,8 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   addImage,
   removeImage,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   const { handle, bio, bannerImage, profileImage } = content;
 
@@ -44,7 +58,14 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
     }
   };
 
-  console.log(showControls);
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'TwitterProfile',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
+  };
 
   switch (size) {
     case 'A':
@@ -59,7 +80,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -86,7 +107,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -114,7 +135,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
               {showControls && (
                 <ModifyImageWidget
                   hasImage={bannerImage ? true : false}
-                  openWidgetLink={openWidgetLink}
+                  restoreImage={restoreImage}
                   setErrorInvalidImage={setErrorInvalidImage}
                   identifier={identifier}
                   addImage={addImage}
@@ -140,7 +161,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}

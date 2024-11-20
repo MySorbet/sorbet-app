@@ -1,22 +1,32 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
 import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import { GithubWidgetContentType, WidgetSize } from '@/types';
+import {
+  GithubWidgetContentType,
+  WidgetContentType,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { restoreWidgetImage } from '@/api/widgets';
 
 interface GithubWidgetType {
   identifier: string;
-  showControls?: boolean;
+  showControls: boolean;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
-  redirectUrl?: string;
   content: GithubWidgetContentType;
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 export const GithubWidget: React.FC<GithubWidgetType> = ({
@@ -25,19 +35,15 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
   setErrorInvalidImage,
   addImage,
   removeImage,
-  redirectUrl,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   let widgetLayout;
 
   const restoreImage = async () => {
-    try {
-      await restoreWidgetImage(identifier, 'Github', redirectUrl, content); // Call the mutation with the image URL
-      console.log('here');
-    } catch (error) {
-      console.error('Error restoring image:', error);
-    }
+    await handleRestoreImage(identifier, 'Github', redirectUrl ?? '', content); // Call the mutation with the image URL
   };
 
   switch (size) {

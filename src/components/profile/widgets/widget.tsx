@@ -57,12 +57,19 @@ interface WidgetProps {
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
   handleEditLink: (key: string, url: string) => void;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
   setActiveWidget: (widgetId: string | null) => void;
   activeWidget: string | null;
   widgetDimensions: {
     width: number;
     height: number;
   };
+
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
@@ -79,6 +86,7 @@ export const Widget: React.FC<WidgetProps> = ({
   handleResize,
   handleRemove,
   handleEditLink,
+  handleRestoreImage,
   draggedRef,
   setActiveWidget,
   activeWidget,
@@ -151,6 +159,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as DribbbleWidgetContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -165,6 +174,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as BehanceWidgetContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -179,6 +189,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as MediumArticleContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -193,6 +204,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as YoutubeWidgetContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -208,6 +220,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as SubstackWidgetContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -217,6 +230,7 @@ export const Widget: React.FC<WidgetProps> = ({
           <SpotifyAlbumWidget
             content={content as SpotifyWidgetContentType}
             size={widgetSize}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -226,6 +240,7 @@ export const Widget: React.FC<WidgetProps> = ({
           <SpotifySongWidget
             content={content as SpotifyWidgetContentType}
             size={widgetSize}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -241,6 +256,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as SoundcloudTrackContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -266,6 +282,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as GithubWidgetContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -291,6 +308,7 @@ export const Widget: React.FC<WidgetProps> = ({
             content={content as TwitterWidgetContentType}
             size={widgetSize}
             redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -314,6 +332,8 @@ export const Widget: React.FC<WidgetProps> = ({
             showControls={showControls}
             content={content as LinkWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;

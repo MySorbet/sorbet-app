@@ -2,7 +2,12 @@ import React, { Dispatch, SetStateAction } from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
 import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import { SoundcloudTrackContentType, WidgetSize } from '@/types';
+import {
+  SoundcloudTrackContentType,
+  WidgetContentType,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { PlayButton } from './play-button';
@@ -16,6 +21,13 @@ interface SoundcloudWidgetType {
   removeImage: (key: string) => Promise<void>;
   content: SoundcloudTrackContentType;
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
@@ -26,6 +38,8 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
   removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   let widgetLayout;
 
@@ -36,13 +50,13 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
     </>
   );
 
-  const openWidgetLink = () => {
-    if (content.artwork) {
-      const newWindow = window.open(content.artwork, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-    }
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'SoundcloudSong',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
   };
 
   switch (size) {
@@ -58,7 +72,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.artwork ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -90,7 +104,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.artwork ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -121,7 +135,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.artwork ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -146,7 +160,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.artwork ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}

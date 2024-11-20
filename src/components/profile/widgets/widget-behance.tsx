@@ -1,6 +1,11 @@
 import React, { Dispatch, SetStateAction } from 'react';
 
-import { BehanceWidgetContentType, WidgetSize } from '@/types';
+import {
+  BehanceWidgetContentType,
+  WidgetContentType,
+  WidgetSize,
+  WidgetType,
+} from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
@@ -16,6 +21,13 @@ interface BehanceWidgetType {
   removeImage: (key: string) => Promise<void>;
   content: BehanceWidgetContentType;
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 export const BehanceWidget: React.FC<BehanceWidgetType> = ({
@@ -26,15 +38,13 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
   removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   let widgetLayout;
-  const openWidgetLink = () => {
-    if (content.image) {
-      const newWindow = window.open(content.image, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-    }
+
+  const restoreImage = async () => {
+    await handleRestoreImage(identifier, 'Behance', redirectUrl ?? '', content); // Call the mutation with the image URL
   };
 
   switch (size) {
@@ -56,7 +66,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -90,7 +100,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -117,7 +127,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -144,7 +154,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={content.image ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}

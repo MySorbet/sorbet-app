@@ -63,6 +63,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleFileDrop,
     handleWidgetEditLink,
     handleNewImageAdd,
+    handleRestoreImage,
     handleImageRemoval,
     handleImageCropping,
     handleAddMultipleWidgets,
@@ -202,6 +203,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         handleResize={handleWidgetResize}
                         handleRemove={handleWidgetRemove}
                         handleEditLink={handleWidgetEditLink}
+                        handleRestoreImage={handleRestoreImage}
                         content={item.content}
                         initialSize={item.size}
                         redirectUrl={item.redirectUrl}
@@ -293,6 +295,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   handleResize={handleWidgetResize}
                   handleRemove={handleWidgetRemove}
                   handleEditLink={handleWidgetEditLink}
+                  handleRestoreImage={handleRestoreImage}
                   content={item.content}
                   initialSize={item.size}
                   redirectUrl={item.redirectUrl}

@@ -22,7 +22,12 @@ import {
   WidgetLayoutItem,
   YoutubeWidgetContentType,
   DribbbleWidgetContentType,
+  WidgetType,
+  WidgetContentType,
 } from '@/types';
+
+import { restoreWidgetImage } from '@/api/widgets';
+import { useRestoreWidgetImage } from '@/hooks/widgets/useRestoreWidgetImage';
 
 interface WidgetManagementProps {
   userId: string;
@@ -46,6 +51,7 @@ export const useWidgetManagement = ({
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
   const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
+  const { mutateAsync: restoreWidgetImageAsync } = useRestoreWidgetImage();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
 
@@ -141,9 +147,7 @@ export const useWidgetManagement = ({
   /** Handles the replacement of display images for widgets */
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
-      setAddingWidget(true);
       let widgetUrl = '';
-
       try {
         const existingItem = layout.find((item) => item.i === key);
 
@@ -225,18 +229,39 @@ export const useWidgetManagement = ({
         toast(`We couldn't update a widget`, {
           description: message,
         });
-      } finally {
-        setAddingWidget(false);
       }
     },
     [layout, uploadWidgetsImageAsync, updateWidgetContentAsync]
   );
 
+  const handleRestoreImage = useCallback(
+    async (
+      key: string,
+      type: WidgetType,
+      redirectUrl: string,
+      content: WidgetContentType
+    ) => {
+      try {
+        await restoreWidgetImageAsync({
+          key,
+          type,
+          redirectUrl,
+          content,
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast(`We couldn't update a widget`, {
+          description: message,
+        });
+      }
+    },
+    [layout, updateWidgetContentAsync]
+  );
+
   /** Handles the replacement of display images for Link and Photo Widgets */
   const handleImageRemoval = useCallback(
     async (key: string) => {
-      setAddingWidget(true);
-
       try {
         const existingItem = layout.find((item) => item.i === key);
 
@@ -293,8 +318,6 @@ export const useWidgetManagement = ({
         toast(`We couldn't remove the picture`, {
           description: message,
         });
-      } finally {
-        setAddingWidget(false);
       }
     },
     [layout, updateWidgetContentAsync]
@@ -303,7 +326,6 @@ export const useWidgetManagement = ({
   /** Handles the cropping of images, the id of the image being cropped should be passed */
   const handleImageCropping = useCallback(
     async (key: string, croppedArea: Area) => {
-      setAddingWidget(true);
       try {
         const existingItem = layout.find((item) => item.i === key);
 
@@ -322,8 +344,6 @@ export const useWidgetManagement = ({
         toast(`We couldn't crop this widget`, {
           description: message,
         });
-      } finally {
-        setAddingWidget(false);
       }
     },
     [layout, updateWidgetContentAsync]
@@ -451,6 +471,7 @@ export const useWidgetManagement = ({
     handleFileDrop,
     handleWidgetEditLink,
     handleNewImageAdd,
+    handleRestoreImage,
     handleImageRemoval,
     handleImageCropping,
     handleAddMultipleWidgets,
