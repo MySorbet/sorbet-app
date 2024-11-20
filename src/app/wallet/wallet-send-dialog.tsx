@@ -345,6 +345,7 @@ const Step1 = ({
                         errors.recipientWalletAddress &&
                         'border border-red-500 focus-visible:ring-red-500'
                       }
+                      spellCheck={false}
                     />
                   </FormControl>
                   <FormDescription className='text-sm font-normal text-[#667085]'>
