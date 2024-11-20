@@ -6,6 +6,7 @@ import { DateRange } from 'react-day-picker';
 import { Spinner } from '@/components/common';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
 import { env } from '@/lib/env';
+import { formatWalletAddress } from '@/app/wallet/utils';
 
 export interface TableTransaction {
   account: string;
@@ -38,10 +39,6 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
 }) => {
   const handleTxnClick = (hash: string) => {
     window.open(`${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}`, '_blank');
-  };
-
-  const truncateAccount = (account: string) => {
-    return `${account.slice(0, 5)}...${account.slice(-5)}`;
   };
 
   return (
@@ -134,7 +131,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                     </div>
                     <div className='ml-4'>
                       <div className='text-sm font-medium text-gray-900'>
-                        {truncateAccount(transaction.account)}
+                        {formatWalletAddress(transaction.account)}
                       </div>
                       <div className='mt-1 text-xs text-[#595B5A]'>
                         {transaction.type === 'Self-transfer'
