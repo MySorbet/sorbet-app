@@ -92,10 +92,8 @@ function InvoiceStatusBadge({
         >
           {/* Filter out the current variant (since you don't need to change it) */}
           {/* Filter out overdue since it is cosmetic */}
-          {/* Filter out open since you may not reopen an invoice */}
           {InvoiceStatuses.filter(
-            (status) =>
-              status !== variant && status !== 'Overdue' && status !== 'Open'
+            (status) => status !== variant && status !== 'Overdue'
           ).map((status) => (
             <DropdownMenuRadioItem key={status} value={status} className='pl-2'>
               {status}
