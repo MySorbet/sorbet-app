@@ -40,6 +40,10 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
     window.open(`${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}`, '_blank');
   };
 
+  const truncateAccount = (account: string) => {
+    return `${account.slice(0, 5)}...${account.slice(-5)}`;
+  };
+
   return (
     <div className='relative min-h-[100%] rounded-xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
       {isLoading && (
@@ -130,7 +134,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                     </div>
                     <div className='ml-4'>
                       <div className='text-sm font-medium text-gray-900'>
-                        {transaction.account}
+                        {truncateAccount(transaction.account)}
                       </div>
                       <div className='mt-1 text-xs text-[#595B5A]'>
                         {transaction.type === 'Self-transfer'

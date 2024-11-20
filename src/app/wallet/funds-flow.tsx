@@ -22,6 +22,7 @@ const BalanceItem: React.FC<BalanceItemProps> = ({
   account,
   balance,
 }) => {
+  const truncatedAccount = `${account.slice(0, 5)}...${account.slice(-5)}`;
   return (
     <div className='flex items-center justify-between'>
       <div className='flex items-center gap-3'>
@@ -29,7 +30,7 @@ const BalanceItem: React.FC<BalanceItemProps> = ({
           {icon}
         </span>
         <div className='flex flex-col'>
-          <span className='text-sm font-medium'>{account}</span>
+          <span className='text-sm font-medium'>{truncatedAccount}</span>
           <span className='mt-1 text-xs text-[#595B5A]'>{label}</span>
         </div>
       </div>

@@ -121,9 +121,9 @@ export const WalletContainer = () => {
   return (
     <Authenticated>
       <Header />
-      <div className='container my-16 pb-8'>
+      <div className='container my-16 max-w-[1080px] pb-8'>
         <div className='flex flex-col items-center justify-center gap-6 lg:flex-row'>
-          <div className='lg:w-8/12'>
+          <div className='w-full'>
             <WalletBalance
               balanceHistoryIn={
                 !transactions.money_in

@@ -43,7 +43,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   );
 
   return (
-    <div className='min-h-[100%] min-w-80 rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
+    <div className='min-h-[100%] rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
       <div className='flex flex-col gap-1'>
         <div className='flex items-center justify-between p-6 pb-0'>
           <div>
