@@ -151,7 +151,7 @@ export const WalletContainer = () => {
             />
           </div>
           <div className='lg:w-4/12'>
-            <MyAccounts usdcBalance={usdcBalance} />
+            <MyAccounts usdcBalance={usdcBalance} address={walletAddress} />
           </div>
         </div>
         <div className='mb-6 mt-12 flex justify-between'>
