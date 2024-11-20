@@ -50,7 +50,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
           <div>
             <div className='flex items-center gap-2'>
               <span className='rounded-full bg-black p-2 text-white'>
-                <Wallet03 width={18} height={18} />
+                <Wallet03 className='size-[1.125rem]' />
               </span>
               <span className='text-md font-medium text-[#595B5A]'>
                 BALANCE
@@ -71,8 +71,8 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
           </div>
           <div className='flex gap-4'>
             <CircleButton
-              icon={<Plus size={26} />}
-              label='Top up'
+              icon={<Plus className='size-6' />}
+              label='Deposit'
               onClick={onTopUp}
             />
             <CircleButton

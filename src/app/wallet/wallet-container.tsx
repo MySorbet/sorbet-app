@@ -122,7 +122,7 @@ export const WalletContainer = () => {
   return (
     <Authenticated>
       <Header />
-      <div className='container my-16 max-w-[1080px] pb-8'>
+      <div className='container my-16 max-w-[1200px] pb-8'>
         <div className='flex flex-col gap-6 lg:flex-row'>
           <div className='lg:w-8/12'>
             <WalletBalance
@@ -169,7 +169,7 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money In'
               balance={transactions.total_money_in}
-              icon={<ArrowDown size={14} color='white' />}
+              icon={<ArrowDown className='size-4 text-white' />}
               items={
                 !transactions.money_in
                   ? undefined
@@ -180,9 +180,9 @@ export const WalletContainer = () => {
                         walletAddress?.toLowerCase();
                       return {
                         icon: isAdded ? (
-                          <Plus size={24} color='white' />
+                          <Plus className='size-6 text-white' />
                         ) : (
-                          <ArrowDown size={24} color='white' />
+                          <ArrowDown className='size-6 text-white' />
                         ),
                         label: isAdded ? 'Added' : 'Received',
                         account: transaction.sender,
@@ -197,12 +197,12 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money Out'
               balance={transactions.total_money_out}
-              icon={<ArrowUp size={14} color='white' />}
+              icon={<ArrowUp className='size-4 text-white' />}
               items={
                 !transactions.money_out
                   ? undefined
                   : transactions.money_out.map((transaction: Transaction) => ({
-                      icon: <ArrowUp size={24} color='white' />,
+                      icon: <ArrowUp className='size-6 text-white' />,
                       label: 'Sent',
                       account: transaction.receiver,
                       balance: transaction.value,

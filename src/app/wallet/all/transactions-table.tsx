@@ -56,7 +56,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
         <div className='mb-4 grid grid-cols-12 gap-4'>
           <div className='relative col-span-12 lg:col-span-8'>
             <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
-              <Search size={20} />
+              <Search className='size-5' />
             </div>
             <input
               type='text'
@@ -75,7 +75,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                 triggerButton={
                   <button className='text-md text-muted-foreground flex w-full items-center justify-center rounded-md border border-gray-300 px-4 py-2 focus:outline-none'>
                     Date
-                    <ChevronDown size={16} className='ml-1' />
+                    <ChevronDown className='ml-1 size-4' />
                   </button>
                 }
               />
@@ -123,13 +123,13 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                     <div className='h-12 w-12 flex-shrink-0'>
                       <span className='flex h-12 w-12 items-center justify-center rounded-full bg-[#D7D7D7]'>
                         {transaction.type === 'Sent' && (
-                          <ArrowDown size={24} color='white' />
+                          <ArrowDown className='size-6 text-white' />
                         )}
                         {transaction.type === 'Received' && (
-                          <Send size={24} color='white' />
+                          <Send className='size-6 text-white' />
                         )}
                         {transaction.type === 'Self-transfer' && (
-                          <Plus size={24} color='white' />
+                          <Plus className='size-6 text-white' />
                         )}
                       </span>
                     </div>
@@ -159,7 +159,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                       {transaction.type === 'Sent' ? '-' : '+'}{' '}
                       {formatCurrency(transaction.amount)} USDC
                     </div>
-                    <LinkExternal02 width={18} height={18} color='#595B5A' />
+                    <LinkExternal02 className='size-[1.125rem] text-[#595B5A]' />
                   </div>
                 </td>
               </tr>
