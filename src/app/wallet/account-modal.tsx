@@ -24,7 +24,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
       <DialogContent
         className='p-8 sm:rounded-[32px]'
         hideDefaultCloseButton={true}
-        aria-describedby={undefined}
+        aria-describedby='Account info modal'
       >
         <DialogTitle>
           <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
