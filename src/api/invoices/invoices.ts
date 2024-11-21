@@ -82,6 +82,21 @@ export const payInvoice = async (id: string) => {
 };
 
 /**
+ * Marks an invoice as open.
+ *
+ * @param id - The id of the invoice to mark as open
+ * @returns The opened invoice
+ */
+export const openInvoice = async (id: string) => {
+  const res = await axios.put<Invoice>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}/open`,
+    {}, // No data on the put, just hitting the endpoint opens the invoice
+    await withAuthHeader()
+  );
+  return res.data;
+};
+
+/**
  * Checks if an invoice number is available and gets recommendations if needed.
  *
  * @param invoiceNumber - Optional invoice number to check. If not provided, will only return recommendations

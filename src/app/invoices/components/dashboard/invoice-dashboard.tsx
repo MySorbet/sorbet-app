@@ -3,12 +3,14 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
-import { useCancelInvoice } from '@/app/invoices/hooks/use-cancel-invoice';
-import { useInvoicePrinter } from '@/app/invoices/hooks/use-invoice-printer';
-import { usePayInvoice } from '@/app/invoices/hooks/use-pay-invoice';
 import { Button } from '@/components/ui/button';
 
+import { useCancelInvoice } from '../../hooks/use-cancel-invoice';
+import { useInvoicePrinter } from '../../hooks/use-invoice-printer';
+import { useOpenInvoice } from '../../hooks/use-open-invoice';
+import { usePayInvoice } from '../../hooks/use-pay-invoice';
 import InvoiceSheet from './invoice-sheet';
 import { InvoiceTable } from './invoice-table';
 import SummaryCard from './summary-card';
@@ -70,6 +72,7 @@ export const InvoiceDashboard = ({
   // TODO: Loading states
   // TODO: This could merge with cancel
   const { payInvoiceMutation, isPending: isPayingInvoice } = usePayInvoice();
+  const { openInvoiceMutation, isPending: isOpeningInvoice } = useOpenInvoice();
   const handleInvoiceStatusChange = async (
     invoice: Invoice,
     status: InvoiceStatus
@@ -78,9 +81,10 @@ export const InvoiceDashboard = ({
       await cancelInvoiceMutation(invoice.id);
     } else if (status === 'Paid') {
       await payInvoiceMutation(invoice.id);
+    } else if (status === 'Open') {
+      await openInvoiceMutation(invoice.id);
     } else {
-      // Currently, you can only cancel or pay an invoice
-      // You cannot mark an invoice as open (reopen) and overdue is cosmetic
+      toast.error(`Cannot change invoice status to ${status}`);
       return;
     }
 
