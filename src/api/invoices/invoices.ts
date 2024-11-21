@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
-import { Invoice } from '@/app/invoices/components/dashboard/utils';
+import {
+  CheckInvoiceNumberResponse,
+  Invoice,
+} from '@/app/invoices/components/dashboard/utils';
 import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../withAuthHeader';
@@ -74,6 +77,24 @@ export const payInvoice = async (id: string) => {
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/${id}/paid`,
     {}, // No data on the put, just hitting the endpoint marks the invoice as paid
     await withAuthHeader()
+  );
+  return res.data;
+};
+
+/**
+ * Checks if an invoice number is available and gets recommendations if needed.
+ *
+ * @param invoiceNumber - Optional invoice number to check. If not provided, will only return recommendations
+ * @returns Object containing availability status and recommended number if applicable
+ */
+export const checkInvoiceNumber = async (invoiceNumber?: string) => {
+  const res = await axios.get<CheckInvoiceNumberResponse>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/check-number`,
+    await withAuthHeader({
+      params: {
+        invoiceNumber,
+      },
+    })
   );
   return res.data;
 };

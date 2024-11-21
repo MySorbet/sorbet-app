@@ -16,6 +16,12 @@ export type Invoice = InvoiceFormData & {
   userId: string;
 };
 
+// Should match the API response from `/invoices/check-number`
+export type CheckInvoiceNumberResponse = {
+  isAvailable: boolean;
+  recommendation?: string;
+};
+
 /**
  * Calculates the total monetary value of a list of invoice items.
  * TODO: Consider doing this server side (or doing it here and then checking the value with the server)
