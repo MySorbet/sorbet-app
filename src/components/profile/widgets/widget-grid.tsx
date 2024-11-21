@@ -137,7 +137,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 w={existingItem.w}
                 h={existingItem.h}
                 type={existingItem.type}
-                rowHeight={rowHeight}
                 margins={[25, 25]}
                 handleEditLink={handleWidgetEditLink}
                 content={existingItem.content}
@@ -153,7 +152,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 activeWidget={activeWidget}
                 setActiveWidget={setActiveWidget}
                 handleImageCropping={handleImageCropping}
-                cols={cols}
               />
             </div>
           ) : (

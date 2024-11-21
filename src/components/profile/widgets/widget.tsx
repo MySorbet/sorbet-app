@@ -379,6 +379,7 @@ export const Widget: React.FC<WidgetProps> = ({
     removeImage,
     setErrorInvalidImage,
     showControls,
+    handleRestoreImage,
   ]);
 
   /** For photo widgets to disable cropping for square images */
