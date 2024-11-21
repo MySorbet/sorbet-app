@@ -11,7 +11,13 @@ import {
 import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { formatCurrency, formatDate, Invoice, InvoiceStatus } from './utils';
+import {
+  checkOverdue,
+  formatCurrency,
+  formatDate,
+  Invoice,
+  InvoiceStatus,
+} from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({
@@ -75,9 +81,8 @@ export const InvoiceTable = ({
               >
                 <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                 <TableCell>
-                  {/* TODO: Render overdue badge based on date */}
                   <InvoiceStatusBadge
-                    variant={invoice.status}
+                    variant={checkOverdue(invoice.dueDate, invoice.status)}
                     interactive
                     onValueChange={(status) =>
                       onInvoiceStatusChange?.(invoice, status)

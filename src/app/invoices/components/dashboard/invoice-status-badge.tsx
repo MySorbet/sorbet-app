@@ -89,11 +89,13 @@ function InvoiceStatusBadge({
           onClick={(e) => e.stopPropagation()} // Included to prevent the click event from bubbling up to UI behind the dropdown
           onValueChange={(value) => onValueChange?.(value as InvoiceStatus)} // Cast is safe because all children are valid InvoiceStatus values
         >
-          {/* Filter out the current variant (since you don't need to change it) */}
-          {/* Filter out overdue since it is cosmetic */}
-          {InvoiceStatuses.filter(
-            (status) => status !== variant && status !== 'Overdue'
-          ).map((status) => (
+          {InvoiceStatuses.filter((status) => {
+            return (
+              status !== variant && // Filter out the current variant (since you don't need to change it)
+              status !== 'Overdue' && // Filter out overdue since it is cosmetic
+              !(variant === 'Overdue' && status === 'Open') // If the badge is overdue, you can't mark it as open (b/c it's already open)
+            );
+          }).map((status) => (
             <DropdownMenuRadioItem key={status} value={status} className='pl-2'>
               {status}
             </DropdownMenuRadioItem>
