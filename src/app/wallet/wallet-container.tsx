@@ -13,6 +13,7 @@ import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
 import { FundsFlow } from '@/app/wallet/funds-flow';
+import { MyAccounts } from '@/app/wallet/my-accounts';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
@@ -20,7 +21,6 @@ import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
-import { MyAccounts } from '@/app/wallet/my-accounts';
 
 export const WalletContainer = () => {
   const [reload, setReload] = useState(false);

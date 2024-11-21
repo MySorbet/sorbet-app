@@ -1,4 +1,6 @@
-import { X } from '@untitled-ui/icons-react';
+import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { CloseButton } from '@/components/common/x-button';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -6,22 +8,19 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
-import { Button } from '@/components/ui/button';
-
 interface AccountModalProps {
-  accountModalVisible: boolean;
+  isOpen: boolean;
+  handleOpenChange: (open: boolean) => void;
   address: string | null;
-  handleModalVisible: (open: boolean) => void;
 }
 
 export const AccountModal: React.FC<AccountModalProps> = ({
-  accountModalVisible,
+  isOpen,
+  handleOpenChange,
   address,
-  handleModalVisible,
 }) => {
   return (
-    <Dialog open={accountModalVisible} onOpenChange={handleModalVisible}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent
         className='p-8 sm:rounded-[32px]'
         hideDefaultCloseButton={true}
@@ -30,10 +29,11 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         <DialogTitle>
           <DialogHeader className='flex w-full flex-row items-start justify-between text-2xl font-semibold'>
             <p>USDC account</p>
-            <X
-              className='h-6 w-6 cursor-pointer text-[#98A2B3] transition ease-out hover:scale-110'
-              onClick={() => handleModalVisible(false)}
-            />
+            <CloseButton
+              onClick={() => handleOpenChange(false)}
+              height={6}
+              width={6}
+            ></CloseButton>
           </DialogHeader>
         </DialogTitle>
         <div className='mt-6 text-sm text-[#595B5A]'>
@@ -43,10 +43,10 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           <div className='text-sm text-[#595B5A]'>{address}</div>
           <div className='ml-auto flex items-center justify-end'>
             <CopyIconButton
-              copyIconClassName={'size-5 text-[#D0D5DD]'}
-              checkIconClassName={'size-5'}
+              copyIconClassName='size-5 text-[#D0D5DD]'
+              checkIconClassName='size-5'
               onCopy={() => {
-                navigator.clipboard.writeText(address);
+                navigator.clipboard.writeText(address ?? '');
               }}
             />
           </div>
@@ -54,7 +54,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
         <Button
           variant='outline'
           className='mt-4 h-10'
-          onClick={() => handleModalVisible(false)}
+          onClick={() => handleOpenChange(false)}
         >
           <div>Done</div>
         </Button>

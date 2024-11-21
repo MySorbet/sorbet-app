@@ -5,11 +5,11 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { BalanceChart } from '@/app/wallet/balance-chart';
 import { PercentageChange } from '@/app/wallet/percent-change';
 import { SelectDuration } from '@/app/wallet/select-duration';
+import { formatCurrency } from '@/app/wallet/utils';
 import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
-import { formatCurrency } from '@/app/wallet/utils';
 
 interface WalletBalanceProps {
   usdcBalance: string;
