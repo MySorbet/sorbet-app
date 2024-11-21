@@ -29,28 +29,31 @@ export const useGooglePlacesApi = () => {
    * Handler that calls Google Places API to get predictions based on the input value with 300ms debounce
    * Only cities are allowed at the moment. Can easily be changed to allow other types of places.
    */
-  const handleLocationInputChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
-      setPredictions([]);
-      return;
-    }
-
-    if (!autocompleteRef.current) {
-      autocompleteRef.current = new google.maps.places.AutocompleteService();
-    }
-
-    autocompleteRef.current.getPlacePredictions(
-      { input: e.target.value, types: ['(cities)'] },
-      (
-        predictions: google.maps.places.AutocompletePrediction[] | null,
-        status: google.maps.places.PlacesServiceStatus
-      ) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          setPredictions(predictions || []);
-        }
+  const handleLocationInputChange = debounce(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.value) {
+        setPredictions([]);
+        return;
       }
-    );
-  }, 300);
+
+      if (!autocompleteRef.current) {
+        autocompleteRef.current = new google.maps.places.AutocompleteService();
+      }
+
+      autocompleteRef.current.getPlacePredictions(
+        { input: e.target.value, types: ['(cities)'] },
+        (
+          predictions: google.maps.places.AutocompletePrediction[] | null,
+          status: google.maps.places.PlacesServiceStatus
+        ) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            setPredictions(predictions || []);
+          }
+        }
+      );
+    },
+    300
+  );
 
   /**
    * Clear predictions when the edit modal is closed so it doesnt appear when the user opens the modal again

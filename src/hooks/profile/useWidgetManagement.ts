@@ -223,11 +223,10 @@ export const useWidgetManagement = ({
         console.log(existingItem);
         if (existingItem && existingItem.type === 'SectionTitle') {
           (existingItem.content as SectionTitleWidgetContentType).title = title;
-          const newObj = {
-            ...existingItem,
-            id: existingItem.i, // Replace 'i' with 'id' for patch endpoint
-          };
-          await updateWidgetContentAsync(newObj);
+          await updateWidgetContentAsync({
+            key: existingItem.i,
+            content: existingItem.content,
+          });
         } else {
           throw new Error(`Couldn't edit widget's title`);
         }

@@ -1,19 +1,22 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { updateWidgetContent } from '@/api/widgets';
-import { useToast } from '@/components/ui/use-toast';
-import { WidgetLayoutItem } from '@/types';
+import { WidgetContentType } from '@/types';
 
 export const useUpdateWidgetContent = () => {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (widgetLayoutItem: WidgetLayoutItem) =>
-      await updateWidgetContent(widgetLayoutItem),
+    mutationFn: async ({
+      key,
+      content,
+    }: {
+      key: string;
+      content: WidgetContentType;
+    }) => await updateWidgetContent(key, content),
     onError: () =>
-      toast({
-        title: 'Failed to update widget',
+      toast('Failed to update widget', {
         description: 'If the issue persists, contact support',
       }),
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['widgets'] }),

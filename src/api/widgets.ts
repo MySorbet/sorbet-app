@@ -13,6 +13,15 @@ import {
 
 import { withAuthHeader } from './withAuthHeader';
 
+/** Toggle the appropriate error message based on if it was an Axios issue */
+const catchAndRethrowWidgetError = (error: unknown, message: string) => {
+  if (axios.isAxiosError(error)) {
+    throw new Error(`Axios error, ${message}: ${error.response?.data.message}`);
+  } else {
+    throw new Error(`Non-axios error, ${message}L ${error}`);
+  }
+};
+
 export const getWidgetsByUsername = async (username: string) => {
   try {
     const res = await axios.get(
@@ -20,10 +29,8 @@ export const getWidgetsByUsername = async (username: string) => {
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get widgets for ${username}: ${error.response.data.message}`
-    );
+  } catch (error) {
+    catchAndRethrowWidgetError(error, `Failed to get widgets for ${username}`);
   }
 };
 
@@ -35,9 +42,10 @@ export const getWidgetsForUser = async (userId: string) => {
         await withAuthHeader()
       );
       return response.data;
-    } catch (error: any) {
-      throw new Error(
-        `Failed to fetch widgets for user: ${error.response.data.message}`
+    } catch (error) {
+      catchAndRethrowWidgetError(
+        error,
+        `Failed to fetch widgets for user ${userId}`
       );
     }
   } else {
@@ -55,10 +63,8 @@ export const updateWidgetsBulk = async (
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to update widgets in bulk: ${error.response.data.message}`
-    );
+  } catch (error) {
+    catchAndRethrowWidgetError(error, `Failed to update widgets in bulk`);
   }
 };
 
@@ -67,7 +73,7 @@ export const updateWidget = async (
   widgetLayoutItem: WidgetLayoutItem,
   widgetSize?: WidgetSize
 ) => {
-  let payload: any = {
+  let payload: Partial<WidgetDto> = {
     type: widgetLayoutItem.type,
     content: widgetLayoutItem.content,
     layout: {
@@ -89,37 +95,82 @@ export const updateWidget = async (
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: any) {
-    throw new Error(`Failed to update widget: ${error.response.data.message}`);
+  } catch (error) {
+    catchAndRethrowWidgetError(
+      error,
+      `Failed to update widget with ID ${widgetId}`
+    );
   }
 };
 
-/** Updating the only the content of a widget */
-export const updateWidgetContent = async (
-  widgetLayoutItem: WidgetLayoutItem
+export const restoreWidgetImage = async (
+  widgetId: string,
+  type: WidgetType,
+  redirectUrl: string,
+  content: WidgetContentType
 ) => {
-  // content should be set to what we want already in the payload
-  const payload: { content: WidgetContentType } = {
-    content: widgetLayoutItem.content,
+  try {
+    const payload: Partial<WidgetDto> = {
+      id: widgetId,
+      type: type,
+      redirectUrl: redirectUrl,
+      content: content,
+    };
+    const response = await axios.patch(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/restore-image`,
+      payload,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error) {
+    catchAndRethrowWidgetError(error, `Failed to update widgets in bulk`);
+  }
+};
+
+/** Updating the links of image widgets (only widget's redirectUrl should be updated) */
+export const updateWidgetLink = async (key: string, url: string) => {
+  // redirectUrl should be set to what we want already in the payload
+  const payload: { redirectUrl: string | undefined } = {
+    redirectUrl: url,
   };
 
   try {
     const res = await axios.patch(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${widgetLayoutItem.id}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,
       await withAuthHeader()
     );
     return res.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(
-        `Axios error: Failed to update widget image: ${error.response?.data.message}`
-      );
-    } else {
-      throw new Error(
-        `Non-axios error: Failed to update widget image: ${error}`
-      );
-    }
+    catchAndRethrowWidgetError(
+      error,
+      `Failed to update widget link with ID ${key}`
+    );
+  }
+};
+
+/** Updating the content of widgets */
+export const updateWidgetContent = async (
+  key: string,
+  content: WidgetContentType
+) => {
+  // content should be set to what we want already in the payload
+  const payload: { content: WidgetContentType } = {
+    content: content,
+  };
+
+  try {
+    const res = await axios.patch(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
+      payload,
+      await withAuthHeader()
+    );
+    return res.data;
+  } catch (error) {
+    catchAndRethrowWidgetError(
+      error,
+      `Failed to update widget image with ID ${key}`
+    );
   }
 };
 
@@ -130,12 +181,16 @@ export const deleteWidget = async (id: string) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(`Failed to delete widget: ${error.response.data.message}`);
+  } catch (error) {
+    catchAndRethrowWidgetError(error, `Failed to delete widget with ID ${id}`);
   }
 };
 
 // 👇 Local Widget Getters 👇
+
+// to appease TypeScript, in the catch statements catchAndRethrowWidgetError()
+// is returned to change the return type from
+// undefined to Promise<AxiosResponse<WidgetDto, unknown>>
 
 const getDribbleShot: WidgetGetterFn = async (body) => {
   try {
@@ -145,10 +200,8 @@ const getDribbleShot: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get DribbbleShot: ${error.response.data.message}`
-    );
+  } catch (error) {
+    return catchAndRethrowWidgetError(error, `Failed to get DribbleShot`);
   }
 };
 
@@ -160,10 +213,8 @@ const getBehanceItem: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Behance item: ${error.response.data.message}`
-    );
+  } catch (error) {
+    return catchAndRethrowWidgetError(error, `Failed to get Behance Item`);
   }
 };
 
@@ -175,9 +226,10 @@ const getMediumArticleMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Medium article metadata: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Medium article metadata`
     );
   }
 };
@@ -190,10 +242,8 @@ const getYouTubeVideoMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get YouTube video metadata: ${error.response.data.message}`
-    );
+  } catch (error) {
+    return catchAndRethrowWidgetError(error, `Failed to get Youtube metadata`);
   }
 };
 
@@ -205,10 +255,8 @@ const getSubstackMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Substack metadata: ${error.response.data.message}`
-    );
+  } catch (error) {
+    return catchAndRethrowWidgetError(error, `Failed to get Substack metadata`);
   }
 };
 
@@ -220,9 +268,10 @@ const getSpotifyAlbumDetails: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Spotify album details: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Spotify album details`
     );
   }
 };
@@ -235,9 +284,10 @@ const getSpotifySongDetails: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Spotify song details: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Spotify song details`
     );
   }
 };
@@ -250,9 +300,10 @@ const getSoundcloudTrackDetails: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Soundcloud track details: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Soundcloud track details`
     );
   }
 };
@@ -265,12 +316,11 @@ const getInstagramProfileMetadata: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data.message);
-    } else {
-      throw new Error(`Failed to get Instagram profile metadata: ${error}`);
-    }
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Instagram profile metadata`
+    );
   }
 };
 
@@ -282,10 +332,8 @@ const getPhotoWidget: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get photo widget: ${error.response.data.message}`
-    );
+  } catch (error) {
+    return catchAndRethrowWidgetError(error, `Failed to get photo widget`);
   }
 };
 
@@ -297,9 +345,10 @@ const getGithubProfile: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Github profile data: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Github profile data`
     );
   }
 };
@@ -312,9 +361,10 @@ const getTwitterProfile: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Twitter profile data: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get Twitter profile data`
     );
   }
 };
@@ -327,9 +377,10 @@ const getLinkedInProfile: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get Linkedin profile data: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get LinkedIn profile data`
     );
   }
 };
@@ -342,10 +393,8 @@ const getLinkData: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get generic link data: ${error.response.data.message}`
-    );
+  } catch (error) {
+    return catchAndRethrowWidgetError(error, `Failed to get generic link data`);
   }
 };
 
@@ -357,9 +406,10 @@ const getSectionTitleData: WidgetGetterFn = async (body) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to get generic link data: ${error.response.data.message}`
+  } catch (error) {
+    return catchAndRethrowWidgetError(
+      error,
+      `Failed to get section title data`
     );
   }
 };
