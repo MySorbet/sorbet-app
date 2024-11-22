@@ -169,7 +169,7 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money In'
               balance={transactions.total_money_in}
-              icon={<ArrowDown className='size-4 text-white' />}
+              icon={<ArrowDown className='text-muted size-4' />}
               items={
                 !transactions.money_in
                   ? undefined
@@ -180,9 +180,9 @@ export const WalletContainer = () => {
                         walletAddress?.toLowerCase();
                       return {
                         icon: isAdded ? (
-                          <Plus className='size-6 text-white' />
+                          <Plus className='text-muted size-6' />
                         ) : (
-                          <ArrowDown className='size-6 text-white' />
+                          <ArrowDown className='text-muted size-6' />
                         ),
                         label: isAdded ? 'Added' : 'Received',
                         account: transaction.sender,
@@ -197,7 +197,7 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money Out'
               balance={transactions.total_money_out}
-              icon={<ArrowUp className='size-4 text-white' />}
+              icon={<ArrowUp className='text-muted size-4' />}
               items={
                 !transactions.money_out
                   ? undefined

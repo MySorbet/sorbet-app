@@ -15,14 +15,14 @@ export const MyAccounts: React.FC<MyAccountsProps> = ({
   address,
 }) => {
   return (
-    <div className='min-h-[100%] min-w-[360px] rounded-2xl bg-white p-6 shadow-md'>
+    <div className='bg-background min-h-[100%] min-w-[360px] rounded-2xl p-6 shadow-md'>
       <div className='flex items-center gap-2'>
-        <span className='rounded-full bg-black p-2 text-white'>
+        <span className='bg-foreground text-muted rounded-full p-2'>
           <Bank className='size-[1.125rem]' />
         </span>
         <span className='text-md font-medium text-[#595B5A]'>MY ACCOUNTS</span>
       </div>
-      <div className='my-4 h-[1px] w-full bg-[#F2F2F2]' />
+      <div className='bg-border my-4 h-[1px] w-full' />
       <div>
         {/** for now, it's only USDC but this will be refactored into multiple account items */}
         <USDCAccountItem
@@ -51,7 +51,7 @@ const USDCAccountItem: React.FC<{
   };
 
   return (
-    <div className='flex gap-2 rounded-xl border border-[#EFEFEF] p-3'>
+    <div className='border-border flex gap-2 rounded-xl border p-3'>
       <Image
         src='/svg/base-usdc.svg'
         priority={true}
@@ -62,7 +62,7 @@ const USDCAccountItem: React.FC<{
       <div className='flex flex-col'>
         <div className='font-semibold'>USDC</div>
         {address && (
-          <div className='flex items-center gap-2 text-[#344054]'>
+          <div className='text-muted-foreground flex items-center gap-2'>
             {icon}
             <div className='text-xs'>{formatWalletAddress(address)}</div>
             <Copy06

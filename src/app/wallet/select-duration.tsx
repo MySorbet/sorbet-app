@@ -20,7 +20,7 @@ export const SelectDuration: React.FC<SelectDurationProps> = ({
 }) => {
   return (
     <Select value={selectedValue} onValueChange={onChange}>
-      <SelectTrigger className='w-[140px] border border-[#D7D7D7] font-medium'>
+      <SelectTrigger className='border-border w-[140px] border font-medium'>
         <SelectValue placeholder='Select Duration' />
       </SelectTrigger>
       <SelectContent>
