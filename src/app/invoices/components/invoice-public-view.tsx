@@ -90,7 +90,7 @@ export const InvoicePublicView = ({
       </CreateInvoiceHeader>
 
       {isLoading ? (
-        <Skeleton variant='darker' className='h-[500px] w-[800px]' />
+        <Skeleton variant='darker' className='h-[800px] w-[800px]' />
       ) : (
         invoice && <InvoiceDocument invoice={invoice} ref={contentRef} />
       )}
