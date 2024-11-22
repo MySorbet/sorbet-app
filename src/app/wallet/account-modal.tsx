@@ -22,7 +22,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent
-        className='p-8 sm:rounded-[32px]'
+        className='p-8'
         hideDefaultCloseButton={true}
         aria-describedby='Account info modal'
       >

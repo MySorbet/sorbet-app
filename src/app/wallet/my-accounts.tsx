@@ -15,7 +15,7 @@ export const MyAccounts: React.FC<MyAccountsProps> = ({
   address,
 }) => {
   return (
-    <div className='bg-background min-h-[100%] min-w-[360px] rounded-2xl p-6 shadow-md'>
+    <div className='bg-background min-h-full min-w-[360px] rounded-2xl p-6 shadow-md'>
       <div className='flex items-center gap-2'>
         <span className='bg-foreground text-muted rounded-full p-2'>
           <Bank className='size-[1.125rem]' />

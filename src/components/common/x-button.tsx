@@ -19,7 +19,9 @@ export const CloseButton: React.FC<CloseButtonProps> = ({
       variant='ghost'
       className={`h-${height} w-${width} p-0 transition ease-out hover:scale-110`}
     >
-      <X className={`h-${height} w-${width} cursor-pointer text-[#98A2B3]`} />
+      <X
+        className={`h-${height} w-${width} text-muted-foreground cursor-pointer`}
+      />
     </Button>
   );
 };
