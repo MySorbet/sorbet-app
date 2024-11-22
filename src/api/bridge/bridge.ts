@@ -3,7 +3,7 @@ import axios from 'axios';
 import { env } from '@/lib/env';
 import { BridgeCustomer, SourceDepositInstructions } from '@/types';
 
-import { withAuthHeader } from './withAuthHeader';
+import { withAuthHeader } from '../withAuthHeader';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 

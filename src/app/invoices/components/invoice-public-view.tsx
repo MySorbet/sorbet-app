@@ -95,17 +95,17 @@ export const InvoicePublicView = ({
         invoice && <InvoiceDocument invoice={invoice} ref={contentRef} />
       )}
 
-      <CreateInvoiceFooter className='justify-center'>
+      <CreateInvoiceFooter className='mb-12 justify-center'>
         {isFreelancer ? (
           <Button variant='sorbet' asChild className='ml-auto'>
             <Link href='/invoices'>Back to dashboard</Link>
           </Button>
-        ) : (
+        ) : achWireDetails ? (
           <Tabs
             defaultValue='usdc'
             className='flex max-w-[31rem] flex-col items-center'
           >
-            <TabsList>
+            <TabsList className='space-x-4'>
               <TabsTrigger value='usdc'>Pay USDC</TabsTrigger>
               <TabsTrigger value='ach'>ACH/Wire</TabsTrigger>
             </TabsList>
@@ -116,16 +116,19 @@ export const InvoicePublicView = ({
               />
             </TabsContent>
             <TabsContent value='ach'>
-              {achWireDetails && (
-                <InvoicePayAchWire
-                  routingNumber={achWireDetails.routingNumber}
-                  accountNumber={achWireDetails.accountNumber}
-                  beneficiary={achWireDetails.beneficiary}
-                  bank={achWireDetails.bank}
-                />
-              )}
+              <InvoicePayAchWire
+                routingNumber={achWireDetails.routingNumber}
+                accountNumber={achWireDetails.accountNumber}
+                beneficiary={achWireDetails.beneficiary}
+                bank={achWireDetails.bank}
+              />
             </TabsContent>
           </Tabs>
+        ) : (
+          <InvoicePayUsdc
+            address={walletAddress ?? ''}
+            isLoading={isLoadingWalletAddress}
+          />
         )}
       </CreateInvoiceFooter>
     </CreateInvoiceShell>
