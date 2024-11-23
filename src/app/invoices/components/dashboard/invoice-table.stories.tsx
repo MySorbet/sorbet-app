@@ -24,6 +24,7 @@ export const Default: Story = {
     invoices: sampleInvoices,
     onInvoiceClick: fn(),
     onInvoiceStatusChange: fn(),
+    onCreateInvoice: fn(),
   },
 };
 

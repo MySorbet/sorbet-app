@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { Invoice, InvoiceStatus } from './utils';
+import { checkOverdue, Invoice, InvoiceStatus } from './utils';
 import { formatCurrency, formatDate } from './utils';
 
 // TODO: Address scroll when there is not enough height
@@ -96,7 +96,7 @@ export default function InvoiceSheet({
           {/* Invoice status and total amount */}
           <div>
             <InvoiceStatusBadge
-              variant={invoice.status}
+              variant={checkOverdue(invoice.dueDate, invoice.status)}
               interactive
               onValueChange={onInvoiceStatusChange}
             />
