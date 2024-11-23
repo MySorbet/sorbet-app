@@ -1,3 +1,4 @@
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Receipt, User01 } from '@untitled-ui/icons-react';
 import { X } from '@untitled-ui/icons-react';
 import {
@@ -10,17 +11,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Spinner } from '@/components/common';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { useOpenPollAndInvalidate } from '@/components/sidebar/use-open-poll-and-invalidate';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge';
+import { useVerify } from '@/hooks/profile/use-verify';
 import { featureFlags } from '@/lib/flags';
+import { BridgeCustomer } from '@/types';
 
-import { GetVerifiedCard } from './get-verified-card';
+import { VerificationCard } from './verification-card';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -47,12 +58,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     onIsOpenChange(false);
   };
 
+  const { open } = useOpenPollAndInvalidate();
+
+  const {
+    mutate: verifyUser,
+    isPending: isVerifyingUser,
+    data: verifyUserResponse,
+  } = useVerify({
+    onSuccess: (data) => {
+      open((data as BridgeCustomer).tos_link, 'bridgeCustomer');
+    },
+  });
+
+  const { data: bridgeCustomer } = useBridgeCustomer();
+
   return (
     <Sheet open={isOpen} onOpenChange={onIsOpenChange}>
       <SheetContent
         className='inset-y-6 right-6 h-auto rounded-3xl bg-[#F9FAFB] data-[state=closed]:right-0'
         hideDefaultCloseButton
       >
+        <VisuallyHidden>
+          <SheetTitle>{`Sidebar for ${user.handle}`}</SheetTitle>
+          <SheetDescription>
+            Displaying balances and navigation options
+          </SheetDescription>
+        </VisuallyHidden>
+
         <div className='flex h-full w-full flex-col justify-between gap-10 text-[#101828]'>
           <div className='flex w-full flex-col gap-10'>
             {/* Header */}
@@ -111,10 +143,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
           {/* Verification and logout */}
           <div className='flex flex-col gap-2'>
             {featureFlags.verification && (
-              <GetVerifiedCard
-                termsAccepted={false}
-                detailsAdded={false}
-                onComplete={() => console.log('Complete verification clicked')}
+              <VerificationCard
+                tosStatus={bridgeCustomer?.tos_status}
+                kycStatus={bridgeCustomer?.kyc_status}
+                disabled={isVerifyingUser}
+                onComplete={() => {
+                  // If there is no bridge customer, we need to to kick off the verification process
+                  if (!bridgeCustomer) {
+                    verifyUser();
+                    return;
+                  }
+
+                  // Try again
+                  if (bridgeCustomer.kyc_status === 'rejected') {
+                    toast('Please contact support');
+                    return;
+                  }
+
+                  // If the user has not accepted the terms of service,
+                  // open the terms of service link
+                  if (bridgeCustomer.tos_status !== 'approved') {
+                    open(bridgeCustomer.tos_link, 'bridgeCustomer');
+                  } else {
+                    // If the user has accepted the terms of service,
+                    // open the KYC link in a new tab
+                    open(bridgeCustomer.kyc_link, 'bridgeCustomer');
+                  }
+                }}
               />
             )}
             <Button
