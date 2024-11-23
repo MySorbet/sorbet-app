@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -10,7 +11,13 @@ import {
 import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { formatCurrency, formatDate, Invoice, InvoiceStatus } from './utils';
+import {
+  checkOverdue,
+  formatCurrency,
+  formatDate,
+  Invoice,
+  InvoiceStatus,
+} from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({
@@ -36,6 +43,8 @@ type InvoiceTableProps = {
   isLoading?: boolean;
   /** Called when the status of an invoice is changed (via the status badge) */
   onInvoiceStatusChange?: (invoice: Invoice, status: InvoiceStatus) => void;
+  /** Called when the user interacts with the empty state CTA*/
+  onCreateInvoice?: () => void;
 };
 
 /** Renders a table of invoices */
@@ -44,6 +53,7 @@ export const InvoiceTable = ({
   onInvoiceClick,
   isLoading,
   onInvoiceStatusChange,
+  onCreateInvoice,
 }: InvoiceTableProps) => {
   return (
     <div className='rounded-2xl bg-white px-6 py-3'>
@@ -61,7 +71,7 @@ export const InvoiceTable = ({
         {isLoading ? (
           <InvoiceTableBodySkeleton />
         ) : invoices.length === 0 ? (
-          <EmptyInvoiceTableBody />
+          <EmptyInvoiceTableBody onCreateInvoice={onCreateInvoice} />
         ) : (
           <TableBody>
             {invoices.map((invoice) => (
@@ -71,9 +81,8 @@ export const InvoiceTable = ({
               >
                 <TableCell>{formatDate(invoice.dueDate)}</TableCell>
                 <TableCell>
-                  {/* TODO: Render overdue badge based on date */}
                   <InvoiceStatusBadge
-                    variant={invoice.status}
+                    variant={checkOverdue(invoice.dueDate, invoice.status)}
                     interactive
                     onValueChange={(status) =>
                       onInvoiceStatusChange?.(invoice, status)
@@ -95,13 +104,26 @@ export const InvoiceTable = ({
   );
 };
 
-// TODO: Match this to design
-const EmptyInvoiceTableBody = () => {
+/**
+ * Local component for the empty state of the invoice table
+ * Renders a CTA to create a new invoice
+ */
+const EmptyInvoiceTableBody = ({
+  onCreateInvoice,
+}: {
+  onCreateInvoice?: () => void;
+}) => {
   return (
     <TableBody>
-      <TableRow>
-        <TableCell colSpan={6} className='text-center'>
-          🔍 Looks like you don't have any invoices yet
+      <TableRow className='hover:bg-background'>
+        <TableCell colSpan={6} className='py-16 text-center'>
+          <p className='mb-1 text-sm font-medium'>No invoices to display</p>
+          <p className='mb-6 text-xs font-normal'>
+            Your invoices will appear here after they are created
+          </p>
+          <Button variant='sorbet' onClick={onCreateInvoice}>
+            Create invoice
+          </Button>
         </TableCell>
       </TableRow>
     </TableBody>

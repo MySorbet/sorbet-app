@@ -16,7 +16,7 @@ export default function InvoicesPage() {
   return (
     <main className='flex size-full flex-col'>
       <Header />
-      <div className='container flex flex-1 items-center justify-center'>
+      <div className='container flex flex-1 justify-center pt-14'>
         <InvoiceDashboard
           invoices={invoices ?? []}
           isLoading={isLoading}

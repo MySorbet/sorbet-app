@@ -1,9 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
+
+import { checkInvoiceNumber } from '@/api/invoices/invoices';
+
 /**
- * Gets the auto-incremented invoice number for the current user
+ * Gets the next available invoice number for the current user.
+ * Currently, this is just based on the number of invoices the user has.
  */
 export const useInvoiceNumber = () => {
-  // TODO: Store the last invoice number, and auto-increment from there
-  // This could be acheived by storing the invoice number in the database
-  // Or by querying the number of invoices for the current user and incrementing from there
-  return 'INV-001';
+  const { data } = useQuery({
+    queryKey: ['invoice-number'],
+    queryFn: () => checkInvoiceNumber(),
+  });
+  return data?.recommendation;
 };
