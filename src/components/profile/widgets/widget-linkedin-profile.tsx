@@ -26,7 +26,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
+            <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <BannerImage src={bannerImage} />
@@ -36,7 +36,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
+            <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <BannerImage src={bannerImage} />
@@ -46,7 +46,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
+            <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <div className='flex h-full flex-row justify-end gap-3'>
@@ -58,7 +58,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
       return (
         <WidgetLayout>
           <WidgetHeader>
-            <WidgetIcon type={'LinkedInProfile'} className='mb-0' />
+            <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
           <BannerImage src={bannerImage} />

@@ -2,6 +2,7 @@ import { Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,7 @@ import {
   LinkWidgetContentType,
   MediumArticleContentType,
   PhotoWidgetContentType,
+  SectionTitleWidgetContentType,
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
@@ -56,6 +58,7 @@ interface WidgetProps {
   showControls?: boolean;
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
+  handleTitleUpdate: any;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -68,6 +71,7 @@ export const Widget: React.FC<WidgetProps> = ({
   showControls = false,
   handleResize,
   handleRemove,
+  handleTitleUpdate,
   draggedRef,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
@@ -92,6 +96,10 @@ export const Widget: React.FC<WidgetProps> = ({
       }
     }
     // TODO: Maybe widgets should be anchors?
+  };
+
+  const updateTitle = (title: string) => {
+    handleTitleUpdate(identifier, title);
   };
 
   useEffect(() => {
@@ -244,18 +252,31 @@ export const Widget: React.FC<WidgetProps> = ({
         break;
       }
 
+      case 'SectionTitle':
+        setWidgetContent(
+          <SectionTitleWidget
+            title={(content as SectionTitleWidgetContentType).title}
+            updateTitle={updateTitle}
+          />
+        );
+        break;
+
       default:
         setWidgetContent(<>Unsupported widget type</>);
         break;
     }
+    // disabling here because 'redirectUrl' and 'updateTitle' being dependencies will cause massive re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, widgetSize, content]);
 
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div
         className={cn(
-          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md',
-          type !== 'Photo' && 'p-4'
+          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl drop-shadow-md',
+          type !== 'Photo' && type !== 'SectionTitle' && 'p-4',
+          type !== 'SectionTitle' && 'bg-white',
+          type === 'SectionTitle' && 'py-4'
         )}
         key={identifier}
         onClick={onWidgetClick}
@@ -271,12 +292,20 @@ export const Widget: React.FC<WidgetProps> = ({
           widgetContent
         )}
         {showControls && (
-          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+          <div
+            className={cn(
+              'absolute bottom-0 left-1/2 -translate-x-1/2 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100',
+              type !== 'SectionTitle' && 'translate-y-5',
+              type === 'SectionTitle' && '-translate-y-1' // to account for margins on the background of section titles
+            )}
+          >
             <div className='flex flex-row gap-1'>
-              <ResizeWidget
-                onResize={onWidgetResize}
-                initialSize={initialSize}
-              />
+              {type !== 'SectionTitle' && (
+                <ResizeWidget
+                  onResize={onWidgetResize}
+                  initialSize={initialSize}
+                />
+              )}
               <Button
                 variant='outline'
                 size='icon'

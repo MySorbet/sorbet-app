@@ -22,7 +22,7 @@ export const WidgetErrorFallback: React.ComponentType<FallbackProps> = ({
       <AlertDescription>Something broke. Please try again.</AlertDescription>
       <div className='flex`'>
         <Button
-          variant={'outline'}
+          variant='outline'
           onClick={() => resetErrorBoundary()}
           className='mt-2'
         >

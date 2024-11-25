@@ -29,7 +29,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   return (
-    <div className='align-center z-20 flex hidden min-w-[140px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#573DF5] text-white md:flex'>
+    <div className='align-center z-20 hidden min-w-[140px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#573DF5] text-white md:flex'>
       <button className={btnClass} onClick={(e) => onResizeClick(e, 'A')}>
         <Square
           size={16}
