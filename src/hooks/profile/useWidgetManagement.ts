@@ -1,12 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
+
+import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
 import { useToast } from '@/components/ui/use-toast';
 import {
   useCreateWidget,
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
-import { WidgetLayoutItem, WidgetSize, WidgetDimensions } from '@/types';
-import { parseWidgetTypeFromUrl } from '@/components/profile/widgets/util';
+import { WidgetDimensions, WidgetLayoutItem } from '@/types';
 
 interface WidgetManagementProps {
   userId: string;
@@ -14,19 +15,17 @@ interface WidgetManagementProps {
   layout: WidgetLayoutItem[];
   setLayout: React.Dispatch<React.SetStateAction<WidgetLayoutItem[]>>;
   cols: number;
-  persistWidgetsLayoutOnChange: (items?: WidgetLayoutItem[]) => void;
 }
 
 export const useWidgetManagement = ({
-  userId,
   editMode,
   layout,
   setLayout,
   cols,
-  persistWidgetsLayoutOnChange,
 }: WidgetManagementProps) => {
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
+  const [removingWidget, setRemovingWidget] = useState<boolean>(false);
 
   const { toast } = useToast();
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
@@ -35,16 +34,13 @@ export const useWidgetManagement = ({
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
+      if (removingWidget) return;
+      setRemovingWidget(true);
       await deleteWidget(key);
-      setLayout((prevLayout) => {
-        const newLayout = prevLayout.filter((item) => item.i !== key);
-        if (newLayout.length > 0) {
-          persistWidgetsLayoutOnChange(newLayout);
-        }
-        return newLayout;
-      });
+      setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
+      setRemovingWidget(false); // Reset after operation
     },
-    [deleteWidget, setLayout, persistWidgetsLayoutOnChange]
+    [deleteWidget, removingWidget, setLayout]
   );
 
   const handleWidgetAdd = useCallback(
@@ -98,7 +94,6 @@ export const useWidgetManagement = ({
 
         setLayout((prevLayout) => {
           const newLayout = [...prevLayout, widgetToAdd];
-          persistWidgetsLayoutOnChange(newLayout);
           return newLayout;
         });
       } catch (error) {
@@ -113,7 +108,6 @@ export const useWidgetManagement = ({
       }
     },
     [
-      userId,
       editMode,
       layout,
       cols,
@@ -121,7 +115,6 @@ export const useWidgetManagement = ({
       createWidget,
       toast,
       setLayout,
-      persistWidgetsLayoutOnChange,
     ]
   );
 
@@ -164,7 +157,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [userId, uploadWidgetsImageAsync, handleWidgetAdd]
+    [uploadWidgetsImageAsync, handleWidgetAdd]
   );
 
   const handleAddMultipleWidgets = useCallback(
@@ -209,20 +202,11 @@ export const useWidgetManagement = ({
       ).filter((widget): widget is WidgetLayoutItem => widget !== undefined);
 
       setLayout((prevLayout) => {
-        const newLayout = [...prevLayout, ...widgetsToAdd];
-        persistWidgetsLayoutOnChange(newLayout);
-        return newLayout;
+        return [...prevLayout, ...widgetsToAdd];
       });
       setAddingWidget(false);
     },
-    [
-      cols,
-      editMode,
-      createWidget,
-      toast,
-      setLayout,
-      persistWidgetsLayoutOnChange,
-    ]
+    [cols, editMode, createWidget, toast, setLayout]
   );
 
   return {
