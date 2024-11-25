@@ -9,7 +9,8 @@ export const useOpenPollAndInvalidate = () => {
   const openLinkInNewTabWithInvalidation = (
     link: string,
     queryKeyToInvalidate: string,
-    interval = 1000
+    interval = 1000,
+    onClose?: () => void
   ) => {
     const newWindow = window.open(link, '_blank');
 
@@ -19,6 +20,7 @@ export const useOpenPollAndInvalidate = () => {
         clearInterval(checkWindow);
         console.log('New window closed');
         queryClient.invalidateQueries({ queryKey: [queryKeyToInvalidate] });
+        onClose?.();
       }
     }, interval);
   };

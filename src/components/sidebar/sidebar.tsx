@@ -25,7 +25,12 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import {
+  useAuth,
+  useLocalStorage,
+  useSmartWalletAddress,
+  useWalletBalances,
+} from '@/hooks';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge';
 import { useVerify } from '@/hooks/profile/use-verify';
 import { featureFlags } from '@/lib/flags';
@@ -59,6 +64,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   };
 
   const { open } = useOpenPollAndInvalidate();
+  // TODO: does this work?
+  const [isCollapsed, setIsCollapsed] = useLocalStorage(
+    'isVerificationCollapsed',
+    false
+  );
+  const [isIndeterminate, setIsIndeterminate] = useState(false);
 
   const {
     mutate: verifyUser,
@@ -147,6 +158,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                 tosStatus={bridgeCustomer?.tos_status}
                 kycStatus={bridgeCustomer?.kyc_status}
                 disabled={isVerifyingUser}
+                missingEmail={!user.email}
+                indeterminate={isIndeterminate}
+                isCollapsed={isCollapsed}
+                // TODO: Add rejection reason
                 onComplete={() => {
                   // If there is no bridge customer, we need to to kick off the verification process
                   if (!bridgeCustomer) {
@@ -157,6 +172,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   // Try again
                   if (bridgeCustomer.kyc_status === 'rejected') {
                     toast('Please contact support');
+                    // TODO: Maybe just send them to KYC link again?
+                    return;
+                  }
+
+                  // Close
+                  if (bridgeCustomer.kyc_status === 'approved') {
+                    setIsCollapsed(true);
                     return;
                   }
 
@@ -167,7 +189,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   } else {
                     // If the user has accepted the terms of service,
                     // open the KYC link in a new tab
-                    open(bridgeCustomer.kyc_link, 'bridgeCustomer');
+                    open(
+                      bridgeCustomer.kyc_link,
+                      'bridgeCustomer',
+                      1000,
+                      () => {
+                        setIsIndeterminate(true);
+                      }
+                    );
                   }
                 }}
               />
