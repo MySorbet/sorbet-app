@@ -46,7 +46,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
   };
 
   return (
-    <div className='bg-card relative min-h-[100%] rounded-xl p-6 shadow-md'>
+    <div className='bg-card relative min-h-full rounded-2xl p-6 shadow-md'>
       {isLoading && (
         <div className='bg-card absolute inset-0 z-30 flex items-center justify-center rounded-3xl bg-opacity-75'>
           <Spinner />

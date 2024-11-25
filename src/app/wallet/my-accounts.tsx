@@ -1,9 +1,8 @@
-import { Bank, Copy06, Wallet03 } from '@untitled-ui/icons-react';
+import { Bank, Wallet03 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
-import { useState } from 'react';
 
-import { AccountModal } from '@/app/wallet/account-modal';
 import { formatCurrency, formatWalletAddress } from '@/app/wallet/utils';
+import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 
 interface MyAccountsProps {
   usdcBalance: string;
@@ -40,16 +39,6 @@ const USDCAccountItem: React.FC<{
   balance: string;
   address: string | null;
 }> = ({ icon, balance, address }) => {
-  const [isOpen, setisOpen] = useState<boolean>(false);
-
-  const handleAccountEdit = () => {
-    setisOpen((prev) => !prev);
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    setisOpen(open);
-  };
-
   return (
     <div className='border-border flex gap-2 rounded-xl border p-3'>
       <Image
@@ -65,19 +54,15 @@ const USDCAccountItem: React.FC<{
           <div className='text-muted-foreground flex items-center gap-2'>
             {icon}
             <div className='text-xs'>{formatWalletAddress(address)}</div>
-            <Copy06
-              onClick={handleAccountEdit}
-              className='size-3 cursor-pointer'
+            <CopyIconButton
+              copyIconClassName='size-3'
+              checkIconClassName='size-3'
+              stringToCopy={address ?? ''}
             />
           </div>
         )}
       </div>
       <div className='ml-auto'>${formatCurrency(balance)}</div>
-      <AccountModal
-        isOpen={isOpen}
-        handleOpenChange={handleOpenChange}
-        address={address}
-      />
     </div>
   );
 };

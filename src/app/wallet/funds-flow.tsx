@@ -47,7 +47,7 @@ export const FundsFlow: React.FC<
   FundsFlowProps & { items: BalanceItemProps[] | undefined; isLoading: boolean }
 > = ({ title, balance, icon, items, isLoading }) => {
   return (
-    <div className='bg-card flex min-h-[100%] flex-col rounded-3xl p-6 shadow-[0px_10px_30px_0px_#00000014]'>
+    <div className='bg-card flex min-h-full flex-col rounded-3xl p-6 shadow-[0px_10px_30px_0px_#00000014]'>
       {isLoading && (
         <div className='bg-card absolute inset-0 flex items-center justify-center rounded-3xl bg-opacity-75'>
           <Spinner />

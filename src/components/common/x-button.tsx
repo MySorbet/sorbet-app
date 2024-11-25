@@ -1,27 +1,24 @@
 import { X } from '@untitled-ui/icons-react';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface CloseButtonProps {
   onClick: () => void;
-  height?: number;
-  width?: number;
+  className: string;
 }
 
 export const CloseButton: React.FC<CloseButtonProps> = ({
   onClick,
-  height = 6,
-  width = 6,
+  className,
 }) => {
   return (
     <Button
       onClick={onClick}
       variant='ghost'
-      className={`h-${height} w-${width} p-0 transition ease-out hover:scale-110`}
+      className={cn(className, 'p-0 transition ease-out hover:scale-110')}
     >
-      <X
-        className={`h-${height} w-${width} text-muted-foreground cursor-pointer`}
-      />
+      <X className='text-muted-foreground size-full cursor-pointer' />
     </Button>
   );
 };
