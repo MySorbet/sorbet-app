@@ -80,3 +80,25 @@ export const mockCurrentWalletAddressHandler = http.get(
     return HttpResponse.json('0x1234567890123456789012345678901234567890');
   }
 );
+
+/**
+ * Mock the data from the `/invoices/check-number` endpoint
+ *
+ * Will report that INV-001, INV-002, and INV-003 are not available
+ * and will recommend INV-REC
+ */
+export const mockCheckInvoiceNumberHandler = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/check-number`,
+  async ({ request }) => {
+    const invoiceNumber = new URL(request.url).searchParams.get(
+      'invoiceNumber'
+    );
+    await delay();
+    return HttpResponse.json({
+      isAvailable: invoiceNumber
+        ? !['INV-001', 'INV-002', 'INV-003'].includes(invoiceNumber)
+        : true,
+      recommendation: 'INV-REC',
+    });
+  }
+);

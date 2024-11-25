@@ -4,9 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { Plus, Trash01 } from '@untitled-ui/icons-react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { checkInvoiceNumber } from '@/api/invoices/invoices';
 import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,7 +47,16 @@ const emptyInvoiceItemData: InvoiceItemData = {
 
 const formSchema = z.object({
   projectName: invoiceFormStringValidator('Project name'),
-  invoiceNumber: invoiceFormStringValidator('Invoice number'),
+  invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
+    async (invoiceNumber) => {
+      // No need to call the API for empty strings
+      if (!invoiceNumber) return true;
+      const { isAvailable } = await checkInvoiceNumber(invoiceNumber);
+      return isAvailable;
+    },
+    // TODO: can we make a recommendation from the error state?
+    { message: "You've already used this invoice number" }
+  ),
   items: z.array(InvoiceItemDataSchema),
 });
 
@@ -69,11 +80,22 @@ export const InvoiceDetails = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectName: formData.projectName ?? '',
-      invoiceNumber: invoiceNumber ?? formData.invoiceNumber ?? '',
+      invoiceNumber: formData.invoiceNumber ?? invoiceNumber ?? '',
       items: formData.items ?? [emptyInvoiceItemData],
     },
     mode: 'all',
   });
+
+  // Effect to set the invoiceNumber form value to the
+  // invoiceNumber prop if it is provided after a delay
+  useEffect(() => {
+    if (invoiceNumber) {
+      form.setValue('invoiceNumber', invoiceNumber, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  }, [form, invoiceNumber]);
 
   const items = form.watch('items');
   const formattedTotal = formatCurrency(calculateTotalAmount(items ?? []));
