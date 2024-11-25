@@ -135,9 +135,7 @@ export const InvoiceDocument = forwardRef<
               </div>
               <div className='flex'>
                 <p className='min-w-16 text-xs'>Pay by</p>
-                <p className='text-xs font-semibold'>
-                  USDC, ACH / Wire, Credit Card
-                </p>
+                <p className='text-xs font-semibold'>USDC, ACH / Wire</p>
               </div>
             </td>
             <td className='pt-2'>

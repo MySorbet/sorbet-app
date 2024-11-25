@@ -13,11 +13,6 @@ export interface User {
   tags: string[];
   tempLocation: string;
   city: string;
-  balance?: {
-    usdc: number;
-    near: number;
-    nearUsd: number;
-  };
 }
 
 /** Type to capture the fact that a user can have an id but not the rest of the user object */
