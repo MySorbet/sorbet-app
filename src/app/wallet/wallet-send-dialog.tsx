@@ -172,7 +172,7 @@ export const WalletSendDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
+        className='w-[460px] rounded-2xl p-0'
         hideDefaultCloseButton={true}
       >
         <motion.div
@@ -460,10 +460,7 @@ interface Step3Props extends ScreenProps {
 /**
  * Final screen showing success and a link to basescan for transaction hash
  */
-const Step3 = ({
-  transactionHash,
-  close,
-}: Step3Props) => {
+const Step3 = ({ transactionHash, close }: Step3Props) => {
   const basescanHref = env.NEXT_PUBLIC_TESTNET
     ? `https://sepolia.basescan.org/tx/${transactionHash}`
     : `https://basescan.org/tx/${transactionHash}`;

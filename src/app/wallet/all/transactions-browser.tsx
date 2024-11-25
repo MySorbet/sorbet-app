@@ -13,6 +13,7 @@ import { useAuth, useSmartWalletAddress } from '@/hooks';
 import { Transaction } from '@/types/transactions';
 
 import TransactionsTable, { TableTransaction } from './transactions-table';
+import { ArrowNarrowLeft } from '@untitled-ui/icons-react';
 
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();
@@ -153,7 +154,7 @@ export const TransactionsBrowser: React.FC = () => {
               href='/wallet'
               className='flex items-center gap-1 font-semibold'
             >
-              <MoveLeft size={20} />
+              <ArrowNarrowLeft className='size-5' />
               Go Back
             </Link>
           </div>
