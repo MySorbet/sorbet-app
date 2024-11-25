@@ -13,6 +13,7 @@ import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import TransactionsTable from '@/app/wallet/all/transactions-table';
 import { FundsFlow } from '@/app/wallet/funds-flow';
+import { MyAccounts } from '@/app/wallet/my-accounts';
 import { SelectDuration } from '@/app/wallet/select-duration';
 import { WalletBalance } from '@/app/wallet/wallet-balance';
 import { Header } from '@/components/header';
@@ -121,9 +122,9 @@ export const WalletContainer = () => {
   return (
     <Authenticated>
       <Header />
-      <div className='container my-16 max-w-[1080px] pb-8'>
-        <div className='flex flex-col items-center justify-center gap-6 lg:flex-row'>
-          <div className='w-full'>
+      <div className='container my-16 max-w-[1200px] pb-8'>
+        <div className='flex flex-col gap-6 lg:flex-row'>
+          <div className='lg:w-8/12'>
             <WalletBalance
               balanceHistoryIn={
                 !transactions.money_in
@@ -149,12 +150,9 @@ export const WalletContainer = () => {
               onTxnDurationChange={setSelectedDuration}
             />
           </div>
-          {/** 
-          // commenting out until cards implemented
           <div className='lg:w-4/12'>
-            <CreditCardForm />
-          </div> 
-           */}
+            <MyAccounts usdcBalance={usdcBalance} address={walletAddress} />
+          </div>
         </div>
         <div className='mb-6 mt-12 flex justify-between'>
           <div className='text-2xl font-semibold'>Money Movements</div>
@@ -171,7 +169,7 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money In'
               balance={transactions.total_money_in}
-              icon={<ArrowDown size={14} color='white' />}
+              icon={<ArrowDown className='text-muted size-4' />}
               items={
                 !transactions.money_in
                   ? undefined
@@ -182,9 +180,9 @@ export const WalletContainer = () => {
                         walletAddress?.toLowerCase();
                       return {
                         icon: isAdded ? (
-                          <Plus size={24} color='white' />
+                          <Plus className='text-muted size-6' />
                         ) : (
-                          <ArrowDown size={24} color='white' />
+                          <ArrowDown className='text-muted size-6' />
                         ),
                         label: isAdded ? 'Added' : 'Received',
                         account: transaction.sender,
@@ -199,12 +197,12 @@ export const WalletContainer = () => {
               isLoading={loading}
               title='Money Out'
               balance={transactions.total_money_out}
-              icon={<ArrowUp size={14} color='white' />}
+              icon={<ArrowUp className='text-muted size-4' />}
               items={
                 !transactions.money_out
                   ? undefined
                   : transactions.money_out.map((transaction: Transaction) => ({
-                      icon: <ArrowUp size={24} color='white' />,
+                      icon: <ArrowUp className='size-6 text-white' />,
                       label: 'Sent',
                       account: transaction.receiver,
                       balance: transaction.value,
