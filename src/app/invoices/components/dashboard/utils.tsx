@@ -1,3 +1,5 @@
+import { isBefore } from 'date-fns';
+
 import { InvoiceItemData } from '../create/invoice-details';
 import { InvoiceFormData } from '../create/invoice-form-context';
 
@@ -14,6 +16,12 @@ export type Invoice = InvoiceFormData & {
   totalAmount: number;
   id: string;
   userId: string;
+};
+
+// Should match the API response from `/invoices/check-number`
+export type CheckInvoiceNumberResponse = {
+  isAvailable: boolean;
+  recommendation?: string;
 };
 
 /**
@@ -52,4 +60,19 @@ export const formatDate = (date?: Date | string | null) => {
     month: 'short',
     day: 'numeric',
   });
+};
+
+/**
+ * Transforms an `InvoiceStatus` to `Overdue` if the `dueDate` is in the past and the `status` is `Open`.
+ * Otherwise, it returns the original `status`.
+ */
+export const checkOverdue = (
+  dueDate: Date | null,
+  status: InvoiceStatus
+): InvoiceStatus => {
+  const today = new Date();
+  if (dueDate && isBefore(dueDate, today) && status === 'Open') {
+    return 'Overdue';
+  }
+  return status;
 };

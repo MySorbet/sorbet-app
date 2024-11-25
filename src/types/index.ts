@@ -1,3 +1,4 @@
+export * from './bridge';
 export * from './gigs';
 export * from './miscellaneous';
 export * from './profile';

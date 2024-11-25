@@ -1,15 +1,15 @@
-import { Send01 } from '@untitled-ui/icons-react';
-import { Plus, Wallet } from 'lucide-react';
+import { Send01, Wallet03 } from '@untitled-ui/icons-react';
+import { Plus } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { BalanceChart } from '@/app/wallet/balance-chart';
 import { PercentageChange } from '@/app/wallet/percent-change';
 import { SelectDuration } from '@/app/wallet/select-duration';
+import { formatCurrency } from '@/app/wallet/utils';
 import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
-import { formatCurrency } from '@/app/wallet/utils';
 
 interface WalletBalanceProps {
   usdcBalance: string;
@@ -44,13 +44,13 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   );
 
   return (
-    <div className='min-h-[100%] rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
+    <div className='min-h-full rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
       <div className='flex flex-col gap-1'>
         <div className='flex items-center justify-between p-6 pb-0'>
           <div>
             <div className='flex items-center gap-2'>
               <span className='rounded-full bg-black p-2 text-white'>
-                <Wallet size={18} />
+                <Wallet03 className='size-[1.125rem]' />
               </span>
               <span className='text-md font-medium text-[#595B5A]'>
                 BALANCE
@@ -71,8 +71,8 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
           </div>
           <div className='flex gap-4'>
             <CircleButton
-              icon={<Plus size={26} />}
-              label='Top up'
+              icon={<Plus className='size-6' />}
+              label='Deposit'
               onClick={onTopUp}
             />
             <CircleButton

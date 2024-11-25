@@ -10,7 +10,7 @@ import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSmartWalletAddress } from '@/hooks';
+import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 import { useACHWireDetails } from '../hooks/use-ach-wire-details';
 import { CreateInvoiceFooter } from './create/create-invoice-footer';
@@ -40,10 +40,8 @@ export const InvoicePublicView = ({
     documentTitle: `sorbet-invoice-${invoice?.invoiceNumber}`,
   });
 
-  const {
-    smartWalletAddress: walletAddress,
-    isLoading: isLoadingWalletAddress,
-  } = useSmartWalletAddress();
+  const { data: walletAddress, isLoading: isLoadingWalletAddress } =
+    useWalletAddressByUserId(invoice?.userId ?? '');
 
   const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
     useACHWireDetails(invoice?.userId ?? '');
@@ -92,22 +90,22 @@ export const InvoicePublicView = ({
       </CreateInvoiceHeader>
 
       {isLoading ? (
-        <Skeleton variant='darker' className='h-[500px] w-[800px]' />
+        <Skeleton variant='darker' className='h-[800px] w-[800px]' />
       ) : (
         invoice && <InvoiceDocument invoice={invoice} ref={contentRef} />
       )}
 
-      <CreateInvoiceFooter className='justify-center'>
+      <CreateInvoiceFooter className='mb-12 justify-center'>
         {isFreelancer ? (
           <Button variant='sorbet' asChild className='ml-auto'>
             <Link href='/invoices'>Back to dashboard</Link>
           </Button>
-        ) : (
+        ) : achWireDetails ? (
           <Tabs
             defaultValue='usdc'
             className='flex max-w-[31rem] flex-col items-center'
           >
-            <TabsList>
+            <TabsList className='space-x-4'>
               <TabsTrigger value='usdc'>Pay USDC</TabsTrigger>
               <TabsTrigger value='ach'>ACH/Wire</TabsTrigger>
             </TabsList>
@@ -118,16 +116,19 @@ export const InvoicePublicView = ({
               />
             </TabsContent>
             <TabsContent value='ach'>
-              {achWireDetails && (
-                <InvoicePayAchWire
-                  routingNumber={achWireDetails.routingNumber}
-                  accountNumber={achWireDetails.accountNumber}
-                  beneficiary={achWireDetails.beneficiary}
-                  bank={achWireDetails.bank}
-                />
-              )}
+              <InvoicePayAchWire
+                routingNumber={achWireDetails.routingNumber}
+                accountNumber={achWireDetails.accountNumber}
+                beneficiary={achWireDetails.beneficiary}
+                bank={achWireDetails.bank}
+              />
             </TabsContent>
           </Tabs>
+        ) : (
+          <InvoicePayUsdc
+            address={walletAddress ?? ''}
+            isLoading={isLoadingWalletAddress}
+          />
         )}
       </CreateInvoiceFooter>
     </CreateInvoiceShell>
