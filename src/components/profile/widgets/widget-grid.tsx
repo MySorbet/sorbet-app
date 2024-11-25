@@ -24,14 +24,12 @@ export interface WidgetGridProps {
   rowHeight?: number;
   editMode: boolean;
   userId: string;
-  onLayoutChange?: (layout: any) => void;
 }
 
 export const WidgetGrid: React.FC<WidgetGridProps> = ({
   rowHeight = 120,
   editMode,
   userId,
-  onLayoutChange,
 }) => {
   const draggedRef = useRef<boolean>(false);
 
@@ -45,8 +43,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,
-    persistWidgetsLayoutOnChange,
-  } = useLayoutManagement({ userId, editMode, onLayoutChange });
+  } = useLayoutManagement({ userId, editMode });
 
   const {
     errorInvalidImage,
@@ -62,7 +59,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     layout,
     setLayout,
     cols,
-    persistWidgetsLayoutOnChange,
   });
 
   const { drawerOpen, setDrawerOpen, handleOnboardingDrawerSubmit } =
