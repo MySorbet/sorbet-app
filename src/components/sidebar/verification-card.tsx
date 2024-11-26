@@ -23,7 +23,7 @@ interface VerificationCardProps {
   kycStatus?: KYCStatus /** The status of the user's KYC verification */;
   onComplete?: () => void /** Callback for when the primary action button is clicked. This can mean a few different things depending on the state of the card. */;
   disabled?: boolean /** Disables the primary action button?*/;
-  indeterminate?: boolean /** Whether the verification process is indeterminate. Use this to optimistically render a loading state before KYC is approved. */;
+  indeterminate?: boolean /** Whether the verification process is indeterminate. Use this to optimistically render a loading state before KYC is approved. Ignored if kycStatus and tosStatus are both approved */;
   missingEmail?: boolean /** Whether the user has an email associated with their sorbet account */;
   rejectionReason?: string /** The reason the user's KYC was rejected. Only rendered if `kycStatus` is `rejected` */;
   isCollapsed?: boolean /** Whether the card is collapsed. If true, the card will not render the progress bar or the remaining steps. Use this after verification is complete. */;
@@ -62,17 +62,15 @@ export const VerificationCard = ({
   const progress =
     (0.2 + Number(termsAccepted) * 0.3 + Number(detailsAdded) * 0.5) * 100;
 
-  const titleStatus = indeterminate
-    ? 'indeterminate'
-    : isApproved
+  const titleStatus = isApproved
     ? 'approved'
     : isRejected
     ? 'rejected'
+    : indeterminate
+    ? 'indeterminate'
     : 'default';
 
-  const descriptionStatus = indeterminate
-    ? 'indeterminate'
-    : isApproved
+  const descriptionStatus = isApproved
     ? 'approved'
     : isRejected
     ? 'rejected'
@@ -80,6 +78,8 @@ export const VerificationCard = ({
     ? 'pending'
     : termsAccepted
     ? 'tosAccepted'
+    : indeterminate
+    ? 'indeterminate'
     : 'notStarted';
 
   return (
@@ -97,7 +97,7 @@ export const VerificationCard = ({
         <CardContent className='space-y-4 p-4 pt-3'>
           <Progress
             value={progress}
-            indeterminate={indeterminate}
+            indeterminate={indeterminate && !isApproved}
             className='[&>*]:bg-sorbet h-2'
           />
 
