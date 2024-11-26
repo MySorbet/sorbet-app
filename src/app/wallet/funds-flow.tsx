@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
+import { formatCurrency, formatWalletAddress } from '@/app/wallet/utils';
 import { Spinner } from '@/components/common';
 
 interface FundsFlowProps {
@@ -29,12 +30,14 @@ const BalanceItem: React.FC<BalanceItemProps> = ({
           {icon}
         </span>
         <div className='flex flex-col'>
-          <span className='text-sm font-medium'>{account}</span>
+          <span className='text-sm font-medium'>
+            {formatWalletAddress(account)}
+          </span>
           <span className='mt-1 text-xs text-[#595B5A]'>{label}</span>
         </div>
       </div>
       <span className='text-sm font-medium'>
-        {Number(balance).toLocaleString()} USDC
+        {formatCurrency(balance)} USDC
       </span>
     </div>
   );
@@ -44,32 +47,32 @@ export const FundsFlow: React.FC<
   FundsFlowProps & { items: BalanceItemProps[] | undefined; isLoading: boolean }
 > = ({ title, balance, icon, items, isLoading }) => {
   return (
-    <div className='flex min-h-[100%] flex-col rounded-3xl bg-white p-6 shadow-[0px_10px_30px_0px_#00000014]'>
+    <div className='bg-card flex min-h-full flex-col rounded-3xl p-6 shadow-[0px_10px_30px_0px_#00000014]'>
       {isLoading && (
-        <div className='absolute inset-0 flex items-center justify-center rounded-3xl bg-white bg-opacity-75'>
+        <div className='bg-card absolute inset-0 flex items-center justify-center rounded-3xl bg-opacity-75'>
           <Spinner />
         </div>
       )}
       <div className='flex flex-grow flex-col gap-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-2'>
-            <span className='rounded-full bg-black p-1.5 text-white'>
+            <span className='bg-foreground text-muted rounded-full p-1.5'>
               {icon}
             </span>
-            <span className='text-sm font-medium uppercase text-[#595B5A]'>
+            <span className='text-muted-foreground text-sm font-medium uppercase'>
               {title}
             </span>
           </div>
           <div className='text-xl font-semibold'>
-            {Number(balance).toLocaleString()} USDC
+            {formatCurrency(balance)} USDC
           </div>
         </div>
 
-        <div className='mt-4 border-t border-gray-200'></div>
+        <div className='border-border mt-4 border-t'></div>
         <div className='mt-4 flex-grow'>
           <div className='flex flex-col gap-4'>
             {(!items || items.length < 1) && !isLoading && (
-              <div className='text-center text-sm text-[#595B5A]'>
+              <div className='text-muted-foreground text-center text-sm'>
                 No transactions found
               </div>
             )}

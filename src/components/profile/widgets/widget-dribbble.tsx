@@ -59,6 +59,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
           <div className='flex flex-row gap-2'>
             <div className='w-16'>
               <WidgetIcon type='Dribbble' />
+              <WidgetIcon type='Dribbble' />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -96,6 +97,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
         <div className='flex h-full flex-col gap-2'>
           <div>
             <WidgetIcon type='Dribbble' className='m-0' />
+            <WidgetIcon type='Dribbble' className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -124,6 +126,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
       widgetLayout = (
         <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
+            <WidgetIcon type='Dribbble' />
             <WidgetIcon type='Dribbble' />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>

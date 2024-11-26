@@ -37,12 +37,15 @@ export const WidgetIcon: React.FC<WidgetIconProps> = ({
 };
 
 /** This is the subset of `WidgetType`'s that have an associated social icon. */
-export type WidgetTypeWithIcon = Exclude<WidgetType, 'Photo' | 'Link'>;
+export type WidgetTypeWithIcon = Exclude<
+  WidgetType,
+  'Photo' | 'Link' | 'SectionTitle'
+>;
 
 /** This is the subset of `WidgetType`'s that have an associated social icon (as an array) */
 export const WidgetTypesWithIcons: WidgetTypeWithIcon[] = WidgetTypes.filter(
   (type) => {
-    return type !== 'Photo' && type !== 'Link';
+    return type !== 'Photo' && type !== 'Link' && type !== 'SectionTitle';
   }
 );
 

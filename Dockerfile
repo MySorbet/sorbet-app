@@ -22,7 +22,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn build
+# Workaround for https://github.com/yarnpkg/yarn/issues/9015
+RUN npm run build
+# RUN yarn build
 
 # 3. Production image, copy all the files and run next
 FROM base AS runner

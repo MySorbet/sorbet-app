@@ -11,7 +11,7 @@ import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
 import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
 import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
-import { getWidgetDimensions, WidgetLayoutItem, WidgetSize } from '@/types';
+import { getWidgetDimensions, WidgetSize } from '@/types';
 
 import { AddWidgets } from './add-widgets';
 import { DesktopOnlyAlert } from './desktop-only-alert';
@@ -26,14 +26,12 @@ export interface WidgetGridProps {
   rowHeight?: number;
   editMode: boolean;
   userId: string;
-  onLayoutChange?: (layout: WidgetLayoutItem[]) => void;
 }
 
 export const WidgetGrid: React.FC<WidgetGridProps> = ({
   rowHeight = 120,
   editMode,
   userId,
-  onLayoutChange,
 }) => {
   const draggedRef = useRef<boolean>(false);
   const [activeWidget, setActiveWidget] = useState<string | null>(null);
@@ -51,8 +49,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,
-    persistWidgetsLayoutOnChange,
-  } = useLayoutManagement({ userId, editMode, onLayoutChange });
+  } = useLayoutManagement({ userId, editMode });
 
   const {
     errorInvalidImage,
@@ -66,6 +63,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     handleRestoreImage,
     handleImageRemoval,
     handleImageCropping,
+    handleSectionTitleAdd,
+    handleSectionTitleUpdate,
     handleAddMultipleWidgets,
   } = useWidgetManagement({
     userId,
@@ -73,7 +72,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     layout,
     setLayout,
     cols,
-    persistWidgetsLayoutOnChange,
   });
 
   const { drawerOpen, setDrawerOpen, handleOnboardingDrawerSubmit } =
@@ -205,6 +203,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         content={item.content}
                         initialSize={item.size}
                         redirectUrl={item.redirectUrl}
+                        handleTitleUpdate={handleSectionTitleUpdate}
                         draggedRef={draggedRef}
                         widgetDimensions={calculateWidgetPixelDimensions(
                           item.size,
@@ -243,7 +242,11 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   </InvalidAlert>
                 </div>
               )}
-              <AddWidgets addUrl={handleWidgetAdd} loading={addingWidget} />
+              <AddWidgets
+                addUrl={handleWidgetAdd}
+                addSectionTitle={handleSectionTitleAdd}
+                loading={addingWidget}
+              />
             </div>
           </div>
         </div>

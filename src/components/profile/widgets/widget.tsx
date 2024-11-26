@@ -2,6 +2,7 @@ import { Trash2 } from 'lucide-react';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,7 @@ import {
   LinkWidgetContentType,
   MediumArticleContentType,
   PhotoWidgetContentType,
+  SectionTitleWidgetContentType,
   SoundcloudTrackContentType,
   SpotifyWidgetContentType,
   SubstackWidgetContentType,
@@ -73,6 +75,7 @@ interface WidgetProps {
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  handleTitleUpdate: any;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -87,6 +90,7 @@ export const Widget: React.FC<WidgetProps> = ({
   handleRemove,
   handleEditLink,
   handleRestoreImage,
+  handleTitleUpdate,
   draggedRef,
   setActiveWidget,
   activeWidget,
@@ -127,6 +131,10 @@ export const Widget: React.FC<WidgetProps> = ({
       }
     }
     // TODO: Maybe widgets should be anchors?
+  };
+
+  const updateTitle = (title: string) => {
+    handleTitleUpdate(identifier, title);
   };
 
   /** For setting the content of the widgets dynamically
@@ -365,10 +373,21 @@ export const Widget: React.FC<WidgetProps> = ({
         break;
       }
 
+      case 'SectionTitle':
+        setWidgetContent(
+          <SectionTitleWidget
+            title={(content as SectionTitleWidgetContentType).title}
+            updateTitle={updateTitle}
+          />
+        );
+        break;
+
       default:
         setWidgetContent(<>Unsupported widget type</>);
         break;
     }
+    // disabling here because 'redirectUrl' and 'updateTitle' being dependencies will cause massive re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     type,
     widgetSize,
@@ -399,8 +418,10 @@ export const Widget: React.FC<WidgetProps> = ({
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
       <div
         className={cn(
-          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl bg-white drop-shadow-md',
-          type !== 'Photo' && 'p-4'
+          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl drop-shadow-md',
+          type !== 'Photo' && type !== 'SectionTitle' && 'p-4',
+          type !== 'SectionTitle' && 'bg-white',
+          type === 'SectionTitle' && 'py-4'
         )}
         id={identifier}
         key={identifier}
@@ -418,26 +439,34 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         {(showControls || activeWidget) && (
           <div
-            className={`absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-5 ${
-              isPopoverOpen
-                ? ''
-                : 'transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'
-            }`}
+            className={cn(
+              `absolute bottom-0 left-1/2 -translate-x-1/2 ${
+                isPopoverOpen
+                  ? ''
+                  : 'transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'
+              }`,
+              type !== 'SectionTitle' && 'translate-y-5',
+              type === 'SectionTitle' && '-translate-y-1' // to account for margins on the background of section titles}
+            )}
           >
             <div className='flex flex-row gap-1'>
-              <ResizeWidget
-                redirectUrl={redirectUrl}
-                onResize={onWidgetResize}
-                onEditLink={onWidgetLinkEdit}
-                setPopoverOpen={setIsPopoverOpen}
-                popoverOpen={isPopoverOpen}
-                initialSize={initialSize}
-                identifier={identifier}
-                activeWidget={activeWidget}
-                setActiveWidget={setActiveWidget}
-                type={type}
-                photoDimensions={photoDimensions ? photoDimensions : undefined}
-              />
+              {type !== 'SectionTitle' && (
+                <ResizeWidget
+                  redirectUrl={redirectUrl}
+                  onResize={onWidgetResize}
+                  onEditLink={onWidgetLinkEdit}
+                  setPopoverOpen={setIsPopoverOpen}
+                  popoverOpen={isPopoverOpen}
+                  initialSize={initialSize}
+                  identifier={identifier}
+                  activeWidget={activeWidget}
+                  setActiveWidget={setActiveWidget}
+                  type={type}
+                  photoDimensions={
+                    photoDimensions ? photoDimensions : undefined
+                  }
+                />
+              )}
               <Button
                 variant='outline'
                 size='icon'

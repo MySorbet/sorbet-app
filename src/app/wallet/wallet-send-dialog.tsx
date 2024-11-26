@@ -11,7 +11,6 @@ import {
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
   FieldErrors,
@@ -173,7 +172,7 @@ export const WalletSendDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className='w-[460px] rounded-[32px] p-0 sm:rounded-[32px]'
+        className='w-[460px] rounded-2xl p-0'
         hideDefaultCloseButton={true}
       >
         <motion.div
@@ -345,6 +344,7 @@ const Step1 = ({
                         errors.recipientWalletAddress &&
                         'border border-red-500 focus-visible:ring-red-500'
                       }
+                      spellCheck={false}
                     />
                   </FormControl>
                   <FormDescription className='text-sm font-normal text-[#667085]'>
@@ -396,6 +396,11 @@ const Step2 = ({
         <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
           Confirm Send
         </DialogTitle>
+        <VisuallyHidden asChild>
+          <DialogDescription>
+            Confirm the details of the transaction
+          </DialogDescription>
+        </VisuallyHidden>
         <button
           className='group m-0 bg-transparent p-0 hover:bg-transparent'
           onClick={close}
@@ -455,16 +460,11 @@ interface Step3Props extends ScreenProps {
 /**
  * Final screen showing success and a link to basescan for transaction hash
  */
-const Step3 = ({
-  // TODO: Update this with the proper transactionId from the sendTransaction call
-  transactionHash,
-  close,
-}: Step3Props) => {
+const Step3 = ({ transactionHash, close }: Step3Props) => {
   const basescanHref = env.NEXT_PUBLIC_TESTNET
     ? `https://sepolia.basescan.org/tx/${transactionHash}`
     : `https://basescan.org/tx/${transactionHash}`;
 
-  const router = useRouter();
   return (
     <div className='flex flex-col gap-6 p-6'>
       <div className='flex flex-col items-center justify-center gap-[10px] py-6'>

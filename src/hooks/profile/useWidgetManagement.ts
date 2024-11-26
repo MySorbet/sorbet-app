@@ -8,6 +8,7 @@ import {
   useDeleteWidget,
   useUploadWidgetsImage,
 } from '@/hooks';
+import { useUpdateWidgetContent } from '@/hooks/profile/useUpdateWidgetContent';
 import { useRestoreWidgetImage } from '@/hooks/widgets/useRestoreWidgetImage';
 import { useUpdateWidgetContent } from '@/hooks/widgets/useUpdateWidgetContent';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
@@ -17,6 +18,7 @@ import {
   GithubWidgetContentType,
   LinkWidgetContentType,
   PhotoWidgetContentType,
+  SectionTitleWidgetContentType,
   SoundcloudTrackContentType,
   SubstackWidgetContentType,
   TwitterWidgetContentType,
@@ -33,7 +35,6 @@ interface WidgetManagementProps {
   layout: WidgetLayoutItem[];
   setLayout: React.Dispatch<React.SetStateAction<WidgetLayoutItem[]>>;
   cols: number;
-  persistWidgetsLayoutOnChange: (items?: WidgetLayoutItem[]) => void;
 }
 
 export const useWidgetManagement = ({
@@ -41,10 +42,10 @@ export const useWidgetManagement = ({
   layout,
   setLayout,
   cols,
-  persistWidgetsLayoutOnChange,
 }: WidgetManagementProps) => {
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
+  const [removingWidget, setRemovingWidget] = useState<boolean>(false);
 
   const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
@@ -52,19 +53,17 @@ export const useWidgetManagement = ({
   const { mutateAsync: restoreWidgetImageAsync } = useRestoreWidgetImage();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
+  const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
+      if (removingWidget) return;
+      setRemovingWidget(true);
       await deleteWidget(key);
-      setLayout((prevLayout) => {
-        const newLayout = prevLayout.filter((item) => item.i !== key);
-        if (newLayout.length > 0) {
-          persistWidgetsLayoutOnChange(newLayout);
-        }
-        return newLayout;
-      });
+      setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
+      setRemovingWidget(false); // Reset after operation
     },
-    [deleteWidget, setLayout, persistWidgetsLayoutOnChange]
+    [deleteWidget, removingWidget, setLayout]
   );
 
   const handleWidgetAdd = useCallback(
@@ -118,7 +117,6 @@ export const useWidgetManagement = ({
 
         setLayout((prevLayout) => {
           const newLayout = [...prevLayout, widgetToAdd];
-          persistWidgetsLayoutOnChange(newLayout);
           return newLayout;
         });
       } catch (error) {
@@ -131,15 +129,7 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [
-      editMode,
-      layout,
-      cols,
-      uploadWidgetsImageAsync,
-      createWidget,
-      setLayout,
-      persistWidgetsLayoutOnChange,
-    ]
+    [editMode, layout, cols, uploadWidgetsImageAsync, createWidget, setLayout]
   );
 
   /** Handles the replacement of display images for widgets */
@@ -411,7 +401,69 @@ export const useWidgetManagement = ({
         setAddingWidget(false);
       }
     },
-    [uploadWidgetsImageAsync, handleWidgetAdd]
+    [handleWidgetAdd, uploadWidgetsImageAsync]
+  );
+
+  const handleSectionTitleAdd = useCallback(async () => {
+    console.log('testing layout', layout);
+    setAddingWidget(true);
+    try {
+      const widget = await createWidget({ url: '', type: 'SectionTitle' });
+      if (!widget) {
+        throw new Error('Failed to add widget. Please try again.');
+      }
+      const widgetToAdd: WidgetLayoutItem = {
+        i: widget.id,
+        x: (layout.length * 2) % cols,
+        y: 0,
+        w: WidgetDimensions.Section.w,
+        h: WidgetDimensions.Section.h,
+        type: 'SectionTitle',
+        content: widget.content,
+        static: !editMode,
+        isResizable: false,
+        isDraggable: editMode,
+        loading: false,
+        size: 'Section',
+      };
+
+      setLayout((prevLayout) => {
+        return [...prevLayout, widgetToAdd];
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Something went wrong';
+      toast(`We couldn't add a section title`, {
+        description: message,
+      });
+    } finally {
+      setAddingWidget(false);
+    }
+  }, [editMode, layout, cols, createWidget, setLayout]);
+
+  const handleSectionTitleUpdate = useCallback(
+    async (key: string, title: string) => {
+      try {
+        const existingItem = layout.find((item) => item.i === key);
+        console.log(existingItem);
+        if (existingItem && existingItem.type === 'SectionTitle') {
+          (existingItem.content as SectionTitleWidgetContentType).title = title;
+          await updateWidgetContentAsync({
+            key: existingItem.i,
+            content: existingItem.content,
+          });
+        } else {
+          throw new Error(`Couldn't edit widget's title`);
+        }
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast(`We couldn't update a widget`, {
+          description: message,
+        });
+      }
+    },
+    [layout, updateWidgetContentAsync]
   );
 
   const handleAddMultipleWidgets = useCallback(
@@ -455,13 +507,11 @@ export const useWidgetManagement = ({
       ).filter((widget): widget is WidgetLayoutItem => widget !== undefined);
 
       setLayout((prevLayout) => {
-        const newLayout = [...prevLayout, ...widgetsToAdd];
-        persistWidgetsLayoutOnChange(newLayout);
-        return newLayout;
+        return [...prevLayout, ...widgetsToAdd];
       });
       setAddingWidget(false);
     },
-    [cols, editMode, createWidget, setLayout, persistWidgetsLayoutOnChange]
+    [cols, editMode, createWidget, setLayout]
   );
 
   return {
@@ -471,6 +521,8 @@ export const useWidgetManagement = ({
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
+    handleSectionTitleAdd,
+    handleSectionTitleUpdate,
     handleWidgetEditLink,
     handleNewImageAdd,
     handleRestoreImage,

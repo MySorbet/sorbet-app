@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockACHWireDetailsHandler } from '@/api/bridge';
 import {
   mockCurrentWalletAddressHandler,
   mockInvoiceHandler,
@@ -52,7 +53,11 @@ export const Freelancer: Story = {
 export const WithNetworkCall: Story = {
   parameters: {
     msw: {
-      handlers: [mockInvoiceHandler, mockCurrentWalletAddressHandler],
+      handlers: [
+        mockInvoiceHandler,
+        mockCurrentWalletAddressHandler,
+        mockACHWireDetailsHandler,
+      ],
     },
   },
   render: () => {

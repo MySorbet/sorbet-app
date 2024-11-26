@@ -1,27 +1,49 @@
 import { useQuery } from '@tanstack/react-query';
 
-export const useACHWireDetails = (userId: string) => {
-  return useQuery({
-    queryKey: ['achWireDetails'],
-    queryFn: getACHWireDetails,
-  });
-};
+import { getACHWireDetails } from '@/api/bridge';
+import { SourceDepositInstructions } from '@/types';
 
-// TODO: Remove this mock data, we can get this from the Bridge virtual account API and store it
-// https://apidocs.bridge.xyz/docs/virtual-accounts
-const getACHWireDetails = async () => {
-  // TODO: Fetch this based on the authed users token
+// TODO: Have to make this grab the ACH info for any user, not the logged in user
+export const useACHWireDetails = (userId: string) => {
+  const query = useQuery({
+    queryKey: ['achWireDetails', userId],
+    queryFn: () => getACHWireDetails(userId),
+  });
+
+  const mappedData = query.data ? mapToACHWireDetails(query.data) : undefined;
+
   return {
-    routingNumber: '123456789',
-    accountNumber: '123456789',
-    beneficiary: {
-      name: 'John Doe',
-      accountType: 'Checking',
-      address: '123 Main St, Anytown, USA',
-    },
-    bank: {
-      name: 'Bank of America',
-      address: '123 Main St, Anytown, USA',
-    },
+    ...query,
+    data: mappedData,
   };
 };
+
+export type ACHWireDetails = {
+  routingNumber: string;
+  accountNumber: string;
+  beneficiary: {
+    name: string;
+    accountType: string;
+    address: string;
+  };
+  bank: {
+    name: string;
+    address: string;
+  };
+};
+
+const mapToACHWireDetails = (
+  instructions: SourceDepositInstructions
+): ACHWireDetails => ({
+  routingNumber: instructions.bank_routing_number,
+  accountNumber: instructions.bank_account_number,
+  beneficiary: {
+    name: instructions.bank_beneficiary_name,
+    accountType: 'Checking', // Defaulting to "Checking" since it's not provided in the source data
+    address: instructions.bank_beneficiary_address,
+  },
+  bank: {
+    name: instructions.bank_name,
+    address: instructions.bank_address,
+  },
+});

@@ -53,6 +53,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
           <div className='mb-4 flex flex-row gap-2'>
             <div className='w-10'>
               <WidgetIcon type='Github' />
+              <WidgetIcon type='Github' />
             </div>
             <div>
               <div className='text-sm font-semibold'>{content.title}</div>
@@ -88,6 +89,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
         <div className='flex h-full flex-col gap-2'>
           <div>
             <WidgetIcon type='Github' className='m-0' />
+            <WidgetIcon type='Github' className='m-0' />
           </div>
           <div>
             <div className='text-sm font-semibold'>{content.title}</div>
@@ -116,6 +118,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
       widgetLayout = (
         <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
+            <WidgetIcon type='Github' />
             <WidgetIcon type='Github' />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>

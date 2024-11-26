@@ -22,11 +22,7 @@ const breakpoints = {
   xl: 1600,
 };
 
-export const useLayoutManagement = ({
-  userId,
-  editMode,
-  onLayoutChange,
-}: WidgetGridProps) => {
+export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
   const [layout, setLayout] = useState<WidgetLayoutItem[]>([]);
   const [initialLayout, setInitialLayout] = useState<WidgetLayoutItem[]>([]);
   const [cols, setCols] = useState<number>(8);
@@ -60,7 +56,7 @@ export const useLayoutManagement = ({
       redirectUrl: widget.redirectUrl,
       size: widget.size,
     }));
-  }, [userId, editMode, userWidgetData]);
+  }, [editMode, userWidgetData]);
 
   const handleLayoutChange = useCallback(
     (newLayout: WidgetLayoutItem[]) => {
@@ -68,13 +64,12 @@ export const useLayoutManagement = ({
         const existingItem = layout.find((item) => item.i === layoutItem.i);
         return existingItem ? { ...existingItem, ...layoutItem } : layoutItem;
       });
-
       setLayout(updatedLayout);
-      onLayoutChange?.(updatedLayout);
     },
-    [layout, onLayoutChange]
+    [layout]
   );
 
+  /** Triggered automatically when layout is changed, updates backend according to layout changes */
   const persistWidgetsLayoutOnChange = useCallback(
     (items?: WidgetLayoutItem[], key?: string) => {
       const itemsToUse = items && items.length > 0 ? items : layout;
@@ -256,6 +251,5 @@ export const useLayoutManagement = ({
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,
-    persistWidgetsLayoutOnChange,
   };
 };
