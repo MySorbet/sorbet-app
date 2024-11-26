@@ -75,7 +75,7 @@ interface WidgetProps {
   addImage: (key: string, image: File) => Promise<void>;
   removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  handleTitleUpdate: any;
+  handleTitleUpdate: (key: string, title: string) => Promise<void>;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -368,6 +368,8 @@ export const Widget: React.FC<WidgetProps> = ({
               } as LinkedInProfileWidgetContentType
             }
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;

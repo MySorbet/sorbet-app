@@ -19,6 +19,13 @@ interface LinkedInProfileWidgetProps {
   content: LinkedInProfileWidgetContentType;
   /** The size of the widget to render */
   size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
 }
 
 export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
@@ -29,16 +36,18 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
   removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   const { name, bannerImage } = content;
 
-  const openWidgetLink = () => {
-    if (bannerImage) {
-      const newWindow = window.open(bannerImage, '_blank');
-      if (newWindow) {
-        newWindow.opener = null;
-      }
-    }
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'LinkedIn',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
   };
 
   switch (size) {
@@ -53,7 +62,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -78,7 +87,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -103,7 +112,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
@@ -126,7 +135,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             {showControls && (
               <ModifyImageWidget
                 hasImage={bannerImage ? true : false}
-                openWidgetLink={openWidgetLink}
+                restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
                 addImage={addImage}
