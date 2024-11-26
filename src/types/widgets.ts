@@ -103,7 +103,7 @@ export interface LinkWidgetContentType {
 export interface LinkedInProfileWidgetContentType {
   name: string;
   bio: string;
-  bannerImage: string;
+  bannerImage: string | undefined;
   profileImage: string;
 }
 

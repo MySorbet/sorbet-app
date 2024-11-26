@@ -16,10 +16,10 @@ export const BannerImage: React.FC<{ src?: string; className?: string }> = ({
         className
       )}
     >
-      {!src && (
+      {(!src || src === undefined) && (
         <div className='absolute inset-0 bg-[url("/svg/empty-widget-background.svg")] bg-cover bg-center opacity-50' />
       )}
-      {src && src !== '' ? (
+      {src && src !== '' && src !== undefined ? (
         <>
           <img
             src={src}

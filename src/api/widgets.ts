@@ -160,12 +160,12 @@ export const updateWidgetContent = async (
   };
 
   try {
-    const res = await axios.patch(
+    const response = await axios.patch(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,
       await withAuthHeader()
     );
-    return res.data;
+    return response;
   } catch (error) {
     catchAndRethrowWidgetError(
       error,

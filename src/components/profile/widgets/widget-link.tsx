@@ -175,7 +175,7 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
   className,
   ...rest
 }) => {
-  return src ? (
+  return src || src === '' ? (
     <img
       className={cn('size-[30px]', className)}
       src={src}

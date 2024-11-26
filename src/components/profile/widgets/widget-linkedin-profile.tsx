@@ -3,7 +3,11 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { BannerImage } from '@/components/profile/widgets/banner-image';
 import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
 import { cn } from '@/lib/utils';
-import { LinkedInProfileWidgetContentType, WidgetSize } from '@/types';
+import {
+  LinkedInProfileWidgetContentType,
+  WidgetContentType,
+  WidgetSize,
+} from '@/types';
 
 import { WidgetHeader } from './widget-header';
 import { WidgetIcon } from './widget-icon';
@@ -44,7 +48,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
   const restoreImage = async () => {
     await handleRestoreImage(
       identifier,
-      'LinkedIn',
+      'LinkedInProfile',
       redirectUrl ?? '',
       content
     ); // Call the mutation with the image URL

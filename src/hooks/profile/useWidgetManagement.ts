@@ -10,12 +10,12 @@ import {
 } from '@/hooks';
 import { useUpdateWidgetContent } from '@/hooks/profile/useUpdateWidgetContent';
 import { useRestoreWidgetImage } from '@/hooks/widgets/useRestoreWidgetImage';
-import { useUpdateWidgetContent } from '@/hooks/widgets/useUpdateWidgetContent';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   GithubWidgetContentType,
+  LinkedInProfileWidgetContentType,
   LinkWidgetContentType,
   PhotoWidgetContentType,
   SectionTitleWidgetContentType,
@@ -47,13 +47,12 @@ export const useWidgetManagement = ({
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
   const [removingWidget, setRemovingWidget] = useState<boolean>(false);
 
-  const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
-  const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
-  const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
-  const { mutateAsync: restoreWidgetImageAsync } = useRestoreWidgetImage();
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
+  const { mutateAsync: uploadWidgetsImageAsync } = useUploadWidgetsImage();
   const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
+  const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
+  const { mutateAsync: restoreWidgetImageAsync } = useRestoreWidgetImage();
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
@@ -116,8 +115,7 @@ export const useWidgetManagement = ({
         };
 
         setLayout((prevLayout) => {
-          const newLayout = [...prevLayout, widgetToAdd];
-          return newLayout;
+          return [...prevLayout, widgetToAdd];
         });
       } catch (error) {
         const message =
@@ -136,6 +134,7 @@ export const useWidgetManagement = ({
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
       let widgetUrl = '';
+      console.log('here');
       try {
         const existingItem = layout.find((item) => item.i === key);
 
@@ -187,7 +186,6 @@ export const useWidgetManagement = ({
             case 'Medium':
               (existingItem.content as GithubWidgetContentType).image =
                 widgetUrl;
-
               break;
             case 'TwitterProfile':
               (existingItem.content as TwitterWidgetContentType).bannerImage =
@@ -201,6 +199,11 @@ export const useWidgetManagement = ({
               (existingItem.content as DribbbleWidgetContentType).image =
                 widgetUrl;
               break;
+            case 'LinkedInProfile':
+              (
+                existingItem.content as LinkedInProfileWidgetContentType
+              ).bannerImage = widgetUrl;
+              break;
 
             default:
               break;
@@ -209,6 +212,13 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
+          setLayout((prevLayout) =>
+            prevLayout.map((item) =>
+              item.i === existingItem.i
+                ? { ...item, content: existingItem.content }
+                : item
+            )
+          );
         }
       } catch (error) {
         const message =
@@ -218,7 +228,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout, uploadWidgetsImageAsync, updateWidgetContentAsync]
+    [layout, uploadWidgetsImageAsync, updateWidgetContentAsync, setLayout]
   );
 
   const handleRestoreImage = useCallback(
@@ -294,6 +304,11 @@ export const useWidgetManagement = ({
             case 'Dribbble':
               (existingItem.content as DribbbleWidgetContentType).image =
                 undefined;
+              break;
+            case 'LinkedInProfile':
+              (
+                existingItem.content as LinkedInProfileWidgetContentType
+              ).bannerImage = undefined;
               break;
 
             default:
