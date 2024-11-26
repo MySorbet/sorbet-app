@@ -18,8 +18,6 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content }) => {
     (content as PhotoWidgetContentType).croppedArea ?? undefined;
   const isCropped = (content as PhotoWidgetContentType).isCropped;
 
-  console.log(isCropped, croppedArea);
-
   /** Calculates how an image should be transformed based on widget's croppedArea property, if it has it */
   const calculateStyles = (croppedArea: Area): React.CSSProperties => {
     const scale = 100 / croppedArea?.width;

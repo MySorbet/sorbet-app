@@ -67,7 +67,6 @@ export const useWidgetManagement = ({
 
   const handleWidgetAdd = useCallback(
     async (url: string, image?: File) => {
-      setAddingWidget(true);
       let widgetUrl = url;
 
       try {
@@ -123,8 +122,6 @@ export const useWidgetManagement = ({
         toast(`We couldn't add a widget`, {
           description: message,
         });
-      } finally {
-        setAddingWidget(false);
       }
     },
     [editMode, layout, cols, uploadWidgetsImageAsync, createWidget, setLayout]
@@ -134,7 +131,6 @@ export const useWidgetManagement = ({
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
       let widgetUrl = '';
-      console.log('here');
       try {
         const existingItem = layout.find((item) => item.i === key);
 
@@ -391,8 +387,6 @@ export const useWidgetManagement = ({
         setErrorInvalidImage(true);
         return;
       }
-
-      setAddingWidget(true);
       try {
         const imageFormData = new FormData();
         imageFormData.append('file', file);
@@ -412,16 +406,12 @@ export const useWidgetManagement = ({
         }
       } catch (error) {
         setErrorInvalidImage(true);
-      } finally {
-        setAddingWidget(false);
       }
     },
     [handleWidgetAdd, uploadWidgetsImageAsync]
   );
 
   const handleSectionTitleAdd = useCallback(async () => {
-    console.log('testing layout', layout);
-    setAddingWidget(true);
     try {
       const widget = await createWidget({ url: '', type: 'SectionTitle' });
       if (!widget) {
@@ -451,8 +441,6 @@ export const useWidgetManagement = ({
       toast(`We couldn't add a section title`, {
         description: message,
       });
-    } finally {
-      setAddingWidget(false);
     }
   }, [editMode, layout, cols, createWidget, setLayout]);
 
@@ -460,7 +448,6 @@ export const useWidgetManagement = ({
     async (key: string, title: string) => {
       try {
         const existingItem = layout.find((item) => item.i === key);
-        console.log(existingItem);
         if (existingItem && existingItem.type === 'SectionTitle') {
           (existingItem.content as SectionTitleWidgetContentType).title = title;
           await updateWidgetContentAsync({
