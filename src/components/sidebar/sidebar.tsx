@@ -1,4 +1,5 @@
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useQueryClient } from '@tanstack/react-query';
 import { Receipt, User01 } from '@untitled-ui/icons-react';
 import { X } from '@untitled-ui/icons-react';
 import {
@@ -15,7 +16,7 @@ import { toast } from 'sonner';
 
 import { Spinner } from '@/components/common';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
-import { useOpenPollAndInvalidate } from '@/components/sidebar/use-open-poll-and-invalidate';
+import { openPollAndCallback } from '@/components/sidebar/open-poll-and-callback';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -63,7 +64,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     onIsOpenChange(false);
   };
 
-  const { open } = useOpenPollAndInvalidate();
+  // Build a function that will open a link in a new tab and invalidate the bridge customer query when it closes
+  const queryClient = useQueryClient();
+  const openAndInvalidate = (link: string) => {
+    openPollAndCallback({
+      link,
+      onClose: () => {
+        queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
+      },
+    });
+  };
+
   // TODO: does this work?
   const [isCollapsed, setIsCollapsed] = useLocalStorage(
     'isVerificationCollapsed',
@@ -77,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     data: verifyUserResponse,
   } = useVerify({
     onSuccess: (data) => {
-      open((data as BridgeCustomer).tos_link, 'bridgeCustomer');
+      openAndInvalidate((data as BridgeCustomer).tos_link);
     },
   });
 
@@ -185,18 +196,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   // If the user has not accepted the terms of service,
                   // open the terms of service link
                   if (bridgeCustomer.tos_status !== 'approved') {
-                    open(bridgeCustomer.tos_link, 'bridgeCustomer');
+                    openAndInvalidate(bridgeCustomer.tos_link);
                   } else {
                     // If the user has accepted the terms of service,
                     // open the KYC link in a new tab
-                    open(
-                      bridgeCustomer.kyc_link,
-                      'bridgeCustomer',
-                      1000,
-                      () => {
-                        setIsIndeterminate(true);
-                      }
-                    );
+                    openPollAndCallback({
+                      link: bridgeCustomer.kyc_link,
+                      onClose: () => setIsIndeterminate(true),
+                    });
                   }
                 }}
               />
