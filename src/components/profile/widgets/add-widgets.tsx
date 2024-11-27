@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { featureFlags } from '@/lib/flags';
 import { cn } from '@/lib/utils';
 
 import { InvalidAlert } from './invalid-alert';
@@ -202,19 +203,21 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
           </Popover>
         </div>
 
-        <div className='flex w-[56px] items-center gap-2'>
+        <div className='flex items-center gap-2'>
           <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <SectionTitleIcon
-                  onClick={addSectionTitle}
-                  className='hover:text-sorbet'
-                  width={20}
-                  height={20}
-                />
-              </TooltipTrigger>
-              <TooltipContent>Add section title</TooltipContent>
-            </Tooltip>
+            {featureFlags.sectionTitles && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <SectionTitleIcon
+                    onClick={addSectionTitle}
+                    className='hover:text-sorbet'
+                    width={20}
+                    height={20}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>Add section title</TooltipContent>
+              </Tooltip>
+            )}
             <Tooltip>
               <TooltipTrigger asChild>
                 <label
