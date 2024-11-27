@@ -103,6 +103,7 @@ const config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        // Used for the indeterminate progress bar
         progress: {
           '0%': { transform: 'translateX(0) scaleX(0)' },
           '40%': { transform: 'translateX(0) scaleX(0.4)' },
@@ -112,6 +113,7 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        // Used for the indeterminate progress bar
         progress: 'progress 2s infinite linear',
       },
       boxShadow: {

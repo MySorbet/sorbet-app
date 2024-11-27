@@ -19,7 +19,7 @@ import {
 import { KYCStatus, TOSStatus } from '@/types';
 
 interface VerificationCardProps {
-  tosStatus?: TOSStatus /** HAS the user accepted the terms of service? */;
+  tosStatus?: TOSStatus /** Has the user accepted the terms of service? */;
   kycStatus?: KYCStatus /** The status of the user's KYC verification */;
   onComplete?: () => void /** Callback for when the primary action button is clicked. This can mean a few different things depending on the state of the card. */;
   disabled?: boolean /** Disables the primary action button?*/;
@@ -98,7 +98,7 @@ export const VerificationCard = ({
       {/* Only show the remaining steps if the user hasn't completed the verification process or the card is not collapsed */}
       {!(isRejected || isCollapsed) && (
         <CardContent className='space-y-4 p-4 pt-3'>
-          {/* TODO: Fix the 'snap; from right to left when indeterminate goes from false to true */}
+          {/* TODO: Fix the 'snap' from right to left when indeterminate goes from false to true */}
           <Progress
             value={progress}
             indeterminate={isIndeterminate}
