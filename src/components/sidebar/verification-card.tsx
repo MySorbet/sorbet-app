@@ -82,6 +82,9 @@ export const VerificationCard = ({
     ? 'indeterminate'
     : 'notStarted';
 
+  // Indeterminacy does not take priority over approval
+  const isIndeterminate = indeterminate && !isApproved;
+
   return (
     <Card>
       <CardHeader className='p-4'>
@@ -98,7 +101,7 @@ export const VerificationCard = ({
           {/* TODO: Fix the 'snap; from right to left when indeterminate goes from false to true */}
           <Progress
             value={progress}
-            indeterminate={indeterminate && !isApproved}
+            indeterminate={isIndeterminate}
             className='[&>*]:bg-sorbet h-2'
           />
 
@@ -119,7 +122,7 @@ export const VerificationCard = ({
             <Button
               onClick={onComplete}
               variant='sorbet'
-              disabled={disabled || missingEmail || inReview || indeterminate}
+              disabled={disabled || missingEmail || inReview || isIndeterminate}
               className='min-w-44'
             >
               {isApproved
