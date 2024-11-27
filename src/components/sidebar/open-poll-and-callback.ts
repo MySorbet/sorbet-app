@@ -1,6 +1,6 @@
 type OpenPollAndCallbackOptions = {
   link: string /** The link to open in a new tab */;
-  interval?: number /** The interval on which to check if the window is closed */;
+  interval?: number /** The interval on which to check if the window is closed. Defaults to 1 second */;
   onClose?: () => void /** The callback to run when the window is closed */;
 };
 
