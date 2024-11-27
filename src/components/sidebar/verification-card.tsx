@@ -95,6 +95,7 @@ export const VerificationCard = ({
       {/* Only show the remaining steps if the user hasn't completed the verification process or the card is not collapsed */}
       {!(isRejected || isCollapsed) && (
         <CardContent className='space-y-4 p-4 pt-3'>
+          {/* TODO: Fix the 'snap; from right to left when indeterminate goes from false to true */}
           <Progress
             value={progress}
             indeterminate={indeterminate && !isApproved}
@@ -174,7 +175,7 @@ const DynamicCardTitle = ({
 }) => {
   return (
     <CardTitle
-      className='animate-in fade-in slide-in-from-left-1 flex items-center gap-2 text-sm font-medium'
+      className='animate-in fade-in flex items-center gap-2 text-sm font-medium'
       key={status}
     >
       {status === 'rejected' && (
@@ -207,10 +208,7 @@ const DynamicCardDescription = ({
   rejectionReason?: string;
 }) => {
   return (
-    <CardDescription
-      className='animate-in fade-in slide-in-from-left-1 text-xs'
-      key={status}
-    >
+    <CardDescription className='animate-in fade-in text-xs' key={status}>
       {status === 'rejected' && rejectionReason
         ? rejectionReason
         : descriptionContent[status]}
