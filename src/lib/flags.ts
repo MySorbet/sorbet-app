@@ -12,5 +12,5 @@ export const featureFlags: FeatureFlags = {
   invoices: true,
   coinGeckoApi: process.env.NODE_ENV === 'production', // Api for getting exchange rates to USD. Enabling only for production.
   verification: true,
-  sectionTitles: false,
+  sectionTitles: true,
 };
