@@ -11,11 +11,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Spinner } from '@/components/common';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
-import { useOpenPollAndInvalidate } from '@/components/sidebar/use-open-poll-and-invalidate';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,11 +24,9 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge';
-import { useVerify } from '@/hooks/profile/use-verify';
 import { featureFlags } from '@/lib/flags';
-import { BridgeCustomer } from '@/types';
 
+import { useBridgeActions } from './use-bridge-actions';
 import { VerificationCard } from './verification-card';
 
 interface SidebarProps {
@@ -58,19 +54,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     onIsOpenChange(false);
   };
 
-  const { open } = useOpenPollAndInvalidate();
-
   const {
-    mutate: verifyUser,
-    isPending: isVerifyingUser,
-    data: verifyUserResponse,
-  } = useVerify({
-    onSuccess: (data) => {
-      open((data as BridgeCustomer).tos_link, 'bridgeCustomer');
-    },
-  });
-
-  const { data: bridgeCustomer } = useBridgeCustomer();
+    bridgeCustomer,
+    isCollapsed,
+    isIndeterminate,
+    isVerifying,
+    handlePrimaryButtonClick,
+  } = useBridgeActions();
 
   return (
     <Sheet open={isOpen} onOpenChange={onIsOpenChange}>
@@ -146,30 +136,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
               <VerificationCard
                 tosStatus={bridgeCustomer?.tos_status}
                 kycStatus={bridgeCustomer?.kyc_status}
-                disabled={isVerifyingUser}
-                onComplete={() => {
-                  // If there is no bridge customer, we need to to kick off the verification process
-                  if (!bridgeCustomer) {
-                    verifyUser();
-                    return;
-                  }
-
-                  // Try again
-                  if (bridgeCustomer.kyc_status === 'rejected') {
-                    toast('Please contact support');
-                    return;
-                  }
-
-                  // If the user has not accepted the terms of service,
-                  // open the terms of service link
-                  if (bridgeCustomer.tos_status !== 'approved') {
-                    open(bridgeCustomer.tos_link, 'bridgeCustomer');
-                  } else {
-                    // If the user has accepted the terms of service,
-                    // open the KYC link in a new tab
-                    open(bridgeCustomer.kyc_link, 'bridgeCustomer');
-                  }
-                }}
+                disabled={isVerifying}
+                missingEmail={!user.email}
+                indeterminate={isIndeterminate}
+                isCollapsed={isCollapsed}
+                onComplete={handlePrimaryButtonClick}
+                // TODO: Add rejection reason
               />
             )}
             <Button

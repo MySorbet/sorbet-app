@@ -1,5 +1,6 @@
 import { StoryObj } from '@storybook/react';
 import { Meta } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { VerificationCard } from './verification-card';
 
@@ -16,6 +17,9 @@ const meta = {
       </div>
     ),
   ],
+  args: {
+    onComplete: fn(),
+  },
 } satisfies Meta<typeof VerificationCard>;
 
 export default meta;
@@ -38,10 +42,24 @@ export const Approved: Story = {
   },
 };
 
-export const Rejected: Story = {
+export const RejectedDefaultReason: Story = {
+  parameters: {
+    name: 'Rejected (default reason)',
+  },
   args: {
     tosStatus: 'approved',
     kycStatus: 'rejected',
+  },
+};
+
+export const RejectedSpecificReason: Story = {
+  parameters: {
+    name: 'Rejected (specific reason)',
+  },
+  args: {
+    tosStatus: 'approved',
+    kycStatus: 'rejected',
+    rejectionReason: 'There is a specific reason for rejection',
   },
 };
 
@@ -49,5 +67,30 @@ export const InReview: Story = {
   args: {
     tosStatus: 'approved',
     kycStatus: 'under_review',
+  },
+};
+
+export const Indeterminate: Story = {
+  args: {
+    tosStatus: 'approved',
+    indeterminate: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const MissingEmail: Story = {
+  args: {
+    missingEmail: true,
+  },
+};
+
+export const Collapsed: Story = {
+  args: {
+    isCollapsed: true,
   },
 };
