@@ -1,4 +1,5 @@
 import { Trash2 } from 'lucide-react';
+import posthog from 'posthog-js';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -46,6 +47,7 @@ import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
 
 interface WidgetProps {
+  sorbetUserId: string;
   identifier: string;
   type: WidgetType;
   w: number;
@@ -62,6 +64,7 @@ interface WidgetProps {
 }
 
 export const Widget: React.FC<WidgetProps> = ({
+  sorbetUserId,
   identifier,
   type,
   loading,
@@ -95,6 +98,12 @@ export const Widget: React.FC<WidgetProps> = ({
         }
       }
     }
+    posthog.capture('widget_clicked', {
+      widget_name: type,
+      widget_identifier: identifier,
+      widget_url: redirectUrl,
+      user_id: sorbetUserId,
+    });
     // TODO: Maybe widgets should be anchors?
   };
 
