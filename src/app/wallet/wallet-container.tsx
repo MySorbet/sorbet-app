@@ -4,7 +4,7 @@ import { useFundWallet } from '@privy-io/react-auth';
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
@@ -33,7 +33,7 @@ export const WalletContainer = () => {
 
   const { fundWallet } = useFundWallet();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [selectedDuration, setSelectedDuration] = useState<string>('30');
 
@@ -69,8 +69,9 @@ export const WalletContainer = () => {
           amount: defaultFundAmount,
           asset: 'USDC',
         });
-        setReload(!reload); // trigger reload to refresh wallet amount
       }
+      // TODO: see if setReload() can be removed, fundWallet() is technically finished after just opening the modal.
+      setReload(!reload);
     } catch (e) {
       toast('Something went wrong', {
         description:
@@ -103,6 +104,7 @@ export const WalletContainer = () => {
       });
 
       setReload(!reload);
+
       return transferTransactionHash;
     }
   };
@@ -111,13 +113,13 @@ export const WalletContainer = () => {
     (async () => {
       await fetchTransactions();
     })();
-  }, [walletAddress, reload, fetchTransactions]);
+  }, [fetchTransactions, reload]);
 
   useEffect(() => {
     (async () => {
       fetchTransactions(parseInt(selectedDuration, 10));
     })();
-  }, [selectedDuration, fetchTransactions]);
+  }, [fetchTransactions, selectedDuration]);
 
   return (
     <Authenticated>
@@ -146,12 +148,17 @@ export const WalletContainer = () => {
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
               isBalanceLoading={balanceLoading}
+              isLoading={loading}
               selectedDuration={selectedDuration}
               onTxnDurationChange={setSelectedDuration}
             />
           </div>
           <div className='lg:w-4/12'>
-            <MyAccounts usdcBalance={usdcBalance} address={walletAddress} />
+            <MyAccounts
+              usdcBalance={usdcBalance}
+              address={walletAddress}
+              isLoading={loading}
+            />
           </div>
         </div>
         <div className='mb-6 mt-12 flex justify-between'>

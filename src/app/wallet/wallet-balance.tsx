@@ -22,6 +22,7 @@ interface WalletBalanceProps {
   balanceHistoryIn: { date: string; balance: string }[] | undefined;
   balanceHistoryOut: { date: string; balance: string }[] | undefined;
   selectedDuration: string;
+  isLoading: boolean;
   onTxnDurationChange: Dispatch<SetStateAction<string>>;
 }
 
@@ -34,6 +35,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   onTxnDurationChange,
   balanceHistoryIn,
   balanceHistoryOut,
+  isLoading,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -44,59 +46,66 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   );
 
   return (
-    <div className='min-h-full rounded-3xl bg-white shadow-[0px_10px_30px_0px_#00000014]'>
-      <div className='flex flex-col gap-1'>
-        <div className='flex items-center justify-between p-6 pb-0'>
-          <div>
-            <div className='flex items-center gap-2'>
-              <span className='rounded-full bg-black p-2 text-white'>
-                <Wallet03 className='size-[1.125rem]' />
-              </span>
-              <span className='text-md font-medium text-[#595B5A]'>
-                BALANCE
-              </span>
-              {percentChange !== 0 && (
-                <PercentageChange percentChange={percentChange} />
-              )}
-            </div>
-            <div className='mt-2 flex'>
-              {isBalanceLoading ? (
-                <Skeleton className='h-[30px] w-32 bg-gray-300 leading-[38px]' />
-              ) : (
-                <div className='text-3xl font-semibold'>
-                  {formatCurrency(usdcBalance)} USDC
+    <>
+      {isLoading || usdcBalance === '' ? (
+        <Skeleton className='h-[366px] rounded-3xl bg-gray-300 shadow-md' />
+      ) : (
+        <div className='min-h-full rounded-3xl bg-white shadow-md'>
+          <div className='flex flex-col gap-1'>
+            <div className='flex items-center justify-between p-6 pb-0'>
+              <div>
+                <div className='flex items-center gap-2'>
+                  <span className='rounded-full bg-black p-2 text-white'>
+                    <Wallet03 className='size-[1.125rem]' />
+                  </span>
+                  <span className='text-md font-medium text-[#595B5A]'>
+                    BALANCE
+                  </span>
+                  {percentChange !== 0 && (
+                    <PercentageChange percentChange={percentChange} />
+                  )}
                 </div>
-              )}
+                <div className='mt-2 flex'>
+                  {isBalanceLoading || usdcBalance === '' ? (
+                    // Show skeleton with the same height as the balance display
+                    <Skeleton className='h-[36px] w-32 bg-gray-300 leading-[38px]' />
+                  ) : (
+                    <div className='text-3xl font-semibold'>
+                      {formatCurrency(usdcBalance)} USDC
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className='flex gap-4'>
+                <CircleButton
+                  icon={<Plus className='size-6' />}
+                  label='Deposit'
+                  onClick={onTopUp}
+                />
+                <CircleButton
+                  icon={<Send01 className='size-6' />}
+                  label='Send'
+                  onClick={() => setOpen(true)}
+                />
+                <WalletSendDialog
+                  open={open}
+                  setOpen={setOpen}
+                  sendUSDC={sendUSDC}
+                  usdcBalance={usdcBalance}
+                />
+              </div>
             </div>
-          </div>
-          <div className='flex gap-4'>
-            <CircleButton
-              icon={<Plus className='size-6' />}
-              label='Deposit'
-              onClick={onTopUp}
-            />
-            <CircleButton
-              icon={<Send01 className='size-6' />}
-              label='Send'
-              onClick={() => setOpen(true)}
-            />
-            <WalletSendDialog
-              open={open}
-              setOpen={setOpen}
-              sendUSDC={sendUSDC}
-              usdcBalance={usdcBalance}
-            />
+            <div className='mb-2 ml-6 mt-2'>
+              <SelectDuration
+                selectedValue={selectedDuration}
+                onChange={(value) => onTxnDurationChange(value)}
+              />
+            </div>
+            <BalanceChart balanceHistory={cumulativeBalanceHistory} />
           </div>
         </div>
-        <div className='mb-2 ml-6 mt-2'>
-          <SelectDuration
-            selectedValue={selectedDuration}
-            onChange={(value) => onTxnDurationChange(value)}
-          />
-        </div>
-        <BalanceChart balanceHistory={cumulativeBalanceHistory} />
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

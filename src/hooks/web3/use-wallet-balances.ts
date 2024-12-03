@@ -14,9 +14,9 @@ export const useWalletBalances = (
   walletAddress: string | null,
   reload?: boolean
 ) => {
-  const [ethBalance, setEthBalance] = useState<string>('0');
-  const [usdcBalance, setUsdcBalance] = useState<string>('0');
-  const [loading, setLoading] = useState(true);
+  const [ethBalance, setEthBalance] = useState<string>('');
+  const [usdcBalance, setUsdcBalance] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   // TODO: convert to RQ so we can invalidate whenever a usdc is sent or received
 
