@@ -204,20 +204,31 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
         </div>
 
         <div className='flex items-center gap-2'>
-          <TooltipProvider>
-            {featureFlags.sectionTitles && (
+          {featureFlags.sectionTitles && (
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <SectionTitleIcon
-                    onClick={addSectionTitle}
-                    className='hover:text-sorbet'
-                    width={20}
-                    height={20}
-                  />
+                  <label
+                    className={cn(
+                      'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
+                      loading && loadingClasses
+                    )}
+                  >
+                    <input
+                      type='button'
+                      className='hidden'
+                      onClick={addSectionTitle}
+                      disabled={loading}
+                    />
+
+                    <SectionTitleIcon width={20} height={20} />
+                  </label>
                 </TooltipTrigger>
                 <TooltipContent>Add section title</TooltipContent>
               </Tooltip>
-            )}
+            </TooltipProvider>
+          )}
+          <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <label
@@ -253,49 +264,56 @@ interface SectionTitleIconProps {
   height?: number | string; // Allow dynamic height
 }
 const SectionTitleIcon: React.FC<SectionTitleIconProps> = ({
-  onClick,
   className,
   width = 20,
   height = 20,
 }) => {
   return (
-    <svg
-      onClick={onClick}
-      width={width}
-      height={height}
-      viewBox='0 0 20 20'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-      className={`group cursor-pointer transition-colors ${className}`}
-    >
-      <rect
-        x='1'
-        y='1'
-        width='18'
-        height='18'
-        rx='3'
-        stroke='currentColor'
-        strokeWidth='2'
-      />
-      <rect x='3.5' y='4.75' width='10' height='2' rx='1' fill='currentColor' />
-      <rect
-        x='3.5'
-        y='9.25'
-        width='6'
-        height='6'
-        rx='2'
-        fill='#A8A8A8'
-        className='group-hover:fill-current'
-      />
-      <rect
-        x='10.5'
-        y='9.25'
-        width='6'
-        height='6'
-        rx='2'
-        fill='#A8A8A8'
-        className='group-hover:fill-current'
-      />
-    </svg>
+    <div>
+      <svg
+        width={width}
+        height={height}
+        viewBox='0 0 20 20'
+        fill='none'
+        xmlns='http://www.w3.org/2000/svg'
+        className={`group cursor-pointer transition-colors ${className}`}
+      >
+        <rect
+          x='1'
+          y='1'
+          width='18'
+          height='18'
+          rx='3'
+          stroke='currentColor'
+          strokeWidth='2'
+        />
+        <rect
+          x='3.5'
+          y='4.75'
+          width='10'
+          height='2'
+          rx='1'
+          fill='currentColor'
+        />
+        <rect
+          x='3.5'
+          y='9.25'
+          width='6'
+          height='6'
+          rx='2'
+          fill='#A8A8A8'
+          className='group-hover:fill-current'
+        />
+        <rect
+          x='10.5'
+          y='9.25'
+          width='6'
+          height='6'
+          rx='2'
+          fill='#A8A8A8'
+          className='group-hover:fill-current'
+        />
+      </svg>
+    </div>
   );
 };
