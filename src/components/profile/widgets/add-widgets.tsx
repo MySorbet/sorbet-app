@@ -220,7 +220,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                       onClick={addSectionTitle}
                       disabled={loading}
                     />
-
                     <SectionTitleIcon width={20} height={20} />
                   </label>
                 </TooltipTrigger>
@@ -258,7 +257,6 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 
 /** Local component for achieving purple effect on a custom icon */
 interface SectionTitleIconProps {
-  onClick?: () => void;
   className?: string;
   width?: number | string; // Allow dynamic width
   height?: number | string; // Allow dynamic height
