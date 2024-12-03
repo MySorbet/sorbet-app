@@ -227,33 +227,29 @@ export const WalletContainer = () => {
               </div>
             </Link>
           </div>
-          {walletAddress && (
-            <TransactionsTable
-              isLoading={loading}
-              minimalMode
-              transactions={
-                !transactions.transactions
-                  ? []
-                  : transactions.transactions.map(
-                      (transaction: Transaction) => ({
-                        type:
-                          transaction.sender.toLowerCase() ===
-                          walletAddress.toLowerCase()
-                            ? 'Sent'
-                            : 'Received',
-                        account:
-                          transaction.sender.toLowerCase() ===
-                          walletAddress.toLowerCase()
-                            ? transaction.receiver
-                            : transaction.sender,
-                        date: transaction.timestamp,
-                        amount: transaction.value,
-                        hash: transaction.hash,
-                      })
-                    )
-              }
-            />
-          )}
+          <TransactionsTable
+            isLoading={loading}
+            minimalMode
+            transactions={
+              !transactions.transactions
+                ? []
+                : transactions.transactions.map((transaction: Transaction) => ({
+                    type:
+                      transaction.sender.toLowerCase() ===
+                      walletAddress?.toLowerCase()
+                        ? 'Sent'
+                        : 'Received',
+                    account:
+                      transaction.sender.toLowerCase() ===
+                      walletAddress?.toLowerCase()
+                        ? transaction.receiver
+                        : transaction.sender,
+                    date: transaction.timestamp,
+                    amount: transaction.value,
+                    hash: transaction.hash,
+                  }))
+            }
+          />
         </div>
       </div>
     </Authenticated>
