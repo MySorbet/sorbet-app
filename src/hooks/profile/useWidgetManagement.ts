@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useCallback, useState } from 'react';
 import { Area } from 'react-easy-crop';
 import { toast } from 'sonner';
@@ -35,6 +36,7 @@ interface WidgetManagementProps {
   layout: WidgetLayoutItem[];
   setLayout: React.Dispatch<React.SetStateAction<WidgetLayoutItem[]>>;
   cols: number;
+  handleLayoutChange: (newLayout: WidgetLayoutItem[]) => void;
 }
 
 export const useWidgetManagement = ({
@@ -42,6 +44,7 @@ export const useWidgetManagement = ({
   layout,
   setLayout,
   cols,
+  handleLayoutChange,
 }: WidgetManagementProps) => {
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
@@ -57,16 +60,27 @@ export const useWidgetManagement = ({
   const handleWidgetRemove = useCallback(
     async (key: string) => {
       if (removingWidget) return;
-      setRemovingWidget(true);
-      await deleteWidget(key);
-      setLayout((prevLayout) => prevLayout.filter((item) => item.i !== key));
-      setRemovingWidget(false); // Reset after operation
+      try {
+        setRemovingWidget(true);
+        await deleteWidget(key);
+
+        handleLayoutChange(layout.filter((item) => item.i !== key));
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        toast(`We couldn't remove a widget`, {
+          description: message,
+        });
+      } finally {
+        setRemovingWidget(false); // Reset after operation
+      }
     },
-    [deleteWidget, removingWidget, setLayout]
+    [removingWidget, deleteWidget, handleLayoutChange, layout]
   );
 
   const handleWidgetAdd = useCallback(
     async (url: string, image?: File) => {
+      setAddingWidget(true);
       let widgetUrl = url;
 
       try {
@@ -122,6 +136,8 @@ export const useWidgetManagement = ({
         toast(`We couldn't add a widget`, {
           description: message,
         });
+      } finally {
+        setAddingWidget(false);
       }
     },
     [editMode, layout, cols, uploadWidgetsImageAsync, createWidget, setLayout]
@@ -240,21 +256,80 @@ export const useWidgetManagement = ({
           throw new Error('Failed to find widget to update.');
         }
 
-        await restoreWidgetImageAsync({
+        const returnedImage = await restoreWidgetImageAsync({
           key,
           type,
           redirectUrl,
           content,
         });
+        // if image does exist, now you can update it
+        if (returnedImage !== undefined && returnedImage !== '') {
+          switch (existingItem.type) {
+            case 'Link':
+              (existingItem.content as LinkWidgetContentType).heroImageUrl =
+                returnedImage;
+              break;
+            case 'SoundcloudSong':
+              (existingItem.content as SoundcloudTrackContentType).artwork =
+                returnedImage;
+              break;
+            case 'Substack':
+              (existingItem.content as SubstackWidgetContentType).image =
+                returnedImage;
+              break;
+            case 'Github':
+              (existingItem.content as GithubWidgetContentType).image =
+                returnedImage;
+              break;
+            case 'Behance':
+              (existingItem.content as BehanceWidgetContentType).image =
+                returnedImage;
+              break;
+            case 'Medium':
+              (existingItem.content as GithubWidgetContentType).image =
+                returnedImage;
+              break;
+            case 'TwitterProfile':
+              (existingItem.content as TwitterWidgetContentType).bannerImage =
+                returnedImage;
+              break;
+            case 'Youtube':
+              (existingItem.content as YoutubeWidgetContentType).thumbnail =
+                returnedImage;
+              break;
+            case 'Dribbble':
+              (existingItem.content as DribbbleWidgetContentType).image =
+                returnedImage;
+              break;
+            case 'LinkedInProfile':
+              (
+                existingItem.content as LinkedInProfileWidgetContentType
+              ).bannerImage = returnedImage;
+              break;
+
+            default:
+              break;
+          }
+          await updateWidgetContentAsync({
+            key: existingItem.i,
+            content: existingItem.content,
+          });
+
+          // and if that site doesn't have an image, hold off on doing anything and inform the user.
+        } else {
+          toast(`It looks like this site has no image for this URL`, {
+            description: `We won't update or delete the current image.`,
+          });
+        }
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
-        toast(`We couldn't update a widget`, {
+        toast(`We couldn't update the picture`, {
           description: message,
         });
       }
     },
-    [layout, restoreWidgetImageAsync]
+    [layout, restoreWidgetImageAsync, updateWidgetContentAsync]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */
@@ -387,6 +462,8 @@ export const useWidgetManagement = ({
         setErrorInvalidImage(true);
         return;
       }
+
+      setAddingWidget(true);
       try {
         const imageFormData = new FormData();
         imageFormData.append('file', file);
@@ -406,6 +483,8 @@ export const useWidgetManagement = ({
         }
       } catch (error) {
         setErrorInvalidImage(true);
+      } finally {
+        setAddingWidget(false);
       }
     },
     [handleWidgetAdd, uploadWidgetsImageAsync]
@@ -413,6 +492,7 @@ export const useWidgetManagement = ({
 
   const handleSectionTitleAdd = useCallback(async () => {
     try {
+      setAddingWidget(true);
       const widget = await createWidget({ url: '', type: 'SectionTitle' });
       if (!widget) {
         throw new Error('Failed to add widget. Please try again.');
@@ -441,6 +521,8 @@ export const useWidgetManagement = ({
       toast(`We couldn't add a section title`, {
         description: message,
       });
+    } finally {
+      setAddingWidget(false);
     }
   }, [editMode, layout, cols, createWidget, setLayout]);
 

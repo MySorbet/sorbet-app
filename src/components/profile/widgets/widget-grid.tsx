@@ -71,6 +71,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     editMode,
     layout,
     setLayout,
+    handleLayoutChange,
     cols,
   });
 
