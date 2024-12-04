@@ -4,7 +4,7 @@ import { useFundWallet } from '@privy-io/react-auth';
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
@@ -70,7 +70,8 @@ export const WalletContainer = () => {
           asset: 'USDC',
         });
       }
-      // TODO: see if setReload() can be removed, fundWallet() is technically finished after just opening the modal.
+
+      // update the value of reload here to re-fetch transactions after the deposit
       setReload(!reload);
     } catch (e) {
       toast('Something went wrong', {
@@ -103,6 +104,7 @@ export const WalletContainer = () => {
         data: transferData,
       });
 
+      // update the value of reload here to re-fetch transactions after the deposit
       setReload(!reload);
 
       return transferTransactionHash;

@@ -68,7 +68,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
                 <div className='mt-2 flex'>
                   {isBalanceLoading || usdcBalance === '' ? (
                     // Show skeleton with the same height as the balance display
-                    <Skeleton className='h-[36px] w-32 bg-gray-300 leading-[38px]' />
+                    <Skeleton className='h-9 w-32 bg-gray-300' />
                   ) : (
                     <div className='text-3xl font-semibold'>
                       {formatCurrency(usdcBalance)} USDC
