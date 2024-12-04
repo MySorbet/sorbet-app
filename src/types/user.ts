@@ -7,11 +7,8 @@ export interface User {
   handle: string | null;
   email: string;
   bio: string;
-  title: string;
   profileImage: string;
-  profileBannerImage: string;
   tags: string[];
-  tempLocation: string;
   city: string;
 }
 
