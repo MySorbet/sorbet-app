@@ -208,20 +208,14 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <label
-                    className={cn(
-                      'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
-                      loading && loadingClasses
-                    )}
+                  <Button
+                    variant='ghost'
+                    className='h-fit p-0'
+                    onClick={addSectionTitle}
+                    disabled={loading}
                   >
-                    <input
-                      type='button'
-                      className='hidden'
-                      onClick={addSectionTitle}
-                      disabled={loading}
-                    />
-                    <SectionTitleIcon width={20} height={20} />
-                  </label>
+                    <SectionTitleIcon className='hover:text-sorbet size-5' />
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>Add section title</TooltipContent>
               </Tooltip>
@@ -258,19 +252,11 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 /** Local component for achieving purple effect on a custom icon */
 interface SectionTitleIconProps {
   className?: string;
-  width?: number | string; // Allow dynamic width
-  height?: number | string; // Allow dynamic height
 }
-const SectionTitleIcon: React.FC<SectionTitleIconProps> = ({
-  className,
-  width = 20,
-  height = 20,
-}) => {
+const SectionTitleIcon: React.FC<SectionTitleIconProps> = ({ className }) => {
   return (
     <div>
       <svg
-        width={width}
-        height={height}
         viewBox='0 0 20 20'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
