@@ -2,7 +2,6 @@ export interface User {
   id: string;
   firstName: string;
   lastName: string;
-  accountId: string | null;
   privyId: string | null;
   handle: string | null;
   email: string;
