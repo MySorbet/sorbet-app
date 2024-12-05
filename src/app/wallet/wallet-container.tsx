@@ -33,7 +33,7 @@ export const WalletContainer = () => {
 
   const { fundWallet } = useFundWallet();
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [selectedDuration, setSelectedDuration] = useState<string>('30');
 
@@ -69,8 +69,10 @@ export const WalletContainer = () => {
           amount: defaultFundAmount,
           asset: 'USDC',
         });
-        setReload(!reload); // trigger reload to refresh wallet amount
       }
+
+      // update the value of reload here to re-fetch transactions after the deposit
+      setReload(!reload);
     } catch (e) {
       toast('Something went wrong', {
         description:
@@ -102,7 +104,9 @@ export const WalletContainer = () => {
         data: transferData,
       });
 
+      // update the value of reload here to re-fetch transactions after the deposit
       setReload(!reload);
+
       return transferTransactionHash;
     }
   };
@@ -111,13 +115,13 @@ export const WalletContainer = () => {
     (async () => {
       await fetchTransactions();
     })();
-  }, [walletAddress, reload, fetchTransactions]);
+  }, [fetchTransactions, reload]);
 
   useEffect(() => {
     (async () => {
       fetchTransactions(parseInt(selectedDuration, 10));
     })();
-  }, [selectedDuration, fetchTransactions]);
+  }, [fetchTransactions, selectedDuration]);
 
   return (
     <Authenticated>
@@ -146,12 +150,17 @@ export const WalletContainer = () => {
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
               isBalanceLoading={balanceLoading}
+              isLoading={loading}
               selectedDuration={selectedDuration}
               onTxnDurationChange={setSelectedDuration}
             />
           </div>
           <div className='lg:w-4/12'>
-            <MyAccounts usdcBalance={usdcBalance} address={walletAddress} />
+            <MyAccounts
+              usdcBalance={usdcBalance}
+              address={walletAddress}
+              isLoading={loading}
+            />
           </div>
         </div>
         <div className='mb-6 mt-12 flex justify-between'>
@@ -220,33 +229,29 @@ export const WalletContainer = () => {
               </div>
             </Link>
           </div>
-          {walletAddress && (
-            <TransactionsTable
-              isLoading={loading}
-              minimalMode
-              transactions={
-                !transactions.transactions
-                  ? []
-                  : transactions.transactions.map(
-                      (transaction: Transaction) => ({
-                        type:
-                          transaction.sender.toLowerCase() ===
-                          walletAddress.toLowerCase()
-                            ? 'Sent'
-                            : 'Received',
-                        account:
-                          transaction.sender.toLowerCase() ===
-                          walletAddress.toLowerCase()
-                            ? transaction.receiver
-                            : transaction.sender,
-                        date: transaction.timestamp,
-                        amount: transaction.value,
-                        hash: transaction.hash,
-                      })
-                    )
-              }
-            />
-          )}
+          <TransactionsTable
+            isLoading={loading}
+            minimalMode
+            transactions={
+              !transactions.transactions
+                ? []
+                : transactions.transactions.map((transaction: Transaction) => ({
+                    type:
+                      transaction.sender.toLowerCase() ===
+                      walletAddress?.toLowerCase()
+                        ? 'Sent'
+                        : 'Received',
+                    account:
+                      transaction.sender.toLowerCase() ===
+                      walletAddress?.toLowerCase()
+                        ? transaction.receiver
+                        : transaction.sender,
+                    date: transaction.timestamp,
+                    amount: transaction.value,
+                    hash: transaction.hash,
+                  }))
+            }
+          />
         </div>
       </div>
     </Authenticated>

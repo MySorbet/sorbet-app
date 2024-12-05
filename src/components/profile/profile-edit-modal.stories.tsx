@@ -27,15 +27,11 @@ const mockData = {
     lastName: 'Test',
     privyId: '123',
     handle: 'apple-banana-mango',
-    accountId: '123',
     email: '',
     bio: '',
     city: 'New York',
     tags: ['JavaScript', 'React', 'Node.js'],
     profileImage: 'https://example.com/profile-image.jpg',
-    title: '',
-    profileBannerImage: '',
-    tempLocation: '',
   },
 };
 
