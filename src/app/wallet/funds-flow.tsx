@@ -53,11 +53,6 @@ export const FundsFlow: React.FC<
         <Skeleton className='h-44 rounded-3xl bg-gray-300 shadow-md' />
       ) : (
         <div className='bg-card flex min-h-full flex-col rounded-3xl p-6 shadow-md'>
-          {/** isLoading && (
-          <div className='bg-card absolute inset-0 flex items-center justify-center rounded-3xl bg-opacity-75'>
-            <Spinner />
-          </div>
-        ) */}
           <div className='flex flex-grow flex-col gap-2'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2'>
