@@ -60,7 +60,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   const [width, setWidth] = useState(1);
 
   /** Update cropped image dimensions */
-  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+  const onCropComplete = (croppedArea: Area, _croppedAreaPixels: Area) => {
     setCroppedArea(croppedArea);
   };
 
@@ -99,8 +99,10 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   // Disable the functionality of the following functions (editing links, resizing)
   // if users are actively cropping
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onWidgetResize = () => {};
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onWidgetLinkEdit = () => {};
 
   /** Calculates dimensions of image */

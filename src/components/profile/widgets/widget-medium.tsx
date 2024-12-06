@@ -1,35 +1,15 @@
-import React, { Dispatch, SetStateAction } from 'react';
-
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  MediumArticleContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, MediumArticleContentType } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface MediumWidgetType {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface MediumWidgetProps extends BaseWidgetProps {
   content: MediumArticleContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const MediumWidget: React.FC<MediumWidgetType> = ({
+export const MediumWidget: React.FC<MediumWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -61,7 +41,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -88,7 +68,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -116,7 +96,7 @@ export const MediumWidget: React.FC<MediumWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

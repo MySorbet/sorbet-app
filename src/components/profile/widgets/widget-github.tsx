@@ -1,35 +1,14 @@
-import React, { Dispatch, SetStateAction } from 'react';
-
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  GithubWidgetContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, GithubWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface GithubWidgetType {
-  identifier: string;
-  showControls: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface GithubWidgetProps extends BaseWidgetProps {
   content: GithubWidgetContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const GithubWidget: React.FC<GithubWidgetType> = ({
+export const GithubWidget: React.FC<GithubWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -61,7 +40,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -88,7 +67,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -115,7 +94,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -140,7 +119,7 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

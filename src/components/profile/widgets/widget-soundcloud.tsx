@@ -1,36 +1,17 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  SoundcloudTrackContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, SoundcloudTrackContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { PlayButton } from './play-button';
 import { WidgetIcon } from './widget-icon';
 
-interface SoundcloudWidgetType {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface SoundcloudWidgetProps extends BaseWidgetProps {
   content: SoundcloudTrackContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
+export const SoundcloudWidget: React.FC<SoundcloudWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -70,7 +51,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.artwork ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -95,7 +76,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.artwork ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -126,7 +107,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.artwork ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -151,7 +132,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.artwork ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

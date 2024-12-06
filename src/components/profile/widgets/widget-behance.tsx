@@ -1,36 +1,15 @@
-import React, { Dispatch, SetStateAction } from 'react';
-
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  BehanceWidgetContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, BehanceWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
 import { WidgetIcon } from './widget-icon';
 
-interface BehanceWidgetType {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface BehanceWidgetProps extends BaseWidgetProps {
   content: BehanceWidgetContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const BehanceWidget: React.FC<BehanceWidgetType> = ({
+export const BehanceWidget: React.FC<BehanceWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -64,7 +43,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -91,7 +70,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -118,7 +97,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -145,7 +124,7 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

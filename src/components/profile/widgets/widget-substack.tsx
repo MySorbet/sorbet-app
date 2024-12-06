@@ -1,35 +1,16 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  SubstackWidgetContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, SubstackWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface SubstackWidgetType {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface SubstackWidgetProps extends BaseWidgetProps {
   content: SubstackWidgetContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const SubstackWidget: React.FC<SubstackWidgetType> = ({
+export const SubstackWidget: React.FC<SubstackWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -70,7 +51,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -94,7 +75,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -120,7 +101,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -142,7 +123,7 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

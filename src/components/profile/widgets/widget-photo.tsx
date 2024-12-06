@@ -4,18 +4,17 @@ import { PhotoWidgetContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 
-interface PhotoWidgetType {
+interface PhotoWidgetProps {
   content: PhotoWidgetContentType;
   size: WidgetSize;
 }
 
-export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content }) => {
+export const PhotoWidget: React.FC<PhotoWidgetProps> = ({ content }) => {
   // stylings for cropped images derived from official react-easy-crop examples
   // reference: https://codesandbox.io/p/sandbox/react-easy-crop-with-live-output-kkqj0?file=%2Fsrc%2FApp.jsx%3A49%2C11
   // this is the only approach that seems to handle images of any dimensions.
 
-  const croppedArea =
-    (content as PhotoWidgetContentType).croppedArea ?? undefined;
+  const croppedArea = content.croppedArea;
   const isCropped = (content as PhotoWidgetContentType).isCropped;
 
   /** Calculates how an image should be transformed based on widget's croppedArea property, if it has it */
@@ -49,7 +48,9 @@ export const PhotoWidget: React.FC<PhotoWidgetType> = ({ content }) => {
             ? 'absolute'
             : `relative h-full w-full object-cover`
         }
-        style={isCropped && croppedArea ? calculateStyles(croppedArea) : {}}
+        style={
+          isCropped && croppedArea ? calculateStyles(croppedArea) : undefined
+        }
       />
       <ImageOverlay />
     </div>

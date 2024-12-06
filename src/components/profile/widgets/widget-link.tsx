@@ -1,35 +1,15 @@
 import { Link } from 'lucide-react';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
 import { cn } from '@/lib/utils';
-import {
-  LinkWidgetContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { BaseWidgetProps, LinkWidgetContentType } from '@/types';
 
 import { WidgetHeader } from './widget-header';
 
-interface LinkWidgetProps {
-  /** The content from link for the widget to render */
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+interface LinkWidgetProps extends BaseWidgetProps {
   content: LinkWidgetContentType;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
-  identifier: string;
-  showControls?: boolean;
-  /** The size of the widget to render */
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
 /**
@@ -62,7 +42,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           </WidgetHeader>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={heroImageUrl ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -87,7 +67,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           </WidgetHeader>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={heroImageUrl ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -113,7 +93,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           <div className='flex h-full flex-row justify-end gap-3'>
             <div className='relative ml-auto w-2/3'>
               {showControls && (
-                <ModifyImageWidget
+                <ModifyImageControls
                   hasImage={heroImageUrl ? true : false}
                   restoreImage={restoreImage}
                   setErrorInvalidImage={setErrorInvalidImage}
@@ -137,7 +117,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
           </WidgetHeader>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={heroImageUrl ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

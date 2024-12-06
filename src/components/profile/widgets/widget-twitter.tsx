@@ -1,35 +1,17 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import {
-  TwitterWidgetContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { BaseWidgetProps, TwitterWidgetContentType } from '@/types';
 
 import { WidgetHeader } from './widget-header';
 import { WidgetIcon } from './widget-icon';
 
-interface TwitterWidgetProps {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+interface TwitterWidgetProps extends BaseWidgetProps {
   content: TwitterWidgetContentType;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
 /**
@@ -68,7 +50,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <Handle handle={handle} img={profileImage} />
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={bannerImage ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -95,7 +77,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <Bio bio={bio} />
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={bannerImage ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -123,7 +105,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             <Bio bio={bio} />
             <div className='relative ml-auto w-3/5'>
               {showControls && (
-                <ModifyImageWidget
+                <ModifyImageControls
                   hasImage={bannerImage ? true : false}
                   restoreImage={restoreImage}
                   setErrorInvalidImage={setErrorInvalidImage}
@@ -149,7 +131,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <Bio bio={bio} />
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={bannerImage ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

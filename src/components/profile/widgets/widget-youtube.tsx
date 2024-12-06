@@ -1,35 +1,16 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-  YoutubeWidgetContentType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, YoutubeWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface YouTubeWidgetType {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface YouTubeWidgetProps extends BaseWidgetProps {
   content: YoutubeWidgetContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
+export const YouTubeWidget: React.FC<YouTubeWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -65,7 +46,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.thumbnail ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -89,7 +70,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.thumbnail ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -115,7 +96,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.thumbnail ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -137,7 +118,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetType> = ({
           <div>{localHeader}</div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.thumbnail ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 
+import { handleImageUpload } from '@/components/profile/widgets/util';
 import {
   Tooltip,
   TooltipContent,
@@ -11,7 +12,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-interface ModifyImageWidgetProps {
+interface ModifyImageControlsProps {
   identifier: string;
   hasImage: boolean;
   addImage: (key: string, image: File) => Promise<void>;
@@ -21,7 +22,12 @@ interface ModifyImageWidgetProps {
   className?: string;
 }
 
-export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
+/**
+ * Component that appears above the contents of any given widget to
+ * provide the option to replace the widget's content image, remove it,
+ * or restore it to the website's scraped image.
+ */
+export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
   identifier,
   hasImage,
   addImage,
@@ -33,24 +39,8 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
   const btnClass = 'h-4 w-7 flex items-center justify-center';
   const dividerClass = 'h-4 w-[2.5px] bg-[#344054] rounded-full mx-2';
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : undefined;
-    if (file) {
-      const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-      const fileSize = file.size / 1024 / 1024; // in MB
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
-
-      if (!fileExtension) {
-        return;
-      }
-      if (validExtensions.includes(fileExtension) && fileSize <= 10) {
-        addImage(identifier, file);
-      } else {
-        setErrorInvalidImage(true);
-      }
-    } else {
-      setErrorInvalidImage(true);
-    }
+  const handleAddImageClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleImageUpload(e, addImage, setErrorInvalidImage);
   };
 
   const handleImageRemove = () => {
@@ -72,7 +62,7 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
                 <input
                   type='file'
                   className='hidden'
-                  onChange={handleImageUpload}
+                  onChange={handleAddImageClick}
                   accept='image/*'
                 />
                 <Image03 width={24} height={24} strokeWidth={2.5} />
@@ -88,7 +78,7 @@ export const ModifyImageWidget: React.FC<ModifyImageWidgetProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <div className={btnClass} onClick={restoreImage}>
-                  <LinkedPictureIcon className='text-white' />
+                  <LinkedPictureIcon className='size-5 text-white' />
                 </div>
               </TooltipTrigger>
               <TooltipContent>Use website picture</TooltipContent>
@@ -131,15 +121,9 @@ interface LinkedPictureIconProps {
   height?: number | string;
 }
 
-const LinkedPictureIcon: React.FC<LinkedPictureIconProps> = ({
-  className,
-  width = 24,
-  height = 24,
-}) => {
+const LinkedPictureIcon: React.FC<LinkedPictureIconProps> = ({ className }) => {
   return (
     <svg
-      width={width}
-      height={height}
       viewBox='0 0 24 24'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useCallback, useState } from 'react';
 import { Area } from 'react-easy-crop';
 import { toast } from 'sonner';

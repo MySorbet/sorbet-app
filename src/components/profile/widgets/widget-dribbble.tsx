@@ -1,36 +1,15 @@
-import React, { Dispatch, SetStateAction } from 'react';
-
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageWidget } from '@/components/profile/widgets/modify-widget-image';
-import {
-  DribbbleWidgetContentType,
-  WidgetContentType,
-  WidgetSize,
-  WidgetType,
-} from '@/types';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { BaseWidgetProps, DribbbleWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
 import { WidgetIcon } from './widget-icon';
 
-interface DribbbleWidgetType {
-  identifier: string;
-  showControls?: boolean;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
+interface DribbbleWidgetProps extends BaseWidgetProps {
   content: DribbbleWidgetContentType;
-  size: WidgetSize;
-  redirectUrl?: string;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
 }
 
-export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
+export const DribbbleWidget: React.FC<DribbbleWidgetProps> = ({
   identifier,
   showControls,
   setErrorInvalidImage,
@@ -69,7 +48,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -96,7 +75,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -123,7 +102,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
           </div>
           <div className='relative ml-auto w-3/5'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
@@ -150,7 +129,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
           </div>
           <div className='relative flex-grow'>
             {showControls && (
-              <ModifyImageWidget
+              <ModifyImageControls
                 hasImage={content.image ? true : false}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}

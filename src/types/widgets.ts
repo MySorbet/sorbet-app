@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import type { Layout } from 'react-grid-layout';
 
 export interface GetWidgetBody {
@@ -15,6 +16,22 @@ export interface Widget {
   updatedAt: string;
 }
 
+export interface BaseWidgetProps {
+  identifier: string;
+  showControls?: boolean;
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
+  size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
+}
+
 export interface DribbbleWidgetContentType {
   image: string | undefined;
   title: string;
@@ -28,7 +45,7 @@ export interface PhotoWidgetContentType {
 }
 
 export interface BehanceWidgetContentType {
-  image: string | undfined;
+  image: string | undefined;
   title: string;
   description: string;
 }

@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
+  BaseWidgetProps,
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   FigmaWidgetContentType,
@@ -45,36 +46,22 @@ import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
 
-interface WidgetProps {
-  identifier: string;
+interface WidgetProps extends BaseWidgetProps {
   type: WidgetType;
   w: number;
   h: number;
   content?: WidgetContentType;
   loading?: boolean;
-  initialSize?: WidgetSize;
-  redirectUrl?: string;
   draggedRef: React.MutableRefObject<boolean>;
-  showControls?: boolean;
-  handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
-  handleRemove: (key: string) => void;
-  handleEditLink: (key: string, url: string) => void;
-  handleRestoreImage: (
-    key: string,
-    type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
-  ) => Promise<void>;
-  setActiveWidget: (widgetId: string | null) => void;
   activeWidget: string | null;
   widgetDimensions: {
     width: number;
     height: number;
   };
-
-  addImage: (key: string, image: File) => Promise<void>;
-  removeImage: (key: string) => Promise<void>;
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
+  handleRemove: (key: string) => void;
+  handleEditLink: (key: string, url: string) => void;
+  setActiveWidget: (widgetId: string | null) => void;
   handleTitleUpdate: (key: string, title: string) => Promise<void>;
 }
 
@@ -84,7 +71,7 @@ export const Widget: React.FC<WidgetProps> = ({
   loading,
   content,
   redirectUrl,
-  initialSize = 'A',
+  size = 'A',
   showControls = false,
   handleResize,
   handleRemove,
@@ -98,7 +85,7 @@ export const Widget: React.FC<WidgetProps> = ({
   addImage,
   removeImage,
 }) => {
-  const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
+  const [widgetSize, setWidgetSize] = useState<WidgetSize>(size);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
@@ -427,6 +414,7 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         id={identifier}
         key={identifier}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onClick={!showControls ? onWidgetClick : () => {}} // Don't redirect if editing dashboard, similar to Bento
       >
         {loading ? (
@@ -459,7 +447,7 @@ export const Widget: React.FC<WidgetProps> = ({
                   onEditLink={onWidgetLinkEdit}
                   setPopoverOpen={setIsPopoverOpen}
                   popoverOpen={isPopoverOpen}
-                  initialSize={initialSize}
+                  initialSize={size}
                   identifier={identifier}
                   activeWidget={activeWidget}
                   setActiveWidget={setActiveWidget}

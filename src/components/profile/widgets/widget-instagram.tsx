@@ -3,7 +3,7 @@ import { InstagramWidgetContentType, WidgetSize } from '@/types';
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface InstagramWidgetType {
+interface InstagramWidgetProps {
   content: InstagramWidgetContentType;
   size: WidgetSize;
 }
@@ -33,7 +33,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, heightClass }) => {
   );
 };
 
-export const InstagramWidget: React.FC<InstagramWidgetType> = ({
+export const InstagramWidget: React.FC<InstagramWidgetProps> = ({
   content,
   size,
 }) => {
