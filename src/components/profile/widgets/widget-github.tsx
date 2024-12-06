@@ -41,7 +41,7 @@ export const GithubWidget: React.FC<GithubWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.image ? true : false}
+                hasImage={!!content.image}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -68,7 +68,7 @@ export const GithubWidget: React.FC<GithubWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.image ? true : false}
+                hasImage={!!content.image}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -95,7 +95,7 @@ export const GithubWidget: React.FC<GithubWidgetProps> = ({
           <div className='relative ml-auto w-3/5'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.image ? true : false}
+                hasImage={!!content.image}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -120,7 +120,7 @@ export const GithubWidget: React.FC<GithubWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.image ? true : false}
+                hasImage={!!content.image}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}

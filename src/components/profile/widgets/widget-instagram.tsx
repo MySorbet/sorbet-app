@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { InstagramWidgetContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
@@ -19,7 +20,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, heightClass }) => {
       {images &&
         images.length > 0 &&
         images.map((image, index) => (
-          <div key={index} className={`col-span-1 ${heightClass}`}>
+          <div key={index} className={cn(`col-span-1`, heightClass)}>
             <img
               src={`data:image/jpeg;base64,${image}`}
               crossOrigin='anonymous'

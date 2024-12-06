@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 interface AddLinkProps {
   value: string;
@@ -103,9 +104,10 @@ export const AddLink = ({
           onKeyDown={handleKeyDown}
           placeholder='Enter link here'
           variant='noRing'
-          className={`h-7 w-full py-0.5 pl-1.5 text-sm ${
+          className={cn(
+            `h-7 w-full bg-[#344054] py-0.5 pl-1.5 text-sm text-gray-300`,
             isValid ? 'border-[rgba(34,36,35,1)]' : 'border-red-500' // Display invalidity
-          } bg-[#344054] text-gray-300`}
+          )}
         />
       </PopoverContent>
     </Popover>

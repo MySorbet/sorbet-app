@@ -254,7 +254,7 @@ const SectionTitleIcon: React.FC<SectionTitleIconProps> = ({
       viewBox='0 0 20 20'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
-      className={`group cursor-pointer transition-colors ${className}`}
+      className={cn(`group cursor-pointer transition-colors`, className)}
     >
       <rect
         x='1'

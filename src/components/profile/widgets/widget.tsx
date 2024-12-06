@@ -414,8 +414,7 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         id={identifier}
         key={identifier}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onClick={!showControls ? onWidgetClick : () => {}} // Don't redirect if editing dashboard, similar to Bento
+        onClick={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
       >
         {loading ? (
           <Skeleton

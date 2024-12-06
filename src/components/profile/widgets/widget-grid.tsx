@@ -11,6 +11,7 @@ import { InvalidAlert } from '@/components/profile/widgets/invalid-alert';
 import { useLayoutManagement } from '@/hooks/profile/useLayoutManagement';
 import { useOnboardingDrawer } from '@/hooks/profile/useOnboardingDrawer';
 import { useWidgetManagement } from '@/hooks/profile/useWidgetManagement';
+import { cn } from '@/lib/utils';
 import { getWidgetDimensions, WidgetSize } from '@/types';
 
 import { AddWidgets } from './add-widgets';
@@ -179,9 +180,10 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   return (
                     <motion.div
                       id={item.i}
-                      className={`widget-motion-wrapper ${
+                      className={cn(
+                        `widget-motion-wrapper`,
                         shouldRender ? '' : 'hidden'
-                      }`}
+                      )}
                       initial={false}
                       animate={animationStyles[item.i]}
                       style={{ width: '100%', height: '100%' }}
@@ -276,9 +278,10 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
             return (
               <motion.div
                 id={item.i}
-                className={`widget-motion-wrapper ${
+                className={cn(
+                  `widget-motion-wrapper`,
                   shouldRender ? '' : 'hidden'
-                }`}
+                )}
                 initial={false}
                 animate={animationStyles[item.i]}
                 style={{ width: '100%', height: '100%' }}

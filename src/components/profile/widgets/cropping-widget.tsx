@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
   PhotoWidgetContentType,
   WidgetContentType,
@@ -95,15 +96,6 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
     croppedArea,
     handleImageCropping,
   ]);
-
-  // Disable the functionality of the following functions (editing links, resizing)
-  // if users are actively cropping
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const onWidgetResize = () => {};
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const onWidgetLinkEdit = () => {};
 
   /** Calculates dimensions of image */
   // TODO: un-disable this
@@ -213,11 +205,12 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           }
         />
         <div
-          className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform ${
+          className={cn(
+            `absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform`,
             isPopoverOpen
               ? ''
               : 'opacity-0 transition-opacity duration-300 hover:opacity-100'
-          }`}
+          )}
           style={{
             top: `calc(50% + ${widgetDimensions.height / 2}px)`, // Adjusting the top position
           }}
@@ -225,8 +218,10 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
           <div className='flex flex-row gap-1'>
             <ResizeWidget
               redirectUrl={redirectUrl}
-              onResize={onWidgetResize}
-              onEditLink={onWidgetLinkEdit}
+              // Disable the functionality of the following functions (editing links, resizing)
+              // if users are actively cropping
+              onResize={undefined}
+              onEditLink={undefined}
               setPopoverOpen={setIsPopoverOpen}
               popoverOpen={isPopoverOpen}
               initialSize={initialSize}

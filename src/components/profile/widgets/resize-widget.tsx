@@ -148,9 +148,10 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
                 <Tooltip>
                   <TooltipTrigger>
                     <div
-                      className={`${btnClass} ${
+                      className={cn(
+                        btnClass,
                         activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
-                      }`}
+                      )}
                     >
                       <Crop size={20} strokeWidth={2.5} color='#667085' />
                     </div>
@@ -160,9 +161,10 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
               </TooltipProvider>
             ) : (
               <div
-                className={`${btnClass} ${
+                className={cn(
+                  btnClass,
                   activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
-                }`}
+                )}
                 onClick={(e) => {
                   e.stopPropagation();
                   startCropping();
@@ -173,9 +175,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
             )}
           </>
           <div
-            className={`${btnClass} ${
-              popoverOpen ? 'rounded-md bg-white' : ''
-            }`}
+            className={cn(btnClass, popoverOpen ? 'rounded-md bg-white' : '')}
           >
             <AddLink
               value={currentLink}
