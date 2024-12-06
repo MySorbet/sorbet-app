@@ -43,7 +43,7 @@ const AuthHero = () => {
       </div>
       <div className='flex flex-col gap-6'>
         <div className='text-4xl font-semibold leading-[44px]'>
-          A link-in-bio powering your global payments
+          Your Borderless Wallet for Global Freelance Payment
         </div>
         <ul className='flex flex-col gap-6'>
           <li className={listItemStyles}>
@@ -62,7 +62,7 @@ const AuthHero = () => {
                 strokeLinejoin='round'
               />
             </svg>
-            Instant Payments
+            Global Invoicing (USD or USDc)
           </li>
           <li className={listItemStyles}>
             <svg

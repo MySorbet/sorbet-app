@@ -22,7 +22,9 @@ export const Header = () => {
 
   return (
     <>
-      <Sidebar isOpen={isSidebarOpen} onIsOpenChange={setIsSidebarOpen} />
+      {user && (
+        <Sidebar isOpen={isSidebarOpen} onIsOpenChange={setIsSidebarOpen} />
+      )}
       <div className='container mx-auto flex w-full justify-between bg-[#F2F3F7] py-4'>
         <div className='flex gap-6'>
           <Link href='/'>

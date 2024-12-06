@@ -3,34 +3,45 @@ import Image from 'next/image';
 
 import { formatCurrency, formatWalletAddress } from '@/app/wallet/utils';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface MyAccountsProps {
   usdcBalance: string;
   address: string | null;
+  isLoading: boolean;
 }
 
 export const MyAccounts: React.FC<MyAccountsProps> = ({
   usdcBalance,
   address,
+  isLoading,
 }) => {
   return (
-    <div className='bg-background min-h-full min-w-[360px] rounded-2xl p-6 shadow-md'>
-      <div className='flex items-center gap-2'>
-        <span className='bg-foreground text-muted rounded-full p-2'>
-          <Bank className='size-[1.125rem]' />
-        </span>
-        <span className='text-md font-medium text-[#595B5A]'>MY ACCOUNTS</span>
-      </div>
-      <div className='bg-border my-4 h-[1px] w-full' />
-      <div>
-        {/** for now, it's only USDC but this will be refactored into multiple account items */}
-        <USDCAccountItem
-          icon={<Wallet03 className='size-3' />}
-          address={address}
-          balance={usdcBalance}
-        ></USDCAccountItem>
-      </div>
-    </div>
+    <>
+      {isLoading || usdcBalance === '' ? (
+        <Skeleton className='h-[366px] rounded-3xl bg-gray-300 shadow-md' />
+      ) : (
+        <div className='bg-background min-h-full min-w-[360px] rounded-2xl p-6 shadow-md'>
+          <div className='flex items-center gap-2'>
+            <span className='bg-foreground text-muted rounded-full p-2'>
+              <Bank className='size-[1.125rem]' />
+            </span>
+            <span className='text-md font-medium text-[#595B5A]'>
+              MY ACCOUNTS
+            </span>
+          </div>
+          <div className='bg-border my-4 h-[1px] w-full' />
+          <div>
+            {/** for now, it's only USDC but this will be refactored into multiple account items */}
+            <USDCAccountItem
+              icon={<Wallet03 className='size-3' />}
+              address={address}
+              balance={usdcBalance}
+            ></USDCAccountItem>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

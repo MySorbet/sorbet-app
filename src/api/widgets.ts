@@ -22,15 +22,15 @@ const catchAndRethrowWidgetError = (error: unknown, message: string) => {
   }
 };
 
-export const getWidgetsByUsername = async (username: string) => {
+export const getWidgetsByHandle = async (handle: string) => {
   try {
     const res = await axios.get(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/username/${username}`,
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/handle/${handle}`,
       await withAuthHeader()
     );
     return res.data;
   } catch (error) {
-    catchAndRethrowWidgetError(error, `Failed to get widgets for ${username}`);
+    catchAndRethrowWidgetError(error, `Failed to get widgets for ${handle}`);
   }
 };
 
