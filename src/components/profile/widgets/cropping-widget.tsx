@@ -49,7 +49,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
   margins,
   item,
 }) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isAddLinkOpen, setIsAddLinkOpen] = useState(false);
   const cropperRef = useRef<HTMLDivElement | null>(null); // Added reference for Cropper
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -207,7 +207,7 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
         <div
           className={cn(
             `absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform`,
-            isPopoverOpen
+            isAddLinkOpen
               ? ''
               : 'opacity-0 transition-opacity duration-300 hover:opacity-100'
           )}
@@ -222,8 +222,8 @@ export const CroppingWidget: React.FC<CroppingWidgetProps> = ({
               // if users are actively cropping
               onResize={undefined}
               onEditLink={undefined}
-              setPopoverOpen={setIsPopoverOpen}
-              popoverOpen={isPopoverOpen}
+              setIsAddLinkOpen={setIsAddLinkOpen}
+              isAddLinkOpen={isAddLinkOpen}
               initialSize={initialSize}
               identifier={identifier}
               activeWidget={activeWidget}

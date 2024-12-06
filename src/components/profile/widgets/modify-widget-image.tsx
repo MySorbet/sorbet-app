@@ -48,12 +48,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        'align-center z-20 hidden min-h-[36px] cursor-pointer flex-row items-center justify-center rounded-full bg-[#667085] px-2 text-white',
-        className
-      )}
-    >
+    <div className='align-center absolute left-1/2 top-0 z-20 flex min-h-[36px] -translate-x-1/2 -translate-y-1/2 transform cursor-pointer flex-row items-center justify-center rounded-full bg-[#667085] px-2 text-white opacity-0 transition-opacity group-hover:opacity-100'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>

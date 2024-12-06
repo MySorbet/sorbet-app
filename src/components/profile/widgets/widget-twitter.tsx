@@ -51,7 +51,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={bannerImage ? true : false}
+                hasImage={!!bannerImage}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -78,7 +78,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={bannerImage ? true : false}
+                hasImage={!!bannerImage}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -106,7 +106,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             <div className='relative ml-auto w-3/5'>
               {showControls && (
                 <ModifyImageControls
-                  hasImage={bannerImage ? true : false}
+                  hasImage={!!bannerImage}
                   restoreImage={restoreImage}
                   setErrorInvalidImage={setErrorInvalidImage}
                   identifier={identifier}
@@ -132,7 +132,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={bannerImage ? true : false}
+                hasImage={!!bannerImage}
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}

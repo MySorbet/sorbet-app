@@ -48,7 +48,6 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
                 identifier={identifier}
                 addImage={addImage}
                 removeImage={removeImage}
-                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
               />
             )}
             <BannerImage src={content.image} />
@@ -75,7 +74,6 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
                 identifier={identifier}
                 addImage={addImage}
                 removeImage={removeImage}
-                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
               />
             )}
             <div className='flex h-full flex-grow overflow-hidden'>
@@ -103,7 +101,6 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
                 identifier={identifier}
                 addImage={addImage}
                 removeImage={removeImage}
-                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
               />
             )}
             <BannerImage src={content.image} />
