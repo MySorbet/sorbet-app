@@ -62,17 +62,12 @@ export const TransactionsBrowser: React.FC = () => {
         const formattedTransactions = res.data.transactions.transactions.map(
           (transaction: Transaction) => {
             const type =
-              transaction.sender !== transaction.receiver
-                ? transaction.sender === user?.accountId
-                  ? 'Sent'
-                  : 'Received'
-                : 'Self-transfer';
+              transaction.sender !== transaction.receiver ? 'Sent' : 'Received';
             const account =
               transaction.sender !== transaction.receiver
-                ? transaction.sender === user?.accountId
-                  ? transaction.receiver
-                  : transaction.sender
-                : user?.accountId;
+                ? transaction.receiver
+                : transaction.sender;
+
             return {
               account,
               date: transaction.timestamp,

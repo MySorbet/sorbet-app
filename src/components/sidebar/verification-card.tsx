@@ -19,10 +19,14 @@ import {
 import { KYCStatus, TOSStatus } from '@/types';
 
 interface VerificationCardProps {
-  tosStatus?: TOSStatus;
-  kycStatus?: KYCStatus;
-  onComplete?: () => void;
-  disabled?: boolean;
+  tosStatus?: TOSStatus /** Has the user accepted the terms of service? */;
+  kycStatus?: KYCStatus /** The status of the user's KYC verification */;
+  onComplete?: () => void /** Callback for when the primary action button is clicked. This can mean a few different things depending on the state of the card. */;
+  disabled?: boolean /** Disables the primary action button?*/;
+  indeterminate?: boolean /** Whether the verification process is indeterminate. Use this to optimistically render a loading state before KYC is approved. Ignored if kycStatus and tosStatus are both approved */;
+  missingEmail?: boolean /** Whether the user has an email associated with their sorbet account */;
+  rejectionReason?: string /** The reason the user's KYC was rejected. Only rendered if `kycStatus` is `rejected` */;
+  isCollapsed?: boolean /** Whether the card is collapsed. If true, the card will not render the progress bar or the remaining steps. Use this after verification is complete. */;
 }
 
 export const VerificationCard = ({
@@ -30,6 +34,10 @@ export const VerificationCard = ({
   kycStatus,
   onComplete,
   disabled = false,
+  indeterminate = false,
+  missingEmail = false,
+  rejectionReason,
+  isCollapsed = false,
 }: VerificationCardProps) => {
   // Convenience approved states
   const termsAccepted = tosStatus === 'approved';
@@ -58,6 +66,8 @@ export const VerificationCard = ({
     ? 'approved'
     : isRejected
     ? 'rejected'
+    : indeterminate
+    ? 'indeterminate'
     : 'default';
 
   const descriptionStatus = isApproved
@@ -68,19 +78,32 @@ export const VerificationCard = ({
     ? 'pending'
     : termsAccepted
     ? 'tosAccepted'
+    : indeterminate
+    ? 'indeterminate'
     : 'notStarted';
+
+  // Indeterminacy does not take priority over approval
+  const isIndeterminate = indeterminate && !isApproved;
 
   return (
     <Card>
       <CardHeader className='p-4'>
         <DynamicCardTitle status={titleStatus} />
-        <DynamicCardDescription status={descriptionStatus} />
+        <DynamicCardDescription
+          status={descriptionStatus}
+          rejectionReason={rejectionReason}
+        />
       </CardHeader>
 
-      {/* Only show the remaining steps if the user hasn't completed the verification process */}
-      {!isRejected && (
+      {/* Only show the remaining steps if the user hasn't completed the verification process or the card is not collapsed */}
+      {!(isRejected || isCollapsed) && (
         <CardContent className='space-y-4 p-4 pt-3'>
-          <Progress value={progress} className='[&>*]:bg-sorbet h-2' />
+          {/* TODO: Fix the 'snap' from right to left when indeterminate goes from false to true */}
+          <Progress
+            value={progress}
+            indeterminate={isIndeterminate}
+            className='[&>*]:bg-sorbet h-2'
+          />
 
           <div className='space-y-2'>
             <CheckItem completed={termsAccepted}>
@@ -90,41 +113,31 @@ export const VerificationCard = ({
           </div>
         </CardContent>
       )}
-      <CardFooter className='flex justify-between gap-4 p-4 pt-0'>
-        <Button variant='ghost' asChild>
-          <a href='https://docs.mysorbet.xyz'>Learn more</a>
-        </Button>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={onComplete}
-                variant='sorbet'
-                disabled={disabled || inReview || isApproved}
-                className='min-w-44'
-              >
-                {isApproved
-                  ? 'Close'
-                  : isRejected
-                  ? 'Try again'
-                  : inReview
-                  ? 'In review'
-                  : termsAccepted
-                  ? 'Complete Verification'
-                  : 'Get Verified'}
-              </Button>
-            </TooltipTrigger>
-            {disabled && (
-              <TooltipContent>
-                <p>
-                  You must have an email associated with your sorbet account to
-                  get verified
-                </p>
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
-      </CardFooter>
+      {!isCollapsed && (
+        <CardFooter className='flex justify-between gap-4 p-4 pt-0'>
+          <Button variant='ghost' asChild>
+            <a href='https://docs.mysorbet.xyz'>Learn more</a>
+          </Button>
+          <MissingEmailTooltip showTooltip={missingEmail}>
+            <Button
+              onClick={onComplete}
+              variant='sorbet'
+              disabled={disabled || missingEmail || inReview || isIndeterminate}
+              className='min-w-44'
+            >
+              {isApproved
+                ? 'Close'
+                : isRejected
+                ? 'Try again'
+                : inReview
+                ? 'In review'
+                : termsAccepted
+                ? 'Complete Verification'
+                : 'Get Verified'}
+            </Button>
+          </MissingEmailTooltip>
+        </CardFooter>
+      )}
     </Card>
   );
 };
@@ -155,6 +168,7 @@ const titleContent = {
   default: 'KYC verification',
   approved: 'Account approved',
   rejected: 'Kyc verification failed',
+  indeterminate: 'Verification processing...',
 };
 
 const DynamicCardTitle = ({
@@ -163,7 +177,10 @@ const DynamicCardTitle = ({
   status: keyof typeof titleContent;
 }) => {
   return (
-    <CardTitle className='flex items-center gap-2 text-sm font-medium'>
+    <CardTitle
+      className='animate-in fade-in flex items-center gap-2 text-sm font-medium'
+      key={status}
+    >
       {status === 'rejected' && (
         <AlertTriangle className='size-4 text-red-500' />
       )}
@@ -181,17 +198,48 @@ const descriptionContent = {
     'Complete your account verification to accept payments via ACH/Wire',
   pending: 'Account verification under review. Please check back shortly.',
   approved: 'You can now accept payments via ACH/Wire',
-  rejected: 'Kyc verification failed', // TODO: Accept and render a reason
+  rejected: 'There was a problem with your KYC verification',
+  indeterminate:
+    'Thank your for submitting KYC. It can take up to 1 minute to process your details.',
 };
 
 const DynamicCardDescription = ({
   status,
+  rejectionReason,
 }: {
   status: keyof typeof descriptionContent;
+  rejectionReason?: string;
 }) => {
   return (
-    <CardDescription className='text-xs'>
-      {descriptionContent[status]}
+    <CardDescription className='animate-in fade-in text-xs' key={status}>
+      {status === 'rejected' && rejectionReason
+        ? rejectionReason
+        : descriptionContent[status]}
     </CardDescription>
+  );
+};
+
+/**
+ * Low hanging fruit tooltip that provides users without an email the reason why they can't get verified
+ */
+const MissingEmailTooltip = ({
+  children,
+  showTooltip,
+}: {
+  children: React.ReactNode;
+  showTooltip: boolean;
+}) => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>{children}</TooltipTrigger>
+        {showTooltip && (
+          <TooltipContent className='max-w-72'>
+            You must have an email associated with your sorbet account to get
+            verified
+          </TooltipContent>
+        )}
+      </Tooltip>
+    </TooltipProvider>
   );
 };
