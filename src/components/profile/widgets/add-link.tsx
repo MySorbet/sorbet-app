@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { isValidUrl } from '@/components/profile/widgets/util';
+import { isValidUrl, normalizeUrl } from '@/components/profile/widgets/util';
 import { Input } from '@/components/ui/input';
 import {
   Popover,
@@ -13,26 +13,24 @@ import {
 import { cn } from '@/lib/utils';
 
 interface AddLinkProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmission: () => void;
-  popoverOpen: boolean;
-  setPopoverOpen: (open: boolean) => void; // Prop for managing popover state
+  initialValue: string;
+  onSubmit: (link: string) => void;
+  isAddLinkOpen: boolean;
+  setIsAddLinkOpen: (open: boolean) => void; // Prop for managing popover state
 }
 
 export const AddLink = ({
-  value,
-  onChange,
-  setPopoverOpen,
-  popoverOpen,
-  onSubmission,
+  initialValue,
+  setIsAddLinkOpen,
+  isAddLinkOpen,
+  onSubmit,
 }: AddLinkProps) => {
   const [isValid, setIsValid] = useState(true);
-  const [initialValue, setInitialValue] = useState(value);
+  const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
-    setInitialValue(value);
-  }, [popoverOpen, value]);
+    setValue(initialValue);
+  }, [isAddLinkOpen, initialValue]);
 
   /** Necessary to not conflict with widget redirects */
   const handleIconClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,12 +40,16 @@ export const AddLink = ({
   /** Handles case when user confirms their inputted link */
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      // Check if the input is valid and do any error-checking
+      // Check if user is essentially removing link
       if (value.trim() === '') {
-        setPopoverOpen(false);
+        setIsAddLinkOpen(false);
         setIsValid(true);
-        onSubmission();
-      } else if (!isValidUrl(value)) {
+        onSubmit('');
+        return;
+      }
+      const normalizedUrl = normalizeUrl(value);
+      // make sure it's a legitimate link
+      if (!isValidUrl(value) || !normalizedUrl) {
         setIsValid(false);
         toast('Invalid Link', {
           description:
@@ -56,7 +58,8 @@ export const AddLink = ({
         return;
       } else {
         // otherwise, update widget's link
-        setPopoverOpen(false);
+        onSubmit(normalizedUrl);
+        setIsAddLinkOpen(false);
         setIsValid(true);
       }
     }
@@ -64,8 +67,8 @@ export const AddLink = ({
 
   return (
     <Popover
-      open={popoverOpen}
-      onOpenChange={(open: boolean) => setPopoverOpen(open)}
+      open={isAddLinkOpen}
+      onOpenChange={(open: boolean) => setIsAddLinkOpen(open)}
     >
       <PopoverTrigger asChild>
         <div onClick={handleIconClick}>
@@ -75,11 +78,11 @@ export const AddLink = ({
               alt='link check'
               width={19}
               height={19}
-              className={popoverOpen ? 'invert' : ''}
+              className={isAddLinkOpen ? 'invert' : ''}
             />
           ) : (
             <Link03
-              color={popoverOpen ? 'black' : 'white'}
+              color={isAddLinkOpen ? 'black' : 'white'}
               height={20}
               width={20}
               strokeWidth={2.5}
@@ -98,7 +101,7 @@ export const AddLink = ({
           value={value}
           onChange={(e) => {
             // Reset validity state when input changes
-            onChange(e.target.value);
+            setValue(e.target.value);
             setIsValid(true);
           }}
           onKeyDown={handleKeyDown}

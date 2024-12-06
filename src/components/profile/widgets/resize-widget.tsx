@@ -18,11 +18,11 @@ import { cn } from '@/lib/utils';
 import { WidgetDimensions, WidgetSize, WidgetType } from '@/types';
 
 interface ResizeWidgetProps {
-  onResize: (w: number, h: number, widgetSize: WidgetSize) => void;
-  popoverOpen: boolean;
+  onResize?: (w: number, h: number, widgetSize: WidgetSize) => void;
+  isAddLinkOpen: boolean;
   redirectUrl?: string;
-  setPopoverOpen: (open: boolean) => void;
-  onEditLink: (url: string) => void;
+  setIsAddLinkOpen: (open: boolean) => void;
+  onEditLink?: (url: string) => void;
   setActiveWidget: (identifier: string | null) => void;
   activeWidget: string | null;
   identifier: string;
@@ -35,8 +35,8 @@ interface ResizeWidgetProps {
 
 export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   onResize,
-  popoverOpen,
-  setPopoverOpen,
+  isAddLinkOpen,
+  setIsAddLinkOpen,
   onEditLink,
   setActiveWidget,
   handleImageCropping,
@@ -62,7 +62,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
     widgetSize: WidgetSize
   ) => {
     event.stopPropagation();
-    if (!activeWidget) {
+    if (!activeWidget && onResize) {
       onResize(
         WidgetDimensions[widgetSize].w,
         WidgetDimensions[widgetSize].h,
@@ -72,8 +72,10 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
     }
   };
 
-  const onSubmitLink = () => {
-    onEditLink(currentLink);
+  const onSubmitLink = (link: string) => {
+    if (onEditLink) {
+      onEditLink(link);
+    }
   };
 
   const startCropping = async () => {
@@ -86,8 +88,8 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   };
 
   const handleMouseLeave = () => {
-    if (!popoverOpen) {
-      setPopoverOpen(false); // Close the popover when the widget is no longer hovered
+    if (!isAddLinkOpen) {
+      setIsAddLinkOpen(false); // Close the popover when the widget is no longer hovered
     }
   };
 
@@ -105,7 +107,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       className={cn(
         'align-center z-20 flex flex-row items-center justify-center rounded-full bg-[#573DF5] text-white md:flex',
         type === 'Photo' ? 'min-w-[205px]' : 'min-w-[140px]',
-        popoverOpen ? 'opacity-100' : '' // Control visibility based on popover state
+        isAddLinkOpen ? 'opacity-100' : '' // Control visibility based on popover state
       )}
       onMouseLeave={handleMouseLeave} // Close popover on mouse leave
     >
@@ -175,14 +177,13 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
             )}
           </>
           <div
-            className={cn(btnClass, popoverOpen ? 'rounded-md bg-white' : '')}
+            className={cn(btnClass, isAddLinkOpen ? 'rounded-md bg-white' : '')}
           >
             <AddLink
-              value={currentLink}
-              onChange={setCurrentLink}
-              onSubmission={onSubmitLink}
-              popoverOpen={popoverOpen}
-              setPopoverOpen={setPopoverOpen}
+              initialValue={currentLink}
+              onSubmit={onSubmitLink}
+              isAddLinkOpen={isAddLinkOpen}
+              setIsAddLinkOpen={setIsAddLinkOpen}
             />
           </div>
         </>
