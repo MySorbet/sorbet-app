@@ -3,11 +3,11 @@ import '@/styles/globals.css';
 
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Suspense } from 'react';
 
 import { ClientProviders } from '@/app/client-providers';
 import PostHogPageView from '@/app/posthog-page-view';
 import { cn } from '@/lib/utils';
-import { Suspense } from 'react';
 
 /** Docs on metadata object options: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields */
 export const metadata: Metadata = {

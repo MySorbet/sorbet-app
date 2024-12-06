@@ -8,7 +8,7 @@ export interface ContractRejectedProps {
 export const ContractRejected = ({ isClient }: ContractRejectedProps) => {
   return (
     <div className='flex flex-col gap-4 justify-center items-center bg-gray-100 p-2 py-3 rounded-2xl h-full text-center'>
-      <X className='w-16 h-16' stroke={`red`} />
+      <X className='w-16 h-16' stroke="red" />
       <h1 className='text-3xl font-bold'>Contract Rejected</h1>
       {isClient ? (
         <p className='text-xl md:w-[60%]'>

@@ -6,12 +6,12 @@ import { ImageOverlay } from './image-overlay';
 import { PlayButton } from './play-button';
 import { WidgetIcon } from './widget-icon';
 
-interface SpotifyWidgetType {
+interface SpotifyWidgetProps {
   content: SpotifyWidgetContentType;
   size: WidgetSize;
 }
 
-export const SpotifyAlbumWidget: React.FC<SpotifyWidgetType> = ({
+export const SpotifyAlbumWidget: React.FC<SpotifyWidgetProps> = ({
   content,
   size,
 }) => {

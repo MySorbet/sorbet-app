@@ -1,26 +1,27 @@
 'use client';
 
-import { formatBytes } from '@/app/gigs/chat/sendbird-utils';
-import { fetchFile } from '@/api/chat';
-import { Spinner } from '@/components/common';
-import {
-  TooltipProvider,
-  TooltipTrigger,
-  Tooltip,
-  TooltipContent,
-} from '@/components/ui/tooltip';
-import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
-import {
-  SBFileMessage,
-  SupportedFileIcons,
-  SupportedFileIcon,
-} from '@/types/sendbird';
 import {
   Download,
 } from 'lucide-react';
 import Image from 'next/image';
 import { ReactNode, useEffect, useState } from 'react';
+
+import { fetchFile } from '@/api/chat';
+import { formatBytes } from '@/app/gigs/chat/sendbird-utils';
+import { Spinner } from '@/components/common';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import {
+  SBFileMessage,
+  SupportedFileIcon,
+  SupportedFileIcons,
+} from '@/types/sendbird';
 
 interface FileDisplayProps {
   color: string;

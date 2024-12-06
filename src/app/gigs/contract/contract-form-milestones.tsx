@@ -1,10 +1,11 @@
+import { Plus as IconPlus, Trash2 as IconTrash } from 'lucide-react';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus as IconPlus, Trash2 as IconTrash } from 'lucide-react';
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
 
 const Milestone = ({
   control,

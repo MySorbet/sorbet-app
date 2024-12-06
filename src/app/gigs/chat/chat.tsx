@@ -1,10 +1,12 @@
-import ChatBottombar from './chat-bottombar';
-import { ChatList } from './chat-list';
-import ChatTopbar from './chat-topbar';
+import { File, ImageIcon } from 'lucide-react';
+
 import { useAuth } from '@/hooks';
 import { useChat } from '@/hooks/chat/useChat';
 import { useGetOffer } from '@/hooks/gigs/useGetOffer';
-import { File, ImageIcon } from 'lucide-react';
+
+import ChatBottombar from './chat-bottombar';
+import { ChatList } from './chat-list';
+import ChatTopbar from './chat-topbar';
 
 const icons = {
   pdf: <File className='w-5 h-5 text-white' />,

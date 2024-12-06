@@ -1,17 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { deleteWidget } from '@/api/widgets';
-import { useToast } from '@/components/ui/use-toast';
 
 export const useDeleteWidget = () => {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   return useMutation({
     mutationFn: async (id: string) => await deleteWidget(id),
-    onError: (error) =>
-      toast({
-        title: 'Failed to remove widget',
+    onError: () =>
+      toast('Failed to remove widget', {
         description: 'If the issue persists, contact support',
       }),
     onSettled: () =>

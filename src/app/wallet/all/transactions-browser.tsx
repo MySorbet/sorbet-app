@@ -1,7 +1,8 @@
 'use client';
 
+import { ArrowNarrowLeft } from '@untitled-ui/icons-react';
 import { format } from 'date-fns';
-import { ChevronLeft, ChevronRight, MoveLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -13,7 +14,6 @@ import { useAuth, useSmartWalletAddress } from '@/hooks';
 import { Transaction } from '@/types/transactions';
 
 import TransactionsTable, { TableTransaction } from './transactions-table';
-import { ArrowNarrowLeft } from '@untitled-ui/icons-react';
 
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();

@@ -1,7 +1,6 @@
 'use client';
 
 import { Loader } from 'lucide-react';
-import { useContext, useEffect, useState } from 'react';
 
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Button } from '@/components/ui/button';

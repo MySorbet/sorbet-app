@@ -1,9 +1,10 @@
+import { cn } from '@/lib/utils';
 import { InstagramWidgetContentType, WidgetSize } from '@/types';
 
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface InstagramWidgetType {
+interface InstagramWidgetProps {
   content: InstagramWidgetContentType;
   size: WidgetSize;
 }
@@ -19,7 +20,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, heightClass }) => {
       {images &&
         images.length > 0 &&
         images.map((image, index) => (
-          <div key={index} className={`col-span-1 ${heightClass}`}>
+          <div key={index} className={cn(`col-span-1`, heightClass)}>
             <img
               src={`data:image/jpeg;base64,${image}`}
               crossOrigin='anonymous'
@@ -33,7 +34,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, heightClass }) => {
   );
 };
 
-export const InstagramWidget: React.FC<InstagramWidgetType> = ({
+export const InstagramWidget: React.FC<InstagramWidgetProps> = ({
   content,
   size,
 }) => {

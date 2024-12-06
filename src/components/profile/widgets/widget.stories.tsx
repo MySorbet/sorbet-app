@@ -62,7 +62,7 @@ export const Default: Story = {
     h: 1,
     content: mockContent.Link,
     loading: false,
-    initialSize: 'A',
+    size: 'A',
     showControls: true,
   },
 };

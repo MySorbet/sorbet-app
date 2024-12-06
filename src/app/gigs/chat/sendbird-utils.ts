@@ -169,9 +169,9 @@ const getTimeDifferenceInMinutes = (time1: string, time2: string) => {
 };
 
 export {
-  createChatTimestamp,
-  timestampToTime,
   convertMilitaryToRegular,
+  createChatTimestamp,
   formatBytes,
   getTimeDifferenceInMinutes,
+  timestampToTime,
 };

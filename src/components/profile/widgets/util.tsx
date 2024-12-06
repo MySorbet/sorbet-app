@@ -1,7 +1,7 @@
+import { Dispatch, SetStateAction } from 'react';
 import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 
 import { SupportedWidgetTypes } from '@/api/widgets';
-import { WidgetType } from '@/types';
 
 /**
  * Parses the WidgetType from a given URL
@@ -181,3 +181,31 @@ export function normalizeUrl(url: string): string | undefined {
   // invalid url
   return undefined;
 }
+
+/**
+ * Handle the image uploading process to Google Storage
+ */
+export const handleImageUpload = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  addUrl: (key: string, image: File) => void,
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>
+) => {
+  const file = e.target.files ? e.target.files[0] : undefined;
+  if (file) {
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+    const fileSize = file.size / 1024 / 1024; // in MB
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!fileExtension) {
+      // This condition is hit if there is no file extension
+      setErrorInvalidImage(true);
+      return;
+    }
+
+    if (validExtensions.includes(fileExtension) && fileSize <= 10) {
+      addUrl('https://storage.googleapis.com', file);
+    } else {
+      setErrorInvalidImage(true);
+    }
+  }
+};
