@@ -114,6 +114,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 }}
               >
                 <Widget
+                  sorbetUserId={userId}
                   identifier={item.i}
                   w={item.w}
                   h={item.h}
