@@ -167,10 +167,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
  */
 const Balances: React.FC = () => {
   const { smartWalletAddress } = useSmartWalletAddress();
-  const { ethBalance, usdcBalance, loading } = useWalletBalances(
-    smartWalletAddress,
-    false
-  );
+  const { usdcBalance, loading } = useWalletBalances(smartWalletAddress, false);
+  // Note: ETH balance is still fetched despite not being displayed
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
@@ -189,16 +187,6 @@ const Balances: React.FC = () => {
           />
 
           {loading ? <Skeleton className='h-4 w-24' /> : `${usdcBalance} USDC`}
-        </div>
-        <div className='flex items-center gap-2 text-sm font-semibold'>
-          <Image
-            src='/svg/ethereum.svg'
-            alt='ETH'
-            width={18}
-            height={18}
-            className='size-[1.125rem]' // 18px
-          />
-          {loading ? <Skeleton className='h-4 w-24' /> : `${ethBalance} ETH`}
         </div>
       </div>
     </div>
