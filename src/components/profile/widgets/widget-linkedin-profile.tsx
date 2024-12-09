@@ -1,25 +1,38 @@
 import React from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
 import { cn } from '@/lib/utils';
-import { LinkedInProfileWidgetContentType, WidgetSize } from '@/types';
+import { BaseWidgetProps, LinkedInProfileWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
 import { WidgetIcon } from './widget-icon';
 
-// TODO: This could be shared type WidgetProps<LinkedInProfileWidgetContentType>
-interface LinkedInProfileWidgetProps {
-  /** The content from link for the widget to render */
+interface LinkedInProfileWidgetProps extends BaseWidgetProps {
   content: LinkedInProfileWidgetContentType;
-  /** The size of the widget to render */
-  size: WidgetSize;
 }
 
 export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
-  const { name, bio, profileImage, bannerImage } = content;
+  const { name, bannerImage } = content;
+
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'LinkedInProfile',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
+  };
 
   switch (size) {
     case 'A':
@@ -29,7 +42,21 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
-          <BannerImage src={bannerImage} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={bannerImage} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'B':
@@ -39,7 +66,21 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
-          <BannerImage src={bannerImage} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={bannerImage} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'C':
@@ -49,8 +90,18 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
-          <div className='flex h-full flex-row justify-end gap-3'>
-            <BannerImage src={bannerImage} className='w-2/3' />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={bannerImage} />
           </div>
         </WidgetLayout>
       );
@@ -61,7 +112,20 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
-          <BannerImage src={bannerImage} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={bannerImage} />
+          </div>
         </WidgetLayout>
       );
     default:
@@ -90,36 +154,3 @@ const WidgetLayout = React.forwardRef<
     {...props}
   />
 ));
-
-/**
- * Local component to render the banner image for the link.
- */
-const BannerImage: React.FC<{ src?: string; className?: string }> = ({
-  src,
-  className,
-}) => {
-  return (
-    <div
-      className={cn(
-        `relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl`,
-        !src && 'bg-gray-200',
-        className
-      )}
-    >
-      {src ? (
-        <>
-          <img
-            src={src}
-            alt='Banner image from url'
-            className='h-full w-full object-cover'
-          />
-          <ImageOverlay />
-        </>
-      ) : (
-        <span className='text-muted-foreground text-sm font-semibold'>
-          Nothing to see here
-        </span>
-      )}
-    </div>
-  );
-};

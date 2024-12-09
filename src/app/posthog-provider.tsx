@@ -4,10 +4,10 @@ import posthog from 'posthog-js';
 import { PostHogProvider } from 'posthog-js/react';
 import { ReactNode, useEffect } from 'react';
 
+import { SESSION_REPLAY_DURATION } from '@/constant';
 import { useAuth } from '@/hooks';
 import { env } from '@/lib/env';
 import { featureFlags } from '@/lib/flags';
-import { SESSION_REPLAY_DURATION } from '@/constant';
 
 export function PHProvider({ children }: { children: ReactNode }) {
   useEffect(() => {

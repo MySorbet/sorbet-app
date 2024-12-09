@@ -108,7 +108,7 @@ export const restoreWidgetImage = async (
   type: WidgetType,
   redirectUrl: string,
   content: WidgetContentType
-) => {
+): Promise<string | undefined> => {
   try {
     const payload: Partial<WidgetDto> = {
       id: widgetId,
@@ -116,12 +116,12 @@ export const restoreWidgetImage = async (
       redirectUrl: redirectUrl,
       content: content,
     };
-    const response = await axios.patch(
+    const response = await axios.post(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/restore-image`,
       payload,
       await withAuthHeader()
     );
-    return response;
+    return response.data;
   } catch (error) {
     catchAndRethrowWidgetError(error, `Failed to update widgets in bulk`);
   }
@@ -160,12 +160,12 @@ export const updateWidgetContent = async (
   };
 
   try {
-    const res = await axios.patch(
+    const response = await axios.patch(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,
       await withAuthHeader()
     );
-    return res.data;
+    return response;
   } catch (error) {
     catchAndRethrowWidgetError(
       error,

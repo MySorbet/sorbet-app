@@ -34,9 +34,13 @@ export const uploadWidgetsImageAsync = async (data: FormData) => {
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to upload widgets image: ${error.response.data.message}`
-    );
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to upload widget image: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(`Failed to upload widget image: ${error}`);
+    }
   }
 };

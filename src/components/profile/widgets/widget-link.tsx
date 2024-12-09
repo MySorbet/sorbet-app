@@ -1,24 +1,36 @@
 import { Link } from 'lucide-react';
 import React from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
 import { cn } from '@/lib/utils';
-import { LinkWidgetContentType, WidgetSize } from '@/types';
+import { BaseWidgetProps, LinkWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
 
-interface LinkWidgetProps {
-  /** The content from link for the widget to render */
+interface LinkWidgetProps extends BaseWidgetProps {
   content: LinkWidgetContentType;
-  /** The size of the widget to render */
-  size: WidgetSize;
 }
 
 /**
  * Render a link widget with the given content and size
  */
-export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
+export const LinkWidget: React.FC<LinkWidgetProps> = ({
+  setErrorInvalidImage,
+  content,
+  identifier,
+  addImage,
+  removeImage,
+  showControls,
+  size,
+  redirectUrl,
+  handleRestoreImage,
+}) => {
   const { title, iconUrl, heroImageUrl } = content;
+
+  const restoreImage = async () => {
+    await handleRestoreImage(identifier, 'Link', redirectUrl ?? '', content); // Call the mutation with the image URL
+  };
 
   switch (size) {
     case 'A':
@@ -28,7 +40,22 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={heroImageUrl} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={heroImageUrl ? true : false}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={heroImageUrl} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'B':
@@ -38,7 +65,22 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={heroImageUrl} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={heroImageUrl ? true : false}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={heroImageUrl} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'C':
@@ -48,8 +90,21 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <div className='flex h-full flex-row justify-end gap-3 overflow-hidden'>
-            <BannerImage src={heroImageUrl} className='w-2/3 ' />
+          <div className='flex h-full flex-row justify-end gap-3'>
+            <div className='relative ml-auto w-2/3'>
+              {showControls && (
+                <ModifyImageControls
+                  hasImage={heroImageUrl ? true : false}
+                  restoreImage={restoreImage}
+                  setErrorInvalidImage={setErrorInvalidImage}
+                  identifier={identifier}
+                  addImage={addImage}
+                  removeImage={removeImage}
+                  className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+                />
+              )}
+              <BannerImage src={heroImageUrl} />
+            </div>
           </div>
         </WidgetLayout>
       );
@@ -60,7 +115,20 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({ content, size }) => {
             <Icon src={iconUrl} />
             <Title>{title}</Title>
           </WidgetHeader>
-          <BannerImage src={heroImageUrl} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={heroImageUrl ? true : false}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={heroImageUrl} />
+          </div>
         </WidgetLayout>
       );
     default:
@@ -121,36 +189,3 @@ const WidgetLayout = React.forwardRef<
     {...props}
   />
 ));
-
-/**
- * Local component to render the banner image for the link.
- */
-const BannerImage: React.FC<{ src?: string; className?: string }> = ({
-  src,
-  className,
-}) => {
-  return (
-    <div
-      className={cn(
-        'relative flex h-full w-full items-center justify-center overflow-hidden rounded-2xl', // TODO: overflow-hidden is a bandaid for SRBT-132. Fix this at the source
-        !src && 'bg-gray-200',
-        className
-      )}
-    >
-      {src ? (
-        <>
-          <img
-            src={src}
-            alt='Banner image from url'
-            className='h-full w-full object-cover'
-          />
-          <ImageOverlay />
-        </>
-      ) : (
-        <span className='text-muted-foreground text-sm font-semibold'>
-          Nothing to see here
-        </span>
-      )}
-    </div>
-  );
-};

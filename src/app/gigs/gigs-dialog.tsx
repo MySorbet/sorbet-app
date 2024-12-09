@@ -576,7 +576,7 @@ export const GigsDialog = ({
               showTopbar={false}
               isOpen={isOpen}
               offerId={currentOfferId}
-              contractStatus={'Approved'}
+              contractStatus="Approved"
             />
           )}
           {activeTab === 'Contract' ? (

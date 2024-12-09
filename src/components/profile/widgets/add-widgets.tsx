@@ -19,7 +19,12 @@ import { featureFlags } from '@/lib/flags';
 import { cn } from '@/lib/utils';
 
 import { InvalidAlert } from './invalid-alert';
-import { isValidUrl, normalizeUrl, parseWidgetTypeFromUrl } from './util';
+import {
+  handleImageUpload,
+  isValidUrl,
+  normalizeUrl,
+  parseWidgetTypeFromUrl,
+} from './util';
 
 interface AddWidgetsProps {
   /** Callback for when a url is added. `image` is defined if adding an image  */
@@ -90,25 +95,8 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
     setDisabled(!currentUrl || !isValidUrl(currentUrl));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : undefined;
-    if (file) {
-      const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-      const fileSize = file.size / 1024 / 1024; // in MB
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
-
-      if (!fileExtension) {
-        // This condition is hit if there is no file extension
-        showErrorInvalidImage(true);
-        return;
-      }
-
-      if (validExtensions.includes(fileExtension) && fileSize <= 10) {
-        addUrl('https://storage.googleapis.com', file);
-      } else {
-        showErrorInvalidImage(true);
-      }
-    }
+  const handleAddImageClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleImageUpload(e, addUrl, showErrorInvalidImage);
   };
 
   const loadingClasses = 'opacity-90 pointer-events-none';
@@ -233,7 +221,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
                   <input
                     type='file'
                     className='hidden'
-                    onChange={handleImageUpload}
+                    onChange={handleAddImageClick}
                     disabled={loading}
                     accept='image/*'
                   />

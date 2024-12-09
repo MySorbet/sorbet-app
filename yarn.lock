@@ -16455,6 +16455,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"normalize-wheel@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "normalize-wheel@npm:1.0.1"
+  checksum: 10c0/5daf4c97e39f36658a5263a6499bbc148676ae2bd85f12c8d03c46ffe7bc3c68d44564c00413d88d0457ac0d94450559bb1c24c2ce7ae0c107031f82d093ac06
+  languageName: node
+  linkType: hard
+
 "npm-run-path@npm:^4.0.1":
   version: 4.0.1
   resolution: "npm-run-path@npm:4.0.1"
@@ -17829,6 +17836,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-easy-crop@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "react-easy-crop@npm:5.1.0"
+  dependencies:
+    normalize-wheel: "npm:^1.0.1"
+    tslib: "npm:^2.0.1"
+  peerDependencies:
+    react: ">=16.4.0"
+    react-dom: ">=16.4.0"
+  checksum: 10c0/8ce16548cef4062f5b2953c139759f61fd1cf0bbcd546881b3457f0bfd8d96a2de96446eec078671e7e9199bf9e1192738b90b5a15943f3402dd65f21e4a905f
+  languageName: node
+  linkType: hard
+
 "react-error-boundary@npm:^4.0.13":
   version: 4.1.2
   resolution: "react-error-boundary@npm:4.1.2"
@@ -17866,7 +17886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-grid-layout@npm:^1.4.4":
+"react-grid-layout@npm:^1.5.0":
   version: 1.5.0
   resolution: "react-grid-layout@npm:1.5.0"
   dependencies:
@@ -19325,10 +19345,11 @@ __metadata:
     react-credit-cards-2: "npm:^1.0.3"
     react-day-picker: "npm:^8.10.0"
     react-dom: "npm:^18.2.0"
+    react-easy-crop: "npm:^5.1.0"
     react-error-boundary: "npm:^4.0.13"
     react-geocode: "npm:^1.0.0-alpha.1"
     react-google-autocomplete: "npm:^2.7.3"
-    react-grid-layout: "npm:^1.4.4"
+    react-grid-layout: "npm:^1.5.0"
     react-hook-form: "npm:^7.51.0"
     react-loader-spinner: "npm:^5.4.5"
     react-redux: "npm:^8.1.3"

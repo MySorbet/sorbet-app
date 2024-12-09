@@ -1,11 +1,12 @@
+import { TriangleAlert } from 'lucide-react';
+import React, { useEffect,useState } from 'react';
+
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
 } from '@/components/ui/alert-dialog';
-import { TriangleAlert } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
 
 interface ConfirmDialogProps {
   title: string;
@@ -49,7 +50,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               <TriangleAlert
                 className='w-24 h-24'
                 strokeWidth={1}
-                stroke={`#595C5A`}
+                stroke="#595C5A"
               />
             </div>
             <div className='text-3xl font-semibold'>{title}</div>

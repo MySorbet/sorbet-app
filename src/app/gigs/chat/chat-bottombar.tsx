@@ -2,12 +2,7 @@ import { GroupChannel } from '@sendbird/chat/groupChannel';
 import {
   ArrowNarrowUp,
   Attachment01,
-  Bold01,
-  Italic01,
-  Link03,
-  List,
 } from '@untitled-ui/icons-react';
-import { ListOrdered } from 'lucide-react';
 import React, {
   Dispatch,
   RefObject,

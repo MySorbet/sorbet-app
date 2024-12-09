@@ -1,22 +1,35 @@
-import React from 'react';
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
+import { BaseWidgetProps, GithubWidgetContentType } from '@/types';
 
-import { GithubWidgetContentType, WidgetSize } from '@/types';
-
-import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface GithubWidgetType {
+interface GithubWidgetProps extends BaseWidgetProps {
   content: GithubWidgetContentType;
-  size: WidgetSize;
 }
 
-export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
+export const GithubWidget: React.FC<GithubWidgetProps> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
+  content,
+  size,
+  redirectUrl,
+  handleRestoreImage,
+}) => {
   let widgetLayout;
+
+  const restoreImage = async () => {
+    await handleRestoreImage(identifier, 'Github', redirectUrl ?? '', content); // Call the mutation with the image URL
+  };
+
   switch (size) {
     case 'A':
       widgetLayout = (
         <div className='flex h-full flex-col gap-2'>
-          <div className='flex flex-row gap-2'>
+          <div className='mb-4 flex flex-row gap-2'>
             <div className='w-10'>
               <WidgetIcon type='Github' />
             </div>
@@ -25,13 +38,18 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
               <div className='text-xs text-gray-500'>github.com</div>
             </div>
           </div>
-          <div className='relative flex-grow overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Github content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -46,13 +64,20 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Github content'
-              className='h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={content.image} />
+            </div>
           </div>
         </div>
       );
@@ -65,14 +90,18 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>
           </div>
-          <div className='relative w-3/5 overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Github content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -85,14 +114,18 @@ export const GithubWidget: React.FC<GithubWidgetType> = ({ content, size }) => {
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>github.com</div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Github content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );

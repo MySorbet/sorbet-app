@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
+  BaseWidgetProps,
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   FigmaWidgetContentType,
@@ -45,20 +46,23 @@ import { SubstackWidget } from './widget-substack';
 import { TwitterWidget } from './widget-twitter';
 import { YouTubeWidget } from './widget-youtube';
 
-interface WidgetProps {
-  identifier: string;
+interface WidgetProps extends BaseWidgetProps {
   type: WidgetType;
   w: number;
   h: number;
   content?: WidgetContentType;
   loading?: boolean;
-  initialSize?: WidgetSize;
-  redirectUrl?: string;
   draggedRef: React.MutableRefObject<boolean>;
-  showControls?: boolean;
+  activeWidget: string | null;
+  widgetDimensions: {
+    width: number;
+    height: number;
+  };
   handleResize: (key: string, w: number, h: number, size: WidgetSize) => void;
   handleRemove: (key: string) => void;
-  handleTitleUpdate: any;
+  handleEditLink: (key: string, url: string) => void;
+  setActiveWidget: (widgetId: string | null) => void;
+  handleTitleUpdate: (key: string, title: string) => Promise<void>;
 }
 
 export const Widget: React.FC<WidgetProps> = ({
@@ -67,24 +71,42 @@ export const Widget: React.FC<WidgetProps> = ({
   loading,
   content,
   redirectUrl,
-  initialSize = 'A',
+  size = 'A',
   showControls = false,
   handleResize,
   handleRemove,
+  handleEditLink,
+  handleRestoreImage,
   handleTitleUpdate,
   draggedRef,
+  setActiveWidget,
+  activeWidget,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
 }) => {
-  const [widgetSize, setWidgetSize] = useState<WidgetSize>(initialSize);
+  const [widgetSize, setWidgetSize] = useState<WidgetSize>(size);
+  const [isisAddLinkOpen, setIsisAddLinkOpen] = useState(false);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
+  const [photoDimensions, setPhotoDimensions] = useState<{
+    w: number;
+    h: number;
+  }>();
 
+  /** update image dimensions */
   const onWidgetResize = (w: number, h: number, widgetSize: WidgetSize) => {
     handleResize(identifier, w, h, widgetSize);
     setWidgetSize(widgetSize);
   };
 
-  const onWidgetClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  /** handles the update of widget redirect urls */
+  const onWidgetLinkEdit = (url: string) => {
+    handleEditLink(identifier, url);
+  };
+
+  const onWidgetClick = () => {
     const dragged = draggedRef.current;
     draggedRef.current = false;
     if (!dragged) {
@@ -102,37 +124,82 @@ export const Widget: React.FC<WidgetProps> = ({
     handleTitleUpdate(identifier, title);
   };
 
+  /** For setting the content of the widgets dynamically
+   * List of components that support image replacement
+   * - GitHub
+   * - Twitter
+   * - Soundcloud
+   * - Medium
+   * - Dribble
+   * - Behance
+   * - Substack
+   * - Youtube
+   * - LinkedIn
+   *
+   * List of components that don't support image replacement:
+   * - Instagram Profiles (too many pictures)
+   * - Figma (not implemented)
+   * - Spotify Song/Album (Bento doesn't allow it + iframes)
+   */
   useEffect(() => {
     switch (type) {
       case 'Dribbble':
         setWidgetContent(
           <DribbbleWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as DribbbleWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
       case 'Behance':
         setWidgetContent(
           <BehanceWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as BehanceWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
       case 'Medium':
         setWidgetContent(
           <MediumWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as MediumArticleContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
       case 'Youtube':
         setWidgetContent(
           <YouTubeWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as YoutubeWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -140,8 +207,15 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Substack':
         setWidgetContent(
           <SubstackWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as SubstackWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -167,8 +241,15 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'SoundcloudSong':
         setWidgetContent(
           <SoundcloudWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as SoundcloudTrackContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -185,12 +266,20 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Github':
         setWidgetContent(
           <GithubWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as GithubWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
 
+      /** not supported yet */
       case 'Figma':
         setWidgetContent(
           <FigmaWidget
@@ -203,8 +292,15 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'TwitterProfile':
         setWidgetContent(
           <TwitterWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as TwitterWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -221,8 +317,15 @@ export const Widget: React.FC<WidgetProps> = ({
       case 'Link':
         setWidgetContent(
           <LinkWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={content as LinkWidgetContentType}
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -240,6 +343,11 @@ export const Widget: React.FC<WidgetProps> = ({
 
         setWidgetContent(
           <LinkedInProfileWidget
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
             content={
               {
                 ...content,
@@ -247,6 +355,8 @@ export const Widget: React.FC<WidgetProps> = ({
               } as LinkedInProfileWidgetContentType
             }
             size={widgetSize}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;
@@ -267,7 +377,31 @@ export const Widget: React.FC<WidgetProps> = ({
     }
     // disabling here because 'redirectUrl' and 'updateTitle' being dependencies will cause massive re-renders
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, widgetSize, content]);
+  }, [
+    type,
+    widgetSize,
+    content,
+    addImage,
+    identifier,
+    redirectUrl,
+    removeImage,
+    setErrorInvalidImage,
+    showControls,
+    handleRestoreImage,
+  ]);
+
+  /** For photo widgets to disable cropping for square images */
+  useEffect(() => {
+    if (type === 'Photo') {
+      const img = new Image();
+      img.src = (content as PhotoWidgetContentType).image; // Set the image source URL
+
+      // Once the image is loaded, update the state with its dimensions
+      img.onload = () => {
+        setPhotoDimensions({ w: img.width, h: img.height });
+      };
+    }
+  }, [type, content]);
 
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
@@ -278,8 +412,9 @@ export const Widget: React.FC<WidgetProps> = ({
           type !== 'SectionTitle' && 'bg-white',
           type === 'SectionTitle' && 'py-4'
         )}
+        id={identifier}
         key={identifier}
-        onClick={onWidgetClick}
+        onClick={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
       >
         {loading ? (
           <Skeleton
@@ -291,19 +426,34 @@ export const Widget: React.FC<WidgetProps> = ({
         ) : (
           widgetContent
         )}
-        {showControls && (
+        {(showControls || activeWidget) && (
           <div
             className={cn(
-              'absolute bottom-0 left-1/2 -translate-x-1/2 transform opacity-0 transition-opacity duration-300 group-hover:opacity-100',
+              `absolute bottom-0 left-1/2 -translate-x-1/2 ${
+                isisAddLinkOpen
+                  ? ''
+                  : 'transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'
+              }`,
               type !== 'SectionTitle' && 'translate-y-5',
-              type === 'SectionTitle' && '-translate-y-1' // to account for margins on the background of section titles
+              type === 'SectionTitle' && '-translate-y-1' // to account for margins on the background of section titles}
             )}
           >
             <div className='flex flex-row gap-1'>
               {type !== 'SectionTitle' && (
                 <ResizeWidget
+                  redirectUrl={redirectUrl}
                   onResize={onWidgetResize}
-                  initialSize={initialSize}
+                  onEditLink={onWidgetLinkEdit}
+                  setIsAddLinkOpen={setIsisAddLinkOpen}
+                  isAddLinkOpen={isisAddLinkOpen}
+                  initialSize={size}
+                  identifier={identifier}
+                  activeWidget={activeWidget}
+                  setActiveWidget={setActiveWidget}
+                  type={type}
+                  photoDimensions={
+                    photoDimensions ? photoDimensions : undefined
+                  }
                 />
               )}
               <Button

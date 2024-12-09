@@ -1,29 +1,43 @@
 import React from 'react';
 
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { TwitterWidgetContentType, WidgetSize } from '@/types';
+import { BaseWidgetProps, TwitterWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetHeader } from './widget-header';
 import { WidgetIcon } from './widget-icon';
 
-interface TwitterWidgetProps {
-  /** The content from twitter for the widget to render */
+interface TwitterWidgetProps extends BaseWidgetProps {
   content: TwitterWidgetContentType;
-  /** The size of the widget to render */
-  size: WidgetSize;
 }
 
 /**
  * Render a Twitter widget with the given content and size
  */
 export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
   content,
+  addImage,
+  removeImage,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
-  const { name, handle, bio, bannerImage, profileImage } = content;
+  const { handle, bio, bannerImage, profileImage } = content;
+
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'TwitterProfile',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
+  };
 
   switch (size) {
     case 'A':
@@ -34,9 +48,22 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
             <FollowButton handle={handle} />
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
-          {/* // TODO: does this need className='flex-grow' on root*/}
-          {/* // TODO: does this need className='absolute inset-0' on img*/}
-          <BannerImage src={bannerImage} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={bannerImage} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'B':
@@ -48,7 +75,22 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
           <Bio bio={bio} />
-          <BannerImage src={bannerImage} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={bannerImage} />
+            </div>
+          </div>
         </WidgetLayout>
       );
     case 'C':
@@ -61,7 +103,20 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           <Handle handle={handle} img={profileImage} />
           <div className='flex h-full flex-row justify-between gap-3'>
             <Bio bio={bio} />
-            <BannerImage src={bannerImage} className='w-2/3' />
+            <div className='relative ml-auto w-3/5'>
+              {showControls && (
+                <ModifyImageControls
+                  hasImage={!!bannerImage}
+                  restoreImage={restoreImage}
+                  setErrorInvalidImage={setErrorInvalidImage}
+                  identifier={identifier}
+                  addImage={addImage}
+                  removeImage={removeImage}
+                  className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+                />
+              )}
+              <BannerImage src={bannerImage} />
+            </div>
           </div>
         </WidgetLayout>
       );
@@ -74,7 +129,20 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
           </WidgetHeader>
           <Handle handle={handle} img={profileImage} />
           <Bio bio={bio} />
-          <BannerImage src={bannerImage} />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!bannerImage}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+                className='absolute left-1/2 top-0 z-20 flex -translate-x-1/2 -translate-y-1/2 transform items-center opacity-0 transition-opacity group-hover:opacity-100'
+              />
+            )}
+            <BannerImage src={bannerImage} />
+          </div>
         </WidgetLayout>
       );
     default:
@@ -107,32 +175,6 @@ const Handle: React.FC<{ handle: string; img: string }> = ({ handle, img }) => {
         <AvatarFallback>{handle.substring(0, 1)}</AvatarFallback>
       </Avatar>
       <span className='text-secondary-foreground text-sm font-medium'>{`@${handle}`}</span>
-    </div>
-  );
-};
-
-/**
- * Local component to render the banner image for the twitter profile.
- *
- * TODO: Use Next.js Image component for better performance.
- */
-const BannerImage: React.FC<{ src: string; className?: string }> = ({
-  src,
-  className,
-}) => {
-  return (
-    <div
-      className={cn(
-        `relative h-full w-full overflow-hidden rounded-2xl`,
-        className
-      )}
-    >
-      <img
-        src={src}
-        alt='Banner image from twitter profile'
-        className='h-full w-full object-cover'
-      />
-      <ImageOverlay />
     </div>
   );
 };

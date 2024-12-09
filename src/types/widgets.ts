@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import type { Layout } from 'react-grid-layout';
 
 export interface GetWidgetBody {
@@ -15,38 +16,56 @@ export interface Widget {
   updatedAt: string;
 }
 
+export interface BaseWidgetProps {
+  identifier: string;
+  showControls?: boolean;
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
+  addImage: (key: string, image: File) => Promise<void>;
+  removeImage: (key: string) => Promise<void>;
+  size: WidgetSize;
+  redirectUrl?: string;
+  handleRestoreImage: (
+    key: string,
+    type: WidgetType,
+    redirectUrl: string,
+    content: WidgetContentType
+  ) => Promise<void>;
+}
+
 export interface DribbbleWidgetContentType {
-  image: string;
+  image: string | undefined;
   title: string;
   description: string;
 }
 
 export interface PhotoWidgetContentType {
   image: string;
+  isCropped?: boolean;
+  croppedArea?: { x: number; y: number; width: number; height: number };
 }
 
 export interface BehanceWidgetContentType {
-  image: string;
+  image: string | undefined;
   title: string;
   description: string;
 }
 
 export interface MediumArticleContentType {
   title: string;
-  image: string;
+  image: string | undefined;
   host: string;
 }
 
 export interface GithubWidgetContentType {
   title: string;
-  image: string;
+  image: string | undefined;
 }
 
 export interface TwitterWidgetContentType {
   name: string;
   handle: string;
   bio: string;
-  bannerImage: string;
+  bannerImage: string | undefined;
   profileImage: string;
 }
 
@@ -58,13 +77,13 @@ export interface FigmaWidgetContentType {
 
 export interface YoutubeWidgetContentType {
   title: string;
-  thumbnail: string;
+  thumbnail: string | undefined;
   url: string;
 }
 
 export interface SubstackWidgetContentType {
   title: string;
-  image: string;
+  image: string | undefined;
   host: string;
 }
 
@@ -84,7 +103,7 @@ export interface InstagramWidgetContentType {
 
 export interface SoundcloudTrackContentType {
   title: string;
-  artwork: string;
+  artwork: string | undefined;
   trackUrl: string;
   artist: string;
 }
@@ -101,7 +120,7 @@ export interface LinkWidgetContentType {
 export interface LinkedInProfileWidgetContentType {
   name: string;
   bio: string;
-  bannerImage: string;
+  bannerImage: string | undefined;
   profileImage: string;
 }
 
@@ -172,6 +191,7 @@ export interface UpdateWidgetsBulkDto {
   id: string;
   layout: { x: number; y: number; w: number; h: number };
   size: string;
+  content?: WidgetContentType; // for resetting photo cropping
 }
 
 /** This should match sorbet-api Widget in schema.prisma */

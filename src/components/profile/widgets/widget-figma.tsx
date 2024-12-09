@@ -5,12 +5,12 @@ import { FigmaWidgetContentType, WidgetSize } from '@/types';
 import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface FigmaWidgetType {
+interface FigmaWidgetProps {
   content: FigmaWidgetContentType;
   size: WidgetSize;
 }
 
-export const FigmaWidget: React.FC<FigmaWidgetType> = ({ content, size }) => {
+export const FigmaWidget: React.FC<FigmaWidgetProps> = ({ content, size }) => {
   let widgetLayout;
   switch (size) {
     case 'A':

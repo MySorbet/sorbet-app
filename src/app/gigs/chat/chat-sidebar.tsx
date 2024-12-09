@@ -1,16 +1,17 @@
 'use client';
 
+import { MoreHorizontal, SquarePen } from 'lucide-react';
+import Link from 'next/link';
+
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
+  TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { MoreHorizontal, SquarePen } from 'lucide-react';
-import Link from 'next/link';
 
 /**
   TODO: Make sure to define the type of the messages prop

@@ -1,21 +1,36 @@
-import React from 'react';
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
+import { BaseWidgetProps, DribbbleWidgetContentType } from '@/types';
 
-import { DribbbleWidgetContentType, WidgetSize } from '@/types';
-
-import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
 import { WidgetIcon } from './widget-icon';
 
-interface DribbbleWidgetType {
+interface DribbbleWidgetProps extends BaseWidgetProps {
   content: DribbbleWidgetContentType;
-  size: WidgetSize;
 }
 
-export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
+export const DribbbleWidget: React.FC<DribbbleWidgetProps> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'Dribbble',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
+  };
+
   let widgetLayout;
+
   switch (size) {
     case 'A':
       widgetLayout = (
@@ -31,13 +46,18 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
               </div>
             </div>
           </div>
-          <div className='relative flex-grow overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Dribbble content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -52,13 +72,20 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Dribbble content'
-              className='h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={content.image} />
+            </div>
           </div>
         </div>
       );
@@ -71,14 +98,18 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className='relative w-3/5 overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Dribbble content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -93,14 +124,18 @@ export const DribbbleWidget: React.FC<DribbbleWidgetType> = ({
               <WidgetDescription description={content.description} />
             </div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Dribbble content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );

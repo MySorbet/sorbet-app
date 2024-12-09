@@ -1,21 +1,31 @@
-import React from 'react';
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
+import { BaseWidgetProps, BehanceWidgetContentType } from '@/types';
 
-import { BehanceWidgetContentType, WidgetSize } from '@/types';
-
-import { ImageOverlay } from './image-overlay';
 import { WidgetDescription } from './widget-description';
 import { WidgetIcon } from './widget-icon';
 
-interface BehanceWidgetType {
+interface BehanceWidgetProps extends BaseWidgetProps {
   content: BehanceWidgetContentType;
-  size: WidgetSize;
 }
 
-export const BehanceWidget: React.FC<BehanceWidgetType> = ({
+export const BehanceWidget: React.FC<BehanceWidgetProps> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   let widgetLayout;
+
+  const restoreImage = async () => {
+    await handleRestoreImage(identifier, 'Behance', redirectUrl ?? '', content); // Call the mutation with the image URL
+  };
+
   switch (size) {
     case 'A':
       widgetLayout = (
@@ -31,13 +41,18 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
               </div>
             </div>
           </div>
-          <div className='relative flex-grow overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Behance content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -52,13 +67,20 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Behance content'
-              className='h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={content.image} />
+            </div>
           </div>
         </div>
       );
@@ -71,14 +93,18 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.description}</div>
           </div>
-          <div className='relative w-3/5 overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Behance content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -93,14 +119,18 @@ export const BehanceWidget: React.FC<BehanceWidgetType> = ({
               <WidgetDescription description={content.description} />
             </div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Behance content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );

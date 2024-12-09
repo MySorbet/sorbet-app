@@ -1,17 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { uploadWidgetsImageAsync } from '@/api/images';
-import { useToast } from '@/components/ui/use-toast';
 
 export const useUploadWidgetsImage = () => {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: FormData) => await uploadWidgetsImageAsync(data),
     onError: (error) => {
-      toast({
-        title: 'Failed to upload widget image',
+      toast('Failed to upload widget image', {
         description: error.message,
       });
     },

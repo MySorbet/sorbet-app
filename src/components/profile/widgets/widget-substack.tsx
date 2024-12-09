@@ -1,20 +1,36 @@
 import React from 'react';
 
-import { SubstackWidgetContentType, WidgetSize } from '@/types';
+import { BannerImage } from '@/components/profile/widgets/banner-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
+import { BaseWidgetProps, SubstackWidgetContentType } from '@/types';
 
-import { ImageOverlay } from './image-overlay';
 import { WidgetIcon } from './widget-icon';
 
-interface SubstackWidgetType {
+interface SubstackWidgetProps extends BaseWidgetProps {
   content: SubstackWidgetContentType;
-  size: WidgetSize;
 }
 
-export const SubstackWidget: React.FC<SubstackWidgetType> = ({
+export const SubstackWidget: React.FC<SubstackWidgetProps> = ({
+  identifier,
+  showControls,
+  setErrorInvalidImage,
+  addImage,
+  removeImage,
   content,
   size,
+  redirectUrl,
+  handleRestoreImage,
 }) => {
   let widgetLayout;
+
+  const restoreImage = async () => {
+    await handleRestoreImage(
+      identifier,
+      'Substack',
+      redirectUrl ?? '',
+      content
+    ); // Call the mutation with the image URL
+  };
 
   const localHeader = (
     <>
@@ -33,13 +49,18 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
             </div>
             <div className='w-90'>{localHeader}</div>
           </div>
-          <div className='relative flex-grow overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Substack content'
-              className='absolute inset-0 h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -51,13 +72,20 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
             <WidgetIcon type='Substack' className='m-0' />
           </div>
           <div>{localHeader}</div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Substack content'
-              className='h-full w-full object-cover'
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <div className='flex h-full flex-grow overflow-hidden'>
+              <BannerImage src={content.image} />
+            </div>
           </div>
         </div>
       );
@@ -69,14 +97,18 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
             <WidgetIcon type='Substack' />
             {localHeader}
           </div>
-          <div className='relative w-3/5 overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Substack content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative ml-auto w-3/5'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
@@ -86,14 +118,18 @@ export const SubstackWidget: React.FC<SubstackWidgetType> = ({
         <div className='flex h-full flex-col gap-2'>
           <WidgetIcon type='Substack' className='m-0' />
           <div>{localHeader}</div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Substack content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative flex-grow'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
