@@ -1,5 +1,5 @@
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
 import { BaseWidgetProps, BehanceWidgetContentType } from '@/types';
 
 import { WidgetDescription } from './widget-description';

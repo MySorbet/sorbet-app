@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { BannerImage } from '@/components/profile/widgets/banner-image';
-import { ModifyImageControls } from '@/components/profile/widgets/modify-widget-image';
+import { ModifyImageControls } from '@/components/profile/widgets/modify-image-controls';
 import { BaseWidgetProps, SubstackWidgetContentType } from '@/types';
 
 import { WidgetIcon } from './widget-icon';
