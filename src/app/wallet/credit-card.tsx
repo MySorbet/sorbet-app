@@ -1,7 +1,7 @@
 import './styles.css';
 
 import React, { useState } from 'react';
-import type { Focused } from 'react-credit-cards';
+import type { Focused } from 'react-credit-cards-2';
 
 import { CreditCardPreview } from '@/app/wallet/credit-card-preview';
 import { Button } from '@/components/ui/button';
