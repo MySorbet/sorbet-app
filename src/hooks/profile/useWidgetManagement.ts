@@ -145,9 +145,12 @@ export const useWidgetManagement = ({
   /** Handles the replacement of display images for widgets */
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
+      console.log('function', key);
       let widgetUrl = '';
       try {
         const existingItem = layout.find((item) => item.i === key);
+
+        console.log(existingItem, image);
 
         if (existingItem && image && image !== undefined) {
           const fileExtension = image.name.split('.').pop()?.toLowerCase();
@@ -223,13 +226,14 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
-          setLayout((prevLayout) =>
-            prevLayout.map((item) =>
+          handleLayoutChange(
+            layout.map((item) =>
               item.i === existingItem.i
                 ? { ...item, content: existingItem.content }
                 : item
             )
           );
+          console.log('here');
         }
       } catch (error) {
         const message =
@@ -239,7 +243,12 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout, uploadWidgetsImageAsync, updateWidgetContentAsync, setLayout]
+    [
+      layout,
+      uploadWidgetsImageAsync,
+      updateWidgetContentAsync,
+      handleLayoutChange,
+    ]
   );
 
   const handleRestoreImage = useCallback(

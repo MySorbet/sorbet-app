@@ -40,7 +40,8 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
   const dividerClass = 'h-4 w-[2.5px] bg-[#344054] rounded-full mx-2';
 
   const handleAddImageClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImageUpload(e, addImage, setErrorInvalidImage);
+    console.log('bleh');
+    handleImageUpload(e, addImage, setErrorInvalidImage, identifier);
   };
 
   const handleImageRemove = () => {

@@ -188,7 +188,8 @@ export function normalizeUrl(url: string): string | undefined {
 export const handleImageUpload = (
   e: React.ChangeEvent<HTMLInputElement>,
   addUrl: (key: string, image: File) => void,
-  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>
+  setErrorInvalidImage: Dispatch<SetStateAction<boolean>>,
+  key?: string
 ) => {
   const file = e.target.files ? e.target.files[0] : undefined;
   if (file) {
@@ -203,7 +204,8 @@ export const handleImageUpload = (
     }
 
     if (validExtensions.includes(fileExtension) && fileSize <= 10) {
-      addUrl('https://storage.googleapis.com', file);
+      console.log('here');
+      addUrl(key ?? 'https://storage.googleapis.com', file);
     } else {
       setErrorInvalidImage(true);
     }
