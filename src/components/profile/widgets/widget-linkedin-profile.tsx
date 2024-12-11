@@ -90,18 +90,20 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
             <WidgetIcon type='LinkedInProfile' className='mb-0' />
             <Title>{name}</Title>
           </WidgetHeader>
-          <div className='relative ml-auto w-3/5'>
-            {showControls && (
-              <ModifyImageControls
-                hasImage={!!bannerImage}
-                restoreImage={restoreImage}
-                setErrorInvalidImage={setErrorInvalidImage}
-                identifier={identifier}
-                addImage={addImage}
-                removeImage={removeImage}
-              />
-            )}
-            <BannerImage src={bannerImage} />
+          <div className='flex h-full flex-row justify-end gap-3'>
+            <div className='relative ml-auto w-2/3'>
+              {showControls && (
+                <ModifyImageControls
+                  hasImage={!!bannerImage}
+                  restoreImage={restoreImage}
+                  setErrorInvalidImage={setErrorInvalidImage}
+                  identifier={identifier}
+                  addImage={addImage}
+                  removeImage={removeImage}
+                />
+              )}
+              <BannerImage src={bannerImage} />
+            </div>
           </div>
         </WidgetLayout>
       );
