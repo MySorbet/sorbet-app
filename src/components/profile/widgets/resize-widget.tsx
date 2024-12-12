@@ -49,9 +49,6 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
   photoDimensions,
 }) => {
   const [currentSize, setCurrentSize] = useState<WidgetSize>(initialSize);
-  const [currentLink, setCurrentLink] = useState<string>(
-    redirectUrl ? redirectUrl : ''
-  );
 
   const btnClass = 'h-7 w-7 flex items-center justify-center';
   const dividerClass =
@@ -180,7 +177,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
             className={cn(btnClass, isAddLinkOpen ? 'rounded-md bg-white' : '')}
           >
             <AddLink
-              initialValue={currentLink}
+              initialValue={redirectUrl ?? ''}
               onSubmit={onSubmitLink}
               isAddLinkOpen={isAddLinkOpen}
               setIsAddLinkOpen={setIsAddLinkOpen}
