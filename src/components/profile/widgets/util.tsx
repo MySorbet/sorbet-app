@@ -204,7 +204,6 @@ export const handleImageUpload = (
     }
 
     if (validExtensions.includes(fileExtension) && fileSize <= 10) {
-      console.log('here');
       addUrl(key ?? 'https://storage.googleapis.com', file);
     } else {
       setErrorInvalidImage(true);

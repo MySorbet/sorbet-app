@@ -145,12 +145,9 @@ export const useWidgetManagement = ({
   /** Handles the replacement of display images for widgets */
   const handleNewImageAdd = useCallback(
     async (key: string, image: File) => {
-      console.log('function', key);
       let widgetUrl = '';
       try {
         const existingItem = layout.find((item) => item.i === key);
-
-        console.log(existingItem, image);
 
         if (existingItem && image && image !== undefined) {
           const fileExtension = image.name.split('.').pop()?.toLowerCase();
@@ -233,7 +230,6 @@ export const useWidgetManagement = ({
                 : item
             )
           );
-          console.log('here');
         }
       } catch (error) {
         const message =
