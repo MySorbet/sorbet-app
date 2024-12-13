@@ -73,7 +73,6 @@ export const deleteProfileImageAsync = async (userId: string) => {
 
 /**
  * Get a user from the db by their email
- * 🛑 CURRENTLY THIS ENDPOINT DOES NOT WORK 🛑
  */
 export const getUserByEmail = async (email: string) => {
   try {
