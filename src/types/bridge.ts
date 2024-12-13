@@ -8,9 +8,16 @@ export type BridgeCustomer = {
   tos_status: TOSStatus;
 
   virtual_account: BridgeVirtualAccount;
+  rejection_reasons: RejectionReason[];
 };
 
 // 👇 Supporting types
+
+export type RejectionReason = {
+  developer_reason: string;
+  reason: string;
+  created_at: string;
+};
 
 export type KYCStatus =
   | 'not_started'
