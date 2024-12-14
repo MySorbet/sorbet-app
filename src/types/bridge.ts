@@ -7,8 +7,8 @@ export type BridgeCustomer = {
   kyc_status: KYCStatus;
   tos_status: TOSStatus;
 
-  virtual_account: BridgeVirtualAccount;
-  rejection_reasons: RejectionReason[];
+  virtual_account?: BridgeVirtualAccount;
+  rejection_reasons?: RejectionReason[];
 };
 
 // 👇 Supporting types

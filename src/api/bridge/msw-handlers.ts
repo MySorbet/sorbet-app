@@ -9,7 +9,7 @@ export const mockACHWireDetailsHandler = http.get(
   async () => {
     await delay();
     return HttpResponse.json<SourceDepositInstructions>(
-      mockBridgeCustomer.virtual_account.source_deposit_instructions
+      mockBridgeCustomer.virtual_account?.source_deposit_instructions
     );
   }
 );
