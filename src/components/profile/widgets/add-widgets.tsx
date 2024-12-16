@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 
 import { InvalidAlert } from './invalid-alert';
 import {
-  handleImageUpload,
+  checkFileValid,
   isValidUrl,
   normalizeUrl,
   parseWidgetTypeFromUrl,
@@ -44,7 +44,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string>();
-  const [errorInvalidImage, showErrorInvalidImage] = useState(false);
+  const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [disabled, setDisabled] = useState(true);
 
   const handleUrlSubmit = () => {
@@ -96,7 +96,15 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
   };
 
   const handleAddImageClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImageUpload(e, addUrl, showErrorInvalidImage);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const valid = checkFileValid(file);
+    if (valid) {
+      // pass in URL for the handleWidgetAdd (so it knows its a photo widget)
+      addUrl('https://storage.googleapis.com', file);
+    } else {
+      setErrorInvalidImage(true);
+    }
   };
 
   const loadingClasses = 'opacity-90 pointer-events-none';
@@ -127,7 +135,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
       {errorInvalidImage && (
         <div className='animate-in slide-in-from-bottom-8 z-0 mb-2'>
           <InvalidAlert
-            handleAlertVisible={(show: boolean) => showErrorInvalidImage(show)}
+            handleAlertVisible={(show: boolean) => setErrorInvalidImage(show)}
             title='Error uploading file'
           >
             <p className='mt-2'>

@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
 
 import { useLocalStorage } from '@/hooks';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
@@ -56,10 +55,12 @@ export const useBridgeActions = () => {
       return;
     }
 
-    // Try again
+    // Try again (just re-open the KYC link. Does not include fancy timeout invalidation)
+    // Note, there is not loading stat after tab close so this use case may be confusing
     if (bridgeCustomer.kyc_status === 'rejected') {
-      toast('Please contact support');
-      // TODO: Maybe just send them to KYC link again?
+      openPollAndCallback({
+        link: bridgeCustomer.kyc_link,
+      });
       return;
     }
 

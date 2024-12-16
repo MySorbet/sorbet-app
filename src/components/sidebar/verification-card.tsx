@@ -25,7 +25,7 @@ interface VerificationCardProps {
   disabled?: boolean /** Disables the primary action button?*/;
   indeterminate?: boolean /** Whether the verification process is indeterminate. Use this to optimistically render a loading state before KYC is approved. Ignored if kycStatus and tosStatus are both approved */;
   missingEmail?: boolean /** Whether the user has an email associated with their sorbet account */;
-  rejectionReason?: string /** The reason the user's KYC was rejected. Only rendered if `kycStatus` is `rejected` */;
+  rejectionReasons?: string[] /** List of user friendly reasons for KYC rejection. Only rendered if `kycStatus` is `rejected` */;
   isCollapsed?: boolean /** Whether the card is collapsed. If true, the card will not render the progress bar or the remaining steps. Use this after verification is complete. */;
 }
 
@@ -36,7 +36,7 @@ export const VerificationCard = ({
   disabled = false,
   indeterminate = false,
   missingEmail = false,
-  rejectionReason,
+  rejectionReasons,
   isCollapsed = false,
 }: VerificationCardProps) => {
   // Convenience approved states
@@ -91,7 +91,7 @@ export const VerificationCard = ({
         <DynamicCardTitle status={titleStatus} />
         <DynamicCardDescription
           status={descriptionStatus}
-          rejectionReason={rejectionReason}
+          rejectionReason={rejectionReasons}
         />
       </CardHeader>
 
@@ -208,13 +208,23 @@ const DynamicCardDescription = ({
   rejectionReason,
 }: {
   status: keyof typeof descriptionContent;
-  rejectionReason?: string;
+  rejectionReason?: string[];
 }) => {
   return (
     <CardDescription className='animate-in fade-in text-xs' key={status}>
-      {status === 'rejected' && rejectionReason
-        ? rejectionReason
-        : descriptionContent[status]}
+      {status === 'rejected' && rejectionReason ? (
+        rejectionReason.length === 1 ? (
+          rejectionReason[0]
+        ) : (
+          <ol className='list-inside list-decimal'>
+            {rejectionReason.map((reason, index) => (
+              <li key={index}>{reason}</li>
+            ))}
+          </ol>
+        )
+      ) : (
+        descriptionContent[status]
+      )}
     </CardDescription>
   );
 };
