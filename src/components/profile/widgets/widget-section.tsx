@@ -16,7 +16,6 @@ export const SectionTitleWidget: React.FC<SectionTitleWidgetProps> = ({
 }) => {
   const [editableTitle, setEditableTitle] = useState(title);
   const [isEditing, setIsEditing] = useState(false);
-  console.log('editMode', editMode);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditableTitle(e.target.value);
