@@ -88,7 +88,6 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
         <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
             <WidgetIcon type='Medium' />
-            <WidgetIcon type='Medium' />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
