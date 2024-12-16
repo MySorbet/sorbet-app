@@ -86,7 +86,7 @@ export const Widget: React.FC<WidgetProps> = ({
   removeImage,
 }) => {
   const [widgetSize, setWidgetSize] = useState<WidgetSize>(size);
-  const [isisAddLinkOpen, setIsisAddLinkOpen] = useState(false);
+  const [isAddLinkOpen, setIsAddLinkOpen] = useState(false);
   const [widgetContent, setWidgetContent] = useState<React.ReactNode>(
     <>None</>
   );
@@ -430,7 +430,7 @@ export const Widget: React.FC<WidgetProps> = ({
           <div
             className={cn(
               `absolute bottom-0 left-1/2 -translate-x-1/2 ${
-                isisAddLinkOpen
+                isAddLinkOpen
                   ? ''
                   : 'transform opacity-0 transition-opacity duration-300 group-hover:opacity-100'
               }`,
@@ -444,8 +444,8 @@ export const Widget: React.FC<WidgetProps> = ({
                   redirectUrl={redirectUrl}
                   onResize={onWidgetResize}
                   onEditLink={onWidgetLinkEdit}
-                  setIsAddLinkOpen={setIsisAddLinkOpen}
-                  isAddLinkOpen={isisAddLinkOpen}
+                  setIsAddLinkOpen={setIsAddLinkOpen}
+                  isAddLinkOpen={isAddLinkOpen}
                   initialSize={size}
                   identifier={identifier}
                   activeWidget={activeWidget}

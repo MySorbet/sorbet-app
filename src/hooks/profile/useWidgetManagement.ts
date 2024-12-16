@@ -451,6 +451,11 @@ export const useWidgetManagement = ({
         const existingItem = layout.find((item) => item.i === key);
         if (existingItem) {
           await updateWidgetLinkAsync({ key: key, url: url });
+          handleLayoutChange(
+            layout.map((item) =>
+              item.i === existingItem.i ? { ...item, redirectUrl: url } : item
+            )
+          );
         } else {
           throw new Error('No widget exists to edit');
         }
@@ -462,7 +467,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout, updateWidgetLinkAsync]
+    [handleLayoutChange, layout, updateWidgetLinkAsync]
   );
 
   /** Handles cases when the user drags an image over the profile page */
