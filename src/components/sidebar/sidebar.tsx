@@ -141,7 +141,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                 indeterminate={isIndeterminate}
                 isCollapsed={isCollapsed}
                 onComplete={handlePrimaryButtonClick}
-                // TODO: Add rejection reason
+                rejectionReasons={bridgeCustomer?.rejection_reasons?.map(
+                  (reason) => reason.reason
+                )}
               />
             )}
             <Button

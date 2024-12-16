@@ -52,14 +52,28 @@ export const RejectedDefaultReason: Story = {
   },
 };
 
-export const RejectedSpecificReason: Story = {
+export const RejectedSpecificSingleReason: Story = {
   parameters: {
     name: 'Rejected (specific reason)',
   },
   args: {
     tosStatus: 'approved',
     kycStatus: 'rejected',
-    rejectionReason: 'There is a specific reason for rejection',
+    rejectionReasons: ['There is a specific reason for rejection'],
+  },
+};
+
+export const RejectedSpecificMultipleReasons: Story = {
+  parameters: {
+    name: 'Rejected (specific reason)',
+  },
+  args: {
+    tosStatus: 'approved',
+    kycStatus: 'rejected',
+    rejectionReasons: [
+      'There is one specific reason for rejection',
+      'There is another specific reason for rejection',
+    ],
   },
 };
 
