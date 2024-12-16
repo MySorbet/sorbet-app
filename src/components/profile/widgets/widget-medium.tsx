@@ -88,7 +88,6 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
         <div className='flex h-full flex-row gap-2'>
           <div className='w-2/5'>
             <WidgetIcon type='Medium' />
-            <WidgetIcon type='Medium' />
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
@@ -116,14 +115,18 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
             <div className='text-sm font-semibold'>{content.title}</div>
             <div className='text-xs text-gray-500'>{content.host}</div>
           </div>
-          <div className='relative h-full w-full overflow-hidden rounded-xl'>
-            <img
-              src={content.image}
-              alt='Medium content'
-              className='h-full w-full object-cover'
-              style={{ objectFit: 'cover' }}
-            />
-            <ImageOverlay />
+          <div className='relative h-full w-full'>
+            {showControls && (
+              <ModifyImageControls
+                hasImage={!!content.image}
+                restoreImage={restoreImage}
+                setErrorInvalidImage={setErrorInvalidImage}
+                identifier={identifier}
+                addImage={addImage}
+                removeImage={removeImage}
+              />
+            )}
+            <BannerImage src={content.image} />
           </div>
         </div>
       );
