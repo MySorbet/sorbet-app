@@ -366,6 +366,7 @@ export const Widget: React.FC<WidgetProps> = ({
         setWidgetContent(
           <SectionTitleWidget
             title={(content as SectionTitleWidgetContentType).title}
+            editMode={showControls}
             updateTitle={updateTitle}
           />
         );
