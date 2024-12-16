@@ -223,8 +223,8 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
-          setLayout((prevLayout) =>
-            prevLayout.map((item) =>
+          handleLayoutChange(
+            layout.map((item) =>
               item.i === existingItem.i
                 ? { ...item, content: existingItem.content }
                 : item
@@ -239,7 +239,12 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout, uploadWidgetsImageAsync, updateWidgetContentAsync, setLayout]
+    [
+      layout,
+      uploadWidgetsImageAsync,
+      updateWidgetContentAsync,
+      handleLayoutChange,
+    ]
   );
 
   const handleRestoreImage = useCallback(
@@ -314,6 +319,14 @@ export const useWidgetManagement = ({
             content: existingItem.content,
           });
 
+          handleLayoutChange(
+            layout.map((item) =>
+              item.i === existingItem.i
+                ? { ...item, content: existingItem.content }
+                : item
+            )
+          );
+
           // and if that site doesn't have an image, hold off on doing anything and inform the user.
         } else {
           toast(`It looks like this site has no image for this URL`, {
@@ -328,7 +341,12 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [layout, restoreWidgetImageAsync, updateWidgetContentAsync]
+    [
+      handleLayoutChange,
+      layout,
+      restoreWidgetImageAsync,
+      updateWidgetContentAsync,
+    ]
   );
 
   /** Handles the replacement of display images for Link and Photo Widgets */
@@ -426,6 +444,7 @@ export const useWidgetManagement = ({
     [layout, updateWidgetContentAsync]
   );
 
+  /** Changes the redirectURL of a given widget (specified by the key) */
   const handleWidgetEditLink = useCallback(
     async (key: string, url: string) => {
       try {

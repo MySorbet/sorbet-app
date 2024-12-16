@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 
-import { handleImageUpload } from '@/components/profile/widgets/util';
+import { checkFileValid } from '@/components/profile/widgets/util';
 import {
   Tooltip,
   TooltipContent,
@@ -19,7 +19,6 @@ interface ModifyImageControlsProps {
   removeImage: (key: string) => Promise<void>;
   setErrorInvalidImage: Dispatch<SetStateAction<boolean>>;
   restoreImage?: (event: React.MouseEvent<HTMLDivElement>) => void;
-  className?: string;
 }
 
 /**
@@ -34,13 +33,20 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
   removeImage,
   setErrorInvalidImage,
   restoreImage,
-  className,
 }) => {
   const btnClass = 'h-4 w-7 flex items-center justify-center';
   const dividerClass = 'h-4 w-[2.5px] bg-[#344054] rounded-full mx-2';
 
   const handleAddImageClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImageUpload(e, addImage, setErrorInvalidImage);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const valid = checkFileValid(file);
+    if (valid) {
+      // Pass in identifier so the correct widget is modified (for handleNewImageAdd)
+      addImage(identifier, file);
+    } else {
+      setErrorInvalidImage(true);
+    }
   };
 
   const handleImageRemove = () => {
@@ -60,7 +66,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
                   onChange={handleAddImageClick}
                   accept='image/*'
                 />
-                <Image03 width={24} height={24} strokeWidth={2.5} />
+                <Image03 width={26} height={26} strokeWidth={2.5} />
               </label>
             </div>
           </TooltipTrigger>
@@ -73,7 +79,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <div className={btnClass} onClick={restoreImage}>
-                  <LinkedPictureIcon className='size-5 text-white' />
+                  <LinkedPictureIcon className='size-6 text-white' />
                 </div>
               </TooltipTrigger>
               <TooltipContent>Use website picture</TooltipContent>
@@ -85,7 +91,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <div className={btnClass} onClick={handleImageRemove}>
-                  <Trash2 size={18} />
+                  <Trash2 size={22} />
                 </div>
               </TooltipTrigger>
               <TooltipContent>Delete picture</TooltipContent>
@@ -98,7 +104,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
             <Tooltip>
               <TooltipTrigger>
                 <div className={btnClass} onClick={restoreImage}>
-                  <LinkedPictureIcon className='text-white' />
+                  <LinkedPictureIcon className='size-6 text-white' />
                 </div>
               </TooltipTrigger>
               <TooltipContent>Use website picture</TooltipContent>
