@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 
-import { handleImageUpload } from '@/components/profile/widgets/util';
+import { checkFileValid } from '@/components/profile/widgets/util';
 import {
   Tooltip,
   TooltipContent,
@@ -38,7 +38,15 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
   const dividerClass = 'h-4 w-[2.5px] bg-[#344054] rounded-full mx-2';
 
   const handleAddImageClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImageUpload(e, addImage, setErrorInvalidImage, identifier);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const valid = checkFileValid(file);
+    if (valid) {
+      // Pass in identifier so the correct widget is modified (for handleNewImageAdd)
+      addImage(identifier, file);
+    } else {
+      setErrorInvalidImage(true);
+    }
   };
 
   const handleImageRemove = () => {
