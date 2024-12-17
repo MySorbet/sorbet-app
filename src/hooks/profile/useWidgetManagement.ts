@@ -62,7 +62,6 @@ export const useWidgetManagement = ({
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
-      console.log('here');
       if (removingWidget) return;
       try {
         setRemovingWidget(true);
