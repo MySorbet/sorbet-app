@@ -108,28 +108,52 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       )}
       onMouseLeave={handleMouseLeave} // Close popover on mouse leave
     >
-      <button className={btnClass} onClick={(e) => onResizeClick(e, 'A')}>
+      <button
+        className={btnClass}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          onResizeClick(e, 'A');
+        }}
+      >
         <Square
           size={16}
           fill={currentSize === 'A' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </button>
-      <div className={btnClass} onClick={(e) => onResizeClick(e, 'B')}>
+      <div
+        className={btnClass}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          onResizeClick(e, 'B');
+        }}
+      >
         <Square
           size={22}
           fill={currentSize === 'B' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </div>
-      <div className={btnClass} onClick={(e) => onResizeClick(e, 'C')}>
+      <div
+        className={btnClass}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          onResizeClick(e, 'C');
+        }}
+      >
         <RectangleHorizontal
           size={16}
           fill={currentSize === 'C' && !activeWidget ? '#fff' : 'transparent'}
           strokeWidth={2.5}
         />
       </div>
-      <div className={btnClass} onClick={(e) => onResizeClick(e, 'D')}>
+      <div
+        className={btnClass}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          onResizeClick(e, 'D');
+        }}
+      >
         <RectangleVertical
           size={16}
           fill={currentSize === 'D' && !activeWidget ? '#fff' : 'transparent'}

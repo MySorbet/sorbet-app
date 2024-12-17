@@ -415,7 +415,7 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         id={identifier}
         key={identifier}
-        onClick={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
+        onMouseDown={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
       >
         {loading === identifier ? (
           <Skeleton
@@ -461,6 +461,7 @@ export const Widget: React.FC<WidgetProps> = ({
                 variant='outline'
                 size='icon'
                 className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
+                // https://github.com/react-grid-layout/react-grid-layout/issues/166
                 onMouseDown={(e) => {
                   e.stopPropagation();
                   handleRemove(identifier);
