@@ -110,8 +110,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
     >
       <button
         className={btnClass}
-        onMouseDown={(e) => {
-          e.stopPropagation();
+        onClick={(e) => {
           onResizeClick(e, 'A');
         }}
       >
@@ -123,8 +122,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       </button>
       <div
         className={btnClass}
-        onMouseDown={(e) => {
-          e.stopPropagation();
+        onClick={(e) => {
           onResizeClick(e, 'B');
         }}
       >
@@ -136,8 +134,7 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       </div>
       <div
         className={btnClass}
-        onMouseDown={(e) => {
-          e.stopPropagation();
+        onClick={(e) => {
           onResizeClick(e, 'C');
         }}
       >
@@ -150,7 +147,6 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
       <div
         className={btnClass}
         onMouseDown={(e) => {
-          e.stopPropagation();
           onResizeClick(e, 'D');
         }}
       >

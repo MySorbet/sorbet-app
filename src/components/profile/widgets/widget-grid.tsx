@@ -201,7 +201,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         h={item.h}
                         type={item.type}
                         showControls={editMode}
-                        handleResize={() => handleWidgetResize}
+                        handleResize={handleWidgetResize}
                         handleRemove={(key) => handleWidgetRemove(key)}
                         handleEditLink={() => handleWidgetEditLink}
                         handleRestoreImage={handleRestoreImage}

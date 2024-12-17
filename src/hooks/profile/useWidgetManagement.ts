@@ -365,9 +365,11 @@ export const useWidgetManagement = ({
   const handleImageRemoval = useCallback(
     async (key: string) => {
       try {
+        if (modifyingWidget) return;
         const existingItem = layout.find((item) => item.i === key);
 
         if (existingItem) {
+          setModifyingWidget(key);
           switch (existingItem.type) {
             case 'Link':
               (existingItem.content as LinkWidgetContentType).heroImageUrl =
@@ -418,6 +420,7 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
+          setModifyingWidget(null);
         }
       } catch (error) {
         const message =
