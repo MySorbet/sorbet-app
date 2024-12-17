@@ -60,6 +60,7 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
 
   const handleLayoutChange = useCallback(
     (newLayout: WidgetLayoutItem[]) => {
+      console.log('handlechange', newLayout, layout);
       const updatedLayout = newLayout.map((layoutItem) => {
         const existingItem = layout.find((item) => item.i === layoutItem.i);
         return existingItem ? { ...existingItem, ...layoutItem } : layoutItem;
@@ -72,7 +73,8 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
   /** Triggered automatically when layout is changed, updates backend according to layout changes */
   const persistWidgetsLayoutOnChange = useCallback(
     (items?: WidgetLayoutItem[], key?: string) => {
-      const itemsToUse = items && items.length > 0 ? items : layout;
+      console.log('persist', items);
+      const itemsToUse = items && items.length > 0 ? items : [];
       if (itemsToUse.length > 0 && editMode) {
         const payload: UpdateWidgetsBulkDto[] = itemsToUse.map((item) => {
           if (key && item.i === key) {
@@ -92,7 +94,7 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
         updateWidgetsBulk(payload);
       }
     },
-    [layout, editMode, updateWidgetsBulk]
+    [editMode, updateWidgetsBulk]
   );
 
   const handleWidgetDropStop = useCallback(
@@ -243,11 +245,12 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
   return {
     layout,
     setLayout,
+    handleLayoutChange,
+    persistWidgetsLayoutOnChange,
     cols,
     animationStyles,
     widgetRefs,
     currentBreakpoint,
-    handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,

@@ -34,8 +34,11 @@ interface WidgetManagementProps {
   editMode: boolean;
   layout: WidgetLayoutItem[];
   setLayout: React.Dispatch<React.SetStateAction<WidgetLayoutItem[]>>;
+  persistWidgetsLayoutOnChange: (
+    items?: WidgetLayoutItem[],
+    key?: string
+  ) => void;
   cols: number;
-  handleLayoutChange: (newLayout: WidgetLayoutItem[]) => void;
 }
 
 export const useWidgetManagement = ({
@@ -43,7 +46,7 @@ export const useWidgetManagement = ({
   layout,
   setLayout,
   cols,
-  handleLayoutChange,
+  persistWidgetsLayoutOnChange,
 }: WidgetManagementProps) => {
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
@@ -59,12 +62,16 @@ export const useWidgetManagement = ({
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
+      console.log('here');
       if (removingWidget) return;
       try {
         setRemovingWidget(true);
         await deleteWidget(key);
 
-        handleLayoutChange(layout.filter((item) => item.i !== key));
+        setLayout((prevLayout) => {
+          const newLayout = prevLayout.filter((item) => item.i !== key);
+          return newLayout;
+        });
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
@@ -75,7 +82,7 @@ export const useWidgetManagement = ({
         setRemovingWidget(false); // Reset after operation
       }
     },
-    [removingWidget, deleteWidget, handleLayoutChange, layout]
+    [removingWidget, deleteWidget, setLayout]
   );
 
   const handleWidgetAdd = useCallback(
@@ -226,13 +233,11 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
-          handleLayoutChange(
-            layout.map((item) =>
-              item.i === existingItem.i
-                ? { ...item, content: existingItem.content }
-                : item
-            )
-          );
+          setLayout((prevLayout) => {
+            const newLayout = [...prevLayout, existingItem];
+            return newLayout;
+          });
+
           setModifyingWidget(null);
         }
       } catch (error) {
@@ -248,7 +253,7 @@ export const useWidgetManagement = ({
       layout,
       uploadWidgetsImageAsync,
       updateWidgetContentAsync,
-      handleLayoutChange,
+      setLayout,
     ]
   );
 
@@ -326,13 +331,11 @@ export const useWidgetManagement = ({
             content: existingItem.content,
           });
 
-          handleLayoutChange(
-            layout.map((item) =>
-              item.i === existingItem.i
-                ? { ...item, content: existingItem.content }
-                : item
-            )
-          );
+          setLayout((prevLayout) => {
+            const newLayout = [...prevLayout, existingItem];
+            persistWidgetsLayoutOnChange(newLayout);
+            return newLayout;
+          });
 
           // and if that site doesn't have an image, hold off on doing anything and inform the user.
         } else {
@@ -350,10 +353,11 @@ export const useWidgetManagement = ({
       }
     },
     [
-      handleLayoutChange,
       layout,
       modifyingWidget,
+      persistWidgetsLayoutOnChange,
       restoreWidgetImageAsync,
+      setLayout,
       updateWidgetContentAsync,
     ]
   );
@@ -464,11 +468,13 @@ export const useWidgetManagement = ({
         const existingItem = layout.find((item) => item.i === key);
         if (existingItem) {
           await updateWidgetLinkAsync({ key: key, url: url });
-          handleLayoutChange(
-            layout.map((item) =>
-              item.i === existingItem.i ? { ...item, redirectUrl: url } : item
-            )
-          );
+          setLayout((prevLayout) => {
+            const newLayout = [
+              ...prevLayout,
+              { ...existingItem, redirectUrl: url },
+            ];
+            return newLayout;
+          });
         } else {
           throw new Error('No widget exists to edit');
         }
@@ -480,7 +486,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [handleLayoutChange, layout, updateWidgetLinkAsync]
+    [layout, setLayout, updateWidgetLinkAsync]
   );
 
   /** Handles cases when the user drags an image over the profile page */

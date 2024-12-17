@@ -461,7 +461,7 @@ export const Widget: React.FC<WidgetProps> = ({
                 variant='outline'
                 size='icon'
                 className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.stopPropagation();
                   handleRemove(identifier);
                 }}

@@ -43,10 +43,11 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const {
     layout,
     setLayout,
+    handleLayoutChange,
+    persistWidgetsLayoutOnChange,
     cols,
     animationStyles,
     widgetRefs,
-    handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,
@@ -73,7 +74,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     editMode,
     layout,
     setLayout,
-    handleLayoutChange,
+    persistWidgetsLayoutOnChange,
     cols,
   });
 
@@ -200,9 +201,9 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         h={item.h}
                         type={item.type}
                         showControls={editMode}
-                        handleResize={handleWidgetResize}
-                        handleRemove={handleWidgetRemove}
-                        handleEditLink={handleWidgetEditLink}
+                        handleResize={() => handleWidgetResize}
+                        handleRemove={(key) => handleWidgetRemove(key)}
+                        handleEditLink={() => handleWidgetEditLink}
                         handleRestoreImage={handleRestoreImage}
                         content={item.content}
                         size={item.size}
@@ -298,9 +299,9 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   h={item.h}
                   type={item.type}
                   showControls={editMode}
-                  handleResize={handleWidgetResize}
-                  handleRemove={handleWidgetRemove}
-                  handleEditLink={handleWidgetEditLink}
+                  handleResize={() => handleWidgetResize}
+                  handleRemove={() => handleWidgetRemove}
+                  handleEditLink={() => handleWidgetEditLink}
                   handleRestoreImage={handleRestoreImage}
                   content={item.content}
                   size={item.size}
