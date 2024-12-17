@@ -173,7 +173,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                     setGridHeight(node.offsetHeight);
                   }
                 }}
-                useCSSTransforms={false}
               >
                 {layout.map((item) => {
                   // Allow all widgets to render if not cropping
@@ -272,7 +271,6 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               setGridHeight(node.offsetHeight);
             }
           }}
-          useCSSTransforms={false}
         >
           {layout.map((item) => {
             // Allow all widgets to render if not cropping

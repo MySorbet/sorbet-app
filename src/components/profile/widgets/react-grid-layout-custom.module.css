@@ -7,6 +7,11 @@ Read this to learn more https://stackoverflow.com/a/69541558
 .react-grid-layout-custom {
   /* Isolate the z-index shenanigans below to RGL */
   isolation: isolate;
+  transition: none !important;
+}
+
+.react-grid-item.cssTransforms {
+  transition-property: none !important;
 }
 
 .react-grid-layout-custom :global(.react-grid-item.react-draggable-dragging) {
@@ -17,6 +22,7 @@ Read this to learn more https://stackoverflow.com/a/69541558
 .react-grid-layout-custom :global(.react-grid-item) {
   /* Stack items above placeholders */
   z-index: 2;
+  transition: none !important;
 }
 
 .react-grid-layout-custom :global(.react-grid-item.react-grid-placeholder) {
