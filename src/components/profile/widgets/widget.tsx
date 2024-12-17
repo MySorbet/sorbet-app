@@ -51,7 +51,7 @@ interface WidgetProps extends BaseWidgetProps {
   w: number;
   h: number;
   content?: WidgetContentType;
-  loading?: boolean;
+  loading: string | null;
   draggedRef: React.MutableRefObject<boolean>;
   activeWidget: string | null;
   widgetDimensions: {
@@ -417,7 +417,7 @@ export const Widget: React.FC<WidgetProps> = ({
         key={identifier}
         onClick={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
       >
-        {loading ? (
+        {loading === identifier ? (
           <Skeleton
             className={cn(
               'size-full rounded-xl',

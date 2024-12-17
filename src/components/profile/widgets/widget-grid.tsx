@@ -56,6 +56,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     errorInvalidImage,
     setErrorInvalidImage,
     addingWidget,
+    modifyingWidget,
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
@@ -218,7 +219,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         setActiveWidget={setActiveWidget}
                         addImage={handleNewImageAdd}
                         removeImage={handleImageRemoval}
-                        loading={addingWidget}
+                        loading={modifyingWidget}
                         setErrorInvalidImage={setErrorInvalidImage}
                       />
                     </motion.div>
@@ -315,7 +316,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   setActiveWidget={setActiveWidget}
                   addImage={handleNewImageAdd}
                   removeImage={handleImageRemoval}
-                  loading={addingWidget}
+                  loading={modifyingWidget}
                   handleTitleUpdate={handleSectionTitleUpdate}
                   setErrorInvalidImage={setErrorInvalidImage}
                 />
