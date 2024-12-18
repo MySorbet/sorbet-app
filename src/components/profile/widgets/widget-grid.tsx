@@ -43,10 +43,11 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   const {
     layout,
     setLayout,
+    handleLayoutChange,
+    persistWidgetsLayoutOnChange,
     cols,
     animationStyles,
     widgetRefs,
-    handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,
@@ -56,6 +57,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     errorInvalidImage,
     setErrorInvalidImage,
     addingWidget,
+    modifyingWidget,
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
@@ -72,7 +74,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     editMode,
     layout,
     setLayout,
-    handleLayoutChange,
+    persistWidgetsLayoutOnChange,
     cols,
   });
 
@@ -200,8 +202,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         type={item.type}
                         showControls={editMode}
                         handleResize={handleWidgetResize}
-                        handleRemove={handleWidgetRemove}
-                        handleEditLink={handleWidgetEditLink}
+                        handleRemove={(key) => handleWidgetRemove(key)}
+                        handleEditLink={() => handleWidgetEditLink}
                         handleRestoreImage={handleRestoreImage}
                         content={item.content}
                         size={item.size}
@@ -218,7 +220,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                         setActiveWidget={setActiveWidget}
                         addImage={handleNewImageAdd}
                         removeImage={handleImageRemoval}
-                        loading={addingWidget}
+                        loading={modifyingWidget}
                         setErrorInvalidImage={setErrorInvalidImage}
                       />
                     </motion.div>
@@ -297,9 +299,9 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   h={item.h}
                   type={item.type}
                   showControls={editMode}
-                  handleResize={handleWidgetResize}
-                  handleRemove={handleWidgetRemove}
-                  handleEditLink={handleWidgetEditLink}
+                  handleResize={() => handleWidgetResize}
+                  handleRemove={() => handleWidgetRemove}
+                  handleEditLink={() => handleWidgetEditLink}
                   handleRestoreImage={handleRestoreImage}
                   content={item.content}
                   size={item.size}
@@ -315,7 +317,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                   setActiveWidget={setActiveWidget}
                   addImage={handleNewImageAdd}
                   removeImage={handleImageRemoval}
-                  loading={addingWidget}
+                  loading={modifyingWidget}
                   handleTitleUpdate={handleSectionTitleUpdate}
                   setErrorInvalidImage={setErrorInvalidImage}
                 />

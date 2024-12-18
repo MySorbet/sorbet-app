@@ -34,8 +34,11 @@ interface WidgetManagementProps {
   editMode: boolean;
   layout: WidgetLayoutItem[];
   setLayout: React.Dispatch<React.SetStateAction<WidgetLayoutItem[]>>;
+  persistWidgetsLayoutOnChange: (
+    items?: WidgetLayoutItem[],
+    key?: string
+  ) => void;
   cols: number;
-  handleLayoutChange: (newLayout: WidgetLayoutItem[]) => void;
 }
 
 export const useWidgetManagement = ({
@@ -43,11 +46,12 @@ export const useWidgetManagement = ({
   layout,
   setLayout,
   cols,
-  handleLayoutChange,
+  persistWidgetsLayoutOnChange,
 }: WidgetManagementProps) => {
   const [errorInvalidImage, setErrorInvalidImage] = useState(false);
   const [addingWidget, setAddingWidget] = useState<boolean>(false);
   const [removingWidget, setRemovingWidget] = useState<boolean>(false);
+  const [modifyingWidget, setModifyingWidget] = useState<string | null>(null);
 
   const { mutateAsync: createWidget } = useCreateWidget();
   const { mutateAsync: deleteWidget } = useDeleteWidget();
@@ -63,7 +67,10 @@ export const useWidgetManagement = ({
         setRemovingWidget(true);
         await deleteWidget(key);
 
-        handleLayoutChange(layout.filter((item) => item.i !== key));
+        setLayout((prevLayout) => {
+          const newLayout = prevLayout.filter((item) => item.i !== key);
+          return newLayout;
+        });
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
@@ -74,7 +81,7 @@ export const useWidgetManagement = ({
         setRemovingWidget(false); // Reset after operation
       }
     },
-    [removingWidget, deleteWidget, handleLayoutChange, layout]
+    [removingWidget, deleteWidget, setLayout]
   );
 
   const handleWidgetAdd = useCallback(
@@ -147,9 +154,11 @@ export const useWidgetManagement = ({
     async (key: string, image: File) => {
       let widgetUrl = '';
       try {
+        if (modifyingWidget) return;
         const existingItem = layout.find((item) => item.i === key);
 
         if (existingItem && image && image !== undefined) {
+          setModifyingWidget(key);
           const fileExtension = image.name.split('.').pop()?.toLowerCase();
           const imageFormData = new FormData();
           imageFormData.append('file', image);
@@ -223,13 +232,12 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
-          handleLayoutChange(
-            layout.map((item) =>
-              item.i === existingItem.i
-                ? { ...item, content: existingItem.content }
-                : item
-            )
-          );
+          setLayout((prevLayout) => {
+            const newLayout = [...prevLayout, existingItem];
+            return newLayout;
+          });
+
+          setModifyingWidget(null);
         }
       } catch (error) {
         const message =
@@ -240,10 +248,11 @@ export const useWidgetManagement = ({
       }
     },
     [
+      modifyingWidget,
       layout,
       uploadWidgetsImageAsync,
       updateWidgetContentAsync,
-      handleLayoutChange,
+      setLayout,
     ]
   );
 
@@ -255,11 +264,13 @@ export const useWidgetManagement = ({
       content: WidgetContentType
     ) => {
       try {
+        if (modifyingWidget) return;
         const existingItem = layout.find((item) => item.i === key);
         if (!existingItem) {
           throw new Error('Failed to find widget to update.');
         }
 
+        setModifyingWidget(key);
         const returnedImage = await restoreWidgetImageAsync({
           key,
           type,
@@ -319,13 +330,11 @@ export const useWidgetManagement = ({
             content: existingItem.content,
           });
 
-          handleLayoutChange(
-            layout.map((item) =>
-              item.i === existingItem.i
-                ? { ...item, content: existingItem.content }
-                : item
-            )
-          );
+          setLayout((prevLayout) => {
+            const newLayout = [...prevLayout, existingItem];
+            persistWidgetsLayoutOnChange(newLayout);
+            return newLayout;
+          });
 
           // and if that site doesn't have an image, hold off on doing anything and inform the user.
         } else {
@@ -333,6 +342,7 @@ export const useWidgetManagement = ({
             description: `We won't update or delete the current image.`,
           });
         }
+        setModifyingWidget(null);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
@@ -342,9 +352,11 @@ export const useWidgetManagement = ({
       }
     },
     [
-      handleLayoutChange,
       layout,
+      modifyingWidget,
+      persistWidgetsLayoutOnChange,
       restoreWidgetImageAsync,
+      setLayout,
       updateWidgetContentAsync,
     ]
   );
@@ -353,9 +365,11 @@ export const useWidgetManagement = ({
   const handleImageRemoval = useCallback(
     async (key: string) => {
       try {
+        if (modifyingWidget) return;
         const existingItem = layout.find((item) => item.i === key);
 
         if (existingItem) {
+          setModifyingWidget(key);
           switch (existingItem.type) {
             case 'Link':
               (existingItem.content as LinkWidgetContentType).heroImageUrl =
@@ -406,6 +420,7 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
+          setModifyingWidget(null);
         }
       } catch (error) {
         const message =
@@ -422,9 +437,11 @@ export const useWidgetManagement = ({
   const handleImageCropping = useCallback(
     async (key: string, croppedArea: Area) => {
       try {
+        if (modifyingWidget) return;
         const existingItem = layout.find((item) => item.i === key);
 
         if (existingItem) {
+          setModifyingWidget(key);
           (existingItem.content as PhotoWidgetContentType).croppedArea =
             croppedArea;
           (existingItem.content as PhotoWidgetContentType).isCropped = true;
@@ -439,9 +456,11 @@ export const useWidgetManagement = ({
         toast(`We couldn't crop this widget`, {
           description: message,
         });
+      } finally {
+        setModifyingWidget(null);
       }
     },
-    [layout, updateWidgetContentAsync]
+    [layout, modifyingWidget, updateWidgetContentAsync]
   );
 
   /** Changes the redirectURL of a given widget (specified by the key) */
@@ -451,11 +470,13 @@ export const useWidgetManagement = ({
         const existingItem = layout.find((item) => item.i === key);
         if (existingItem) {
           await updateWidgetLinkAsync({ key: key, url: url });
-          handleLayoutChange(
-            layout.map((item) =>
-              item.i === existingItem.i ? { ...item, redirectUrl: url } : item
-            )
-          );
+          setLayout((prevLayout) => {
+            const newLayout = [
+              ...prevLayout,
+              { ...existingItem, redirectUrl: url },
+            ];
+            return newLayout;
+          });
         } else {
           throw new Error('No widget exists to edit');
         }
@@ -467,7 +488,7 @@ export const useWidgetManagement = ({
         });
       }
     },
-    [handleLayoutChange, layout, updateWidgetLinkAsync]
+    [layout, setLayout, updateWidgetLinkAsync]
   );
 
   /** Handles cases when the user drags an image over the profile page */
@@ -625,6 +646,7 @@ export const useWidgetManagement = ({
     errorInvalidImage,
     setErrorInvalidImage,
     addingWidget,
+    modifyingWidget,
     handleWidgetRemove,
     handleWidgetAdd,
     handleFileDrop,
