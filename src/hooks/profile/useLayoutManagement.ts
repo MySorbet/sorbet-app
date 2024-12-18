@@ -243,11 +243,12 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
   return {
     layout,
     setLayout,
+    handleLayoutChange,
+    persistWidgetsLayoutOnChange,
     cols,
     animationStyles,
     widgetRefs,
     currentBreakpoint,
-    handleLayoutChange,
     handleWidgetDropStop,
     handleWidgetResize,
     isUserWidgetPending,

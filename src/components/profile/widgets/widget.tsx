@@ -51,7 +51,7 @@ interface WidgetProps extends BaseWidgetProps {
   w: number;
   h: number;
   content?: WidgetContentType;
-  loading?: boolean;
+  loading: string | null;
   draggedRef: React.MutableRefObject<boolean>;
   activeWidget: string | null;
   widgetDimensions: {
@@ -415,9 +415,9 @@ export const Widget: React.FC<WidgetProps> = ({
         )}
         id={identifier}
         key={identifier}
-        onClick={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
+        onMouseDown={!showControls ? onWidgetClick : undefined} // Don't redirect if editing dashboard, similar to Bento
       >
-        {loading ? (
+        {loading === identifier ? (
           <Skeleton
             className={cn(
               'size-full rounded-xl',
@@ -461,7 +461,8 @@ export const Widget: React.FC<WidgetProps> = ({
                 variant='outline'
                 size='icon'
                 className='rounded-full border-gray-800 bg-gray-800 text-white hover:bg-gray-800 hover:text-white'
-                onClick={(e) => {
+                // https://github.com/react-grid-layout/react-grid-layout/issues/166
+                onMouseDown={(e) => {
                   e.stopPropagation();
                   handleRemove(identifier);
                 }}
