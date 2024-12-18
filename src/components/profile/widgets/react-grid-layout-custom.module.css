@@ -22,6 +22,10 @@ Read this to learn more https://stackoverflow.com/a/69541558
 .react-grid-layout-custom :global(.react-grid-item) {
   /* Stack items above placeholders */
   z-index: 2;
+
+  /* when the grid is shown after previously being hidden, an animation from (0,0) in the grid
+  with all the widgets will be played, this disables that.
+  */
   transition: none !important;
 }
 
