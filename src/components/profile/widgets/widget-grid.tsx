@@ -85,6 +85,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
     return <WidgetPlaceholderGrid loading className='px-[25px]' />;
   }
 
+  console.log(cols);
+
   const calculateWidgetPixelDimensions = (
     size: WidgetSize,
     gridWidth: number,
@@ -164,7 +166,8 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 className={styles['react-grid-layout-custom']}
                 rowHeight={rowHeight}
                 margin={[25, 25]}
-                cols={cols}
+                containerPadding={[0, 0]}
+                cols={8} // harcoded cols for dimensions
                 onDragStop={handleWidgetDropStop}
                 isDraggable={editMode} // Disable dragging if cropping
                 isResizable={editMode}
@@ -262,7 +265,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
           className={styles['react-grid-layout-custom']}
           rowHeight={rowHeight}
           margin={[25, 25]}
-          cols={cols}
+          cols={8}
           onDragStop={handleWidgetDropStop}
           isDraggable={editMode}
           isResizable={editMode}

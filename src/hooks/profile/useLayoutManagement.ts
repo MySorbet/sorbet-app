@@ -14,9 +14,9 @@ import {
 } from '@/types';
 
 const breakpoints = {
-  xxs: 240,
-  xs: 480,
-  sm: 768,
+  xxs: 0,
+  xs: 550,
+  sm: 780,
   md: 996,
   lg: 1200,
   xl: 1600,
@@ -73,7 +73,12 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
   const persistWidgetsLayoutOnChange = useCallback(
     (items?: WidgetLayoutItem[], key?: string) => {
       const itemsToUse = items && items.length > 0 ? items : layout;
-      if (itemsToUse.length > 0 && editMode) {
+      if (
+        itemsToUse.length > 0 &&
+        editMode &&
+        currentBreakpoint != 'sm' &&
+        currentBreakpoint != 'xs'
+      ) {
         const payload: UpdateWidgetsBulkDto[] = itemsToUse.map((item) => {
           if (key && item.i === key) {
             return {
@@ -92,7 +97,7 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
         updateWidgetsBulk(payload);
       }
     },
-    [layout, editMode, updateWidgetsBulk]
+    [layout, editMode, currentBreakpoint, updateWidgetsBulk]
   );
 
   const handleWidgetDropStop = useCallback(
@@ -160,15 +165,20 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
   useEffect(() => {
     const calculateBreakpoint = () => {
       const width = window.innerWidth;
-      let breakpoint = 'lg';
-      if (width < breakpoints.xs) breakpoint = 'xs';
+      let breakpoint = currentBreakpoint;
+      if (width < breakpoints.xxs) breakpoint = 'xxs'; // Added xxs breakpoint
+      else if (width >= breakpoints.xxs && width < breakpoints.xs)
+        breakpoint = 'xs';
       else if (width >= breakpoints.xs && width < breakpoints.sm)
         breakpoint = 'sm';
       else if (width >= breakpoints.sm && width < breakpoints.md)
         breakpoint = 'md';
       else if (width >= breakpoints.md && width < breakpoints.lg)
         breakpoint = 'lg';
+      else if (width >= breakpoints.lg && width < breakpoints.xl)
+        breakpoint = 'xl';
 
+      console.log(breakpoint, currentBreakpoint, width);
       if (breakpoint !== currentBreakpoint) {
         setCurrentBreakpoint(breakpoint);
       }
@@ -183,6 +193,8 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
     let cols = 8;
     switch (currentBreakpoint) {
       case 'xxs':
+        cols = 1;
+        break;
       case 'xs':
         cols = 2;
         break;

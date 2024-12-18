@@ -369,7 +369,6 @@ export const useWidgetManagement = ({
         const existingItem = layout.find((item) => item.i === key);
 
         if (existingItem) {
-          setModifyingWidget(key);
           switch (existingItem.type) {
             case 'Link':
               (existingItem.content as LinkWidgetContentType).heroImageUrl =

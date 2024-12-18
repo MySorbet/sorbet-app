@@ -10,6 +10,13 @@ Read this to learn more https://stackoverflow.com/a/69541558
   transition: none !important;
 }
 
+@media (width < 768px) {
+  .react-grid-layout-custom {
+    margin-top: 25px;
+    margin-left: 25px;
+  }
+}
+
 .react-grid-item.cssTransforms {
   transition-property: none !important;
 }
