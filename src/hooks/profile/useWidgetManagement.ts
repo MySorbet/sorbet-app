@@ -227,6 +227,7 @@ export const useWidgetManagement = ({
               (
                 existingItem.content as InstagramWidgetContentType
               ).replacementPicture = widgetUrl;
+              (existingItem.content as InstagramWidgetContentType).images = [];
               break;
             case 'LinkedInProfile':
               (
@@ -245,8 +246,6 @@ export const useWidgetManagement = ({
             const newLayout = [...prevLayout, existingItem];
             return newLayout;
           });
-
-          setModifyingWidget(null);
         }
       } catch (error) {
         const message =
@@ -254,6 +253,8 @@ export const useWidgetManagement = ({
         toast(`We couldn't update a widget`, {
           description: message,
         });
+      } finally {
+        setModifyingWidget(null);
       }
     },
     [
@@ -373,50 +374,12 @@ export const useWidgetManagement = ({
       layout,
       modifyingWidget,
       persistWidgetsLayoutOnChange,
+      restoreInstagramWidgetAsync,
       restoreWidgetImageAsync,
       setLayout,
       updateWidgetContentAsync,
     ]
   );
-
-  /**
-   * else if (
-          returnedImage !== undefined &&
-          typeof returnedImage !== 'string'
-        ) {
-
-        const { handle, images, isPrivate } = returnedImage;
-          if (
-            (existingItem.content as InstagramWidgetContentType).images ===
-              images &&
-            !isPrivate
-          ) {
-            toast(`Looks like there's no new posts for this profile`, {
-              description: `We won't change the pictures for now, but you can manually upload your own photos if you want.`,
-            });
-          } else if (isPrivate) {
-            toast(`This account is private`, {
-              description: `We can't fetch any photos from this account, but you can manually upload your own photos if you want.`,
-            });
-          } else {
-            (existingItem.content as InstagramWidgetContentType).handle =
-              handle;
-            (existingItem.content as InstagramWidgetContentType).images =
-              images;
-            (existingItem.content as InstagramWidgetContentType).isPrivate =
-              isPrivate;
-
-            await updateWidgetContentAsync({
-              key: existingItem.i,
-              content: existingItem.content,
-            });
-
-            setLayout((prevLayout) => {
-              const newLayout = [...prevLayout, existingItem];
-              persistWidgetsLayoutOnChange(newLayout);
-              return newLayout;
-            });
-   */
 
   /** Handles the replacement of display images for Link and Photo Widgets */
   const handleImageRemoval = useCallback(
@@ -479,10 +442,6 @@ export const useWidgetManagement = ({
             default:
               break;
           }
-          console.log({
-            key: existingItem.i,
-            content: existingItem.content,
-          });
           await updateWidgetContentAsync({
             key: existingItem.i,
             content: existingItem.content,

@@ -134,7 +134,6 @@ export const restoreInstagramWidget = async (
       id: widgetId,
       redirectUrl: redirectUrl,
     };
-    console.log('restore image', payload);
     const response = await axios.post(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/restore-instagram-widget`,
       payload,
@@ -179,7 +178,6 @@ export const updateWidgetContent = async (
   };
 
   try {
-    console.log(payload);
     const response = await axios.patch(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,

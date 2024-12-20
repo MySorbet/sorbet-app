@@ -81,7 +81,9 @@ export const InstagramWidget: React.FC<InstagramWidgetProps> = ({
           <div className='relative flex-grow'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.replacementPicture ? true : false}
+                hasImage={
+                  content.replacementPicture || content.images ? true : false
+                }
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -139,7 +141,9 @@ export const InstagramWidget: React.FC<InstagramWidgetProps> = ({
           <div className='relative h-full w-1/2 rounded-xl'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.replacementPicture ? true : false}
+                hasImage={
+                  content.replacementPicture || content.images ? true : false
+                }
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -166,7 +170,9 @@ export const InstagramWidget: React.FC<InstagramWidgetProps> = ({
           <div className='relative mt-24 h-full w-full overflow-hidden rounded-xl'>
             {showControls && (
               <ModifyImageControls
-                hasImage={content.replacementPicture ? true : false}
+                hasImage={
+                  content.replacementPicture || content.images ? true : false
+                }
                 restoreImage={restoreImage}
                 setErrorInvalidImage={setErrorInvalidImage}
                 identifier={identifier}
@@ -202,27 +208,26 @@ const InstagramImageContent = ({
   heightClass,
   replacementPicture,
 }: InstagramImageContentProps) => {
+  // priority to display: images from the actual profile -> pictures the sorbet user uploaded -> placeholders
   return (
     <>
-      {isPrivate ? (
-        replacementPicture ? (
-          <>
-            <img
-              src={replacementPicture}
-              alt='Banner image from url'
-              className='absolute inset-0 h-full w-full rounded-xl object-cover'
-            />
-            <ImageOverlay />
-          </>
-        ) : (
-          <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-100 text-sm font-semibold'>
-            This account is private
-          </span>
-        )
-      ) : images.length > 0 ? (
+      {images.length > 0 ? (
         <div className={className}>
           <ImageGallery images={images} heightClass={heightClass} />
         </div>
+      ) : replacementPicture ? (
+        <>
+          <img
+            src={replacementPicture}
+            alt='Banner image from url'
+            className='absolute inset-0 h-full w-full rounded-xl object-cover'
+          />
+          <ImageOverlay />
+        </>
+      ) : isPrivate ? (
+        <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-100 text-sm font-semibold'>
+          This account is private
+        </span>
       ) : (
         <span className='text-muted-foreground flex h-full w-full items-center justify-center rounded-2xl bg-gray-100 text-sm font-semibold'>
           Nothing to see here
