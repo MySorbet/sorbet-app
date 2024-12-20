@@ -78,7 +78,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <div className={btnClass} onClick={restoreImage}>
+                <div className={btnClass} onMouseDown={restoreImage}>
                   <LinkedPictureIcon className='size-6 text-white' />
                 </div>
               </TooltipTrigger>
@@ -90,7 +90,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <div className={btnClass} onClick={handleImageRemove}>
+                <div className={btnClass} onMouseDown={handleImageRemove}>
                   <Trash2 size={22} />
                 </div>
               </TooltipTrigger>
@@ -103,7 +103,7 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <div className={btnClass} onClick={restoreImage}>
+                <div className={btnClass} onMouseDown={restoreImage}>
                   <LinkedPictureIcon className='size-6 text-white' />
                 </div>
               </TooltipTrigger>
