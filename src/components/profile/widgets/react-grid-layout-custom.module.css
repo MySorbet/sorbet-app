@@ -8,12 +8,15 @@ Read this to learn more https://stackoverflow.com/a/69541558
   /* Isolate the z-index shenanigans below to RGL */
   isolation: isolate;
   transition: none !important;
+  width: 100%;
 }
 
-@media (width < 768px) {
+@media (width < 800px) {
   .react-grid-layout-custom {
     margin-top: 25px;
-    margin-left: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 

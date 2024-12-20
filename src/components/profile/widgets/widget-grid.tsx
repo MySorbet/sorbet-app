@@ -42,6 +42,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
 
   const {
     layout,
+    currentBreakpoint,
     setLayout,
     handleLayoutChange,
     persistWidgetsLayoutOnChange,
@@ -84,6 +85,14 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
   if (isUserWidgetPending) {
     return <WidgetPlaceholderGrid loading className='px-[25px]' />;
   }
+
+  const isSmallScreen = (): boolean => {
+    if (currentBreakpoint === 'xs' || currentBreakpoint === 'sm') {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   console.log(cols);
 
@@ -167,7 +176,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
                 rowHeight={rowHeight}
                 margin={[25, 25]}
                 containerPadding={[0, 0]}
-                cols={8} // harcoded cols for dimensions
+                cols={cols} // hardcoded cols for dimensions
                 onDragStop={handleWidgetDropStop}
                 isDraggable={editMode} // Disable dragging if cropping
                 isResizable={editMode}
@@ -265,7 +274,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
           className={styles['react-grid-layout-custom']}
           rowHeight={rowHeight}
           margin={[25, 25]}
-          cols={8}
+          cols={cols}
           onDragStop={handleWidgetDropStop}
           isDraggable={editMode}
           isResizable={editMode}

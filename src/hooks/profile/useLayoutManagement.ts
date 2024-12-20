@@ -17,7 +17,7 @@ const breakpoints = {
   xxs: 0,
   xs: 550,
   sm: 780,
-  md: 996,
+  md: 1024,
   lg: 1200,
   xl: 1600,
 };
@@ -166,6 +166,7 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
     const calculateBreakpoint = () => {
       const width = window.innerWidth;
       let breakpoint = currentBreakpoint;
+
       if (width < breakpoints.xxs) breakpoint = 'xxs'; // Added xxs breakpoint
       else if (width >= breakpoints.xxs && width < breakpoints.xs)
         breakpoint = 'xs';
@@ -202,9 +203,11 @@ export const useLayoutManagement = ({ userId, editMode }: WidgetGridProps) => {
         cols = 4;
         break;
       case 'md':
-        cols = 6;
+        cols = 4;
         break;
       case 'lg':
+        cols = 5;
+        break;
       default:
         setCols(8);
         setLayout(initialLayout);
