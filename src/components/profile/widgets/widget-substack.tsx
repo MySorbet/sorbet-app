@@ -24,12 +24,7 @@ export const SubstackWidget: React.FC<SubstackWidgetProps> = ({
   let widgetLayout;
 
   const restoreImage = async () => {
-    await handleRestoreImage(
-      identifier,
-      'Substack',
-      redirectUrl ?? '',
-      content
-    ); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Substack', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   const localHeader = (

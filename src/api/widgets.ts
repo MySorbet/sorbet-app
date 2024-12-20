@@ -106,18 +106,37 @@ export const updateWidget = async (
 export const restoreWidgetImage = async (
   widgetId: string,
   type: WidgetType,
-  redirectUrl: string,
-  content: WidgetContentType
+  redirectUrl: string
 ): Promise<string | undefined> => {
   try {
     const payload: Partial<WidgetDto> = {
       id: widgetId,
       type: type,
       redirectUrl: redirectUrl,
-      content: content,
     };
     const response = await axios.post(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/restore-image`,
+      payload,
+      await withAuthHeader()
+    );
+    return response.data;
+  } catch (error) {
+    catchAndRethrowWidgetError(error, `Failed to update widgets in bulk`);
+  }
+};
+
+export const restoreInstagramWidget = async (
+  widgetId: string,
+  redirectUrl: string
+): Promise<{ message: string; description: string } | undefined> => {
+  try {
+    const payload: Partial<WidgetDto> = {
+      id: widgetId,
+      redirectUrl: redirectUrl,
+    };
+    console.log('restore image', payload);
+    const response = await axios.post(
+      `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/restore-instagram-widget`,
       payload,
       await withAuthHeader()
     );
@@ -160,6 +179,7 @@ export const updateWidgetContent = async (
   };
 
   try {
+    console.log(payload);
     const response = await axios.patch(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/widgets/${key}`,
       payload,

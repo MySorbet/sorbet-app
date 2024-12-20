@@ -26,12 +26,7 @@ export const LinkedInProfileWidget: React.FC<LinkedInProfileWidgetProps> = ({
   const { name, bannerImage } = content;
 
   const restoreImage = async () => {
-    await handleRestoreImage(
-      identifier,
-      'LinkedInProfile',
-      redirectUrl ?? '',
-      content
-    ); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'LinkedInProfile', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {

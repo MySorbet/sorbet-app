@@ -23,7 +23,7 @@ export const BehanceWidget: React.FC<BehanceWidgetProps> = ({
   let widgetLayout;
 
   const restoreImage = async () => {
-    await handleRestoreImage(identifier, 'Behance', redirectUrl ?? '', content); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Behance', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {
