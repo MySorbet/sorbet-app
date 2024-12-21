@@ -26,7 +26,7 @@ export const BannerImage: React.FC<{ src?: string; className?: string }> = ({
           <ImageOverlay />
         </>
       ) : (
-        <span className='text-sm font-semibold text-[#344054]'>
+        <span className='text-muted-foreground text-sm font-semibold'>
           Nothing to see here
         </span>
       )}

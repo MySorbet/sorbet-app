@@ -27,8 +27,7 @@ export interface BaseWidgetProps {
   handleRestoreImage: (
     key: string,
     type: WidgetType,
-    redirectUrl: string,
-    content: WidgetContentType
+    redirectUrl: string
   ) => Promise<void>;
 }
 
@@ -99,6 +98,7 @@ export interface InstagramWidgetContentType {
   handle: string;
   images: string[];
   isPrivate: boolean;
+  replacementPicture?: string; // for private or instagrams with no posts
 }
 
 export interface SoundcloudTrackContentType {

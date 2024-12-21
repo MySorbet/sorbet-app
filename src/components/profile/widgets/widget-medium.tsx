@@ -23,7 +23,7 @@ export const MediumWidget: React.FC<MediumWidgetProps> = ({
   let widgetLayout;
 
   const restoreImage = async () => {
-    await handleRestoreImage(identifier, 'Medium', redirectUrl ?? '', content); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Medium', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {

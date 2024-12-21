@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { useCallback, useState } from 'react';
 import { Area } from 'react-easy-crop';
 import { toast } from 'sonner';
@@ -9,12 +10,14 @@ import {
   useUploadWidgetsImage,
 } from '@/hooks';
 import { useUpdateWidgetContent } from '@/hooks/profile/useUpdateWidgetContent';
+import { useRestoreInstagramWidget } from '@/hooks/widgets/useRestoreInstagramWidget';
 import { useRestoreWidgetImage } from '@/hooks/widgets/useRestoreWidgetImage';
 import { useUpdateWidgetLink } from '@/hooks/widgets/useUpdateWidgetLink';
 import {
   BehanceWidgetContentType,
   DribbbleWidgetContentType,
   GithubWidgetContentType,
+  InstagramWidgetContentType,
   LinkedInProfileWidgetContentType,
   LinkWidgetContentType,
   PhotoWidgetContentType,
@@ -22,7 +25,6 @@ import {
   SoundcloudTrackContentType,
   SubstackWidgetContentType,
   TwitterWidgetContentType,
-  WidgetContentType,
   WidgetDimensions,
   WidgetLayoutItem,
   WidgetType,
@@ -59,6 +61,8 @@ export const useWidgetManagement = ({
   const { mutateAsync: updateWidgetContentAsync } = useUpdateWidgetContent();
   const { mutateAsync: updateWidgetLinkAsync } = useUpdateWidgetLink();
   const { mutateAsync: restoreWidgetImageAsync } = useRestoreWidgetImage();
+  const { mutateAsync: restoreInstagramWidgetAsync } =
+    useRestoreInstagramWidget();
 
   const handleWidgetRemove = useCallback(
     async (key: string) => {
@@ -219,6 +223,12 @@ export const useWidgetManagement = ({
               (existingItem.content as DribbbleWidgetContentType).image =
                 widgetUrl;
               break;
+            case 'InstagramProfile':
+              (
+                existingItem.content as InstagramWidgetContentType
+              ).replacementPicture = widgetUrl;
+              (existingItem.content as InstagramWidgetContentType).images = [];
+              break;
             case 'LinkedInProfile':
               (
                 existingItem.content as LinkedInProfileWidgetContentType
@@ -236,8 +246,6 @@ export const useWidgetManagement = ({
             const newLayout = [...prevLayout, existingItem];
             return newLayout;
           });
-
-          setModifyingWidget(null);
         }
       } catch (error) {
         const message =
@@ -245,6 +253,8 @@ export const useWidgetManagement = ({
         toast(`We couldn't update a widget`, {
           description: message,
         });
+      } finally {
+        setModifyingWidget(null);
       }
     },
     [
@@ -257,12 +267,7 @@ export const useWidgetManagement = ({
   );
 
   const handleRestoreImage = useCallback(
-    async (
-      key: string,
-      type: WidgetType,
-      redirectUrl: string,
-      content: WidgetContentType
-    ) => {
+    async (key: string, type: WidgetType, redirectUrl: string) => {
       try {
         if (modifyingWidget) return;
         const existingItem = layout.find((item) => item.i === key);
@@ -271,90 +276,105 @@ export const useWidgetManagement = ({
         }
 
         setModifyingWidget(key);
-        const returnedImage = await restoreWidgetImageAsync({
-          key,
-          type,
-          redirectUrl,
-          content,
-        });
-        // if image does exist, now you can update it
-        if (returnedImage !== undefined && returnedImage !== '') {
-          switch (existingItem.type) {
-            case 'Link':
-              (existingItem.content as LinkWidgetContentType).heroImageUrl =
-                returnedImage;
-              break;
-            case 'SoundcloudSong':
-              (existingItem.content as SoundcloudTrackContentType).artwork =
-                returnedImage;
-              break;
-            case 'Substack':
-              (existingItem.content as SubstackWidgetContentType).image =
-                returnedImage;
-              break;
-            case 'Github':
-              (existingItem.content as GithubWidgetContentType).image =
-                returnedImage;
-              break;
-            case 'Behance':
-              (existingItem.content as BehanceWidgetContentType).image =
-                returnedImage;
-              break;
-            case 'Medium':
-              (existingItem.content as GithubWidgetContentType).image =
-                returnedImage;
-              break;
-            case 'TwitterProfile':
-              (existingItem.content as TwitterWidgetContentType).bannerImage =
-                returnedImage;
-              break;
-            case 'Youtube':
-              (existingItem.content as YoutubeWidgetContentType).thumbnail =
-                returnedImage;
-              break;
-            case 'Dribbble':
-              (existingItem.content as DribbbleWidgetContentType).image =
-                returnedImage;
-              break;
-            case 'LinkedInProfile':
-              (
-                existingItem.content as LinkedInProfileWidgetContentType
-              ).bannerImage = returnedImage;
-              break;
-
-            default:
-              break;
+        if (type === 'InstagramProfile') {
+          const toastMessage = await restoreInstagramWidgetAsync({
+            key,
+            redirectUrl,
+          });
+          if (toastMessage) {
+            toast(toastMessage.message, {
+              description: toastMessage.description,
+            });
           }
-          await updateWidgetContentAsync({
-            key: existingItem.i,
-            content: existingItem.content,
-          });
-
-          setLayout((prevLayout) => {
-            const newLayout = [...prevLayout, existingItem];
-            persistWidgetsLayoutOnChange(newLayout);
-            return newLayout;
-          });
-
-          // and if that site doesn't have an image, hold off on doing anything and inform the user.
         } else {
-          toast(`It looks like this site has no image for this URL`, {
-            description: `We won't update or delete the current image.`,
+          const returnedImage = await restoreWidgetImageAsync({
+            key,
+            type,
+            redirectUrl,
           });
+          // if image does exist, now you can update it
+          if (
+            returnedImage !== undefined &&
+            typeof returnedImage === 'string'
+          ) {
+            switch (existingItem.type) {
+              case 'Link':
+                (existingItem.content as LinkWidgetContentType).heroImageUrl =
+                  String(returnedImage);
+                break;
+              case 'SoundcloudSong':
+                (existingItem.content as SoundcloudTrackContentType).artwork =
+                  String(returnedImage);
+                break;
+              case 'Substack':
+                (existingItem.content as SubstackWidgetContentType).image =
+                  String(returnedImage);
+                break;
+              case 'Github':
+                (existingItem.content as GithubWidgetContentType).image =
+                  String(returnedImage);
+                break;
+              case 'Behance':
+                (existingItem.content as BehanceWidgetContentType).image =
+                  String(returnedImage);
+                break;
+              case 'Medium':
+                (existingItem.content as GithubWidgetContentType).image =
+                  String(returnedImage);
+                break;
+              case 'TwitterProfile':
+                (existingItem.content as TwitterWidgetContentType).bannerImage =
+                  String(returnedImage);
+                break;
+              case 'Youtube':
+                (existingItem.content as YoutubeWidgetContentType).thumbnail =
+                  String(returnedImage);
+                break;
+              case 'Dribbble':
+                (existingItem.content as DribbbleWidgetContentType).image =
+                  String(returnedImage);
+                break;
+              case 'LinkedInProfile':
+                (
+                  existingItem.content as LinkedInProfileWidgetContentType
+                ).bannerImage = String(returnedImage);
+                break;
+
+              default:
+                break;
+            }
+            await updateWidgetContentAsync({
+              key: existingItem.i,
+              content: existingItem.content,
+            });
+
+            setLayout((prevLayout) => {
+              const newLayout = [...prevLayout, existingItem];
+              persistWidgetsLayoutOnChange(newLayout);
+              return newLayout;
+            });
+          } else {
+            // and if that site doesn't have an image, hold off on doing anything and inform the user.
+            toast(`It looks like this site has no image for this URL`, {
+              description: `We won't update or delete the current image.`,
+            });
+          }
         }
-        setModifyingWidget(null);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Something went wrong';
         toast(`We couldn't update the picture`, {
           description: message,
         });
+      } finally {
+        setModifyingWidget(null);
       }
     },
     [
       layout,
       modifyingWidget,
       persistWidgetsLayoutOnChange,
+      restoreInstagramWidgetAsync,
       restoreWidgetImageAsync,
       setLayout,
       updateWidgetContentAsync,
@@ -412,6 +432,12 @@ export const useWidgetManagement = ({
                 existingItem.content as LinkedInProfileWidgetContentType
               ).bannerImage = undefined;
               break;
+            case 'InstagramProfile':
+              (existingItem.content as InstagramWidgetContentType).images = [];
+              (
+                existingItem.content as InstagramWidgetContentType
+              ).replacementPicture = undefined;
+              break;
 
             default:
               break;
@@ -420,7 +446,6 @@ export const useWidgetManagement = ({
             key: existingItem.i,
             content: existingItem.content,
           });
-          setModifyingWidget(null);
         }
       } catch (error) {
         const message =
@@ -428,9 +453,11 @@ export const useWidgetManagement = ({
         toast(`We couldn't remove the picture`, {
           description: message,
         });
+      } finally {
+        setModifyingWidget(null);
       }
     },
-    [layout, updateWidgetContentAsync]
+    [layout, modifyingWidget, updateWidgetContentAsync]
   );
 
   /** Handles the cropping of images, the id of the image being cropped should be passed */

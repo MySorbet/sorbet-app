@@ -29,7 +29,7 @@ export const LinkWidget: React.FC<LinkWidgetProps> = ({
   const { title, iconUrl, heroImageUrl } = content;
 
   const restoreImage = async () => {
-    await handleRestoreImage(identifier, 'Link', redirectUrl ?? '', content); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Link', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {

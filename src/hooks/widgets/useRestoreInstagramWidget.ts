@@ -1,22 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { restoreWidgetImage } from '@/api/widgets';
-import { WidgetType } from '@/types';
-
-export const useRestoreWidgetImage = () => {
+import { restoreInstagramWidget } from '@/api/widgets';
+export const useRestoreInstagramWidget = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       key,
-      type,
       redirectUrl,
     }: {
       key: string;
-      type: WidgetType;
       redirectUrl: string;
-    }) => await restoreWidgetImage(key, type, redirectUrl),
+    }) => await restoreInstagramWidget(key, redirectUrl),
     onError: () =>
       toast('Failed to update widget', {
         description: 'If the issue persists, contact support',

@@ -22,7 +22,7 @@ export const GithubWidget: React.FC<GithubWidgetProps> = ({
   let widgetLayout;
 
   const restoreImage = async () => {
-    await handleRestoreImage(identifier, 'Github', redirectUrl ?? '', content); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Github', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {

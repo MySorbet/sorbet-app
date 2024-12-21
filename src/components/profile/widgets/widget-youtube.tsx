@@ -31,7 +31,7 @@ export const YouTubeWidget: React.FC<YouTubeWidgetProps> = ({
   );
 
   const restoreImage = async () => {
-    await handleRestoreImage(identifier, 'Youtube', redirectUrl ?? '', content); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Youtube', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {
