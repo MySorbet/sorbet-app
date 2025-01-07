@@ -11,6 +11,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 import { DashboardCard } from './dashboard-card';
 
@@ -29,10 +30,12 @@ export const ChecklistCard = ({
   onTaskClick,
   completedTasks,
   onClose,
+  className,
 }: {
   onTaskClick?: (task: TaskType) => void;
   completedTasks?: TaskType[];
   onClose?: () => void;
+  className?: string;
 }) => {
   const tasksDone = completedTasks?.length ?? 0;
   const progress = (tasksDone / tasksTotal) * 100;
@@ -40,7 +43,7 @@ export const ChecklistCard = ({
 
   const title = isAllTasksDone ? 'Tasks completed!' : 'Onboarding Checklist';
   return (
-    <DashboardCard className='space-y-6'>
+    <DashboardCard className={cn('space-y-6', className)}>
       <div className='space-y-3'>
         <h2 className='text-xl font-semibold'>{title}</h2>
         <div className='flex items-center justify-between gap-4'>

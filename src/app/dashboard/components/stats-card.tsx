@@ -23,7 +23,7 @@ export const StatsCard = ({
 }) => {
   const Icon = IconMap[type];
   return (
-    <DashboardCard className='flex w-full max-w-sm flex-col gap-2'>
+    <DashboardCard className='flex h-fit w-full max-w-lg flex-col gap-2'>
       <div className='flex items-center justify-between gap-2'>
         <h2 className='text-sm font-medium'>{title}</h2>
         <Icon className='size-4' />

@@ -13,7 +13,7 @@ export const WelcomeCard = ({
   onClickLinkInBio?: () => void;
 }) => {
   return (
-    <DashboardCard className='w-full'>
+    <DashboardCard className='@container w-full'>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
           <h2 className=' text-wrap break-words text-2xl font-semibold'>
@@ -25,11 +25,19 @@ export const WelcomeCard = ({
           </p>
         </div>
 
-        <div className='flex gap-3'>
-          <Button variant='sorbet' onClick={onCreateInvoice}>
+        <div className='flex flex-row flex-wrap gap-3'>
+          <Button
+            variant='sorbet'
+            onClick={onCreateInvoice}
+            className='@xs:max-w-36 w-full'
+          >
             Create Invoice
           </Button>
-          <Button variant='secondary' onClick={onClickLinkInBio}>
+          <Button
+            variant='secondary'
+            onClick={onClickLinkInBio}
+            className='@xs:max-w-36 w-full'
+          >
             Link-in-Bio
           </Button>
         </div>
