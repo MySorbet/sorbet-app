@@ -1,7 +1,8 @@
-import { CurrencyDollarCircle } from '@untitled-ui/icons-react';
 import {
+  ArrowRight,
   CircleCheck,
   CircleDashed,
+  CircleDollarSign,
   FileText,
   Share2,
   ShieldCheck,
@@ -74,7 +75,7 @@ const TaskIconMap: Record<TaskType, React.ElementType> = {
   invoice: FileText,
   widget: SquareUser,
   share: Share2,
-  payment: CurrencyDollarCircle,
+  payment: CircleDollarSign,
 };
 
 type TaskItemProps = {
@@ -98,12 +99,18 @@ const TaskItem = ({
   const Icon = TaskIconMap[type];
   return (
     <div
-      className='flex cursor-pointer items-center justify-between gap-3'
+      className='group flex cursor-pointer items-center justify-between gap-3'
       onClick={onClick}
     >
-      <Icon className='text-muted-foreground size-6 shrink-0 self-start' />
+      <Icon
+        strokeWidth={1.33}
+        className='text-muted-foreground size-6 shrink-0 self-start'
+      />
       <div className='mr-auto flex flex-col'>
-        <span className='text-sm font-medium'>{title}</span>
+        <div className='flex items-center'>
+          <span className='text-sm font-medium'>{title}</span>
+          <ArrowRight className='animate-in fade-in-0 zoom-in-0 aria-hidden size-4 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100' />
+        </div>
         <span className='text-muted-foreground text-sm font-normal'>
           {description}
         </span>
