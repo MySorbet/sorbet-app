@@ -5,9 +5,19 @@ import { cn } from '@/lib/utils';
 export const DashboardCard = ({
   children,
   className,
+  onClick,
 }: {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }) => {
-  return <Card className={cn('p-6', className)}>{children}</Card>;
+  return (
+    <Card
+      className={cn('p-6', className)}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+    >
+      {children}
+    </Card>
+  );
 };

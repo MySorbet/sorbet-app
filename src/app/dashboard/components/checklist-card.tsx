@@ -22,7 +22,7 @@ const TaskTypes = [
   'share',
   'payment',
 ] as const;
-type TaskType = (typeof TaskTypes)[number];
+export type TaskType = (typeof TaskTypes)[number];
 const tasksTotal = TaskTypes.length;
 
 /** A Dashboard card rendering a checklist of onboarding tasks to complete */
