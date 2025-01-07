@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 import { type TaskType, ChecklistCard } from './checklist-card';
@@ -15,7 +17,7 @@ export const Dashboard = () => {
   return (
     <>
       <OpenOnDesktopDrawer open={open} onClose={() => setOpen(false)} />
-      <div className='@container @lg:grid-cols-[minmax(0,1fr),300px] grid grid-cols-1 gap-4'>
+      <div className='@container @lg:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-1 gap-4'>
         <div className='@lg:col-span-2'>
           <WelcomeCard name='Rami' />
         </div>
