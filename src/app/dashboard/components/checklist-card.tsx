@@ -24,6 +24,7 @@ const TaskTypes = [
 type TaskType = (typeof TaskTypes)[number];
 const tasksTotal = TaskTypes.length;
 
+/** A Dashboard card rendering a checklist of onboarding tasks to complete */
 export const ChecklistCard = ({
   onTaskClick,
   completedTasks,
@@ -70,6 +71,7 @@ export const ChecklistCard = ({
   );
 };
 
+/** Map task types to their icon for rendering */
 const TaskIconMap: Record<TaskType, React.ElementType> = {
   verified: ShieldCheck,
   invoice: FileText,
@@ -124,6 +126,7 @@ const TaskItem = ({
   );
 };
 
+/** The list of tasks to complete for onboarding */
 const tasks: Omit<TaskItemProps, 'completed' | 'onClick'>[] = [
   {
     title: 'Get verified',
