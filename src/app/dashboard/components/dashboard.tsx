@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 
+import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-is-mobile';
+import { formatCurrency } from '@/lib/currency';
 
+import { useDashboardData } from '../hooks/use-dashboard-data';
 import { type TaskType, ChecklistCard } from './checklist-card';
 import { OpenOnDesktopDrawer } from './open-on-desktop-drawer';
 import { type StatsCardType, StatsCard } from './stats-card';
@@ -20,6 +24,15 @@ export const Dashboard = () => {
     }
   };
 
+  // TODO should this go here or 1 level up?
+  const { data, isLoading } = useDashboardData();
+  const { user } = useAuth();
+
+  // TODO: Think about who should format the balance
+  const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
+  const { usdcBalance, loading: balanceLoading } =
+    useWalletBalances(walletAddress);
+
   return (
     <>
       {/* Conditionally rendered drawer for mobile clicks */}
@@ -27,32 +40,33 @@ export const Dashboard = () => {
 
       {/* Fluid dashboard layout */}
       <div className='@container @lg:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-1 gap-4'>
-        <WelcomeCard name='Rami' className='@lg:col-span-2' />
+        <WelcomeCard name={user?.firstName} className='@lg:col-span-2' />
 
         <ChecklistCard
           className='h-full min-w-64'
           onTaskClick={handleCardClicked}
+          completedTasks={data?.tasks}
         />
 
         <div className='flex h-full min-w-[240px] flex-col justify-between gap-4'>
           <StatsCard
             title='Wallet balance'
             type='wallet'
-            value='$0'
+            value={formatCurrency(Number(usdcBalance))}
             description='Total'
             onClick={() => handleCardClicked('wallet')}
           />
           <StatsCard
             title='Invoice Sales'
             type='invoice'
-            value='$0'
+            value={String(data?.invoiceSales ?? 0)}
             description='Total income'
             onClick={() => handleCardClicked('invoice')}
           />
           <StatsCard
             title='Profile Views'
             type='profile'
-            value='0'
+            value={String(data?.profileViews ?? 0)}
             description='Unique visitors'
             onClick={() => handleCardClicked('profile')}
           />

@@ -1,5 +1,7 @@
 import { Meta } from '@storybook/react';
 
+import { mockDashboardHandler } from '@/api/dashboard/msw-handlers';
+
 import { Dashboard } from './dashboard';
 
 const meta = {
@@ -10,3 +12,9 @@ const meta = {
 export default meta;
 
 export const Default = {};
+
+export const WithMockData = {
+  parameters: {
+    msw: [mockDashboardHandler],
+  },
+};

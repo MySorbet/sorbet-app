@@ -16,13 +16,23 @@ export default meta;
 
 export const Default = {
   args: {
-    completedTasks: ['verified', 'invoice'],
+    completedTasks: {
+      verified: true,
+      invoice: true,
+    },
   },
 };
 
 export const AllTasksDone = {
   args: {
     ...Default.args,
-    completedTasks: ['verified', 'invoice', 'widget', 'share', 'payment'],
+    completedTasks: {
+      verified: true,
+      invoice: true,
+      profile: true,
+      widget: true,
+      share: true,
+      payment: true,
+    },
   },
 };

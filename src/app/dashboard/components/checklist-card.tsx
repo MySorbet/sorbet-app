@@ -25,7 +25,7 @@ const TaskTypes = [
   'payment',
 ] as const;
 export type TaskType = (typeof TaskTypes)[number];
-const tasksTotal = TaskTypes.length;
+const totalTasks = TaskTypes.length;
 
 /** A Dashboard card rendering a checklist of onboarding tasks to complete */
 export const ChecklistCard = ({
@@ -35,15 +35,19 @@ export const ChecklistCard = ({
   className,
 }: {
   onTaskClick?: (task: TaskType) => void;
-  completedTasks?: TaskType[];
+  completedTasks?: Record<TaskType, boolean>;
   onClose?: () => void;
   className?: string;
 }) => {
-  const tasksDone = completedTasks?.length ?? 0;
-  const progress = (tasksDone / tasksTotal) * 100;
-  const isAllTasksDone = tasksDone === tasksTotal;
+  const numTasksComplete = Object.values(completedTasks ?? {}).filter(
+    Boolean
+  ).length;
+  const progress = (numTasksComplete / totalTasks) * 100;
+  const isAllTasksComplete = numTasksComplete === totalTasks;
 
-  const title = isAllTasksDone ? 'Tasks completed!' : 'Onboarding Checklist';
+  const title = isAllTasksComplete
+    ? 'Tasks completed!'
+    : 'Onboarding Checklist';
   return (
     <DashboardCard className={cn('space-y-6', className)}>
       <div className='space-y-3'>
@@ -51,12 +55,12 @@ export const ChecklistCard = ({
         <div className='flex items-center justify-between gap-4'>
           <Progress value={progress} className='[&>*]:bg-sorbet h-2' />
           <span className='text-muted-foreground shrink-0 text-xs'>
-            {tasksDone} / {tasksTotal}
+            {numTasksComplete} / {totalTasks}
           </span>
         </div>
       </div>
       {/* TODO: Consider a delightful animation for the transition to all tasks done */}
-      {isAllTasksDone ? (
+      {isAllTasksComplete ? (
         <Button variant='secondary' onClick={onClose} disabled={true}>
           Close
         </Button>
@@ -66,7 +70,7 @@ export const ChecklistCard = ({
             <TaskItem
               key={index}
               {...task}
-              completed={completedTasks?.includes(task.type) ?? false}
+              completed={completedTasks?.[task.type] ?? false}
               onClick={() => onTaskClick?.(task.type)}
             />
           ))}
