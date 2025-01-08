@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-is-mobile';
-import { formatCurrency } from '@/lib/currency';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import { type TaskType, ChecklistCard } from './checklist-card';
