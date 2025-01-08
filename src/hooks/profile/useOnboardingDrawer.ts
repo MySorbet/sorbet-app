@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { parseAsBoolean, useQueryState } from 'nuqs';
+import { useCallback } from 'react';
 
 import {
   SocialHandleInputWidgetType,
@@ -12,7 +13,10 @@ interface UseOnboardingDrawerProps {
 export const useOnboardingDrawer = ({
   handleAddMultipleWidgets,
 }: UseOnboardingDrawerProps) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useQueryState(
+    'drawerOpen',
+    parseAsBoolean.withDefault(false)
+  );
 
   const handleOnboardingDrawerSubmit = useCallback(
     async (handles: Partial<Record<SocialHandleInputWidgetType, string>>) => {
@@ -25,7 +29,7 @@ export const useOnboardingDrawer = ({
       await handleAddMultipleWidgets(urls);
       setDrawerOpen(false);
     },
-    [handleAddMultipleWidgets]
+    [handleAddMultipleWidgets, setDrawerOpen]
   );
 
   return {
