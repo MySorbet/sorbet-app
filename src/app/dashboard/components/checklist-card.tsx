@@ -108,7 +108,7 @@ const TaskItem = ({
       onClick={onClick}
     >
       <Icon
-        strokeWidth={1.33}
+        strokeWidth={1.5}
         className='text-muted-foreground size-6 shrink-0 self-start'
       />
       <div className='mr-auto flex flex-col'>
