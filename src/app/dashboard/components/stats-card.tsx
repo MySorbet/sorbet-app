@@ -5,12 +5,12 @@ import { formatCurrency } from '@/lib/currency';
 
 import { DashboardCard } from './dashboard-card';
 
-export type StatsCardType = 'wallet' | 'invoice' | 'profile';
+export type StatsCardType = 'wallet' | 'sales' | 'views';
 
 const IconMap: Record<StatsCardType, React.ElementType> = {
   wallet: Wallet,
-  invoice: DollarSign,
-  profile: View,
+  sales: DollarSign,
+  views: View,
 };
 
 // TODO: Revisit enter an exit animations for skeleton and value
@@ -57,7 +57,7 @@ export const StatsCard = ({
 };
 
 const formatValue = (value: number, type: StatsCardType) => {
-  if (type === 'wallet' || type === 'invoice') {
+  if (type === 'wallet' || type === 'sales') {
     return formatCurrency(value);
   }
 

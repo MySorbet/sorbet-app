@@ -40,7 +40,7 @@ export const Wallet: Story = {
 export const Invoice: Story = {
   args: {
     title: 'Invoice Sales',
-    type: 'invoice',
+    type: 'sales',
     value: 1000,
     description: 'Total income',
   },
@@ -49,7 +49,7 @@ export const Invoice: Story = {
 export const Profile: Story = {
   args: {
     title: 'Profile Views',
-    type: 'profile',
+    type: 'views',
     value: 1000,
     description: 'Unique visitors',
   },
