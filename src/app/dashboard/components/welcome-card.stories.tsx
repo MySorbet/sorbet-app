@@ -7,7 +7,6 @@ const meta = {
   title: 'Dashboard/WelcomeCard',
   component: WelcomeCard,
   parameters: {
-    // layout: 'centered',
     backgrounds: {
       default: 'white',
     },
@@ -21,9 +20,7 @@ const meta = {
 export default meta;
 
 export const Default = {
-  args: {
-    name: 'Rami',
-  },
+  args: {},
 };
 
 export const LongName = {
@@ -41,11 +38,5 @@ export const LongNameNoSpaces = {
 export const LongNameNoSpacesUnrealistic = {
   args: {
     name: 'Thisisverylongnamewithnospacesthatshouldnotbreakui',
-  },
-};
-
-export const WithActions = {
-  args: {
-    ...Default.args,
   },
 };

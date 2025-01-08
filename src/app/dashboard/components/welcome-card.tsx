@@ -8,16 +8,17 @@ export const WelcomeCard = ({
   onCreateInvoice,
   onClickLinkInBio,
 }: {
-  name: string;
+  name?: string;
   onCreateInvoice?: () => void;
   onClickLinkInBio?: () => void;
 }) => {
+  const title = name ? `Welcome, ${name}` : 'Welcome to Sorbet';
   return (
     <DashboardCard className='@container w-full'>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
           <h2 className=' text-wrap break-words text-2xl font-semibold'>
-            Welcome, {name}
+            {title}
           </h2>
           <p className='text-sm'>
             Introducing the global payment experience for freelancers. Complete
