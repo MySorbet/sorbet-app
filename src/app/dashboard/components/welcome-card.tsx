@@ -42,7 +42,7 @@ export const WelcomeCard = ({
             onClick={onClickLinkInBio}
             className='@xs:max-w-36 w-full'
           >
-            Link-in-Bio
+            My Sorbet Profile
           </Button>
         </div>
       </div>
