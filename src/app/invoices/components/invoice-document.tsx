@@ -1,13 +1,9 @@
 import { forwardRef } from 'react';
 
-import { InvoiceFormData } from './create/invoice-form-context';
-import {
-  calculateTotalAmount,
-  formatCurrency,
-  formatDate,
-  Invoice,
-} from './dashboard/utils';
+import { formatCurrency } from '@/lib/currency';
 
+import { InvoiceFormData } from './create/invoice-form-context';
+import { calculateTotalAmount, formatDate, Invoice } from './dashboard/utils';
 /**
  * Render a PDF-like document displaying the invoice details.
  *

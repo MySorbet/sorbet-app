@@ -18,9 +18,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { calculateTotalAmount, formatCurrency } from '../dashboard/utils';
+import { calculateTotalAmount } from '../dashboard/utils';
 import { BackButton } from './back-button';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
