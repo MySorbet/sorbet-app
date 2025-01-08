@@ -21,12 +21,7 @@ export const DribbbleWidget: React.FC<DribbbleWidgetProps> = ({
   handleRestoreImage,
 }) => {
   const restoreImage = async () => {
-    await handleRestoreImage(
-      identifier,
-      'Dribbble',
-      redirectUrl ?? '',
-      content
-    ); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'Dribbble', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   let widgetLayout;

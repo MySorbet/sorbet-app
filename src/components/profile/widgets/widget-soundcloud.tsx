@@ -32,12 +32,7 @@ export const SoundcloudWidget: React.FC<SoundcloudWidgetProps> = ({
   );
 
   const restoreImage = async () => {
-    await handleRestoreImage(
-      identifier,
-      'SoundcloudSong',
-      redirectUrl ?? '',
-      content
-    ); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'SoundcloudSong', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {

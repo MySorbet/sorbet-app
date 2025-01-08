@@ -259,6 +259,13 @@ export const Widget: React.FC<WidgetProps> = ({
           <InstagramWidget
             content={content as InstagramWidgetContentType}
             size={widgetSize}
+            setErrorInvalidImage={setErrorInvalidImage}
+            identifier={identifier}
+            addImage={addImage}
+            removeImage={removeImage}
+            showControls={showControls}
+            redirectUrl={redirectUrl}
+            handleRestoreImage={handleRestoreImage}
           />
         );
         break;

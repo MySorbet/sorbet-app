@@ -31,12 +31,7 @@ export const TwitterWidget: React.FC<TwitterWidgetProps> = ({
   const { handle, bio, bannerImage, profileImage } = content;
 
   const restoreImage = async () => {
-    await handleRestoreImage(
-      identifier,
-      'TwitterProfile',
-      redirectUrl ?? '',
-      content
-    ); // Call the mutation with the image URL
+    await handleRestoreImage(identifier, 'TwitterProfile', redirectUrl ?? ''); // Call the mutation with the image URL
   };
 
   switch (size) {

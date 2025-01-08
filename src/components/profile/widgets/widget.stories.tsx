@@ -55,22 +55,31 @@ const mockContent: Partial<Record<WidgetType, WidgetContentType>> = {
 };
 
 export const Default: Story = {
-  // @ts-expect-error draggedRef is handled in the meta render
   args: {
     type: 'Link',
     w: 1,
     h: 1,
     content: mockContent.Link,
-    loading: false,
+    loading: '',
     size: 'A',
     showControls: true,
+    draggedRef: useRef(false),
+    activeWidget: null,
+    widgetDimensions: { width: 100, height: 100 },
+    handleEditLink: fn(),
+    setActiveWidget: fn(),
+    handleTitleUpdate: fn(),
+    setErrorInvalidImage: fn(),
+    removeImage: fn(),
+    handleRestoreImage: fn(),
+    addImage: fn(),
   },
 };
 
 export const Loading: Story = {
   args: {
     ...Default.args,
-    loading: true,
+    loading: '',
   },
 };
 
