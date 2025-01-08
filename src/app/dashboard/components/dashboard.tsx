@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import { useIsMobile } from '@/hooks/use-is-mobile';
+
 import { type TaskType, ChecklistCard } from './checklist-card';
 import { OpenOnDesktopDrawer } from './open-on-desktop-drawer';
 import { type StatsCardType, StatsCard } from './stats-card';
@@ -9,9 +11,13 @@ import { WelcomeCard } from './welcome-card';
 
 export const Dashboard = () => {
   const [open, setOpen] = useState(false);
+  const isMobile = useIsMobile();
   const handleCardClicked = (type: StatsCardType | TaskType) => {
-    // TODO: Only do this if the user is on mobile, otherwise take the appropriate action
-    setOpen(true);
+    if (isMobile) {
+      setOpen(true);
+    } else {
+      alert(type);
+    }
   };
 
   return (
