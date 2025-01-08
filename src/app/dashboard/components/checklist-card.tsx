@@ -4,6 +4,7 @@ import {
   CircleDashed,
   CircleDollarSign,
   FileText,
+  Grid3X3,
   Share2,
   ShieldCheck,
   SquareUser,
@@ -18,6 +19,7 @@ import { DashboardCard } from './dashboard-card';
 const TaskTypes = [
   'verified',
   'invoice',
+  'profile',
   'widget',
   'share',
   'payment',
@@ -78,7 +80,8 @@ export const ChecklistCard = ({
 const TaskIconMap: Record<TaskType, React.ElementType> = {
   verified: ShieldCheck,
   invoice: FileText,
-  widget: SquareUser,
+  profile: SquareUser,
+  widget: Grid3X3,
   share: Share2,
   payment: CircleDollarSign,
 };
@@ -142,8 +145,13 @@ const tasks: Omit<TaskItemProps, 'completed' | 'onClick'>[] = [
     type: 'invoice',
   },
   {
-    title: 'Add first profile widget',
-    description: 'Start creating your profile by adding a widget',
+    title: 'Edit profile',
+    description: 'Add your avatar, name, bio, and skills',
+    type: 'profile',
+  },
+  {
+    title: 'Add a widget',
+    description: 'Start creating your profile by adding widgets',
     type: 'widget',
   },
   {
