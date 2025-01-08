@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 import { DashboardCard } from './dashboard-card';
 
@@ -7,14 +8,16 @@ export const WelcomeCard = ({
   name,
   onCreateInvoice,
   onClickLinkInBio,
+  className,
 }: {
   name?: string;
   onCreateInvoice?: () => void;
   onClickLinkInBio?: () => void;
+  className?: string;
 }) => {
   const title = name ? `Welcome, ${name}` : 'Welcome to Sorbet';
   return (
-    <DashboardCard className='@container w-full'>
+    <DashboardCard className={cn('@container w-full', className)}>
       <div className='flex flex-col gap-3'>
         <div className='flex flex-col gap-2'>
           <h2 className=' text-wrap break-words text-2xl font-semibold'>

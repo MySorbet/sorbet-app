@@ -22,11 +22,12 @@ export const Dashboard = () => {
 
   return (
     <>
+      {/* Conditionally rendered drawer for mobile clicks */}
       <OpenOnDesktopDrawer open={open} onClose={() => setOpen(false)} />
+
+      {/* Fluid dashboard layout */}
       <div className='@container @lg:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-1 gap-4'>
-        <div className='@lg:col-span-2'>
-          <WelcomeCard name='Rami' />
-        </div>
+        <WelcomeCard name='Rami' className='@lg:col-span-2' />
 
         <ChecklistCard
           className='h-full min-w-64'
