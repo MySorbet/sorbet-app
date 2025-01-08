@@ -30,7 +30,7 @@ export const Dashboard = () => {
 
   // TODO: Think about who should format the balance
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
-  const { usdcBalance, loading: balanceLoading } =
+  const { usdcBalance, loading: isBalanceLoading } =
     useWalletBalances(walletAddress);
 
   return (
@@ -52,21 +52,21 @@ export const Dashboard = () => {
           <StatsCard
             title='Wallet balance'
             type='wallet'
-            value={formatCurrency(Number(usdcBalance))}
+            value={isBalanceLoading ? undefined : Number(usdcBalance)}
             description='Total'
             onClick={() => handleCardClicked('wallet')}
           />
           <StatsCard
             title='Invoice Sales'
             type='invoice'
-            value={String(data?.invoiceSales ?? 0)}
+            value={data?.invoiceSales}
             description='Total income'
             onClick={() => handleCardClicked('invoice')}
           />
           <StatsCard
             title='Profile Views'
             type='profile'
-            value={String(data?.profileViews ?? 0)}
+            value={data?.profileViews}
             description='Unique visitors'
             onClick={() => handleCardClicked('profile')}
           />

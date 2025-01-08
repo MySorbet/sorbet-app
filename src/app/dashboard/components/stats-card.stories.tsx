@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { StatsCard } from './stats-card';
 
@@ -8,38 +8,49 @@ const meta = {
 } satisfies Meta<typeof StatsCard>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = {
+export const Default: Story = {
   args: {
     title: 'Title',
     type: 'wallet',
-    value: '0',
+    value: 0,
     description: 'Description',
   },
 };
-export const Wallet = {
+
+export const Loading: Story = {
+  args: {
+    title: 'Title',
+    type: 'wallet',
+    value: undefined,
+    description: 'Description',
+  },
+};
+
+export const Wallet: Story = {
   args: {
     title: 'Total Balance',
     type: 'wallet',
-    value: '$1000',
+    value: 1000,
     description: 'Total',
   },
 };
 
-export const Invoice = {
+export const Invoice: Story = {
   args: {
     title: 'Invoice Sales',
     type: 'invoice',
-    value: '$1000',
+    value: 1000,
     description: 'Total income',
   },
 };
 
-export const Profile = {
+export const Profile: Story = {
   args: {
     title: 'Profile Views',
     type: 'profile',
-    value: '1000',
+    value: 1000,
     description: 'Unique visitors',
   },
 };
