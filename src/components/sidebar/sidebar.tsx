@@ -7,6 +7,7 @@ import {
   LogOut,
   WalletMinimal,
 } from 'lucide-react';
+import { GanttChartSquare } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -28,7 +29,6 @@ import { featureFlags } from '@/lib/flags';
 
 import { useBridgeActions } from './use-bridge-actions';
 import { VerificationCard } from './verification-card';
-
 interface SidebarProps {
   isOpen: boolean;
   onIsOpenChange: (open: boolean) => void;
@@ -100,7 +100,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
             {/* Navigation and Balances */}
             <div>
-              <div className='grid grid-cols-3 gap-2'>
+              <div className='grid grid-cols-2 gap-2'>
+                <SidebarHeaderOption
+                  label='Dashboard'
+                  icon={<GanttChartSquare />}
+                  href='/dashboard'
+                />
                 <SidebarHeaderOption
                   label='Wallet'
                   href='/wallet'
