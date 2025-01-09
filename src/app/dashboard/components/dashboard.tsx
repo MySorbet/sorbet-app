@@ -127,7 +127,7 @@ export const Dashboard = () => {
         />
 
         <ChecklistCard
-          className='h-full min-w-64'
+          className='min-w-64'
           onTaskClick={handleCardClicked}
           completedTasks={completedTasks}
         />
