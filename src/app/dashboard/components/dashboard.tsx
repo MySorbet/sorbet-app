@@ -64,8 +64,7 @@ export const Dashboard = () => {
           router.push(`/${user?.handle}?drawerOpen=true`);
           break;
         case 'share':
-          // TODO: Could we open the share modal with QP
-          router.push(`/${user?.handle}`);
+          router.push(`/${user?.handle}?shareDialogOpen=true`);
           break;
         case 'payment':
           router.push('/wallet');

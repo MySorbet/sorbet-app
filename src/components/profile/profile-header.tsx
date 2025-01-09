@@ -1,4 +1,5 @@
 import { MarkerPin03, Share06, User01 } from '@untitled-ui/icons-react';
+import { parseAsBoolean, useQueryState } from 'nuqs';
 import React from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,6 +35,11 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     const url = `${window.location.origin}/${handle}`;
     navigator.clipboard.writeText(url);
   };
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = useQueryState(
+    'shareDialogOpen',
+    parseAsBoolean.withDefault(false)
+  );
 
   return (
     <>
@@ -117,6 +123,8 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           )}
           {!hideShare && (
             <ShareProfileDialog
+              open={isShareDialogOpen}
+              setOpen={setIsShareDialogOpen}
               trigger={
                 <Button
                   className='align-center group flex flex-row items-center gap-2 bg-inherit px-0 text-[#573DF5] hover:bg-inherit'

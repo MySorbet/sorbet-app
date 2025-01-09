@@ -26,8 +26,14 @@ const screenOptions = [
 export type View = (typeof screenOptions)[number];
 
 interface ShareProfileModalProps {
-  trigger: React.ReactNode;
+  /** You may provide a rendered component as a trigger and ShareProfileDialog will manage state */
+  trigger?: React.ReactNode;
+  /* The handle to share */
   username: string;
+  /** You may also manage the open state of the dialog yourself. This is compatible with `trigger*/
+  open?: boolean;
+  /** You may also manage the open state of the dialog yourself. This is compatible with `trigger*/
+  setOpen?: (open: boolean) => void;
 }
 
 export interface ViewProps {
@@ -39,6 +45,8 @@ export interface ViewProps {
 export const ShareProfileDialog = ({
   trigger,
   username,
+  open,
+  setOpen,
 }: ShareProfileModalProps) => {
   const [activeView, setActive] = useState<View>('ShareYourProfile');
 
@@ -50,7 +58,13 @@ export const ShareProfileDialog = ({
   const [contentRef, { height: contentHeight }] = useMeasure();
 
   return (
-    <Dialog onOpenChange={() => setActive('ShareYourProfile')}>
+    <Dialog
+      onOpenChange={(open) => {
+        setActive('ShareYourProfile');
+        setOpen?.(open);
+      }}
+      open={open}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className='flex w-[400px] flex-col items-center gap-6 rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl'
