@@ -26,9 +26,11 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
+import { cn } from '@/lib/utils';
 
 import { useBridgeActions } from './use-bridge-actions';
 import { VerificationCard } from './verification-card';
+
 interface SidebarProps {
   isOpen: boolean;
   onIsOpenChange: (open: boolean) => void;
@@ -100,12 +102,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
             {/* Navigation and Balances */}
             <div>
-              <div className='grid grid-cols-2 gap-2'>
-                <SidebarHeaderOption
-                  label='Dashboard'
-                  icon={<GanttChartSquare />}
-                  href='/dashboard'
-                />
+              <div
+                className={cn(
+                  'grid grid-cols-3 gap-2',
+                  featureFlags.dashboard && 'grid-cols-2'
+                )}
+              >
+                {featureFlags.dashboard && (
+                  <SidebarHeaderOption
+                    label='Dashboard'
+                    icon={<GanttChartSquare />}
+                    href='/dashboard'
+                  />
+                )}
                 <SidebarHeaderOption
                   label='Wallet'
                   href='/wallet'
