@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { User } from '@/types';
@@ -80,6 +81,9 @@ export const Dashboard = () => {
     }
   };
 
+  const [hasShared] = useHasShared();
+  const completedTasks = data ? { ...data.tasks, share: hasShared } : undefined;
+
   return (
     <>
       {/* Conditionally rendered drawer for mobile clicks */}
@@ -106,7 +110,7 @@ export const Dashboard = () => {
         <ChecklistCard
           className='h-full min-w-64'
           onTaskClick={handleCardClicked}
-          completedTasks={data?.tasks}
+          completedTasks={completedTasks}
         />
 
         <div className='flex h-full min-w-[240px] flex-col justify-between gap-4'>
