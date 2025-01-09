@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { parseAsBoolean, useQueryState } from 'nuqs';
 import { useState } from 'react';
 
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
@@ -34,6 +35,12 @@ export const Dashboard = () => {
 
   const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
 
+  // Just need the setter to open the sidebar
+  const [, setIsSidebarOpen] = useQueryState(
+    'sidebarOpen',
+    parseAsBoolean.withDefault(false)
+  );
+
   const handleCardClicked = (type: StatsCardType | TaskType) => {
     if (isMobile) {
       setOpen(true);
@@ -52,7 +59,7 @@ export const Dashboard = () => {
 
         // Tasks
         case 'verified':
-          // TODO Open sidebar (QP?)
+          setIsSidebarOpen(true);
           break;
         case 'invoice':
           router.push('/invoices/create');
