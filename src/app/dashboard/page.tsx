@@ -8,7 +8,7 @@ export default function DashboardPage() {
     <Authenticated>
       <main className='flex size-full flex-col'>
         <Header />
-        <div className='container flex flex-1 justify-center pt-14'>
+        <div className='container flex flex-1 justify-center pt-6'>
           <Dashboard />
         </div>
       </main>
