@@ -23,11 +23,14 @@ import { WelcomeCard } from './welcome-card';
  * TODO: What if this component stayed server side and just managed layout. And the former responsibilities were hoisted?
  */
 export const Dashboard = () => {
-  const [open, setOpen] = useState(false);
+  const [isDesktopDrawerOpen, setIsDesktopDrawerOpen] = useState(false);
   const isMobile = useIsMobile();
   const router = useRouter();
   const { data } = useDashboardData();
   const { user } = useAuth();
+
+  const [hasShared] = useHasShared();
+  const completedTasks = data ? { ...data.tasks, share: hasShared } : undefined;
 
   // TODO: Think about who should format the balance
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
@@ -44,7 +47,7 @@ export const Dashboard = () => {
 
   const handleCardClicked = (type: StatsCardType | TaskType) => {
     if (isMobile) {
-      setOpen(true);
+      setIsDesktopDrawerOpen(true);
     } else {
       switch (type) {
         // Stats cards
@@ -81,13 +84,29 @@ export const Dashboard = () => {
     }
   };
 
-  const [hasShared] = useHasShared();
-  const completedTasks = data ? { ...data.tasks, share: hasShared } : undefined;
+  const handleCreateInvoice = () => {
+    if (isMobile) {
+      setIsDesktopDrawerOpen(true);
+    } else {
+      router.push('/invoices/create');
+    }
+  };
+
+  const handleClickMyProfile = () => {
+    if (isMobile) {
+      setIsDesktopDrawerOpen(true);
+    } else {
+      router.push(`/${user?.handle}`);
+    }
+  };
 
   return (
     <>
       {/* Conditionally rendered drawer for mobile clicks */}
-      <OpenOnDesktopDrawer open={open} onClose={() => setOpen(false)} />
+      <OpenOnDesktopDrawer
+        open={isDesktopDrawerOpen}
+        onClose={() => setIsDesktopDrawerOpen(false)}
+      />
 
       {/* Conditionally rendered profile edit modal */}
       {user && (
@@ -103,8 +122,8 @@ export const Dashboard = () => {
         <WelcomeCard
           name={user?.firstName}
           className='@lg:col-span-2'
-          onClickLinkInBio={() => router.push(`/${user?.handle}`)}
-          onCreateInvoice={() => router.push('/invoices/create')}
+          onClickMyProfile={handleClickMyProfile}
+          onCreateInvoice={handleCreateInvoice}
         />
 
         <ChecklistCard

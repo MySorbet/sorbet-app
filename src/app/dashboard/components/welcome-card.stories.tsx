@@ -13,7 +13,7 @@ const meta = {
   },
   args: {
     onCreateInvoice: fn(),
-    onClickLinkInBio: fn(),
+    onClickMyProfile: fn(),
   },
 } satisfies Meta<typeof WelcomeCard>;
 

@@ -7,12 +7,12 @@ import { DashboardCard } from './dashboard-card';
 export const WelcomeCard = ({
   name,
   onCreateInvoice,
-  onClickLinkInBio,
+  onClickMyProfile,
   className,
 }: {
   name?: string;
   onCreateInvoice?: () => void;
-  onClickLinkInBio?: () => void;
+  onClickMyProfile?: () => void;
   className?: string;
 }) => {
   const title = name ? `Welcome, ${name}` : 'Welcome to Sorbet';
@@ -39,7 +39,7 @@ export const WelcomeCard = ({
           </Button>
           <Button
             variant='secondary'
-            onClick={onClickLinkInBio}
+            onClick={onClickMyProfile}
             className='@xs:max-w-36 w-full'
           >
             My Sorbet Profile
