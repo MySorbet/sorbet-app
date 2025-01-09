@@ -22,7 +22,7 @@ export const OpenOnDesktopDrawer = ({
 }: OpenOnDesktopDrawerProps) => {
   return (
     <Drawer open={open} onClose={onClose}>
-      <DrawerContent>
+      <DrawerContent aria-describedby={undefined}>
         <DrawerHeader className='pb-1'>
           <DrawerTitle className='text-center text-lg font-semibold'>
             Switch to desktop
