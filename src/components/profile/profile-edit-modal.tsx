@@ -154,6 +154,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         router.replace(`/${handle}`);
       }
       queryClient.invalidateQueries({ queryKey: ['freelancer', handle] });
+      // Also invalidate the dashboard data (TODO: this is a hacky fix until we have more generic communication with the parent component)
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       handleModalVisible(false);
     } else {
       alert('Unable to update profile details right now.');
