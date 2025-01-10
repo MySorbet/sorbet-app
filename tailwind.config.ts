@@ -124,7 +124,11 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate'), require('tailwindcss-bg-patterns')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('tailwindcss-bg-patterns'),
+    require('@tailwindcss/container-queries'),
+  ],
 } satisfies Config;
 
 export default config;

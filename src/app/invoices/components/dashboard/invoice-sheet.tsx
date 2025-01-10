@@ -17,12 +17,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, Invoice, InvoiceStatus } from './utils';
-import { formatCurrency, formatDate } from './utils';
+import { formatDate } from './utils';
 
 // TODO: Address scroll when there is not enough height
 // TODO: Use custom easing curves to improve the feel of the sheet open animation (match vaul?)

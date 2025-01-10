@@ -4,7 +4,8 @@ import { ChevronDown, User01 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { parseAsBoolean, useQueryState } from 'nuqs';
+import React from 'react';
 
 import { Notifications } from '@/components/notifications';
 import FeaturebaseWidget from '@/components/profile/featurebase-widget';
@@ -18,7 +19,10 @@ export const Header = () => {
   const { user } = useAuth();
   const profileImage = user?.profileImage;
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useQueryState(
+    'sidebarOpen',
+    parseAsBoolean.withDefault(false)
+  );
 
   return (
     <>

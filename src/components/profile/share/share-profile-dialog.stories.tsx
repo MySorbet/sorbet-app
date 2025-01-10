@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -33,4 +34,16 @@ export const Default: Story = {
   },
 };
 
-// TODO: "My Sorbet QR Code" breaks the story because we need to mock RQ.
+export const WithManagedState: Story = {
+  render: (args) => {
+    const [open, setOpen] = useState(false);
+    return (
+      <ShareProfileDialog
+        {...args}
+        open={open}
+        setOpen={setOpen}
+        {...Default.args}
+      />
+    );
+  },
+};

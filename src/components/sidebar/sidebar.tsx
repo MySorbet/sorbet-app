@@ -7,6 +7,7 @@ import {
   LogOut,
   WalletMinimal,
 } from 'lucide-react';
+import { GanttChartSquare } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -25,6 +26,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
+import { cn } from '@/lib/utils';
 
 import { useBridgeActions } from './use-bridge-actions';
 import { VerificationCard } from './verification-card';
@@ -100,7 +102,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
             {/* Navigation and Balances */}
             <div>
-              <div className='grid grid-cols-3 gap-2'>
+              <div
+                className={cn(
+                  'grid grid-cols-3 gap-2',
+                  featureFlags.dashboard && 'grid-cols-2'
+                )}
+              >
+                {featureFlags.dashboard && (
+                  <SidebarHeaderOption
+                    label='Dashboard'
+                    icon={<GanttChartSquare />}
+                    href='/dashboard'
+                  />
+                )}
                 <SidebarHeaderOption
                   label='Wallet'
                   href='/wallet'

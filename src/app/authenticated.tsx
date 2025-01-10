@@ -16,7 +16,7 @@ const Authenticated: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [ready, authenticated, router]);
 
-  return <>{children}</>;
+  return ready && authenticated ? <>{children}</> : null;
 };
 
 export default Authenticated;

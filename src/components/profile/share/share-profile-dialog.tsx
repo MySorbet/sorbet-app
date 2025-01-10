@@ -1,10 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import useMeasure from 'react-use-measure';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { useHasShared } from '@/hooks/profile/use-has-shared';
 
 import {
   AddToSocials,
@@ -26,8 +27,14 @@ const screenOptions = [
 export type View = (typeof screenOptions)[number];
 
 interface ShareProfileModalProps {
-  trigger: React.ReactNode;
+  /** You may provide a rendered component as a trigger and ShareProfileDialog will manage state */
+  trigger?: React.ReactNode;
+  /* The handle to share */
   username: string;
+  /** You may also manage the open state of the dialog yourself. This is compatible with `trigger`*/
+  open?: boolean;
+  /** You may also manage the open state of the dialog yourself. This is compatible with `trigger`*/
+  setOpen?: (open: boolean) => void;
 }
 
 export interface ViewProps {
@@ -39,6 +46,8 @@ export interface ViewProps {
 export const ShareProfileDialog = ({
   trigger,
   username,
+  open,
+  setOpen,
 }: ShareProfileModalProps) => {
   const [activeView, setActive] = useState<View>('ShareYourProfile');
 
@@ -49,8 +58,20 @@ export const ShareProfileDialog = ({
 
   const [contentRef, { height: contentHeight }] = useMeasure();
 
+  // If the share dialog opens, remember in local storage
+  const [, setHasShared] = useHasShared();
+  useEffect(() => {
+    open && setHasShared(true);
+  }, [open, setHasShared]);
+
   return (
-    <Dialog onOpenChange={() => setActive('ShareYourProfile')}>
+    <Dialog
+      onOpenChange={(open) => {
+        setActive('ShareYourProfile');
+        setOpen?.(open);
+      }}
+      open={open}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className='flex w-[400px] flex-col items-center gap-6 rounded-3xl bg-[#F9F7FF] p-4 sm:rounded-3xl'

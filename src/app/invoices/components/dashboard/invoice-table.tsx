@@ -8,16 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import {
-  checkOverdue,
-  formatCurrency,
-  formatDate,
-  Invoice,
-  InvoiceStatus,
-} from './utils';
+import { checkOverdue, formatDate, Invoice, InvoiceStatus } from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({
