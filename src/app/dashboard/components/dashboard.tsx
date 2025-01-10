@@ -28,7 +28,6 @@ export const Dashboard = () => {
   const router = useRouter();
   const { data } = useDashboardData();
   const { user } = useAuth();
-
   const [hasShared] = useHasShared();
   const completedTasks = data ? { ...data.tasks, share: hasShared } : undefined;
 

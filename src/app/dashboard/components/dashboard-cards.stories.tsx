@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { DashboardCard } from './dashboard-card';
 
@@ -14,7 +14,7 @@ const meta = {
 } satisfies Meta<typeof DashboardCard>;
 
 export default meta;
-
-export const Default = () => {
+type Story = StoryObj<typeof meta>;
+export const Default: Story = () => {
   return <DashboardCard>I'm a dashboard card</DashboardCard>;
 };

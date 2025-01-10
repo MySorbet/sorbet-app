@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 
 import { mockDashboardHandler } from '@/api/dashboard/msw-handlers';
 
@@ -10,10 +10,11 @@ const meta = {
 } satisfies Meta<typeof Dashboard>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = {};
+export const Default: Story = {};
 
-export const WithMockData = {
+export const WithMockData: Story = {
   parameters: {
     msw: [mockDashboardHandler],
   },

@@ -48,6 +48,7 @@ export const ChecklistCard = ({
   const title = isAllTasksComplete
     ? 'Tasks completed!'
     : 'Onboarding Checklist';
+
   return (
     <DashboardCard className={cn('h-fit space-y-6', className)}>
       <div className='space-y-3'>
@@ -60,6 +61,8 @@ export const ChecklistCard = ({
         </div>
       </div>
       {/* TODO: Consider a delightful animation for the transition to all tasks done */}
+      {/* TODO: Implement local storage state to save the closed state */}
+      {/* TODO: Implement Recent transactions card */}
       {isAllTasksComplete ? (
         <Button variant='secondary' onClick={onClose} disabled={true}>
           Close

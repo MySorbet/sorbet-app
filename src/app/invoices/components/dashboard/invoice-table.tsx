@@ -15,19 +15,19 @@ import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, formatDate, Invoice, InvoiceStatus } from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
-function InvoiceTableHead({
+const InvoiceTableHead = ({
   children,
   className,
 }: {
   children: React.ReactNode;
   className?: string;
-}) {
+}) => {
   return (
     <TableHead className={cn(className, 'text-xs font-medium')}>
       {children}
     </TableHead>
   );
-}
+};
 
 type InvoiceTableProps = {
   /** The invoices to display */
