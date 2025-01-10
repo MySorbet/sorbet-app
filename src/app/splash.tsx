@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
 import { useAuth } from '@/hooks';
+import { featureFlags } from '@/lib/flags';
 import MutedSorbetLogo from '~/muted-sorbet-logo.svg';
 
 /**
@@ -26,7 +27,10 @@ const Splash: FC = () => {
   useEffect(() => {
     if (ready) {
       if (authenticated) {
-        if (user?.handle) {
+        if (featureFlags.dashboard) {
+          console.log('routing to dashboard');
+          router.push('/dashboard');
+        } else if (user?.handle) {
           console.log('routing to ' + user.handle);
           router.push(`/${user.handle}`);
         } else {
