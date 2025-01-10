@@ -12,7 +12,7 @@ type SignUpWithPrivyIdDto = {
 /** Create a new sorbet user with a privy id (after user signs up with privy) */
 export const signUpWithPrivyId = async (body: SignUpWithPrivyIdDto) => {
   try {
-    const res = await axios.post<Pick<User, 'id' | 'privyId'>>(
+    const res = await axios.post<Pick<User, 'id' | 'privyId' | 'handle'>>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/privy`,
       body
     );

@@ -1,14 +1,19 @@
-'use client';
-// TODO: Remove use client and fix trickle down errors
+'use client'; // TODO: Remove use client and fix trickle down errors
 
 import Image from 'next/image';
 
+import { SigninContent } from '@/app/signin/components/signin-content';
 import { OnboardingShell } from '@/components';
 import { PrivyLoginButtons } from '@/components/onboarding/privy-login-buttons';
+import { featureFlags } from '@/lib/flags';
 import HeroBlob from '~/login-hero-blob.png';
 
 const SignInPage = () => {
-  return (
+  return featureFlags.dashboard ? (
+    <div className='bg-background flex size-full items-center justify-center'>
+      <SigninContent />
+    </div>
+  ) : (
     <OnboardingShell renderUnderAuthHero={() => <PrivyLoginButtons />}>
       <Image
         src={HeroBlob}
