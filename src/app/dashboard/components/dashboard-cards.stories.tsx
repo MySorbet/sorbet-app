@@ -15,6 +15,9 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-export const Default: Story = () => {
-  return <DashboardCard>I'm a dashboard card</DashboardCard>;
+
+export const Default: Story = {
+  args: {
+    children: 'I am a dashboard card',
+  },
 };
