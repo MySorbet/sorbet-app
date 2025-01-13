@@ -1,9 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 
-import { useLocalStorage } from '@/hooks';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useVerify } from '@/hooks/profile/use-verify';
+import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { BridgeCustomer } from '@/types';
 
 import { openPollAndCallback } from './open-poll-and-callback';
@@ -30,8 +30,8 @@ export const useBridgeActions = () => {
   };
 
   // Persist the collapsed state of the verification card so that it stays collapsed
-  const [isCollapsed, setIsCollapsed] = useLocalStorage(
-    'isVerificationCollapsed',
+  const [isCollapsed, setIsCollapsed] = useScopedLocalStorage(
+    'is-verification-collapsed',
     false
   );
 
