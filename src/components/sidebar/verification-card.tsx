@@ -116,7 +116,9 @@ export const VerificationCard = ({
       {!isCollapsed && (
         <CardFooter className='flex justify-between gap-4 p-4 pt-0'>
           <Button variant='ghost' asChild>
-            <a href='https://docs.mysorbet.xyz'>Learn more</a>
+            <a href='https://docs.mysorbet.xyz/sorbet/getting-started#complete-kyc'>
+              Learn more
+            </a>
           </Button>
           <MissingEmailTooltip showTooltip={missingEmail}>
             <Button

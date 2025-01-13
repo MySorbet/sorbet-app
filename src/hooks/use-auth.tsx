@@ -181,7 +181,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     },
     onError: (error) => {
       // Ignore the user exiting the auth flow
-      if (error === 'exited_auth_flow') {
+      // Ignore the user typing the wrong otp. Privy displays an error message for this
+      if (error === 'exited_auth_flow' || error === 'invalid_credentials') {
         return;
       }
       toast({
