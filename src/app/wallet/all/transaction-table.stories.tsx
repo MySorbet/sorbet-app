@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import TransactionsTable from './transactions-table';
+import { TransactionTable } from '@/app/wallet/all/transaction-table';
 
 const meta = {
-  title: 'Wallet/TransactionsTable',
-  component: TransactionsTable,
-} satisfies Meta<typeof TransactionsTable>;
+  title: 'Wallet/TransactionTable',
+  component: TransactionTable,
+} satisfies Meta<typeof TransactionTable>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -38,9 +38,9 @@ export const Default: Story = {
   },
 };
 
-export const Minimal: Story = {
+export const Loading: Story = {
   args: {
     ...Default.args,
-    minimalMode: true,
+    isLoading: true,
   },
 };

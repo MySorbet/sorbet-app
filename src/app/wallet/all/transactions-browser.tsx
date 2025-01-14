@@ -13,7 +13,8 @@ import { Header } from '@/components/header';
 import { useAuth, useSmartWalletAddress } from '@/hooks';
 import { Transaction } from '@/types/transactions';
 
-import TransactionsTable, { TableTransaction } from './transactions-table';
+import { FilteredTransactionTable } from './filtered-transaction-table';
+import { TableTransaction } from './transaction-table';
 
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();
@@ -174,7 +175,7 @@ export const TransactionsBrowser: React.FC = () => {
               </div>
             </div>
           </div>
-          <TransactionsTable
+          <FilteredTransactionTable
             transactions={filteredTransactions}
             searchValue={searchValue}
             dateRange={dateRange}

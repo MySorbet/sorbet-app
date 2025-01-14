@@ -11,7 +11,8 @@ import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
-import TransactionsTable from '@/app/wallet/all/transactions-table';
+import { TransactionTable } from '@/app/wallet/all/transaction-table';
+import { TransactionTableCard } from '@/app/wallet/all/transaction-table-card';
 import { FundsFlow } from '@/app/wallet/funds-flow';
 import { MyAccounts } from '@/app/wallet/my-accounts';
 import { SelectDuration } from '@/app/wallet/select-duration';
@@ -229,29 +230,32 @@ export const WalletContainer = () => {
               </div>
             </Link>
           </div>
-          <TransactionsTable
-            isLoading={loading}
-            minimalMode
-            transactions={
-              !transactions.transactions
-                ? []
-                : transactions.transactions.map((transaction: Transaction) => ({
-                    type:
-                      transaction.sender.toLowerCase() ===
-                      walletAddress?.toLowerCase()
-                        ? 'Sent'
-                        : 'Received',
-                    account:
-                      transaction.sender.toLowerCase() ===
-                      walletAddress?.toLowerCase()
-                        ? transaction.receiver
-                        : transaction.sender,
-                    date: transaction.timestamp,
-                    amount: transaction.value,
-                    hash: transaction.hash,
-                  }))
-            }
-          />
+          <TransactionTableCard>
+            <TransactionTable
+              isLoading={loading}
+              transactions={
+                !transactions.transactions
+                  ? []
+                  : transactions.transactions.map(
+                      (transaction: Transaction) => ({
+                        type:
+                          transaction.sender.toLowerCase() ===
+                          walletAddress?.toLowerCase()
+                            ? 'Sent'
+                            : 'Received',
+                        account:
+                          transaction.sender.toLowerCase() ===
+                          walletAddress?.toLowerCase()
+                            ? transaction.receiver
+                            : transaction.sender,
+                        date: transaction.timestamp,
+                        amount: transaction.value,
+                        hash: transaction.hash,
+                      })
+                    )
+              }
+            />
+          </TransactionTableCard>
         </div>
       </div>
     </Authenticated>
