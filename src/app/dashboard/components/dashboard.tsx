@@ -26,7 +26,7 @@ export const Dashboard = () => {
   const [isDesktopDrawerOpen, setIsDesktopDrawerOpen] = useState(false);
   const isMobile = useIsMobile();
   const router = useRouter();
-  const { data } = useDashboardData();
+  const { data, isLoading: isDashboardLoading } = useDashboardData();
   const { user } = useAuth();
   const [hasShared] = useHasShared();
   const completedTasks = data ? { ...data.tasks, share: hasShared } : undefined;
@@ -129,6 +129,7 @@ export const Dashboard = () => {
           className='min-w-64'
           onTaskClick={handleCardClicked}
           completedTasks={completedTasks}
+          loading={isDashboardLoading}
         />
 
         <div className='flex h-full min-w-[240px] flex-col justify-between gap-4'>

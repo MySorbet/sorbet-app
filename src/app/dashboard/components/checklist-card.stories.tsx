@@ -41,3 +41,10 @@ export const AllTasksDone: Story = {
     },
   },
 };
+
+export const Loading: Story = {
+  args: {
+    ...Default.args,
+    loading: true,
+  },
+};

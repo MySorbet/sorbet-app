@@ -12,6 +12,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { DashboardCard } from './dashboard-card';
@@ -33,11 +34,13 @@ export const ChecklistCard = ({
   completedTasks,
   onClose,
   className,
+  loading,
 }: {
   onTaskClick?: (task: TaskType) => void;
   completedTasks?: Record<TaskType, boolean>;
   onClose?: () => void;
   className?: string;
+  loading?: boolean;
 }) => {
   const numTasksComplete = Object.values(completedTasks ?? {}).filter(
     Boolean
@@ -54,10 +57,17 @@ export const ChecklistCard = ({
       <div className='space-y-3'>
         <h2 className='text-xl font-semibold'>{title}</h2>
         <div className='flex items-center justify-between gap-4'>
-          <Progress value={progress} className='[&>*]:bg-sorbet h-2' />
-          <span className='text-muted-foreground shrink-0 text-xs'>
-            {numTasksComplete} / {totalTasks}
-          </span>
+          <Progress
+            value={progress}
+            className={cn('[&>*]:bg-sorbet h-2', loading && 'animate-pulse')}
+          />
+          {loading ? (
+            <Skeleton className='h-4 w-6' />
+          ) : (
+            <span className='text-muted-foreground shrink-0 text-xs'>
+              {numTasksComplete} / {totalTasks}
+            </span>
+          )}
         </div>
       </div>
       {/* TODO: Consider a delightful animation for the transition to all tasks done */}
@@ -72,6 +82,7 @@ export const ChecklistCard = ({
           {tasks.map((task, index) => (
             <TaskItem
               key={index}
+              loading={loading}
               {...task}
               completed={completedTasks?.[task.type] ?? false}
               onClick={() => onTaskClick?.(task.type)}
@@ -99,6 +110,7 @@ type TaskItemProps = {
   description: string;
   type: TaskType;
   onClick: () => void;
+  loading?: boolean;
 };
 
 /**
@@ -109,6 +121,7 @@ const TaskItem = ({
   completed,
   description,
   type,
+  loading,
   onClick,
 }: TaskItemProps) => {
   const Icon = TaskIconMap[type];
@@ -130,7 +143,9 @@ const TaskItem = ({
           {description}
         </span>
       </div>
-      {completed ? (
+      {loading ? (
+        <Skeleton className='size-6 rounded-full' />
+      ) : completed ? (
         <CircleCheck className='text-sorbet animate-in fade-in zoom-in-0 size-6 shrink-0' />
       ) : (
         <CircleDashed className='text-muted-foreground size-6 shrink-0' />
