@@ -11,8 +11,6 @@ import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
-import { TransactionTable } from '@/app/wallet/all/transaction-table';
-import { TransactionTableCard } from '@/app/wallet/all/transaction-table-card';
 import { FundsFlow } from '@/app/wallet/funds-flow';
 import { MyAccounts } from '@/app/wallet/my-accounts';
 import { SelectDuration } from '@/app/wallet/select-duration';
@@ -22,6 +20,9 @@ import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
 import { Transaction, Transactions } from '@/types/transactions';
+
+import { TransactionTable } from './components/transaction-table';
+import { TransactionTableCard } from './components/transaction-table-card';
 
 export const WalletContainer = () => {
   const [reload, setReload] = useState(false);

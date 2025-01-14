@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { TransactionTable } from '@/app/wallet/all/transaction-table';
+import { TransactionTable } from './transaction-table';
 
 const meta = {
   title: 'Wallet/TransactionTable',
