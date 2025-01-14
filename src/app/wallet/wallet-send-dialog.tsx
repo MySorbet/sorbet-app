@@ -21,7 +21,7 @@ import {
 import useMeasure from 'react-use-measure';
 import { z } from 'zod';
 
-import { USDCToUSD } from '@/app/wallet/usdc-to-usd-conversion';
+import { useUSDCToUSD } from '@/app/wallet/hooks/use-usdc-to-usd';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -127,7 +127,7 @@ export const WalletSendDialog = ({
   const recipientWalletAddress = form.watch('recipientWalletAddress');
 
   // Perhaps we only want to run this fetch request once...
-  const { data: rate } = USDCToUSD();
+  const { data: rate } = useUSDCToUSD();
   const convertedUSD = String(rate * Number(amount || 0));
 
   const {
