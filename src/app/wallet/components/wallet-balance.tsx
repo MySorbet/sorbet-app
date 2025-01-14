@@ -2,14 +2,15 @@ import { Send01, Wallet03 } from '@untitled-ui/icons-react';
 import { Plus } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-import { BalanceChart } from '@/app/wallet/balance-chart';
-import { PercentageChange } from '@/app/wallet/percent-change';
-import { SelectDuration } from '@/app/wallet/select-duration';
-import { formatCurrency } from '@/app/wallet/utils';
-import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
+
+import { BalanceChart } from './balance-chart';
+import { PercentageChange } from './percent-change';
+import { SelectDuration } from './select-duration';
+import { formatCurrency } from './utils';
+import { WalletSendDialog } from './wallet-send-dialog';
 
 interface WalletBalanceProps {
   usdcBalance: string;

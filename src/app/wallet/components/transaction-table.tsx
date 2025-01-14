@@ -2,11 +2,6 @@ import { LinkExternal02 } from '@untitled-ui/icons-react';
 import { ArrowDown, Plus, Send } from 'lucide-react';
 import React, { useState } from 'react';
 
-import {
-  formatCurrency,
-  formatTransactionDate,
-  formatWalletAddress,
-} from '@/app/wallet/utils';
 import useCopy from '@/components/common/copy-button/use-copy';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -15,6 +10,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+
+import {
+  formatCurrency,
+  formatTransactionDate,
+  formatWalletAddress,
+} from './utils';
 
 export interface TableTransaction {
   account: string;

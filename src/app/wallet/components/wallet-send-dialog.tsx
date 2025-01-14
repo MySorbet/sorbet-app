@@ -21,7 +21,6 @@ import {
 import useMeasure from 'react-use-measure';
 import { z } from 'zod';
 
-import { useUSDCToUSD } from '@/app/wallet/hooks/use-usdc-to-usd';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -42,6 +41,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { env } from '@/lib/env';
+
+import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */

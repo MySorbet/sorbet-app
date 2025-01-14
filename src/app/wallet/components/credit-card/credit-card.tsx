@@ -3,10 +3,10 @@ import './styles.css';
 import React, { useState } from 'react';
 import type { Focused } from 'react-credit-cards-2';
 
-import { CreditCardPreview } from '@/app/wallet/credit-card-preview';
 import { Button } from '@/components/ui/button';
 
 import { CreditCardDialog } from './credit-card-dialog';
+import { CreditCardPreview } from './credit-card-preview';
 
 interface CardData {
   cardName: string;
