@@ -35,88 +35,93 @@ export const TransactionTable = ({
   isLoading?: boolean;
 }) => {
   return (
-    <table className='min-w-full divide-y divide-gray-200'>
-      <thead className='border-b'>
-        <tr>
-          <th
-            scope='col'
-            className='w-2/5 py-3 text-left text-xs font-medium text-gray-500'
-          >
-            To/From
-          </th>
-          <th
-            scope='col'
-            className='w-1/5 py-3 text-left text-xs font-medium text-gray-500'
-          >
-            Date
-          </th>
-          <th
-            scope='col'
-            className='w-1/5 py-3 text-right text-xs font-medium text-gray-500'
-          >
-            Amount
-          </th>
-        </tr>
-      </thead>
-      <tbody className='bg-white'>
-        {isLoading ? (
-          <TableSkeleton />
-        ) : transactions.length === 0 ? (
+    <div className='overflow-x-auto'>
+      <table className='min-w-96 divide-y divide-gray-200'>
+        <thead className='border-b'>
           <tr>
-            <td colSpan={3} className='text-muted-foreground py-8 text-center'>
-              No transactions found
-            </td>
+            <th
+              scope='col'
+              className='w-2/5 py-3 text-left text-xs font-medium text-gray-500'
+            >
+              To/From
+            </th>
+            <th
+              scope='col'
+              className='w-1/5 py-3 text-left text-xs font-medium text-gray-500'
+            >
+              Date
+            </th>
+            <th
+              scope='col'
+              className='w-1/5 py-3 text-right text-xs font-medium text-gray-500'
+            >
+              Amount
+            </th>
           </tr>
-        ) : (
-          transactions.map((transaction, index) => (
-            <tr key={index}>
-              <td className='w-2/5 whitespace-nowrap py-4'>
-                <div className='flex items-center'>
-                  <div className='h-12 w-12 flex-shrink-0'>
-                    <span className='flex h-12 w-12 items-center justify-center rounded-full bg-[#D7D7D7]'>
-                      {transaction.type === 'Sent' && (
-                        <ArrowDown className='size-6 text-white' />
-                      )}
-                      {transaction.type === 'Received' && (
-                        <Send className='size-6 text-white' />
-                      )}
-                      {transaction.type === 'Self-transfer' && (
-                        <Plus className='size-6 text-white' />
-                      )}
-                    </span>
-                  </div>
-                  <div className='ml-4'>
-                    <AddressText address={transaction.account} />
-                    <div className='mt-1 text-xs text-[#595B5A]'>
-                      {transaction.type === 'Self-transfer'
-                        ? 'Added'
-                        : transaction.type}
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className='w-1/5 whitespace-nowrap py-4'>
-                <div className='text-sm font-medium text-gray-900'>
-                  {formatTransactionDate(transaction.date)}
-                </div>
-              </td>
+        </thead>
+        <tbody className='bg-white'>
+          {isLoading ? (
+            <TableSkeleton />
+          ) : transactions.length === 0 ? (
+            <tr>
               <td
-                className='w-1/5 cursor-pointer whitespace-nowrap py-4'
-                onClick={() => onTransactionClick?.(transaction.hash)}
+                colSpan={3}
+                className='text-muted-foreground py-8 text-center'
               >
-                <div className='flex items-center justify-end gap-2'>
-                  <div className='text-sm font-medium'>
-                    {transaction.type === 'Sent' ? '-' : '+'}{' '}
-                    {formatCurrency(transaction.amount)} USDC
-                  </div>
-                  <LinkExternal02 className='size-[1.125rem] text-[#595B5A]' />
-                </div>
+                No transactions found
               </td>
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          ) : (
+            transactions.map((transaction, index) => (
+              <tr key={index}>
+                <td className='w-2/5 whitespace-nowrap py-4'>
+                  <div className='flex items-center'>
+                    <div className='h-12 w-12 flex-shrink-0'>
+                      <span className='flex h-12 w-12 items-center justify-center rounded-full bg-[#D7D7D7]'>
+                        {transaction.type === 'Sent' && (
+                          <ArrowDown className='size-6 text-white' />
+                        )}
+                        {transaction.type === 'Received' && (
+                          <Send className='size-6 text-white' />
+                        )}
+                        {transaction.type === 'Self-transfer' && (
+                          <Plus className='size-6 text-white' />
+                        )}
+                      </span>
+                    </div>
+                    <div className='ml-4'>
+                      <AddressText address={transaction.account} />
+                      <div className='mt-1 text-xs text-[#595B5A]'>
+                        {transaction.type === 'Self-transfer'
+                          ? 'Added'
+                          : transaction.type}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td className='w-1/5 whitespace-nowrap py-4'>
+                  <div className='text-sm font-medium text-gray-900'>
+                    {formatTransactionDate(transaction.date)}
+                  </div>
+                </td>
+                <td
+                  className='w-1/5 cursor-pointer whitespace-nowrap py-4'
+                  onClick={() => onTransactionClick?.(transaction.hash)}
+                >
+                  <div className='flex items-center justify-end gap-2'>
+                    <div className='text-sm font-medium'>
+                      {transaction.type === 'Sent' ? '-' : '+'}{' '}
+                      {formatCurrency(transaction.amount)} USDC
+                    </div>
+                    <LinkExternal02 className='size-[1.125rem] text-[#595B5A]' />
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

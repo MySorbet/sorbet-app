@@ -4,6 +4,7 @@ import {
   mockDashboardHandler,
   mockDashboardHandlerAllTasksComplete,
 } from '@/api/dashboard/msw-handlers';
+import { mockOverviewHandler } from '@/api/transactions';
 
 import { Dashboard } from './dashboard';
 
@@ -25,6 +26,6 @@ export const WithMockData: Story = {
 
 export const AllTasksCompleteMockData: Story = {
   parameters: {
-    msw: [mockDashboardHandlerAllTasksComplete],
+    msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
   },
 };
