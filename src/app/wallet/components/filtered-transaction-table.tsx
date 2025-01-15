@@ -32,10 +32,6 @@ export const FilteredTransactionTable: React.FC<
   onDateRangeChange,
   onClearAll,
 }) => {
-  const handleTransactionClicked = (hash: string) => {
-    window.open(`${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}`, '_blank');
-  };
-
   return (
     <TransactionTableCard>
       <div className='mb-4 grid grid-cols-12 gap-4'>
