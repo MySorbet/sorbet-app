@@ -19,6 +19,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@alexgorbatchev/storybook-addon-localstorage@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@alexgorbatchev/storybook-addon-localstorage@npm:2.0.3"
+  checksum: 10c0/a93c5d7dd97de66776272bbb185eefaef4f0e1743b65d9e9334fe76d54c061273d00cb9a7ac3a4bd142431a49b3a3f9138009ecd9c6793cb815ed490a793bcdc
+  languageName: node
+  linkType: hard
+
 "@alloc/quick-lru@npm:^5.2.0":
   version: 5.2.0
   resolution: "@alloc/quick-lru@npm:5.2.0"
@@ -19232,6 +19239,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sorbet-app@workspace:."
   dependencies:
+    "@alexgorbatchev/storybook-addon-localstorage": "npm:^2.0.3"
     "@emoji-mart/data": "npm:^1.2.1"
     "@emoji-mart/react": "npm:^1.1.1"
     "@hookform/resolvers": "npm:^3.6.0"
