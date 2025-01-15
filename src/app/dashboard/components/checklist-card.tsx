@@ -28,6 +28,17 @@ const TaskTypes = [
 export type TaskType = (typeof TaskTypes)[number];
 const totalTasks = TaskTypes.length;
 
+/** Tasks status are reported as an object mapping every task type to a boolean */
+export type TaskStatuses = Record<TaskType, boolean>;
+
+/** Helper to check if tasks are complete outside of the component */
+export const checkTasksComplete = (completedTasks: TaskStatuses): boolean => {
+  return (
+    Object.values(completedTasks).every(Boolean) &&
+    Object.keys(completedTasks).length === totalTasks
+  );
+};
+
 /** A Dashboard card rendering a checklist of onboarding tasks to complete */
 export const ChecklistCard = ({
   onTaskClick,
@@ -37,7 +48,7 @@ export const ChecklistCard = ({
   loading,
 }: {
   onTaskClick?: (task: TaskType) => void;
-  completedTasks?: Record<TaskType, boolean>;
+  completedTasks?: TaskStatuses;
   onClose?: () => void;
   className?: string;
   loading?: boolean;
@@ -46,6 +57,8 @@ export const ChecklistCard = ({
     Boolean
   ).length;
   const progress = (numTasksComplete / totalTasks) * 100;
+
+  // TODO: Use checkTasksComplete helper?
   const isAllTasksComplete = numTasksComplete === totalTasks;
 
   const title = isAllTasksComplete
@@ -74,7 +87,7 @@ export const ChecklistCard = ({
       {/* TODO: Implement local storage state to save the closed state */}
       {/* TODO: Implement Recent transactions card */}
       {isAllTasksComplete ? (
-        <Button variant='secondary' onClick={onClose} disabled={true}>
+        <Button variant='secondary' onClick={onClose}>
           Close
         </Button>
       ) : (

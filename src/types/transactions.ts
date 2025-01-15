@@ -6,7 +6,7 @@ export interface Transaction {
   hash: string;
 }
 
-export interface Transactions {
+export interface TransactionOverview {
   money_in: Transaction[];
   money_out: Transaction[];
   transactions: Transaction[];
@@ -14,13 +14,7 @@ export interface Transactions {
   total_money_out: string;
 }
 
-export interface Balances {
-  usdc: number;
-  near: number;
-  nearUsd: number;
-}
-
 export interface TransactionsResponse {
-  transactions: Transactions;
-  balances: Balances;
+  transactions: Transaction[];
+  cursor: string;
 }

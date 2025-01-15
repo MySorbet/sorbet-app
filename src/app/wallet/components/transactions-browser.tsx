@@ -60,25 +60,29 @@ export const TransactionsBrowser: React.FC = () => {
         before_date
       );
       if (res.status === 200 && res.data) {
-        const formattedTransactions = res.data.transactions.transactions.map(
-          (transaction: Transaction) => {
-            const type =
-              transaction.sender !== transaction.receiver ? 'Sent' : 'Received';
-            const account =
-              transaction.sender !== transaction.receiver
-                ? transaction.receiver
-                : transaction.sender;
+        // TODO: Is this similar to the mapTransactionOverview?
+        const formattedTransactions =
+          res.data.transactions.map<TableTransaction>(
+            (transaction: Transaction) => {
+              const type =
+                transaction.sender !== transaction.receiver
+                  ? 'Sent'
+                  : 'Received';
+              const account =
+                transaction.sender !== transaction.receiver
+                  ? transaction.receiver
+                  : transaction.sender;
 
-            return {
-              account,
-              date: transaction.timestamp,
-              amount: transaction.value,
-              hash: transaction.hash,
-              type,
-            };
-          }
-        );
-        const cursor_data = res.data.transactions.cursor;
+              return {
+                account,
+                date: transaction.timestamp,
+                amount: transaction.value,
+                hash: transaction.hash,
+                type,
+              };
+            }
+          );
+        const cursor_data = res.data.cursor;
         if (cursor_data) {
           setCursorsMap((prev) => ({
             ...prev,

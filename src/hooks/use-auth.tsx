@@ -193,8 +193,6 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     },
   });
 
-  // TODO: balances were fetched before. We should fetch them again?
-
   // Combine a privy logout with resetting the redux user and local storage user
   const logout = useCallback(async () => {
     await logoutPrivy();

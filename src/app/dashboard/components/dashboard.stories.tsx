@@ -1,6 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { mockDashboardHandler } from '@/api/dashboard/msw-handlers';
+import {
+  mockDashboardHandler,
+  mockDashboardHandlerAllTasksComplete,
+} from '@/api/dashboard/msw-handlers';
 
 import { Dashboard } from './dashboard';
 
@@ -17,5 +20,11 @@ export const Default: Story = {};
 export const WithMockData: Story = {
   parameters: {
     msw: [mockDashboardHandler],
+  },
+};
+
+export const AllTasksCompleteMockData: Story = {
+  parameters: {
+    msw: [mockDashboardHandlerAllTasksComplete],
   },
 };
