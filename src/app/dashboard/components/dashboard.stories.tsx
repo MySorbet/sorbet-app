@@ -29,3 +29,21 @@ export const AllTasksCompleteMockData: Story = {
     msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
   },
 };
+export const AllTasksCompleteMockDataAndShared: Story = {
+  parameters: {
+    msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
+    localStorage: {
+      'sorbet:has-shared:1': true,
+    },
+  },
+};
+
+export const AllTasksCompleteMockDataAndTasksClosed: Story = {
+  parameters: {
+    msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
+    localStorage: {
+      'sorbet:has-shared:1': true,
+      'sorbet:is-tasks-closed:1': true,
+    },
+  },
+};

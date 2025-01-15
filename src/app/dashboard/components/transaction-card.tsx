@@ -15,6 +15,8 @@ export const TransactionCard = () => {
     smartWalletAddress && overview
       ? mapTransactionOverview(overview.transactions, smartWalletAddress)
       : [];
+
+  // TODO: Should we limit the number of transactions displayed?
   return (
     <DashboardCard>
       <div className='mb-6 flex justify-between'>

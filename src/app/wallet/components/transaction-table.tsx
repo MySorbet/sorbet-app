@@ -129,7 +129,7 @@ export const TransactionTable = ({
 const TableSkeleton = () => {
   return (
     <>
-      {[...Array(6)].map((_, index) => (
+      {[...Array(3)].map((_, index) => (
         <tr key={index}>
           <td className='w-2/5 whitespace-nowrap py-4'>
             <div className='flex items-center'>
