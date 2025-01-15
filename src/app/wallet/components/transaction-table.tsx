@@ -36,7 +36,7 @@ export const TransactionTable = ({
 }) => {
   return (
     <div className='overflow-x-auto'>
-      <table className='min-w-96 divide-y divide-gray-200'>
+      <table className='w-full min-w-96 divide-y divide-gray-200'>
         <thead className='border-b'>
           <tr>
             <th
