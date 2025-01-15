@@ -11,7 +11,10 @@ import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
-import { mapTransactionOverview } from '@/app/wallet/components/utils';
+import {
+  mapTransactionOverview,
+  openTransactionInExplorer,
+} from '@/app/wallet/components/utils';
 import { Header } from '@/components/header';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
@@ -242,6 +245,7 @@ export const WalletContainer = () => {
             <TransactionTable
               isLoading={loading}
               transactions={mappedTransactions}
+              onTransactionClick={openTransactionInExplorer}
             />
           </TransactionTableCard>
         </div>

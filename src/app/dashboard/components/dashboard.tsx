@@ -42,7 +42,7 @@ export const Dashboard = () => {
   );
 
   const completedTasks: TaskStatuses | undefined = data
-    ? { ...data.tasks, share: hasShared, verified: true } // TODO: Remove hardcoded verified
+    ? { ...data.tasks, share: hasShared }
     : undefined;
 
   // TODO: Think about who should format the balance

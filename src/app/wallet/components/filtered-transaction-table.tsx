@@ -9,6 +9,7 @@ import { env } from '@/lib/env';
 
 import { type TableTransaction, TransactionTable } from './transaction-table';
 import { TransactionTableCard } from './transaction-table-card';
+import { openTransactionInExplorer } from './utils';
 
 interface FilteredTransactionTableProps {
   transactions: TableTransaction[];
@@ -75,7 +76,7 @@ export const FilteredTransactionTable: React.FC<
       <TransactionTable
         isLoading={isLoading}
         transactions={transactions}
-        onTransactionClick={handleTransactionClicked}
+        onTransactionClick={openTransactionInExplorer}
       />
     </TransactionTableCard>
   );

@@ -61,6 +61,12 @@ export const TransactionTable = ({
       <tbody className='bg-white'>
         {isLoading ? (
           <TableSkeleton />
+        ) : transactions.length === 0 ? (
+          <tr>
+            <td colSpan={3} className='text-muted-foreground py-8 text-center'>
+              No transactions found
+            </td>
+          </tr>
         ) : (
           transactions.map((transaction, index) => (
             <tr key={index}>

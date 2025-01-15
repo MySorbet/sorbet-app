@@ -33,10 +33,7 @@ export type TaskStatuses = Record<TaskType, boolean>;
 
 /** Helper to check if tasks are complete outside of the component */
 export const checkTasksComplete = (completedTasks: TaskStatuses): boolean => {
-  return (
-    Object.values(completedTasks).every(Boolean) &&
-    Object.keys(completedTasks).length === totalTasks
-  );
+  return Object.values(completedTasks).every(Boolean);
 };
 
 /** A Dashboard card rendering a checklist of onboarding tasks to complete */
@@ -58,7 +55,8 @@ export const ChecklistCard = ({
   ).length;
   const progress = (numTasksComplete / totalTasks) * 100;
 
-  // TODO: Use checkTasksComplete helper?
+  // Note that we do not use the checkTasksComplete helper here because
+  // We need to know how many tasks are complete to display the progress
   const isAllTasksComplete = numTasksComplete === totalTasks;
 
   const title = isAllTasksComplete

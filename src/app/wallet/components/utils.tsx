@@ -1,4 +1,5 @@
 import { TableTransaction } from '@/app/wallet/components/transaction-table';
+import { env } from '@/lib/env';
 import { Transaction } from '@/types/transactions';
 
 export const formatWalletAddress = (account: string): string => {
@@ -35,4 +36,10 @@ export const mapTransactionOverview = (
     amount: transaction.value,
     hash: transaction.hash,
   }));
+};
+
+/** Open a transaction hash in the appropriate explorer (basescan) */
+export const openTransactionInExplorer = (hash: string) => {
+  // TODO: Should we use the explorer from one of our libs rather than env?
+  window.open(`${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}`, '_blank');
 };

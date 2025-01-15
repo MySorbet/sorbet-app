@@ -26,6 +26,7 @@ export const mockDashboardHandler = http.get(
     });
   }
 );
+
 /**
  * Mock the data from the `/dashboard` endpoint with all tasks complete
  */
