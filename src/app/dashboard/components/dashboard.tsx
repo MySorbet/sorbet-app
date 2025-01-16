@@ -41,6 +41,7 @@ export const Dashboard = () => {
     false
   );
 
+  // Completed tasks are stored in the DB, save for sharing which is stored in local storage
   const completedTasks: TaskStatuses | undefined = data
     ? { ...data.tasks, share: hasShared }
     : undefined;
@@ -141,7 +142,6 @@ export const Dashboard = () => {
           onCreateInvoice={handleCreateInvoice}
         />
 
-        {/* TODO: Does this let the transaction card grow as long as it is supposed to? */}
         <div className='flex flex-col gap-4'>
           {!isTasksClosed && (
             <ChecklistCard
@@ -152,7 +152,6 @@ export const Dashboard = () => {
               onClose={() => setIsTasksClosed(true)}
             />
           )}
-          {/* TODO: Better loading state. Currently this is hidden while we wait for task response */}
           {isTasksComplete && <TransactionCard />}
         </div>
 

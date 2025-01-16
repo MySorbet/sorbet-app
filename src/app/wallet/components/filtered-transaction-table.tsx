@@ -5,12 +5,12 @@ import { DateRange } from 'react-day-picker';
 import { Button } from '@/components/ui/button';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
 import { Input } from '@/components/ui/input';
-import { env } from '@/lib/env';
 
 import { type TableTransaction, TransactionTable } from './transaction-table';
 import { TransactionTableCard } from './transaction-table-card';
 import { openTransactionInExplorer } from './utils';
 
+/** Renders a transaction table in a card with additional controls to filter the transactions */
 interface FilteredTransactionTableProps {
   transactions: TableTransaction[];
   isLoading?: boolean;
