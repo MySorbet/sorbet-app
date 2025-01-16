@@ -29,6 +29,7 @@ export const AllTasksCompleteMockData: Story = {
     msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
   },
 };
+
 export const AllTasksCompleteMockDataAndShared: Story = {
   parameters: {
     msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],

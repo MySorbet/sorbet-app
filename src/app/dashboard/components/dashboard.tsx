@@ -156,7 +156,7 @@ export const Dashboard = () => {
           {isTasksComplete && <TransactionCard />}
         </div>
 
-        <div className='flex h-full min-w-[240px] flex-col justify-between gap-4'>
+        <div className='flex h-full min-w-[240px] flex-col justify-start gap-4'>
           <StatsCard
             title='Wallet balance'
             type='wallet'
