@@ -1,5 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import {
+  mockOverviewHandler,
+  mockOverviewHandlerNoTransactions,
+} from '@/api/transactions';
 import { TransactionCard } from '@/app/dashboard/components/transaction-card';
 
 const meta = {
@@ -15,4 +19,14 @@ export const Default: Story = {
   args: {},
 };
 
-// TODO: MSW story
+export const WithMockData: Story = {
+  parameters: {
+    msw: [mockOverviewHandler],
+  },
+};
+
+export const WithMockDataNoTransactions: Story = {
+  parameters: {
+    msw: [mockOverviewHandlerNoTransactions],
+  },
+};
