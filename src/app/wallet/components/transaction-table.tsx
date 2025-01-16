@@ -73,7 +73,7 @@ export const TransactionTable = ({
             </tr>
           ) : (
             transactions.map((transaction, index) => (
-              <tr key={index}>
+              <tr key={index} className='animate-in fade-in'>
                 <td className='w-2/5 whitespace-nowrap py-4'>
                   <div className='flex items-center'>
                     <div className='h-12 w-12 flex-shrink-0'>
@@ -159,6 +159,7 @@ const TableSkeleton = () => {
 
 // Tooltip state inspired by https://github.com/shadcn-ui/ui/issues/86#issuecomment-2241817826
 // TODO: Revisit "copy" flash when tooltip is closing (likely due to fade out animation)
+// TODO: Revisit tooltip flash when hover steals mouseenter
 /** Local component to display formatted address and allow copying */
 const AddressText = ({ address }: { address: string }) => {
   const formattedAddress = formatWalletAddress(address);
