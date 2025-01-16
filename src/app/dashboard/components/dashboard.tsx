@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { parseAsBoolean, useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
@@ -115,6 +115,13 @@ export const Dashboard = () => {
   };
 
   const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);
+
+  // Effect that resets the users closing of the tasks card if a task becomes incomplete
+  useEffect(() => {
+    if (completedTasks && !isTasksComplete) {
+      setIsTasksClosed(false);
+    }
+  }, [completedTasks, isTasksComplete, setIsTasksClosed]);
 
   return (
     <>
