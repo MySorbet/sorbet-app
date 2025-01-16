@@ -22,8 +22,11 @@ const preview: Preview = {
       appDirectory: true,
     },
     backgrounds: {
-      values: [{ name: 'sorbet', value: '#f3f3f3' }],
-      default: 'sorbet',
+      values: [
+        { name: 'sorbet', value: '#f3f3f3' },
+        { name: 'white', value: '#ffffff' },
+      ],
+      default: 'white',
     },
   },
   decorators: [ProvidersDecorator],
