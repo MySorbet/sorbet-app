@@ -26,7 +26,7 @@ export const TransactionCard = () => {
 
   return (
     <DashboardCard className='animate-in fade-in slide-in-from-bottom-1'>
-      <div className='mb-6 flex justify-between'>
+      <div className='mb-6 flex flex-wrap justify-between gap-3'>
         <div>
           <h2 className='mb-1 text-2xl font-semibold'>Transactions</h2>
           <span className='text-muted-foreground text-sm'>
