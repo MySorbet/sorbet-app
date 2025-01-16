@@ -7,6 +7,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
     '@storybook/addon-interactions',
+    '@alexgorbatchev/storybook-addon-localstorage',
   ],
   framework: {
     name: '@storybook/nextjs',

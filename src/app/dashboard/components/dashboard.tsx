@@ -2,19 +2,26 @@
 
 import { useRouter } from 'next/navigation';
 import { parseAsBoolean, useQueryState } from 'nuqs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-is-mobile';
+import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { User } from '@/types';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
-import { type TaskType, ChecklistCard } from './checklist-card';
+import {
+  type TaskType,
+  ChecklistCard,
+  checkTasksComplete,
+  TaskStatuses,
+} from './checklist-card';
 import { OpenOnDesktopDrawer } from './open-on-desktop-drawer';
 import { type StatsCardType, StatsCard } from './stats-card';
+import { TransactionCard } from './transaction-card';
 import { WelcomeCard } from './welcome-card';
 
 /**
@@ -29,7 +36,15 @@ export const Dashboard = () => {
   const { data, isLoading: isDashboardLoading } = useDashboardData();
   const { user } = useAuth();
   const [hasShared] = useHasShared();
-  const completedTasks = data ? { ...data.tasks, share: hasShared } : undefined;
+  const [isTasksClosed, setIsTasksClosed] = useScopedLocalStorage(
+    'is-tasks-closed',
+    false
+  );
+
+  // Completed tasks are stored in the DB, save for sharing which is stored in local storage
+  const completedTasks: TaskStatuses | undefined = data
+    ? { ...data.tasks, share: hasShared }
+    : undefined;
 
   // TODO: Think about who should format the balance
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
@@ -99,6 +114,15 @@ export const Dashboard = () => {
     }
   };
 
+  const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);
+
+  // Effect that resets the users closing of the tasks card if a task becomes incomplete
+  useEffect(() => {
+    if (completedTasks && !isTasksComplete) {
+      setIsTasksClosed(false);
+    }
+  }, [completedTasks, isTasksComplete, setIsTasksClosed]);
+
   return (
     <>
       {/* Conditionally rendered drawer for mobile clicks */}
@@ -125,14 +149,20 @@ export const Dashboard = () => {
           onCreateInvoice={handleCreateInvoice}
         />
 
-        <ChecklistCard
-          className='min-w-64'
-          onTaskClick={handleCardClicked}
-          completedTasks={completedTasks}
-          loading={isDashboardLoading}
-        />
+        <div className='flex flex-col gap-4'>
+          {!isTasksClosed && (
+            <ChecklistCard
+              className='min-w-64'
+              onTaskClick={handleCardClicked}
+              completedTasks={completedTasks}
+              loading={isDashboardLoading}
+              onClose={() => setIsTasksClosed(true)}
+            />
+          )}
+          {isTasksComplete && <TransactionCard />}
+        </div>
 
-        <div className='flex h-full min-w-[240px] flex-col justify-between gap-4'>
+        <div className='flex h-full min-w-[240px] flex-col justify-start gap-4'>
           <StatsCard
             title='Wallet balance'
             type='wallet'

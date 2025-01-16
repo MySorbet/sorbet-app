@@ -10,7 +10,6 @@ export type DashboardData = {
     invoice: boolean;
     profile: boolean;
     widget: boolean;
-    share: boolean;
     payment: boolean;
   };
 

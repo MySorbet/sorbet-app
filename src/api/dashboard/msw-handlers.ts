@@ -19,8 +19,28 @@ export const mockDashboardHandler = http.get(
         invoice: true,
         profile: true,
         widget: false,
-        share: false,
         payment: false,
+      },
+      invoiceSales: 1000.01,
+      profileViews: 25,
+    });
+  }
+);
+
+/**
+ * Mock the data from the `/dashboard` endpoint with all tasks complete
+ */
+export const mockDashboardHandlerAllTasksComplete = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/dashboard`,
+  async () => {
+    await delay();
+    return HttpResponse.json<DashboardData>({
+      tasks: {
+        verified: true,
+        invoice: true,
+        profile: true,
+        widget: true,
+        payment: true,
       },
       invoiceSales: 1000.01,
       profileViews: 25,

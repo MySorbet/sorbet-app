@@ -1,14 +1,18 @@
 import axios, { AxiosError } from 'axios';
 
 import { env } from '@/lib/env';
+import {
+  TransactionOverview,
+  TransactionsResponse,
+} from '@/types/transactions';
 
-import { withAuthHeader } from './withAuthHeader';
+import { withAuthHeader } from '../withAuthHeader';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
 export const getOverview = async (address: string, last_days = 30) => {
   try {
-    const res = await axios.get(
+    const res = await axios.get<TransactionOverview>(
       `${API_URL}/transactions/overview?account=${address}&last_days=${last_days}`,
       await withAuthHeader()
     );
@@ -51,7 +55,7 @@ export const getTransactions = async (
   }
 
   try {
-    const res = await axios.get(
+    const res = await axios.get<TransactionsResponse>(
       `${API_URL}/transactions?${queryParams.toString()}`,
       await withAuthHeader()
     );

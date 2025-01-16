@@ -142,6 +142,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@alexgorbatchev/storybook-addon-localstorage": "^2.0.3",
     "@storybook/addon-a11y": "8.4.1",
     "@storybook/addon-essentials": "8.4.1",
     "@storybook/addon-interactions": "8.4.1",

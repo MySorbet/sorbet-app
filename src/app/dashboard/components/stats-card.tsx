@@ -48,7 +48,9 @@ export const StatsCard = ({
         {value === undefined ? (
           <Skeleton className='mb-1 h-7 w-20' />
         ) : (
-          <p className='text-2xl font-bold'>{formatValue(value, type)}</p>
+          <p className='animate-in fade-in text-2xl font-bold'>
+            {formatValue(value, type)}
+          </p>
         )}
         <p className='text-muted-foreground text-xs'>{description}</p>
       </div>

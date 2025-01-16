@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { formatCurrency, formatWalletAddress } from '@/app/wallet/utils';
-import { Spinner } from '@/components/common';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import { formatCurrency, formatWalletAddress } from './utils';
 
 interface FundsFlowProps {
   icon: React.ReactNode;

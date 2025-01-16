@@ -1,9 +1,10 @@
 import { Bank, Wallet03 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 
-import { formatCurrency, formatWalletAddress } from '@/app/wallet/utils';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import { formatCurrency, formatWalletAddress } from './utils';
 
 interface MyAccountsProps {
   usdcBalance: string;

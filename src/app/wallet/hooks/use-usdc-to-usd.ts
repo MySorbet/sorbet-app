@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { featureFlags } from '@/lib/flags';
 
 /** RQ hook to fetch the exchange rate of USDC to USD via CoinGecko */
-export const USDCToUSD = () => {
+export const useUSDCToUSD = () => {
   return useQuery({
     queryKey: ['USDCToUSDConversionRate'],
     queryFn: async () => {

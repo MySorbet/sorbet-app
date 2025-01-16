@@ -2,8 +2,9 @@ import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { WalletSendDialog } from '@/app/wallet/wallet-send-dialog';
 import { Button } from '@/components/ui/button';
+
+import { WalletSendDialog } from './wallet-send-dialog';
 
 const meta = {
   title: 'Wallet/WalletSendDialog',

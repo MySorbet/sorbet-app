@@ -11,16 +11,22 @@ import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
-import TransactionsTable from '@/app/wallet/all/transactions-table';
-import { FundsFlow } from '@/app/wallet/funds-flow';
-import { MyAccounts } from '@/app/wallet/my-accounts';
-import { SelectDuration } from '@/app/wallet/select-duration';
-import { WalletBalance } from '@/app/wallet/wallet-balance';
+import {
+  mapTransactionOverview,
+  openTransactionInExplorer,
+} from '@/app/wallet/components/utils';
 import { Header } from '@/components/header';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { env } from '@/lib/env';
-import { Transaction, Transactions } from '@/types/transactions';
+import { Transaction, TransactionOverview } from '@/types/transactions';
+
+import { FundsFlow } from './funds-flow';
+import { MyAccounts } from './my-accounts';
+import { SelectDuration } from './select-duration';
+import { TransactionTable } from './transaction-table';
+import { TransactionTableCard } from './transaction-table-card';
+import { WalletBalance } from './wallet-balance';
 
 export const WalletContainer = () => {
   const [reload, setReload] = useState(false);
@@ -37,7 +43,7 @@ export const WalletContainer = () => {
 
   const [selectedDuration, setSelectedDuration] = useState<string>('30');
 
-  const [transactions, setTransactions] = useState<Transactions>({
+  const [transactions, setTransactions] = useState<TransactionOverview>({
     money_in: [],
     money_out: [],
     transactions: [],
@@ -45,13 +51,14 @@ export const WalletContainer = () => {
     total_money_out: '',
   });
 
+  // TODO: Use useTransactionOverview hook instead
   const fetchTransactions = useCallback(
     async (last_days = 30) => {
       if (walletAddress) {
         setLoading(true);
         const response = await getOverview(walletAddress, last_days);
         if (response && response.data) {
-          setTransactions(response.data.transactions);
+          setTransactions(response.data);
         }
         setLoading(false);
       }
@@ -122,6 +129,11 @@ export const WalletContainer = () => {
       fetchTransactions(parseInt(selectedDuration, 10));
     })();
   }, [fetchTransactions, selectedDuration]);
+
+  const mappedTransactions =
+    walletAddress && transactions
+      ? mapTransactionOverview(transactions.transactions, walletAddress)
+      : [];
 
   return (
     <Authenticated>
@@ -229,29 +241,13 @@ export const WalletContainer = () => {
               </div>
             </Link>
           </div>
-          <TransactionsTable
-            isLoading={loading}
-            minimalMode
-            transactions={
-              !transactions.transactions
-                ? []
-                : transactions.transactions.map((transaction: Transaction) => ({
-                    type:
-                      transaction.sender.toLowerCase() ===
-                      walletAddress?.toLowerCase()
-                        ? 'Sent'
-                        : 'Received',
-                    account:
-                      transaction.sender.toLowerCase() ===
-                      walletAddress?.toLowerCase()
-                        ? transaction.receiver
-                        : transaction.sender,
-                    date: transaction.timestamp,
-                    amount: transaction.value,
-                    hash: transaction.hash,
-                  }))
-            }
-          />
+          <TransactionTableCard>
+            <TransactionTable
+              isLoading={loading}
+              transactions={mappedTransactions}
+              onTransactionClick={openTransactionInExplorer}
+            />
+          </TransactionTableCard>
         </div>
       </div>
     </Authenticated>

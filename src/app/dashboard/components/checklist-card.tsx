@@ -28,6 +28,14 @@ const TaskTypes = [
 export type TaskType = (typeof TaskTypes)[number];
 const totalTasks = TaskTypes.length;
 
+/** Tasks status are reported as an object mapping every task type to a boolean */
+export type TaskStatuses = Record<TaskType, boolean>;
+
+/** Helper to check if tasks are complete outside of the component */
+export const checkTasksComplete = (completedTasks: TaskStatuses): boolean => {
+  return Object.values(completedTasks).every(Boolean);
+};
+
 /** A Dashboard card rendering a checklist of onboarding tasks to complete */
 export const ChecklistCard = ({
   onTaskClick,
@@ -37,7 +45,7 @@ export const ChecklistCard = ({
   loading,
 }: {
   onTaskClick?: (task: TaskType) => void;
-  completedTasks?: Record<TaskType, boolean>;
+  completedTasks?: TaskStatuses;
   onClose?: () => void;
   className?: string;
   loading?: boolean;
@@ -46,6 +54,9 @@ export const ChecklistCard = ({
     Boolean
   ).length;
   const progress = (numTasksComplete / totalTasks) * 100;
+
+  // Note that we do not use the checkTasksComplete helper here because
+  // We need to know how many tasks are complete to display the progress
   const isAllTasksComplete = numTasksComplete === totalTasks;
 
   const title = isAllTasksComplete
@@ -53,7 +64,7 @@ export const ChecklistCard = ({
     : 'Onboarding Checklist';
 
   return (
-    <DashboardCard className={cn('h-fit space-y-6', className)}>
+    <DashboardCard className={cn('@container h-fit space-y-6', className)}>
       <div className='space-y-3'>
         <h2 className='text-xl font-semibold'>{title}</h2>
         <div className='flex items-center justify-between gap-4'>
@@ -71,10 +82,12 @@ export const ChecklistCard = ({
         </div>
       </div>
       {/* TODO: Consider a delightful animation for the transition to all tasks done */}
-      {/* TODO: Implement local storage state to save the closed state */}
-      {/* TODO: Implement Recent transactions card */}
       {isAllTasksComplete ? (
-        <Button variant='secondary' onClick={onClose} disabled={true}>
+        <Button
+          variant='secondary'
+          onClick={onClose}
+          className='@xs:max-w-36 w-full'
+        >
           Close
         </Button>
       ) : (

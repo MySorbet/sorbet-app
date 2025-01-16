@@ -21,7 +21,6 @@ import {
 import useMeasure from 'react-use-measure';
 import { z } from 'zod';
 
-import { USDCToUSD } from '@/app/wallet/usdc-to-usd-conversion';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -42,6 +41,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { env } from '@/lib/env';
+
+import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -127,7 +128,7 @@ export const WalletSendDialog = ({
   const recipientWalletAddress = form.watch('recipientWalletAddress');
 
   // Perhaps we only want to run this fetch request once...
-  const { data: rate } = USDCToUSD();
+  const { data: rate } = useUSDCToUSD();
   const convertedUSD = String(rate * Number(amount || 0));
 
   const {
