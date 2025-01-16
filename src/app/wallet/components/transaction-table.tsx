@@ -25,6 +25,10 @@ export interface TableTransaction {
   type: 'Sent' | 'Received' | 'Self-transfer';
 }
 
+/**
+ * Renders a table of transactions with no bells and whistles. Scrolls horizontally when its container is too narrow for a row.
+ * Renders a simple empty state if not loading and no transactions are present.
+ */
 export const TransactionTable = ({
   transactions,
   onTransactionClick,
