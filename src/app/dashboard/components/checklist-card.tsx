@@ -64,7 +64,7 @@ export const ChecklistCard = ({
     : 'Onboarding Checklist';
 
   return (
-    <DashboardCard className={cn('h-fit space-y-6', className)}>
+    <DashboardCard className={cn('@container h-fit space-y-6', className)}>
       <div className='space-y-3'>
         <h2 className='text-xl font-semibold'>{title}</h2>
         <div className='flex items-center justify-between gap-4'>
@@ -85,7 +85,11 @@ export const ChecklistCard = ({
       {/* TODO: Implement local storage state to save the closed state */}
       {/* TODO: Implement Recent transactions card */}
       {isAllTasksComplete ? (
-        <Button variant='secondary' onClick={onClose}>
+        <Button
+          variant='secondary'
+          onClick={onClose}
+          className='@xs:max-w-36 w-full'
+        >
           Close
         </Button>
       ) : (
