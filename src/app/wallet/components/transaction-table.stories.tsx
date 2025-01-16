@@ -10,6 +10,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// Note: You must fake the return values of useSmartWalletAddress for these stories to render properly
+
 export const Default: Story = {
   args: {
     transactions: [

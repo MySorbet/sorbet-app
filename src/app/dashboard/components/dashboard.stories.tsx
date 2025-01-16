@@ -17,6 +17,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// Note: You must fake the return values of useSmartWalletAddress stories rendering transaction cards to render properly
+
 export const Default: Story = {};
 
 export const WithMockData: Story = {
