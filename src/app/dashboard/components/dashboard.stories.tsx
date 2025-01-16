@@ -5,6 +5,7 @@ import {
   mockDashboardHandlerAllTasksComplete,
 } from '@/api/dashboard/msw-handlers';
 import { mockOverviewHandler } from '@/api/transactions';
+import { mockUser } from '@/api/user';
 
 import { Dashboard } from './dashboard';
 
@@ -34,7 +35,7 @@ export const AllTasksCompleteMockDataAndShared: Story = {
   parameters: {
     msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
     localStorage: {
-      'sorbet:has-shared:1': true,
+      [`sorbet:has-shared:${mockUser.id}`]: true,
     },
   },
 };
@@ -43,8 +44,8 @@ export const AllTasksCompleteMockDataAndTasksClosed: Story = {
   parameters: {
     msw: [mockDashboardHandlerAllTasksComplete, mockOverviewHandler],
     localStorage: {
-      'sorbet:has-shared:1': true,
-      'sorbet:is-tasks-closed:1': true,
+      [`sorbet:has-shared:${mockUser.id}`]: true,
+      [`sorbet:is-tasks-closed:${mockUser.id}`]: true,
     },
   },
 };
