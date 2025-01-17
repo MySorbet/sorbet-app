@@ -5,7 +5,7 @@ import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { TransactionOverview } from '@/types/transactions';
 
 /** Use RQ to fetch transaction overview data for the current smart wallet (provided by privy) */
-export const useTransactionOverview = (last_days = 30) => {
+export const useTransactionOverview = (last_days?: number) => {
   const { smartWalletAddress } = useSmartWalletAddress();
 
   return useQuery<TransactionOverview>({
