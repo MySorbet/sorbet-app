@@ -3,13 +3,21 @@ import Link from 'next/link';
 
 import { DashboardCard } from '@/app/dashboard/components/dashboard-card';
 import { TransactionTable } from '@/app/wallet/components/transaction-table';
-import { mapTransactionOverview } from '@/app/wallet/components/utils';
+import {
+  mapTransactionOverview,
+  openTransactionInExplorer,
+} from '@/app/wallet/components/utils';
 import { useTransactionOverview } from '@/app/wallet/hooks/use-transaction-overview';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
+/**
+ * Render the transaction table with some additional UI as a dashboard card
+ * Note: Fetches its own data
+ */
 export const TransactionCard = () => {
+  // No need to limit number of transaction because the API defaults to a limit of 5 anyway
   const { data: overview, isLoading } = useTransactionOverview();
   const { smartWalletAddress } = useSmartWalletAddress();
   const mappedTransactions =
@@ -43,6 +51,7 @@ export const TransactionCard = () => {
       <TransactionTable
         transactions={mappedTransactions}
         isLoading={isLoading}
+        onTransactionClick={openTransactionInExplorer}
       />
     </DashboardCard>
   );

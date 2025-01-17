@@ -10,10 +10,18 @@ import { withAuthHeader } from '../withAuthHeader';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
-export const getOverview = async (address: string, last_days = 30) => {
+export const getOverview = async (address: string, last_days?: number) => {
+  const queryParams = new URLSearchParams({
+    account: address,
+  });
+
+  if (last_days !== undefined) {
+    queryParams.append('last_days', last_days.toString());
+  }
+
   try {
     const res = await axios.get<TransactionOverview>(
-      `${API_URL}/transactions/overview?account=${address}&last_days=${last_days}`,
+      `${API_URL}/transactions/overview?${queryParams.toString()}`,
       await withAuthHeader()
     );
     return res;
