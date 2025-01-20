@@ -122,7 +122,7 @@ export const InvoiceDashboard = ({
         }}
       />
 
-      <div className='flex w-full max-w-6xl flex-col gap-10'>
+      <div className='@container flex w-full min-w-fit max-w-6xl flex-col gap-10'>
         {/* Header */}
         <div className='flex items-center justify-between gap-4'>
           <h1 className='text-2xl font-semibold'>Invoicing</h1>
@@ -133,7 +133,7 @@ export const InvoiceDashboard = ({
         </div>
 
         {/* Summary cards */}
-        <div className='flex items-center justify-between gap-4'>
+        <div className='@md:flex-row flex flex-col items-center justify-between gap-4'>
           <SummaryCard
             label='Total Open'
             value={calculateTotal(openInvoices)}

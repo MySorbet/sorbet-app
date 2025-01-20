@@ -27,7 +27,7 @@ export default function SummaryCard({
   }
 
   return (
-    <Card className='w-full max-w-sm rounded-2xl border-none bg-white shadow-none'>
+    <Card className='w-full max-w-[32rem] rounded-2xl border-none bg-white shadow-none'>
       <CardContent className='flex flex-col items-start gap-1 px-6 py-4'>
         <h2 className='text-muted-foreground text-xs font-medium'>{label}</h2>
         <p className='text-xl font-semibold'>
