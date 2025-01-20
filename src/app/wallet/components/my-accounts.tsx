@@ -22,7 +22,7 @@ export const MyAccounts: React.FC<MyAccountsProps> = ({
       {isLoading || usdcBalance === '' ? (
         <Skeleton className='h-[366px] rounded-3xl bg-gray-300 shadow-md' />
       ) : (
-        <div className='bg-background min-h-full min-w-[360px] rounded-2xl p-6 shadow-md'>
+        <div className='bg-background min-h-full min-w-72 rounded-2xl p-6 shadow-md'>
           <div className='flex items-center gap-2'>
             <span className='bg-foreground text-muted rounded-full p-2'>
               <Bank className='size-[1.125rem]' />
@@ -32,14 +32,12 @@ export const MyAccounts: React.FC<MyAccountsProps> = ({
             </span>
           </div>
           <div className='bg-border my-4 h-[1px] w-full' />
-          <div>
-            {/** for now, it's only USDC but this will be refactored into multiple account items */}
-            <USDCAccountItem
-              icon={<Wallet03 className='size-3' />}
-              address={address}
-              balance={usdcBalance}
-            ></USDCAccountItem>
-          </div>
+
+          <USDCAccountItem
+            icon={<Wallet03 className='size-3' />}
+            address={address}
+            balance={usdcBalance}
+          ></USDCAccountItem>
         </div>
       )}
     </>
@@ -59,6 +57,7 @@ const USDCAccountItem: React.FC<{
         width={35}
         height={35}
         alt='usdc logo'
+        className='flex-shrink-0'
       />
       <div className='flex flex-col'>
         <div className='font-semibold'>USDC</div>
