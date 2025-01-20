@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { parseAsBoolean, useQueryState } from 'nuqs';
 import { useEffect, useState } from 'react';
 
+import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer';
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
@@ -19,7 +20,6 @@ import {
   checkTasksComplete,
   TaskStatuses,
 } from './checklist-card';
-import { OpenOnDesktopDrawer } from './open-on-desktop-drawer';
 import { type StatsCardType, StatsCard } from './stats-card';
 import { TransactionCard } from './transaction-card';
 import { WelcomeCard } from './welcome-card';
