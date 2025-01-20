@@ -59,59 +59,57 @@ export const Dashboard = () => {
     parseAsBoolean.withDefault(false)
   );
 
-  const handleCardClicked = (type: StatsCardType | TaskType) => {
+  const unlessMobile = (fn: () => void) => {
     if (isMobile) {
       setIsDesktopDrawerOpen(true);
     } else {
-      switch (type) {
-        // Stats cards
-        case 'wallet':
-          router.push('/wallet');
-          break;
-        case 'sales':
-          router.push('/invoices');
-          break;
-        case 'views':
-          router.push(`/${user?.handle}`);
-          break;
+      fn();
+    }
+  };
 
-        // Tasks
-        case 'verified':
-          setIsSidebarOpen(true);
-          break;
-        case 'invoice':
-          router.push('/invoices/create');
-          break;
-        case 'profile':
-          setIsProfileEditModalOpen(true);
-          break;
-        case 'widget':
-          router.push(`/${user?.handle}?drawerOpen=true`);
-          break;
-        case 'share':
-          router.push(`/${user?.handle}?shareDialogOpen=true`);
-          break;
-        case 'payment':
-          router.push('/wallet');
-          break;
-      }
+  const handleCardClicked = (type: StatsCardType | TaskType) => {
+    switch (type) {
+      // Stats cards
+      case 'wallet':
+        router.push('/wallet');
+        break;
+      case 'sales':
+        router.push('/invoices');
+        break;
+      case 'views':
+        unlessMobile(() => router.push(`/${user?.handle}`));
+        break;
+
+      // Tasks
+      case 'verified':
+        unlessMobile(() => setIsSidebarOpen(true));
+        break;
+      case 'invoice':
+        unlessMobile(() => router.push('/invoices/create'));
+        break;
+      case 'profile':
+        unlessMobile(() => setIsProfileEditModalOpen(true));
+        break;
+      case 'widget':
+        unlessMobile(() => router.push(`/${user?.handle}?drawerOpen=true`));
+        break;
+      case 'share':
+        unlessMobile(() =>
+          router.push(`/${user?.handle}?shareDialogOpen=true`)
+        );
+        break;
+      case 'payment':
+        router.push('/wallet');
+        break;
     }
   };
 
   const handleCreateInvoice = () => {
-    if (isMobile) {
-      setIsDesktopDrawerOpen(true);
-    } else {
-      router.push('/invoices/create');
-    }
+    unlessMobile(() => router.push('/invoices/create'));
   };
 
   const handleClickMyProfile = () => {
-    if (isMobile) {
-      setIsDesktopDrawerOpen(true);
-    } else {
-      router.push(`/${user?.handle}`);
-    }
+    unlessMobile(() => router.push(`/${user?.handle}`));
   };
 
   const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);
