@@ -14,7 +14,7 @@ import { usePayInvoice } from '../../hooks/use-pay-invoice';
 import InvoiceSheet from './invoice-sheet';
 import { InvoiceTable } from './invoice-table';
 import SummaryCard from './summary-card';
-import { Invoice, InvoiceStatus } from './utils';
+import { checkOverdue, Invoice, InvoiceStatus } from './utils';
 
 type InvoiceDashboardProps = {
   invoices: Invoice[];
@@ -32,9 +32,14 @@ export const InvoiceDashboard = ({
   isLoading,
 }: InvoiceDashboardProps) => {
   const openInvoices = invoices.filter((invoice) => invoice.status === 'Open');
-  const overdueInvoices = invoices.filter(
-    (invoice) => invoice.status === 'Overdue'
-  );
+  // To find overdue invoices, we need to map with checkOverdue since Overdue is not
+  // stored in the db. Rather, we decide to display this status on the frontend based on the date.
+  const overdueInvoices = invoices
+    .map((invoice) => ({
+      ...invoice,
+      status: checkOverdue(invoice.dueDate, invoice.status),
+    }))
+    .filter((invoice) => invoice.status === 'Overdue');
   const paidInvoices = invoices.filter((invoice) => invoice.status === 'Paid');
 
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
