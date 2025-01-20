@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { Metadata } from 'next';
 
-export const metadata = {
-  title: 'Sign in',
+export const metadata: Metadata = {
+  title: 'Invoices',
 };
 
 /** Noop layout. We just use this file to set metadata */

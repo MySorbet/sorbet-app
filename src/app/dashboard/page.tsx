@@ -1,7 +1,13 @@
+import { Metadata } from 'next';
+
 import Authenticated from '@/app/authenticated';
 import { Header } from '@/components/header';
 
 import { Dashboard } from './components/dashboard';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
 
 export default function DashboardPage() {
   return (

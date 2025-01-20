@@ -1,7 +1,10 @@
-'use client';
-// TODO: Remove use client and fix trickle down errors
+import { Metadata } from 'next';
 
 import { OnboardingShell, SignUp } from '@/components/onboarding';
+
+export const metadata: Metadata = {
+  title: 'Create your account',
+};
 
 const SignUpPage = () => {
   return (

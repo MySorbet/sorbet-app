@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: `Profile`,
 };
 
-export default function ClientLayout({ children }: { children: ReactNode }) {
-  return children;
+/** Noop layout. We just use this file to set metadata */
+export default function Layout(props: React.PropsWithChildren) {
+  return props.children;
 }
