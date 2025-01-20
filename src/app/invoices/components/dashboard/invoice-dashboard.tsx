@@ -76,8 +76,8 @@ export const InvoiceDashboard = ({
   // TODO: handle error
   // TODO: Loading states
   // TODO: This could merge with cancel
-  const { payInvoiceMutation, isPending: isPayingInvoice } = usePayInvoice();
-  const { openInvoiceMutation, isPending: isOpeningInvoice } = useOpenInvoice();
+  const { payInvoiceMutation } = usePayInvoice();
+  const { openInvoiceMutation } = useOpenInvoice();
   const handleInvoiceStatusChange = async (
     invoice: Invoice,
     status: InvoiceStatus

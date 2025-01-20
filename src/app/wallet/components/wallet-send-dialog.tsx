@@ -68,7 +68,7 @@ export const WalletSendDialog = ({
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
 
-  const [contentRef, { height: contentHeight }] = useMeasure();
+  const [contentRef] = useMeasure();
 
   const { toast } = useToast();
 

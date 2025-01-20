@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from 'react';
 import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 
 import { SupportedWidgetTypes } from '@/api/widgets';

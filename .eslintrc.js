@@ -14,12 +14,10 @@ module.exports = {
     'plugin:storybook/recommended',
   ],
   rules: {
-    'no-unused-vars': 'warn',
     'no-console': 'off',
     'no-useless-escape': 'warn',
 
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
 
     'react/no-unescaped-entities': 'off',
     'react/display-name': 'off',
@@ -30,6 +28,9 @@ module.exports = {
 
     '@next/next/no-img-element': 'off',
 
+    // Use no-unused-vars from unused-imports rather than from eslint or @typescript-eslint
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
     'unused-imports/no-unused-imports': 'warn',
     'unused-imports/no-unused-vars': [
       'warn',
@@ -49,6 +50,6 @@ module.exports = {
     JSX: true,
   },
 
-  // We don't want to touch shadcn for now
-  ignorePatterns: ['src/components/ui/*'],
+  // We don't want to touch shadcn for now (nor syntax-ui)
+  ignorePatterns: ['src/components/ui/*', 'src/components/syntax-ui/*'],
 };

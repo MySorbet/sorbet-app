@@ -25,7 +25,7 @@ import { useLocalStorage } from './use-local-storage';
 type LoginResultFailed = {
   status: 'failed';
   message: string;
-  error?: any;
+  error?: Error | unknown;
 };
 
 type LoginResultSuccess = {
@@ -150,9 +150,13 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
       if (loginResult.status === 'failed') {
         await logout();
         setLoading(false);
+        const errorMessage =
+          loginResult.error instanceof Error
+            ? loginResult.error.message
+            : 'Unknown error';
         toast({
           title: 'Error logging in',
-          description: loginResult.error?.message,
+          description: errorMessage,
           variant: 'destructive',
         });
         return;

@@ -11,7 +11,7 @@ export const useUpdateUser = () => {
   const dispatch = useAppDispatch();
 
   return useMutation({
-    mutationFn: async (userToUpdate: UserWithId): Promise<any> =>
+    mutationFn: async (userToUpdate: UserWithId) =>
       await updateUser(userToUpdate, userToUpdate.id),
     onSuccess: (user: AxiosResponse) => {
       dispatch(updateUserData(user.data));
@@ -19,9 +19,11 @@ export const useUpdateUser = () => {
         description: 'Your changes were saved successfully.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       toast('User profile failed to update.', {
-        description: error.message + ' If the issue persists, contact support.',
+        description: errorMessage + ' If the issue persists, contact support.',
       });
     },
     onSettled: () => {

@@ -43,8 +43,8 @@ export const InvoicePublicView = ({
   const { data: walletAddress, isLoading: isLoadingWalletAddress } =
     useWalletAddressByUserId(invoice?.userId ?? '');
 
-  const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
-    useACHWireDetails(invoice?.userId ?? '');
+  // TODO: Should we display a loading state when seeing if there are ACH wire details?
+  const { data: achWireDetails } = useACHWireDetails(invoice?.userId ?? '');
 
   // Render closed receipts in the case of paid or cancelled invoices
   if (invoice?.status === 'Paid' || invoice?.status === 'Cancelled') {
