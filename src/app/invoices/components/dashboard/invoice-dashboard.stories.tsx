@@ -15,7 +15,7 @@ const meta: Meta<typeof InvoiceDashboard> = {
   title: 'Invoices/InvoiceDashboard',
   component: InvoiceDashboard,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
     backgrounds: {
       default: 'sorbet',
     },
