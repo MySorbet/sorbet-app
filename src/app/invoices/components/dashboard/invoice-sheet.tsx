@@ -25,7 +25,7 @@ import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, Invoice, InvoiceStatus } from './utils';
 import { formatDate } from './utils';
 
-// TODO: Address scroll when there is not enough height
+// TODO: Is there a better scroll solution? Perhaps with sticky header and footer?
 // TODO: Use custom easing curves to improve the feel of the sheet open animation (match vaul?)
 
 type InvoiceSheetProps = {
@@ -81,8 +81,8 @@ export default function InvoiceSheet({
         setOpen(open);
       }}
     >
-      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 p-6'>
-        <SheetHeader>
+      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 overflow-y-auto p-6'>
+        <SheetHeader className='gap-2 sm:gap-0'>
           <SheetTitle className='text-sm font-medium'>
             {invoice.toName}
           </SheetTitle>
@@ -155,7 +155,7 @@ export default function InvoiceSheet({
         </div>
 
         {/* Invoice actions */}
-        <SheetFooter className='items-end'>
+        <SheetFooter className='items-end gap-2 sm:gap-0'>
           <Button
             variant='outline'
             className='w-full'
