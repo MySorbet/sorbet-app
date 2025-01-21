@@ -15,6 +15,7 @@ import {
   Form,
   FormControl,
   FormField,
+  FormItem,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -46,6 +47,8 @@ const emptyInvoiceItemData: InvoiceItemData = {
   amount: 0,
 };
 
+const DEFAULT_TAX_PERCENTAGE = 10;
+
 const formSchema = z.object({
   projectName: invoiceFormStringValidator('Project name'),
   invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
@@ -59,6 +62,7 @@ const formSchema = z.object({
     { message: "You've already used this invoice number" }
   ),
   items: z.array(InvoiceItemDataSchema),
+  tax: z.coerce.number().min(0).max(100).optional().nullable(),
 });
 
 export type InvoiceDetailsFormSchema = z.infer<typeof formSchema>;
@@ -83,6 +87,7 @@ export const InvoiceDetails = ({
       projectName: formData.projectName ?? '',
       invoiceNumber: formData.invoiceNumber ?? invoiceNumber ?? '',
       items: formData.items ?? [emptyInvoiceItemData],
+      tax: formData.tax ?? 0,
     },
     mode: 'all',
   });
@@ -99,7 +104,16 @@ export const InvoiceDetails = ({
   }, [form, invoiceNumber]);
 
   const items = form.watch('items');
-  const formattedTotal = formatCurrency(calculateTotalAmount(items ?? []));
+  const tax = form.watch('tax');
+  const subtotal = calculateTotalAmount(items ?? []);
+  const formattedSubtotal = formatCurrency(subtotal);
+
+  const taxAmount = tax ? subtotal * (tax / 100) : 0;
+  const formattedTaxAmount = formatCurrency(taxAmount);
+  const hasTax = tax !== 0;
+
+  const total = subtotal + taxAmount;
+  const formattedTotal = formatCurrency(total);
 
   const router = useRouter();
   const handleSubmit = form.handleSubmit((data, event) => {
@@ -172,23 +186,70 @@ export const InvoiceDetails = ({
                 )}
               />
             ))}
-            <Button
-              variant='ghost'
-              className='text-sorbet self-start'
-              type='button'
-              onClick={() => {
-                form.setValue('items', [...items, emptyInvoiceItemData]);
-              }}
-            >
-              <Plus className='mr-1 size-5' /> Add item
-            </Button>
+            {hasTax && (
+              <FormField
+                name='tax'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <SalesTaxItem
+                        tax={field.value ?? 0}
+                        onChange={field.onChange}
+                        className='animate-in slide-in-from-top-3 fade-in-0'
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            <div className='space-x-4'>
+              <Button
+                variant='ghost'
+                className='text-sorbet'
+                type='button'
+                onClick={() => {
+                  form.setValue('items', [...items, emptyInvoiceItemData]);
+                }}
+              >
+                <Plus className='mr-1 size-5' /> Add item
+              </Button>
+              {!hasTax && (
+                <Button
+                  variant='ghost'
+                  type='button'
+                  onClick={() => {
+                    form.setValue('tax', DEFAULT_TAX_PERCENTAGE);
+                  }}
+                >
+                  <Plus className='mr-1 size-5' /> Sales tax
+                </Button>
+              )}
+            </div>
           </div>
 
-          <div className='flex justify-between border-t border-gray-200 py-4'>
-            <span className='text-sm font-semibold'>Total</span>
-            <TextMorph className='text-xl font-semibold'>
-              {formattedTotal}
-            </TextMorph>
+          <div className='flex flex-col gap-1 border-t border-gray-200 py-4'>
+            <div className='flex justify-between gap-1'>
+              <span className='text-sm font-semibold'>Subtotal</span>
+              <TextMorph className='text-base font-medium'>
+                {formattedSubtotal}
+              </TextMorph>
+            </div>
+            {hasTax && (
+              <div className='flex justify-between gap-1'>
+                <span className='text-sm font-semibold'>{`Tax (${tax}%)`}</span>
+                <TextMorph className='text-base font-medium'>
+                  {formattedTaxAmount}
+                </TextMorph>
+              </div>
+            )}
+            <div className='flex justify-between gap-1'>
+              <span className='text-sm font-semibold'>Total</span>
+              <TextMorph className='text-xl font-semibold'>
+                {formattedTotal}
+              </TextMorph>
+            </div>
           </div>
           <CreateInvoiceFooter>
             <BackButton onClick={onBack}>Back</BackButton>
@@ -290,6 +351,49 @@ const InvoiceItem = ({
       </div>
       {/* TODO: Revisit FormMessage errors for these items. Currently, they just say "undefined" */}
       {/* <FormMessage /> */}
+    </div>
+  );
+};
+
+/**
+ * Local component to display a single sales tax item
+ */
+const SalesTaxItem = ({
+  tax,
+  onChange,
+  className,
+}: {
+  tax: number;
+  onChange?: (tax: number) => void;
+  className?: string;
+}) => {
+  return (
+    <div className={cn('flex items-center justify-between gap-6', className)}>
+      <Label htmlFor='tax' className='w-full min-w-fit max-w-sm'>
+        Sales Tax (%)
+      </Label>
+
+      {/* Placeholder div to align with row above */}
+      <div className='h-full w-full max-w-32' aria-hidden='true' />
+
+      {/* Sales tax input with suffix */}
+      <div className='relative w-full max-w-56'>
+        <Input
+          id='tax'
+          type='number'
+          placeholder='Sales tax'
+          value={tax}
+          onChange={(e) => {
+            onChange?.(parseFloat(e.target.value));
+          }}
+          className='no-spin-buttons pr-7 text-right'
+          autoFocus
+        />
+        <span className='absolute right-3 top-1/2 -translate-y-1/2'>%</span>
+      </div>
+      <Button variant='ghost' type='button' onClick={() => onChange?.(0)}>
+        <Trash01 className='size-5' />
+      </Button>
     </div>
   );
 };
