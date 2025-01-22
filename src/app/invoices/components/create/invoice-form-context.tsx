@@ -7,6 +7,7 @@ import {
   parseAsJson,
   parseAsString,
   useQueryStates,
+  parseAsFloat,
 } from 'nuqs';
 import React, { createContext, useContext } from 'react';
 
@@ -70,6 +71,7 @@ export const InvoiceFormProvider = ({
     projectName: parseAsString,
     invoiceNumber: parseAsString,
     items: parseAsArrayOf<InvoiceItemData>(parseAsJson()),
+    tax: parseAsFloat,
   };
   const serializeInvoiceDetails = createSerializer(invoiceDetailsQueryState);
   const [invoiceDetails, setInvoiceDetails] = useQueryStates(
