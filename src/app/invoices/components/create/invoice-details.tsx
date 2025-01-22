@@ -62,7 +62,7 @@ const formSchema = z.object({
     { message: "You've already used this invoice number" }
   ),
   items: z.array(InvoiceItemDataSchema),
-  tax: z.coerce.number().min(0).max(100).optional().nullable(),
+  tax: z.coerce.number().min(0).max(100).optional(),
 });
 
 export type InvoiceDetailsFormSchema = z.infer<typeof formSchema>;
@@ -87,7 +87,7 @@ export const InvoiceDetails = ({
       projectName: formData.projectName ?? '',
       invoiceNumber: formData.invoiceNumber ?? invoiceNumber ?? '',
       items: formData.items ?? [emptyInvoiceItemData],
-      tax: formData.tax ?? 0,
+      tax: formData.tax ?? undefined,
     },
     mode: 'all',
   });
@@ -112,12 +112,12 @@ export const InvoiceDetails = ({
 
   const items = form.watch('items');
   const tax = form.watch('tax');
-  const hasTax = tax !== 0;
+  const hasTax = tax !== undefined;
 
   const router = useRouter();
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
-    const newFormData = { ...formData, ...data };
+    const newFormData = { ...formData, ...data, tax: tax ?? undefined };
     onSubmit?.(newFormData);
     router.push(
       `/invoices/create/payment-details${serializeFormData(newFormData)}`
@@ -365,7 +365,7 @@ const SalesTaxItem = ({
   className,
 }: {
   tax: number;
-  onChange?: (tax: number) => void;
+  onChange?: (tax: number | undefined) => void;
   className?: string;
 }) => {
   return (
@@ -392,7 +392,11 @@ const SalesTaxItem = ({
         />
         <span className='absolute right-3 top-1/2 -translate-y-1/2'>%</span>
       </div>
-      <Button variant='ghost' type='button' onClick={() => onChange?.(0)}>
+      <Button
+        variant='ghost'
+        type='button'
+        onClick={() => onChange?.(undefined)}
+      >
         <Trash01 className='size-5' />
       </Button>
     </div>
