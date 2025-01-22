@@ -38,7 +38,7 @@ export const sampleInvoices: Invoice[] = [
     userId: 'a1b2c3d4-e5f6-4a5b-9c8d-7e6f5a4b3c2d',
     invoiceNumber: 'INV005',
     status: 'Paid',
-    totalAmount: 1250.0,
+    totalAmount: 1375.0,
     issueDate: subDays(new Date(), 60),
     dueDate: subDays(new Date(), 30),
     memo: 'Payment received with thanks',
@@ -59,6 +59,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 50.0,
       },
     ],
+    tax: 10,
   },
   {
     id: 'c2d8f3a1-8f7b-4e3c-9d6a-8b7f9e2c1d3b',

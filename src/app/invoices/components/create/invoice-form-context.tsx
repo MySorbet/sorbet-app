@@ -3,6 +3,7 @@
 import {
   createSerializer,
   parseAsArrayOf,
+  parseAsFloat,
   parseAsIsoDateTime,
   parseAsJson,
   parseAsString,
@@ -70,6 +71,7 @@ export const InvoiceFormProvider = ({
     projectName: parseAsString,
     invoiceNumber: parseAsString,
     items: parseAsArrayOf<InvoiceItemData>(parseAsJson()),
+    tax: parseAsFloat,
   };
   const serializeInvoiceDetails = createSerializer(invoiceDetailsQueryState);
   const [invoiceDetails, setInvoiceDetails] = useQueryStates(

@@ -3,7 +3,11 @@ import { forwardRef } from 'react';
 import { formatCurrency } from '@/lib/currency';
 
 import { InvoiceFormData } from './create/invoice-form-context';
-import { calculateTotalAmount, formatDate, Invoice } from './dashboard/utils';
+import {
+  calculateSubtotalTaxAndTotal,
+  formatDate,
+  Invoice,
+} from './dashboard/utils';
 /**
  * Render a PDF-like document displaying the invoice details.
  *
@@ -19,11 +23,12 @@ export const InvoiceDocument = forwardRef<
   HTMLDivElement,
   { invoice: InvoiceFormData | Invoice }
 >(({ invoice }, ref) => {
+  const { taxAmount, total } = calculateSubtotalTaxAndTotal(invoice);
   // Total amount is dependent on which type of invoice we get
-  const totalAmount =
-    'totalAmount' in invoice
-      ? invoice.totalAmount
-      : calculateTotalAmount(invoice.items ?? []);
+  // If this is full invoice from the server, the amount has been calculated already
+  // If this is form data, we'll need to calculate it ourselves
+  const totalAmount = 'totalAmount' in invoice ? invoice.totalAmount : total;
+
   return (
     <div
       className='mx-auto min-w-[800px] max-w-4xl rounded-2xl bg-white p-16'
@@ -93,6 +98,15 @@ export const InvoiceDocument = forwardRef<
               </td>
             </tr>
           ))}
+          {taxAmount > 0 && (
+            <tr>
+              <td className='py-3 text-xs'>{/** Empty cell */}</td>
+              <td className='py-3 text-right text-xs'>Sales Tax</td>
+              <td className='py-3 text-right text-xs'>
+                {formatCurrency(taxAmount)}
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
 

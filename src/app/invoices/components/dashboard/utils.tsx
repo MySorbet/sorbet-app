@@ -33,6 +33,21 @@ export const calculateTotalAmount = (items: InvoiceItemData[]) => {
 };
 
 /**
+ * Calculates the subtotal, tax amount, and total amount for an invoice.
+ *
+ * @param invoice - The invoice to calculate the subtotal, tax amount, and total amount for. Only the `items` and `tax` properties are required.
+ * @returns An object containing the subtotal, tax amount, and total amount.
+ */
+export const calculateSubtotalTaxAndTotal = (
+  invoice: Pick<InvoiceFormData, 'items' | 'tax'>
+) => {
+  const subtotal = calculateTotalAmount(invoice.items ?? []);
+  const taxAmount = invoice.tax ? subtotal * (invoice.tax / 100) : 0;
+  const total = subtotal + taxAmount;
+  return { subtotal, taxAmount, total };
+};
+
+/**
  * Use this to format dates anywhere within invoices
  */
 export const formatDate = (date?: Date | string | null) => {
