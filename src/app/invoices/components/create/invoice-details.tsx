@@ -391,7 +391,12 @@ const SalesTaxItem = ({
           value={tax}
           onChange={(e) => {
             const value = e.target.value;
-            onChange?.(value === '' ? 0 : parseFloat(value));
+            const parsedValue = value === '' ? 0 : parseFloat(value);
+            if (parsedValue === 0) {
+              onChange?.(undefined);
+            } else {
+              onChange?.(parsedValue);
+            }
           }}
           className='no-spin-buttons pr-7 text-right'
           autoFocus
