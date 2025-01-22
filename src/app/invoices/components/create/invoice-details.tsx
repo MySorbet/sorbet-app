@@ -336,7 +336,12 @@ const InvoiceItem = ({
             placeholder='amount'
             value={item.amount}
             onChange={(e) => {
-              onChange?.({ ...item, amount: parseFloat(e.target.value) });
+              const value = e.target.value;
+              // TODO: There must be a better way to coerce the number from the input
+              onChange?.({
+                ...item,
+                amount: value === '' ? 0 : parseFloat(value),
+              });
             }}
             className='no-spin-buttons text-right'
           />
@@ -385,7 +390,8 @@ const SalesTaxItem = ({
           placeholder='Sales tax'
           value={tax}
           onChange={(e) => {
-            onChange?.(parseFloat(e.target.value));
+            const value = e.target.value;
+            onChange?.(value === '' ? 0 : parseFloat(value));
           }}
           className='no-spin-buttons pr-7 text-right'
           autoFocus
