@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { calculateTotalAmount } from '../dashboard/utils';
+import { calculateSubtotalTaxAndTotal } from '../dashboard/utils';
 import { BackButton } from './back-button';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
@@ -103,17 +103,16 @@ export const InvoiceDetails = ({
     }
   }, [form, invoiceNumber]);
 
+  const { subtotal, taxAmount, total } = calculateSubtotalTaxAndTotal(
+    form.getValues()
+  );
+  const formattedSubtotal = formatCurrency(subtotal);
+  const formattedTaxAmount = formatCurrency(taxAmount);
+  const formattedTotal = formatCurrency(total);
+
   const items = form.watch('items');
   const tax = form.watch('tax');
-  const subtotal = calculateTotalAmount(items ?? []);
-  const formattedSubtotal = formatCurrency(subtotal);
-
-  const taxAmount = tax ? subtotal * (tax / 100) : 0;
-  const formattedTaxAmount = formatCurrency(taxAmount);
   const hasTax = tax !== 0;
-
-  const total = subtotal + taxAmount;
-  const formattedTotal = formatCurrency(total);
 
   const router = useRouter();
   const handleSubmit = form.handleSubmit((data, event) => {
@@ -230,19 +229,21 @@ export const InvoiceDetails = ({
           </div>
 
           <div className='flex flex-col gap-1 border-t border-gray-200 py-4'>
-            <div className='flex justify-between gap-1'>
-              <span className='text-sm font-semibold'>Subtotal</span>
-              <TextMorph className='text-base font-medium'>
-                {formattedSubtotal}
-              </TextMorph>
-            </div>
             {hasTax && (
-              <div className='flex justify-between gap-1'>
-                <span className='text-sm font-semibold'>{`Tax (${tax}%)`}</span>
-                <TextMorph className='text-base font-medium'>
-                  {formattedTaxAmount}
-                </TextMorph>
-              </div>
+              <>
+                <div className='flex justify-between gap-1'>
+                  <span className='text-sm font-semibold'>Subtotal</span>
+                  <TextMorph className='text-base font-medium'>
+                    {formattedSubtotal}
+                  </TextMorph>
+                </div>
+                <div className='flex justify-between gap-1'>
+                  <span className='text-sm font-semibold'>{`Tax (${tax}%)`}</span>
+                  <TextMorph className='text-base font-medium'>
+                    {formattedTaxAmount}
+                  </TextMorph>
+                </div>
+              </>
             )}
             <div className='flex justify-between gap-1'>
               <span className='text-sm font-semibold'>Total</span>
