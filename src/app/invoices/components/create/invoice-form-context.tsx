@@ -3,11 +3,11 @@
 import {
   createSerializer,
   parseAsArrayOf,
+  parseAsFloat,
   parseAsIsoDateTime,
   parseAsJson,
   parseAsString,
   useQueryStates,
-  parseAsFloat,
 } from 'nuqs';
 import React, { createContext, useContext } from 'react';
 
