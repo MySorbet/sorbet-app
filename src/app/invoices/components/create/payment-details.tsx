@@ -50,7 +50,7 @@ const paymentDetailsSchema = z.object({
     .refine(isInTheFuture, {
       message: 'Due date must be a future date',
     }),
-  memo: z.string().optional(),
+  memo: z.string().max(800, 'Memo must be less than 800 characters').optional(), // Note: this max should match backend validation
 });
 
 export type PaymentDetailsFormData = z.infer<typeof paymentDetailsSchema>;
@@ -137,7 +137,7 @@ export const PaymentDetails = ({ onBack, onSubmit }: PaymentDetailsProps) => {
                 <FormControl>
                   <Textarea
                     placeholder='Payment terms or additional info'
-                    className='w-full max-w-md resize-none'
+                    className='max-h-72 min-h-28 w-full max-w-md resize-y'
                     {...field}
                   />
                 </FormControl>

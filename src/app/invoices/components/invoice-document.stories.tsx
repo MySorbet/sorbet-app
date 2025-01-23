@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { sampleInvoices } from '@/api/invoices/sample-invoices';
+import { longestMemo, sampleInvoices } from '@/api/invoices/sample-invoices';
 import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
 
 import { InvoiceDocument } from './invoice-document';
@@ -65,5 +65,14 @@ const sampleInvoiceFormData: InvoiceFormData = {
 export const WithOnlyFormData: Story = {
   args: {
     invoice: sampleInvoiceFormData,
+  },
+};
+
+export const LongMemo: Story = {
+  args: {
+    invoice: {
+      ...sampleInvoices[0],
+      memo: longestMemo,
+    },
   },
 };

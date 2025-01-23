@@ -192,3 +192,7 @@ export const sampleInvoices: Invoice[] = [
     ],
   },
 ];
+
+/** 792 character memo */
+export const longestMemo =
+  'Sit consectetur sunt enim. Ea consequat culpa sit nostrud exercitation. Proident occaecat incididunt commodo consequat deserunt nulla esse ad anim quis sint. Duis minim minim proident excepteur culpa nulla nostrud labore irure non incididunt sit enim. Eiusmod ipsum consectetur laborum. Id consectetur incididunt do mollit adipisicing nostrud. Tempor ad consequat deserunt magna adipisicing. Nisi dolor qui excepteur Lorem amet. Aute aliquip in ea magna consectetur laboris nostrud incididunt cupidatat ut culpa duis Lorem. Ex exercitation excepteur sint sit do et duis sunt. Fugiat laborum eu non laborum ea. Qui quis non magna qui minim ullamco velit laborum proident ad esse ipsum. Nulla eiusmod non proident cillum amet do amet exercitation est consectetur veniam. Cupidatat dolore Lorem.';

@@ -148,7 +148,7 @@ export const InvoiceDocument = forwardRef<
                 <p className='text-xs font-semibold'>USDC, ACH / Wire</p>
               </div>
             </td>
-            <td className='pt-2'>
+            <td className='max-w-sm pt-2'>
               <p className='text-xs'>{invoice.memo}</p>
             </td>
           </tr>
