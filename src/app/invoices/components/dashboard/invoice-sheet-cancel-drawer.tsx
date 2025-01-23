@@ -32,7 +32,7 @@ export const InvoiceSheetCancelDrawer = ({
     if (open) {
       setIsVisible(true);
     } else {
-      const timer = setTimeout(() => setIsVisible(false), 150); // Matches default animation duration
+      const timer = setTimeout(() => setIsVisible(false), 150 - 10); // Matches default animation duration (minus 10ms to avoid flickering)
       return () => clearTimeout(timer);
     }
   }, [open]);
