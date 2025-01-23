@@ -45,6 +45,8 @@ type InvoiceSheetProps = {
   isUpdating?: boolean;
   /** Called when the invoice status is changed (via the status badge) */
   onInvoiceStatusChange?: (status: InvoiceStatus) => void;
+  /** Whether to force the cancel confirmation drawer to open */
+  forceConfirmCancel?: boolean;
 };
 
 /**
@@ -59,19 +61,37 @@ export default function InvoiceSheet({
   onDownload,
   isUpdating,
   onInvoiceStatusChange,
+  forceConfirmCancel,
 }: InvoiceSheetProps) {
   // Manage the open state of the cancel confirmation drawer
   // Effect closes the cancel confirmation drawer if the invoice is cancelled
   const [cancelDrawerOpen, setCancelDrawerOpen] = useState(false);
+
   useEffect(() => {
     if (invoice?.status === 'Cancelled') {
       setCancelDrawerOpen(false);
     }
   }, [invoice?.status]);
 
+  // If forceConfirmCancel is true, open the cancel confirmation drawer
+  useEffect(() => {
+    if (forceConfirmCancel) {
+      setCancelDrawerOpen(true);
+    }
+  }, [forceConfirmCancel]);
+
   if (!invoice) return null;
 
   const invoiceLink = `${window.location.origin}/invoices/${invoice.id}`;
+
+  // Capture the status change from the status badge and open the cancel drawer if the status is cancelled
+  const handleStatusBadgeChange = (status: InvoiceStatus) => {
+    if (status === 'Cancelled') {
+      setCancelDrawerOpen(true);
+    } else {
+      onInvoiceStatusChange?.(status);
+    }
+  };
 
   return (
     <Sheet
@@ -99,7 +119,7 @@ export default function InvoiceSheet({
             <InvoiceStatusBadge
               variant={checkOverdue(invoice.dueDate, invoice.status)}
               interactive
-              onValueChange={onInvoiceStatusChange}
+              onValueChange={handleStatusBadgeChange}
             />
             <div
               className={cn(

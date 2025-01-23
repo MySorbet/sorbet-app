@@ -5,6 +5,7 @@ import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useIsInvoiceSheetOpen } from '@/app/invoices/hooks/use-is-invoice-sheet-open';
 import { Button } from '@/components/ui/button';
 
 import { useCancelInvoice } from '../../hooks/use-cancel-invoice';
@@ -43,18 +44,20 @@ export const InvoiceDashboard = ({
   const paidInvoices = invoices.filter((invoice) => invoice.status === 'Paid');
 
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice>();
-  const [isInvoiceSheetOpen, setIsInvoiceSheetOpen] = useState(false);
+  const {
+    isInvoiceSheetOpen,
+    setIsInvoiceSheetOpen,
+    forceOpenCancelDrawer,
+    setForceOpenCancelDrawer,
+  } = useIsInvoiceSheetOpen();
 
   // Manage the open state of the invoice sheet
   // When closing, wait for the animation to complete
   // before clearing the selected invoice
   const handleInvoiceSheetOpen = (open: boolean) => {
-    setIsInvoiceSheetOpen(open);
-    if (!open) {
-      setTimeout(() => {
-        setSelectedInvoice(undefined);
-      }, 300);
-    }
+    setIsInvoiceSheetOpen(open, undefined, () => {
+      setSelectedInvoice(undefined);
+    });
   };
 
   // Cancel an invoice using the mutation hook. When complete, set the selected
@@ -66,6 +69,7 @@ export const InvoiceDashboard = ({
     if (!selectedInvoice) return;
     const cancelledInvoice = await cancelInvoiceMutation(selectedInvoice.id);
     setSelectedInvoice(cancelledInvoice);
+    setForceOpenCancelDrawer(false);
     // Force the parent to re-fetch invoices
     queryClient.invalidateQueries({
       queryKey: ['invoices'],
@@ -83,10 +87,15 @@ export const InvoiceDashboard = ({
     status: InvoiceStatus
   ) => {
     if (status === 'Cancelled') {
-      await cancelInvoiceMutation(invoice.id);
+      setSelectedInvoice({ ...invoice });
+      setIsInvoiceSheetOpen(true, true); // Set the invoice sheet open and force the cancel drawer open
     } else if (status === 'Paid') {
+      // Optimistically update the status
+      setSelectedInvoice({ ...invoice, status });
       await payInvoiceMutation(invoice.id);
     } else if (status === 'Open') {
+      // Optimistically update the status
+      setSelectedInvoice({ ...invoice, status });
       await openInvoiceMutation(invoice.id);
     } else {
       toast.error(`Cannot change invoice status to ${status}`);
@@ -110,14 +119,13 @@ export const InvoiceDashboard = ({
       <InvoiceSheet
         open={isInvoiceSheetOpen}
         setOpen={handleInvoiceSheetOpen}
+        forceConfirmCancel={forceOpenCancelDrawer}
         invoice={selectedInvoice}
         onDownload={print}
         onCancel={handleCancelInvoice}
         isUpdating={isPending}
         onInvoiceStatusChange={(status) => {
           if (!selectedInvoice) return;
-          // Optimistically update the status
-          setSelectedInvoice({ ...selectedInvoice, status });
           handleInvoiceStatusChange(selectedInvoice, status);
         }}
       />
