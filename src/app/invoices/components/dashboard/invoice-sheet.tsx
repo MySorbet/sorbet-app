@@ -8,6 +8,7 @@ import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
@@ -101,7 +102,7 @@ export default function InvoiceSheet({
         setOpen(open);
       }}
     >
-      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 overflow-y-auto p-6'>
+      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 p-5'>
         <SheetHeader className='gap-2 sm:gap-0'>
           <SheetTitle className='text-sm font-medium'>
             {invoice.toName}
@@ -113,66 +114,73 @@ export default function InvoiceSheet({
           </VisuallyHidden>
         </SheetHeader>
 
-        <div className='flex flex-1 flex-col gap-12'>
-          {/* Invoice status and total amount */}
-          <div>
-            <InvoiceStatusBadge
-              variant={checkOverdue(invoice.dueDate, invoice.status)}
-              interactive
-              onValueChange={handleStatusBadgeChange}
-            />
-            <div
-              className={cn(
-                'mt-3 text-2xl font-semibold',
-                invoice.status === 'Cancelled' && 'line-through'
-              )}
-            >
-              {formatCurrency(invoice.totalAmount)}
+        <ScrollArea className='h-full w-full'>
+          <div className='flex flex-1 flex-col gap-12 p-1'>
+            {/* Invoice status and total amount */}
+            <div>
+              <InvoiceStatusBadge
+                variant={checkOverdue(invoice.dueDate, invoice.status)}
+                interactive
+                onValueChange={handleStatusBadgeChange}
+              />
+              <div
+                className={cn(
+                  'mt-3 text-2xl font-semibold',
+                  invoice.status === 'Cancelled' && 'line-through'
+                )}
+              >
+                {formatCurrency(invoice.totalAmount)}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Invoice details */}
+            <div className='space-y-4'>
+              <InvoiceDetail
+                label='Due date'
+                value={formatDate(invoice.dueDate)}
+              />
+              <InvoiceDetail
+                label='Invoice date'
+                value={formatDate(invoice.issueDate)}
+              />
+              <InvoiceDetail
+                label='Invoice no.'
+                value={invoice.invoiceNumber}
+              />
+              <InvoiceDetail label='Project name' value={invoice.projectName} />
+            </div>
+
+            <Separator />
+
+            {/* Invoice payment link */}
+            <div className='space-y-2'>
+              <Label className='text-sm font-medium'>
+                Invoice payment link
+              </Label>
+              <Input value={invoiceLink} readOnly className='truncate' />
+              <div className='flex gap-2'>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  className='min-w-11'
+                  onClick={onDownload}
+                >
+                  <Download01 className='size-4' />
+                </Button>
+                <CopyButton
+                  className='w-full'
+                  stringToCopy={invoiceLink}
+                  copyIconClassName='size-4'
+                  checkIconClassName='size-4'
+                >
+                  Copy Invoice Link
+                </CopyButton>
+              </div>
             </div>
           </div>
-
-          <Separator />
-
-          {/* Invoice details */}
-          <div className='space-y-4'>
-            <InvoiceDetail
-              label='Due date'
-              value={formatDate(invoice.dueDate)}
-            />
-            <InvoiceDetail
-              label='Invoice date'
-              value={formatDate(invoice.issueDate)}
-            />
-            <InvoiceDetail label='Invoice no.' value={invoice.invoiceNumber} />
-            <InvoiceDetail label='Project name' value={invoice.projectName} />
-          </div>
-
-          <Separator />
-
-          {/* Invoice payment link */}
-          <div className='space-y-2'>
-            <Label className='text-sm font-medium'>Invoice payment link</Label>
-            <Input value={invoiceLink} readOnly className='truncate' />
-            <div className='flex gap-2'>
-              <Button
-                variant='outline'
-                size='icon'
-                className='min-w-11'
-                onClick={onDownload}
-              >
-                <Download01 className='size-4' />
-              </Button>
-              <CopyButton
-                className='w-full'
-                stringToCopy={invoiceLink}
-                copyIconClassName='size-4'
-                checkIconClassName='size-4'
-              >
-                Copy Invoice Link
-              </CopyButton>
-            </div>
-          </div>
-        </div>
+        </ScrollArea>
 
         {/* Invoice actions */}
         <SheetFooter className='items-end gap-2 sm:gap-0'>
