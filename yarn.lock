@@ -16275,14 +16275,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-themes@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "next-themes@npm:0.2.1"
+"next-themes@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "next-themes@npm:0.4.4"
   peerDependencies:
-    next: "*"
-    react: "*"
-    react-dom: "*"
-  checksum: 10c0/979dec0a2de049ce7d1b5da835e7f7dc3b7ec83ba9e464348f497a52a6a6e5b5c395c97f071f66a63f50f22cce89fb6d19061ec7e75643b0eab215b21794bde7
+    react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/45d82f968ccfc90f6e6e3cdb95962132f6d1e19eaf614c4e824fc5d079ec522dd50cc196c58da2f000d755b81dbb0caf378c4f512a9e6b6c0a0daa3f99f1a2c7
   languageName: node
   linkType: hard
 
@@ -19268,13 +19267,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sonner@npm:^1.4.3":
-  version: 1.7.0
-  resolution: "sonner@npm:1.7.0"
+"sonner@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "sonner@npm:1.7.2"
   peerDependencies:
     react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
-  checksum: 10c0/02b16249b0c6e3a62c50dbcb643bb089aecd82c4f0ae988d00903e427d5485933d6cb59047fe5da338b548b6a3311643e511f63ed60a938458295015f7a3fdfd
+  checksum: 10c0/9c16d1d7daa6ad5d690d0213905bf4348d038c8649ebec67e42a0615057b3fb7eab24de14d540163189a415459a48f571182dac541e475f251c987060b7c02b6
   languageName: node
   linkType: hard
 
@@ -19390,7 +19389,7 @@ __metadata:
     next-redux-wrapper: "npm:^8.1.0"
     next-router-mock: "npm:^0.7.5"
     next-sitemap: "npm:^4.2.3"
-    next-themes: "npm:^0.2.1"
+    next-themes: "npm:^0.4.4"
     nuqs: "npm:^1.20.0"
     octokit: "npm:^3.1.2"
     permissionless: "npm:^0.2.18"
@@ -19428,7 +19427,7 @@ __metadata:
     save: "npm:^2.9.0"
     sharp: "npm:^0.33.5"
     socket.io-client: "npm:^4.7.2"
-    sonner: "npm:^1.4.3"
+    sonner: "npm:^1.7.2"
     storybook: "npm:^8.5.1"
     tailwind-merge: "npm:^2.2.1"
     tailwindcss: "npm:^3.3.3"

@@ -37,18 +37,11 @@ const NotificationToasts = () => {
           queryClient.invalidateQueries({ queryKey: ['offers'] });
         }
         toast(
-          notification.data.title != ''
-            ? notification.data.title
-            : 'Notification',
-          {
-            description: (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: notification.blocks[0].rendered,
-                }}
-              />
-            ),
-          }
+          <div
+            dangerouslySetInnerHTML={{
+              __html: notification.blocks[0].rendered,
+            }}
+          />
         );
       });
     },
