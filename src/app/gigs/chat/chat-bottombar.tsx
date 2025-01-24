@@ -1,8 +1,5 @@
 import { GroupChannel } from '@sendbird/chat/groupChannel';
-import {
-  ArrowNarrowUp,
-  Attachment01,
-} from '@untitled-ui/icons-react';
+import { ArrowNarrowUp, Attachment01 } from '@untitled-ui/icons-react';
 import React, {
   Dispatch,
   RefObject,
@@ -11,10 +8,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
 import {
   FileMessage,
   SendMessageParams,
@@ -55,8 +52,6 @@ export default function ChatBottombar({
     setDisabled(message.trim().length === 0 && files.length === 0);
   }, [message, files]);
 
-  const { toast } = useToast();
-
   //TODO: Refactor funcs that use send message to use optimistic updates
 
   const handleFileClick = () => {
@@ -66,7 +61,7 @@ export default function ChatBottombar({
     if (event.target.files) {
       // temporarily only allow one file to be uploaded because sb uses a different method for multiple files
       if (files.length === 1) {
-        toast({ title: 'Only one file can be uploaded at a time.' });
+        toast.error('Only one file can be uploaded at a time.');
         return;
       }
       setFiles((prevFiles) => [

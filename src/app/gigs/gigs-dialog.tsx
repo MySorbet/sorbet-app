@@ -8,6 +8,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { FileCheck02 } from '@untitled-ui/icons-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { encodeFunctionData, formatUnits, hexToBigInt, parseUnits } from 'viem';
 
 import {
@@ -35,7 +36,6 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useToast } from '@/components/ui/use-toast';
 import { CONTRACT_ABI, TOKEN_ABI } from '@/constant/abis';
 import { useGetContractForOffer } from '@/hooks';
 import { useLocalStorage } from '@/hooks';
@@ -76,7 +76,6 @@ export const GigsDialog = ({
   const [contractApproved, setContractApproved] = useState<boolean>(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { toast } = useToast();
   const { ready, wallets } = useWallets();
 
   const queryClient = useQueryClient();
@@ -103,8 +102,7 @@ export const GigsDialog = ({
   };
 
   if (isGetContractError) {
-    toast({
-      title: 'Unable to fetch contract information',
+    toast.error('Unable to fetch contract information', {
       description: 'If the problem persists, please contract support',
     });
   }
@@ -131,13 +129,11 @@ export const GigsDialog = ({
         //   await updateOfferStatus(currentOffer?.id, 'Accepted');
         // }
         setContractApproved(true);
-        toast({
-          title: 'Contract approved',
+        toast.success('Contract approved', {
           description: 'You can now fund the contract.',
         });
       } else {
-        toast({
-          title: 'Something went wrong',
+        toast.error('Unable to approve contract', {
           description:
             'Unable to approve contract. If the issue persists, please contact support',
         });
@@ -158,13 +154,11 @@ export const GigsDialog = ({
       if (response && response.data) {
         setContractApproved(false);
         setIsRejectDialogOpen(false);
-        toast({
-          title: 'Contract rejected',
+        toast.success('Contract rejected', {
           description: 'The contract offer was rejected',
         });
       } else {
-        toast({
-          title: 'Something went wrong',
+        toast.error('Unable to reject contract', {
           description:
             'Unable to reject contract. If the issue persists, please contact support',
         });
@@ -185,8 +179,7 @@ export const GigsDialog = ({
       // await updateOfferStatus(currentOffer?.id, 'Completed');
       await updateContractStatus(contractData.id, 'Completed');
     }
-    toast({
-      title: 'Contract completed',
+    toast.success('Contract completed', {
       description: 'The contract has been completed',
     });
     invalidateQueries();
@@ -218,8 +211,7 @@ export const GigsDialog = ({
           afterContractSubmitted();
         }
       } else {
-        toast({
-          title: 'Unable to submit contract',
+        toast.error('Unable to submit contract', {
           description: 'Something went wrong, please try again',
         });
       }
@@ -249,8 +241,7 @@ export const GigsDialog = ({
           afterContractSubmitted();
         }
       } else {
-        toast({
-          title: 'Unable to submit contract',
+        toast.error('Unable to submit contract', {
           description: 'Something went wrong, please try again',
         });
       }
@@ -270,10 +261,8 @@ export const GigsDialog = ({
         contractData?.freelanceId
       );
       if (!freelancerAddress || freelancerAddress === '') {
-        toast({
-          title: 'Freelancer address not found',
+        toast.error('Freelancer address not found', {
           description: 'Unable to fund milestone',
-          variant: 'destructive',
         });
         return;
       }
@@ -303,8 +292,7 @@ export const GigsDialog = ({
         // amount = 0.01;
 
         if (hexToBigInt(balanceResult) < parseUnits(amount.toString(), 6)) {
-          toast({
-            title: 'Insufficient balance',
+          toast.error('Insufficient balance', {
             description: `You need at least ${amount} USDC to perform this action. Only ${formatUnits(
               hexToBigInt(balanceResult),
               6
@@ -339,22 +327,17 @@ export const GigsDialog = ({
         // await updateMilestoneStatus(milestoneId, 'Active');
         // await updateContractStatus(projectId, 'InProgress');
 
-        toast({
-          title: 'Transaction Successful',
+        toast.success('Transaction Successful', {
           description: 'Milestone funded successfully ',
         });
       } else {
-        toast({
-          title: 'Something went wrong',
+        toast.error('Unable to fund milestone', {
           description: 'Your Privy wallet was not detected. Please try again',
-          variant: 'destructive',
         });
       }
     } catch (err) {
-      toast({
-        title: 'Transaction Failed',
+      toast.error('Transaction Failed', {
         description: 'Failed to Fund Milestone. Please try again',
-        variant: 'destructive',
       });
       console.error('Failed to fund milestone', err);
       throw err;
@@ -369,15 +352,12 @@ export const GigsDialog = ({
   ) => {
     const response = await updateMilestoneStatus(milestoneId, 'InReview');
     if (response && response.data) {
-      toast({
-        title: 'Milestone submitted',
+      toast.success('Milestone submitted', {
         description: 'Milestone is in review now and awaiting approval',
       });
     } else {
-      toast({
-        title: 'Something went wrong',
+      toast.error('Unable to submit milestone', {
         description: 'Unable to submit milestone, please try again',
-        variant: 'destructive',
       });
     }
 
@@ -408,22 +388,17 @@ export const GigsDialog = ({
         // await updateMilestoneStatus(milestoneId, 'Approved');
         // await updateContractStatus(projectId, 'Completed');
 
-        toast({
-          title: 'Transaction Successful',
+        toast.success('Transaction Successful', {
           description: 'Milestone released successfully ',
         });
       } else {
-        toast({
-          title: 'Something went wrong',
+        toast.error('Unable to release milestone', {
           description: 'Your Privy wallet was not detected. Please try again',
-          variant: 'destructive',
         });
       }
     } catch (err) {
-      toast({
-        title: 'Transaction Failed',
+      toast.error('Transaction Failed', {
         description: 'Failed to Release Milestone. Please try again',
-        variant: 'destructive',
       });
       console.error('Failed to release milestone', err);
       throw err;
@@ -576,7 +551,7 @@ export const GigsDialog = ({
               showTopbar={false}
               isOpen={isOpen}
               offerId={currentOfferId}
-              contractStatus="Approved"
+              contractStatus='Approved'
             />
           )}
           {activeTab === 'Contract' ? (

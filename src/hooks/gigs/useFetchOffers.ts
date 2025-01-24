@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { getClientOffers, getFreelancerOffers } from '@/api/gigs';
-import { useToast } from '@/components/ui/use-toast';
 import { GigsContentType, UserWithId } from '@/types';
 
 export const useFetchOffers = (
@@ -9,13 +9,11 @@ export const useFetchOffers = (
   gigsContentType: GigsContentType,
   status: string
 ) => {
-  const { toast } = useToast();
-
   return useQuery({
     queryKey: ['offers'],
     queryFn: async () => {
       if (loggedInUser?.id) {
-        let response: any;
+        let response;
 
         switch (gigsContentType) {
           case GigsContentType.Sent:
@@ -29,8 +27,7 @@ export const useFetchOffers = (
         if (response?.data) {
           return response.data;
         } else {
-          toast({
-            title: 'Failed to fetch offers',
+          toast.error('Failed to fetch offers', {
             description: 'Try again. If this issue persists, contact support.',
           });
         }

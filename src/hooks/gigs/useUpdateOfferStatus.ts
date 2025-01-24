@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { updateOfferStatus } from '@/api/gigs';
-import { useToast } from '@/components/ui/use-toast';
 import { OfferType } from '@/types';
 
 interface updateOfferStatusParams {
@@ -10,8 +10,6 @@ interface updateOfferStatusParams {
 }
 
 export const useUpdateOfferStatus = () => {
-  const { toast } = useToast();
-
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: updateOfferStatusParams) => {
@@ -19,8 +17,7 @@ export const useUpdateOfferStatus = () => {
       if (currentOffer) {
         if (confirm('Are you sure you want to update this offer?')) {
           await updateOfferStatus(currentOffer.id, status);
-          toast({
-            title: 'Offer rejected',
+          toast.success('Offer rejected', {
             description: 'The offer was rejected successfully',
           });
         }
@@ -28,8 +25,10 @@ export const useUpdateOfferStatus = () => {
         throw new Error('Offer not found');
       }
     },
-    onError: (error: any) => {
-      toast({ title: 'Failed to update offer.', description: error.message });
+    onError: (error) => {
+      toast.error('Failed to update offer.', {
+        description: error.message,
+      });
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['offers'] }),
   });

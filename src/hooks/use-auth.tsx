@@ -11,10 +11,10 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { toast } from 'sonner';
 
 import { signUpWithPrivyId } from '@/api/auth';
 import { getUserByPrivyId } from '@/api/user';
-import { useToast } from '@/components/ui/use-toast';
 import { featureFlags } from '@/lib/flags';
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { reset, updateUserData } from '@/redux/userSlice';
@@ -61,7 +61,6 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
 
   const { logout: logoutPrivy } = usePrivy();
   const router = useRouter();
-  const { toast } = useToast();
 
   // We sync the user from redux to local storage and vice versa
   useEffect(() => {
@@ -154,10 +153,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
           loginResult.error instanceof Error
             ? loginResult.error.message
             : 'Unknown error';
-        toast({
-          title: 'Error logging in',
+        toast.error('Error logging in', {
           description: errorMessage,
-          variant: 'destructive',
         });
         return;
       }
@@ -189,10 +186,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
       if (error === 'exited_auth_flow' || error === 'invalid_credentials') {
         return;
       }
-      toast({
-        title: 'Error logging in',
+      toast.error('Error logging in', {
         description: error,
-        variant: 'destructive',
       });
     },
   });

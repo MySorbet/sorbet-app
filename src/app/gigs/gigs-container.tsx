@@ -2,12 +2,12 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 import Authenticated from '@/app/authenticated';
 import { GigsBoard } from '@/app/gigs/gigs-board';
 import { Header } from '@/components';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/components/ui/use-toast';
 import { useAuth, useLocalStorage } from '@/hooks';
 import { GigsContentType } from '@/types';
 
@@ -19,7 +19,6 @@ export const GigsContainer = () => {
   );
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
 
   const getSuccessNotification = () => {
     let response = {
@@ -73,17 +72,15 @@ export const GigsContainer = () => {
 
     if (transactionHashes && !errorCode && !errorMessage) {
       const { title, description } = getSuccessNotification();
-      toast({ title, description });
+      toast.success(title, { description });
     } else if (errorCode && errorMessage) {
-      toast({
-        title: 'Transaction failed',
+      toast.error('Transaction failed', {
         description: `Transaction failed with error: ${decodeURIComponent(
           errorMessage
         )}`,
-        variant: 'destructive',
       });
     }
-  }, [router, toast]);
+  }, [router]);
 
   return (
     <Authenticated>

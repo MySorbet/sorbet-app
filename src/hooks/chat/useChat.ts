@@ -7,10 +7,10 @@ import {
 } from '@sendbird/chat/groupChannel';
 import { MessageListParams } from '@sendbird/chat/message';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import { sendNotification } from '@/api/chat';
 import { timestampToTime } from '@/app/gigs/chat/sendbird-utils';
-import { useToast } from '@/components/ui/use-toast';
 import { useSendbird } from '@/hooks/chat/useSendbird';
 import { PrismaOfferType, UserWithId } from '@/types';
 import {
@@ -29,7 +29,6 @@ interface useChatProps {
 }
 
 export const useChat = ({ user, logout, isOpen, offer }: useChatProps) => {
-  const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [state, updateState] = useState<ChatState>({
@@ -62,10 +61,8 @@ export const useChat = ({ user, logout, isOpen, offer }: useChatProps) => {
       );
       if (!sender) {
         console.error('Sender not found in channel members');
-        toast({
-          title: 'Authentication error',
+        toast.error('Authentication error', {
           description: 'Please contact support for assistance',
-          variant: 'destructive',
         });
         return;
       }
@@ -74,10 +71,8 @@ export const useChat = ({ user, logout, isOpen, offer }: useChatProps) => {
       );
       if (!recipient) {
         console.error('Recipient not found in channel members');
-        toast({
-          title: 'Authentication error',
+        toast.error('Authentication error', {
           description: 'Please contact support for assistance',
-          variant: 'destructive',
         });
         return;
       }
@@ -196,10 +191,8 @@ export const useChat = ({ user, logout, isOpen, offer }: useChatProps) => {
         return;
       }
       if (!user) {
-        toast({
-          title: 'You are not authenticated',
+        toast.error('You are not authenticated', {
           description: 'Redirecting to login page',
-          variant: 'destructive',
         });
         timeoutId = setTimeout(() => {
           logout();

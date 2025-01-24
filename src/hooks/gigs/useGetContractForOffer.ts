@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { getContractForOffer } from '@/api/gigs';
-import { useToast } from '@/components/ui/use-toast';
 import { ActiveTab } from '@/types';
 
 type useGetContractForOfferParams = {
@@ -17,7 +17,6 @@ type useGetContractForOfferParams = {
 */
 export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
   const { currentOfferId, isOpen, activeTab } = data;
-  const { toast } = useToast();
 
   const query = useQuery({
     queryKey: ['contractForOffer', currentOfferId],
@@ -31,9 +30,8 @@ export const useGetContractForOffer = (data: useGetContractForOfferParams) => {
           return response.data;
         }
       } else {
-        toast({
-          title: 'Unable to fetch contract information',
-          description: 'If the problem persists, please contract support',
+        toast.error('Unable to fetch contract information', {
+          description: 'If the problem persists, please contact support',
         });
         throw new Error('Unable to fetch contract information');
       }

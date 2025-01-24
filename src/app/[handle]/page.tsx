@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { createOffer } from '@/api/gigs';
 import { getUserByHandle } from '@/api/user';
@@ -12,7 +13,6 @@ import {
 } from '@/app/[handle]/project-offer-dialog';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
-import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 
 import { ClaimYourProfile } from './claim-your-profile';
@@ -20,7 +20,6 @@ import { ClaimYourProfile } from './claim-your-profile';
 const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const [isOfferDialogOpen, setOfferDialogOpen] = useState(false);
   const { user } = useAuth();
-  const { toast } = useToast();
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -41,8 +40,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
       });
     },
     onError: () => {
-      toast({
-        title: 'Something went wrong',
+      toast.error('Unable to send offer', {
         description: 'We were unable to send your offer. Please try again',
       });
     },

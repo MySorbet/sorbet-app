@@ -3,8 +3,7 @@
 import { useKnockFeed } from '@knocklabs/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
-
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const KnockContractWorkflows = new Set([
   'contract-finished',
@@ -21,7 +20,6 @@ const KnockContractWorkflows = new Set([
 
 const NotificationToasts = () => {
   const { feedClient } = useKnockFeed();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const onNotificationsReceived = useCallback(
@@ -38,22 +36,23 @@ const NotificationToasts = () => {
           });
           queryClient.invalidateQueries({ queryKey: ['offers'] });
         }
-        toast({
-          title:
-            notification.data.title != ''
-              ? notification.data.title
-              : 'Notification',
-          description: (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: notification.blocks[0].rendered,
-              }}
-            />
-          ),
-        });
+        toast(
+          notification.data.title != ''
+            ? notification.data.title
+            : 'Notification',
+          {
+            description: (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: notification.blocks[0].rendered,
+                }}
+              />
+            ),
+          }
+        );
       });
     },
-    [queryClient, toast]
+    [queryClient]
   );
 
   useEffect(() => {

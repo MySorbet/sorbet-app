@@ -11,6 +11,7 @@ export const InvoiceStatuses = [
 ] as const;
 export type InvoiceStatus = (typeof InvoiceStatuses)[number];
 
+// ! Remember to update the knock JSON validation schema if you change this. Otherwise notifications will fail.
 export type Invoice = InvoiceFormData & {
   status: InvoiceStatus;
   totalAmount: number;

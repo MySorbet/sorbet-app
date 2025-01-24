@@ -19,6 +19,7 @@ import {
   useFormState,
 } from 'react-hook-form';
 import useMeasure from 'react-use-measure';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -39,7 +40,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
 import { env } from '@/lib/env';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
@@ -69,8 +69,6 @@ export const WalletSendDialog = ({
   const [step, setStep] = useState<number>(1);
 
   const [contentRef] = useMeasure();
-
-  const { toast } = useToast();
 
   const formSchema = z.object({
     amount: z
@@ -152,10 +150,8 @@ export const WalletSendDialog = ({
         setOpen(true);
         return;
       }
-      toast({
-        title: 'Transaction failed',
+      toast.error('Transaction failed', {
         description: 'Failed to send USDC',
-        variant: 'destructive',
       });
     },
     onSuccess: () => {

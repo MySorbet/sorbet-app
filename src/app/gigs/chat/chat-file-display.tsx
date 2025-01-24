@@ -1,10 +1,9 @@
 'use client';
 
-import {
-  Download,
-} from 'lucide-react';
+import { Download } from 'lucide-react';
 import Image from 'next/image';
 import { ReactNode, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { fetchFile } from '@/api/chat';
 import { formatBytes } from '@/app/gigs/chat/sendbird-utils';
@@ -15,7 +14,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import {
   SBFileMessage,
@@ -45,7 +43,6 @@ const FileDisplay = ({
 }: FileDisplayProps) => {
   const [link, setLink] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const { toast } = useToast();
 
   useEffect(() => {
     async function initLink() {
@@ -62,10 +59,8 @@ const FileDisplay = ({
 
   const handleDownloadFile = async () => {
     if (!link) {
-      toast({
-        title: `Failed to download ${file.name}`,
+      toast.error(`Failed to download ${file.name}`, {
         description: 'Please try again. If the issue persists, contact support',
-        variant: 'destructive',
       });
       return;
     }
@@ -84,9 +79,9 @@ const FileDisplay = ({
         {!loading ? (
           link ? (
             <FileDisplay.Container className={color}>
-              <a href={link} className='w-auto h-full'>
+              <a href={link} className='h-full w-auto'>
                 <Image
-                  className='object-cover h-full w-auto rounded-sm'
+                  className='h-full w-auto rounded-sm object-cover'
                   src={link}
                   width={1}
                   height={1}
@@ -101,7 +96,7 @@ const FileDisplay = ({
                   file.type.split('/').pop()?.toLowerCase() as SupportedFileIcon
                 ]
               }
-              <p className='text-white mt-1'>
+              <p className='mt-1 text-white'>
                 {file.type.split('/').pop()?.toUpperCase()}
               </p>
             </FileDisplay.Container>
@@ -111,12 +106,12 @@ const FileDisplay = ({
             <Spinner />
           </FileDisplay.Container>
         )}
-        <div className='flex flex-col gap-1 justify-center '>
+        <div className='flex flex-col justify-center gap-1 '>
           <span className='text-xs text-[#666666]'>
             {fileName} <span className=''>{formatBytes(fileSize)}</span>
           </span>
           <Download
-            className='w-4 h-4 text-[#666666] cursor-pointer'
+            className='h-4 w-4 cursor-pointer text-[#666666]'
             onClick={handleDownloadFile}
           />
         </div>
@@ -135,7 +130,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        `flex flex-col items-center justify-center w-[65px] h-[80px] rounded-sm overflow-clip`,
+        `flex h-[80px] w-[65px] flex-col items-center justify-center overflow-clip rounded-sm`,
         className
       )}
     >
@@ -151,7 +146,7 @@ const Actions = ({ handleDownloadFile, color }: FileDisplayActionsProps) => {
         <Tooltip>
           <TooltipTrigger>
             <Download
-              className={cn('w-4 h-4', color)}
+              className={cn('h-4 w-4', color)}
               onClick={handleDownloadFile}
             />
           </TooltipTrigger>
