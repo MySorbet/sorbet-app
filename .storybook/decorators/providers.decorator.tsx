@@ -7,8 +7,7 @@ import { Provider } from 'react-redux';
 import { MockAuthProvider } from './use-auth.mock';
 import { env } from '../../src/lib/env';
 import { store } from '../../src/redux/store';
-import { Toaster } from '../../src/components/ui/toaster';
-import { Toaster as SonnerToaster } from '../../src/components/ui/sonner';
+import { Toaster } from '../../src/components/ui/sonner';
 
 /**
  * Decorator to provide the necessary providers to the story
@@ -31,7 +30,6 @@ export const ProvidersDecorator = (Story: any) => {
           <MockAuthProvider>
             <Story />
             <Toaster />
-            <SonnerToaster />
           </MockAuthProvider>
         </Provider>
       </QueryClientProvider>
