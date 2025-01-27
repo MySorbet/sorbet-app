@@ -6,7 +6,7 @@ import { mockCancelInvoiceHandler } from '@/api/invoices';
 import InvoicesPage from './page';
 
 const meta = {
-  title: 'Invoices/Page',
+  title: 'Invoices/Invoices Page',
   component: InvoicesPage,
   parameters: {
     layout: 'fullscreen',

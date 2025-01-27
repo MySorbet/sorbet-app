@@ -6,7 +6,7 @@ import { InvoicePublicView } from '../components/invoice-public-view';
 import { useInvoice } from '../hooks/use-invoice';
 
 export default function InvoicePage({ params }: { params: { id: string } }) {
-  const { data, isLoading } = useInvoice(params.id);
+  const { data, isLoading, isError } = useInvoice(params.id);
   const { user } = useAuth();
   const isFreelancer = user?.id === data?.userId;
 
@@ -15,6 +15,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
       invoice={data}
       isLoading={isLoading}
       isFreelancer={isFreelancer}
+      isError={isError}
     />
   );
 }

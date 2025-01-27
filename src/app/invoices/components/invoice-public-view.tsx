@@ -26,6 +26,7 @@ import { InvoiceReceipt } from './invoice-receipt';
 type InvoicePublicViewProps = {
   invoice?: Invoice;
   isLoading?: boolean;
+  isError?: boolean;
   isFreelancer?: boolean;
 };
 
@@ -33,6 +34,7 @@ export const InvoicePublicView = ({
   invoice,
   isLoading,
   isFreelancer,
+  isError,
 }: InvoicePublicViewProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
@@ -46,11 +48,27 @@ export const InvoicePublicView = ({
   // TODO: Should we display a loading state when seeing if there are ACH wire details?
   const { data: achWireDetails } = useACHWireDetails(invoice?.userId ?? '');
 
+  // Render the receipt jerryrigged for an error in the case of an error
+  if (isError) {
+    console.log('isError', isError);
+    return (
+      <div className='container flex size-full items-center justify-center'>
+        <InvoiceReceipt
+          status='Error'
+          className='animate-in fade-in slide-in-from-bottom-1'
+        />
+      </div>
+    );
+  }
+
   // Render closed receipts in the case of paid or cancelled invoices
   if (invoice?.status === 'Paid' || invoice?.status === 'Cancelled') {
     return (
       <div className='container flex size-full items-center justify-center'>
-        <InvoiceReceipt status={invoice.status} />
+        <InvoiceReceipt
+          status={invoice.status}
+          className='animate-in fade-in slide-in-from-bottom-1'
+        />
       </div>
     );
   }

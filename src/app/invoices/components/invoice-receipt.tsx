@@ -3,16 +3,24 @@ import Image from 'next/image';
 import { InvoiceStatus } from '@/app/invoices/components/dashboard/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './dashboard/invoice-status-badge';
 
 export type InvoiceReceiptProps = {
-  status: Extract<InvoiceStatus, 'Paid' | 'Cancelled'>;
+  /** InvoiceReceipt can be used for paid & cancelled invoices, or an error state (in the case the invoice is not found) */
+  status: Extract<InvoiceStatus, 'Paid' | 'Cancelled'> | 'Error';
+  className?: string;
 };
 
-export const InvoiceReceipt = ({ status }: InvoiceReceiptProps) => {
+export const InvoiceReceipt = ({ status, className }: InvoiceReceiptProps) => {
   return (
-    <div className='flex w-full max-w-[800px] flex-col items-center justify-center gap-16 rounded-2xl bg-white p-16'>
+    <div
+      className={cn(
+        'flex w-full max-w-[800px] flex-col items-center justify-center gap-16 rounded-2xl bg-white p-16',
+        className
+      )}
+    >
       {/* Logo */}
       <div className='flex items-center gap-3'>
         <Image
@@ -28,9 +36,11 @@ export const InvoiceReceipt = ({ status }: InvoiceReceiptProps) => {
 
       {/* Status */}
       <div className='space-y-3 text-center'>
-        <InvoiceStatusBadge variant={status} />
+        {status !== 'Error' && <InvoiceStatusBadge variant={status} />}
         <h1 className='text-3xl font-semibold'>
-          {status === 'Paid'
+          {status === 'Error'
+            ? 'We couldn’t find this invoice'
+            : status === 'Paid'
             ? 'This invoice has been paid'
             : 'This invoice is no longer active'}
         </h1>

@@ -29,6 +29,21 @@ export const mockInvoiceHandler = http.get(
 );
 
 /**
+ * Mock the data from the `/invoices/:id` endpoint
+ * Return a 404 error
+ */
+export const mockInvoiceNotFoundHandler = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/:id`,
+  async () => {
+    await delay();
+    return HttpResponse.json(
+      { message: 'Invoice not found', statusCode: 404 },
+      { status: 404 }
+    );
+  }
+);
+
+/**
  * Mock the data from posting to the `/invoices` endpoint
  * TODO: Not sure if this works yet
  */
