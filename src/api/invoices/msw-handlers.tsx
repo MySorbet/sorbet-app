@@ -18,13 +18,13 @@ export const mockInvoicesHandler = http.get(
 
 /**
  * Mock the data from the `/invoices/:id` endpoint
- * Just gives the first sample invoice
+ * Just gives the third sample invoice
  */
 export const mockInvoiceHandler = http.get(
   `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/:id`,
   async () => {
     await delay();
-    return HttpResponse.json(sampleInvoices[0]);
+    return HttpResponse.json(sampleInvoices[2]);
   }
 );
 

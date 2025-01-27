@@ -26,7 +26,7 @@ type Story = StoryObj<typeof InvoicePublicView>;
 
 export const Default: Story = {
   args: {
-    invoice: sampleInvoices[0],
+    invoice: sampleInvoices[2],
     isLoading: false,
   },
 };

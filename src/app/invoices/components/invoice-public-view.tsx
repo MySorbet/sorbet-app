@@ -22,6 +22,7 @@ import { InvoiceDocument } from './invoice-document';
 import { InvoicePayAchWire } from './invoice-pay-ach-wire';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
 import { InvoiceReceipt } from './invoice-receipt';
+import { TimingBadge } from './timing-badge';
 
 type InvoicePublicViewProps = {
   invoice?: Invoice;
@@ -128,12 +129,20 @@ export const InvoicePublicView = ({
               <TabsTrigger value='ach'>ACH/Wire</TabsTrigger>
             </TabsList>
             <TabsContent value='usdc'>
+              <TimingBadge className='mx-auto mb-4'>
+                Arrives instantly
+              </TimingBadge>
+
               <InvoicePayUsdc
                 address={walletAddress ?? ''}
                 isLoading={isLoadingWalletAddress}
               />
             </TabsContent>
             <TabsContent value='ach'>
+              <TimingBadge className='mx-auto mb-4'>
+                Arrives in ~2 business days
+              </TimingBadge>
+
               <InvoicePayAchWire
                 routingNumber={achWireDetails.routingNumber}
                 accountNumber={achWireDetails.accountNumber}
@@ -143,10 +152,15 @@ export const InvoicePublicView = ({
             </TabsContent>
           </Tabs>
         ) : (
-          <InvoicePayUsdc
-            address={walletAddress ?? ''}
-            isLoading={isLoadingWalletAddress}
-          />
+          <div className='flex flex-col items-center'>
+            <TimingBadge className='mx-auto mb-4'>
+              Arrives instantly
+            </TimingBadge>
+            <InvoicePayUsdc
+              address={walletAddress ?? ''}
+              isLoading={isLoadingWalletAddress}
+            />
+          </div>
         )}
       </CreateInvoiceFooter>
     </CreateInvoiceShell>
