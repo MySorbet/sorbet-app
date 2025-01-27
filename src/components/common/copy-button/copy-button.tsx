@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckCircle, Copy06 } from '@untitled-ui/icons-react';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import useCopy from '@/components/common/copy-button/use-copy';
 import { Button, ButtonProps } from '@/components/ui/button';
@@ -32,6 +32,11 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
 }) => {
   const { isCopied, handleClick } = useCopy(stringToCopy);
 
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    isFirstRender.current = false;
+  }, []);
+
   return (
     <Button
       variant='outline'
@@ -50,7 +55,8 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
       ) : (
         <Copy06
           className={cn(
-            'animate-in zoom-in-0 text-primary size-4 p-0 transition-transform group-hover:scale-110',
+            'text-primary size-4 p-0 transition-transform group-hover:scale-110',
+            !isFirstRender.current && 'animate-in zoom-in-0',
             copyIconClassName
           )}
         />
