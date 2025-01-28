@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
  */
 const FeaturebaseWidget = () => {
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const win = window as any;
 
     if (typeof win.Featurebase !== 'function') {

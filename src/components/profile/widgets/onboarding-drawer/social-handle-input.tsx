@@ -31,6 +31,7 @@ export const SocialHandleInput = React.forwardRef<
   const [showClearButton, setShowClearButton] = useState(false);
 
   // TODO: Can we do without this non-null assertion?
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   useImperativeHandle(ref, () => localRef.current!);
 
   const clearInput = () => {

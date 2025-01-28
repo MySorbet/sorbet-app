@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { createOffer } from '@/api/gigs';
 import { getUserByHandle } from '@/api/user';
 import {
   ProjectFormValues,
@@ -30,14 +29,19 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
       if (!user) throw new Error('User not found');
       if (!user.handle) throw new Error('User handle not found');
 
-      return createOffer({
+      // TODO: We used to create an offer here, but now, we will just do nothing
+      // In the future, we could use this to generate an email or notification
+      const offer = {
         projectName: projectFormValues.projectName,
         description: projectFormValues.description,
         projectStart: projectFormValues.projectStarting,
         budget: projectFormValues.budget,
         clientUsername: user.handle,
         freelancerUsername: params.handle,
-      });
+      };
+
+      console.log('offer', offer);
+      return Promise.resolve(offer);
     },
     onError: () => {
       toast.error('Unable to send offer', {

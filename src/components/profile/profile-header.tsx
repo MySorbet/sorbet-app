@@ -111,7 +111,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               <span className='text-base text-[#344054]'>Edit Profile</span>
             </Button>
           ) : (
-            featureFlags.gigs && (
+            featureFlags.hireMe && (
               <Button
                 className='bg-[#573DF5] px-5 text-base'
                 onClick={onHireMeClick}

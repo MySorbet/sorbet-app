@@ -12,12 +12,8 @@ interface CreditCardPreviewProps {
 import './styles.css';
 
 export const CreditCardPreview: React.FC<CreditCardPreviewProps> = ({
-  cvc,
   expiry,
-  issuer,
-  locale,
   name,
-  number,
 }) => {
   return (
     <div className='min-w-[360px] rounded-2xl bg-white px-6 py-10 shadow-[0_16px_50px_0px_rgba(0,0,0,0.15)]'>

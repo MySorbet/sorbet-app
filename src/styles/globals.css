@@ -77,7 +77,6 @@
 }
 
 @layer utilities {
-
   /* Prevents a horizontal layout shift (for fixed elements) when radix modals are open */
   /* Use this on your fixed positioned elements that are affected by the shift */
   /* See https://github.com/radix-ui/primitives/discussions/1586#discussioncomment-6641424 */
@@ -91,7 +90,6 @@
   .no-spin-buttons::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-
   }
 
   .no-spin-buttons {

@@ -75,5 +75,5 @@ export const getSocialIconForWidget = (
     Figma: 'figma.svg',
   };
 
-  return `/images/social/${iconMap[widgetType]}`;
+  return `/svg/social/${iconMap[widgetType]}`;
 };

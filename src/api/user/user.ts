@@ -78,7 +78,7 @@ export const getUserByEmail = async (email: string) => {
   try {
     const response = await axios.get(`${API_URL}/users/email/${email}`);
     return response;
-  } catch (error: any) {
+  } catch (error) {
     console.log(`Failed to get user by email: ${JSON.stringify(error)}`);
   }
 };

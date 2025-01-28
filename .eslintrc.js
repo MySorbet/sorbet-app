@@ -49,7 +49,10 @@ module.exports = {
     React: true,
     JSX: true,
   },
-
-  // We don't want to touch shadcn for now (nor syntax-ui)
-  ignorePatterns: ['src/components/ui/*', 'src/components/syntax-ui/*'],
+  ignorePatterns: [
+    'src/components/ui/*', // Don't lint shadcn components (they use different rules than us)
+    'src/components/syntax-ui/*', // Same as above
+    'src/components/chat/*', // Chat components are not used currently, but may be used in the future (ignore for now)
+    'src/hooks/chat/*', // Same as above
+  ],
 };

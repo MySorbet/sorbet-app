@@ -32,7 +32,7 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
     const blob = new Blob([buffer], { type: type });
     const blobUrl = URL.createObjectURL(blob);
     return blobUrl;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(`Failed to fetch file: ${error}`);
   }
 }
@@ -47,7 +47,7 @@ export async function fetchFile(sendbirdUrl: string, type: string) {
 export async function sendNotification(reqBody: NewMessageNotificationDto) {
   try {
     await axios.post(`${API_URL}/chat`, reqBody, await withAuthHeader());
-  } catch (error: any) {
+  } catch (error) {
     // Message goes thru to sendbird, but notification fails in backend
     console.error(
       `Failed to send message notification to user ${reqBody.reqRecipientId}`

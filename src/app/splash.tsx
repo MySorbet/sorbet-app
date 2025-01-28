@@ -6,7 +6,7 @@ import { FC, useEffect } from 'react';
 
 import { useAuth } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
-import MutedSorbetLogo from '~/muted-sorbet-logo.svg';
+import MutedSorbetLogo from '~/svg/muted-sorbet-logo.svg';
 
 /**
  * Renders a full page splash screen displaying a muted Sorbet logo that fades in and up - gmail style.

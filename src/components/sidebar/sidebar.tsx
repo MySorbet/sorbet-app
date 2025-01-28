@@ -1,12 +1,7 @@
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Receipt, User01 } from '@untitled-ui/icons-react';
 import { X } from '@untitled-ui/icons-react';
-import {
-  CircleArrowRight,
-  LayoutGrid,
-  LogOut,
-  WalletMinimal,
-} from 'lucide-react';
+import { CircleArrowRight, LogOut, WalletMinimal } from 'lucide-react';
 import { GanttChartSquare } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -120,13 +115,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   href='/wallet'
                   icon={<WalletMinimal />}
                 />
-                {featureFlags.gigs && (
-                  <SidebarHeaderOption
-                    label='Gigs'
-                    href='/gigs'
-                    icon={<LayoutGrid />}
-                  />
-                )}
                 <SidebarHeaderOption
                   label='Profile'
                   icon={<CircleArrowRight />}

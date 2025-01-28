@@ -6,7 +6,7 @@ import { SigninContent } from '@/app/signin/components/signin-content';
 import { OnboardingShell } from '@/components';
 import { PrivyLoginButtons } from '@/components/onboarding/privy-login-buttons';
 import { featureFlags } from '@/lib/flags';
-import HeroBlob from '~/login-hero-blob.png';
+import HeroBlob from '~/images/login-hero-blob.png';
 
 const SignInPage = () => {
   return featureFlags.dashboard ? (
