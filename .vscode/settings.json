@@ -12,6 +12,9 @@
   // Lock everyone into using prettier
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
+  // This ensures that vscode does not remove the final newline from files (b/c prettier wants them)
+  "files.insertFinalNewline": true,
+
   // Tailwind CSS Autocomplete
   "tailwindCSS.classAttributes": [
     "class",
