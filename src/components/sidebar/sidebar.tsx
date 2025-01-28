@@ -120,13 +120,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   href='/wallet'
                   icon={<WalletMinimal />}
                 />
-                {featureFlags.gigs && (
-                  <SidebarHeaderOption
-                    label='Gigs'
-                    href='/gigs'
-                    icon={<LayoutGrid />}
-                  />
-                )}
                 <SidebarHeaderOption
                   label='Profile'
                   icon={<CircleArrowRight />}
