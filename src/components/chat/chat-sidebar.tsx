@@ -36,11 +36,11 @@ export function ChatSidebar({
   return (
     <div
       data-collapsed={isCollapsed}
-      className='relative group flex flex-col h-full gap-4 p-2 data-[collapsed=true]:p-2 '
+      className='group relative flex h-full flex-col gap-4 p-2 data-[collapsed=true]:p-2 '
     >
       {!isCollapsed && (
-        <div className='flex justify-between p-2 items-center'>
-          <div className='flex gap-2 items-center text-2xl'>
+        <div className='flex items-center justify-between p-2'>
+          <div className='flex items-center gap-2 text-2xl'>
             <p className='font-medium'>Chats</p>
             <span className='text-zinc-300'>({links.length})</span>
           </div>
@@ -83,13 +83,13 @@ export function ChatSidebar({
                         'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
                     )}
                   >
-                    <Avatar className='flex justify-center items-center'>
+                    <Avatar className='flex items-center justify-center'>
                       <AvatarImage
                         src={link.avatar}
                         alt={link.avatar}
                         width={6}
                         height={6}
-                        className='w-10 h-10 '
+                        className='h-10 w-10 '
                       />
                     </Avatar>{' '}
                     <span className='sr-only'>{link.name}</span>
@@ -110,23 +110,23 @@ export function ChatSidebar({
               className={cn(
                 buttonVariants({ variant: 'link', size: 'lg' }),
                 link.variant === 'grey' &&
-                  'dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink',
+                  'dark:bg-muted dark:hover:bg-muted shrink dark:text-white dark:hover:text-white',
                 'justify-start gap-4'
               )}
             >
-              <Avatar className='flex justify-center items-center'>
+              <Avatar className='flex items-center justify-center'>
                 <AvatarImage
                   src={link.avatar}
                   alt={link.avatar}
                   width={6}
                   height={6}
-                  className='w-10 h-10 '
+                  className='h-10 w-10 '
                 />
               </Avatar>
-              <div className='flex flex-col max-w-28'>
+              <div className='flex max-w-28 flex-col'>
                 <span>{link.name}</span>
                 {link.messages.length > 0 && (
-                  <span className='text-zinc-300 text-xs truncate '>
+                  <span className='truncate text-xs text-zinc-300 '>
                     {link.messages[link.messages.length - 1].name.split(' ')[0]}
                     : {link.messages[link.messages.length - 1].message}
                   </span>

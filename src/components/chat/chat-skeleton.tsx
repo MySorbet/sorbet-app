@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 const ChatSkeleton = () => {
   return (
-    <div className='w-full overflow-y-hidden h-[50vh] overflow-x-hidden flex flex-col px-2 py-3'>
+    <div className='flex h-[50vh] w-full flex-col overflow-x-hidden overflow-y-hidden px-2 py-3'>
       <ChatSkeleton.User />
       <ChatSkeleton.Message width={28} />
       <ChatSkeleton.Message width={20} />
@@ -24,9 +24,9 @@ const ChatSkeleton = () => {
 
 function User() {
   return (
-    <div className='flex items-center gap-1 mt-5'>
-      <Skeleton className='w-8 h-8 rounded-full bg-gray-400' />
-      <Skeleton className='w-28 h-3 bg-gray-400' />
+    <div className='mt-5 flex items-center gap-1'>
+      <Skeleton className='h-8 w-8 rounded-full bg-gray-400' />
+      <Skeleton className='h-3 w-28 bg-gray-400' />
     </div>
   );
 }
@@ -34,7 +34,7 @@ function User() {
 function Message({ width }: { width: number }) {
   return (
     <Skeleton
-      className={cn('ml-8 h-10 bg-gray-400 mt-1 rounded-2xl', `w-${width}`)}
+      className={cn('ml-8 mt-1 h-10 rounded-2xl bg-gray-400', `w-${width}`)}
     />
   );
 }

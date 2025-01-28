@@ -22,16 +22,16 @@ const FilePreview = ({ file, removeFile }: FilePreviewProps) => {
           damping: 30,
         },
       }}
-      className='relative h-12 w-16 rounded-lg overflow-hidden p-0 border border-gray-400'
+      className='relative h-12 w-16 overflow-hidden rounded-lg border border-gray-400 p-0'
     >
       <button className='' onClick={() => removeFile()}>
-        <CircleX className='absolute top-[1px] left-[1px] h-4 w-4 text-white z-20' />
-        <div className='absolute top-[1px] left-[1px] h-4 w-4 rounded-full bg-gray-500 z-10' />
+        <CircleX className='absolute left-[1px] top-[1px] z-20 h-4 w-4 text-white' />
+        <div className='absolute left-[1px] top-[1px] z-10 h-4 w-4 rounded-full bg-gray-500' />
       </button>
       <img
         src={file}
         alt='file'
-        className='absolute top-0 w-full h-full object-cover '
+        className='absolute top-0 h-full w-full object-cover '
       />
     </motion.div>
   );

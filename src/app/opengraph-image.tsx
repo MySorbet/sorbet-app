@@ -10,9 +10,9 @@ export const size = {
 export const runtime = 'edge';
 
 export default async function Image() {
-  const logoSrc = await fetch(
-    new URL('./og-image.png', import.meta.url)
-  ).then((res) => res.arrayBuffer());
+  const logoSrc = await fetch(new URL('./og-image.png', import.meta.url)).then(
+    (res) => res.arrayBuffer()
+  );
 
   return new ImageResponse(
     (
