@@ -2,7 +2,7 @@ import { Meta } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { File, ImageIcon } from 'lucide-react';
 
-import ChatBottombar from '@/app/gigs/chat/chat-bottombar';
+import ChatBottombar from './chat-bottombar';
 
 const meta = {
   title: 'Chat/ChatBottomBar',

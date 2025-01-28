@@ -2,18 +2,18 @@ import type { Member } from '@sendbird/chat/groupChannel';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 
-import { ChatSkeleton } from '@/app/gigs/chat/chat-skeleton';
-import { MessageAvatar } from '@/app/gigs/chat/message-avatar';
-import {
-  convertMilitaryToRegular,
-  createChatTimestamp,
-  getTimeDifferenceInMinutes,
-} from '@/app/gigs/chat/sendbird-utils';
 import { cn } from '@/lib/utils';
 import { UserWithId } from '@/types';
 import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
 
 import { FileDisplay } from './chat-file-display';
+import { ChatSkeleton } from './chat-skeleton';
+import { MessageAvatar } from './message-avatar';
+import {
+  convertMilitaryToRegular,
+  createChatTimestamp,
+  getTimeDifferenceInMinutes,
+} from './sendbird-utils';
 import { TypingIndicator } from './typing-indicator';
 
 interface ChatListProps {

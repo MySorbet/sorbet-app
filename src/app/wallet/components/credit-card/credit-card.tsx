@@ -18,7 +18,7 @@ interface CardData {
 
 export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);
-  const [focus, setFocus] = useState<Focused | undefined>(undefined);
+  const [, setFocus] = useState<Focused | undefined>(undefined);
   const [cardData, setCardData] = useState<CardData>({
     cardName: '',
     cardNumber: '',
@@ -27,22 +27,22 @@ export const CreditCardForm = () => {
     zipCode: '',
   });
 
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    const allowedFocusFields = [
-      'cardNumber',
-      'cardName',
-      'expiry',
-      'cvc',
-      'zipCode',
-    ];
-    const focusValue = e.target.name;
-    if (allowedFocusFields.includes(focusValue)) {
-      setFocus(focusValue as Focused);
-    } else {
-      console.error(`Invalid focus field: ${focusValue}`);
-      setFocus(undefined);
-    }
-  };
+  // const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  //   const allowedFocusFields = [
+  //     'cardNumber',
+  //     'cardName',
+  //     'expiry',
+  //     'cvc',
+  //     'zipCode',
+  //   ];
+  //   const focusValue = e.target.name;
+  //   if (allowedFocusFields.includes(focusValue)) {
+  //     setFocus(focusValue as Focused);
+  //   } else {
+  //     console.error(`Invalid focus field: ${focusValue}`);
+  //     setFocus(undefined);
+  //   }
+  // };
 
   const handleDialogSubmit = (data: CardData) => {
     setCardData(data);

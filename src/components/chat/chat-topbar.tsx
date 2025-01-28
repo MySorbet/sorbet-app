@@ -3,7 +3,6 @@ import Link from 'next/link';
 import React from 'react';
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-// import { UserData } from '@/app/data';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -15,15 +14,15 @@ export const TopbarIcons = [{ icon: Phone }, { icon: Video }, { icon: Info }];
 
 export default function ChatTopbar({ selectedUser }: ChatTopbarProps) {
   return (
-    <div className='w-full h-20 flex p-4 justify-between items-center border-b'>
+    <div className='flex h-20 w-full items-center justify-between border-b p-4'>
       <div className='flex items-center gap-2'>
-        <Avatar className='flex justify-center items-center'>
+        <Avatar className='flex items-center justify-center'>
           <AvatarImage
             src={selectedUser.avatar}
             alt={selectedUser.name}
             width={6}
             height={6}
-            className='w-10 h-10 '
+            className='h-10 w-10 '
           />
         </Avatar>
         <div className='flex flex-col'>

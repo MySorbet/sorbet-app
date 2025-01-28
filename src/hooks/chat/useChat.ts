@@ -10,9 +10,9 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { sendNotification } from '@/api/chat';
-import { timestampToTime } from '@/app/gigs/chat/sendbird-utils';
+import { timestampToTime } from '@/components/chat/sendbird-utils';
 import { useSendbird } from '@/hooks/chat/useSendbird';
-import { PrismaOfferType, UserWithId } from '@/types';
+import { User, UserWithId } from '@/types';
 import {
   ChatState,
   NewMessageNotificationDto,
@@ -20,6 +20,22 @@ import {
   SBMessage,
   SendMessageParams,
 } from '@/types/sendbird';
+
+export interface PrismaOfferType {
+  id: string;
+  projectName: string;
+  description: string;
+  projectStart: 'Immediately' | 'Flexible';
+  status: 'Pending' | 'Accepted' | 'Rejected' | 'Completed';
+  budget: number;
+  clientId: string;
+  freelancerId: string;
+  creator: User;
+  recipient: User;
+  createdAt: string;
+  updatedAt: string;
+  channelId: string;
+}
 
 interface useChatProps {
   user: UserWithId | null;

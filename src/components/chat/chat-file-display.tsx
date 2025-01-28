@@ -6,7 +6,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { fetchFile } from '@/api/chat';
-import { formatBytes } from '@/app/gigs/chat/sendbird-utils';
 import { Spinner } from '@/components/common';
 import {
   Tooltip,
@@ -20,6 +19,8 @@ import {
   SupportedFileIcon,
   SupportedFileIcons,
 } from '@/types/sendbird';
+
+import { formatBytes } from './sendbird-utils';
 
 interface FileDisplayProps {
   color: string;

@@ -1,17 +1,16 @@
 import { File, ImageIcon } from 'lucide-react';
 
 import { useAuth } from '@/hooks';
-import { useChat } from '@/hooks/chat/useChat';
-import { useGetOffer } from '@/hooks/gigs/useGetOffer';
+import { PrismaOfferType, useChat } from '@/hooks/chat/useChat';
 
 import ChatBottombar from './chat-bottombar';
 import { ChatList } from './chat-list';
 import ChatTopbar from './chat-topbar';
 
 const icons = {
-  pdf: <File className='w-5 h-5 text-white' />,
-  jpeg: <ImageIcon className='w-5 h-5 text-white' />,
-  png: <ImageIcon className='w-5 h-5 text-white' />,
+  pdf: <File className='h-5 w-5 text-white' />,
+  jpeg: <ImageIcon className='h-5 w-5 text-white' />,
+  png: <ImageIcon className='h-5 w-5 text-white' />,
 };
 
 type SupportedFileIcon = keyof typeof icons;
@@ -23,6 +22,44 @@ interface ChatProps {
   contractStatus: string;
 }
 
+const fakeOffer: PrismaOfferType = {
+  id: '12345',
+  projectName: 'Sample Project',
+  description: 'This is a sample project description',
+  projectStart: 'Immediately',
+  status: 'Pending',
+  budget: 1000,
+  clientId: 'client123',
+  freelancerId: 'freelancer456',
+  creator: {
+    id: 'client123',
+    firstName: 'John Doe',
+    email: 'john@example.com',
+    lastName: '',
+    privyId: null,
+    handle: null,
+    bio: '',
+    profileImage: '',
+    tags: [],
+    city: '',
+  },
+  recipient: {
+    id: 'freelancer456',
+    firstName: 'Jane Smith',
+    email: 'jane@example.com',
+    lastName: '',
+    privyId: null,
+    handle: null,
+    bio: '',
+    profileImage: '',
+    tags: [],
+    city: '',
+  },
+  createdAt: '2024-03-20T12:00:00Z',
+  updatedAt: '2024-03-20T12:00:00Z',
+  channelId: 'channel789',
+};
+
 export function Chat({
   showTopbar = true,
   isOpen,
@@ -30,16 +67,15 @@ export function Chat({
   contractStatus = '',
 }: ChatProps) {
   const { user, logout } = useAuth();
-  const { data: offer } = useGetOffer(offerId);
   const [state, chatLoading, error, sendMessage] = useChat({
     user,
     logout,
     isOpen,
-    offer,
+    offer: fakeOffer,
   });
 
   return (
-    <div className='flex flex-col justify-between w-full h-full bg-gray-100 p-2 py-3 rounded-2xl '>
+    <div className='flex h-full w-full flex-col justify-between rounded-2xl bg-gray-100 p-2 py-3 '>
       {showTopbar && <ChatTopbar selectedUser={user} />}
 
       <ChatList

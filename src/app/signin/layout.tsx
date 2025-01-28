@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 export const metadata = {
   title: 'Sign in',
 };
