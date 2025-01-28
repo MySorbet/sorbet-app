@@ -31,8 +31,8 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# vercel
-.vercel
+# public
+public/
 
 # changelog
 CHANGELOG.md
@@ -42,3 +42,5 @@ src/components/ui/
 
 # Storybook
 .storybook/storybook-static/
+
+
