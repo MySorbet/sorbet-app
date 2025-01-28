@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
@@ -280,12 +280,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     image || user?.profileImage ? deleteImage : undefined
                   }
                 >
-                  <img
-                    src='/images/trash-01.svg'
-                    alt='trash'
-                    width={20}
-                    height={20}
-                  />
+                  <Trash className='h-5 w-5' />
                 </div>
               )}
             </div>
