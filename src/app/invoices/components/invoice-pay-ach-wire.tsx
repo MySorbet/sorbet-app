@@ -28,8 +28,10 @@ export const InvoicePayAchWire = ({
   bank,
 }: InvoicePayAchWireProps) => {
   return (
-    <div className='flex max-w-[32rem] flex-col justify-center gap-6 rounded-xl bg-white p-4'>
-      <span>Use these details to send domestic wires and ACH transfers</span>
+    <div className='bg-background flex max-w-[32rem] flex-col justify-center gap-6 rounded-xl p-4'>
+      <span className='text-sm font-medium'>
+        Copy the details below to send wires or ACH transfers without fees
+      </span>
       <div className='flex w-full justify-between gap-4'>
         <ACHWireCopyButton value={accountNumber} label='Account number' />
         <ACHWireCopyButton value={routingNumber} label='Routing number' />
