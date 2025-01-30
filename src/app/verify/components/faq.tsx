@@ -7,15 +7,16 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 import { VerifyCard } from './verify-card';
 
 // TODO: Update links
 
 /** Renders an FAQ Accordion with information and a learn more button */
-export const FAQ = () => {
+export const FAQ = ({ className }: { className?: string }) => {
   return (
-    <VerifyCard className='w-full min-w-96 max-w-2xl'>
+    <VerifyCard className={cn('w-full min-w-72 max-w-2xl', className)}>
       <div className='flex flex-col gap-3'>
         <h2 className='text-2xl font-semibold'>FAQ</h2>
         <Accordion type='multiple' className='w-full'>
