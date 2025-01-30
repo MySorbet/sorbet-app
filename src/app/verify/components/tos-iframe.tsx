@@ -1,13 +1,11 @@
 import { VerifyCard } from './verify-card';
 
-const TOS_URL =
-  'https://dashboard.bridge.xyz/accept-terms-of-service?customer_id=fdaf8561-32a1-4334-bc05-941f2cff7721';
-
-export const TosIframe = () => {
+/** Render bridge TOS in an iframe just big enough to fit it */
+export const TosIframe = ({ url }: { url: string }) => {
   return (
-    <VerifyCard className='h-[25rem] w-[32rem]'>
+    <VerifyCard className='h-[24rem] w-[28rem]'>
       <iframe
-        src={TOS_URL}
+        src={url}
         className='h-full w-full'
         style={{
           overflow: 'hidden',

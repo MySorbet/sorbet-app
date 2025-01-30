@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 
 import { TosIframe } from './tos-iframe';
+import { TOS_URL } from './urls';
 
 type Story = StoryObj<typeof TosIframe>;
 
@@ -12,13 +12,10 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    onAccept: fn(),
+    url: TOS_URL,
   },
-  argTypes: {},
 } satisfies Meta<typeof TosIframe>;
 
 export default meta;
 
-export const Default: Story = {
-  args: {},
-};
+export const Default: Story = {};

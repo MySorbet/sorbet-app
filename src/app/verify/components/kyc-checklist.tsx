@@ -10,9 +10,11 @@ import { cn } from '@/lib/utils';
 
 import { VerifyCard } from './verify-card';
 
-const TaskTypes = ['terms', 'details'] as const;
-type TaskType = (typeof TaskTypes)[number];
-const totalSteps = TaskTypes.length;
+export const VerifySteps = ['terms', 'details'] as const;
+export type VerifyStep = (typeof VerifySteps)[number];
+
+type TaskType = VerifyStep;
+const totalSteps = VerifySteps.length;
 
 /** Steps status are reported as an object mapping every step type to a boolean */
 type TaskStatuses = Record<TaskType, boolean>;
