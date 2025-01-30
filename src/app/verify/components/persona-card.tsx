@@ -26,7 +26,8 @@ const getParams = (urlString: string) => {
   };
 };
 
-export const PersonaIframe = () => {
+/** Render a persona flow according to https://docs.withpersona.com/docs/inlined-flow */
+export const PersonaCard = () => {
   const params = getParams(PERSONA_URL);
   const [ready, setReady] = useState(false);
 
