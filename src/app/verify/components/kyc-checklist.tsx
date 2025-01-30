@@ -48,6 +48,7 @@ export const KYCChecklist = ({
         <div className='flex items-center justify-between gap-4'>
           <Progress
             value={progress}
+            indeterminate={indeterminate}
             className={cn('[&>*]:bg-sorbet h-2', loading && 'animate-pulse')}
           />
           {loading ? (
