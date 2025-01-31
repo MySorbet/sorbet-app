@@ -42,7 +42,7 @@ export const PersonaCard = ({
 
   console.log(ready);
   return (
-    <VerifyCard className='flex h-[41rem] w-[25rem] items-center justify-center'>
+    <VerifyCard className='flex h-[41rem] w-[28rem] items-center justify-center'>
       <Skeleton className={cn('size-full', ready ? 'hidden' : 'block')} />
 
       <div
