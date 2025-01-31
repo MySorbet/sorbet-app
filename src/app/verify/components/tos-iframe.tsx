@@ -6,24 +6,39 @@ import { cn } from '@/lib/utils';
 import { VerifyCard } from './verify-card';
 
 /** Render bridge TOS in an iframe just big enough to fit it */
-export const TosIframe = ({ url }: { url: string }) => {
+export const TosIframe = ({
+  url,
+  onComplete,
+}: {
+  url: string;
+  onComplete?: (signedAgreementId: string) => void;
+}) => {
   const [ready, setReady] = useState(false);
 
-  // A set loading time (just needs to be longer than it takes bridge to load)
-  // TODO: Is there a way we can tell when it loads?
+  // Listen for the iframe message to know when the TOS has been accepted
   useEffect(() => {
-    const timeout = setTimeout(() => setReady(true), 1500);
-    return () => clearTimeout(timeout);
-  }, []);
+    const handleMessage = (event: MessageEvent) => {
+      // Only handle messages from the TOS iframe URL
+      if (event.origin !== new URL(url).origin) return;
+
+      // Check if the message contains signedAgreementId
+      if (event.data?.signedAgreementId) {
+        onComplete?.(event.data.signedAgreementId);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [onComplete, url]);
 
   return (
     <VerifyCard className='h-[24rem] w-[28rem]'>
-      <Skeleton className={cn('size-full', ready ? 'hidden' : 'block')} />
+      {!ready && <Skeleton className='size-full' />}
 
       <div
         className={cn(
-          'size-full [&_iframe]:size-full',
-          ready ? 'animate-in fade-in block duration-300' : 'hidden'
+          'animate-in fade-in size-full duration-500 [&_iframe]:size-full',
+          ready ? 'block' : 'hidden'
         )}
       >
         <iframe
@@ -33,6 +48,7 @@ export const TosIframe = ({ url }: { url: string }) => {
             overflow: 'hidden',
           }}
           scrolling='no'
+          onLoad={() => setTimeout(() => setReady(true), 500)}
         />
       </div>
     </VerifyCard>

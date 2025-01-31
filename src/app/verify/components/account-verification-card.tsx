@@ -38,6 +38,10 @@ export const AccountVerificationCard = ({
   // TODO:
   // When the step is "terms", poll the bridge customer to see if the terms have been accepted
   // If they have. set step to details
+  // OR we could listen fro this iframe message. Should probs invalidate the query too
+  const handleTermsComplete = () => {
+    onStepChange?.('details');
+  };
 
   const handleDetailsComplete = () => {
     onStepChange?.('complete');
@@ -73,13 +77,7 @@ export const AccountVerificationCard = ({
         )}
 
         {step === 'terms' && (
-          <>
-            <TosIframe url={TOS_URL} />
-            {/* Temp button just to advance to the next step*/}
-            <Button variant='sorbet' onClick={() => onStepChange?.('details')}>
-              Next
-            </Button>
-          </>
+          <TosIframe url={TOS_URL} onComplete={handleTermsComplete} />
         )}
 
         {step === 'details' && (

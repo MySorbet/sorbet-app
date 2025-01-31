@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { TosIframe } from './tos-iframe';
 import { TOS_URL } from './urls';
@@ -13,6 +14,7 @@ const meta = {
   },
   args: {
     url: TOS_URL,
+    onComplete: fn(),
   },
 } satisfies Meta<typeof TosIframe>;
 
