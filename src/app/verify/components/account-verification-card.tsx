@@ -82,11 +82,15 @@ export const AccountVerificationCard = ({
 
         {step === 'details' && (
           <>
-            <PersonaCard url={PERSONA_URL} onComplete={handleDetailsComplete} />
             {/* Temp button just to advance to the next step*/}
-            <Button variant='sorbet' onClick={handleDetailsComplete}>
-              Next
+            <Button
+              variant='link'
+              className='self-start'
+              onClick={handleDetailsComplete}
+            >
+              Skip
             </Button>
+            <PersonaCard url={PERSONA_URL} onComplete={handleDetailsComplete} />
           </>
         )}
       </div>
