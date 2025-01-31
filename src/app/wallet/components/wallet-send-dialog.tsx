@@ -22,6 +22,7 @@ import useMeasure from 'react-use-measure';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -33,7 +34,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { env } from '@/lib/env';
+import BaseInProduct from '~/svg/base-in-product.svg';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
@@ -285,7 +286,7 @@ const Step1 = ({
                       <Input
                         {...field}
                         placeholder='0.0'
-                        className='py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
+                        className='no-spin-buttons py-6 pr-28 text-2xl font-semibold placeholder:text-[#D0D5DD]'
                         type='number'
                         autoFocus
                       />
@@ -344,16 +345,15 @@ const Step1 = ({
                       spellCheck={false}
                     />
                   </FormControl>
-                  <FormDescription className='text-sm font-normal text-[#667085]'>
-                    Please add a valid Ethereum wallet address
-                  </FormDescription>
                 </FormItem>
               )}
             />
+            <BaseAlert />
           </div>
           <Button
-            className='bg-sorbet border-sorbet-border mt-4 w-full border'
+            className='mt-6 w-full'
             type='submit'
+            variant='sorbet'
             disabled={!isValid}
           >
             Continue
@@ -361,6 +361,19 @@ const Step1 = ({
         </form>
       </Form>
     </div>
+  );
+};
+
+const BaseAlert = ({ className }: { className?: string }) => {
+  return (
+    <Alert className={className}>
+      <BaseInProduct className='size-5' />
+      <AlertTitle>Is this a Base network address?</AlertTitle>
+      <AlertDescription>
+        Make sure this address can accept USDC on Base. If not, you could lose
+        your funds.
+      </AlertDescription>
+    </Alert>
   );
 };
 
@@ -415,14 +428,9 @@ const Step2 = ({
         </div>
         <span className='text-sm font-medium text-[#344054]'>To</span>
         <div className='flex w-full items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] px-4 py-6'>
-          <Image src='/svg/logo.svg' height={48} width={48} alt='Sorbet logo' />
-          <div className='flex max-w-[calc(100%-58px)] flex-col justify-between'>
-            <span className='text-sm font-medium text-[#344054]'>Sorbet</span>
-            <p className='text-sorbet w-full truncate text-lg'>
-              {recipientWalletAddress}
-            </p>
-          </div>
+          <p className='text-md w-full truncate'>{recipientWalletAddress}</p>
         </div>
+        <BaseAlert />
       </div>
       <div className='mt-4 flex gap-3'>
         <Button
