@@ -52,6 +52,7 @@ export const KYCChecklist = ({
             value={progress}
             indeterminate={indeterminate}
             className={cn('[&>*]:bg-sorbet h-2', loading && 'animate-pulse')}
+            aria-label={`${numTasksComplete} of ${totalSteps} steps complete`}
           />
           {loading ? (
             <Skeleton className='h-4 w-6' />
