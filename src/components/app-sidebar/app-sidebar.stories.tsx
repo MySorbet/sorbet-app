@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { Menu } from 'lucide-react';
 
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { SidebarProvider, useSidebar } from '@/components/ui/sidebar';
 
 import { AppSidebar } from './app-sidebar';
 
@@ -11,7 +12,10 @@ const meta = {
   title: 'Sidebar/AppSidebar',
   component: AppSidebar,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
+    viewport: {
+      defaultViewport: 'desktop',
+    },
   },
   decorators: [
     (Story) => (
@@ -24,6 +28,23 @@ const meta = {
 
 export default meta;
 
-export const Default: Story = {
-  args: {},
+export const Default: Story = {};
+
+export const Mobile: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+  render: () => {
+    const { toggleSidebar } = useSidebar();
+    return (
+      <div className='flex h-screen w-screen items-center justify-center'>
+        <AppSidebar />
+        <Button onClick={toggleSidebar} variant='link'>
+          <Menu />
+        </Button>
+      </div>
+    );
+  },
 };
