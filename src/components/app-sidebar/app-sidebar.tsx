@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -30,6 +31,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
 
@@ -48,6 +50,33 @@ const isRender = (item: MenuItem): item is MenuItemRender => {
   return 'render' in item;
 };
 
+/** Dynamics wallet menu item which fetches and displays balance */
+const WalletMenuItem = () => {
+  // TODO: Use a a better hook and remove mock
+  // const { smartWalletAddress } = useSmartWalletAddress();
+  // const { usdcBalance } = useWalletBalances(smartWalletAddress, false);
+  const { loading, usdcBalance } = useMockBalance();
+
+  const item = {
+    title: 'Wallet',
+    url: '#/wallet',
+    icon: Wallet,
+  };
+  return (
+    <SidebarMenuItem key={item.title}>
+      <SidebarLinkButton item={item} />
+
+      <SidebarMenuBadge>
+        {loading ? (
+          <Skeleton className='h-4 w-16' variant='darker' />
+        ) : (
+          <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+        )}
+      </SidebarMenuBadge>
+    </SidebarMenuItem>
+  );
+};
+
 // Menu items.
 const items: MenuItem[] = [
   {
@@ -56,20 +85,7 @@ const items: MenuItem[] = [
     icon: FileText,
   },
   {
-    render: () => {
-      const item = {
-        title: 'Wallet',
-        url: '#/wallet',
-        icon: Wallet,
-      };
-      // TODO: Dynamic balance
-      return (
-        <SidebarMenuItem key={item.title}>
-          <SidebarLinkButton item={item} />
-          <SidebarMenuBadge>1,329 USDC</SidebarMenuBadge>
-        </SidebarMenuItem>
-      );
-    },
+    render: WalletMenuItem,
   },
   {
     title: 'Transactions',
@@ -128,7 +144,8 @@ const accountItems: MenuItem[] = [
     icon: Settings2,
   },
 ];
-
+// TODO: useMobile to render a button to open and close the sidebar on mobile
+/** A global sidebar */
 export const AppSidebar = () => {
   // TODO: Props instead?
   const { user } = useAuth();
@@ -190,22 +207,26 @@ export const AppSidebar = () => {
       {/* Footer */}
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuButton
-            size='lg'
-            className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-          >
-            <Avatar className='h-8 w-8 rounded-lg'>
-              <AvatarImage src={user?.profileImage} alt={user?.firstName} />
-              <AvatarFallback className='text-muted-foreground size-8 rounded-lg'>
-                <User />
-              </AvatarFallback>
-            </Avatar>
-            <div className='grid flex-1 text-left text-sm leading-tight'>
-              <span className='truncate font-semibold'>{user?.firstName}</span>
-              <span className='truncate text-xs'>{user?.email}</span>
-            </div>
-            <ChevronsUpDown className='ml-auto size-4' />
-          </SidebarMenuButton>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size='lg'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+            >
+              <Avatar className='h-8 w-8 rounded-lg'>
+                <AvatarImage src={user?.profileImage} alt={user?.firstName} />
+                <AvatarFallback className='text-muted-foreground size-8 rounded-lg'>
+                  <User />
+                </AvatarFallback>
+              </Avatar>
+              <div className='grid flex-1 text-left text-sm leading-tight'>
+                <span className='truncate font-semibold'>
+                  {user?.firstName}
+                </span>
+                <span className='truncate text-xs'>{user?.email}</span>
+              </div>
+              <ChevronsUpDown className='ml-auto size-4' />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
@@ -241,4 +262,16 @@ const renderMenuItems = (items: MenuItem[]) => {
       </SidebarMenuItem>
     );
   });
+};
+
+const useMockBalance = () => {
+  const [loading, setLoading] = useState(true);
+  const [usdcBalance, setUsdcBalance] = useState<string>('1,329');
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+      setUsdcBalance('1,329');
+    }, 1000);
+  }, []);
+  return { loading, usdcBalance };
 };
