@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LucideIcon, User } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -11,7 +11,6 @@ import {
 } from 'react';
 
 import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
@@ -35,8 +34,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { SquareUserIcon } from '@/components/ui/square-user';
 import { WalletIcon } from '@/components/ui/wallet';
-import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
+
+import { NavUser } from './nav-user';
 
 // Little hack (assumes all icons are this type)
 type AnimatedIconHandle = {
@@ -157,12 +157,9 @@ const accountItems: MenuItem[] = [
     icon: SettingsIcon,
   },
 ];
-// TODO: useMobile to render a button to open and close the sidebar on mobile
+
 /** A global sidebar */
 export const AppSidebar = () => {
-  // TODO: Props instead?
-  const { user } = useAuth();
-
   return (
     <Sidebar>
       {/* Header */}
@@ -219,28 +216,7 @@ export const AppSidebar = () => {
 
       {/* Footer */}
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-            >
-              <Avatar className='h-8 w-8 rounded-full'>
-                <AvatarImage src={user?.profileImage} alt={user?.firstName} />
-                <AvatarFallback className='text-muted-foreground size-8 rounded-full'>
-                  <User />
-                </AvatarFallback>
-              </Avatar>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-semibold'>
-                  {user?.firstName}
-                </span>
-                <span className='truncate text-xs'>{user?.email}</span>
-              </div>
-              <ChevronsUpDown className='ml-auto size-4' />
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );
