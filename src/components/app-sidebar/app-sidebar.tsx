@@ -225,9 +225,9 @@ export const AppSidebar = () => {
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <Avatar className='h-8 w-8 rounded-lg'>
+              <Avatar className='h-8 w-8 rounded-full'>
                 <AvatarImage src={user?.profileImage} alt={user?.firstName} />
-                <AvatarFallback className='text-muted-foreground size-8 rounded-lg'>
+                <AvatarFallback className='text-muted-foreground size-8 rounded-full'>
                   <User />
                 </AvatarFallback>
               </Avatar>
