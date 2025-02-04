@@ -3,11 +3,8 @@ import {
   BarChartBig,
   ChevronsUpDown,
   FileText,
-  HandCoins,
   LucideIcon,
   MessageSquare,
-  Settings2,
-  ShieldCheck,
   SquareGanttChart,
   SquareUser,
   User,
@@ -15,9 +12,19 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import {
+  ForwardRefExoticComponent,
+  HTMLAttributes,
+  RefAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { HandCoinsIcon } from '@/components/ui/hand-coins';
+import { SettingsIcon } from '@/components/ui/settings';
+import { ShieldCheckIcon } from '@/components/ui/shield-check';
 import {
   Sidebar,
   SidebarContent,
@@ -35,10 +42,20 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
 
+// Little hack (assumes all icons are this type)
+type AnimatedIconHandle = {
+  startAnimation: () => void;
+  stopAnimation: () => void;
+};
+
+type AnimatedIcon = ForwardRefExoticComponent<
+  HTMLAttributes<HTMLDivElement> & RefAttributes<AnimatedIconHandle>
+>;
+
 type MenuItemProps = {
   title: string;
   url: string;
-  icon: LucideIcon;
+  icon: LucideIcon | AnimatedIcon;
 };
 type MenuItemRender = {
   render: () => React.ReactNode;
@@ -90,7 +107,7 @@ const items: MenuItem[] = [
   {
     title: 'Transactions',
     url: '#/wallet/all',
-    icon: HandCoins,
+    icon: HandCoinsIcon,
   },
   {
     title: 'Transfers',
@@ -120,7 +137,7 @@ const accountItems: MenuItem[] = [
       const item = {
         title: isVerified ? 'Account verified' : 'Get verified',
         url: '#/verify',
-        icon: ShieldCheck,
+        icon: ShieldCheckIcon,
       };
       return (
         <SidebarMenuItem key={item.title}>
@@ -141,7 +158,7 @@ const accountItems: MenuItem[] = [
   {
     title: 'Settings',
     url: '#/settings',
-    icon: Settings2,
+    icon: SettingsIcon,
   },
 ];
 // TODO: useMobile to render a button to open and close the sidebar on mobile
@@ -233,6 +250,12 @@ export const AppSidebar = () => {
   );
 };
 
+const isAnimatedIcon = (
+  icon: LucideIcon | AnimatedIconHandle
+): icon is AnimatedIconHandle => {
+  return 'startAnimation' in icon && 'stopAnimation' in icon;
+};
+
 const SidebarLinkButton = ({
   item,
   iconClassName,
@@ -241,12 +264,30 @@ const SidebarLinkButton = ({
   iconClassName?: string;
 }) => {
   const Icon = item.icon;
+  // TODO: fix this typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const iconRef = useRef<any>(null);
+
+  const handleMouseEnter = () => {
+    if (iconRef.current && isAnimatedIcon(iconRef.current)) {
+      iconRef.current?.startAnimation?.();
+    }
+  };
+
   return (
     <SidebarMenuButton asChild>
-      <a href={item.url}>
-        <Icon className={iconClassName} />
+      <Link href={item.url} onMouseEnter={handleMouseEnter}>
+        <Icon
+          className={cn(
+            iconClassName,
+            'size-4 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:stroke-current [&>svg]:stroke-[1.5]'
+          )}
+          size={20}
+          strokeWidth={1.5}
+          ref={iconRef}
+        />
         <span>{item.title}</span>
-      </a>
+      </Link>
     </SidebarMenuButton>
   );
 };
