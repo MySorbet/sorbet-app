@@ -1,0 +1,98 @@
+'use client';
+
+import { motion, useAnimation } from 'motion/react';
+import type { HTMLAttributes } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+
+export interface FileTextIconHandle {
+  startAnimation: () => void;
+  stopAnimation: () => void;
+}
+
+const FileTextIcon = forwardRef<
+  FileTextIconHandle,
+  HTMLAttributes<HTMLDivElement>
+>(({ onMouseEnter, onMouseLeave, ...props }, ref) => {
+  const controls = useAnimation();
+  const isControlledRef = useRef(false);
+
+  useImperativeHandle(ref, () => {
+    isControlledRef.current = true;
+
+    return {
+      startAnimation: () => controls.start('animate'),
+      stopAnimation: () => controls.start('normal'),
+    };
+  });
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!isControlledRef.current) {
+        controls.start('animate');
+      } else {
+        onMouseEnter?.(e);
+      }
+    },
+    [controls, onMouseEnter]
+  );
+
+  const handleMouseLeave = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!isControlledRef.current) {
+        controls.start('normal');
+      } else {
+        onMouseLeave?.(e);
+      }
+    },
+    [controls, onMouseLeave]
+  );
+
+  return (
+    <div
+      className='hover:bg-accent flex cursor-pointer select-none items-center justify-center rounded-md p-2 transition-colors duration-200'
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      {...props}
+    >
+      <motion.svg
+        animate={controls}
+        variants={{
+          animate: {
+            scale: [1, 1.04, 1],
+            rotate: [0, -8, 8, -8, 0],
+            y: [0, -2, 0],
+            transition: {
+              duration: 0.6,
+              ease: 'easeInOut',
+              times: [0, 0.2, 0.5, 0.8, 1],
+            },
+          },
+          normal: {
+            scale: 1,
+            rotate: 0,
+            y: 0,
+          },
+        }}
+        xmlns='http://www.w3.org/2000/svg'
+        width='24'
+        height='24'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      >
+        <path d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' />
+        <path d='M14 2v4a2 2 0 0 0 2 2h4' />
+        <path d='M10 9H8' />
+        <path d='M16 13H8' />
+        <path d='M16 17H8' />
+      </motion.svg>
+    </div>
+  );
+});
+
+FileTextIcon.displayName = 'FileTextIcon';
+
+export { FileTextIcon };

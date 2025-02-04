@@ -1,15 +1,4 @@
-import {
-  ArrowLeftRight,
-  BarChartBig,
-  ChevronsUpDown,
-  FileText,
-  LucideIcon,
-  MessageSquare,
-  SquareGanttChart,
-  SquareUser,
-  User,
-  Wallet,
-} from 'lucide-react';
+import { ChevronsUpDown, LucideIcon, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -21,8 +10,12 @@ import {
   useState,
 } from 'react';
 
+import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
+import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
+import { MessageSquareIcon } from '@/components/ui/message-square';
 import { SettingsIcon } from '@/components/ui/settings';
 import { ShieldCheckIcon } from '@/components/ui/shield-check';
 import {
@@ -39,6 +32,9 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
+import { SquareUserIcon } from '@/components/ui/square-user';
+import { WalletIcon } from '@/components/ui/wallet';
 import { useAuth } from '@/hooks';
 import { cn } from '@/lib/utils';
 
@@ -77,7 +73,7 @@ const WalletMenuItem = () => {
   const item = {
     title: 'Wallet',
     url: '#/wallet',
-    icon: Wallet,
+    icon: WalletIcon,
   };
   return (
     <SidebarMenuItem key={item.title}>
@@ -99,7 +95,7 @@ const items: MenuItem[] = [
   {
     title: 'Invoices',
     url: '#/invoices',
-    icon: FileText,
+    icon: FileTextIcon,
   },
   {
     render: WalletMenuItem,
@@ -112,7 +108,7 @@ const items: MenuItem[] = [
   {
     title: 'Transfers',
     url: '#/wallet',
-    icon: ArrowLeftRight,
+    icon: ArrowLeftRightIcon,
   },
 ];
 
@@ -120,12 +116,12 @@ const profileItems: MenuItem[] = [
   {
     title: 'Link-in-bio',
     url: '#/wallet/all',
-    icon: SquareUser,
+    icon: SquareUserIcon,
   },
   {
     title: 'Analytics',
     url: '#/wallet',
-    icon: BarChartBig,
+    icon: ChartColumnIncreasingIcon,
   },
 ];
 
@@ -152,7 +148,7 @@ const accountItems: MenuItem[] = [
   {
     title: 'Feedback',
     url: '#/feedback',
-    icon: MessageSquare,
+    icon: MessageSquareIcon,
     // TODO: Opens featurebase modal
   },
   {
@@ -190,7 +186,7 @@ export const AppSidebar = () => {
               item={{
                 title: 'Dashboard',
                 url: '#/dashboard',
-                icon: SquareGanttChart,
+                icon: SquareGanttChartIcon,
               }}
             />
           </SidebarGroupContent>
@@ -274,9 +270,19 @@ const SidebarLinkButton = ({
     }
   };
 
+  const handleMouseLeave = () => {
+    if (iconRef.current && isAnimatedIcon(iconRef.current)) {
+      iconRef.current?.stopAnimation?.();
+    }
+  };
+
   return (
     <SidebarMenuButton asChild>
-      <Link href={item.url} onMouseEnter={handleMouseEnter}>
+      <Link
+        href={item.url}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <Icon
           className={cn(
             iconClassName,
