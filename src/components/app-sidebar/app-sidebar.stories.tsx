@@ -39,9 +39,9 @@ export const Mobile: Story = {
   render: () => {
     const { toggleSidebar } = useSidebar();
     return (
-      <div className='flex h-screen w-screen items-center justify-center'>
+      <div className='flex h-screen w-screen justify-end p-4'>
         <AppSidebar />
-        <Button onClick={toggleSidebar} variant='link'>
+        <Button onClick={toggleSidebar} variant='ghost' size='icon'>
           <Menu />
         </Button>
       </div>
