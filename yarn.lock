@@ -11724,6 +11724,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"framer-motion@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "framer-motion@npm:12.1.0"
+  dependencies:
+    motion-dom: "npm:^12.0.0"
+    motion-utils: "npm:^12.0.0"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/7b7fe45cf38f2a13236a19f95840ec42dd7de9f9692cb6fdce8c5f17c5101c0bcce43783968a0c6157a1f8b2bcd9cbb88eb9fd9c0e7212a357ec6010135e80d4
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^10.0.0":
   version: 10.1.0
   resolution: "fs-extra@npm:10.1.0"
@@ -14680,6 +14702,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"motion-dom@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "motion-dom@npm:12.0.0"
+  dependencies:
+    motion-utils: "npm:^12.0.0"
+  checksum: 10c0/d67209bc217f16b9a0305afa4bfc366997d02df76eea9ab29062f98beeff5fdfc60ae1b422ab397f525ae775c640ac9ba061c9f45aacd6cd71a23dce06661384
+  languageName: node
+  linkType: hard
+
+"motion-utils@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "motion-utils@npm:12.0.0"
+  checksum: 10c0/ca6cc7542d00afab011130fcd940e5f5a412b21a4eaeb17c0a497dcb86de311dda90741eeca7de1276cc8c1dff7ac1e6a8df1e8cebb1191a2c43bfe8368dc70b
+  languageName: node
+  linkType: hard
+
 "motion@npm:10.16.2":
   version: 10.16.2
   resolution: "motion@npm:10.16.2"
@@ -14691,6 +14729,27 @@ __metadata:
     "@motionone/utils": "npm:^10.15.1"
     "@motionone/vue": "npm:^10.16.2"
   checksum: 10c0/ea3fa2c7ce881824bcefa39b96b5e2b802d4b664b8a64644cded11197c9262e2a5b14b2e9516940e06cec37d3c39e4c79b26825c447f71ba1cfd7e3370efbe61
+  languageName: node
+  linkType: hard
+
+"motion@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "motion@npm:12.1.0"
+  dependencies:
+    framer-motion: "npm:^12.1.0"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/c7cec99c68ab7c760724a3ede514a1c89ea34609421265810493bd5a9604c918388845173ef83c1fa67b1733cec1b97f356d0d79b379a4486991123ed52a8030
   languageName: node
   linkType: hard
 
@@ -17847,6 +17906,7 @@ __metadata:
     lint-staged: "npm:^12.5.0"
     lodash.pickby: "npm:^4.6.0"
     lucide-react: "npm:^0.354.0"
+    motion: "npm:^12.1.0"
     msw: "npm:^2.6.0"
     msw-storybook-addon: "npm:^2.0.3"
     next: "npm:^14.1.3"

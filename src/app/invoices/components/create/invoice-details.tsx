@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
-import { Plus, Trash01 } from '@untitled-ui/icons-react';
+import { Plus } from '@untitled-ui/icons-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 
 import { calculateSubtotalTaxAndTotal } from '../dashboard/utils';
 import { BackButton } from './back-button';
+import { CompactDeleteButton } from './compact-delete-button';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
@@ -348,11 +349,12 @@ const InvoiceItem = ({
         </div>
         {hideDelete ? (
           // Take up the same amount of space as the delete button below
-          <div className='w-[3.2rem] flex-shrink-0' />
+          <div className='w-4 shrink-0' />
         ) : (
-          <Button variant='ghost' type='button' onClick={onDelete}>
-            <Trash01 className='size-5' />
-          </Button>
+          <CompactDeleteButton
+            onDelete={onDelete}
+            className='-ml-5 self-center'
+          />
         )}
       </div>
       {/* TODO: Revisit FormMessage errors for these items. Currently, they just say "undefined" */}
@@ -403,13 +405,10 @@ const SalesTaxItem = ({
         />
         <span className='absolute right-3 top-1/2 -translate-y-1/2'>%</span>
       </div>
-      <Button
-        variant='ghost'
-        type='button'
-        onClick={() => onChange?.(undefined)}
-      >
-        <Trash01 className='size-5' />
-      </Button>
+      <CompactDeleteButton
+        onDelete={() => onChange?.(undefined)}
+        className='-ml-5'
+      />
     </div>
   );
 };
