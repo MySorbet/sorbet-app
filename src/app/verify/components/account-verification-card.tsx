@@ -4,6 +4,7 @@ import { PERSONA_URL, TOS_URL } from '@/app/verify/components/urls';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+import { useConfettiCannons } from '../hooks/use-confetti-cannons';
 import { VerifyStep } from './kyc-checklist';
 import { PersonaCard } from './persona-card';
 import { TosIframe } from './tos-iframe';
@@ -48,6 +49,14 @@ export const AccountVerificationCard = ({
     // TODO: invalidate the bridge customer query to make sure the details are updated.
     // There could be a small wait time for the webhook to be processed. We may need to go indeterminate here to wait for that while polling
   };
+
+  // Confetti on complete
+  const { fire } = useConfettiCannons();
+  useEffect(() => {
+    if (isComplete) {
+      fire();
+    }
+  }, [fire, isComplete]);
 
   return (
     <VerifyCard className={cn('@container w-full', className)}>
