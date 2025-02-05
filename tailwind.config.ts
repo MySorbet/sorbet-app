@@ -22,24 +22,24 @@ const config = {
         primary: '#F9FAFB',
       },
       opacities: {
-        100: '1',
-        80: '.80',
-        60: '.60',
-        40: '.40',
-        20: '.20',
-        10: '.10',
-        5: '.05',
+        '5': '.05',
+        '10': '.10',
+        '20': '.20',
+        '40': '.40',
+        '60': '.60',
+        '80': '.80',
+        '100': '1',
       },
       sizes: {
-        1: '0.25rem',
-        2: '0.5rem',
-        4: '1rem',
-        6: '1.5rem',
-        8: '2rem',
-        16: '4rem',
-        20: '5rem',
-        24: '6rem',
-        32: '8rem',
+        '1': '0.25rem',
+        '2': '0.5rem',
+        '4': '1rem',
+        '6': '1.5rem',
+        '8': '2rem',
+        '16': '4rem',
+        '20': '5rem',
+        '24': '6rem',
+        '32': '8rem',
       },
     },
     extend: {
@@ -88,6 +88,16 @@ const config = {
         textSecondary: {
           DEFAULT: '#344054',
         },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-background))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          primary: 'hsl(var(--sidebar-primary))',
+          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          ring: 'hsl(var(--sidebar-ring))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -96,18 +106,32 @@ const config = {
       },
       keyframes: {
         'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
         },
         // Used for the indeterminate progress bar
         progress: {
-          '0%': { transform: 'translateX(0) scaleX(0)' },
-          '40%': { transform: 'translateX(0) scaleX(0.4)' },
-          '100%': { transform: 'translateX(100%) scaleX(0.5)' },
+          '0%': {
+            transform: 'translateX(0) scaleX(0)',
+          },
+          '40%': {
+            transform: 'translateX(0) scaleX(0.4)',
+          },
+          '100%': {
+            transform: 'translateX(100%) scaleX(0.5)',
+          },
         },
       },
       animation: {
