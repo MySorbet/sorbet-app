@@ -7,7 +7,7 @@ import { TaskItem } from './task-item';
 type Story = StoryObj<typeof TaskItem>;
 
 const meta = {
-  title: 'Components/Common/TaskItem',
+  title: 'Components/common/TaskItem',
   component: TaskItem,
   parameters: {
     layout: 'centered',
