@@ -37,19 +37,16 @@ export const FAQ = ({ className }: { className?: string }) => {
             <AccordionTrigger>How does it work?</AccordionTrigger>
             <AccordionContent>
               Users from{' '}
-              <Hyperlink href='https://docs.mysorbet.xyz/sorbet/getting-started#complete-kyc'>
+              <Hyperlink href='https://apidocs.bridge.xyz/docs/customers-api#supported-government-ids-by-country'>
                 supported countries
               </Hyperlink>{' '}
               can complete it in less than 3 minutes. You will need to provide a
               few basic information about you to confirm your identity. Sorbet
               works with{' '}
-              <Hyperlink href='https://docs.mysorbet.xyz/sorbet/getting-started#complete-kyc'>
+              <Hyperlink href='https://www.bridge.xyz/#secBenefit'>
                 Bridge
               </Hyperlink>{' '}
-              and{' '}
-              <Hyperlink href='https://docs.mysorbet.xyz/sorbet/getting-started#complete-kyc'>
-                Persona
-              </Hyperlink>{' '}
+              and <Hyperlink href='https://withpersona.com/'>Persona</Hyperlink>{' '}
               for a simple and secure process. Once verified you will receive a
               confirmation email.
             </AccordionContent>
@@ -83,7 +80,12 @@ const Hyperlink = ({
   children: ReactNode;
 }) => {
   return (
-    <a href={href} className='text-sorbet font-semibold hover:underline'>
+    <a
+      href={href}
+      target='_blank'
+      rel='noopener noreferrer'
+      className='text-sorbet font-semibold hover:underline'
+    >
       {children}
     </a>
   );
