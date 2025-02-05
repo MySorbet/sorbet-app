@@ -3,6 +3,7 @@ import { CircleCheck, CircleDashed } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export type TaskItemProps = {
   /** The title of the task */
@@ -17,6 +18,8 @@ export type TaskItemProps = {
   onClick: () => void;
   /** Whether the task is loading */
   loading?: boolean;
+  /** Whether the task is disabled */
+  disabled?: boolean;
 };
 
 /**
@@ -29,11 +32,15 @@ export const TaskItem = ({
   loading,
   onClick,
   Icon,
+  disabled,
 }: TaskItemProps) => {
   return (
     <div
-      className='group flex cursor-pointer items-center justify-between gap-4'
-      onClick={onClick}
+      className={cn(
+        'group flex cursor-pointer items-center justify-between gap-4',
+        disabled && 'pointer-events-none'
+      )}
+      onClick={disabled ? undefined : onClick}
       role='button'
     >
       <Icon

@@ -72,6 +72,7 @@ export const KYCChecklist = ({
             completed={completedTasks?.[step.type] ?? false}
             onClick={() => onTaskClick?.(step.type)}
             loading={loading}
+            disabled={completedTasks?.[step.type]}
           />
         ))}
       </div>

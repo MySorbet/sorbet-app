@@ -52,3 +52,9 @@ export const LongContent: Story = {
       'This is a very long task description that demonstrates how the component handles longer content and wrapping behavior in a realistic scenario',
   },
 };
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
