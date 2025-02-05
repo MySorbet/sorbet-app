@@ -5,10 +5,7 @@
 
   // Control behavior of the editor when saving
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.fixAll.eslint": "never" // Stop eslint from autofixing code on save
-  },
+
   // Lock everyone into using prettier
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
