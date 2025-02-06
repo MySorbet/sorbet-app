@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
+
 import { PersonaCard } from './persona-card';
-import { PERSONA_URL } from './urls';
 
 type Story = StoryObj<typeof PersonaCard>;
 
@@ -12,7 +13,7 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    url: PERSONA_URL,
+    url: mockBridgeCustomer.kyc_link,
   },
 } satisfies Meta<typeof PersonaCard>;
 

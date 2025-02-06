@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
+import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
+
 import { TosIframe } from './tos-iframe';
-import { TOS_URL } from './urls';
 
 type Story = StoryObj<typeof TosIframe>;
 
@@ -13,7 +14,7 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    url: TOS_URL,
+    url: mockBridgeCustomer.tos_link,
     onComplete: fn(),
   },
 } satisfies Meta<typeof TosIframe>;
