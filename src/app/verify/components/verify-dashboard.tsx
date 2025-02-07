@@ -45,6 +45,8 @@ export const VerifyDashboard = () => {
   };
 
   const { data: customer, isLoading } = useBridgeCustomer();
+  // TODO: Do not retry if 404
+  // TODO: Set background refetch (make sure that new customer is refetching in indeterminate state)
 
   // Drive step from bridge customer status
   useEffect(() => {
