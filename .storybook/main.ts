@@ -2,6 +2,7 @@ import type { StorybookConfig } from '@storybook/nextjs';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
@@ -9,11 +10,14 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     '@alexgorbatchev/storybook-addon-localstorage',
   ],
+
   framework: {
     name: '@storybook/nextjs',
     options: {},
   },
+
   staticDirs: ['../public'],
+
   core: {
     disableTelemetry: true,
   },
@@ -47,6 +51,10 @@ const config: StorybookConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
+  },
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
   },
 };
 export default config;
