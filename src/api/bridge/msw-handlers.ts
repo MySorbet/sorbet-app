@@ -22,6 +22,29 @@ export const mockBridgeCustomerHandler = http.get(
   }
 );
 
+export const mockBridgeCustomerHandlerTosComplete = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
+  async () => {
+    await delay(1000);
+    return HttpResponse.json<BridgeCustomer>({
+      ...mockBridgeCustomer,
+      tos_status: 'approved',
+    });
+  }
+);
+
+export const mockBridgeCustomerHandlerKycComplete = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
+  async () => {
+    await delay(1000);
+    return HttpResponse.json<BridgeCustomer>({
+      ...mockBridgeCustomer,
+      tos_status: 'approved',
+      kyc_status: 'approved',
+    });
+  }
+);
+
 export const mockBridgeCustomerHandler404 = http.get(
   `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
   async () => {

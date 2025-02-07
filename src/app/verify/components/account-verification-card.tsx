@@ -7,7 +7,7 @@ import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useVerify } from '@/hooks/profile/use-verify';
-import { cn } from '@/lib/utils';
+import { cn, sleep } from '@/lib/utils';
 
 import { useConfettiCannons } from '../hooks/use-confetti-cannons';
 import { VerifyStep } from './kyc-checklist';
@@ -24,6 +24,7 @@ export const AccountVerificationCard = ({
   isLoading,
   tosLink,
   kycLink,
+  isIndeterminate,
 }: {
   className?: string;
   step?: VerifyStep | 'complete' | 'get-verified';
@@ -32,6 +33,7 @@ export const AccountVerificationCard = ({
   isLoading?: boolean;
   tosLink?: string;
   kycLink?: string;
+  isIndeterminate?: boolean;
 }) => {
   const isComplete = step === 'complete';
 
@@ -64,8 +66,8 @@ export const AccountVerificationCard = ({
   };
 
   // When bridge frame fires complete event, invalidate the bridge customer query and advance to the next step
-  // TODO: Should we introduce a small delay to avoid a race condition?
-  const handleTermsComplete = () => {
+  const handleTermsComplete = async () => {
+    await sleep(1000); // Wait 1 second to avoid flashing a confirmation message and give bridge time to update the customer
     queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
     onStepComplete?.('terms');
   };
@@ -73,16 +75,13 @@ export const AccountVerificationCard = ({
   const handleDetailsComplete = () => {
     queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
     onStepComplete?.('details');
-    // TODO: invalidate the bridge customer query to make sure the details are updated.
     // There could be a small wait time for the webhook to be processed. We may need to go indeterminate here to wait for that while polling
   };
 
   // Confetti on complete
   const { fire } = useConfettiCannons();
   useEffect(() => {
-    if (isComplete) {
-      fire();
-    }
+    isComplete && fire();
   }, [fire, isComplete]);
 
   // Loading skeleton of the initial state
@@ -103,18 +102,9 @@ export const AccountVerificationCard = ({
   return (
     <VerifyCard className={cn('@container w-full', className)}>
       <div className='flex flex-col gap-3'>
-        <div className='flex flex-col gap-1.5'>
-          <h2 className='flex items-center text-wrap break-words text-2xl font-semibold'>
-            {isComplete && (
-              <CircleCheck
-                className='mr-1 inline-block size-6 text-green-500'
-                strokeWidth={2}
-              />
-            )}
-            {title}
-          </h2>
-          <p className='text-sm'>{description}</p>
-        </div>
+        {isIndeterminate && <IndeterminateContent />}
+        {isComplete && <CompleteContent />}
+        {!isIndeterminate && !isComplete && <DefaultContent />}
 
         {/* Step specific content */}
         {step === 'get-verified' && (
@@ -134,17 +124,7 @@ export const AccountVerificationCard = ({
         )}
 
         {kycLink && step === 'details' && (
-          <>
-            {/* Temp button just to advance to the next step*/}
-            <Button
-              variant='link'
-              className='self-start'
-              onClick={handleDetailsComplete}
-            >
-              Skip
-            </Button>
-            <PersonaCard url={kycLink} onComplete={handleDetailsComplete} />
-          </>
+          <PersonaCard url={kycLink} onComplete={handleDetailsComplete} />
         )}
 
         {isComplete && (
@@ -158,5 +138,64 @@ export const AccountVerificationCard = ({
         )}
       </div>
     </VerifyCard>
+  );
+};
+
+/** Local component for displaying the card title and description */
+const CardContent = ({
+  title,
+  icon,
+  description,
+}: {
+  title: string;
+  icon?: () => React.ReactNode;
+  description: string;
+}) => {
+  return (
+    <div className='flex flex-col gap-1.5'>
+      <h2 className='flex items-center text-wrap break-words text-2xl font-semibold'>
+        {icon?.()}
+        {title}
+      </h2>
+      <p className='text-sm'>{description}</p>
+    </div>
+  );
+};
+
+/** Local component specializing the card content for the indeterminate state */
+const IndeterminateContent = () => {
+  return (
+    <CardContent
+      title='Verification pending'
+      description="KYC verification is currently pending. Please check back shortly, or
+        we'll notify you via email!"
+      icon={() => <Spinner className='mr-1.5 size-6' />}
+    />
+  );
+};
+
+/** Local component specializing the card content for the complete state */
+const CompleteContent = () => {
+  return (
+    <CardContent
+      title='Account verified'
+      description='Congrats! You can now accept payments via ACH/Wire or Credit Card. Try sending an invoice to test it out.'
+      icon={() => (
+        <CircleCheck
+          className='mr-1.5 inline-block size-6 text-green-500'
+          strokeWidth={2}
+        />
+      )}
+    />
+  );
+};
+
+/** Local component specializing the card content for the default state */
+const DefaultContent = () => {
+  return (
+    <CardContent
+      title='Account verification'
+      description='Verify your account to accept payments via ACH/Wire or Credit Card.'
+    />
   );
 };

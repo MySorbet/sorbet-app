@@ -29,3 +29,9 @@ export const Loading: Story = {
     isLoading: true,
   },
 };
+
+export const Indeterminate: Story = {
+  args: {
+    isIndeterminate: true,
+  },
+};

@@ -21,38 +21,27 @@ const kycCompletedStates: KYCStatus[] = [
   // 'rejected',
 ];
 
+type AllSteps = 'get-verified' | VerifyStep | 'complete';
+
 export const VerifyDashboard = () => {
   // Step currently represents what step of verification we are displaying regardless of bridge customer status
   // TODO: Maybe we should consider driving step from bridge customer status?
-  const [step, setStep] = useState<'get-verified' | VerifyStep | 'complete'>(
-    'get-verified'
-  );
-
-  // TODO: This is competing with the below step driver
-  // Drive step from child callbacks
-  // const handleStepComplete = (
-  //   step: VerifyStep | 'complete' | 'get-verified'
-  // ) => {
-  //   if (step === 'get-verified') {
-  //     setStep('terms');
-  //     return;
-  //   }
-
-  //   if (step === 'terms') {
-  //     setStep('details');
-  //     return;
-  //   }
-
-  //   if (step === 'details') {
-  //     // TODO: Set indeterminate and poll the bridge customer? Or should this happen 1 level lower
-  //     setStep('complete');
-  //     return;
-  //   }
-  // };
+  const [step, setStep] = useState<AllSteps>('get-verified');
 
   const handleTaskClick = (newStep: VerifyStep) => {
     // TODO: Restrict to only allow moving forward in the checklist
     setStep(newStep);
+  };
+
+  // We need this to handle the transition from details to complete
+  const [isIndeterminate, setIsIndeterminate] = useState(false);
+  const handleStepComplete = (step: AllSteps) => {
+    // Ignore all reported step transitions except for details to complete
+    if (step === 'details') {
+      setIsIndeterminate(true);
+      // TODO: Poll
+      // Use effect below will drive the step to complete
+    }
   };
 
   const { data: bridgeCustomer, isLoading } = useBridgeCustomer();
@@ -91,10 +80,11 @@ export const VerifyDashboard = () => {
         <AccountVerificationCard
           className='h-fit'
           step={step}
-          // onStepComplete={handleStepComplete}
+          onStepComplete={handleStepComplete}
           isLoading={isLoading}
           tosLink={bridgeCustomer?.tos_link}
           kycLink={bridgeCustomer?.kyc_link}
+          isIndeterminate={isIndeterminate}
         />
         <FAQ className='h-fit' />
       </div>
@@ -102,6 +92,7 @@ export const VerifyDashboard = () => {
         onTaskClick={handleTaskClick}
         loading={isLoading}
         className='h-fit'
+        indeterminate={isIndeterminate}
         completedTasks={{
           terms: bridgeCustomer?.tos_status === 'approved',
           details:

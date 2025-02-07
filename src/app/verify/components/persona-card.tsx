@@ -1,5 +1,6 @@
+import { CircleAlert } from 'lucide-react';
 import PersonaReact from 'persona-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -10,11 +11,12 @@ import { VerifyCard } from './verify-card';
 const getParams = (urlString: string) => {
   const url = new URL(urlString);
   const searchParams = url.searchParams;
-  const inquiryTemplateId = searchParams.get('inquiry-template-id');
-  const developerId = searchParams.get('fields[developer_id]');
-  const iqtToken = searchParams.get('fields[iqt_token]');
-  const referenceId = searchParams.get('reference-id');
-  const environmentId = searchParams.get('environment-id');
+  const inquiryTemplateId =
+    searchParams.get('inquiry-template-id') ?? undefined;
+  const developerId = searchParams.get('fields[developer_id]') ?? undefined;
+  const iqtToken = searchParams.get('fields[iqt_token]') ?? undefined;
+  const referenceId = searchParams.get('reference-id') ?? undefined;
+  const environmentId = searchParams.get('environment-id') ?? undefined;
   return {
     inquiryTemplateId,
     developerId,
@@ -35,33 +37,55 @@ export const PersonaCard = ({
   const params = getParams(url);
   const [ready, setReady] = useState(false);
 
-  // TODO: Better error state (boundary?)
-  if (!params.inquiryTemplateId || !params.environmentId) {
-    return <span>There was an error loading the Persona iframe</span>;
-  }
+  // Cant load Persona if no inquiry template id is found
+  const isError = !params.inquiryTemplateId;
 
-  console.log(ready);
+  // Reset loading if there is an error
+  useEffect(() => {
+    isError && setReady(false);
+  }, [isError]);
+
   return (
     <VerifyCard className='flex h-[41rem] w-[28rem] items-center justify-center'>
-      <Skeleton className={cn('size-full', ready ? 'hidden' : 'block')} />
-
-      <div
-        className={cn(
-          'size-full [&_iframe]:size-full',
-          ready ? 'block' : 'hidden'
-        )}
-      >
-        <PersonaReact
-          templateId={params.inquiryTemplateId}
-          environmentId={params.environmentId}
-          onReady={() => setReady(true)}
-          onComplete={({ inquiryId, status, fields }) => {
-            // Inquiry completed. Optionally tell your server about it.
-            console.log(`Sending finished inquiry ${inquiryId} to backend`);
-            onComplete?.();
-          }}
-        />
-      </div>
+      {isError ? (
+        <ErrorFallback />
+      ) : (
+        <>
+          <Skeleton className={cn('size-full', ready ? 'hidden' : 'block')} />
+          <div
+            className={cn(
+              'size-full [&_iframe]:size-full',
+              ready ? 'block' : 'hidden'
+            )}
+          >
+            <PersonaReact
+              templateId={params.inquiryTemplateId}
+              environmentId={params.environmentId}
+              onReady={() => setReady(true)}
+              onComplete={({ inquiryId, status, fields }) => {
+                // Inquiry completed. Optionally tell your server about it.
+                console.log(`Sending finished inquiry ${inquiryId} to backend`);
+                onComplete?.();
+              }}
+            />
+          </div>
+        </>
+      )}
     </VerifyCard>
+  );
+};
+
+/** Fallback component for when Persona fails to load */
+const ErrorFallback = () => {
+  return (
+    <div className='flex flex-col items-center gap-2 text-center'>
+      <CircleAlert className='size-10 text-red-500' />
+      <span className='text-lg font-medium'>
+        We ran into an issue with your verification
+      </span>
+      <span className='text-muted-foreground text-sm'>
+        Please try again. If the issue persists, please contact support.
+      </span>
+    </div>
   );
 };
