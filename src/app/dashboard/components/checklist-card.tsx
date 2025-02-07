@@ -1,15 +1,17 @@
 import {
-  ArrowRight,
-  CircleCheck,
-  CircleDashed,
   CircleDollarSign,
   FileText,
   Grid3X3,
+  LucideIcon,
   Share2,
   ShieldCheck,
   SquareUser,
 } from 'lucide-react';
 
+import {
+  TaskItem,
+  TaskItemProps,
+} from '@/components/common/task-item/task-item';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -93,7 +95,7 @@ export const ChecklistCard = ({
       ) : (
         <div className='space-y-4'>
           {tasks.map((task, index) => (
-            <TaskItem
+            <DashboardTaskItem
               key={index}
               loading={loading}
               {...task}
@@ -108,7 +110,7 @@ export const ChecklistCard = ({
 };
 
 /** Map task types to their icon for rendering */
-const TaskIconMap: Record<TaskType, React.ElementType> = {
+const TaskIconMap: Record<TaskType, LucideIcon> = {
   verified: ShieldCheck,
   invoice: FileText,
   profile: SquareUser,
@@ -117,58 +119,20 @@ const TaskIconMap: Record<TaskType, React.ElementType> = {
   payment: CircleDollarSign,
 };
 
-type TaskItemProps = {
-  title: string;
-  completed: boolean;
-  description: string;
+type DashboardTaskItemProps = Omit<TaskItemProps, 'Icon'> & {
   type: TaskType;
-  onClick: () => void;
-  loading?: boolean;
 };
 
 /**
  * Local component to display a single step in the verification process and whether it has been completed
  */
-const TaskItem = ({
-  title,
-  completed,
-  description,
-  type,
-  loading,
-  onClick,
-}: TaskItemProps) => {
-  const Icon = TaskIconMap[type];
-  return (
-    <div
-      className='group flex cursor-pointer items-center justify-between gap-3'
-      onClick={onClick}
-    >
-      <Icon
-        strokeWidth={1.5}
-        className='text-muted-foreground size-6 shrink-0 self-start'
-      />
-      <div className='mr-auto flex flex-col'>
-        <div className='flex items-center'>
-          <span className='text-sm font-medium'>{title}</span>
-          <ArrowRight className='animate-in fade-in-0 zoom-in-0 aria-hidden size-4 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100' />
-        </div>
-        <span className='text-muted-foreground text-sm font-normal'>
-          {description}
-        </span>
-      </div>
-      {loading ? (
-        <Skeleton className='size-6 rounded-full' />
-      ) : completed ? (
-        <CircleCheck className='text-sorbet animate-in fade-in zoom-in-0 size-6 shrink-0' />
-      ) : (
-        <CircleDashed className='text-muted-foreground size-6 shrink-0' />
-      )}
-    </div>
-  );
+const DashboardTaskItem = (props: DashboardTaskItemProps) => {
+  const Icon = TaskIconMap[props.type];
+  return <TaskItem {...props} Icon={Icon} />;
 };
 
 /** The list of tasks to complete for onboarding */
-const tasks: Omit<TaskItemProps, 'completed' | 'onClick'>[] = [
+const tasks: Omit<DashboardTaskItemProps, 'completed' | 'onClick'>[] = [
   {
     title: 'Get verified',
     description: 'Complete KYC verification to accept ACH/Wire payments',

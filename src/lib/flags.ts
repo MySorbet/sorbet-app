@@ -10,4 +10,5 @@ export const featureFlags = {
   verification: true,
   sectionTitles: true,
   dashboard: true,
+  skipAuthHeader: process.env.NODE_ENV === 'development', // Skip sending the auth header in dev
 } as const;
