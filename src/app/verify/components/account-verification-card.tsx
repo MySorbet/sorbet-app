@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { CircleCheck } from 'lucide-react';
+import { AlertTriangle, CircleCheck } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -25,6 +25,7 @@ export const AccountVerificationCard = ({
   tosLink,
   kycLink,
   isIndeterminate,
+  rejectionReasons,
 }: {
   className?: string;
   step?: VerifyStep | 'complete' | 'get-verified';
@@ -34,8 +35,10 @@ export const AccountVerificationCard = ({
   tosLink?: string;
   kycLink?: string;
   isIndeterminate?: boolean;
+  rejectionReasons?: string[];
 }) => {
-  const isComplete = step === 'complete';
+  const isComplete = step === 'complete' && !rejectionReasons;
+  const isRejected = step === 'complete' && rejectionReasons;
 
   const queryClient = useQueryClient();
 
@@ -51,12 +54,6 @@ export const AccountVerificationCard = ({
       toast.error(message);
     },
   });
-
-  // Text display is dependent on if verification is complete (or rejected)
-  const title = isComplete ? 'Account Verified' : 'Account Verification';
-  const description = isComplete
-    ? 'Congrats! You can now accept payments via ACH/Wire or Credit Card. Try sending an invoice to test it out.'
-    : 'Verify your account to accept payments via ACH/Wire or Credit Card.';
 
   // This is only callable when there is no bridge customer
   const handleGetVerified = () => {
@@ -104,7 +101,8 @@ export const AccountVerificationCard = ({
       <div className='flex flex-col gap-3'>
         {isIndeterminate && <IndeterminateContent />}
         {isComplete && <CompleteContent />}
-        {!isIndeterminate && !isComplete && <DefaultContent />}
+        {isRejected && <RejectedContent rejectionReason={rejectionReasons} />}
+        {!isIndeterminate && !isComplete && !isRejected && <DefaultContent />}
 
         {/* Step specific content */}
         {step === 'get-verified' && (
@@ -136,6 +134,16 @@ export const AccountVerificationCard = ({
             Create an invoice
           </Button>
         )}
+
+        {isRejected && (
+          <Button
+            variant='sorbet'
+            onClick={onCallToActionClick}
+            className='@xs:max-w-fit w-full'
+          >
+            Try again
+          </Button>
+        )}
       </div>
     </VerifyCard>
   );
@@ -149,7 +157,7 @@ const CardContent = ({
 }: {
   title: string;
   icon?: () => React.ReactNode;
-  description: string;
+  description: React.ReactNode;
 }) => {
   return (
     <div className='flex flex-col gap-1.5'>
@@ -196,6 +204,35 @@ const DefaultContent = () => {
     <CardContent
       title='Account verification'
       description='Verify your account to accept payments via ACH/Wire or Credit Card.'
+    />
+  );
+};
+
+const RejectedContent = ({
+  rejectionReason,
+}: {
+  rejectionReason: string[];
+}) => {
+  const desc = rejectionReason ? (
+    rejectionReason?.length === 1 ? (
+      rejectionReason[0]
+    ) : (
+      <ol className='list-inside list-decimal'>
+        {rejectionReason.map((reason, index) => (
+          <li key={index}>{reason}</li>
+        ))}
+      </ol>
+    )
+  ) : (
+    'There was a problem with your KYC verification'
+  );
+  return (
+    <CardContent
+      title='Verification failed'
+      icon={() => (
+        <AlertTriangle className='mr-1.5 inline-block size-6 text-red-500' />
+      )}
+      description={desc}
     />
   );
 };

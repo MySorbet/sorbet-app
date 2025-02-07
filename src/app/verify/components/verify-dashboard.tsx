@@ -44,7 +44,7 @@ export const VerifyDashboard = () => {
     }
   };
 
-  const { data: bridgeCustomer, isLoading } = useBridgeCustomer();
+  const { data: customer, isLoading } = useBridgeCustomer();
 
   // Drive step from bridge customer status
   useEffect(() => {
@@ -53,26 +53,26 @@ export const VerifyDashboard = () => {
     }
 
     // Goto step 0 if there is no bridge customer
-    if (!bridgeCustomer) {
+    if (!customer) {
       setStep('get-verified');
       return;
     }
 
     // Goto terms if the customer has not approved the terms
-    if (bridgeCustomer.tos_status === 'pending') {
+    if (customer.tos_status === 'pending') {
       setStep('terms');
       return;
     }
 
     // Goto complete if the customer has approved the kyc
-    if (!kycCompletedStates.includes(bridgeCustomer.kyc_status)) {
+    if (!kycCompletedStates.includes(customer.kyc_status)) {
       setStep('details');
       return;
     }
 
     // Getting here implies that TOS is complete and kyc is approved
     setStep('complete');
-  }, [bridgeCustomer, isLoading]);
+  }, [customer, isLoading]);
 
   return (
     <div className='@container @xl:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-2 gap-4'>
@@ -82,9 +82,12 @@ export const VerifyDashboard = () => {
           step={step}
           onStepComplete={handleStepComplete}
           isLoading={isLoading}
-          tosLink={bridgeCustomer?.tos_link}
-          kycLink={bridgeCustomer?.kyc_link}
+          tosLink={customer?.tos_link}
+          kycLink={customer?.kyc_link}
           isIndeterminate={isIndeterminate}
+          rejectionReasons={customer?.rejection_reasons?.map(
+            (reason) => reason.reason
+          )}
         />
         <FAQ className='h-fit' />
       </div>
@@ -94,10 +97,10 @@ export const VerifyDashboard = () => {
         className='h-fit'
         indeterminate={isIndeterminate}
         completedTasks={{
-          terms: bridgeCustomer?.tos_status === 'approved',
+          terms: customer?.tos_status === 'approved',
           details:
-            bridgeCustomer !== undefined &&
-            kycCompletedStates.includes(bridgeCustomer.kyc_status),
+            customer !== undefined &&
+            kycCompletedStates.includes(customer.kyc_status),
         }}
       />
     </div>

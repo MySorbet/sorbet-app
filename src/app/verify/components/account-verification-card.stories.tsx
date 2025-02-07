@@ -35,3 +35,12 @@ export const Indeterminate: Story = {
     isIndeterminate: true,
   },
 };
+
+export const Rejected: Story = {
+  args: {
+    step: 'complete',
+    rejectionReasons: [
+      'Cannot validate ID -- please upload a clear photo of the full ID.',
+    ],
+  },
+};
