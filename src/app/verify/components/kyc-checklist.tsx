@@ -72,7 +72,10 @@ export const KYCChecklist = ({
             completed={completedTasks?.[step.type] ?? false}
             onClick={() => onTaskClick?.(step.type)}
             loading={loading}
-            disabled={completedTasks?.[step.type]}
+            disabled={
+              completedTasks?.[step.type] || // disable if already completed
+              (step.type === 'details' && !completedTasks?.['terms']) // disable details if terms not completed
+            }
           />
         ))}
       </div>

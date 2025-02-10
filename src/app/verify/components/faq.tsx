@@ -11,8 +11,6 @@ import { cn } from '@/lib/utils';
 
 import { VerifyCard } from './verify-card';
 
-// TODO: Update links
-
 /** Renders an FAQ Accordion with information and a learn more button */
 export const FAQ = ({ className }: { className?: string }) => {
   return (

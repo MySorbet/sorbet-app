@@ -1,5 +1,7 @@
 'use client';
 
+import { isAxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
@@ -10,26 +12,30 @@ import { FAQ } from './faq';
 import { KYCChecklist, VerifyStep } from './kyc-checklist';
 
 const kycCompletedStates: KYCStatus[] = [
-  'pending',
-  'incomplete',
-  'awaiting_ubo',
+  // Complete but waiting for approval
   'manual_review',
   'under_review',
+  'awaiting_ubo', // never happens for individuals
+
+  // Actually completed
   'approved',
+
+  // We consider rejected to be a complete state, then allow the user to retry
+  'rejected',
+
   // 👇 These are the only states that will render the checklist incomplete
+  // 'pending',
   // 'not_started',
-  // 'rejected',
+
+  // 'incomplete',
 ];
 
-type AllSteps = 'get-verified' | VerifyStep | 'complete';
+export type AllSteps = 'begin' | VerifyStep | 'complete';
 
 export const VerifyDashboard = () => {
-  // Step currently represents what step of verification we are displaying regardless of bridge customer status
-  // TODO: Maybe we should consider driving step from bridge customer status?
-  const [step, setStep] = useState<AllSteps>('get-verified');
+  const [step, setStep] = useState<AllSteps>('begin');
 
   const handleTaskClick = (newStep: VerifyStep) => {
-    // TODO: Restrict to only allow moving forward in the checklist
     setStep(newStep);
   };
 
@@ -39,14 +45,18 @@ export const VerifyDashboard = () => {
     // Ignore all reported step transitions except for details to complete
     if (step === 'details') {
       setIsIndeterminate(true);
-      // TODO: Poll
-      // Use effect below will drive the step to complete
+      // Use effect below will drive the step to complete since the bridge customer is refetched
     }
   };
 
-  const { data: customer, isLoading } = useBridgeCustomer();
-  // TODO: Do not retry if 404
-  // TODO: Set background refetch (make sure that new customer is refetching in indeterminate state)
+  const { data: customer, isLoading } = useBridgeCustomer({
+    // TODO: Optimization? We could only refetch in the indeterminate state
+    refetchInterval: 10000, // 10s
+    retry: (_, error) => {
+      // Only retry if the error is not a 404
+      return !(isAxiosError(error) && error.status === 404);
+    },
+  });
 
   // Drive step from bridge customer status
   useEffect(() => {
@@ -56,7 +66,7 @@ export const VerifyDashboard = () => {
 
     // Goto step 0 if there is no bridge customer
     if (!customer) {
-      setStep('get-verified');
+      setStep('begin');
       return;
     }
 
@@ -72,9 +82,27 @@ export const VerifyDashboard = () => {
       return;
     }
 
-    // Getting here implies that TOS is complete and kyc is approved
+    // Getting here implies that TOS is complete and kyc is approved, rejected, or under review
     setStep('complete');
   }, [customer, isLoading]);
+
+  const isUnderReview =
+    customer?.kyc_status === 'under_review' ||
+    customer?.kyc_status === 'manual_review' ||
+    customer?.kyc_status === 'awaiting_ubo';
+
+  const router = useRouter();
+  const handleCallToActionClick = (type: 'retry' | 'create-invoice') => {
+    if (type === 'retry') {
+      setStep('details');
+      // TODO: This leads to a strange state where the UI is in the "details" step
+      // But the bridge customer is rejected. So a mis match of UI is displayed.
+      // Whats worse, is that the customer -> step effect is not triggered (as refetch gives a 304),
+      // but if data is changed on the bridge customer, the effect sets the step to complete, causing the user to lose KYC progress.
+    } else if (type === 'create-invoice') {
+      router.push('/invoices/create');
+    }
+  };
 
   return (
     <div className='@container @xl:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-2 gap-4'>
@@ -87,9 +115,12 @@ export const VerifyDashboard = () => {
           tosLink={customer?.tos_link}
           kycLink={customer?.kyc_link}
           isIndeterminate={isIndeterminate}
+          isRejected={customer?.kyc_status === 'rejected'}
+          isUnderReview={isUnderReview}
           rejectionReasons={customer?.rejection_reasons?.map(
             (reason) => reason.reason
           )}
+          onCallToActionClick={handleCallToActionClick}
         />
         <FAQ className='h-fit' />
       </div>

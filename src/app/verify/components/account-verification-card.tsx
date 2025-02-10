@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, CircleCheck } from 'lucide-react';
+import { AlertTriangle, CircleCheck, Hourglass } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -10,10 +10,10 @@ import { useVerify } from '@/hooks/profile/use-verify';
 import { cn, sleep } from '@/lib/utils';
 
 import { useConfettiCannons } from '../hooks/use-confetti-cannons';
-import { VerifyStep } from './kyc-checklist';
 import { PersonaCard } from './persona-card';
 import { TosIframe } from './tos-iframe';
 import { VerifyCard } from './verify-card';
+import { AllSteps } from './verify-dashboard';
 
 /** Main card for the verification page with a call to action button */
 export const AccountVerificationCard = ({
@@ -26,19 +26,22 @@ export const AccountVerificationCard = ({
   kycLink,
   isIndeterminate,
   rejectionReasons,
+  isUnderReview,
+  isRejected,
 }: {
   className?: string;
-  step?: VerifyStep | 'complete' | 'get-verified';
-  onStepComplete?: (step: VerifyStep | 'get-verified') => void;
-  onCallToActionClick?: () => void;
+  step?: AllSteps;
+  onStepComplete?: (step: AllSteps) => void;
+  onCallToActionClick?: (type: 'retry' | 'create-invoice') => void;
   isLoading?: boolean;
   tosLink?: string;
   kycLink?: string;
   isIndeterminate?: boolean;
   rejectionReasons?: string[];
+  isUnderReview?: boolean;
+  isRejected?: boolean;
 }) => {
-  const isComplete = step === 'complete' && !rejectionReasons;
-  const isRejected = step === 'complete' && rejectionReasons;
+  const isComplete = step === 'complete' && !isRejected && !isUnderReview;
 
   const queryClient = useQueryClient();
 
@@ -46,7 +49,7 @@ export const AccountVerificationCard = ({
     onSuccess: () => {
       console.log('Successfully created bridge customer');
       queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
-      onStepComplete?.('get-verified');
+      onStepComplete?.('begin');
     },
     onError: (error) => {
       const message = `Error creating bridge customer: ${error.message}`;
@@ -56,10 +59,10 @@ export const AccountVerificationCard = ({
   });
 
   // This is only callable when there is no bridge customer
+  // Success callback will complete this step
+  // Error will toast and remain on this step
   const handleGetVerified = () => {
     createBridgeCustomer();
-    // Success callback will complete this step
-    // Error will toast and remain on this step
   };
 
   // When bridge frame fires complete event, invalidate the bridge customer query and advance to the next step
@@ -69,10 +72,11 @@ export const AccountVerificationCard = ({
     onStepComplete?.('terms');
   };
 
+  // There will be a small wait time for a KYC status transition (to either review, approved, or rejected)
+  // Just notify the parent (which will handle going indeterminate)
   const handleDetailsComplete = () => {
-    queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
+    console.log('Details complete');
     onStepComplete?.('details');
-    // There could be a small wait time for the webhook to be processed. We may need to go indeterminate here to wait for that while polling
   };
 
   // Confetti on complete
@@ -102,10 +106,13 @@ export const AccountVerificationCard = ({
         {isIndeterminate && <IndeterminateContent />}
         {isComplete && <CompleteContent />}
         {isRejected && <RejectedContent rejectionReason={rejectionReasons} />}
-        {!isIndeterminate && !isComplete && !isRejected && <DefaultContent />}
+        {isUnderReview && <UnderReviewContent />}
+        {!isIndeterminate && !isComplete && !isRejected && !isUnderReview && (
+          <DefaultContent />
+        )}
 
         {/* Step specific content */}
-        {step === 'get-verified' && (
+        {step === 'begin' && (
           <Button
             variant='sorbet'
             onClick={handleGetVerified}
@@ -121,14 +128,14 @@ export const AccountVerificationCard = ({
           <TosIframe url={tosLink} onComplete={handleTermsComplete} />
         )}
 
-        {kycLink && step === 'details' && (
+        {kycLink && !isIndeterminate && step === 'details' && (
           <PersonaCard url={kycLink} onComplete={handleDetailsComplete} />
         )}
 
         {isComplete && (
           <Button
             variant='sorbet'
-            onClick={onCallToActionClick}
+            onClick={() => onCallToActionClick?.('create-invoice')}
             className='@xs:max-w-fit w-full'
           >
             Create an invoice
@@ -138,7 +145,7 @@ export const AccountVerificationCard = ({
         {isRejected && (
           <Button
             variant='sorbet'
-            onClick={onCallToActionClick}
+            onClick={() => onCallToActionClick?.('retry')}
             className='@xs:max-w-fit w-full'
           >
             Try again
@@ -208,10 +215,23 @@ const DefaultContent = () => {
   );
 };
 
+/** Local component specializing the card content for the under review state */
+const UnderReviewContent = () => {
+  return (
+    <CardContent
+      title='Account under review'
+      description="Your account is currently under review and will be finalized within 24 hours. We'll notify you via email when it's ready."
+      icon={() => (
+        <Hourglass className='mr-1.5 inline-block size-6 text-orange-500' />
+      )}
+    />
+  );
+};
+
 const RejectedContent = ({
   rejectionReason,
 }: {
-  rejectionReason: string[];
+  rejectionReason?: string[];
 }) => {
   const desc = rejectionReason ? (
     rejectionReason?.length === 1 ? (
