@@ -180,7 +180,7 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
               className='bg-sorbet h-fit px-3 py-1'
               disabled={loading || disabled}
             >
-              {loading ? <Spinner size='small' /> : <span>Add</span>}
+              {loading ? <Spinner /> : <span>Add</span>}
             </Button>
           </form>
           <Popover>

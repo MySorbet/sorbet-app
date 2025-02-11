@@ -3,7 +3,7 @@ import { Meta } from '@storybook/react';
 import { CopyButton } from './copy-button';
 
 const meta = {
-  title: 'Components/Common/CopyButton',
+  title: 'Components/common/CopyButton',
   component: CopyButton,
 } satisfies Meta<typeof CopyButton>;
 

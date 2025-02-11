@@ -155,7 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
               disabled={isLoggingOut}
             >
               <div className='mr-2'>
-                {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
+                {isLoggingOut ? <Spinner className='size-5' /> : <LogOut />}
               </div>
               {isLoggingOut ? 'Logging out' : 'Logout'}
             </Button>

@@ -1,6 +1,8 @@
 import { getAccessToken } from '@privy-io/react-auth';
 import { AxiosRequestConfig } from 'axios';
 
+import { featureFlags } from '@/lib/flags';
+
 /** Adds an "Authorization: Bearer: xyz " header to an optionally provided given axios config.
  * If no config is provided, a new one is created with the Authorization header.
  *
@@ -17,6 +19,9 @@ export const withAuthHeader = async (
   config: AxiosRequestConfig = {}
 ): Promise<AxiosRequestConfig> => {
   const accessToken = await getAccessToken();
+  if (featureFlags.skipAuthHeader) {
+    return config;
+  }
   if (accessToken) {
     return {
       ...config,
