@@ -119,7 +119,7 @@ export const AccountVerificationCard = ({
             disabled={isCreating}
             className='@xs:max-w-fit w-full'
           >
-            {isCreating && <Spinner size='small' className='mr-2' />}
+            {isCreating && <Spinner className='mr-2' />}
             Get verified
           </Button>
         )}

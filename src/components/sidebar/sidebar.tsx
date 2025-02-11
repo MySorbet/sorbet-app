@@ -51,13 +51,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
     onIsOpenChange(false);
   };
 
-  const {
-    bridgeCustomer,
-    isCollapsed,
-    isIndeterminate,
-    isVerifying,
-    handlePrimaryButtonClick,
-  } = useBridgeActions();
+  // const {
+  //   bridgeCustomer,
+  //   isCollapsed,
+  //   isIndeterminate,
+  //   isVerifying,
+  //   handlePrimaryButtonClick,
+  // } = useBridgeActions();
 
   return (
     <Sheet open={isOpen} onOpenChange={onIsOpenChange}>
@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
           {/* Verification and logout */}
           <div className='flex flex-col gap-2'>
-            {featureFlags.verification && (
+            {/* {featureFlags.verification && (
               <VerificationCard
                 tosStatus={bridgeCustomer?.tos_status}
                 kycStatus={bridgeCustomer?.kyc_status}
@@ -147,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
                   (reason) => reason.reason
                 )}
               />
-            )}
+            )} */}
             <Button
               onClick={handleLogout}
               variant='ghost'
@@ -155,7 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
               disabled={isLoggingOut}
             >
               <div className='mr-2'>
-                {isLoggingOut ? <Spinner size='small' /> : <LogOut />}
+                {isLoggingOut ? <Spinner className='size-5' /> : <LogOut />}
               </div>
               {isLoggingOut ? 'Logging out' : 'Logout'}
             </Button>

@@ -3,24 +3,15 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface SpinnerProps {
-  size?: 'regular' | 'small';
   className?: string;
 }
 
-export const Spinner: React.FC<SpinnerProps> = ({
-  size = 'regular',
-  className,
-}) => {
-  const svgClass = size === 'small' ? 'w-4 h-4' : 'w-8 h-8';
-
+/** Classic spinner to indicate loading */
+export const Spinner: React.FC<SpinnerProps> = ({ className }) => {
   return (
     <svg
       aria-label='loading'
-      aria-hidden='true'
-      className={cn(
-        `${svgClass} fill-sorbet animate-spin text-gray-200 dark:text-gray-600`,
-        className
-      )}
+      className={cn('fill-sorbet size-4 animate-spin text-gray-200', className)}
       viewBox='0 0 100 101'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
