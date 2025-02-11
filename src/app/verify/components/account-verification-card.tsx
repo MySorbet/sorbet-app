@@ -80,6 +80,7 @@ export const AccountVerificationCard = ({
   };
 
   // Confetti on complete
+  // TODO: Only do this once. Remember in local storage
   const { fire } = useConfettiCannons();
   useEffect(() => {
     isComplete && fire();
