@@ -15,7 +15,6 @@ import {
   mapTransactionOverview,
   openTransactionInExplorer,
 } from '@/app/wallet/components/utils';
-import { Header } from '@/components/header';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';

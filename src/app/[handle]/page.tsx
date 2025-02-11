@@ -10,7 +10,6 @@ import {
   ProjectFormValues,
   ProjectOfferDialog,
 } from '@/app/[handle]/project-offer-dialog';
-import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useAuth } from '@/hooks/use-auth';
 
