@@ -20,3 +20,13 @@ const meta = {
 export default meta;
 
 export const Default: Story = {};
+
+// Render error if the inquiry template id is not found in the url
+export const Error: Story = {
+  args: {
+    url: mockBridgeCustomer.kyc_link.replace(
+      /[?&]inquiry-template-id=[^&]*/,
+      ''
+    ),
+  },
+};

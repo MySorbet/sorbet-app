@@ -4,11 +4,11 @@ import { getBridgeCustomer } from '@/api/bridge';
 import type { BridgeCustomer } from '@/types/bridge';
 
 export const useBridgeCustomer = <
-  T extends Omit<UseQueryOptions<BridgeCustomer, Error>, 'queryKey' | 'queryFn'>
+  T extends Omit<UseQueryOptions<BridgeCustomer>, 'queryKey' | 'queryFn'>
 >(
   options?: T
 ) => {
-  return useQuery<BridgeCustomer, Error>({
+  return useQuery<BridgeCustomer>({
     queryKey: ['bridgeCustomer'],
     queryFn: getBridgeCustomer,
     ...options,

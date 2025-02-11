@@ -16,11 +16,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-export const Complete: Story = {
+export const Default: Story = {
   args: {
-    step: 'complete',
+    step: 'begin',
   },
 };
 
@@ -36,11 +34,25 @@ export const Indeterminate: Story = {
   },
 };
 
+export const Complete: Story = {
+  args: {
+    step: 'complete',
+  },
+};
+
 export const Rejected: Story = {
   args: {
     step: 'complete',
+    isRejected: true,
     rejectionReasons: [
       'Cannot validate ID -- please upload a clear photo of the full ID.',
     ],
+  },
+};
+
+export const UnderReview: Story = {
+  args: {
+    step: 'complete',
+    isUnderReview: true,
   },
 };

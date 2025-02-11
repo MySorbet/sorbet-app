@@ -21,6 +21,8 @@ const meta = {
 
 export default meta;
 
+// Note: You will either need to comment the Authenticated wrapper or solve mocked auth token to render this story
+
 export const Default: Story = {
   parameters: {
     msw: {

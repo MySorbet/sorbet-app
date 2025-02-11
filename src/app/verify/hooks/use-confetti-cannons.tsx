@@ -1,7 +1,7 @@
 import confetti from 'canvas-confetti';
 
 /**
- * Confetti from bottom corner of the screen.
+ * Confetti from bottom corners of the screen.
  * Modified from: https://magicui.design/docs/components/confetti
  */
 export const useConfettiCannons = () => {

@@ -30,7 +30,7 @@ export const AccountVerificationCard = ({
   isRejected,
 }: {
   className?: string;
-  step?: AllSteps;
+  step: AllSteps;
   onStepComplete?: (step: AllSteps) => void;
   onCallToActionClick?: (type: 'retry' | 'create-invoice') => void;
   isLoading?: boolean;
