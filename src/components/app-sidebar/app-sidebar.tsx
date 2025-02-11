@@ -1,12 +1,9 @@
 import { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ForwardRefExoticComponent,
-  HTMLAttributes,
-  RefAttributes,
-} from 'react';
 
+import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
+import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
 import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
 import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
@@ -35,15 +32,6 @@ import { cn } from '@/lib/utils';
 
 import { NavUser } from './nav-user';
 import { SidebarLinkButton } from './sidebar-link-button';
-// Little hack (assumes all icons are this type)
-export type AnimatedIconHandle = {
-  startAnimation: () => void;
-  stopAnimation: () => void;
-};
-
-type AnimatedIcon = ForwardRefExoticComponent<
-  HTMLAttributes<HTMLDivElement> & RefAttributes<AnimatedIconHandle>
->;
 
 export type MenuItemProps = {
   title: string;
@@ -141,10 +129,13 @@ const accountItems: MenuItem[] = [
     },
   },
   {
-    title: 'Feedback',
-    url: '#/feedback',
-    icon: MessageSquareIcon,
-    // TODO: Opens featurebase modal
+    render: () => {
+      const item = {
+        title: 'Feedback',
+        icon: MessageSquareIcon,
+      };
+      return <FeaturebaseLinkButton item={item} />;
+    },
   },
   {
     title: 'Settings',

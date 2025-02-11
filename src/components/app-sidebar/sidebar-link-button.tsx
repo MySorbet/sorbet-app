@@ -1,28 +1,21 @@
 'use client';
 
-import { type LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRef } from 'react';
 
 import { SidebarMenuButton } from '@/components/ui/sidebar';
-import { cn } from '@/lib/utils';
 
-import type { AnimatedIconHandle, MenuItemProps } from './app-sidebar';
+import type { MenuItemProps } from './app-sidebar';
+import { isAnimatedIcon, SidebarIcon } from './sidebar-icon';
 
-const isAnimatedIcon = (
-  icon: LucideIcon | AnimatedIconHandle
-): icon is AnimatedIconHandle => {
-  return 'startAnimation' in icon && 'stopAnimation' in icon;
-};
-
+/** Sidebar menu button as a link with animated icon */
 export const SidebarLinkButton = ({
   item,
   iconClassName,
 }: {
-  item: MenuItemProps;
+  item: Required<MenuItemProps>;
   iconClassName?: string;
 }) => {
-  const Icon = item.icon;
   // TODO: fix this typing
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const iconRef = useRef<any>(null);
@@ -46,14 +39,10 @@ export const SidebarLinkButton = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Icon
-          className={cn(
-            iconClassName,
-            'size-4 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:stroke-current [&>svg]:stroke-[1.5]'
-          )}
-          size={20}
-          strokeWidth={1.5}
-          ref={iconRef}
+        <SidebarIcon
+          iconRef={iconRef}
+          Icon={item.icon}
+          className={iconClassName}
         />
         <span>{item.title}</span>
       </Link>
