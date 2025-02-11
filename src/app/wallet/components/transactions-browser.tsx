@@ -8,8 +8,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { getTransactions } from '@/api/transactions';
-import Authenticated from '@/app/authenticated';
-import { Header } from '@/components/header';
 import { useAuth } from '@/hooks';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { Transaction } from '@/types/transactions';
@@ -146,51 +144,48 @@ export const TransactionsBrowser: React.FC = () => {
   };
 
   return (
-    <Authenticated>
-      <Header />
-      {user && (
-        <div className='container my-16'>
-          <div className='text-sorbet mb-6'>
-            <Link
-              href='/wallet'
-              className='flex items-center gap-1 font-semibold'
+    user && (
+      <div className='container my-16 h-fit max-w-5xl'>
+        <div className='text-sorbet mb-6'>
+          <Link
+            href='/wallet'
+            className='flex items-center gap-1 font-semibold'
+          >
+            <ArrowNarrowLeft className='size-5' />
+            Go Back
+          </Link>
+        </div>
+        <div className='mb-6 flex items-center justify-between'>
+          <div className='text-2xl font-medium'> All Transactions</div>
+          <div className='flex flex-row gap-4'>
+            <div
+              className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-1 ${
+                !hasPrevPage && 'cursor-not-allowed opacity-50'
+              }`}
+              onClick={handlePrevPage}
             >
-              <ArrowNarrowLeft className='size-5' />
-              Go Back
-            </Link>
-          </div>
-          <div className='mb-6 flex items-center justify-between'>
-            <div className='text-2xl font-medium'> All Transactions</div>
-            <div className='flex flex-row gap-4'>
-              <div
-                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-1 ${
-                  !hasPrevPage && 'cursor-not-allowed opacity-50'
-                }`}
-                onClick={handlePrevPage}
-              >
-                <ChevronLeft size={20} />
-              </div>
-              <div
-                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-1 ${
-                  !hasNextPage && 'cursor-not-allowed opacity-50'
-                }`}
-                onClick={handleNextPage}
-              >
-                <ChevronRight size={20} />
-              </div>
+              <ChevronLeft size={20} />
+            </div>
+            <div
+              className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white p-1 ${
+                !hasNextPage && 'cursor-not-allowed opacity-50'
+              }`}
+              onClick={handleNextPage}
+            >
+              <ChevronRight size={20} />
             </div>
           </div>
-          <FilteredTransactionTable
-            transactions={filteredTransactions}
-            searchValue={searchValue}
-            dateRange={dateRange}
-            isLoading={isLoading}
-            onSearchChange={setSearchValue}
-            onDateRangeChange={setDateRange}
-            onClearAll={handleClearAll}
-          />
         </div>
-      )}
-    </Authenticated>
+        <FilteredTransactionTable
+          transactions={filteredTransactions}
+          searchValue={searchValue}
+          dateRange={dateRange}
+          isLoading={isLoading}
+          onSearchChange={setSearchValue}
+          onDateRangeChange={setDateRange}
+          onClearAll={handleClearAll}
+        />
+      </div>
+    )
   );
 };

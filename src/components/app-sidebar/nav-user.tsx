@@ -67,7 +67,9 @@ export const NavUser = () => {
             <DropdownMenuGroup>
               <DropdownMenuItem onSelect={handleLogout}>
                 {isLoggingOut ? (
-                  <Spinner className='animate-in fade-in zoom-in-0 mr-2' />
+                  <div className='animate-in fade-in zoom-in-0'>
+                    <Spinner className='mr-2' />
+                  </div>
                 ) : (
                   <LogOut className='mr-2 size-4' />
                 )}

@@ -84,27 +84,25 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
           handleClaimMyProfile={() => router.push('/signin')}
         />
       ) : (
-        <>
-          <Header />
-          {!isPending && freelancer && (
-            <>
-              <Profile
-                user={freelancer}
-                canEdit={isMyProfile}
-                onHireMeClick={() => setOfferDialogOpen(true)}
-                disableHireMe={disableHireMe}
-                hideShare={hideShare}
-              />
-              <ProjectOfferDialog
-                isOpen={isOfferDialogOpen}
-                onClose={(open) => setOfferDialogOpen(open)}
-                onSubmit={mutation.mutate}
-                name={freelancerFullName}
-                formSubmitted={mutation.isSuccess}
-              />
-            </>
-          )}
-        </>
+        !isPending &&
+        freelancer && (
+          <>
+            <Profile
+              user={freelancer}
+              canEdit={isMyProfile}
+              onHireMeClick={() => setOfferDialogOpen(true)}
+              disableHireMe={disableHireMe}
+              hideShare={hideShare}
+            />
+            <ProjectOfferDialog
+              isOpen={isOfferDialogOpen}
+              onClose={(open) => setOfferDialogOpen(open)}
+              onSubmit={mutation.mutate}
+              name={freelancerFullName}
+              formSubmitted={mutation.isSuccess}
+            />
+          </>
+        )
       )}
     </>
   );

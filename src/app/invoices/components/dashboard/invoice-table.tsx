@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, formatDate, Invoice, InvoiceStatus } from './utils';
+import { Card } from '@/components/ui/card';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({
@@ -51,7 +52,7 @@ export const InvoiceTable = ({
   onCreateInvoice,
 }: InvoiceTableProps) => {
   return (
-    <div className='rounded-2xl bg-white px-6 py-3'>
+    <Card className='bg-background rounded-2xl px-6 py-3'>
       <Table>
         <TableHeader>
           <TableRow>
@@ -95,7 +96,7 @@ export const InvoiceTable = ({
           </TableBody>
         )}
       </Table>
-    </div>
+    </Card>
   );
 };
 

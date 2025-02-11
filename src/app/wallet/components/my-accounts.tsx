@@ -2,6 +2,7 @@ import { Bank, Wallet03 } from '@untitled-ui/icons-react';
 import Image from 'next/image';
 
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { formatCurrency, formatWalletAddress } from './utils';
@@ -20,9 +21,9 @@ export const MyAccounts: React.FC<MyAccountsProps> = ({
   return (
     <>
       {isLoading || usdcBalance === '' ? (
-        <Skeleton className='h-[366px] rounded-3xl bg-gray-300 shadow-md' />
+        <Skeleton className='h-[366px] rounded-2xl' />
       ) : (
-        <div className='bg-background min-h-full min-w-72 rounded-2xl p-6 shadow-md'>
+        <Card className='min-h-full min-w-72 rounded-2xl p-6'>
           <div className='flex items-center gap-2'>
             <span className='bg-foreground text-muted rounded-full p-2'>
               <Bank className='size-[1.125rem]' />
@@ -38,7 +39,7 @@ export const MyAccounts: React.FC<MyAccountsProps> = ({
             address={address}
             balance={usdcBalance}
           ></USDCAccountItem>
-        </div>
+        </Card>
       )}
     </>
   );

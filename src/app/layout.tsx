@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     // classnames prevent horizontal layout shift when radix models open
     <html className={cn('h-full w-screen overflow-x-hidden', inter.className)}>
-      <body className='size-full bg-[#F2F3F7]'>
+      <body className='bg-background size-full'>
         <Suspense>
           <PostHogPageView />
         </Suspense>

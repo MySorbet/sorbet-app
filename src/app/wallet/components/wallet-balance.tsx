@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
 
@@ -49,9 +50,9 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
   return (
     <>
       {isLoading || usdcBalance === '' ? (
-        <Skeleton className='h-[366px] rounded-3xl bg-gray-300 shadow-md' />
+        <Skeleton className='h-[366px] rounded-3xl' />
       ) : (
-        <div className='min-h-full rounded-3xl bg-white shadow-md'>
+        <Card className='min-h-full rounded-3xl'>
           <div className='flex flex-col gap-1'>
             <div className='flex items-center justify-between p-6 pb-0'>
               <div>
@@ -104,7 +105,7 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
             </div>
             <BalanceChart balanceHistory={cumulativeBalanceHistory} />
           </div>
-        </div>
+        </Card>
       )}
     </>
   );

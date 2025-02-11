@@ -4,6 +4,7 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { formatCurrency, formatWalletAddress } from './utils';
+import { Card } from '@/components/ui/card';
 
 interface FundsFlowProps {
   icon: React.ReactNode;
@@ -50,9 +51,9 @@ export const FundsFlow: React.FC<
   return (
     <>
       {isLoading || balance === '' ? (
-        <Skeleton className='h-44 rounded-3xl bg-gray-300 shadow-md' />
+        <Skeleton className='h-44 rounded-3xl' />
       ) : (
-        <div className='bg-card flex min-h-full flex-col rounded-3xl p-6 shadow-md'>
+        <Card className='flex min-h-full flex-col rounded-3xl p-6'>
           <div className='flex flex-grow flex-col gap-2'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-2'>
@@ -96,7 +97,7 @@ export const FundsFlow: React.FC<
               </div>
             </Link>
           </div>
-        </div>
+        </Card>
       )}
     </>
   );

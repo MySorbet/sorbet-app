@@ -4,12 +4,9 @@ import Link from 'next/link';
 
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
 import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
-import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
-import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
 import { MessageSquareIcon } from '@/components/ui/message-square';
-import { SettingsIcon } from '@/components/ui/settings';
 import { ShieldCheckIcon } from '@/components/ui/shield-check';
 import {
   Sidebar,
@@ -55,7 +52,7 @@ const WalletMenuItem = () => {
 
   const item = {
     title: 'Wallet',
-    url: '#/wallet',
+    url: '/wallet',
     icon: WalletIcon,
   };
   return (
@@ -77,7 +74,7 @@ const WalletMenuItem = () => {
 const items: MenuItem[] = [
   {
     title: 'Invoices',
-    url: '#/invoices',
+    url: '/invoices',
     icon: FileTextIcon,
   },
   {
@@ -85,27 +82,27 @@ const items: MenuItem[] = [
   },
   {
     title: 'Transactions',
-    url: '#/wallet/all',
+    url: '/wallet/all',
     icon: HandCoinsIcon,
   },
-  {
-    title: 'Transfers',
-    url: '#/wallet',
-    icon: ArrowLeftRightIcon,
-  },
+  // {
+  //   title: 'Transfers',
+  //   url: '/wallet',
+  //   icon: ArrowLeftRightIcon,
+  // },
 ];
 
 const profileItems: MenuItem[] = [
   {
     title: 'Link-in-bio',
-    url: '#/wallet/all',
+    url: '/',
     icon: SquareUserIcon,
   },
-  {
-    title: 'Analytics',
-    url: '#/wallet',
-    icon: ChartColumnIncreasingIcon,
-  },
+  // {
+  //   title: 'Analytics',
+  //   url: '/wallet',
+  //   icon: ChartColumnIncreasingIcon,
+  // },
 ];
 
 const accountItems: MenuItem[] = [
@@ -115,7 +112,7 @@ const accountItems: MenuItem[] = [
       const isVerified = false;
       const item = {
         title: isVerified ? 'Account verified' : 'Get verified',
-        url: '#/verify',
+        url: '/verify',
         icon: ShieldCheckIcon,
       };
       return (
@@ -137,11 +134,11 @@ const accountItems: MenuItem[] = [
       return <FeaturebaseLinkButton item={item} />;
     },
   },
-  {
-    title: 'Settings',
-    url: '#/settings',
-    icon: SettingsIcon,
-  },
+  // {
+  //   title: 'Settings',
+  //   url: '/settings',
+  //   icon: SettingsIcon,
+  // },
 ];
 
 /** A global sidebar */
@@ -168,7 +165,7 @@ export const AppSidebar = () => {
             <SidebarLinkButton
               item={{
                 title: 'Dashboard',
-                url: '#/dashboard',
+                url: '/dashboard',
                 icon: SquareGanttChartIcon,
               }}
             />
