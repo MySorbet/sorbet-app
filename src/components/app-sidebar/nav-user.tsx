@@ -1,3 +1,5 @@
+'use client';
+
 import { DropdownMenuGroup } from '@radix-ui/react-dropdown-menu';
 import { ChevronsUpDown, LogOut, UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -65,10 +67,7 @@ export const NavUser = () => {
             <DropdownMenuGroup>
               <DropdownMenuItem onSelect={handleLogout}>
                 {isLoggingOut ? (
-                  <Spinner
-                    size='small'
-                    className='animate-in fade-in zoom-in-0 mr-2'
-                  />
+                  <Spinner className='animate-in fade-in zoom-in-0 mr-2' />
                 ) : (
                   <LogOut className='mr-2 size-4' />
                 )}

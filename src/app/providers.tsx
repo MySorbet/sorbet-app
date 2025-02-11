@@ -9,6 +9,8 @@ import { Toaster } from 'sonner';
 import { base, baseSepolia } from 'viem/chains';
 const AuthProvider = dynamic(() => import('@/hooks/use-auth'), { ssr: false }); // TODO: figure out how to use this without dynamic import
 import { PHProvider } from '@/app/posthog-provider';
+import { AppSidebar } from '@/components/app-sidebar/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { env } from '@/lib/env';
 import { store } from '@/redux/store';
 
@@ -32,10 +34,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <AuthProvider>
             <PHProvider>
               <QueryClientProvider client={queryClient}>
-                {children}
+                <SidebarProvider>
+                  <AppSidebar />
+                  <Toaster richColors />
+                  {children}
+                </SidebarProvider>
               </QueryClientProvider>
             </PHProvider>
-            <Toaster richColors />
           </AuthProvider>
         </Provider>
       </SmartWalletsProvider>

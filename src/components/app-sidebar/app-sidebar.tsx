@@ -5,9 +5,6 @@ import {
   ForwardRefExoticComponent,
   HTMLAttributes,
   RefAttributes,
-  useEffect,
-  useRef,
-  useState,
 } from 'react';
 
 import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
@@ -27,7 +24,6 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuBadge,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -38,9 +34,9 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { cn } from '@/lib/utils';
 
 import { NavUser } from './nav-user';
-
+import { SidebarLinkButton } from './sidebar-link-button';
 // Little hack (assumes all icons are this type)
-type AnimatedIconHandle = {
+export type AnimatedIconHandle = {
   startAnimation: () => void;
   stopAnimation: () => void;
 };
@@ -49,11 +45,12 @@ type AnimatedIcon = ForwardRefExoticComponent<
   HTMLAttributes<HTMLDivElement> & RefAttributes<AnimatedIconHandle>
 >;
 
-type MenuItemProps = {
+export type MenuItemProps = {
   title: string;
   url: string;
   icon: LucideIcon | AnimatedIcon;
 };
+
 type MenuItemRender = {
   render: () => React.ReactNode;
 };
@@ -217,58 +214,6 @@ export const AppSidebar = () => {
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  );
-};
-
-const isAnimatedIcon = (
-  icon: LucideIcon | AnimatedIconHandle
-): icon is AnimatedIconHandle => {
-  return 'startAnimation' in icon && 'stopAnimation' in icon;
-};
-
-const SidebarLinkButton = ({
-  item,
-  iconClassName,
-}: {
-  item: MenuItemProps;
-  iconClassName?: string;
-}) => {
-  const Icon = item.icon;
-  // TODO: fix this typing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const iconRef = useRef<any>(null);
-
-  const handleMouseEnter = () => {
-    if (iconRef.current && isAnimatedIcon(iconRef.current)) {
-      iconRef.current?.startAnimation?.();
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (iconRef.current && isAnimatedIcon(iconRef.current)) {
-      iconRef.current?.stopAnimation?.();
-    }
-  };
-
-  return (
-    <SidebarMenuButton asChild>
-      <Link
-        href={item.url}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <Icon
-          className={cn(
-            iconClassName,
-            'size-4 [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:stroke-current [&>svg]:stroke-[1.5]'
-          )}
-          size={20}
-          strokeWidth={1.5}
-          ref={iconRef}
-        />
-        <span>{item.title}</span>
-      </Link>
-    </SidebarMenuButton>
   );
 };
 
