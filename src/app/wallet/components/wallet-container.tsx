@@ -32,7 +32,7 @@ import { WalletBalance } from './wallet-balance';
 export const WalletContainer = () => {
   const {
     data: usdcBalance,
-    isLoading: isBalanceLoading,
+    isPending: isBalanceLoading,
     refetch,
   } = useWalletBalance();
   const { client } = useSmartWallets();

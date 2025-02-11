@@ -66,7 +66,7 @@ const isRender = (item: MenuItem): item is MenuItemRender => {
 
 /** Dynamics wallet menu item which fetches and displays balance */
 const WalletMenuItem = () => {
-  const { data: usdcBalance, isLoading } = useWalletBalance();
+  const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
 
   const item = {
     title: 'Wallet',

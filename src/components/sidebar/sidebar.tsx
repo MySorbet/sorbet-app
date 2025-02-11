@@ -172,7 +172,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
  * Local component for displaying wallet balances
  */
 const Balances: React.FC = () => {
-  const { data: usdcBalance, isLoading } = useWalletBalance();
+  const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>

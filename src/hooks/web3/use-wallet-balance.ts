@@ -31,7 +31,7 @@ const getUsdcContract = () => {
 };
 
 /**
- * Use RQ and ethers to fetch the user's USDC balance
+ * Use RQ and ethers to fetch the user's USDC balance (for smart wallet)
  */
 export const useWalletBalance = () => {
   const { client } = useSmartWallets();

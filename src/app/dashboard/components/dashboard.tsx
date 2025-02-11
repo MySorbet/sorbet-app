@@ -47,7 +47,7 @@ export const Dashboard = () => {
     [data, hasShared]
   );
 
-  const { data: usdcBalance, isLoading: isBalanceLoading } = useWalletBalance();
+  const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
 
   const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
 
