@@ -24,12 +24,14 @@ export const Default: Story = {
 
 export const Loading: Story = {
   args: {
+    step: 'begin',
     isLoading: true,
   },
 };
 
 export const Indeterminate: Story = {
   args: {
+    step: 'begin',
     isIndeterminate: true,
   },
 };
