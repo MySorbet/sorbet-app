@@ -195,7 +195,7 @@ const CompleteContent = () => {
   return (
     <CardContent
       title='Account verified'
-      description='Congrats! You can now accept payments via ACH/Wire or Credit Card. Try sending an invoice to test it out.'
+      description='Congrats! You can now accept payments via ACH or Wire. Try sending an invoice to test it out.'
       icon={() => (
         <CircleCheck
           className='mr-1.5 inline-block size-6 text-green-500'
@@ -211,7 +211,7 @@ const DefaultContent = () => {
   return (
     <CardContent
       title='Account verification'
-      description='Verify your account to accept payments via ACH/Wire or Credit Card.'
+      description='Verify your account to accept payments via ACH or Wire.'
     />
   );
 };
