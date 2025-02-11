@@ -10,7 +10,8 @@ import { DateRange } from 'react-day-picker';
 import { getTransactions } from '@/api/transactions';
 import Authenticated from '@/app/authenticated';
 import { Header } from '@/components/header';
-import { useAuth, useSmartWalletAddress } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { Transaction } from '@/types/transactions';
 
 import { FilteredTransactionTable } from './filtered-transaction-table';

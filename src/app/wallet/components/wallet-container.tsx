@@ -17,7 +17,8 @@ import {
 } from '@/app/wallet/components/utils';
 import { Header } from '@/components/header';
 import { TOKEN_ABI } from '@/constant/abis';
-import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { env } from '@/lib/env';
 import { Transaction, TransactionOverview } from '@/types/transactions';
 
@@ -29,13 +30,13 @@ import { TransactionTableCard } from './transaction-table-card';
 import { WalletBalance } from './wallet-balance';
 
 export const WalletContainer = () => {
-  const [reload, setReload] = useState(false);
+  const {
+    data: usdcBalance,
+    isLoading: isBalanceLoading,
+    refetch,
+  } = useWalletBalance();
   const { client } = useSmartWallets();
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
-  const { usdcBalance, loading: balanceLoading } = useWalletBalances(
-    walletAddress,
-    reload
-  );
 
   const { fundWallet } = useFundWallet();
 
@@ -78,8 +79,7 @@ export const WalletContainer = () => {
         });
       }
 
-      // update the value of reload here to re-fetch transactions after the deposit
-      setReload(!reload);
+      refetch();
     } catch (e) {
       toast('Something went wrong', {
         description:
@@ -111,18 +111,18 @@ export const WalletContainer = () => {
         data: transferData,
       });
 
-      // update the value of reload here to re-fetch transactions after the deposit
-      setReload(!reload);
+      refetch();
 
       return transferTransactionHash;
     }
   };
 
+  // DOES this work?
   useEffect(() => {
     (async () => {
       await fetchTransactions();
     })();
-  }, [fetchTransactions, reload]);
+  }, [fetchTransactions, usdcBalance]);
 
   useEffect(() => {
     (async () => {
@@ -158,10 +158,10 @@ export const WalletContainer = () => {
                       balance: transaction.value,
                     }))
               }
-              usdcBalance={usdcBalance}
+              usdcBalance={usdcBalance ?? ''}
               onTopUp={handleTopUp}
               sendUSDC={handleSendUSDC}
-              isBalanceLoading={balanceLoading}
+              isBalanceLoading={isBalanceLoading}
               isLoading={loading}
               selectedDuration={selectedDuration}
               onTxnDurationChange={setSelectedDuration}
@@ -169,7 +169,7 @@ export const WalletContainer = () => {
           </div>
           <div className='lg:w-4/12'>
             <MyAccounts
-              usdcBalance={usdcBalance}
+              usdcBalance={usdcBalance ?? ''}
               address={walletAddress}
               isLoading={loading}
             />

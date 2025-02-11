@@ -2,15 +2,15 @@
 
 import { useRouter } from 'next/navigation';
 import { parseAsBoolean, useQueryState } from 'nuqs';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer';
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
-import { useSmartWalletAddress, useWalletBalances } from '@/hooks';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { User } from '@/types';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
@@ -42,14 +42,12 @@ export const Dashboard = () => {
   );
 
   // Completed tasks are stored in the DB, save for sharing which is stored in local storage
-  const completedTasks: TaskStatuses | undefined = data
-    ? { ...data.tasks, share: hasShared }
-    : undefined;
+  const completedTasks: TaskStatuses | undefined = useMemo(
+    () => (data ? { ...data.tasks, share: hasShared } : undefined),
+    [data, hasShared]
+  );
 
-  // TODO: Think about who should format the balance
-  const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
-  const { usdcBalance, loading: isBalanceLoading } =
-    useWalletBalances(walletAddress);
+  const { data: usdcBalance, isLoading: isBalanceLoading } = useWalletBalance();
 
   const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
 

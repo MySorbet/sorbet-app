@@ -34,6 +34,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { SquareUserIcon } from '@/components/ui/square-user';
 import { WalletIcon } from '@/components/ui/wallet';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { cn } from '@/lib/utils';
 
 import { NavUser } from './nav-user';
@@ -65,10 +66,7 @@ const isRender = (item: MenuItem): item is MenuItemRender => {
 
 /** Dynamics wallet menu item which fetches and displays balance */
 const WalletMenuItem = () => {
-  // TODO: Use a a better hook and remove mock
-  // const { smartWalletAddress } = useSmartWalletAddress();
-  // const { usdcBalance } = useWalletBalances(smartWalletAddress, false);
-  const { loading, usdcBalance } = useMockBalance();
+  const { data: usdcBalance, isLoading } = useWalletBalance();
 
   const item = {
     title: 'Wallet',
@@ -80,7 +78,7 @@ const WalletMenuItem = () => {
       <SidebarLinkButton item={item} />
 
       <SidebarMenuBadge>
-        {loading ? (
+        {isLoading ? (
           <Skeleton className='h-4 w-16' variant='darker' />
         ) : (
           <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
@@ -285,16 +283,4 @@ const renderMenuItems = (items: MenuItem[]) => {
       </SidebarMenuItem>
     );
   });
-};
-
-const useMockBalance = () => {
-  const [loading, setLoading] = useState(true);
-  const [usdcBalance, setUsdcBalance] = useState<string>('1,329');
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-      setUsdcBalance('1,329');
-    }, 1000);
-  }, []);
-  return { loading, usdcBalance };
 };
