@@ -21,10 +21,10 @@ export type RejectionReason = {
 
 export type KYCStatus =
   | 'not_started'
-  | 'pending'
+  | 'pending' // deprecated, same as 'not_started'
   | 'incomplete'
   | 'awaiting_ubo'
-  | 'manual_review'
+  | 'manual_review' // deprecated, same as 'under_review'
   | 'under_review'
   | 'approved'
   | 'rejected';

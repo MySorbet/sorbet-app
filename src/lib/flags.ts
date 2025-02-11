@@ -10,4 +10,5 @@ export const featureFlags = {
   verification: true,
   sectionTitles: true,
   dashboard: true,
+  skipAuthHeader: false,
 } as const;
