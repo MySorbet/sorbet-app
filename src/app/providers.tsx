@@ -4,7 +4,6 @@ import { PrivyProvider } from '@privy-io/react-auth';
 import { SmartWalletsProvider } from '@privy-io/react-auth/smart-wallets';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
-import { Provider } from 'react-redux';
 import { Toaster } from 'sonner';
 import { base, baseSepolia } from 'viem/chains';
 const AuthProvider = dynamic(() => import('@/hooks/use-auth'), { ssr: false }); // TODO: figure out how to use this without dynamic import
@@ -12,7 +11,6 @@ import { PHProvider } from '@/app/posthog-provider';
 import { AppSidebar } from '@/components/app-sidebar/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { env } from '@/lib/env';
-import { store } from '@/redux/store';
 
 const queryClient = new QueryClient();
 
@@ -30,19 +28,17 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       }}
     >
       <SmartWalletsProvider>
-        <Provider store={store}>
-          <AuthProvider>
-            <PHProvider>
-              <QueryClientProvider client={queryClient}>
-                <SidebarProvider>
-                  <AppSidebar />
-                  <Toaster richColors />
-                  {children}
-                </SidebarProvider>
-              </QueryClientProvider>
-            </PHProvider>
-          </AuthProvider>
-        </Provider>
+        <AuthProvider>
+          <PHProvider>
+            <QueryClientProvider client={queryClient}>
+              <SidebarProvider>
+                <AppSidebar />
+                <Toaster richColors />
+                {children}
+              </SidebarProvider>
+            </QueryClientProvider>
+          </PHProvider>
+        </AuthProvider>
       </SmartWalletsProvider>
     </PrivyProvider>
   );

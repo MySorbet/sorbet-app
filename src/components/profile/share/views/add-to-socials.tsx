@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import SorbetBackground from '@/../public/images/SorbetBackground.png';
+import SorbetBackground from '~/images/SorbetBackground.png';
 
 import {
   Body,

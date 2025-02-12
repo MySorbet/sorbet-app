@@ -3,18 +3,17 @@ import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 
 import { updateUser } from '@/api/user';
-import { useAppDispatch } from '@/redux/hook';
-import { updateUserData } from '@/redux/userSlice';
+import { useUser } from '@/hooks/use-auth';
 import { UserWithId } from '@/types';
 
 export const useUpdateUser = () => {
-  const dispatch = useAppDispatch();
+  const [, setUser] = useUser();
 
   return useMutation({
     mutationFn: async (userToUpdate: UserWithId) =>
       await updateUser(userToUpdate, userToUpdate.id),
     onSuccess: (user: AxiosResponse) => {
-      dispatch(updateUserData(user.data));
+      setUser(user.data);
       toast('Profile updated', {
         description: 'Your changes were saved successfully.',
       });

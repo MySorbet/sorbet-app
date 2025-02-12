@@ -1,4 +1,4 @@
-import ShareInstagram from '@/../public/images/ShareInstagram.png';
+import ShareInstagram from '~/images/ShareInstagram.png';
 
 import {
   Body,
