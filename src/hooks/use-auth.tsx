@@ -7,7 +7,6 @@ import {
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -16,8 +15,6 @@ import { toast } from 'sonner';
 import { signUpWithPrivyId } from '@/api/auth';
 import { getUserByPrivyId } from '@/api/user';
 import { featureFlags } from '@/lib/flags';
-import { useAppDispatch, useAppSelector } from '@/redux/hook';
-import { reset, updateUserData } from '@/redux/userSlice';
 import { User, UserWithId } from '@/types';
 
 import { useLocalStorage } from './use-local-storage';
@@ -50,27 +47,15 @@ type AuthProviderProps = {
   value?: AuthContextType /* The value to pass to the auth context. Usually you won't use this, but can be helpful for mocking in tests and storybook */;
 };
 
+export const useUser = () => useLocalStorage<UserWithId | null>('user', null);
+
 export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
-  const [user, setUser] = useLocalStorage<UserWithId | null>('user', null);
+  const [user, setUser] = useUser();
   const [loading, setLoading] = useState(false);
-
-  // And one in redux to make it globally available
-  const reduxUser = useAppSelector((state) => state.userReducer.user);
-  const dispatch = useAppDispatch();
 
   const { logout: logoutPrivy } = usePrivy();
   const router = useRouter();
-
-  // We sync the user from redux to local storage and vice versa
-  useEffect(() => {
-    // If redux user is empty, we need to fetch the user from local storage
-    if (!reduxUser || Object.keys(reduxUser).length === 0) {
-      user && dispatch(updateUserData(user));
-    } else {
-      setUser(reduxUser);
-    }
-  }, [dispatch, reduxUser, setUser, user]);
 
   /**
    * Local helper to find a user by privy id in the sorbet db,
@@ -89,8 +74,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         }
         const sorbetUser = response.data;
 
-        // Put the user in redux, and thus local storage and return a success
-        dispatch(updateUserData(sorbetUser));
+        // Put the user in local storage and return a success
+        setUser(sorbetUser);
         return {
           status: 'success',
           message: 'Login successful',
@@ -104,7 +89,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         };
       }
     },
-    [dispatch]
+    [setUser]
   );
 
   /**
@@ -115,7 +100,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
       console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
 
-      // This is a signup so create a user in the sorbet db, put it in redux and redirect to signup
+      // This is a signup so create a user in the sorbet db, put it in state and redirect to signup
       if (isNewUser) {
         console.log(
           'This is a new user. Creating a sorbet user and redirecting to signup'
@@ -127,7 +112,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
           email: user.email?.address, // If they sign up with email, we'll store that in the sorbet db too
         });
         const newSorbetUser = signUpResponse.data;
-        dispatch(updateUserData(newSorbetUser));
+        setUser(newSorbetUser);
         console.log(`New sorbet user: ${newSorbetUser}`);
         setLoading(false);
 
@@ -192,13 +177,12 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     },
   });
 
-  // Combine a privy logout with resetting the redux user and local storage user
+  // Combine a privy logout with resetting the stored user
   const logout = useCallback(async () => {
     await logoutPrivy();
     setUser(null);
-    dispatch(reset());
     setLoading(false);
-  }, [dispatch, logoutPrivy, setUser]);
+  }, [logoutPrivy, setUser]);
 
   const memoizedValue = useMemo(
     () => ({
