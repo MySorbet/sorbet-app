@@ -8,7 +8,7 @@ import { Toaster } from 'sonner';
 import { base, baseSepolia } from 'viem/chains';
 const AuthProvider = dynamic(() => import('@/hooks/use-auth'), { ssr: false }); // TODO: figure out how to use this without dynamic import
 import { PHProvider } from '@/app/posthog-provider';
-import { AppSidebar } from '@/components/app-sidebar/app-sidebar';
+import { AwareAppSideBar } from '@/components/app-sidebar/aware-app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { env } from '@/lib/env';
 
@@ -33,8 +33,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <PHProvider>
             <QueryClientProvider client={queryClient}>
               <SidebarProvider>
-                <AppSidebar />
                 <Toaster richColors />
+                <AwareAppSideBar />
                 {children}
               </SidebarProvider>
             </QueryClientProvider>

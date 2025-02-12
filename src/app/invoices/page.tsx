@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer';
+import { Header } from '@/components/header';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 
 import { Authenticated } from '../authenticated';
@@ -25,8 +26,9 @@ export default function InvoicesPage() {
   };
   return (
     <Authenticated>
-      <main className='flex size-full flex-col'>
-        <div className='container flex flex-1 justify-center pt-14'>
+      <main className='flex w-full flex-col'>
+        <Header />
+        <div className='container flex flex-1 justify-center p-8'>
           <InvoiceDashboard
             invoices={invoices ?? []}
             isLoading={isLoading}

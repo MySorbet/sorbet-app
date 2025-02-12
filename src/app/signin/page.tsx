@@ -2,9 +2,9 @@ import { SigninContent } from '@/app/signin/components/signin-content';
 
 const SignInPage = () => {
   return (
-    <div className='bg-background flex size-full items-center justify-center'>
+    <main className='bg-background flex w-full items-center justify-center'>
       <SigninContent />
-    </div>
+    </main>
   );
 };
 

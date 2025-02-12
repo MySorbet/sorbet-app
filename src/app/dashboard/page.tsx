@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 
+import { Header } from '@/components/header';
+
 import { Authenticated } from '../authenticated';
 import { Dashboard } from './components/dashboard';
 
@@ -10,11 +12,12 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
   return (
     <Authenticated>
-      <main className='bg-background flex size-full flex-col'>
-        <div className='bg-background container flex flex-1 justify-center py-6'>
+      <div className='flex w-full flex-col'>
+        <Header />
+        <main className='bg-background container flex flex-col items-center p-8'>
           <Dashboard />
-        </div>
-      </main>
+        </main>
+      </div>
     </Authenticated>
   );
 }
