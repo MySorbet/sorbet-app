@@ -1,4 +1,4 @@
-import ShareTwitter from '@/../public/images/ShareTwitter.png';
+import ShareTwitter from '~/images/ShareTwitter.png';
 
 import {
   Body,
