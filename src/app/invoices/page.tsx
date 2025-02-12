@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 
+import { Authenticated } from '../authenticated';
 import { InvoiceDashboard } from './components/dashboard/invoice-dashboard';
 import { useInvoices } from './hooks/use-invoices';
-import Authenticated from '../authenticated';
 
 export default function InvoicesPage() {
   const { data: invoices, isLoading } = useInvoices();

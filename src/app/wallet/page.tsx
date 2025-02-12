@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
+import { Authenticated } from '../authenticated';
 import { WalletContainer } from './components/wallet-container';
-import Authenticated from '../authenticated';
 
 export const metadata: Metadata = {
   title: 'Wallet',

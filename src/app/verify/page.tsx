@@ -1,5 +1,4 @@
-import Authenticated from '@/app/authenticated';
-
+import { Authenticated } from '../authenticated';
 import { VerifyDashboard } from './components/verify-dashboard';
 
 export default function VerifyPage() {

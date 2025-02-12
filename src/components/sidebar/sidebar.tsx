@@ -99,19 +99,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
             {/* Navigation and Balances */}
             <div>
-              <div
-                className={cn(
-                  'grid grid-cols-3 gap-2',
-                  featureFlags.dashboard && 'grid-cols-2'
-                )}
-              >
-                {featureFlags.dashboard && (
-                  <SidebarHeaderOption
-                    label='Dashboard'
-                    icon={<GanttChartSquare />}
-                    href='/dashboard'
-                  />
-                )}
+              <div className='grid grid-cols-2 gap-2'>
+                <SidebarHeaderOption
+                  label='Dashboard'
+                  icon={<GanttChartSquare />}
+                  href='/dashboard'
+                />
+
                 <SidebarHeaderOption
                   label='Wallet'
                   href='/wallet'

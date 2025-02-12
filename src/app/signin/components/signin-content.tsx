@@ -2,10 +2,12 @@
 
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import posthog from 'posthog-js';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
+import { featureFlags } from '@/lib/flags';
 
 type PressedButton = 'login' | 'signup';
 
@@ -18,6 +20,9 @@ export const SigninContent = () => {
   const handleClick = (button: PressedButton) => {
     setPressedButton(button);
     login();
+    if (featureFlags.sessionReplay) {
+      posthog.startSessionRecording();
+    }
   };
   const loginLoading = loading && pressedButton === 'login';
   const signupLoading = loading && pressedButton === 'signup';

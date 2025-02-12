@@ -3,7 +3,7 @@
 import { X } from 'lucide-react';
 import { MouseEventHandler } from 'react';
 
-import { Badge } from '../../ui/badge';
+import { Badge } from '../ui/badge';
 
 type SkillBadgeProps = {
   skill: string;

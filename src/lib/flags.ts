@@ -9,6 +9,5 @@ export const featureFlags = {
   coinGeckoApi: process.env.NODE_ENV === 'production', // Api for getting exchange rates to USD. Enabling only for production.
   verification: true,
   sectionTitles: true,
-  dashboard: true,
   skipAuthHeader: false,
 } as const;

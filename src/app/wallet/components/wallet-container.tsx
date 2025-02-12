@@ -10,7 +10,6 @@ import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
-import Authenticated from '@/app/authenticated';
 import {
   mapTransactionOverview,
   openTransactionInExplorer,

@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 
-import Authenticated from '@/app/authenticated';
-
+import { Authenticated } from '../authenticated';
 import { Dashboard } from './components/dashboard';
 
 export const metadata: Metadata = {

@@ -14,7 +14,6 @@ import { toast } from 'sonner';
 
 import { signUpWithPrivyId } from '@/api/auth';
 import { getUserByPrivyId } from '@/api/user';
-import { featureFlags } from '@/lib/flags';
 import { User, UserWithId } from '@/types';
 
 import { useLocalStorage } from './use-local-storage';
@@ -116,13 +115,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         console.log(`New sorbet user: ${newSorbetUser}`);
         setLoading(false);
 
-        // We have signed up a privy user and created a minimal (id, privyId, handle) sorbet user.
-        // Redirect to signup so that they can fill out the details and update their profile
-        if (featureFlags.dashboard) {
-          router.replace(`/dashboard`);
-        } else {
-          router.replace('/signup');
-        }
+        // We have signed up a privy user and created a minimal (id, privyId, handle) sorbet user. Redirect to dashboard
+        router.replace(`/dashboard`);
         return;
       }
 
@@ -154,11 +148,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
       // Not if this is an implicit login from privy
       // TODO: Revisit this
       if (!wasAlreadyAuthenticated) {
-        if (featureFlags.dashboard) {
-          router.replace(`/dashboard`);
-        } else {
-          router.replace(`/${sorbetUser.handle}`);
-        }
+        router.replace(`/dashboard`);
       } else {
         console.log(
           `${sorbetUser.handle} is logged in. Did not redirect b/c they were already authenticated.`
