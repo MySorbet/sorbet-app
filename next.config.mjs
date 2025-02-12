@@ -20,12 +20,9 @@ const nextConfig = {
       process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
   },
 
-  // Uncomment to add domain whitelist
-  // images: {
-  //   domains: [
-  //     'res.cloudinary.com',
-  //   ],
-  // },
+  experimental: {
+    optimizePackageImports: ['@untitled-ui', 'lucide-react', 'msw'],
+  },
 
   webpack(config) {
     // Grab the existing rule that handles SVG imports
