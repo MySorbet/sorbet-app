@@ -13,9 +13,10 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { env } from '@/lib/env';
 
 const queryClient = new QueryClient();
+const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
 
+/** All top level providers for sorbet */
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
   return (
     <PrivyProvider
       appId={env.NEXT_PUBLIC_PRIVY_APP_ID}
