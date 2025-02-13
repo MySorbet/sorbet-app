@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
+import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { KYCStatus } from '@/types';
 
 import { AccountVerificationCard } from './account-verification-card';
@@ -36,11 +37,19 @@ export const VerifyDashboard = () => {
   const [step, setStep] = useState<AllSteps>('begin');
 
   const handleTaskClick = (newStep: VerifyStep) => {
+    // This conditional allows the user to retry adding details if they need to
+    if (newStep === 'details') {
+      setIsIndeterminate(false);
+    }
     setStep(newStep);
   };
 
   // We need this to handle the transition from details to complete
-  const [isIndeterminate, setIsIndeterminate] = useState(false);
+  const [isIndeterminate, setIsIndeterminate] = useScopedLocalStorage(
+    'verification-indeterminate',
+    false
+  );
+
   const handleStepComplete = (step: AllSteps) => {
     // Ignore all reported step transitions except for details to complete
     if (step === 'details') {
@@ -84,7 +93,8 @@ export const VerifyDashboard = () => {
 
     // Getting here implies that TOS is complete and kyc is approved, rejected, or under review
     setStep('complete');
-  }, [customer, isLoading]);
+    setIsIndeterminate(false);
+  }, [customer, isLoading, setIsIndeterminate]);
 
   const isUnderReview =
     customer?.kyc_status === 'under_review' ||

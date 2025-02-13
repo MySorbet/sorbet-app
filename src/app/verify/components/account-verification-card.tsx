@@ -7,6 +7,7 @@ import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useVerify } from '@/hooks/profile/use-verify';
+import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { cn, sleep } from '@/lib/utils';
 
 import { useConfettiCannons } from '../hooks/use-confetti-cannons';
@@ -80,11 +81,17 @@ export const AccountVerificationCard = ({
   };
 
   // Confetti on complete
-  // TODO: Only do this once. Remember in local storage
+  const [hasFired, setHasFired] = useScopedLocalStorage(
+    'verification-confetti-fired',
+    false
+  );
   const { fire } = useConfettiCannons();
   useEffect(() => {
-    isComplete && fire();
-  }, [fire, isComplete]);
+    if (isComplete && !hasFired) {
+      fire();
+      setHasFired(true);
+    }
+  }, [fire, isComplete, hasFired, setHasFired]);
 
   // Loading skeleton of the initial state
   if (isLoading) {
@@ -192,10 +199,22 @@ const IndeterminateContent = () => {
 
 /** Local component specializing the card content for the complete state */
 const CompleteContent = () => {
+  const { fire } = useConfettiCannons();
   return (
     <CardContent
       title='Account verified'
-      description='Congrats! You can now accept payments via ACH or Wire. Try sending an invoice to test it out.'
+      description={
+        <span>
+          Congrats! You can now accept payments via ACH or Wire{' '}
+          <span
+            onMouseOver={fire}
+            className='inline-block cursor-pointer transition-transform hover:rotate-6 hover:scale-110'
+          >
+            🎉
+          </span>{' '}
+          Try sending an invoice to test it out.
+        </span>
+      }
       icon={() => (
         <CircleCheck
           className='mr-1.5 inline-block size-6 text-green-500'
