@@ -62,9 +62,14 @@ export const PersonaCard = ({
               templateId={params.inquiryTemplateId}
               environmentId={params.environmentId}
               referenceId={params.referenceId}
+              fields={{
+                developer_id: params.developerId ?? '',
+                iqt_token: params.iqtToken ?? '',
+              }}
               onReady={() => setReady(true)}
               onComplete={() => {
-                // TODO: Note that inquiryId, status and fields are available as parameters. We could store any useful information in our backend.
+                // TODO: Note that inquiryId, status and fields are available as parameters.
+                // TODO: We could store any useful information in our backend.
                 onComplete?.();
               }}
             />
