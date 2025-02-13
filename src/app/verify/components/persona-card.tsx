@@ -37,8 +37,9 @@ export const PersonaCard = ({
   const params = getParams(url);
   const [ready, setReady] = useState(false);
 
-  // Cant load Persona if any of the params are missing
-  const isError = Object.values(params).some((value) => !value);
+  // Cant load Persona if any of the required params are missing
+  const isError =
+    !params.inquiryTemplateId || !params.developerId || !params.iqtToken;
 
   // Reset loading if there is an error
   useEffect(() => {
