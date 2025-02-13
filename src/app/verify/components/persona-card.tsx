@@ -37,8 +37,8 @@ export const PersonaCard = ({
   const params = getParams(url);
   const [ready, setReady] = useState(false);
 
-  // Cant load Persona if no inquiry template id is found
-  const isError = !params.inquiryTemplateId;
+  // Cant load Persona if any of the params are missing
+  const isError = Object.values(params).some((value) => !value);
 
   // Reset loading if there is an error
   useEffect(() => {
@@ -62,9 +62,14 @@ export const PersonaCard = ({
               templateId={params.inquiryTemplateId}
               environmentId={params.environmentId}
               referenceId={params.referenceId}
+              fields={{
+                developer_id: params.developerId ?? '',
+                iqt_token: params.iqtToken ?? '',
+              }}
               onReady={() => setReady(true)}
               onComplete={() => {
-                // TODO: Note that inquiryId, status and fields are available as parameters. We could store any useful information in our backend.
+                // TODO: Note that inquiryId, status and fields are available as parameters.
+                // TODO: We could store any useful information in our backend.
                 onComplete?.();
               }}
             />
