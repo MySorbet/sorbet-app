@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
+import { LinkInBioLinkButton } from '@/components/app-sidebar/link-in-bio-link-button';
 import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
@@ -22,7 +23,6 @@ import {
 } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
-import { SquareUserIcon } from '@/components/ui/square-user';
 import { WalletIcon } from '@/components/ui/wallet';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { cn } from '@/lib/utils';
@@ -94,9 +94,7 @@ const items: MenuItem[] = [
 
 const profileItems: MenuItem[] = [
   {
-    title: 'Link-in-bio',
-    url: '/',
-    icon: SquareUserIcon,
+    render: () => <LinkInBioLinkButton />,
   },
   // {
   //   title: 'Analytics',
