@@ -15,7 +15,7 @@ export const WidgetErrorFallback: React.ComponentType<FallbackProps> = ({
   return (
     <Alert
       variant='destructive'
-      className='h-full w-full rounded-3xl bg-white drop-shadow-md'
+      className='bg-background shadow-card h-full w-full rounded-3xl'
     >
       <AlertCircle className='h-4 w-4' />
       <AlertTitle>Whoops</AlertTitle>

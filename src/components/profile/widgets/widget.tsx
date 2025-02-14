@@ -4,6 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import { SectionTitleWidget } from '@/components/profile/widgets/widget-section';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
@@ -413,9 +414,9 @@ export const Widget: React.FC<WidgetProps> = ({
 
   return (
     <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
-      <div
+      <Card
         className={cn(
-          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl drop-shadow-md',
+          'group relative z-10 flex size-full cursor-pointer flex-col rounded-3xl',
           type !== 'Photo' && type !== 'SectionTitle' && 'p-4',
           type !== 'SectionTitle' && 'bg-white',
           type === 'SectionTitle' && 'py-4'
@@ -479,7 +480,7 @@ export const Widget: React.FC<WidgetProps> = ({
             </div>
           </div>
         )}
-      </div>
+      </Card>
     </ErrorBoundary>
   );
 };
