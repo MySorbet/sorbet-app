@@ -10,6 +10,7 @@ import {
   ProjectFormValues,
   ProjectOfferDialog,
 } from '@/app/[handle]/project-offer-dialog';
+import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -76,7 +77,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   }, [queryClient, params.handle]);
 
   return (
-    <>
+    <div className='flex w-full flex-col'>
       {isError ? (
         <ClaimYourProfile
           handle={params.handle}
@@ -85,7 +86,8 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
       ) : (
         !isPending &&
         freelancer && (
-          <>
+          <main className='bg-background container flex flex-col items-center p-8'>
+            <Header />
             <Profile
               user={freelancer}
               canEdit={isMyProfile}
@@ -100,10 +102,10 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
               name={freelancerFullName}
               formSubmitted={mutation.isSuccess}
             />
-          </>
+          </main>
         )
       )}
-    </>
+    </div>
   );
 };
 
