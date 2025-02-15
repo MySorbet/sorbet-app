@@ -134,7 +134,7 @@ export const WalletContainer = () => {
       : [];
 
   return (
-    <div className='max-w-7xl'>
+    <div className='mx-auto w-full max-w-7xl'>
       <div className='flex flex-col gap-6 lg:flex-row'>
         <div className='lg:w-8/12'>
           <WalletBalance
