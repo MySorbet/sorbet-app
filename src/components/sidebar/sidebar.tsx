@@ -19,9 +19,10 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useAuth, useSmartWalletAddress, useWalletBalances } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { featureFlags } from '@/lib/flags';
-import { cn } from '@/lib/utils';
 
 import { useBridgeActions } from './use-bridge-actions';
 import { VerificationCard } from './verification-card';
@@ -31,6 +32,7 @@ interface SidebarProps {
   onIsOpenChange: (open: boolean) => void;
 }
 
+// TODO: Remove
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -97,19 +99,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
 
             {/* Navigation and Balances */}
             <div>
-              <div
-                className={cn(
-                  'grid grid-cols-3 gap-2',
-                  featureFlags.dashboard && 'grid-cols-2'
-                )}
-              >
-                {featureFlags.dashboard && (
-                  <SidebarHeaderOption
-                    label='Dashboard'
-                    icon={<GanttChartSquare />}
-                    href='/dashboard'
-                  />
-                )}
+              <div className='grid grid-cols-2 gap-2'>
+                <SidebarHeaderOption
+                  label='Dashboard'
+                  icon={<GanttChartSquare />}
+                  href='/dashboard'
+                />
+
                 <SidebarHeaderOption
                   label='Wallet'
                   href='/wallet'
@@ -170,9 +166,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
  * Local component for displaying wallet balances
  */
 const Balances: React.FC = () => {
-  const { smartWalletAddress } = useSmartWalletAddress();
-  const { usdcBalance, loading } = useWalletBalances(smartWalletAddress, false);
-  // Note: ETH balance is still fetched despite not being displayed
+  const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
 
   return (
     <div className='mt-3 flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm'>
@@ -190,7 +184,11 @@ const Balances: React.FC = () => {
             className='size-[1.125rem]' // 18px
           />
 
-          {loading ? <Skeleton className='h-4 w-24' /> : `${usdcBalance} USDC`}
+          {isLoading ? (
+            <Skeleton className='h-4 w-24' />
+          ) : (
+            `${usdcBalance} USDC`
+          )}
         </div>
       </div>
     </div>

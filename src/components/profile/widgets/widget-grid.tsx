@@ -161,7 +161,10 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
               <ReactGridLayout
                 layout={layout}
                 onLayoutChange={handleLayoutChange}
-                className={styles['react-grid-layout-custom']}
+                className={cn(
+                  styles['react-grid-layout-custom'],
+                  'w-full max-w-6xl'
+                )}
                 rowHeight={rowHeight}
                 margin={[25, 25]}
                 cols={cols}
@@ -230,7 +233,7 @@ export const WidgetGrid: React.FC<WidgetGridProps> = ({
             </FileDropArea>
           )}
           {/** bottom bar where widgets can be added */}
-          <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 z-30 -translate-x-1/2 -translate-y-6 transform'>
+          <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] z-30 -translate-x-1/2 -translate-y-6 transform'>
             <div className='flex w-full flex-col items-center'>
               {errorInvalidImage && (
                 <div className='animate-in slide-in-from-bottom-8 z-0 mb-2 w-full'>

@@ -4,9 +4,10 @@ import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Suspense } from 'react';
 
-import { ClientProviders } from '@/app/client-providers';
 import PostHogPageView from '@/app/posthog-page-view';
 import { cn } from '@/lib/utils';
+
+import Providers from './providers';
 
 /** Docs on metadata object options: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields */
 export const metadata: Metadata = {
@@ -40,11 +41,11 @@ export default function RootLayout({
   return (
     // classnames prevent horizontal layout shift when radix models open
     <html className={cn('h-full w-screen overflow-x-hidden', inter.className)}>
-      <body className='size-full bg-[#F2F3F7]'>
+      <body className='bg-background size-full'>
         <Suspense>
           <PostHogPageView />
         </Suspense>
-        <ClientProviders>{children}</ClientProviders>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

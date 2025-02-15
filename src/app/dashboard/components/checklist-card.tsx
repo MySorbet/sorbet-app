@@ -66,7 +66,9 @@ export const ChecklistCard = ({
     : 'Onboarding Checklist';
 
   return (
-    <DashboardCard className={cn('@container h-fit space-y-6', className)}>
+    <DashboardCard
+      className={cn('@container h-fit min-w-56 space-y-6', className)}
+    >
       <div className='space-y-3'>
         <h2 className='text-xl font-semibold'>{title}</h2>
         <div className='flex items-center justify-between gap-4'>

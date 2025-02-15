@@ -31,7 +31,7 @@ export const Profile: FC<{
   };
 
   return (
-    <div className='container px-16 py-4'>
+    <div className='w-full max-w-7xl'>
       <div className='flex flex-col items-center gap-4 py-6'>
         <ProfileHeader
           user={user}
@@ -48,7 +48,7 @@ export const Profile: FC<{
         />
       </div>
 
-      <div className={cn('mt-10', canEdit && 'mb-24')}>
+      <div className={cn('mt-10', canEdit && 'mb-10')}>
         <WidgetGrid editMode={canEdit} userId={user.id} />
       </div>
     </div>

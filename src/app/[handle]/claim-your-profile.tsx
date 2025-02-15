@@ -1,7 +1,6 @@
 import Image from 'next/image';
 
 import ShinyButton from '@/components/common/shiny-button';
-import { BlurredLogos } from '@/components/onboarding/blurred-logos';
 
 interface ClaimYourProfileProps {
   handle: string;
@@ -15,9 +14,7 @@ export const ClaimYourProfile = ({
 }: ClaimYourProfileProps) => {
   return (
     <div className='align-center container mt-40 flex size-full flex-col items-center justify-center gap-10'>
-      <div className='fixed -left-36 top-40 -z-10'>
-        <BlurredLogos className='opacity-60' />
-      </div>
+      <div className='fixed -left-36 top-40 -z-10'></div>
       <div>
         <Image src='/svg/logo.svg' alt='logo' width={100} height={100} />
       </div>

@@ -77,36 +77,35 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   }, [queryClient, params.handle]);
 
   return (
-    <>
+    <div className='flex w-full flex-col'>
       {isError ? (
         <ClaimYourProfile
           handle={params.handle}
           handleClaimMyProfile={() => router.push('/signin')}
         />
       ) : (
-        <>
-          <Header />
-          {!isPending && freelancer && (
-            <>
-              <Profile
-                user={freelancer}
-                canEdit={isMyProfile}
-                onHireMeClick={() => setOfferDialogOpen(true)}
-                disableHireMe={disableHireMe}
-                hideShare={hideShare}
-              />
-              <ProjectOfferDialog
-                isOpen={isOfferDialogOpen}
-                onClose={(open) => setOfferDialogOpen(open)}
-                onSubmit={mutation.mutate}
-                name={freelancerFullName}
-                formSubmitted={mutation.isSuccess}
-              />
-            </>
-          )}
-        </>
+        !isPending &&
+        freelancer && (
+          <main className='bg-background container flex flex-col items-center p-8'>
+            <Header />
+            <Profile
+              user={freelancer}
+              canEdit={isMyProfile}
+              onHireMeClick={() => setOfferDialogOpen(true)}
+              disableHireMe={disableHireMe}
+              hideShare={hideShare}
+            />
+            <ProjectOfferDialog
+              isOpen={isOfferDialogOpen}
+              onClose={(open) => setOfferDialogOpen(open)}
+              onSubmit={mutation.mutate}
+              name={freelancerFullName}
+              formSubmitted={mutation.isSuccess}
+            />
+          </main>
+        )
       )}
-    </>
+    </div>
   );
 };
 

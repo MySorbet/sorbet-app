@@ -7,7 +7,7 @@ import {
 } from 'framer-motion';
 import { ComponentProps, MouseEvent, useState } from 'react';
 
-import { SkillBadge } from '@/components/onboarding/signup/skill-badge';
+import { SkillBadge } from './skill-badge';
 import { MAX_CHARS_PER_SKILL, MAX_NUM_SKILLS } from '@/constant';
 
 interface SkillInputProps extends ComponentProps<'input'> {

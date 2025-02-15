@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -51,7 +52,7 @@ export const InvoiceTable = ({
   onCreateInvoice,
 }: InvoiceTableProps) => {
   return (
-    <div className='rounded-2xl bg-white px-6 py-3'>
+    <Card className='bg-background rounded-2xl px-6 py-3'>
       <Table>
         <TableHeader>
           <TableRow>
@@ -95,7 +96,7 @@ export const InvoiceTable = ({
           </TableBody>
         )}
       </Table>
-    </div>
+    </Card>
   );
 };
 

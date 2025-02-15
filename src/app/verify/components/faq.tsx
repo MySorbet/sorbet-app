@@ -35,7 +35,7 @@ export const FAQ = ({ className }: { className?: string }) => {
             <AccordionTrigger>How does it work?</AccordionTrigger>
             <AccordionContent>
               Users from{' '}
-              <Hyperlink href='https://apidocs.bridge.xyz/docs/customers-api#supported-government-ids-by-country'>
+              <Hyperlink href='https://docs.mysorbet.xyz/sorbet/readme/list-of-supported-countries'>
                 supported countries
               </Hyperlink>{' '}
               can complete it in less than 3 minutes. You will need to provide a

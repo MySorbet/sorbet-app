@@ -130,7 +130,7 @@ export const InvoiceDashboard = ({
         }}
       />
 
-      <div className='@container flex w-full min-w-fit max-w-6xl flex-col gap-10'>
+      <div className='@container flex w-full min-w-fit max-w-5xl flex-col gap-10'>
         {/* Header */}
         <div className='flex items-center justify-between gap-4'>
           <h1 className='text-2xl font-semibold'>Invoicing</h1>

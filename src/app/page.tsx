@@ -1,7 +1,5 @@
-import Splash from '@/app/splash';
+import { Splash } from './splash';
 
-const Home = () => {
+export default function RootPage() {
   return <Splash />;
-};
-
-export default Home;
+}

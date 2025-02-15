@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MockAuthProvider } from './use-auth.mock';
 import { env } from '../../src/lib/env';
 import { Toaster } from '../../src/components/ui/sonner';
-
+import { SidebarProvider } from '../../src/components/ui/sidebar';
 /**
  * Decorator to provide the necessary providers to the story
  *
@@ -24,8 +24,10 @@ export const ProvidersDecorator = (Story: any) => {
     <PrivyProvider appId={env.NEXT_PUBLIC_PRIVY_APP_ID}>
       <QueryClientProvider client={new QueryClient()}>
         <MockAuthProvider>
-          <Story />
-          <Toaster />
+          <SidebarProvider>
+            <Story />
+            <Toaster />
+          </SidebarProvider>
         </MockAuthProvider>
       </QueryClientProvider>
     </PrivyProvider>

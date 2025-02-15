@@ -1,74 +1,40 @@
 'use client';
 
-import { ChevronDown, User01 } from '@untitled-ui/icons-react';
-import Image from 'next/image';
+import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { parseAsBoolean, useQueryState } from 'nuqs';
 import React from 'react';
 
 import { Notifications } from '@/components/notifications';
-import FeaturebaseWidget from '@/components/profile/featurebase-widget';
-import { Sidebar } from '@/components/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks';
+import { useSidebar } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import Logo from '~/svg/logo.svg';
 
 /** Header for all pages */
 export const Header = () => {
-  const { user } = useAuth();
-  const profileImage = user?.profileImage;
-
-  const [isSidebarOpen, setIsSidebarOpen] = useQueryState(
-    'sidebarOpen',
-    parseAsBoolean.withDefault(false)
-  );
-
+  const isMobile = useIsMobile();
+  const { toggleSidebar } = useSidebar();
   return (
-    <>
-      {user && (
-        <Sidebar isOpen={isSidebarOpen} onIsOpenChange={setIsSidebarOpen} />
+    <div className='flex h-fit w-full items-center justify-between gap-4 p-4'>
+      {isMobile && (
+        <Link href='/'>
+          <Logo className='size-8' alt='Sorbet logo' />
+        </Link>
       )}
-      <div className='container mx-auto flex w-full justify-between py-4'>
-        <div className='flex gap-6'>
-          <Link href='/'>
-            <Image
-              src='/svg/logo.svg'
-              width={44}
-              height={44}
-              className='size-11'
-              alt='Sorbet logo'
-              priority
-            />
-          </Link>
-        </div>
-        {user && (
-          <div className='flex items-center justify-end gap-4'>
-            <div className='align-center flex flex-row items-center gap-2'>
-              <FeaturebaseWidget />
-              <Notifications />
-              <div
-                className='group flex cursor-pointer flex-row items-center'
-                onClick={() => setIsSidebarOpen(true)}
-              >
-                <Avatar className='border-primary-default size-10 border-2'>
-                  <AvatarImage src={profileImage} alt='profile image' />
-                  <AvatarFallback>
-                    <User01 className='text-muted-foreground' />
-                  </AvatarFallback>
-                </Avatar>
-                <ChevronDown className='transition ease-out group-hover:translate-y-1' />
-              </div>
-            </div>
-          </div>
-        )}
-        {!user && <LoggedOutCTA />}
-      </div>
-    </>
+
+      <Notifications className='ml-auto' />
+      {isMobile && (
+        <Button onClick={toggleSidebar} variant='ghost' size='icon'>
+          <Menu className='size-6' />
+        </Button>
+      )}
+    </div>
   );
 };
 
 /** Two CTA buttons if viewing a profile logged out. Sign up or sign in. */
+// TODO Remove
 const LoggedOutCTA = () => {
   const router = useRouter();
   const handleClick = () => {
