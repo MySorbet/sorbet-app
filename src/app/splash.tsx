@@ -21,21 +21,19 @@ import MutedSorbetLogo from '~/svg/muted-sorbet-logo.svg';
 export const Splash: FC = () => {
   const { ready, authenticated } = usePrivy();
   const router = useRouter();
-  const { user } = useAuth();
 
   useEffect(() => {
     if (ready) {
       if (authenticated) {
-        console.log('routing to dashboard');
         router.push('/dashboard');
       } else {
         router.push('/signin');
       }
     }
-  }, [ready, authenticated, router, user?.handle]);
+  }, [ready, authenticated, router]);
 
   return (
-    <div className='flex h-full w-full items-center justify-center'>
+    <div className='flex w-full items-center justify-center'>
       <MutedSorbetLogo className='animate-in slide-in-from-bottom-10 fade-in-10 duration-5000 size-44' />
     </div>
   );
