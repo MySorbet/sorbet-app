@@ -14,6 +14,7 @@ import { NotificationToasts } from '@/components/notifications';
 import { useAuth } from '@/hooks';
 import { env } from '@/lib/env';
 import { cn } from '@/lib/utils';
+
 export const Notifications = ({ className }: { className?: string }) => {
   const [isVisible, setIsVisible] = useState(false);
   const buttonRef = useRef(null);
