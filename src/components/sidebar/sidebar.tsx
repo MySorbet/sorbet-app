@@ -23,7 +23,6 @@ import { useAuth } from '@/hooks';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { featureFlags } from '@/lib/flags';
-import { cn } from '@/lib/utils';
 
 import { useBridgeActions } from './use-bridge-actions';
 import { VerificationCard } from './verification-card';
@@ -33,6 +32,7 @@ interface SidebarProps {
   onIsOpenChange: (open: boolean) => void;
 }
 
+// TODO: Remove
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onIsOpenChange }) => {
   const router = useRouter();
   const { user, logout } = useAuth();

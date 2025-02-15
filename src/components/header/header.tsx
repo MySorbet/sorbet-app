@@ -34,6 +34,7 @@ export const Header = () => {
 };
 
 /** Two CTA buttons if viewing a profile logged out. Sign up or sign in. */
+// TODO Remove
 const LoggedOutCTA = () => {
   const router = useRouter();
   const handleClick = () => {

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import React from 'react';
 
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { formatCurrency, formatWalletAddress } from './utils';
-import { Card } from '@/components/ui/card';
 
 interface FundsFlowProps {
   icon: React.ReactNode;

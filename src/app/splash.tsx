@@ -4,7 +4,6 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
-import { useAuth } from '@/hooks';
 import MutedSorbetLogo from '~/svg/muted-sorbet-logo.svg';
 
 /**

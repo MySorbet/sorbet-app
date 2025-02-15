@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -13,7 +14,6 @@ import { cn } from '@/lib/utils';
 
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, formatDate, Invoice, InvoiceStatus } from './utils';
-import { Card } from '@/components/ui/card';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({
