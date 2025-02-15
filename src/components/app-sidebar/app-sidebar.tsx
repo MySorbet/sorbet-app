@@ -24,6 +24,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { WalletIcon } from '@/components/ui/wallet';
+import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { cn } from '@/lib/utils';
 
@@ -94,7 +95,7 @@ const items: MenuItem[] = [
 
 const profileItems: MenuItem[] = [
   {
-    render: () => <LinkInBioLinkButton />,
+    render: LinkInBioLinkButton,
   },
   // {
   //   title: 'Analytics',
@@ -103,25 +104,26 @@ const profileItems: MenuItem[] = [
   // },
 ];
 
+const VerifiedMenuItem = () => {
+  const isVerified = useIsVerified();
+  const item = {
+    title: isVerified ? 'Account verified' : 'Get verified',
+    url: '/verify',
+    icon: ShieldCheckIcon,
+  };
+  return (
+    <SidebarMenuItem key={item.title}>
+      <SidebarLinkButton
+        item={item}
+        iconClassName={cn(isVerified && 'text-green-500')}
+      />
+    </SidebarMenuItem>
+  );
+};
+
 const accountItems: MenuItem[] = [
   {
-    render: () => {
-      // TODO: dynamic verification status
-      const isVerified = false;
-      const item = {
-        title: isVerified ? 'Account verified' : 'Get verified',
-        url: '/verify',
-        icon: ShieldCheckIcon,
-      };
-      return (
-        <SidebarMenuItem key={item.title}>
-          <SidebarLinkButton
-            item={item}
-            iconClassName={cn(isVerified && 'text-green-500')}
-          />
-        </SidebarMenuItem>
-      );
-    },
+    render: VerifiedMenuItem,
   },
   {
     render: () => {
