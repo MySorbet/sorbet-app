@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { checkInvoiceNumber } from '@/api/invoices/invoices';
+import { CompactDeleteButton } from '@/components/common/compact-delete-button';
 import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +25,6 @@ import { cn } from '@/lib/utils';
 
 import { calculateSubtotalTaxAndTotal } from '../dashboard/utils';
 import { BackButton } from './back-button';
-import { CompactDeleteButton } from './compact-delete-button';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
@@ -349,7 +349,7 @@ const InvoiceItem = ({
         </div>
         {hideDelete ? (
           // Take up the same amount of space as the delete button below
-          <div className='w-4 shrink-0' />
+          <div className='w-2 shrink-0' />
         ) : (
           <CompactDeleteButton
             onDelete={onDelete}

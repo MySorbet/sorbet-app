@@ -26,7 +26,7 @@ export const CompactDeleteButton = ({
       <DeleteIcon
         aria-hidden='true'
         className={cn(
-          'h-fit p-2 hover:text-red-500',
+          'h-fit p-1 hover:text-red-500',
           '[&>svg]:size-5 [&>svg]:shrink-0 [&>svg]:stroke-current [&>svg]:stroke-[1.5]'
         )}
       />
