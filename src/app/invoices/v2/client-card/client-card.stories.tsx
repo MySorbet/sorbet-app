@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { ClientSelector } from './client-selector';
-import { Client } from './types';
+import { Client } from '../types';
+import { ClientCard } from './client-card';
 
 const sampleClients: Client[] = [
   { id: '1', name: 'Acme Corp', email: 'acme@acme.com' },
@@ -11,8 +11,8 @@ const sampleClients: Client[] = [
 ];
 
 const meta = {
-  title: 'Invoices/v2/ClientSelector',
-  component: ClientSelector,
+  title: 'Invoices/v2/ClientCard',
+  component: ClientCard,
   parameters: {
     layout: 'centered',
   },
@@ -20,11 +20,12 @@ const meta = {
     clients: sampleClients,
     onClientSelect: fn(),
     onAddClient: fn(),
+    onEditClient: fn(),
   },
-} satisfies Meta<typeof ClientSelector>;
+} satisfies Meta<typeof ClientCard>;
 
 export default meta;
-type Story = StoryObj<typeof ClientSelector>;
+type Story = StoryObj<typeof ClientCard>;
 
 export const Default: Story = {};
 
@@ -37,5 +38,12 @@ export const EmptyList: Story = {
 export const SingleClient: Story = {
   args: {
     clients: [sampleClients[0]],
+  },
+};
+
+export const WithSelectedClient: Story = {
+  args: {
+    clients: sampleClients,
+    selectedClient: sampleClients[0],
   },
 };
