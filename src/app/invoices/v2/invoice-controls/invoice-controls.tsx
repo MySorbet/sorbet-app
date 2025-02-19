@@ -1,7 +1,7 @@
-import { YourInfo } from '@/app/invoices/v2/your-info';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { NewInvoice } from './new-invoice';
+import { YourInfo } from './your-info';
 
 export const InvoiceControls = () => {
   return (

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 
-import { InvoiceControls } from './invoice-controls';
+import { InvoiceControls } from './invoice-controls/invoice-controls';
 import { InvoiceDocument } from './invoice-document';
 import { CreateInvoiceHeader } from './invoice-header/create-invoice-header';
 import { emptyInvoiceItem, InvoiceForm, invoiceFormSchema } from './schema';

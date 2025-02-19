@@ -5,7 +5,7 @@ import { FormItem, FormLabel } from '@/components/ui/form';
 import { FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { InvoiceForm } from './schema';
+import { InvoiceForm } from '../schema';
 
 /** The "Your info" section of the invoice controls */
 export const YourInfo = () => {

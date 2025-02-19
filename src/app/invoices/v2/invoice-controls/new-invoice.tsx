@@ -21,8 +21,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
+import { InvoiceForm, isInTheFuture } from '../schema';
 import { ItemsCard } from './items-card';
-import { InvoiceForm, isInTheFuture } from './schema';
 
 /** "New invoice" section of the invoice controls */
 export const NewInvoice = () => {

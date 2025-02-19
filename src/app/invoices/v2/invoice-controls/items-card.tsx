@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-import { type InvoiceItem, emptyInvoiceItem } from './schema';
+import { type InvoiceItem, emptyInvoiceItem } from '../schema';
 
 /** Card allowing a list of items (making up an invoice) to be added, edited, and deleted */
 export const ItemsCard = ({
