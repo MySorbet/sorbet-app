@@ -28,7 +28,7 @@ import { ClientSheet } from './client-sheet';
 import { ItemsCard } from './items-card';
 
 /** "New invoice" section of the invoice controls */
-export const NewInvoice = () => {
+export const NewInvoiceTab = () => {
   const form = useFormContext<InvoiceForm>();
   const { issueDate, dueDate } = form.watch();
 

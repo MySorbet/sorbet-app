@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { InvoiceForm } from '../schema';
 
 /** The "Your info" section of the invoice controls */
-export const YourInfo = () => {
+export const YourInfoTab = () => {
   const form = useFormContext<InvoiceForm>();
 
   return (

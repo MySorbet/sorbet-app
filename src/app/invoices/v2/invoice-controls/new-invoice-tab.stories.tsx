@@ -1,18 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { addDays } from 'date-fns';
 
-import { NewInvoice } from './new-invoice';
+import { NewInvoiceTab } from './new-invoice-tab';
 
 const meta = {
-  title: 'Invoices/V2/NewInvoice',
-  component: NewInvoice,
+  title: 'Invoices/V2/NewInvoiceTab',
+  component: NewInvoiceTab,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta<Story>;
 
 export default meta;
-type Story = StoryObj<typeof NewInvoice>;
+type Story = StoryObj<typeof NewInvoiceTab>;
 
 export const Default: Story = {
   args: {},

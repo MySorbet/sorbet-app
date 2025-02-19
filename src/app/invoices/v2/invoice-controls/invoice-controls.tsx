@@ -1,8 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { NewInvoice } from './new-invoice';
-import { YourInfo } from './your-info';
+import { NewInvoiceTab } from './new-invoice-tab';
+import { PaymentTab } from './payment-tab';
+import { YourInfoTab } from './your-info-tab';
 
+/** Renders 3 tabs of controls for creating an invoice */
 export const InvoiceControls = () => {
   return (
     <div>
@@ -22,18 +24,20 @@ export const InvoiceControls = () => {
           value='invoice'
           className='animate-in fade-in-0 slide-in-from-right-5'
         >
-          <NewInvoice />
+          <NewInvoiceTab />
         </TabsContent>
         <TabsContent
           value='your-info'
           className='animate-in fade-in-0 slide-in-from-right-5'
         >
-          <YourInfo />
+          <YourInfoTab />
         </TabsContent>
         <TabsContent
           value='payment'
           className='animate-in fade-in-0 slide-in-from-right-5'
-        ></TabsContent>
+        >
+          <PaymentTab />
+        </TabsContent>
       </Tabs>
     </div>
   );
