@@ -22,11 +22,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
 import { ItemsCard } from './items-card';
-import { InvoiceFormData, isInTheFuture } from './schema';
+import { InvoiceForm, isInTheFuture } from './schema';
 
 /** "New invoice" section of the invoice controls */
 export const NewInvoice = () => {
-  const form = useFormContext<InvoiceFormData>();
+  const form = useFormContext<InvoiceForm>();
   const { issueDate, dueDate } = form.watch();
 
   return (
@@ -170,7 +170,7 @@ const DatePicker = ({
 };
 
 const FakeClientCard = () => {
-  const form = useFormContext<InvoiceFormData>();
+  const form = useFormContext<InvoiceForm>();
   return (
     <div>
       <FormField

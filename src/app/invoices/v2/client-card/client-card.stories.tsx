@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { Client } from '../types';
+import { Client } from '../schema';
 import { ClientCard } from './client-card';
 
 const sampleClients: Client[] = [

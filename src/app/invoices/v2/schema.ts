@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { checkInvoiceNumber } from '@/api/invoices';
 
 // TODO: Note there are duplicates of v1 invoice stuff here. At the end of the day, there should only be one
+
 /**
  * Build a zod string validator with a custom error message for use in a RHF FormField
  *
@@ -22,22 +23,31 @@ export const invoiceFormStringValidator = (name: string, min = 1, max = 50) =>
     .min(min)
     .max(max);
 
+// TODO: Revisit this and the form validation ot accepting today
+/** `react-day-picker` matcher which allows any date after and including today */
+export const isInTheFuture = (date: Date) => {
+  const today = startOfDay(new Date());
+  return date >= today;
+};
+
 /** Validator for the data of an invoice item */
-export const InvoiceItemDataSchema = z.object({
+export const InvoiceItemSchema = z.object({
   name: invoiceFormStringValidator('Item name'),
   quantity: z.coerce.number().min(1),
   amount: z.coerce.number().min(0),
 });
+
 /** Type of the data of an invoice item */
-export type InvoiceItemData = z.infer<typeof InvoiceItemDataSchema>;
+export type InvoiceItem = z.infer<typeof InvoiceItemSchema>;
 
 /** Empty invoice item data */
-export const emptyInvoiceItemData: InvoiceItemData = {
+export const emptyInvoiceItem: InvoiceItem = {
   name: '',
   quantity: 1,
   amount: 0,
 };
 
+/** Schema for the "Your info" section of an invoice form */
 const yourInfoSchema = z.object({
   fromName: invoiceFormStringValidator('Name'),
   fromEmail: invoiceFormStringValidator('Email').email({
@@ -45,20 +55,14 @@ const yourInfoSchema = z.object({
   }),
 });
 
-// react-day-picker Matcher which allows any date after and including today
-// TODO: Revisit this and the form validation ot accepting today
-export const isInTheFuture = (date: Date) => {
-  const today = startOfDay(new Date());
-  return date >= today;
-};
-
-export const schema = z.object({
+/** Schema for the data of an invoice form */
+export const invoiceFormSchema = z.object({
   // TODO: This is a temp adapter to work with existing invoice schema. should be replaced with client card
   toName: invoiceFormStringValidator('Name'),
   toEmail: invoiceFormStringValidator('Email').email({
     message: 'Must be a valid email address',
   }),
-  items: z.array(InvoiceItemDataSchema),
+  items: z.array(InvoiceItemSchema),
   invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
     async (invoiceNumber) => {
       // No need to call the API for empty strings
@@ -84,4 +88,24 @@ export const schema = z.object({
   ...yourInfoSchema.shape,
 });
 
-export type InvoiceFormData = z.infer<typeof schema>;
+export type InvoiceForm = z.infer<typeof invoiceFormSchema>;
+
+/** Schema for an address */
+export const addressSchema = z.object({
+  street: z.string(),
+  city: z.string(),
+  state: z.string(),
+  country: z.string(),
+  zip: z.string(),
+});
+
+/** Schema for a client */
+export const clientSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string().email(),
+  address: addressSchema.optional(),
+});
+
+export type Client = z.infer<typeof clientSchema>;
+export type Address = z.infer<typeof addressSchema>;

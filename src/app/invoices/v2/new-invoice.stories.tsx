@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
 
 import { NewInvoice } from './new-invoice';

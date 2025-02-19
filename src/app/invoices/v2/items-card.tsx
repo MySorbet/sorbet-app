@@ -9,15 +9,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-import { emptyInvoiceItemData, InvoiceItemData } from './schema';
+import { type InvoiceItem, emptyInvoiceItem } from './schema';
 
 /** Card allowing a list of items (making up an invoice) to be added, edited, and deleted */
 export const ItemsCard = ({
   items,
   onItemsChange,
 }: {
-  items: InvoiceItemData[];
-  onItemsChange: (items: InvoiceItemData[]) => void;
+  items: InvoiceItem[];
+  onItemsChange: (items: InvoiceItem[]) => void;
 }) => {
   // TODO: These handlers used to be integrated with the parent form. Either do this again, or use this as another layer
   const handleDelete = (index: number) => {
@@ -26,14 +26,14 @@ export const ItemsCard = ({
     onItemsChange(newItems);
   };
 
-  const handleChange = (index: number, item: InvoiceItemData) => {
+  const handleChange = (index: number, item: InvoiceItem) => {
     const newItems = [...items];
     newItems[index] = item;
     onItemsChange(newItems);
   };
 
   const handleAddItem = () => {
-    onItemsChange([...items, emptyInvoiceItemData]);
+    onItemsChange([...items, emptyInvoiceItem]);
   };
 
   return (
@@ -71,11 +71,11 @@ const InvoiceItem = ({
   index,
   className,
 }: {
-  item: InvoiceItemData;
+  item: InvoiceItem;
   hideDelete?: boolean;
   hideLabel?: boolean;
   onDelete?: () => void;
-  onChange?: (item: InvoiceItemData) => void;
+  onChange?: (item: InvoiceItem) => void;
   index: number;
   className?: string;
 }) => {

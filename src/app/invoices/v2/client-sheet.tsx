@@ -21,10 +21,10 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 
-import { Client } from './types';
+import { Client } from './schema';
 
-/** Sheet allowing a client to be added or edited
- *
+/**
+ * Sheet allowing a client to be added or edited.
  * Pass a `client` to edit an existing client, or omit it to add a new client.
  */
 export const ClientSheet = ({

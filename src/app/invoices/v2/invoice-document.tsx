@@ -6,9 +6,10 @@ import {
   Invoice,
 } from '@/app/invoices/components/dashboard/utils';
 import { formatCurrency } from '@/lib/currency';
-
-import { InvoiceFormData } from './schema';
 import { cn } from '@/lib/utils';
+
+import { InvoiceForm } from './schema';
+
 /**
  * Render a PDF-like document displaying the invoice details.
  *
@@ -22,7 +23,7 @@ import { cn } from '@/lib/utils';
  */
 export const InvoiceDocument = forwardRef<
   HTMLDivElement,
-  { invoice: InvoiceFormData | Invoice; className?: string }
+  { invoice: InvoiceForm | Invoice; className?: string }
 >(({ invoice, className }, ref) => {
   const { taxAmount, total } = calculateSubtotalTaxAndTotal(invoice);
   // Total amount is dependent on which type of invoice we get

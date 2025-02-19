@@ -2,21 +2,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 import { useForm } from 'react-hook-form';
 
+import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 
 import { InvoiceControls } from './invoice-controls';
 import { InvoiceDocument } from './invoice-document';
-import { emptyInvoiceItemData, InvoiceFormData, schema } from './schema';
-import { Card } from '@/components/ui/card';
+import { emptyInvoiceItem, InvoiceForm, invoiceFormSchema } from './schema';
 
-export const CreateInvoice = ({ prefills }: { prefills?: InvoiceFormData }) => {
-  const form = useForm<InvoiceFormData>({
-    resolver: zodResolver(schema),
+/** Render a WYSIWYG invoice editor with controls for editing the invoice. */
+export const CreateInvoice = ({ prefills }: { prefills?: InvoiceForm }) => {
+  // Form lives at the top level. Controls access this form via context
+  const form = useForm<InvoiceForm>({
+    resolver: zodResolver(invoiceFormSchema),
     defaultValues: {
       issueDate: prefills?.issueDate ?? new Date(), // Prefill today's date
       dueDate: prefills?.dueDate ?? addDays(new Date(), 7),
       memo: prefills?.memo ?? '',
-      items: prefills?.items ?? [emptyInvoiceItemData],
+      items: prefills?.items ?? [emptyInvoiceItem],
       invoiceNumber: prefills?.invoiceNumber ?? '',
       tax: prefills?.tax ?? 0,
       fromName: prefills?.fromName ?? '',

@@ -1,11 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
 
 import { CreateInvoice } from './create-invoice';
-import { InvoiceFormData } from './schema';
-
-type Story = StoryObj<typeof CreateInvoice>;
+import { InvoiceForm } from './schema';
 
 const meta = {
   title: 'Invoices/V2/CreateInvoice',
@@ -16,8 +13,9 @@ const meta = {
 } satisfies Meta<typeof CreateInvoice>;
 
 export default meta;
+type Story = StoryObj<typeof CreateInvoice>;
 
-const samplePrefills: InvoiceFormData = {
+const samplePrefills: InvoiceForm = {
   toName: 'John Doe',
   toEmail: 'john.doe@example.com',
   fromName: 'Jane Smith',
@@ -32,7 +30,7 @@ const samplePrefills: InvoiceFormData = {
       amount: 150,
     },
   ],
-  invoiceNumber: 'INV-2024-001',
+  invoiceNumber: 'INV-001',
   tax: 10,
 };
 
@@ -43,11 +41,5 @@ export const Default: Story = {
 export const WithPrefills: Story = {
   args: {
     prefills: samplePrefills,
-  },
-};
-
-export const EmptyForm: Story = {
-  args: {
-    prefills: undefined,
   },
 };
