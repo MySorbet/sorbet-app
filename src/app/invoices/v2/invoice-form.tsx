@@ -48,7 +48,7 @@ export type PaymentDetailsFormData = z.infer<typeof paymentDetailsSchema>;
 
 type InvoiceFormProps = {
   onSubmit?: (values: PaymentDetailsFormData) => void;
-  formData: PaymentDetailsFormData;
+  formData?: PaymentDetailsFormData;
 };
 
 /**
@@ -58,9 +58,9 @@ export const InvoiceForm = ({ onSubmit, formData }: InvoiceFormProps) => {
   const form = useForm<PaymentDetailsFormData>({
     resolver: zodResolver(paymentDetailsSchema),
     defaultValues: {
-      issueDate: formData.issueDate ?? new Date(), // Prefill today's date
-      dueDate: formData.dueDate ?? addDays(new Date(), 7),
-      memo: formData.memo ?? '',
+      issueDate: formData?.issueDate ?? new Date(), // Prefill today's date
+      dueDate: formData?.dueDate ?? addDays(new Date(), 7),
+      memo: formData?.memo ?? '',
     },
     mode: 'all',
   });
