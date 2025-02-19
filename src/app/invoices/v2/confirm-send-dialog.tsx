@@ -19,6 +19,7 @@ interface ConfirmSendDialogProps {
   isSending?: boolean;
   hasSent?: boolean;
   onBackToDashboard?: () => void;
+  onViewInvoices?: () => void;
 }
 
 /** Dialog for confirming the sending of an invoice */
@@ -30,6 +31,7 @@ export const ConfirmSendDialog = ({
   isSending = false,
   hasSent = true,
   onBackToDashboard,
+  onViewInvoices,
 }: ConfirmSendDialogProps) => {
   const primaryText = hasSent
     ? 'View invoices'
@@ -84,7 +86,7 @@ export const ConfirmSendDialog = ({
 
         <div className='flex flex-col gap-3'>
           <Button
-            onClick={() => (hasSent ? onBackToDashboard?.() : onConfirm?.())}
+            onClick={() => (hasSent ? onViewInvoices?.() : onConfirm?.())}
             variant='sorbet'
             disabled={isSending}
           >

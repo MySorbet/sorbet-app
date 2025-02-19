@@ -30,10 +30,11 @@ export const Default: Story = {
     onOpenChange: fn(),
     onConfirm: fn(),
     onBackToDashboard: fn(),
+    onViewInvoices: fn(),
     isSending: false,
     hasSent: false,
   },
-  render: function Render(args) {
+  render: (args) => {
     const [open, setOpen] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [hasSent, setHasSent] = useState(false);
@@ -50,6 +51,7 @@ export const Default: Story = {
         <Button onClick={() => setOpen(true)}>Open Send Dialog</Button>
 
         <ConfirmSendDialog
+          {...Default.args}
           {...args}
           open={open}
           onOpenChange={(isOpen) => {
@@ -71,10 +73,8 @@ export const Default: Story = {
 
 export const SendingState: Story = {
   args: {
+    ...Default.args,
     open: true,
-    recipientEmail: 'client@example.com',
-    onOpenChange: fn(),
-    onConfirm: fn(),
     isSending: true,
     hasSent: false,
   },
@@ -82,10 +82,8 @@ export const SendingState: Story = {
 
 export const SentState: Story = {
   args: {
+    ...Default.args,
     open: true,
-    recipientEmail: 'client@example.com',
-    onOpenChange: fn(),
-    onConfirm: fn(),
     isSending: false,
     hasSent: true,
   },
