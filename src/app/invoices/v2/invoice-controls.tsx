@@ -18,13 +18,22 @@ export const InvoiceControls = () => {
             Payment
           </TabsTrigger>
         </TabsList>
-        <TabsContent value='invoice'>
+        <TabsContent
+          value='invoice'
+          className='animate-in fade-in-0 slide-in-from-right-5'
+        >
           <NewInvoice />
         </TabsContent>
-        <TabsContent value='your-info'>
+        <TabsContent
+          value='your-info'
+          className='animate-in fade-in-0 slide-in-from-right-5'
+        >
           <YourInfo />
         </TabsContent>
-        <TabsContent value='payment'></TabsContent>
+        <TabsContent
+          value='payment'
+          className='animate-in fade-in-0 slide-in-from-right-5'
+        ></TabsContent>
       </Tabs>
     </div>
   );
