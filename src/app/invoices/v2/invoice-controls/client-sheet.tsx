@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 
-import { Client } from './schema';
+import { Client, emptyAddress } from '../schema';
 
 /**
  * Sheet allowing a client to be added or edited.
@@ -49,8 +49,15 @@ export const ClientSheet = ({
     ? 'Save'
     : 'Save new';
   const form = useForm<Client>({
-    defaultValues: client,
+    values: client,
+    defaultValues: {
+      name: '',
+      email: '',
+      address: undefined,
+    },
   });
+
+  const showAddress = Boolean(form.watch('address'));
 
   const handleSave = async (client: Client) => {
     await onSave(client, isEditing);
@@ -65,7 +72,10 @@ export const ClientSheet = ({
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSave)} className='space-y-4'>
+          <form
+            onSubmit={form.handleSubmit(handleSave)}
+            className='flex flex-col gap-4'
+          >
             <FormField
               control={form.control}
               name='name'
@@ -96,76 +106,91 @@ export const ClientSheet = ({
             />
             <div className='flex items-center justify-between gap-2'>
               <FormLabel htmlFor='address-toggle'>Address</FormLabel>
-              <Switch id='address-toggle' />
-            </div>
-            <FormField
-              control={form.control}
-              name='address.street'
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} placeholder='Street' />
-                  </FormControl>
-                  <FormDescription />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className='flex gap-2'>
-              <FormField
-                control={form.control}
-                name='address.city'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} placeholder='City' />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='address.state'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} placeholder='State' />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <Switch
+                id='address-toggle'
+                checked={showAddress}
+                onCheckedChange={(checked) => {
+                  form.setValue('address', checked ? emptyAddress : undefined);
+                }}
               />
             </div>
-            <FormField
-              control={form.control}
-              name='address.country'
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} placeholder='Country' />
-                  </FormControl>
-                  <FormDescription />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='address.zip'
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} placeholder='Zip' />
-                  </FormControl>
-                  <FormDescription />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type='submit' disabled={isSaving}>
+            {showAddress && (
+              <div className='animate-in fade-in-0 slide-in-from-top-5 flex flex-col gap-2'>
+                <FormField
+                  control={form.control}
+                  name='address.street'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} placeholder='Street' />
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className='flex gap-2'>
+                  <FormField
+                    control={form.control}
+                    name='address.city'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} placeholder='City' />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='address.state'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} placeholder='State' />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name='address.country'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} placeholder='Country' />
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='address.zip'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} placeholder='Zip' />
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            <Button
+              type='submit'
+              disabled={isSaving}
+              variant='sorbet'
+              className='ml-auto'
+            >
               {isSaving && <Spinner />}
               {submitButtonText}
             </Button>

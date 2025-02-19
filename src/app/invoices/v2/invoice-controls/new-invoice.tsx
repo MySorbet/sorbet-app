@@ -21,7 +21,10 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
+import { ClientCard } from '../client-card/client-card';
+import { useClients } from '../hooks/use-clients';
 import { InvoiceForm, isInTheFuture } from '../schema';
+import { ClientSheet } from './client-sheet';
 import { ItemsCard } from './items-card';
 
 /** "New invoice" section of the invoice controls */
@@ -29,9 +32,39 @@ export const NewInvoice = () => {
   const form = useFormContext<InvoiceForm>();
   const { issueDate, dueDate } = form.watch();
 
+  const {
+    clients,
+    isClientSheetOpen,
+    selectedClient,
+    handleClientChange,
+    handleClientSelect,
+    setIsClientSheetOpen,
+    setSelectedClient,
+    isSaving,
+  } = useClients();
+
   return (
-    <div className='flex w-full flex-col gap-8'>
-      <FakeClientCard />
+    <div className='flex w-full flex-col gap-10'>
+      <ClientCard
+        clients={clients}
+        onClientSelect={handleClientSelect}
+        onAddClient={() => {
+          setSelectedClient(undefined);
+          setIsClientSheetOpen(true);
+        }}
+        selectedClient={selectedClient}
+        onEditClient={() => {
+          setSelectedClient(selectedClient);
+          setIsClientSheetOpen(true);
+        }}
+      />
+      <ClientSheet
+        open={isClientSheetOpen}
+        setOpen={setIsClientSheetOpen}
+        client={selectedClient}
+        onSave={handleClientChange}
+        isSaving={isSaving}
+      />
       <ItemsCard
         items={form.watch('items')}
         onItemsChange={(items) => form.setValue('items', items)}
@@ -166,43 +199,5 @@ const DatePicker = ({
         />
       </PopoverContent>
     </Popover>
-  );
-};
-
-const FakeClientCard = () => {
-  const form = useFormContext<InvoiceForm>();
-  return (
-    <div>
-      <FormField
-        name='toName'
-        control={form.control}
-        render={({ field }) => (
-          <FormItem className='w-full max-w-md'>
-            <FormLabel>Name</FormLabel>
-            <FormControl>
-              <Input placeholder='Client name' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name='toEmail'
-        control={form.control}
-        render={({ field }) => (
-          <FormItem className='w-full max-w-md'>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input
-                type='email'
-                placeholder='Client email address'
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
   );
 };

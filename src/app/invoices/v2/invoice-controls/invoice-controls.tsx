@@ -7,7 +7,7 @@ export const InvoiceControls = () => {
   return (
     <div>
       <Tabs defaultValue='invoice' className='w-96'>
-        <TabsList className='w-full justify-between'>
+        <TabsList className='mb-10 w-full justify-between'>
           <TabsTrigger value='invoice' className='w-1/3'>
             New invoice
           </TabsTrigger>

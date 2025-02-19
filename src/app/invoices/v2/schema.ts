@@ -99,6 +99,14 @@ export const addressSchema = z.object({
   zip: z.string(),
 });
 
+export const emptyAddress: Address = {
+  street: '',
+  city: '',
+  state: '',
+  country: '',
+  zip: '',
+};
+
 /** Schema for a client */
 export const clientSchema = z.object({
   id: z.string(),
