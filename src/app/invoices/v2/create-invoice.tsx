@@ -19,6 +19,10 @@ export const CreateInvoice = ({ prefills }: { prefills?: InvoiceFormData }) => {
       items: prefills?.items ?? [emptyInvoiceItemData],
       invoiceNumber: prefills?.invoiceNumber ?? '',
       tax: prefills?.tax ?? 0,
+      fromName: prefills?.fromName ?? '',
+      fromEmail: prefills?.fromEmail ?? '',
+      toName: prefills?.toName ?? '',
+      toEmail: prefills?.toEmail ?? '',
     },
     mode: 'all',
   });
