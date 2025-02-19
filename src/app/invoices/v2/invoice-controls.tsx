@@ -6,7 +6,7 @@ import { InvoiceForm } from './invoice-form';
 export const InvoiceControls = () => {
   return (
     <div>
-      <Tabs defaultValue='account' className='w-96'>
+      <Tabs defaultValue='invoice' className='w-96'>
         <TabsList className='w-full justify-between'>
           <TabsTrigger value='invoice' className='w-1/3'>
             New invoice
