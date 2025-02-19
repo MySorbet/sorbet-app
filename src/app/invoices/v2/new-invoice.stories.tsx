@@ -1,29 +1,25 @@
-import type { Meta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { addDays } from 'date-fns';
 
-import { InvoiceForm } from './invoice-form';
-
-type Story = typeof InvoiceForm;
+import { NewInvoice } from './new-invoice';
 
 const meta = {
-  title: 'Invoices/V2/InvoiceForm',
-  component: InvoiceForm,
+  title: 'Invoices/V2/NewInvoice',
+  component: NewInvoice,
   parameters: {
     layout: 'centered',
-  },
-  args: {
-    onSubmit: fn(),
   },
 } satisfies Meta<Story>;
 
 export default meta;
+type Story = StoryObj<typeof NewInvoice>;
 
-export const Default = {
+export const Default: Story = {
   args: {},
 };
 
-export const WithPrefilledData = {
+export const WithPrefilledData: Story = {
   args: {
     formData: {
       issueDate: new Date(),

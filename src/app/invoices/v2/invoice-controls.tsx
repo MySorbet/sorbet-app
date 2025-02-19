@@ -1,7 +1,7 @@
 import { YourInfo } from '@/app/invoices/v2/your-info';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { InvoiceForm } from './invoice-form';
+import { NewInvoice } from './new-invoice';
 
 export const InvoiceControls = () => {
   return (
@@ -19,7 +19,7 @@ export const InvoiceControls = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value='invoice'>
-          <InvoiceForm />
+          <NewInvoice />
         </TabsContent>
         <TabsContent value='your-info'>
           <YourInfo />
