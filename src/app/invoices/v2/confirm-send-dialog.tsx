@@ -29,7 +29,7 @@ export const ConfirmSendDialog = ({
   recipientEmail,
   onConfirm,
   isSending = false,
-  hasSent = true,
+  hasSent = false,
   onBackToDashboard,
   onViewInvoices,
 }: ConfirmSendDialogProps) => {
