@@ -11,9 +11,8 @@ const meta = {
   title: 'Invoices/V2/CreateInvoice',
   component: CreateInvoice,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
-  tags: ['autodocs'],
 } satisfies Meta<typeof CreateInvoice>;
 
 export default meta;

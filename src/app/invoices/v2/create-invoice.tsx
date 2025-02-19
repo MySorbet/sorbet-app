@@ -7,6 +7,7 @@ import { Form } from '@/components/ui/form';
 import { InvoiceControls } from './invoice-controls';
 import { InvoiceDocument } from './invoice-document';
 import { emptyInvoiceItemData, InvoiceFormData, schema } from './schema';
+import { Card } from '@/components/ui/card';
 
 export const CreateInvoice = ({ prefills }: { prefills?: InvoiceFormData }) => {
   const form = useForm<InvoiceFormData>({
@@ -28,8 +29,13 @@ export const CreateInvoice = ({ prefills }: { prefills?: InvoiceFormData }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit} className='flex gap-8'>
-        <InvoiceDocument invoice={form.getValues()} />
+      <form onSubmit={handleSubmit} className='flex w-full gap-8 p-6'>
+        <Card className='flex flex-1 items-center justify-center'>
+          <InvoiceDocument
+            invoice={form.getValues()}
+            className='m-4 shadow-[0px_20px_110px_0px_#3440540F]'
+          />
+        </Card>
         <InvoiceControls />
       </form>
     </Form>
