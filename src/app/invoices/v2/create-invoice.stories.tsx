@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { addDays } from 'date-fns';
 
+import { mockCheckInvoiceNumberHandler } from '@/api/invoices/msw-handlers';
+
 import { CreateInvoice } from './create-invoice';
 import { InvoiceForm } from './schema';
 
@@ -9,6 +11,9 @@ const meta = {
   component: CreateInvoice,
   parameters: {
     layout: 'fullscreen',
+    msw: {
+      handlers: [mockCheckInvoiceNumberHandler],
+    },
   },
 } satisfies Meta<typeof CreateInvoice>;
 
