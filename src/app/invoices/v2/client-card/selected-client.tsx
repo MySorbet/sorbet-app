@@ -20,7 +20,7 @@ export const SelectedClient = ({
     <div className='flex items-center gap-2 p-2'>
       <SquareUser className='size-8' strokeWidth={1.5} />
 
-      <div className='mr-4'>
+      <div className='mr-auto'>
         <p className='text-sm font-semibold leading-none'>{client.name}</p>
         <p className='text-xs leading-none'>{client.email}</p>
       </div>
