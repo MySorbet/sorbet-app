@@ -20,7 +20,7 @@ export const invoiceFormStringValidator = (name: string, min = 1, max = 50) =>
     .max(max);
 
 /** Validator for the data of an invoice item */
-const InvoiceItemDataSchema = z.object({
+export const InvoiceItemDataSchema = z.object({
   name: invoiceFormStringValidator('Item name'),
   quantity: z.coerce.number().min(1),
   amount: z.coerce.number().min(0),

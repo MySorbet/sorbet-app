@@ -18,12 +18,3 @@ type Story = StoryObj<typeof InvoiceControls>;
 export const Default: Story = {
   args: {},
 };
-
-export const PreSelectedPaymentTab: Story = {
-  args: {},
-  render: () => (
-    <div className='w-[800px]'>
-      <InvoiceControls />
-    </div>
-  ),
-};

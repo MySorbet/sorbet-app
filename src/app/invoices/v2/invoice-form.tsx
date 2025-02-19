@@ -2,9 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays, format, startOfDay } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { DayPickerSingleProps } from 'react-day-picker';
-import { useForm } from 'react-hook-form';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
+import { checkInvoiceNumber } from '@/api/invoices';
+import { invoiceFormStringValidator } from '@/app/invoices/components/create/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -15,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
@@ -23,6 +26,9 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
+import { ItemsCard } from './items-card';
+import { emptyInvoiceItemData, InvoiceItemDataSchema } from './schema';
+
 // react-day-picker Matcher which allows any date after and including today
 // TODO: Revisit this and the form validation ot accepting today
 const isInTheFuture = (date: Date) => {
@@ -30,7 +36,24 @@ const isInTheFuture = (date: Date) => {
   return date >= today;
 };
 
-const paymentDetailsSchema = z.object({
+const schema = z.object({
+  // TODO: This is a temp adapter to work with existing invoice schema. should be replaced with client card
+  toName: invoiceFormStringValidator('Name'),
+  toEmail: invoiceFormStringValidator('Email').email({
+    message: 'Must be a valid email address',
+  }),
+  items: z.array(InvoiceItemDataSchema),
+  invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
+    async (invoiceNumber) => {
+      // No need to call the API for empty strings
+      if (!invoiceNumber) return true;
+      const { isAvailable } = await checkInvoiceNumber(invoiceNumber);
+      return isAvailable;
+    },
+    // TODO: can we make a recommendation from the error state?
+    { message: "You've already used this invoice number" }
+  ),
+  tax: z.coerce.number().min(0).max(100).optional(),
   issueDate: z
     .date({ required_error: 'An issue date is required.' })
     .refine(isInTheFuture, {
@@ -44,23 +67,26 @@ const paymentDetailsSchema = z.object({
   memo: z.string().max(800, 'Memo must be less than 800 characters').optional(), // Note: this max should match backend validation
 });
 
-export type PaymentDetailsFormData = z.infer<typeof paymentDetailsSchema>;
+export type InvoiceFormData = z.infer<typeof schema>;
 
 type InvoiceFormProps = {
-  onSubmit?: (values: PaymentDetailsFormData) => void;
-  formData?: PaymentDetailsFormData;
+  onSubmit?: (values: InvoiceFormData) => void;
+  formData?: InvoiceFormData;
 };
 
 /**
  * Form controls for WYSIWYG invoice creation
  */
 export const InvoiceForm = ({ onSubmit, formData }: InvoiceFormProps) => {
-  const form = useForm<PaymentDetailsFormData>({
-    resolver: zodResolver(paymentDetailsSchema),
+  const form = useForm<InvoiceFormData>({
+    resolver: zodResolver(schema),
     defaultValues: {
       issueDate: formData?.issueDate ?? new Date(), // Prefill today's date
       dueDate: formData?.dueDate ?? addDays(new Date(), 7),
       memo: formData?.memo ?? '',
+      items: formData?.items ?? [emptyInvoiceItemData],
+      invoiceNumber: formData?.invoiceNumber ?? '',
+      tax: formData?.tax ?? 0,
     },
     mode: 'all',
   });
@@ -74,6 +100,50 @@ export const InvoiceForm = ({ onSubmit, formData }: InvoiceFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className='flex w-full flex-col gap-8'>
+        <FakeClientCard form={form} />
+        <ItemsCard
+          items={form.watch('items')}
+          onItemsChange={(items) => form.setValue('items', items)}
+        />
+        <div className='flex gap-2'>
+          <FormField
+            name='invoiceNumber'
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Invoice number</FormLabel>
+                <FormControl>
+                  <Input placeholder='Enter Invoice number' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name='tax'
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sales tax</FormLabel>
+                <FormControl>
+                  <div className='relative w-full'>
+                    <Input
+                      id='tax'
+                      type='number'
+                      placeholder='0'
+                      className='no-spin-buttons pr-7 text-right'
+                      {...field}
+                    />
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2'>
+                      %
+                    </span>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className='flex gap-2'>
           <FormField
             control={form.control}
@@ -168,5 +238,42 @@ const DatePicker = ({
         />
       </PopoverContent>
     </Popover>
+  );
+};
+
+const FakeClientCard = ({ form }: { form: UseFormReturn<InvoiceFormData> }) => {
+  return (
+    <div>
+      <FormField
+        name='toName'
+        control={form.control}
+        render={({ field }) => (
+          <FormItem className='w-full max-w-md'>
+            <FormLabel>Name</FormLabel>
+            <FormControl>
+              <Input placeholder='Client name' {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name='toEmail'
+        control={form.control}
+        render={({ field }) => (
+          <FormItem className='w-full max-w-md'>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input
+                type='email'
+                placeholder='Client email address'
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 };
