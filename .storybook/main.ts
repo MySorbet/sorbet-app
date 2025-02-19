@@ -43,7 +43,11 @@ const config: StorybookConfig = {
         test: /\.svg$/i,
         issuer: fileLoaderRule.issuer,
         resourceQuery: { not: [/url/] }, // exclude if *.svg?url
-        use: ['@svgr/webpack'],
+        loader: '@svgr/webpack',
+        options: {
+          dimensions: false,
+          titleProp: true,
+        },
       }
     );
 
