@@ -3,13 +3,18 @@ import { forwardRef } from 'react';
 import {
   calculateSubtotalTaxAndTotal,
   formatDate,
-  Invoice,
 } from '@/app/invoices/components/dashboard/utils';
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { InvoiceForm } from './schema';
+import { AcceptedPaymentMethod, InvoiceForm } from './schema';
 
+const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
+  usdc: 'USDC',
+  usd: 'ACH / Wire',
+};
+
+// TODO Add invoice type back to prop when it is updated
 /**
  * Render a PDF-like document displaying the invoice details.
  *
@@ -23,13 +28,15 @@ import { InvoiceForm } from './schema';
  */
 export const InvoiceDocument = forwardRef<
   HTMLDivElement,
-  { invoice: InvoiceForm | Invoice; className?: string }
+  { invoice: InvoiceForm; className?: string }
 >(({ invoice, className }, ref) => {
   const { taxAmount, total } = calculateSubtotalTaxAndTotal(invoice);
   // Total amount is dependent on which type of invoice we get
   // If this is full invoice from the server, the amount has been calculated already
   // If this is form data, we'll need to calculate it ourselves
-  const totalAmount = 'totalAmount' in invoice ? invoice.totalAmount : total;
+  const totalAmount = (
+    'totalAmount' in invoice ? invoice.totalAmount : total
+  ) as number;
 
   return (
     <div
@@ -149,7 +156,11 @@ export const InvoiceDocument = forwardRef<
               </div>
               <div className='flex'>
                 <p className='min-w-16 text-xs'>Pay by</p>
-                <p className='text-xs font-semibold'>USDC, ACH / Wire</p>
+                <p className='text-xs font-semibold'>
+                  {invoice.paymentMethods
+                    .map((method) => paymentMethodDisplay[method])
+                    .join(', ')}
+                </p>
               </div>
             </td>
             <td className='max-w-sm pt-2'>
