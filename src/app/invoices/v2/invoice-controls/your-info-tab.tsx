@@ -1,3 +1,5 @@
+import { CircleAlert } from 'lucide-react';
+
 import {
   FormControl,
   FormField,
@@ -6,6 +8,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { useInvoiceForm } from '../hooks/use-invoice-form';
 
@@ -14,7 +23,7 @@ export const YourInfoTab = () => {
   const form = useInvoiceForm();
 
   return (
-    <div>
+    <div className='flex flex-col gap-6'>
       <FormField
         name='fromName'
         control={form.control}
@@ -41,6 +50,31 @@ export const YourInfoTab = () => {
           </FormItem>
         )}
       />
+      <div className='flex items-center justify-between gap-2'>
+        <FormLabel htmlFor='business-switch'>Business</FormLabel>
+        <Switch id='business-switch' checked={false} disabled />
+      </div>
+      <div className='flex items-center justify-between gap-2'>
+        <FormLabel htmlFor='tax-id-switch' className='flex items-center gap-1'>
+          Tax ID
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <CircleAlert className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
+              </TooltipTrigger>
+              <TooltipContent>
+                {/* // TODO: Replace with a more detailed explanation of the tax ID field */}
+                Tax ID is not yet available. Check back soon.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </FormLabel>
+        <Switch id='tax-id-switch' checked={false} disabled />
+      </div>
+      <div className='flex items-center justify-between gap-2'>
+        <FormLabel htmlFor='address-switch'>Address</FormLabel>
+        <Switch id='address-switch' checked={false} disabled />
+      </div>
     </div>
   );
 };
