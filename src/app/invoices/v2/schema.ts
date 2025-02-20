@@ -1,4 +1,4 @@
-import { startOfDay } from 'date-fns';
+import { addDays, startOfDay } from 'date-fns';
 import { z } from 'zod';
 
 import { checkInvoiceNumber } from '@/api/invoices';
@@ -55,9 +55,17 @@ const yourInfoSchema = z.object({
   }),
 });
 
+/** The payment methods that a client can accept */
+export const ACCEPTED_PAYMENT_METHODS = ['usdc', 'usd'] as const;
+export type AcceptedPaymentMethod = (typeof ACCEPTED_PAYMENT_METHODS)[number];
+
+const paymentMethodsSchema = z.object({
+  paymentMethods: z.array(z.enum(ACCEPTED_PAYMENT_METHODS)).min(1),
+});
+
 /** Schema for the data of an invoice form */
 export const invoiceFormSchema = z.object({
-  // TODO: This is a temp adapter to work with existing invoice schema. should be replaced with client card
+  // TODO: This is a temp adapter to work with existing invoice schema. should be replaced with client
   toName: invoiceFormStringValidator('Name'),
   toEmail: invoiceFormStringValidator('Email').email({
     message: 'Must be a valid email address',
@@ -86,6 +94,7 @@ export const invoiceFormSchema = z.object({
     }),
   memo: z.string().max(800, 'Memo must be less than 800 characters').optional(), // Note: this max should match backend validation
   ...yourInfoSchema.shape,
+  ...paymentMethodsSchema.shape,
 });
 
 export type InvoiceForm = z.infer<typeof invoiceFormSchema>;
@@ -117,3 +126,18 @@ export const clientSchema = z.object({
 
 export type Client = z.infer<typeof clientSchema>;
 export type Address = z.infer<typeof addressSchema>;
+
+/** Default values for an invoice form if no prefills are provided */
+export const defaultInvoiceValues: Required<InvoiceForm> = {
+  issueDate: new Date(),
+  dueDate: addDays(new Date(), 7),
+  memo: '',
+  items: [emptyInvoiceItem],
+  invoiceNumber: '',
+  tax: 0,
+  fromName: '',
+  fromEmail: '',
+  toName: '',
+  toEmail: '',
+  paymentMethods: ['usdc'],
+};

@@ -37,6 +37,7 @@ const samplePrefills: InvoiceForm = {
   ],
   invoiceNumber: 'INV-001',
   tax: 10,
+  paymentMethods: ['usdc'],
 };
 
 export const Default: Story = {
