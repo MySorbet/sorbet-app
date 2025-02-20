@@ -51,7 +51,7 @@ export const PaymentTab = () => {
         <PaymentMethod
           title='Accept USDC payments'
           timing='Arrives instantly'
-          tooltip='Receive USDC payments directly to your wallet on Base'
+          tooltip='Your crypto wallet to receive instant USDC payments on the Base network'
           disabled={false}
           checked={paymentMethods.includes('usdc')}
           onCheckedChange={() => handlePaymentMethodChange('usdc')}
@@ -71,7 +71,7 @@ export const PaymentTab = () => {
 
         <PaymentMethod
           title='Accept USD payments'
-          tooltip='Your client can pay via ACH/Wire transfer to your USD virtual account'
+          tooltip='Your free USD account to receive ACH/Wire payments'
           timing={isVerified ? 'Arrives in 2-3 days' : undefined}
           locked={!isVerified}
           disabled={false}
