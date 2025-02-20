@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { addDays } from 'date-fns';
 
+import { InvoiceFormDecorator } from './invoice-form-decorator';
 import { NewInvoiceTab } from './new-invoice-tab';
 
 const meta = {
@@ -9,6 +10,7 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
+  decorators: [InvoiceFormDecorator],
 } satisfies Meta<Story>;
 
 export default meta;
