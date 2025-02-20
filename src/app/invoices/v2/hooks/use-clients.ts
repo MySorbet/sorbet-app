@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 
 import { sleep } from '@/lib/utils';
 
-import { Client, InvoiceForm } from '../schema';
+import { Client } from '../schema';
+import { useInvoiceForm } from './use-invoice-form';
 
 // TODO: Get clients from backend
 let sampleClients: Client[] = [
@@ -26,7 +26,7 @@ const createClient = async (client: Client) => {
 
 export const useClients = () => {
   const [clients, setClients] = useState<Client[]>(sampleClients);
-  const form = useFormContext<InvoiceForm>();
+  const form = useInvoiceForm();
   const [isSaving, setIsSaving] = useState(false);
   const [isClientSheetOpen, setIsClientSheetOpen] = useState(false);
 

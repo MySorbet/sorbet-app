@@ -1,15 +1,17 @@
-import { useFormContext } from 'react-hook-form';
-
-import { FormControl, FormMessage } from '@/components/ui/form';
-import { FormItem, FormLabel } from '@/components/ui/form';
-import { FormField } from '@/components/ui/form';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { InvoiceForm } from '../schema';
+import { useInvoiceForm } from '../hooks/use-invoice-form';
 
 /** The "Your info" section of the invoice controls */
 export const YourInfoTab = () => {
-  const form = useFormContext<InvoiceForm>();
+  const form = useInvoiceForm();
 
   return (
     <div>

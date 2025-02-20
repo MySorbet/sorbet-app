@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { DayPickerSingleProps } from 'react-day-picker';
-import { useFormContext } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -23,13 +22,14 @@ import { cn } from '@/lib/utils';
 
 import { ClientCard } from '../client-card/client-card';
 import { useClients } from '../hooks/use-clients';
-import { InvoiceForm, isInTheFuture } from '../schema';
+import { useInvoiceForm } from '../hooks/use-invoice-form';
+import { isInTheFuture } from '../schema';
 import { ClientSheet } from './client-sheet';
 import { ItemsCard } from './items-card';
 
 /** "New invoice" section of the invoice controls */
 export const NewInvoiceTab = () => {
-  const form = useFormContext<InvoiceForm>();
+  const form = useInvoiceForm();
   const { issueDate, dueDate } = form.watch();
 
   const {
