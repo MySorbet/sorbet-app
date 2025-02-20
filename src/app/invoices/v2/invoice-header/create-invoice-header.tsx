@@ -8,11 +8,13 @@ export const CreateInvoiceHeader = ({
   onCreateInvoice,
   onClose,
   className,
+  disabled,
 }: {
   onSaveDraft?: () => void;
   onCreateInvoice?: () => void;
   onClose?: () => void;
   className?: string;
+  disabled?: boolean;
 }) => {
   return (
     <InvoiceHeader onClose={onClose} className={className}>
@@ -21,6 +23,7 @@ export const CreateInvoiceHeader = ({
           variant='outline'
           className='rounded-none font-semibold first:rounded-l-md last:rounded-r-md'
           onClick={onSaveDraft}
+          disabled={disabled}
         >
           Save as draft
         </Button>
@@ -28,6 +31,7 @@ export const CreateInvoiceHeader = ({
           variant='sorbet'
           className='rounded-none first:rounded-l-md last:rounded-r-md'
           onClick={onCreateInvoice}
+          disabled={disabled}
         >
           Create invoice
         </Button>
