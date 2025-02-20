@@ -13,7 +13,7 @@ const meta = {
   },
   args: {
     recipientEmail: 'test@test.com',
-    onCopy: fn(),
+    stringToCopy: 'https://mysorbet.io/invoices/123',
     onDownload: fn(),
     onSend: fn(),
   },

@@ -1,8 +1,9 @@
 'use client';
 
-import { Copy, Download, Send } from 'lucide-react';
+import { Download, Send } from 'lucide-react';
 import { useState } from 'react';
 
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,
@@ -16,22 +17,26 @@ import { InvoiceHeader } from './invoice-header';
 
 /** A group of buttons for actions on a published invoice */
 export const PublishedInvoiceHeader = ({
-  onCopy,
+  stringToCopy,
   onDownload,
   onSend,
   className,
   recipientEmail,
+  onClose,
+  disableSend,
 }: {
-  onCopy?: () => void;
+  stringToCopy: string;
   onDownload?: () => void;
   onSend?: () => void;
   className?: string;
   recipientEmail: string;
+  onClose?: () => void;
+  disableSend?: boolean;
 }) => {
   const [sendDialogOpen, setSendDialogOpen] = useState(false);
 
   return (
-    <InvoiceHeader>
+    <InvoiceHeader onClose={onClose}>
       <h1 className='animate-in fade-in-0 slide-in-from-left-5 text-sm font-medium'>
         Invoice published!
       </h1>
@@ -44,14 +49,11 @@ export const PublishedInvoiceHeader = ({
           onConfirm={onSend}
         />
         <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='outline'
+          <TooltipTrigger>
+            <CopyButton
+              stringToCopy={stringToCopy}
               className='rounded-none first:rounded-l-md'
-              onClick={onCopy}
-            >
-              <Copy className='size-4' />
-            </Button>
+            />
           </TooltipTrigger>
           <TooltipContent side='bottom'>Copy</TooltipContent>
         </Tooltip>
@@ -73,6 +75,7 @@ export const PublishedInvoiceHeader = ({
           variant='sorbet'
           className='gap-2 rounded-none last:rounded-r-md'
           onClick={() => setSendDialogOpen(true)}
+          disabled={disableSend}
         >
           <Send className='size-4' />
           Send Now
