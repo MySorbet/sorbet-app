@@ -25,6 +25,7 @@ export default function InvoicesPage() {
       router.push('/invoices/create');
     }
   };
+
   return (
     <Authenticated>
       <main className='flex w-full flex-col'>
