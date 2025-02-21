@@ -143,9 +143,7 @@ const PaymentMethod = ({
                 <TooltipTrigger asChild>
                   <Info className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
                 </TooltipTrigger>
-                <TooltipContent>
-                  <p>{tooltip}</p>
-                </TooltipContent>
+                <TooltipContent>{tooltip}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           )}
