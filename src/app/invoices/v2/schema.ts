@@ -2,6 +2,7 @@ import { addDays, startOfDay } from 'date-fns';
 import { z } from 'zod';
 
 import { checkInvoiceNumber } from '@/api/invoices';
+import { InvoiceStatus } from '@/app/invoices/components/dashboard/utils';
 
 // TODO: Note there are duplicates of v1 invoice stuff here. At the end of the day, there should only be one
 
@@ -140,4 +141,12 @@ export const defaultInvoiceValues: Required<InvoiceForm> = {
   toName: '',
   toEmail: '',
   paymentMethods: ['usdc'],
+};
+
+// ! Remember to update the knock JSON validation schema if you change this. Otherwise notifications will fail.
+export type Invoice = InvoiceForm & {
+  status: InvoiceStatus;
+  totalAmount: number;
+  id: string;
+  userId: string;
 };

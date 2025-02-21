@@ -2,20 +2,26 @@
 
 import { useAuth } from '@/hooks';
 
-import { InvoicePublicView } from '../components/invoice-public-view';
 import { useInvoice } from '../hooks/use-invoice';
+import { PublicInvoice } from '../v2/public-invoice/public-invoice';
+import { PublishedInvoice } from '../v2/published-invoice';
 
 export default function InvoicePage({ params }: { params: { id: string } }) {
   const { data, isLoading, isError } = useInvoice(params.id);
   const { user } = useAuth();
   const isFreelancer = user?.id === data?.userId;
 
-  return (
-    <InvoicePublicView
+  return isFreelancer ? (
+    <PublishedInvoice
       invoice={data}
-      isLoading={isLoading}
-      isFreelancer={isFreelancer}
-      isError={isError}
+      // isLoading={isLoading}
+      // isError={isError}
+    />
+  ) : (
+    <PublicInvoice
+      invoice={data}
+      // isLoading={isLoading}
+      // isError={isError}
     />
   );
 }

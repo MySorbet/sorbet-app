@@ -1,3 +1,18 @@
+import { CornerDownRight } from '@untitled-ui/icons-react';
+import { BadgeDollarSign, Info } from 'lucide-react';
+import { PropsWithChildren } from 'react';
+import { FC } from 'react';
+
+import { ACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
+import { formatWalletAddress } from '@/app/wallet/components/utils'; // TODO: Import from lib
+import { BaseAlert } from '@/components/common/base-alert';
+import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import {
   Card,
   CardContent,
@@ -5,12 +20,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-import { BadgeDollarSign, Info } from 'lucide-react';
-
-import { formatWalletAddress } from '@/app/wallet/components/utils'; // TODO: Import from lib
-import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
@@ -18,23 +29,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-
-import { CornerDownRight } from '@untitled-ui/icons-react';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
-import { BaseAlert } from '@/components/common/base-alert';
-import { Skeleton } from '@/components/ui/skeleton';
+
+import { formatDate } from '../../components/dashboard/utils';
 import { useBaseQRCode } from '../hooks/use-base-qr-code';
 import { AcceptedPaymentMethod } from '../schema';
-import { PropsWithChildren } from 'react';
-import { FC } from 'react';
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { ACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 
 /**
  *  Renders payment details for the client to pay the invoice
@@ -51,7 +50,7 @@ export const ClientPaymentCard = ({
   dueDate: Date;
 }) => {
   const type: AcceptedPaymentMethod = 'usd';
-  const title = `Payment due by ${dueDate.toLocaleDateString()}`;
+  const title = `Payment due by ${formatDate(dueDate)}`;
   const description =
     type === 'usdc' ? 'Send USDC on Base network' : 'Transfer via ACH/Wire';
 

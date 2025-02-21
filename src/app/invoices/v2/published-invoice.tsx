@@ -9,15 +9,16 @@ import { Card } from '@/components/ui/card';
 import { sleep } from '@/lib/utils';
 
 import { InvoiceDocument } from './invoice-document';
-import { InvoiceForm } from './schema';
+import { Invoice } from './schema';
 
 const sendInvoice = async () => {
   // API call to send invoice not yet implemented
   await sleep(1000);
   toast('Invoice sending not yet implemented');
 };
+
 /** Render a full page displaying a published invoice */
-export const PublishedInvoice = ({ invoice }: { invoice: InvoiceForm }) => {
+export const PublishedInvoice = ({ invoice }: { invoice?: Invoice }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -27,7 +28,12 @@ export const PublishedInvoice = ({ invoice }: { invoice: InvoiceForm }) => {
   const router = useRouter();
 
   // TODO: Fetch this properly
+  // For now, set to true since invoices are sent automatically
   const hasSent = true;
+
+  if (!invoice) {
+    return <div>Invoice not found</div>;
+  }
 
   return (
     <div className='flex size-full flex-col'>

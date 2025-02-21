@@ -2,19 +2,19 @@ import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 import { InvoiceDocument } from '@/app/invoices/v2/invoice-document';
+import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
+import { cn } from '@/lib/utils';
 
 import { PublicInvoiceHeader } from '../invoice-header/public-invoice-header';
-import { InvoiceForm } from '../schema';
+import { Invoice } from '../schema';
 import { ClientPaymentCard } from './client-payment-card';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
-import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 /** Renders an invoice and payment options for a client to pay the invoice */
-export const PublicInvoice = ({ invoice }: { invoice: InvoiceForm }) => {
+export const PublicInvoice = ({ invoice }: { invoice?: Invoice }) => {
   const router = useRouter();
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
@@ -27,6 +27,10 @@ export const PublicInvoice = ({ invoice }: { invoice: InvoiceForm }) => {
 
   // TODO: Should we display a loading state when seeing if there are ACH wire details?
   const { data: achWireDetails } = useACHWireDetails(invoice?.userId ?? '');
+
+  if (!invoice) {
+    return <div>Invoice not found</div>;
+  }
 
   return (
     <div className='flex size-full flex-col'>

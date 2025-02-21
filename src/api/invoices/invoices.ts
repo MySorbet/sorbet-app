@@ -1,10 +1,8 @@
 import axios from 'axios';
 
 import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
-import {
-  CheckInvoiceNumberResponse,
-  Invoice,
-} from '@/app/invoices/components/dashboard/utils';
+import { CheckInvoiceNumberResponse } from '@/app/invoices/components/dashboard/utils';
+import { Invoice } from '@/app/invoices/v2/schema';
 import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../withAuthHeader';

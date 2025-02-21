@@ -10,7 +10,15 @@ import { CreateInvoiceHeader } from './invoice-header/create-invoice-header';
 import { defaultInvoiceValues, InvoiceForm, invoiceFormSchema } from './schema';
 
 /** Render a WYSIWYG invoice editor with controls for editing the invoice. */
-export const CreateInvoice = ({ prefills }: { prefills?: InvoiceForm }) => {
+export const CreateInvoice = ({
+  prefills,
+  onClose,
+  onCreate,
+}: {
+  prefills?: InvoiceForm;
+  onClose?: () => void;
+  onCreate?: (invoice: InvoiceForm) => void;
+}) => {
   // Form lives at the top level. Controls access this form via context
   const form = useForm<InvoiceForm>({
     resolver: zodResolver(invoiceFormSchema),
@@ -19,29 +27,20 @@ export const CreateInvoice = ({ prefills }: { prefills?: InvoiceForm }) => {
     mode: 'all',
   });
 
-  const handleSubmit = form.handleSubmit((data) => {
-    alert(JSON.stringify(data));
-  });
+  // Curry our callback with RHF's handleSubmit
+  const handleSubmit = form.handleSubmit((data) => onCreate?.(data));
 
-  const handleClose = () => {
-    // Router back?
-  };
+  // For now, just call the submit handler
+  const handleSaveDraft = () => handleSubmit();
 
-  const handleSaveDraft = () => {
-    // Create invoice in draft state
-    // Save draft
-  };
-
-  const handleCreateInvoice = () => {
-    // Create invoice
-    // Hook in with form submit?
-  };
+  // For now, just call the submit handler
+  const handleCreateInvoice = () => handleSubmit();
 
   return (
     <Form {...form}>
       <div className='flex size-full flex-col'>
         <CreateInvoiceHeader
-          onClose={handleClose}
+          onClose={onClose}
           onSaveDraft={handleSaveDraft}
           onCreateInvoice={handleCreateInvoice}
           // TODO: Disable create invoice if form is invalid
