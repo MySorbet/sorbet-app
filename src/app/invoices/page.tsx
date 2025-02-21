@@ -10,6 +10,7 @@ import { useIsMobile } from '@/hooks/use-is-mobile';
 import { Authenticated } from '../authenticated';
 import { InvoiceDashboard } from './components/dashboard/invoice-dashboard';
 import { useInvoices } from './hooks/use-invoices';
+import { InvoiceDashboardHeader } from './v2/invoice-dashboard-header';
 
 export default function InvoicesPage() {
   const { data: invoices, isLoading } = useInvoices();
@@ -28,7 +29,8 @@ export default function InvoicesPage() {
     <Authenticated>
       <main className='flex w-full flex-col'>
         <Header />
-        <div className='container flex flex-1 justify-center p-8'>
+        <InvoiceDashboardHeader onCreateNew={handleCreateNew} />
+        <div className='container flex flex-1 justify-center p-6'>
           <InvoiceDashboard
             invoices={invoices ?? []}
             isLoading={isLoading}

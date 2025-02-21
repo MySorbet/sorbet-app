@@ -1,12 +1,10 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { Plus } from '@untitled-ui/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useIsInvoiceSheetOpen } from '@/app/invoices/hooks/use-is-invoice-sheet-open';
-import { Button } from '@/components/ui/button';
 
 import { useCancelInvoice } from '../../hooks/use-cancel-invoice';
 import { useInvoicePrinter } from '../../hooks/use-invoice-printer';
@@ -130,16 +128,7 @@ export const InvoiceDashboard = ({
         }}
       />
 
-      <div className='@container flex w-full min-w-fit max-w-5xl flex-col gap-10'>
-        {/* Header */}
-        <div className='flex items-center justify-between gap-4'>
-          <h1 className='text-2xl font-semibold'>Invoicing</h1>
-          <Button onClick={onCreateNew} variant='sorbet'>
-            <Plus className='mr-2 h-4 w-4' />
-            Create invoice
-          </Button>
-        </div>
-
+      <div className='@container flex w-full min-w-fit max-w-7xl flex-col gap-10'>
         {/* Summary cards */}
         <div className='@md:flex-row flex flex-col items-center justify-between gap-4'>
           <SummaryCard
