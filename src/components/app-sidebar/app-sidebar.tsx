@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, SettingsIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -134,11 +134,11 @@ const accountItems: MenuItem[] = [
       return <FeaturebaseLinkButton item={item} />;
     },
   },
-  // {
-  //   title: 'Settings',
-  //   url: '/settings',
-  //   icon: SettingsIcon,
-  // },
+  {
+    title: 'Settings',
+    url: '/settings',
+    icon: SettingsIcon,
+  },
 ];
 
 /** A global sidebar */
