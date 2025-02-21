@@ -14,7 +14,7 @@ const meta = {
 
 export default meta;
 
-const mockInvoice = {
+export const mockInvoice = {
   invoiceNumber: 'INV-001',
   toEmail: 'client@example.com',
   toName: 'John Doe',

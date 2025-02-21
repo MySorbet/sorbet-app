@@ -44,6 +44,7 @@ import { env } from '@/lib/env';
 import BaseInProduct from '~/svg/base-in-product.svg';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
+import { BaseAlert } from '@/components/common/base-alert';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */
@@ -348,7 +349,10 @@ const Step1 = ({
                 </FormItem>
               )}
             />
-            <BaseAlert />
+            <BaseAlert
+              title='Is this a Base network address?'
+              description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+            />
           </div>
           <Button
             className='mt-6 w-full'
@@ -361,19 +365,6 @@ const Step1 = ({
         </form>
       </Form>
     </div>
-  );
-};
-
-const BaseAlert = ({ className }: { className?: string }) => {
-  return (
-    <Alert className={className}>
-      <BaseInProduct className='size-5' />
-      <AlertTitle>Is this a Base network address?</AlertTitle>
-      <AlertDescription>
-        Make sure this address can accept USDC on Base. If not, you could lose
-        your funds.
-      </AlertDescription>
-    </Alert>
   );
 };
 
@@ -430,7 +421,10 @@ const Step2 = ({
         <div className='flex w-full items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] px-4 py-6'>
           <p className='text-md w-full truncate'>{recipientWalletAddress}</p>
         </div>
-        <BaseAlert />
+        <BaseAlert
+          title='Is this a Base network address?'
+          description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+        />
       </div>
       <div className='mt-4 flex gap-3'>
         <Button
