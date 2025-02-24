@@ -12,6 +12,11 @@
   // This ensures that vscode does not remove the final newline from files (b/c prettier wants them)
   "files.insertFinalNewline": true,
 
+  // Run eslint on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
   // Tailwind CSS Autocomplete
   "tailwindCSS.classAttributes": [
     "class",
