@@ -58,7 +58,7 @@ export const PublishedInvoice = ({ invoice }: { invoice?: Invoice }) => {
         <InvoiceDocument
           ref={contentRef}
           invoice={invoice}
-          className='m-4 shadow-[0px_20px_110px_0px_#3440540F]'
+          className='shadow-invoice m-4'
         />
       </Card>
     </div>

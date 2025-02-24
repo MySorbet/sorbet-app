@@ -53,7 +53,7 @@ export const CreateInvoice = ({
           <Card className='flex flex-1 items-center justify-center'>
             <InvoiceDocument
               invoice={form.getValues()}
-              className='m-4 shadow-[0px_20px_110px_0px_#3440540F]'
+              className='shadow-invoice m-4'
             />
           </Card>
           <InvoiceControls />

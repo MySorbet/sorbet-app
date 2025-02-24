@@ -80,7 +80,7 @@ export const PublicInvoice = ({
               <InvoiceDocument
                 invoice={invoice}
                 ref={contentRef}
-                className='shadow-[0px_20px_110px_0px_#3440540F]'
+                className='shadow-invoice'
               />
             )
           )}
