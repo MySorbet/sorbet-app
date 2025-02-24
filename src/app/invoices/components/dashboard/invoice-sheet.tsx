@@ -149,7 +149,12 @@ export default function InvoiceSheet({
                 label='Invoice no.'
                 value={invoice.invoiceNumber}
               />
-              <InvoiceDetail label='Project name' value={invoice.projectName} />
+              {invoice.projectName && (
+                <InvoiceDetail
+                  label='Project name'
+                  value={invoice.projectName}
+                />
+              )}
             </div>
 
             <Separator />

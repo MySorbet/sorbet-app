@@ -4,6 +4,9 @@ import { Invoice } from '@/app/invoices/schema';
 
 /**
  * Set of mock data for invoices. For use in development only.
+ *
+ * When invoices 2.0 was implemented, we added payment methods and made projectName optional.
+ * These changes are reflected here.
  */
 export const sampleInvoices: Invoice[] = [
   {
@@ -19,7 +22,6 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Quantum Dynamics Ltd.',
     toEmail: 'finance@quantumdynamics.com',
-    projectName: 'Data Analysis Service',
     items: [
       {
         name: 'Data Analysis Report',
@@ -61,7 +63,7 @@ export const sampleInvoices: Invoice[] = [
       },
     ],
     tax: 10,
-    paymentMethods: ['usdc'],
+    paymentMethods: ['usdc', 'usd'],
   },
   {
     id: 'c2d8f3a1-8f7b-4e3c-9d6a-8b7f9e2c1d3b',
@@ -117,7 +119,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 20.75,
       },
     ],
-    paymentMethods: ['usdc'],
+    paymentMethods: ['usd'],
   },
   {
     id: 'f1e2d3c4-b5a6-4c5d-8e7f-9a8b7c6d5e4f',
@@ -132,7 +134,6 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Smith Consulting',
     toEmail: 'accounting@smithconsulting.com',
-    projectName: 'Marketing Strategy',
     items: [
       {
         name: 'Marketing Strategy Session',
@@ -168,7 +169,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 100.0,
       },
     ],
-    paymentMethods: ['usdc'],
+    paymentMethods: ['usdc', 'usd'],
   },
   {
     id: 'b1c2d3e4-f5a6-4b5c-8d7e-9f8a7b6c5d4e',
