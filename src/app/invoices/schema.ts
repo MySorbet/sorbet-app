@@ -128,6 +128,8 @@ export const clientSchema = z.object({
 export type Client = z.infer<typeof clientSchema>;
 export type Address = z.infer<typeof addressSchema>;
 
+export const DEFAULT_TAX_PERCENTAGE = 10;
+
 /** Default values for an invoice form if no prefills are provided */
 export const defaultInvoiceValues: Required<InvoiceForm> = {
   issueDate: new Date(),
@@ -135,7 +137,7 @@ export const defaultInvoiceValues: Required<InvoiceForm> = {
   memo: '',
   items: [emptyInvoiceItem],
   invoiceNumber: '',
-  tax: 0,
+  tax: DEFAULT_TAX_PERCENTAGE,
   fromName: '',
   fromEmail: '',
   toName: '',

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { InvoiceControls } from './invoice-controls';
+import { InvoiceFormDecorator } from './invoice-form-decorator';
 
 const meta = {
   title: 'Invoices/InvoiceControls',
@@ -8,8 +9,7 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  args: {},
-  argTypes: {},
+  decorators: [InvoiceFormDecorator],
 } satisfies Meta<typeof InvoiceControls>;
 
 export default meta;
