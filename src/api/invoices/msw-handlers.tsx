@@ -1,6 +1,6 @@
 import { delay, http, HttpResponse } from 'msw';
 
-import { Invoice } from '@/app/invoices/v2/schema';
+import { Invoice } from '@/app/invoices/components/schema';
 import { env } from '@/lib/env';
 
 import { sampleInvoices } from './sample-invoices';

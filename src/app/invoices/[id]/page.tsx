@@ -2,9 +2,9 @@
 
 import { useAuth } from '@/hooks';
 
+import { PublicInvoice } from '../components/public-invoice/public-invoice';
+import { PublishedInvoice } from '../components/published-invoice';
 import { useInvoice } from '../hooks/use-invoice';
-import { PublicInvoice } from '../v2/public-invoice/public-invoice';
-import { PublishedInvoice } from '../v2/published-invoice';
 
 export default function InvoicePage({ params }: { params: { id: string } }) {
   const { data, isLoading, isError } = useInvoice(params.id);

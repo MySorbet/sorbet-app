@@ -9,8 +9,8 @@ import { useIsMobile } from '@/hooks/use-is-mobile';
 
 import { Authenticated } from '../authenticated';
 import { InvoiceDashboard } from './components/dashboard/invoice-dashboard';
+import { InvoiceDashboardHeader } from './components/invoice-dashboard-header';
 import { useInvoices } from './hooks/use-invoices';
-import { InvoiceDashboardHeader } from './v2/invoice-dashboard-header';
 
 export default function InvoicesPage() {
   const { data: invoices, isLoading } = useInvoices();

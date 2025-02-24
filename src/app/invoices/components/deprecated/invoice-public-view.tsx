@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-import { Invoice } from '@/app/invoices/v2/schema';
+import { Invoice } from '@/app/invoices/components/schema';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 import { useACHWireDetails } from '../../hooks/use-ach-wire-details';
-import { InvoiceDocument } from '../../v2/invoice-document';
+import { InvoiceDocument } from '../invoice-document';
 import { InvoiceReceipt } from '../invoice-receipt';
 import { CreateInvoiceFooter } from './create/create-invoice-footer';
 import { CreateInvoiceHeader } from './create/create-invoice-header';

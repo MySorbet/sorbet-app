@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { createInvoice } from '@/api/invoices';
 
-import { InvoiceForm } from '../v2/schema';
+import { InvoiceForm } from '../components/schema';
 
 export const useCreateInvoice = () => {
   return useMutation({

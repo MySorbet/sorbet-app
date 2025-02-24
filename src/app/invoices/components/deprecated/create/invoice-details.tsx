@@ -26,8 +26,8 @@ import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { invoiceFormStringValidator } from '../../../v2/schema';
 import { calculateSubtotalTaxAndTotal } from '../../dashboard/utils';
+import { invoiceFormStringValidator } from '../../schema';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';

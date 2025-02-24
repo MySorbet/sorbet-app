@@ -12,7 +12,7 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { Invoice } from '../../v2/schema';
+import { Invoice } from '../schema';
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, formatDate, InvoiceStatus } from './utils';
 

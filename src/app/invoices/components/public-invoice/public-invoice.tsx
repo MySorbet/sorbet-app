@@ -2,8 +2,8 @@ import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { InvoiceDocument } from '@/app/invoices/components/invoice-document';
 import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
-import { InvoiceDocument } from '@/app/invoices/v2/invoice-document';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';

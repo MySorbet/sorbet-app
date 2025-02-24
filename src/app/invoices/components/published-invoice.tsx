@@ -3,8 +3,8 @@ import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { toast } from 'sonner';
 
-import { PublishedInvoiceHeader } from '@/app/invoices/v2/invoice-header/published-invoice-header';
-import { SentAlert } from '@/app/invoices/v2/sent-alert';
+import { PublishedInvoiceHeader } from '@/app/invoices/components/invoice-header/published-invoice-header';
+import { SentAlert } from '@/app/invoices/components/sent-alert';
 import { Card } from '@/components/ui/card';
 import { sleep } from '@/lib/utils';
 

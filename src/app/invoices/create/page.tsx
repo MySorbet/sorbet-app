@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { createInvoice } from '@/api/invoices';
 import { Authenticated } from '@/app/authenticated';
 
-import { CreateInvoice } from '../v2/create-invoice';
-import { InvoiceForm } from '../v2/schema';
+import { CreateInvoice } from '../components/create-invoice';
+import { InvoiceForm } from '../components/schema';
 
 export default function CreateInvoicePage() {
   const router = useRouter();

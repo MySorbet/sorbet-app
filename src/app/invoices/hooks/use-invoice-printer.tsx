@@ -4,7 +4,7 @@ import { useReactToPrint } from 'react-to-print';
 
 import { InvoiceDocument } from '@/app/invoices/components/deprecated/invoice-document';
 
-import { Invoice } from '../v2/schema';
+import { Invoice } from '../components/schema';
 
 /**
  * Use this hook to print an invoice in a place where it's not visible to the user.

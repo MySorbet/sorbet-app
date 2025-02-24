@@ -2,8 +2,8 @@ import { forwardRef } from 'react';
 
 import { formatCurrency } from '@/lib/currency';
 
-import { Invoice } from '../../v2/schema';
 import { calculateSubtotalTaxAndTotal, formatDate } from '../dashboard/utils';
+import { Invoice } from '../schema';
 import { InvoiceFormData } from './create/invoice-form-context';
 /**
  * Render a PDF-like document displaying the invoice details.

@@ -21,7 +21,7 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { Invoice } from '../../v2/schema';
+import { Invoice } from '../schema';
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
 import { checkOverdue, InvoiceStatus } from './utils';

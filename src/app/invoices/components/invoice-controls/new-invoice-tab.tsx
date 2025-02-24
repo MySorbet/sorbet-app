@@ -20,9 +20,9 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
-import { ClientCard } from '../client-card/client-card';
 import { useClients } from '../../hooks/use-clients';
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
+import { ClientCard } from '../client-card/client-card';
 import { isInTheFuture } from '../schema';
 import { ClientSheet } from './client-sheet';
 import { ItemsCard } from './items-card';
