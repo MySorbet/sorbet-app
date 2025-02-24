@@ -58,10 +58,9 @@ export const CreateInvoice = ({
         />
         <form onSubmit={onSubmit} className='flex w-full flex-1 gap-8 p-6'>
           <Card className='flex flex-1 items-center justify-center'>
-            <InvoiceDocument
-              invoice={form.watch()}
-              className='shadow-invoice m-4'
-            />
+            <div className='shadow-invoice m-4'>
+              <InvoiceDocument invoice={form.watch()} />
+            </div>
           </Card>
           <InvoiceControls />
         </form>

@@ -49,17 +49,11 @@ export const PublishedInvoice = ({ invoice }: { invoice?: Invoice }) => {
       />
       <Card className='m-6 flex flex-1 flex-col items-center justify-center gap-6 p-6'>
         {hasSent && (
-          <SentAlert
-            recipientEmail={invoice.toEmail}
-            className='w-full max-w-[calc(210mm+2rem)]'
-            // TODO How to make this properly match the invoice width?
-          />
+          <SentAlert recipientEmail={invoice.toEmail} className='w-[21cm]' />
         )}
-        <InvoiceDocument
-          ref={contentRef}
-          invoice={invoice}
-          className='shadow-invoice m-4'
-        />
+        <div className='shadow-invoice m-4'>
+          <InvoiceDocument ref={contentRef} invoice={invoice} />
+        </div>
       </Card>
     </div>
   );

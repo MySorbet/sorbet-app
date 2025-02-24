@@ -101,6 +101,7 @@
 }
 
 @layer utilities {
+
   /* Prevents a horizontal layout shift (for fixed elements) when radix modals are open */
   /* Use this on your fixed positioned elements that are affected by the shift */
   /* See https://github.com/radix-ui/primitives/discussions/1586#discussioncomment-6641424 */
@@ -120,4 +121,10 @@
     -moz-appearance: textfield !important;
     appearance: textfield !important;
   }
+}
+
+/* Print invoices at A4 size */
+@page {
+  size: A4;
+  scale: 100%;
 }

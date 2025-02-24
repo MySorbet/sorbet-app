@@ -77,11 +77,9 @@ export const PublicInvoice = ({
             <Skeleton className='h-[800px] w-[800px]' />
           ) : (
             invoice && (
-              <InvoiceDocument
-                invoice={invoice}
-                ref={contentRef}
-                className='shadow-invoice'
-              />
+              <div className='shadow-invoice'>
+                <InvoiceDocument invoice={invoice} ref={contentRef} />
+              </div>
             )
           )}
         </Card>

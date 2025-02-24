@@ -36,7 +36,8 @@ export const InvoiceDocument = forwardRef<
   return (
     <div
       className={cn(
-        'mx-auto min-w-[800px] max-w-4xl rounded-2xl bg-white p-16',
+        'mx-auto w-[21cm] rounded-2xl bg-white p-16',
+        // 'min-h-[29.7cm]', // Note: Use this if you want A4 height
         className
       )}
       ref={ref}
