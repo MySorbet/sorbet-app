@@ -24,7 +24,7 @@ import { useClients } from '../../hooks/use-clients';
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { isInTheFuture } from '../../schema';
 import { ClientCard } from '../client-card/client-card';
-import { ClientSheet } from './client-sheet';
+import { ClientSheet } from '../client-card/client-sheet';
 import { ItemsCard } from './items-card';
 
 /** "New invoice" section of the invoice controls */
