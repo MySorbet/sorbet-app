@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, Copy06 } from '@untitled-ui/icons-react';
+import { CircleCheck, Copy } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
 
 import useCopy from '@/components/common/copy-button/use-copy';
@@ -46,16 +46,16 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
       {...props}
     >
       {isCopied ? (
-        <CheckCircle
+        <CircleCheck
           className={cn(
-            'animate-in zoom-in-0 size-4 p-0 text-green-600',
+            'animate-in zoom-in-0 p-0 text-green-600',
             checkIconClassName
           )}
         />
       ) : (
-        <Copy06
+        <Copy
           className={cn(
-            'text-primary size-4 p-0 transition-transform group-hover:scale-110',
+            'text-primary p-0 transition-transform group-hover:scale-110',
             !isFirstRender.current && 'animate-in zoom-in-0',
             copyIconClassName
           )}

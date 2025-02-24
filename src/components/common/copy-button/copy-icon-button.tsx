@@ -1,4 +1,4 @@
-import { CheckCircle, Copy06 } from '@untitled-ui/icons-react';
+import { CircleCheck, Copy } from 'lucide-react';
 import React, { useEffect, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -38,16 +38,16 @@ export const CopyIconButton: React.FC<CopyIconButtonProps> = ({
       disabled={isCopied}
     >
       {isCopied ? (
-        <CheckCircle
+        <CircleCheck
           className={cn(
-            'animate-in zoom-in-0 size-3 p-0 text-green-500',
+            'animate-in zoom-in-0 p-0 text-green-500',
             checkIconClassName
           )}
         />
       ) : (
-        <Copy06
+        <Copy
           className={cn(
-            'text-muted-foreground size-3 p-0',
+            'text-muted-foreground p-0',
             !isFirstRender.current && 'animate-in zoom-in-0',
             copyIconClassName
           )}
