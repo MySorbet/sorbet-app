@@ -6,11 +6,6 @@ import { cn } from '@/lib/utils';
 import { AcceptedPaymentMethod, Invoice, InvoiceForm } from '../schema';
 import { calculateSubtotalTaxAndTotal, formatDate } from '../utils';
 
-const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
-  usdc: 'USDC',
-  usd: 'ACH / Wire',
-};
-
 //  TODO: Make sure this matches new designs
 
 /**
@@ -18,7 +13,7 @@ const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
  *
  * Can accept either an
  *
- * - `InvoiceFormData` object (in the case you use it to review details). In this
+ * - `InvoiceForm` object (in the case you use it to live render the invoice form). In this
  * case, the `totalAmount` will be calculated on the frontend by totalling the items.
  *
  * - Or an `Invoice` object (in the case you use it to display a finalized invoice). In this
@@ -173,3 +168,9 @@ export const InvoiceDocument = forwardRef<
     </div>
   );
 });
+
+/** Map all payment methods to their display name for the invoice document */
+const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
+  usdc: 'USDC',
+  usd: 'ACH / Wire',
+};
