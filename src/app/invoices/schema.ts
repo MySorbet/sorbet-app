@@ -64,39 +64,41 @@ const paymentMethodsSchema = z.object({
 });
 
 /** Schema for the data of an invoice form */
-export const invoiceFormSchema = z.object({
-  // TODO: left as toName and toEmail for backwards compatibility. replace with client
-  toName: invoiceFormStringValidator('Name'),
-  toEmail: invoiceFormStringValidator('Email').email({
-    message: 'Must be a valid email address',
-  }),
-
-  items: z.array(InvoiceItemSchema),
-  invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
-    async (invoiceNumber) => {
-      // No need to call the API for empty strings
-      if (!invoiceNumber) return true;
-      const { isAvailable } = await checkInvoiceNumber(invoiceNumber);
-      return isAvailable;
-    },
-    // TODO: can we make a recommendation from the error state?
-    { message: "You've already used this invoice number" }
-  ),
-  tax: z.coerce.number().min(0).max(100).optional(),
-  issueDate: z
-    .date({ required_error: 'An issue date is required.' })
-    .refine(isInTheFuture, {
-      message: 'Issue date must be today or a future date.',
+export const invoiceFormSchema = z
+  .object({
+    // TODO: left as toName and toEmail for backwards compatibility. replace with client
+    toName: invoiceFormStringValidator('Name'),
+    toEmail: invoiceFormStringValidator('Email').email({
+      message: 'Must be a valid email address',
     }),
-  dueDate: z
-    .date({ required_error: 'A due date is required.' })
-    .refine(isInTheFuture, {
-      message: 'Due date must be a future date',
-    }),
-  memo: z.string().max(800, 'Memo must be less than 800 characters').optional(), // Note: this max should match backend validation
-  ...yourInfoSchema.shape,
-  ...paymentMethodsSchema.shape,
-});
+    items: z.array(InvoiceItemSchema),
+    invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
+      async (invoiceNumber) => {
+        // No need to call the API for empty strings
+        if (!invoiceNumber) return true;
+        const { isAvailable } = await checkInvoiceNumber(invoiceNumber);
+        return isAvailable;
+      },
+      { message: "You've already used this invoice number" }
+    ),
+    tax: z.coerce.number().min(0).max(100).optional(),
+    issueDate: z
+      .date({ required_error: 'An issue date is required.' })
+      .refine(isInTheFuture, {
+        message: 'Issue date must be today or a future date.',
+      }),
+    dueDate: z
+      .date({ required_error: 'A due date is required.' })
+      .refine(isInTheFuture, {
+        message: 'Due date must be a future date',
+      }),
+    memo: z
+      .string()
+      .max(800, 'Memo must be less than 800 characters')
+      .optional(),
+  })
+  .extend(yourInfoSchema.shape)
+  .extend(paymentMethodsSchema.shape);
 
 export type InvoiceForm = z.infer<typeof invoiceFormSchema>;
 

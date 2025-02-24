@@ -1,3 +1,4 @@
+import { kebabCase } from 'lodash';
 import { Info, LockKeyhole } from 'lucide-react';
 import { forwardRef } from 'react';
 
@@ -128,13 +129,13 @@ const PaymentMethod = ({
           checked={checked}
           onCheckedChange={onCheckedChange}
           disabled={disabled}
-          id={title}
+          id={kebabCase(title)}
           className='mt-2'
         />
       )}
       <div className='flex flex-col gap-2 pb-3 pr-3 pt-1'>
         <div className='flex w-full items-center gap-1'>
-          <Label className='text-sm font-medium' htmlFor={title}>
+          <Label className='text-sm font-medium' htmlFor={kebabCase(title)}>
             {title}
           </Label>
           {tooltip && (

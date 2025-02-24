@@ -26,19 +26,25 @@ export const CreateInvoice = ({
   // Form lives at the top level. Controls access this form via context
   const form = useForm<InvoiceForm>({
     resolver: zodResolver(invoiceFormSchema),
-    values: prefills,
-    defaultValues: defaultInvoiceValues,
+    defaultValues: {
+      ...defaultInvoiceValues,
+      ...prefills,
+    },
     mode: 'all',
   });
 
+  const { isValid } = form.formState;
+
   // Curry our callback with RHF's handleSubmit
-  const handleSubmit = form.handleSubmit((data) => onCreate?.(data));
+  const onSubmit = form.handleSubmit((data) => {
+    onCreate?.(data);
+  });
 
-  // For now, just call the submit handler
-  const handleSaveDraft = () => handleSubmit();
+  // Call the submit handler by executing the returned function
+  const handleSaveDraft = () => onSubmit();
 
-  // For now, just call the submit handler
-  const handleCreateInvoice = () => handleSubmit();
+  // Call the submit handler by executing the returned function
+  const handleCreateInvoice = () => onSubmit();
 
   return (
     <Form {...form}>
@@ -48,11 +54,12 @@ export const CreateInvoice = ({
           onSaveDraft={handleSaveDraft}
           onCreateInvoice={handleCreateInvoice}
           // TODO: Disable create invoice if form is invalid
+          disabled={!isValid}
         />
-        <form onSubmit={handleSubmit} className='flex w-full flex-1 gap-8 p-6'>
+        <form onSubmit={onSubmit} className='flex w-full flex-1 gap-8 p-6'>
           <Card className='flex flex-1 items-center justify-center'>
             <InvoiceDocument
-              invoice={form.getValues()}
+              invoice={form.watch()}
               className='shadow-invoice m-4'
             />
           </Card>

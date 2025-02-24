@@ -18,7 +18,7 @@ export const CreateInvoiceHeader = ({
 }) => {
   return (
     <InvoiceHeader onClose={onClose} className={className}>
-      <div className='ml-auto [&>*+*]:border-l-0'>
+      {/* <div className='ml-auto [&>*+*]:border-l-0'>
         <Button
           variant='outline'
           className='rounded-none font-semibold first:rounded-l-md last:rounded-r-md'
@@ -26,16 +26,17 @@ export const CreateInvoiceHeader = ({
           disabled={disabled}
         >
           Save as draft
-        </Button>
-        <Button
-          variant='sorbet'
-          className='rounded-none first:rounded-l-md last:rounded-r-md'
-          onClick={onCreateInvoice}
-          disabled={disabled}
-        >
-          Create invoice
-        </Button>
-      </div>
+        </Button> */}
+      <Button
+        variant='sorbet'
+        // className='rounded-none first:rounded-l-md last:rounded-r-md'
+        className='ml-auto'
+        onClick={onCreateInvoice}
+        disabled={disabled}
+      >
+        Create invoice
+      </Button>
+      {/* </div> */}
     </InvoiceHeader>
   );
 };
