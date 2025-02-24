@@ -5,7 +5,7 @@ import { sampleInvoices } from '@/api/invoices/sample-invoices';
 import { PublicInvoice } from './public-invoice';
 
 const meta = {
-  title: 'Invoices/V2/PublicInvoice',
+  title: 'Invoices/PublicInvoice',
   component: PublicInvoice,
   parameters: {
     layout: 'fullscreen',

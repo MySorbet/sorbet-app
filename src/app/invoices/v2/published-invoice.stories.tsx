@@ -7,7 +7,7 @@ import { PublishedInvoice } from './published-invoice';
 type Story = StoryObj<typeof PublishedInvoice>;
 
 const meta = {
-  title: 'Invoices/V2/PublishedInvoice',
+  title: 'Invoices/PublishedInvoice',
   component: PublishedInvoice,
   parameters: {
     layout: 'fullscreen',

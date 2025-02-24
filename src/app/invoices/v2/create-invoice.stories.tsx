@@ -7,7 +7,7 @@ import { CreateInvoice } from './create-invoice';
 import { InvoiceForm } from './schema';
 
 const meta = {
-  title: 'Invoices/V2/CreateInvoice',
+  title: 'Invoices/CreateInvoice',
   component: CreateInvoice,
   parameters: {
     layout: 'fullscreen',

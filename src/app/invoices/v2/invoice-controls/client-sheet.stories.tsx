@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ClientSheet } from './client-sheet';
 
 const meta = {
-  title: 'Invoices/V2/ClientSheet',
+  title: 'Invoices/ClientSheet',
   component: ClientSheet,
   parameters: {
     layout: 'centered',

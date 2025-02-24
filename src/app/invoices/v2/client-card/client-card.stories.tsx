@@ -11,7 +11,7 @@ const sampleClients: Client[] = [
 ];
 
 const meta = {
-  title: 'Invoices/v2/ClientCard',
+  title: 'Invoices/ClientCard',
   component: ClientCard,
   parameters: {
     layout: 'centered',

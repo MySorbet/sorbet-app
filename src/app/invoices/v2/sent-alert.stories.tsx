@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { SentAlert } from './sent-alert';
 
 const meta = {
-  title: 'Invoices/V2/SentAlert',
+  title: 'Invoices/SentAlert',
   component: SentAlert,
   parameters: {
     layout: 'centered',

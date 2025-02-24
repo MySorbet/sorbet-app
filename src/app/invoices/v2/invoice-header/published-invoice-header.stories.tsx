@@ -6,7 +6,7 @@ import { PublishedInvoiceHeader } from './published-invoice-header';
 type Story = StoryObj<typeof PublishedInvoiceHeader>;
 
 const meta = {
-  title: 'Invoices/V2/PublishedInvoiceHeader',
+  title: 'Invoices/PublishedInvoiceHeader',
   component: PublishedInvoiceHeader,
   parameters: {
     layout: 'fullscreen',

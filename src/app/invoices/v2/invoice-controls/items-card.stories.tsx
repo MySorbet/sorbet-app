@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { ItemsCard } from './items-card';
 
 const meta = {
-  title: 'Invoices/v2/ItemsCard',
+  title: 'Invoices/ItemsCard',
   component: ItemsCard,
   parameters: {
     layout: 'centered',

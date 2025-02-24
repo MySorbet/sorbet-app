@@ -6,7 +6,7 @@ import { PaymentTab } from './payment-tab';
 type Story = StoryObj<typeof PaymentTab>;
 
 const meta = {
-  title: 'Invoices/V2/PaymentTab',
+  title: 'Invoices/PaymentTab',
   component: PaymentTab,
   parameters: {
     layout: 'centered',

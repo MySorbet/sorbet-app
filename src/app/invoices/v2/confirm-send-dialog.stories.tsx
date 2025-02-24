@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ConfirmSendDialog } from './confirm-send-dialog';
 
 const meta = {
-  title: 'Invoices/V2/ConfirmSendDialog',
+  title: 'Invoices/ConfirmSendDialog',
   component: ConfirmSendDialog,
   parameters: {
     layout: 'centered',

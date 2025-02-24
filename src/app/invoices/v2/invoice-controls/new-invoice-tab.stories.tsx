@@ -5,13 +5,13 @@ import { InvoiceFormDecorator } from './invoice-form-decorator';
 import { NewInvoiceTab } from './new-invoice-tab';
 
 const meta = {
-  title: 'Invoices/V2/NewInvoiceTab',
+  title: 'Invoices/NewInvoiceTab',
   component: NewInvoiceTab,
   parameters: {
     layout: 'centered',
   },
   decorators: [InvoiceFormDecorator],
-} satisfies Meta<Story>;
+} satisfies Meta<typeof NewInvoiceTab>;
 
 export default meta;
 type Story = StoryObj<typeof NewInvoiceTab>;

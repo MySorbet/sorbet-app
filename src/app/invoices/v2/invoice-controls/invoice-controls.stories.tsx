@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { InvoiceControls } from './invoice-controls';
 
 const meta = {
-  title: 'Invoices/V2/InvoiceControls',
+  title: 'Invoices/InvoiceControls',
   component: InvoiceControls,
   parameters: {
     layout: 'centered',
