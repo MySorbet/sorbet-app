@@ -1,6 +1,7 @@
 import { CornerDownRight } from '@untitled-ui/icons-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { BadgeDollarSign, Info } from 'lucide-react';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { FC } from 'react';
 
 import { ACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
@@ -22,6 +23,7 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Tooltip,
   TooltipContent,
@@ -51,34 +53,101 @@ export const ClientPaymentCard = ({
   account?: ACHWireDetails;
   dueDate?: Date;
 }) => {
+  const [selectedTab, setSelectedTab] = useState<
+    AcceptedPaymentMethod | undefined
+  >('usdc');
+  const handleTabChange = (value: string) => {
+    setSelectedTab(value as AcceptedPaymentMethod);
+  };
+
   const isLoading = !dueDate;
-  const type: AcceptedPaymentMethod = 'usd';
   const title = `Payment due by ${formatDate(dueDate)}`;
   const description =
-    // @ts-expect-error TODO: Fix this
-    type === 'usdc' ? 'Send USDC on Base network' : 'Transfer via ACH/Wire';
+    selectedTab === 'usdc'
+      ? 'Send USDC on Base network'
+      : 'Transfer via ACH/Wire';
 
-  // TODO: Conditional tabs
+  const hideUSDC = Boolean(!isLoading && !address && account);
+  const hideUSD = Boolean(!isLoading && address && !account);
+
+  // If one of the payment methods is hidden,
+  // set the selected tab to the other payment method
+  useEffect(() => {
+    if (hideUSDC) {
+      setSelectedTab('usd');
+    }
+    if (hideUSD) {
+      setSelectedTab('usdc');
+    }
+  }, [hideUSDC, hideUSD]);
 
   return (
-    <Card>
-      <CardHeader className='bg-primary-foreground space-y-0 rounded-t-md px-4 py-6'>
-        {isLoading ? (
-          <div className='space-y-2'>
-            <Skeleton variant='darker' className='h-5 w-40' />
-            <Skeleton variant='darker' className='h-4 w-60' />
-          </div>
-        ) : (
-          <>
-            <CardTitle className='text-base font-semibold'>{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </>
-        )}
-      </CardHeader>
-      <CardContent className='p-3'>
-        {address && <PaymentMethodUSDC address={address} />}
-        {account && <PaymentMethodUSD account={account} />}
-      </CardContent>
+    <Card className='max-w-lg'>
+      <Tabs
+        defaultValue={selectedTab}
+        value={selectedTab}
+        onValueChange={handleTabChange}
+        className='w-full'
+      >
+        <TabsList className='w-full justify-around rounded-b-none'>
+          {!hideUSDC && (
+            <TabsTrigger
+              className='w-1/2'
+              value='usdc'
+              disabled={isLoading || hideUSD}
+            >
+              Pay USDC
+            </TabsTrigger>
+          )}
+          {!hideUSD && (
+            <TabsTrigger
+              className='w-1/2'
+              value='usd'
+              disabled={isLoading || hideUSDC}
+            >
+              Pay via ACH/Wire
+            </TabsTrigger>
+          )}
+        </TabsList>
+        <CardHeader className='bg-primary-foreground space-y-0 px-4 py-6'>
+          {isLoading ? (
+            <div className='space-y-2'>
+              <Skeleton variant='darker' className='h-5 w-40' />
+              <Skeleton variant='darker' className='h-4 w-60' />
+            </div>
+          ) : (
+            <>
+              <CardTitle className='text-base font-semibold'>{title}</CardTitle>
+              <AnimatePresence mode='wait'>
+                <motion.div
+                  key={description}
+                  initial={{ opacity: 0, x: 4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -4 }}
+                  transition={{ duration: 0.075 }} // Half the duration of the slide-in animation doubled with wait mode
+                >
+                  <CardDescription>{description}</CardDescription>
+                </motion.div>
+              </AnimatePresence>
+            </>
+          )}
+        </CardHeader>
+        <CardContent className='p-3'>
+          {isLoading && <PaymentMethodSkeleton />}
+          <TabsContent
+            value='usdc'
+            className='animate-in fade-in-0 slide-in-from-top-1'
+          >
+            {address && <PaymentMethodUSDC address={address} />}
+          </TabsContent>
+          <TabsContent
+            value='usd'
+            className='animate-in fade-in-0 slide-in-from-top-1'
+          >
+            {account && <PaymentMethodUSD account={account} />}
+          </TabsContent>
+        </CardContent>
+      </Tabs>
     </Card>
   );
 };
@@ -91,10 +160,9 @@ const PaymentMethod = ({
   children,
   Icon,
 }: {
-  title: string;
+  title: React.ReactNode;
   tooltip?: string;
   timing?: string;
-  loading?: boolean;
   children?: React.ReactNode;
   Icon: React.ElementType;
 }) => {
@@ -104,9 +172,7 @@ const PaymentMethod = ({
       <div className='flex w-full flex-col gap-2 pb-3 pr-3 pt-1'>
         <div className='flex w-full items-center gap-1'>
           <Icon className='size-6 shrink-0' />
-          <Label className='text-sm font-medium' htmlFor={title}>
-            {title}
-          </Label>
+          <Label className='text-sm font-medium'>{title}</Label>
           {tooltip && (
             <TooltipProvider>
               <Tooltip>
@@ -126,6 +192,15 @@ const PaymentMethod = ({
         {children}
       </div>
     </div>
+  );
+};
+
+const PaymentMethodSkeleton = () => {
+  return (
+    <PaymentMethod title={<Skeleton className='h-5 w-40' />} Icon={Skeleton}>
+      <Skeleton className='h-60 w-full' />
+      <Skeleton className='h-20 w-full' />
+    </PaymentMethod>
   );
 };
 

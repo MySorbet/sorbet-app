@@ -32,7 +32,7 @@ export type ACHWireDetails = {
   };
 };
 
-const mapToACHWireDetails = (
+export const mapToACHWireDetails = (
   instructions: SourceDepositInstructions
 ): ACHWireDetails => ({
   routingNumber: instructions.bank_routing_number,
