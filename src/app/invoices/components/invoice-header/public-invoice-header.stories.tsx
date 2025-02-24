@@ -14,9 +14,7 @@ const meta = {
   args: {
     from: 'John Doe',
     onDownload: fn(),
-    onSignUp: fn(),
   },
-  argTypes: {},
 } satisfies Meta<typeof PublicInvoiceHeader>;
 
 export default meta;

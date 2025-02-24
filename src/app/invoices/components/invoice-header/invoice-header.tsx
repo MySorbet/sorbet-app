@@ -21,7 +21,7 @@ export const InvoiceHeader = ({
   return (
     <div
       className={cn(
-        'flex w-full items-center justify-between gap-2 px-4 py-2',
+        'flex w-full items-center justify-between gap-2 px-6 py-3',
         className
       )}
     >

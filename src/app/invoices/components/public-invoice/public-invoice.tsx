@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
@@ -26,7 +25,6 @@ export const PublicInvoice = ({
   isLoading?: boolean;
   isError?: boolean;
 }) => {
-  const router = useRouter();
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -68,11 +66,8 @@ export const PublicInvoice = ({
       <PublicInvoiceHeader
         from={invoice?.fromName}
         onDownload={reactToPrintFn}
-        onSignUp={() => {
-          router.push('/signup');
-        }}
       />
-      <div className='flex flex-1 gap-6 px-4 py-6'>
+      <div className='flex flex-1 gap-6 p-6'>
         <Card className='flex flex-1 flex-col items-center justify-center gap-6 p-6'>
           {isLoading ? (
             <Skeleton className='size-[21cm]' />

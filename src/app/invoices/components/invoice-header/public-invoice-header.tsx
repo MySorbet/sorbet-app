@@ -1,4 +1,5 @@
 import { Download } from 'lucide-react';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,11 +13,9 @@ import { InvoiceHeader } from './invoice-header';
 export const PublicInvoiceHeader = ({
   from,
   onDownload,
-  onSignUp,
 }: {
   from?: string;
   onDownload?: () => void;
-  onSignUp?: () => void;
 }) => {
   const isLoading = !from;
   return (
@@ -32,8 +31,8 @@ export const PublicInvoiceHeader = ({
         <Button variant='outline' onClick={onDownload} disabled={isLoading}>
           <Download className='mr-2 size-4' /> Download
         </Button>
-        <Button variant='outline' onClick={onSignUp}>
-          Sign up
+        <Button variant='outline' asChild>
+          <Link href='/signup'>Sign up</Link>
         </Button>
       </div>
     </InvoiceHeader>

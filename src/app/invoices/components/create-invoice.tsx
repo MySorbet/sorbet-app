@@ -57,7 +57,7 @@ export const CreateInvoice = ({
           // TODO: Disable create invoice if form is invalid
           disabled={!isValid}
         />
-        <form onSubmit={onSubmit} className='flex w-full flex-1 gap-8 p-6'>
+        <form onSubmit={onSubmit} className='flex w-full flex-1 gap-6 p-6'>
           <Card className='flex flex-1 items-center justify-center'>
             <InvoiceDocumentShell>
               <InvoiceDocument invoice={form.watch()} />
