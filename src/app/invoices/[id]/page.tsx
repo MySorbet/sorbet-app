@@ -18,10 +18,6 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
       // isError={isError}
     />
   ) : (
-    <PublicInvoice
-      invoice={data}
-      // isLoading={isLoading}
-      // isError={isError}
-    />
+    <PublicInvoice invoice={data} isLoading={isLoading} isError={isError} />
   );
 }

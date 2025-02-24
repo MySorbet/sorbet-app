@@ -1,11 +1,12 @@
 import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
-import { InvoiceStatus } from '../utils';
-import { InvoiceStatusBadge } from './dashboard/invoice-status-badge';
+import { InvoiceStatus } from '../../utils';
+import { InvoiceStatusBadge } from '../dashboard/invoice-status-badge';
 
 export type InvoiceReceiptProps = {
   /** InvoiceReceipt can be used for paid & cancelled invoices, or an error state (in the case the invoice is not found) */
@@ -13,11 +14,15 @@ export type InvoiceReceiptProps = {
   className?: string;
 };
 
+/**
+ * Invoice receipt from invoice 1.0 implementation.
+ * Jerryrigged to additionally display a not found state.
+ */
 export const InvoiceReceipt = ({ status, className }: InvoiceReceiptProps) => {
   return (
-    <div
+    <Card
       className={cn(
-        'flex w-full max-w-[800px] flex-col items-center justify-center gap-16 rounded-2xl bg-white p-16',
+        'flex w-full max-w-[800px] flex-col items-center justify-center gap-16 rounded-2xl p-16',
         className
       )}
     >
@@ -66,6 +71,6 @@ export const InvoiceReceipt = ({ status, className }: InvoiceReceiptProps) => {
           </a>
         </Button>
       </div>
-    </div>
+    </Card>
   );
 };

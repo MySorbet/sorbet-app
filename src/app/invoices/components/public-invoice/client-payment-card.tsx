@@ -37,6 +37,8 @@ import { formatDate } from '../../utils';
 
 /**
  *  Renders payment details for the client to pay the invoice
+ *  If `dueDate` is omitted, the payment card will be a loading state
+ *
  *  Pass a wallet address to render the USDC payment method
  *  Pass a bank account to render the USD payment method
  */
@@ -47,21 +49,31 @@ export const ClientPaymentCard = ({
 }: {
   address?: string;
   account?: ACHWireDetails;
-  dueDate: Date;
+  dueDate?: Date;
 }) => {
+  const isLoading = !dueDate;
   const type: AcceptedPaymentMethod = 'usd';
   const title = `Payment due by ${formatDate(dueDate)}`;
   const description =
     // @ts-expect-error TODO: Fix this
     type === 'usdc' ? 'Send USDC on Base network' : 'Transfer via ACH/Wire';
 
-  // TODO: Conditional tabs (if design approves?)
+  // TODO: Conditional tabs
 
   return (
     <Card>
       <CardHeader className='bg-primary-foreground space-y-0 rounded-t-md px-4 py-6'>
-        <CardTitle className='text-base font-semibold'>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        {isLoading ? (
+          <div className='space-y-2'>
+            <Skeleton variant='darker' className='h-5 w-40' />
+            <Skeleton variant='darker' className='h-4 w-60' />
+          </div>
+        ) : (
+          <>
+            <CardTitle className='text-base font-semibold'>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </>
+        )}
       </CardHeader>
       <CardContent className='p-3'>
         {address && <PaymentMethodUSDC address={address} />}

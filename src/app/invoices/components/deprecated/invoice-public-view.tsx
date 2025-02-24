@@ -15,7 +15,7 @@ import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id'
 
 import { useACHWireDetails } from '../../hooks/use-ach-wire-details';
 import { InvoiceDocument } from '../invoice-document';
-import { InvoiceReceipt } from '../invoice-receipt';
+import { InvoiceReceipt } from '../public-invoice/invoice-receipt';
 import { CreateInvoiceFooter } from './create/create-invoice-footer';
 import { CreateInvoiceHeader } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';

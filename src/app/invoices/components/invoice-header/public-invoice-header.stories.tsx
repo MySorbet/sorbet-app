@@ -22,3 +22,9 @@ const meta = {
 export default meta;
 
 export const Default: Story = {};
+
+export const Loading: Story = {
+  args: {
+    from: undefined,
+  },
+};
