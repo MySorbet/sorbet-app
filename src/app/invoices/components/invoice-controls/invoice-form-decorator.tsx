@@ -8,7 +8,7 @@ import {
   type InvoiceForm,
   defaultInvoiceValues,
   invoiceFormSchema,
-} from '../schema';
+} from '../../schema';
 
 export const InvoiceFormDecorator = (Story: StoryFn) => {
   const form = useForm<InvoiceForm>({

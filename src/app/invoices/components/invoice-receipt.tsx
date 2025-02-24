@@ -1,10 +1,10 @@
 import Image from 'next/image';
 
-import { InvoiceStatus } from '@/app/invoices/components/dashboard/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
+import { InvoiceStatus } from '../utils';
 import { InvoiceStatusBadge } from './dashboard/invoice-status-badge';
 
 export type InvoiceReceiptProps = {

@@ -8,8 +8,8 @@ import { SentAlert } from '@/app/invoices/components/sent-alert';
 import { Card } from '@/components/ui/card';
 import { sleep } from '@/lib/utils';
 
+import { Invoice } from '../schema';
 import { InvoiceDocument } from './invoice-document';
-import { Invoice } from './schema';
 
 const sendInvoice = async () => {
   // API call to send invoice not yet implemented

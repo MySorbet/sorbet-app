@@ -32,8 +32,8 @@ import { cn } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
 
 import { useBaseQRCode } from '../../hooks/use-base-qr-code';
-import { formatDate } from '../dashboard/utils';
-import { AcceptedPaymentMethod } from '../schema';
+import { AcceptedPaymentMethod } from '../../schema';
+import { formatDate } from '../../utils';
 
 /**
  *  Renders payment details for the client to pay the invoice

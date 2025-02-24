@@ -3,8 +3,8 @@ import { addDays } from 'date-fns';
 
 import { mockCheckInvoiceNumberHandler } from '@/api/invoices/msw-handlers';
 
+import { InvoiceForm } from '../schema';
 import { CreateInvoice } from './create-invoice';
-import { InvoiceForm } from './schema';
 
 const meta = {
   title: 'Invoices/CreateInvoice',

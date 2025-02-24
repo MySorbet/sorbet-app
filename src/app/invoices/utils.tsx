@@ -1,7 +1,6 @@
 import { isBefore } from 'date-fns';
 
-import { InvoiceItemData } from '../deprecated/create/invoice-details';
-import { InvoiceFormData } from '../deprecated/create/invoice-form-context';
+import { InvoiceForm, InvoiceItem } from './schema';
 
 export const InvoiceStatuses = [
   'Open',
@@ -15,7 +14,7 @@ export type InvoiceStatus = (typeof InvoiceStatuses)[number];
  * Calculates the total monetary value of a list of invoice items.
  * TODO: Consider doing this server side (or doing it here and then checking the value with the server)
  */
-export const calculateTotalAmount = (items: InvoiceItemData[]) => {
+export const calculateTotalAmount = (items: InvoiceItem[]) => {
   return items.reduce((acc, item) => acc + item.amount * item.quantity, 0);
 };
 
@@ -26,7 +25,7 @@ export const calculateTotalAmount = (items: InvoiceItemData[]) => {
  * @returns An object containing the subtotal, tax amount, and total amount.
  */
 export const calculateSubtotalTaxAndTotal = (
-  invoice: Pick<InvoiceFormData, 'items' | 'tax'>
+  invoice: Pick<InvoiceForm, 'items' | 'tax'>
 ) => {
   const subtotal = calculateTotalAmount(invoice.items ?? []);
   const taxAmount = invoice.tax ? subtotal * (invoice.tax / 100) : 0;

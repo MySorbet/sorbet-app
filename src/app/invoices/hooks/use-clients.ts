@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { sleep } from '@/lib/utils';
 
-import { Client } from '../components/schema';
+import { Client } from '../schema';
 import { useInvoiceForm } from './use-invoice-form';
 
 // TODO: Get clients from backend

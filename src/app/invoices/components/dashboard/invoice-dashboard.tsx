@@ -10,11 +10,11 @@ import { useCancelInvoice } from '../../hooks/use-cancel-invoice';
 import { useInvoicePrinter } from '../../hooks/use-invoice-printer';
 import { useOpenInvoice } from '../../hooks/use-open-invoice';
 import { usePayInvoice } from '../../hooks/use-pay-invoice';
-import { Invoice } from '../schema';
+import { Invoice } from '../../schema';
+import { checkOverdue, InvoiceStatus } from '../../utils';
 import InvoiceSheet from './invoice-sheet';
 import { InvoiceTable } from './invoice-table';
 import SummaryCard from './summary-card';
-import { checkOverdue, InvoiceStatus } from './utils';
 
 type InvoiceDashboardProps = {
   invoices: Invoice[];

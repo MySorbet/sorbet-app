@@ -2,8 +2,7 @@ import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { InvoiceStatus } from '@/app/invoices/components/dashboard/utils';
-
+import { InvoiceStatus } from '../../utils';
 import { InvoiceStatusBadge } from './invoice-status-badge';
 
 const meta = {

@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 
-import { Client, emptyAddress } from '../schema';
+import { Client, emptyAddress } from '../../schema';
 
 /**
  * Sheet allowing a client to be added or edited.

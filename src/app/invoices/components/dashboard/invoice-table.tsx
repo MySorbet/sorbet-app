@@ -12,9 +12,9 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { Invoice } from '../schema';
+import { Invoice } from '../../schema';
+import { checkOverdue, formatDate, InvoiceStatus } from '../../utils';
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { checkOverdue, formatDate, InvoiceStatus } from './utils';
 
 // TODO: Look into text-secondary-foreground matching design
 const InvoiceTableHead = ({

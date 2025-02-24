@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { invoiceFormStringValidator } from '../../schema';
+import { invoiceFormStringValidator } from '../../../schema';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';

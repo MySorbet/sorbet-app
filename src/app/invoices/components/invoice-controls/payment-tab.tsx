@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
-import { type AcceptedPaymentMethod } from '../schema';
+import { type AcceptedPaymentMethod } from '../../schema';
 
 // TODO: Use purple checks either with theme or sorbet variant
 /** Renders the payment tab allowing the user to choose which payment methods to accept */

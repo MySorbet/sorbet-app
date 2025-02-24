@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { Invoice, InvoiceForm } from '@/app/invoices/components/schema';
+import { Invoice, InvoiceForm } from '@/app/invoices/schema';
 import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../withAuthHeader';

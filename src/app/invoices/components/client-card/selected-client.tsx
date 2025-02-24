@@ -4,7 +4,7 @@ import { FilePenLine, SquareUser, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
-import { Client } from '../schema';
+import { Client } from '../../schema';
 
 /** Render a clients name, email with edit and delete buttons */
 export const SelectedClient = ({

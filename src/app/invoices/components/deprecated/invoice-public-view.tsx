@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-import { Invoice } from '@/app/invoices/components/schema';
+import { Invoice } from '@/app/invoices/schema';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';

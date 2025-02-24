@@ -9,8 +9,8 @@ import { Card } from '@/components/ui/card';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 import { cn } from '@/lib/utils';
 
+import { Invoice } from '../../schema';
 import { PublicInvoiceHeader } from '../invoice-header/public-invoice-header';
-import { Invoice } from '../schema';
 import { ClientPaymentCard } from './client-payment-card';
 
 /** Renders an invoice and payment options for a client to pay the invoice */

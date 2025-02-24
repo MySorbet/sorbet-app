@@ -2,8 +2,8 @@ import { forwardRef } from 'react';
 
 import { formatCurrency } from '@/lib/currency';
 
-import { calculateSubtotalTaxAndTotal, formatDate } from '../dashboard/utils';
-import { Invoice } from '../schema';
+import { Invoice } from '../../schema';
+import { calculateSubtotalTaxAndTotal, formatDate } from '../../utils';
 import { InvoiceFormData } from './create/invoice-form-context';
 /**
  * Render a PDF-like document displaying the invoice details.
@@ -20,6 +20,7 @@ export const InvoiceDocument = forwardRef<
   HTMLDivElement,
   { invoice: InvoiceFormData | Invoice }
 >(({ invoice }, ref) => {
+  // @ts-expect-error - this component is deprecated and just kept for reference
   const { taxAmount, total } = calculateSubtotalTaxAndTotal(invoice);
   // Total amount is dependent on which type of invoice we get
   // If this is full invoice from the server, the amount has been calculated already

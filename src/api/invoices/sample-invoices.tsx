@@ -1,6 +1,6 @@
 import { addDays, subDays } from 'date-fns';
 
-import { Invoice } from '@/app/invoices/components/schema';
+import { Invoice } from '@/app/invoices/schema';
 
 /**
  * Set of mock data for invoices. For use in development only.

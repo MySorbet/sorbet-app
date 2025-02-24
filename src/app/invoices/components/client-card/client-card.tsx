@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { Client } from '../schema';
+import { Client } from '../../schema';
 import { SelectedClient } from './selected-client';
 
 /** Card allow a client to be selected from a list, or to add a new client */

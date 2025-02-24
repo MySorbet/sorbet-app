@@ -1,13 +1,10 @@
 import { forwardRef } from 'react';
 
-import {
-  calculateSubtotalTaxAndTotal,
-  formatDate,
-} from '@/app/invoices/components/dashboard/utils';
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { AcceptedPaymentMethod, InvoiceForm } from './schema';
+import { AcceptedPaymentMethod, InvoiceForm } from '../schema';
+import { calculateSubtotalTaxAndTotal, formatDate } from '../utils';
 
 const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
   usdc: 'USDC',

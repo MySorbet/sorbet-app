@@ -4,10 +4,14 @@ import { useForm } from 'react-hook-form';
 import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 
+import {
+  defaultInvoiceValues,
+  InvoiceForm,
+  invoiceFormSchema,
+} from '../schema';
 import { InvoiceControls } from './invoice-controls/invoice-controls';
 import { InvoiceDocument } from './invoice-document';
 import { CreateInvoiceHeader } from './invoice-header/create-invoice-header';
-import { defaultInvoiceValues, InvoiceForm, invoiceFormSchema } from './schema';
 
 /** Render a WYSIWYG invoice editor with controls for editing the invoice. */
 export const CreateInvoice = ({
