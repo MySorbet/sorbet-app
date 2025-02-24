@@ -6,19 +6,21 @@ import { toast } from 'sonner';
 import { PublishedInvoiceHeader } from '@/app/invoices/components/invoice-header/published-invoice-header';
 import { SentAlert } from '@/app/invoices/components/sent-alert';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { sleep } from '@/lib/utils';
 
 import { Invoice } from '../schema';
 import { InvoiceDocument } from './invoice-document';
-
-const sendInvoice = async () => {
-  // API call to send invoice not yet implemented
-  await sleep(1000);
-  toast('Invoice sending not yet implemented');
-};
+import { InvoiceDocumentShell } from './invoice-document-shell';
 
 /** Render a full page displaying a published invoice */
-export const PublishedInvoice = ({ invoice }: { invoice?: Invoice }) => {
+export const PublishedInvoice = ({
+  invoice,
+  isLoading,
+}: {
+  invoice?: Invoice;
+  isLoading?: boolean;
+}) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
     contentRef,
@@ -31,14 +33,10 @@ export const PublishedInvoice = ({ invoice }: { invoice?: Invoice }) => {
   // For now, set to true since invoices are sent automatically
   const hasSent = true;
 
-  if (!invoice) {
-    return <div>Invoice not found</div>;
-  }
-
   return (
     <div className='flex size-full flex-col'>
       <PublishedInvoiceHeader
-        recipientEmail={invoice.toEmail}
+        recipientEmail={invoice?.toEmail ?? ''}
         stringToCopy={window.location.href}
         onDownload={reactToPrintFn}
         onSend={sendInvoice}
@@ -48,13 +46,28 @@ export const PublishedInvoice = ({ invoice }: { invoice?: Invoice }) => {
         disableSend={hasSent}
       />
       <Card className='m-6 flex flex-1 flex-col items-center justify-center gap-6 p-6'>
-        {hasSent && (
-          <SentAlert recipientEmail={invoice.toEmail} className='w-[21cm]' />
+        {hasSent && invoice && (
+          <SentAlert
+            recipientEmail={invoice?.toEmail ?? ''}
+            className='animate-in fade-in slide-in-from-bottom-1 w-[21cm]'
+          />
         )}
-        <div className='shadow-invoice m-4'>
-          <InvoiceDocument ref={contentRef} invoice={invoice} />
-        </div>
+        {isLoading ? (
+          <Skeleton className='size-[21cm]' />
+        ) : (
+          invoice && (
+            <InvoiceDocumentShell>
+              <InvoiceDocument invoice={invoice} ref={contentRef} />
+            </InvoiceDocumentShell>
+          )
+        )}
       </Card>
     </div>
   );
+};
+
+const sendInvoice = async () => {
+  // TODO: API call to send invoice not yet implemented
+  await sleep(1000);
+  toast('Invoice sending not yet implemented');
 };

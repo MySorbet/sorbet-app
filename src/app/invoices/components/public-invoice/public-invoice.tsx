@@ -11,6 +11,7 @@ import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id'
 import { cn } from '@/lib/utils';
 
 import { Invoice } from '../../schema';
+import { InvoiceDocumentShell } from '../invoice-document-shell';
 import { PublicInvoiceHeader } from '../invoice-header/public-invoice-header';
 import { ClientPaymentCard } from './client-payment-card';
 import { InvoiceReceipt } from './invoice-receipt';
@@ -74,12 +75,12 @@ export const PublicInvoice = ({
       <div className='flex flex-1 gap-6 px-4 py-6'>
         <Card className='flex flex-1 flex-col items-center justify-center gap-6 p-6'>
           {isLoading ? (
-            <Skeleton className='h-[800px] w-[800px]' />
+            <Skeleton className='size-[21cm]' />
           ) : (
             invoice && (
-              <div className='shadow-invoice'>
+              <InvoiceDocumentShell>
                 <InvoiceDocument invoice={invoice} ref={contentRef} />
-              </div>
+              </InvoiceDocumentShell>
             )
           )}
         </Card>

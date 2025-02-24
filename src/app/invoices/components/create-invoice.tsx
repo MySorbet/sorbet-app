@@ -11,6 +11,7 @@ import {
 } from '../schema';
 import { InvoiceControls } from './invoice-controls/invoice-controls';
 import { InvoiceDocument } from './invoice-document';
+import { InvoiceDocumentShell } from './invoice-document-shell';
 import { CreateInvoiceHeader } from './invoice-header/create-invoice-header';
 
 /** Render a WYSIWYG invoice editor with controls for editing the invoice. */
@@ -58,9 +59,9 @@ export const CreateInvoice = ({
         />
         <form onSubmit={onSubmit} className='flex w-full flex-1 gap-8 p-6'>
           <Card className='flex flex-1 items-center justify-center'>
-            <div className='shadow-invoice m-4'>
+            <InvoiceDocumentShell>
               <InvoiceDocument invoice={form.watch()} />
-            </div>
+            </InvoiceDocumentShell>
           </Card>
           <InvoiceControls />
         </form>
