@@ -12,15 +12,9 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
   const isFreelancer = user?.id === data?.userId;
 
   // Let the public invoice page handle rendering the error
-  if (isError) {
-    return (
-      <PublicInvoice invoice={data} isLoading={isLoading} isError={isError} />
-    );
-  }
-
-  return isFreelancer ? (
-    <PublishedInvoice invoice={data} isLoading={isLoading} />
-  ) : (
+  return isError || !isFreelancer ? (
     <PublicInvoice invoice={data} isLoading={isLoading} isError={isError} />
+  ) : (
+    <PublishedInvoice invoice={data} isLoading={isLoading} />
   );
 }
