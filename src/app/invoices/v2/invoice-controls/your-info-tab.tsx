@@ -16,7 +16,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import { useInvoiceForm } from '../hooks/use-invoice-form';
+import { useInvoiceForm } from '../../hooks/use-invoice-form';
 
 /** The "Your info" section of the invoice controls */
 export const YourInfoTab = () => {

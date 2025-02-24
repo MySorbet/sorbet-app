@@ -2,7 +2,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-import { InvoiceDocument } from '@/app/invoices/components/invoice-document';
+import { InvoiceDocument } from '@/app/invoices/components/deprecated/invoice-document';
 
 import { Invoice } from '../v2/schema';
 

@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-import { useInvoiceForm } from '../hooks/use-invoice-form';
+import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { type AcceptedPaymentMethod } from '../schema';
 
 // TODO: Use purple checks either with theme or sorbet variant

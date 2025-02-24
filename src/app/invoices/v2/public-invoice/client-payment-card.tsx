@@ -32,7 +32,7 @@ import { cn } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
 
 import { formatDate } from '../../components/dashboard/utils';
-import { useBaseQRCode } from '../hooks/use-base-qr-code';
+import { useBaseQRCode } from '../../hooks/use-base-qr-code';
 import { AcceptedPaymentMethod } from '../schema';
 
 /**

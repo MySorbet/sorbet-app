@@ -1,7 +1,7 @@
 import { BackButton } from '@/components/common/back-button';
 import { ForwardButton } from '@/components/common/forward-button';
 
-import { InvoiceDocument } from '../../invoice-document';
+import { InvoiceDocument } from '../invoice-document';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
