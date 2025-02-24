@@ -242,7 +242,7 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
     <PaymentMethod
       title='USD Bank'
       Icon={BadgeDollarSign}
-      timing='Arrives in 2-3 days'
+      timing='Arrives in 1-2 days'
       tooltip='Send USD to this bank account to pay this invoice'
     >
       <div className='flex w-full flex-col gap-2'>

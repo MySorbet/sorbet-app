@@ -73,7 +73,7 @@ export const PaymentTab = () => {
         <PaymentMethod
           title='Accept USD payments'
           tooltip='Your free USD account to receive ACH/Wire payments'
-          timing={isVerified ? 'Arrives in 2-3 days' : undefined}
+          timing={isVerified ? 'Arrives in 1-2 days' : undefined}
           locked={!isVerified}
           disabled={false}
           checked={paymentMethods.includes('usd')}
