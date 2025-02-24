@@ -20,7 +20,11 @@ export default function CreateInvoicePage() {
   return (
     <Authenticated>
       <main className='flex w-full flex-col items-center justify-center'>
-        <CreateInvoice onClose={handleClose} onCreate={handleCreate} />
+        <CreateInvoice
+          onClose={handleClose}
+          onCreate={handleCreate}
+          isCreating={isPending}
+        />
       </main>
     </Authenticated>
   );

@@ -41,7 +41,7 @@ export const PublishedInvoice = ({
         onDownload={reactToPrintFn}
         onSend={sendInvoice}
         onClose={() => {
-          router.back();
+          router.push('/invoices');
         }}
         disableSend={hasSent}
       />

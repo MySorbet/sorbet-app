@@ -19,10 +19,12 @@ export const CreateInvoice = ({
   prefills,
   onClose,
   onCreate,
+  isCreating,
 }: {
   prefills?: InvoiceForm;
   onClose?: () => void;
   onCreate?: (invoice: InvoiceForm) => void;
+  isCreating?: boolean;
 }) => {
   // Form lives at the top level. Controls access this form via context
   const form = useForm<InvoiceForm>({
@@ -54,8 +56,8 @@ export const CreateInvoice = ({
           onClose={onClose}
           onSaveDraft={handleSaveDraft}
           onCreateInvoice={handleCreateInvoice}
-          // TODO: Disable create invoice if form is invalid
           disabled={!isValid}
+          isCreating={isCreating}
         />
         <form onSubmit={onSubmit} className='flex w-full flex-1 gap-6 p-6'>
           <Card className='flex flex-1 items-center justify-center'>
