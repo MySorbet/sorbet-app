@@ -5,8 +5,6 @@ import { checkInvoiceNumber } from '@/api/invoices';
 
 import { InvoiceStatus } from './utils';
 
-// TODO: Note there are duplicates of v1 invoice stuff here. At the end of the day, there should only be one
-
 /**
  * Build a zod string validator with a custom error message for use in a RHF FormField
  *
@@ -67,11 +65,12 @@ const paymentMethodsSchema = z.object({
 
 /** Schema for the data of an invoice form */
 export const invoiceFormSchema = z.object({
-  // TODO: This is a temp adapter to work with existing invoice schema. should be replaced with client
+  // TODO: left as toName and toEmail for backwards compatibility. replace with client
   toName: invoiceFormStringValidator('Name'),
   toEmail: invoiceFormStringValidator('Email').email({
     message: 'Must be a valid email address',
   }),
+
   items: z.array(InvoiceItemSchema),
   invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
     async (invoiceNumber) => {

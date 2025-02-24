@@ -20,11 +20,9 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
-import { useClients } from '../../hooks/use-clients';
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { isInTheFuture } from '../../schema';
-import { ClientCard } from '../client-card/client-card';
-import { ClientSheet } from '../client-card/client-sheet';
+import { FakeClientCard } from '../client-card/fake-client-card';
 import { ItemsCard } from './items-card';
 
 /** "New invoice" section of the invoice controls */
@@ -32,44 +30,15 @@ export const NewInvoiceTab = () => {
   const form = useInvoiceForm();
   const { issueDate, dueDate } = form.watch();
 
-  const {
-    clients,
-    isClientSheetOpen,
-    selectedClient,
-    handleClientChange,
-    handleClientSelect,
-    setIsClientSheetOpen,
-    setSelectedClient,
-    isSaving,
-  } = useClients();
-
   return (
     <div className='flex w-full flex-col gap-10'>
-      <ClientCard
-        clients={clients}
-        onClientSelect={handleClientSelect}
-        onAddClient={() => {
-          setSelectedClient(undefined);
-          setIsClientSheetOpen(true);
-        }}
-        selectedClient={selectedClient}
-        onEditClient={() => {
-          setSelectedClient(selectedClient);
-          setIsClientSheetOpen(true);
-        }}
-      />
-      <ClientSheet
-        open={isClientSheetOpen}
-        setOpen={setIsClientSheetOpen}
-        client={selectedClient}
-        onSave={handleClientChange}
-        isSaving={isSaving}
-      />
+      {/* // TODO: Use client card component and hooks instead */}
+      <FakeClientCard />
       <ItemsCard
         items={form.watch('items')}
         onItemsChange={(items) => form.setValue('items', items)}
       />
-      <div className='flex gap-2'>
+      <DualFormFields>
         <FormField
           name='invoiceNumber'
           control={form.control}
@@ -107,8 +76,8 @@ export const NewInvoiceTab = () => {
             </FormItem>
           )}
         />
-      </div>
-      <div className='flex gap-2'>
+      </DualFormFields>
+      <DualFormFields>
         <FormField
           control={form.control}
           name='issueDate'
@@ -143,7 +112,7 @@ export const NewInvoiceTab = () => {
             </FormItem>
           )}
         />
-      </div>
+      </DualFormFields>
       <FormField
         control={form.control}
         name='memo'
@@ -199,5 +168,20 @@ const DatePicker = ({
         />
       </PopoverContent>
     </Popover>
+  );
+};
+
+/** Layout two form fields side by side */
+const DualFormFields = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={cn('flex w-full justify-between gap-2', className)}>
+      {children}
+    </div>
   );
 };
