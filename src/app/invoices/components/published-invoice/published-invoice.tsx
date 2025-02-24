@@ -4,14 +4,14 @@ import { useReactToPrint } from 'react-to-print';
 import { toast } from 'sonner';
 
 import { PublishedInvoiceHeader } from '@/app/invoices/components/invoice-header/published-invoice-header';
-import { SentAlert } from '@/app/invoices/components/sent-alert';
+import { SentAlert } from '@/app/invoices/components/published-invoice/sent-alert';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { sleep } from '@/lib/utils';
 
-import { Invoice } from '../schema';
-import { InvoiceDocument } from './invoice-document';
-import { InvoiceDocumentShell } from './invoice-document-shell';
+import { Invoice } from '../../schema';
+import { InvoiceDocument } from '../invoice-document';
+import { InvoiceDocumentShell } from '../invoice-document-shell';
 
 /** Render a full page displaying a published invoice */
 export const PublishedInvoice = ({

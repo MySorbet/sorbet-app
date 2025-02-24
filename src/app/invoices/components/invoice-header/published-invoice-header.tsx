@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-import { ConfirmSendDialog } from '../confirm-send-dialog';
+import { ConfirmSendDialog } from '../published-invoice/confirm-send-dialog';
 import { InvoiceHeader } from './invoice-header';
 
 /** A group of buttons for actions on a published invoice */

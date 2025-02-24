@@ -3,7 +3,7 @@
 import { useAuth } from '@/hooks';
 
 import { PublicInvoice } from '../components/public-invoice/public-invoice';
-import { PublishedInvoice } from '../components/published-invoice';
+import { PublishedInvoice } from '../components/published-invoice/published-invoice';
 import { useInvoice } from '../hooks/use-invoice';
 
 export default function InvoicePage({ params }: { params: { id: string } }) {

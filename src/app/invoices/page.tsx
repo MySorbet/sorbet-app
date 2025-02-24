@@ -9,7 +9,7 @@ import { useIsMobile } from '@/hooks/use-is-mobile';
 
 import { Authenticated } from '../authenticated';
 import { InvoiceDashboard } from './components/dashboard/invoice-dashboard';
-import { InvoiceDashboardHeader } from './components/invoice-dashboard-header';
+import { InvoiceDashboardHeader } from './components/dashboard/invoice-dashboard-header';
 import { useInvoices } from './hooks/use-invoices';
 
 export default function InvoicesPage() {
