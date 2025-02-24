@@ -21,7 +21,7 @@ export const mockInvoicesHandler = http.get(
  * Just gives the third sample invoice
  */
 export const mockInvoiceHandler = http.get(
-  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/:id`,
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/*`,
   async () => {
     await delay();
     return HttpResponse.json(sampleInvoices[2]);
@@ -33,7 +33,7 @@ export const mockInvoiceHandler = http.get(
  * Return a 404 error
  */
 export const mockInvoiceNotFoundHandler = http.get(
-  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/:id`,
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices/*`,
   async () => {
     await delay();
     return HttpResponse.json(
