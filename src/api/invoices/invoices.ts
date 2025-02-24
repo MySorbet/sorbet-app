@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
-import { CheckInvoiceNumberResponse } from '@/app/invoices/components/dashboard/utils';
-import { Invoice } from '@/app/invoices/v2/schema';
+import { Invoice, InvoiceForm } from '@/app/invoices/v2/schema';
 import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../withAuthHeader';
@@ -13,7 +11,7 @@ import { withAuthHeader } from '../withAuthHeader';
  * @param invoice - The invoice form data to create with
  * @returns The created invoice
  */
-export const createInvoice = async (invoice: InvoiceFormData) => {
+export const createInvoice = async (invoice: InvoiceForm) => {
   const res = await axios.post<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
     invoice,
@@ -92,6 +90,12 @@ export const openInvoice = async (id: string) => {
     await withAuthHeader()
   );
   return res.data;
+};
+
+// Should match the API response from `/invoices/check-number`
+type CheckInvoiceNumberResponse = {
+  isAvailable: boolean;
+  recommendation?: string;
 };
 
 /**

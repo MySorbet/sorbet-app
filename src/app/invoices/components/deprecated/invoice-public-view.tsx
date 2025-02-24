@@ -6,22 +6,22 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { Invoice } from '@/app/invoices/v2/schema';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
-import { useACHWireDetails } from '../hooks/use-ach-wire-details';
+import { useACHWireDetails } from '../../hooks/use-ach-wire-details';
+import { InvoiceDocument } from '../../v2/invoice-document';
+import { InvoiceReceipt } from '../invoice-receipt';
 import { CreateInvoiceFooter } from './create/create-invoice-footer';
 import { CreateInvoiceHeader } from './create/create-invoice-header';
 import { CreateInvoiceShell } from './create/create-invoice-shell';
 import { CreateInvoiceTitle } from './create/create-invoice-title';
-import { Invoice } from './dashboard/utils';
-import { InvoiceDocument } from './invoice-document';
 import { InvoicePayAchWire } from './invoice-pay-ach-wire';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
-import { InvoiceReceipt } from './invoice-receipt';
 import { TimingBadge } from './timing-badge';
 
 type InvoicePublicViewProps = {

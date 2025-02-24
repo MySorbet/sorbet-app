@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 
 import { createInvoice } from '@/api/invoices';
 import { Authenticated } from '@/app/authenticated';
-import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
 
 import { CreateInvoice } from '../v2/create-invoice';
 import { InvoiceForm } from '../v2/schema';
@@ -13,7 +12,7 @@ export default function CreateInvoicePage() {
   const router = useRouter();
   const handleClose = () => router.push('/invoices');
   const handleCreate = async (invoice: InvoiceForm) => {
-    const newInvoice = await createInvoice(adapt(invoice));
+    const newInvoice = await createInvoice(invoice);
     router.push(`/invoices/${newInvoice.id}`);
   };
 
@@ -26,13 +25,4 @@ export default function CreateInvoicePage() {
       </main>
     </Authenticated>
   );
-}
-
-function adapt(invoice: InvoiceForm): InvoiceFormData {
-  return {
-    ...invoice,
-    projectName: '',
-    // @ts-expect-error - temp
-    paymentMethods: undefined,
-  };
 }

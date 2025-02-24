@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { longestMemo, sampleInvoices } from '@/api/invoices/sample-invoices';
-import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
+import { InvoiceFormData } from '@/app/invoices/components/deprecated/create/invoice-form-context';
 
 import { InvoiceDocument } from './invoice-document';
 

@@ -2,12 +2,9 @@ import { forwardRef } from 'react';
 
 import { formatCurrency } from '@/lib/currency';
 
-import { InvoiceFormData } from './create/invoice-form-context';
-import {
-  calculateSubtotalTaxAndTotal,
-  formatDate,
-  Invoice,
-} from './dashboard/utils';
+import { Invoice } from '../v2/schema';
+import { calculateSubtotalTaxAndTotal, formatDate } from './dashboard/utils';
+import { InvoiceFormData } from './deprecated/create/invoice-form-context';
 /**
  * Render a PDF-like document displaying the invoice details.
  *
@@ -67,7 +64,9 @@ export const InvoiceDocument = forwardRef<
               <p className='pt-1 text-xs'>{invoice.toEmail}</p>
             </td>
             <td className='pt-2'>
-              <p className='pt-1 text-xs'>{invoice.projectName}</p>
+              {invoice.projectName && (
+                <p className='pt-1 text-xs'>{invoice.projectName}</p>
+              )}
               <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
             </td>
           </tr>

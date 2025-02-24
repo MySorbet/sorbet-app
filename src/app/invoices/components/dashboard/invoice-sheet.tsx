@@ -21,9 +21,10 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
+import { Invoice } from '../../v2/schema';
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { checkOverdue, Invoice, InvoiceStatus } from './utils';
+import { checkOverdue, InvoiceStatus } from './utils';
 import { formatDate } from './utils';
 
 // TODO: Is there a better scroll solution? Perhaps with sticky header and footer?

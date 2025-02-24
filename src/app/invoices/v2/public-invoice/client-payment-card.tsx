@@ -52,6 +52,7 @@ export const ClientPaymentCard = ({
   const type: AcceptedPaymentMethod = 'usd';
   const title = `Payment due by ${formatDate(dueDate)}`;
   const description =
+    // @ts-expect-error TODO: Fix this
     type === 'usdc' ? 'Send USDC on Base network' : 'Transfer via ACH/Wire';
 
   // TODO: Conditional tabs (if design approves?)

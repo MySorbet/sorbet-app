@@ -1,7 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
+
 import { PublicInvoice } from './public-invoice';
-import { mockInvoice } from '../published-invoice.stories';
 
 const meta = {
   title: 'Invoices/V2/PublicInvoice',
@@ -10,7 +11,7 @@ const meta = {
     layout: 'fullscreen',
   },
   args: {
-    invoice: mockInvoice,
+    invoice: sampleInvoices[0],
   },
 } satisfies Meta<typeof PublicInvoice>;
 

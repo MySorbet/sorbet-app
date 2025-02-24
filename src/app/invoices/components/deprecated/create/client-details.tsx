@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { ForwardButton } from '@/components/common/forward-button';
+import { Stepper } from '@/components/common/stepper';
 import {
   Form,
   FormControl,
@@ -15,14 +17,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
+import { invoiceFormStringValidator } from '../../../v2/schema';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { CreateInvoiceTitle } from './create-invoice-title';
-import { ForwardButton } from './forward-button';
 import { useInvoiceFormContext } from './invoice-form-context';
-import { Stepper } from './stepper';
-import { invoiceFormStringValidator } from './utils';
 
 const formSchema = z.object({
   fromName: invoiceFormStringValidator('Name'),

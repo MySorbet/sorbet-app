@@ -149,4 +149,5 @@ export type Invoice = InvoiceForm & {
   totalAmount: number;
   id: string;
   userId: string;
+  projectName?: string; // backwards compatibility
 };

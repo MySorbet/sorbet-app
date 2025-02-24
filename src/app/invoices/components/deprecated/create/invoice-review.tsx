@@ -1,10 +1,11 @@
-import { InvoiceDocument } from '../invoice-document';
-import { BackButton } from './back-button';
+import { BackButton } from '@/components/common/back-button';
+import { ForwardButton } from '@/components/common/forward-button';
+
+import { InvoiceDocument } from '../../invoice-document';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { CreateInvoiceTitle } from './create-invoice-title';
-import { ForwardButton } from './forward-button';
 import { InvoiceFormData } from './invoice-form-context';
 
 type InvoiceReviewProps = {

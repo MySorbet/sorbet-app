@@ -22,7 +22,7 @@ import useMeasure from 'react-use-measure';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { BaseAlert } from '@/components/common/base-alert';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -41,10 +41,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { env } from '@/lib/env';
-import BaseInProduct from '~/svg/base-in-product.svg';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
-import { BaseAlert } from '@/components/common/base-alert';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */

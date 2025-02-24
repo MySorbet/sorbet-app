@@ -66,7 +66,7 @@ export const PublicInvoice = ({ invoice }: { invoice?: Invoice }) => {
 const FollowButton = () => {
   return (
     <a
-      href={'https://x.com/intent/follow?screen_name=mysorbetxyz'}
+      href='https://x.com/intent/follow?screen_name=mysorbetxyz'
       target='_blank'
       rel='noopener noreferrer'
       className={cn(buttonVariants({ variant: 'ghost' }), 'h-fit self-end')}

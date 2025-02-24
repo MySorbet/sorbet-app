@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 
-import { InvoiceDetails } from '@/app/invoices/components/create/invoice-details';
+import { InvoiceDetails } from '@/app/invoices/components/deprecated/create/invoice-details';
 
-import { useInvoiceNumber } from '../../hooks/use-invoice-number';
+import { useInvoiceNumber } from '../../../hooks/use-invoice-number';
 
 export default function InvoiceDetailsPage() {
   const router = useRouter();

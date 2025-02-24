@@ -9,7 +9,10 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { checkInvoiceNumber } from '@/api/invoices/invoices';
+import { BackButton } from '@/components/common/back-button';
 import { CompactDeleteButton } from '@/components/common/compact-delete-button';
+import { ForwardButton } from '@/components/common/forward-button';
+import { Stepper } from '@/components/common/stepper';
 import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,17 +26,14 @@ import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
-import { calculateSubtotalTaxAndTotal } from '../dashboard/utils';
-import { BackButton } from './back-button';
+import { invoiceFormStringValidator } from '../../../v2/schema';
+import { calculateSubtotalTaxAndTotal } from '../../dashboard/utils';
 import { CreateInvoiceFooter } from './create-invoice-footer';
 import { CreateInvoiceHeader } from './create-invoice-header';
 import { CreateInvoiceShell } from './create-invoice-shell';
 import { CreateInvoiceTitle } from './create-invoice-title';
-import { ForwardButton } from './forward-button';
 import { useInvoiceFormContext } from './invoice-form-context';
 import { LongFormItem } from './long-form-item';
-import { Stepper } from './stepper';
-import { invoiceFormStringValidator } from './utils';
 
 const InvoiceItemDataSchema = z.object({
   name: invoiceFormStringValidator('Item name'),
@@ -51,7 +51,7 @@ const emptyInvoiceItemData: InvoiceItemData = {
 const DEFAULT_TAX_PERCENTAGE = 10;
 
 const formSchema = z.object({
-  projectName: invoiceFormStringValidator('Project name'),
+  projectName: invoiceFormStringValidator('Project name').optional(),
   invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
     async (invoiceNumber) => {
       // No need to call the API for empty strings
@@ -118,7 +118,12 @@ export const InvoiceDetails = ({
   const router = useRouter();
   const handleSubmit = form.handleSubmit((data, event) => {
     event?.preventDefault();
-    const newFormData = { ...formData, ...data, tax: tax ?? undefined };
+    const newFormData = {
+      ...formData,
+      ...data,
+      tax: tax ?? undefined,
+      projectName: data.projectName ?? undefined,
+    };
     onSubmit?.(newFormData);
     router.push(
       `/invoices/create/payment-details${serializeFormData(newFormData)}`

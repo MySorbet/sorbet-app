@@ -1,3 +1,5 @@
+import { Options } from 'qr-code-styling';
+
 import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
 
 const color = '#000000';

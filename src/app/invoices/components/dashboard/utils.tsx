@@ -1,7 +1,7 @@
 import { isBefore } from 'date-fns';
 
-import { InvoiceItemData } from '../create/invoice-details';
-import { InvoiceFormData } from '../create/invoice-form-context';
+import { InvoiceItemData } from '../deprecated/create/invoice-details';
+import { InvoiceFormData } from '../deprecated/create/invoice-form-context';
 
 export const InvoiceStatuses = [
   'Open',
@@ -10,20 +10,6 @@ export const InvoiceStatuses = [
   'Paid',
 ] as const;
 export type InvoiceStatus = (typeof InvoiceStatuses)[number];
-
-// ! Remember to update the knock JSON validation schema if you change this. Otherwise notifications will fail.
-export type Invoice = InvoiceFormData & {
-  status: InvoiceStatus;
-  totalAmount: number;
-  id: string;
-  userId: string;
-};
-
-// Should match the API response from `/invoices/check-number`
-export type CheckInvoiceNumberResponse = {
-  isAvailable: boolean;
-  recommendation?: string;
-};
 
 /**
  * Calculates the total monetary value of a list of invoice items.

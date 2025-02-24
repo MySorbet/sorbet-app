@@ -1,7 +1,7 @@
 import { StoryObj } from '@storybook/react';
 import { Meta } from '@storybook/react';
 
-import { InvoicePayUsdc } from '@/app/invoices/components/invoice-pay-usdc';
+import { InvoicePayUsdc } from './invoice-pay-usdc';
 
 const meta = {
   title: 'Invoices/InvoicePayUsdc',

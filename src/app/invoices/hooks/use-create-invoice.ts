@@ -3,12 +3,13 @@ import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import { createInvoice } from '@/api/invoices';
-import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
+
+import { InvoiceForm } from '../v2/schema';
 
 export const useCreateInvoice = () => {
   return useMutation({
     mutationKey: ['createInvoice'],
-    mutationFn: (invoice: InvoiceFormData) => {
+    mutationFn: (invoice: InvoiceForm) => {
       return createInvoice(invoice);
     },
     onError: (error: unknown) => {
