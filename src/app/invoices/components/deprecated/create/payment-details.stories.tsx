@@ -7,7 +7,7 @@ import { InvoiceFormProvider } from './invoice-form-context';
 import { PaymentDetails } from './payment-details';
 
 const meta: Meta<typeof PaymentDetails> = {
-  title: 'Invoices/PaymentDetails',
+  title: 'Invoices/Deprecated/Create/PaymentDetails',
   component: PaymentDetails,
   decorators: [
     (Story) => (

@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { InvoicePayAchWire } from './invoice-pay-ach-wire';
 
 const meta = {
-  title: 'Invoices/InvoicePayAchWire',
+  title: 'Invoices/Deprecated/InvoicePayAchWire',
   component: InvoicePayAchWire,
   parameters: {
     layout: 'centered',

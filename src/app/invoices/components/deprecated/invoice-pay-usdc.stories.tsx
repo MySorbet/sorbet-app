@@ -4,7 +4,7 @@ import { Meta } from '@storybook/react';
 import { InvoicePayUsdc } from './invoice-pay-usdc';
 
 const meta = {
-  title: 'Invoices/InvoicePayUsdc',
+  title: 'Invoices/Deprecated/InvoicePayUsdc',
   component: InvoicePayUsdc,
   parameters: {
     backgrounds: {

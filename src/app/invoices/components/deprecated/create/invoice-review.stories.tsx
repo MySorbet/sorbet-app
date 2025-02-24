@@ -6,7 +6,7 @@ import { sampleInvoices } from '@/api/invoices/sample-invoices';
 import { InvoiceReview } from './invoice-review';
 
 const meta: Meta<typeof InvoiceReview> = {
-  title: 'Invoices/InvoiceReview',
+  title: 'Invoices/Deprecated/Create/InvoiceReview',
   component: InvoiceReview,
   parameters: {
     layout: 'centered',

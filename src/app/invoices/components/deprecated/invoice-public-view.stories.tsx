@@ -11,7 +11,7 @@ import { useInvoice } from '@/app/invoices/hooks/use-invoice';
 import { InvoicePublicView } from './invoice-public-view';
 
 const meta: Meta<typeof InvoicePublicView> = {
-  title: 'Invoices/InvoicePublicView',
+  title: 'Invoices/Deprecated/InvoicePublicView',
   component: InvoicePublicView,
   parameters: {
     layout: 'fullscreen',

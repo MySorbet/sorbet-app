@@ -8,7 +8,7 @@ import { InvoiceDetails } from './invoice-details';
 import { InvoiceFormProvider } from './invoice-form-context';
 
 const meta: Meta<typeof InvoiceDetails> = {
-  title: 'Invoices/InvoiceDetails',
+  title: 'Invoices/Deprecated/Create/InvoiceDetails',
   component: InvoiceDetails,
   decorators: [
     (Story) => (
