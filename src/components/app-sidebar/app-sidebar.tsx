@@ -1,4 +1,5 @@
-import { LucideIcon, SettingsIcon } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,6 +10,7 @@ import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
 import { MessageSquareIcon } from '@/components/ui/message-square';
 import { ShieldCheckIcon } from '@/components/ui/shield-check';
+import { SettingsIcon} from '@/components/ui/settings';
 import {
   Sidebar,
   SidebarContent,
