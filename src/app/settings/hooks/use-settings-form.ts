@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
+
 import { useAuth, useUpdateUser } from '@/hooks';
 
 const formSchema = z.object({
@@ -12,9 +13,9 @@ const formSchema = z.object({
 export type SettingsFormSchema = z.infer<typeof formSchema>;
 
 export const useSettingsForm = () => {
-  const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { isPending: updateProfilePending, mutateAsync: updateProfileAsync } = useUpdateUser();
+  const { isPending: updateProfilePending, mutateAsync: updateProfileAsync } =
+    useUpdateUser();
 
   const form = useForm<SettingsFormSchema>({
     resolver: zodResolver(formSchema),
@@ -29,17 +30,16 @@ export const useSettingsForm = () => {
 
   const onSubmit = async (formData: SettingsFormSchema) => {
     if (!user?.id) {
-      alert('Unable to update profile details right now.');
+      toast.error('Unable to update profile details');
       return;
     }
 
     const userToUpdate = {
       ...formData,
-      id: user.id
+      id: user.id,
     };
 
     await updateProfileAsync(userToUpdate);
-    queryClient.invalidateQueries({ queryKey: ['user'] });
   };
 
   return {
@@ -47,6 +47,6 @@ export const useSettingsForm = () => {
     onSubmit,
     isDirty,
     isValid,
-    updateProfilePending
+    updateProfilePending,
   };
-}; 
+};

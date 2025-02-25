@@ -1,6 +1,7 @@
 'use client';
 
 import { Header } from '@/components/header';
+
 import { Authenticated } from '../authenticated';
 import { SettingsDashboard } from './components/settings-dashboard';
 

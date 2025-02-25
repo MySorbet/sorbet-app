@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import SettingsPage from './page';
 
 const meta: Meta<typeof SettingsPage> = {
@@ -30,8 +31,10 @@ export const FilledForm: Story = {
 export const LongValues: Story = {
   args: {
     defaultValues: {
-      firstName: 'Smith-Jones-Williams-Brown-Smith-Jones-Williams-Brown-Smith-Jones-Williams',
-      lastName: 'Smith-Jones-Williams-Brown-Smith-Jones-Williams-Brown-Smith-Jones-Williams',
+      firstName:
+        'Smith-Jones-Williams-Brown-Smith-Jones-Williams-Brown-Smith-Jones-Williams',
+      lastName:
+        'Smith-Jones-Williams-Brown-Smith-Jones-Williams-Brown-Smith-Jones-Williams',
     },
   },
 };
