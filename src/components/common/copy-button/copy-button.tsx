@@ -1,7 +1,7 @@
 'use client';
 
 import { CircleCheck, Copy } from 'lucide-react';
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 
 import useCopy from '@/components/common/copy-button/use-copy';
 import { Button, ButtonProps } from '@/components/ui/button';
@@ -22,46 +22,54 @@ interface CopyButtonProps extends ButtonProps {
  * Copy button that shows a checkmark for 1.5 seconds after copying.
  * You decide how to handle the copy action via `onCopy`.
  */
-export const CopyButton: React.FC<CopyButtonProps> = ({
-  stringToCopy,
-  copyIconClassName,
-  checkIconClassName,
-  children,
-  className,
-  ...props
-}) => {
-  const { isCopied, handleClick } = useCopy(stringToCopy);
+export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
+  (
+    {
+      stringToCopy,
+      copyIconClassName,
+      checkIconClassName,
+      children,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const { isCopied, handleClick } = useCopy(stringToCopy);
 
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    isFirstRender.current = false;
-  }, []);
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+      isFirstRender.current = false;
+    }, []);
 
-  return (
-    <Button
-      variant='outline'
-      onClick={handleClick}
-      disabled={isCopied}
-      className={cn(className, 'group')}
-      {...props}
-    >
-      {isCopied ? (
-        <CircleCheck
-          className={cn(
-            'animate-in zoom-in-0 p-0 text-green-600',
-            checkIconClassName
-          )}
-        />
-      ) : (
-        <Copy
-          className={cn(
-            'text-primary p-0 transition-transform group-hover:scale-110',
-            !isFirstRender.current && 'animate-in zoom-in-0',
-            copyIconClassName
-          )}
-        />
-      )}
-      {children && <div className='ml-2'>{children}</div>}
-    </Button>
-  );
-};
+    return (
+      <Button
+        ref={ref}
+        variant='outline'
+        onClick={handleClick}
+        disabled={isCopied}
+        className={cn(className, 'group')}
+        {...props}
+      >
+        {isCopied ? (
+          <CircleCheck
+            className={cn(
+              'animate-in zoom-in-0 p-0 text-green-600',
+              checkIconClassName
+            )}
+          />
+        ) : (
+          <Copy
+            className={cn(
+              'text-primary p-0 transition-transform group-hover:scale-110',
+              !isFirstRender.current && 'animate-in zoom-in-0',
+              copyIconClassName
+            )}
+          />
+        )}
+        {children && <div className='ml-2'>{children}</div>}
+      </Button>
+    );
+  }
+);
+
+CopyButton.displayName = 'CopyButton';
