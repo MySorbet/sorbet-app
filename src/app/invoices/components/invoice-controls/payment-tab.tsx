@@ -8,6 +8,7 @@ import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { FormField } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -36,19 +37,8 @@ export const PaymentTab = ({
   /** The wallet address to display for the USDC payment method. Passing `undefined` will show a skeleton. */
   walletAddress?: string;
 }) => {
-  // TODO: Implement "at least one payment method" validation
-  const form = useInvoiceForm();
-  const { paymentMethods } = form.watch();
-  const handlePaymentMethodChange = (method: AcceptedPaymentMethod) => {
-    const newPaymentMethods = paymentMethods.includes(method)
-      ? paymentMethods.filter((m) => m !== method)
-      : [...paymentMethods, method];
-    form.setValue('paymentMethods', newPaymentMethods);
-  };
-
   // If a callback is not provided, the user is verified
   const isVerified = !onGetVerified;
-
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
 
   return (
@@ -64,8 +54,7 @@ export const PaymentTab = ({
           timing='Arrives instantly'
           tooltip='Your crypto wallet to receive instant USDC payments on the Base network'
           disabled={false}
-          checked={paymentMethods.includes('usdc')}
-          onCheckedChange={() => handlePaymentMethodChange('usdc')}
+          method='usdc'
         >
           <div className='flex items-center justify-between'>
             <span className='text-muted-foreground text-sm'>My Wallet</span>
@@ -75,6 +64,7 @@ export const PaymentTab = ({
                 stringToCopy={walletAddress}
                 className='ml-1'
                 disabled={!walletAddress}
+                aria-label='Copy wallet address'
               />
             </div>
           </div>
@@ -90,8 +80,7 @@ export const PaymentTab = ({
           timing={isVerified ? 'Arrives in 1-2 days' : undefined}
           locked={!isVerified}
           disabled={false}
-          checked={paymentMethods.includes('usd')}
-          onCheckedChange={() => handlePaymentMethodChange('usd')}
+          method='usd'
         >
           <PaymentMethodDescription>
             Your client can pay via ACH/Wire transfer to your USD virtual
@@ -119,32 +108,70 @@ type PaymentMethodProps = {
   disabled?: boolean;
   locked?: boolean;
   loading?: boolean;
-  checked?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
+  method: AcceptedPaymentMethod;
   children?: React.ReactNode;
 };
 
+/**
+ * Local component for rendering a payment method. Essentially a checkbox with some bells and whistles.
+ * - Manipulates form data via `useInvoiceForm`
+ */
 const PaymentMethod = ({
   title,
   tooltip,
   timing,
   disabled,
   locked,
-  checked,
-  onCheckedChange,
+  method,
   children,
 }: PaymentMethodProps) => {
+  const form = useInvoiceForm();
+
   return (
     <div className={cn('group flex w-full gap-4')}>
       {locked ? (
         <LockKeyhole className='text-muted-foreground mt-2 size-4 shrink-0' />
       ) : (
-        <Checkbox
-          checked={checked}
-          onCheckedChange={onCheckedChange}
-          disabled={disabled}
-          id={kebabCase(title)}
-          className='mt-2'
+        <FormField
+          control={form.control}
+          name='paymentMethods'
+          render={({ field }) => {
+            const isLastSelected =
+              field.value.length === 1 && field.value.includes(method);
+
+            return (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {/* Need to wrap the checkbox in a div to prevent the tooltip from effecting the checkbox style */}
+                    <div>
+                      <Checkbox
+                        checked={field.value.includes(method)}
+                        onCheckedChange={(checked) => {
+                          field.onChange(
+                            checked
+                              ? [...field.value, method]
+                              : field.value.filter((m) => m !== method)
+                          );
+                        }}
+                        disabled={disabled || isLastSelected}
+                        id={kebabCase(title)}
+                        className='mt-2'
+                        aria-label={`Select ${title}${
+                          isLastSelected ? ' (required)' : ''
+                        }`}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  {isLastSelected && (
+                    <TooltipContent>
+                      At least one payment method is required
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            );
+          }}
         />
       )}
       <div className='flex flex-col gap-2 pb-3 pr-3 pt-1'>
@@ -174,6 +201,7 @@ const PaymentMethod = ({
   );
 };
 
+/** Local component for rendering a payment method description. Compose this with `PaymentMethod`. */
 const PaymentMethodDescription = forwardRef<
   HTMLSpanElement,
   {
