@@ -3,9 +3,11 @@
 import { useRouter } from 'next/navigation';
 
 import { Authenticated } from '@/app/authenticated';
+import { useAuth } from '@/hooks/use-auth';
 
 import { CreateInvoice } from '../components/create-invoice';
 import { useCreateInvoice } from '../hooks/use-create-invoice';
+import { useInvoiceNumber } from '../hooks/use-invoice-number';
 import { InvoiceForm } from '../schema';
 
 export default function CreateInvoicePage() {
@@ -16,6 +18,9 @@ export default function CreateInvoicePage() {
     const newInvoice = await createInvoice(invoice);
     router.push(`/invoices/${newInvoice.id}`);
   };
+  const { user } = useAuth();
+  const invoiceNumber = useInvoiceNumber();
+  // TODO: Can probably prefill usd payment if the user is verified
 
   return (
     <Authenticated>
@@ -24,6 +29,11 @@ export default function CreateInvoicePage() {
           onClose={handleClose}
           onCreate={handleCreate}
           isCreating={isPending}
+          prefills={{
+            fromName: user?.firstName,
+            fromEmail: user?.email,
+            invoiceNumber,
+          }}
         />
       </main>
     </Authenticated>

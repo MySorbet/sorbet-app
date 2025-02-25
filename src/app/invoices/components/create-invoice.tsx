@@ -21,7 +21,7 @@ export const CreateInvoice = ({
   onCreate,
   isCreating,
 }: {
-  prefills?: InvoiceForm;
+  prefills?: Partial<InvoiceForm>;
   onClose?: () => void;
   onCreate?: (invoice: InvoiceForm) => void;
   isCreating?: boolean;
