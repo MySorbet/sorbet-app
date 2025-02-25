@@ -10,12 +10,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { formatWalletAddress } from '@/lib/utils';
 
-import {
-  formatCurrency,
-  formatTransactionDate,
-  formatWalletAddress,
-} from './utils';
+import { formatCurrency, formatTransactionDate } from './utils';
 
 export interface TableTransaction {
   account: string;

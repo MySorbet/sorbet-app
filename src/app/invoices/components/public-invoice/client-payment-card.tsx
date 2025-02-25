@@ -5,7 +5,6 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { FC } from 'react';
 
 import { ACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
-import { formatWalletAddress } from '@/app/wallet/components/utils'; // TODO: Import from lib
 import { BaseAlert } from '@/components/common/base-alert';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import {
@@ -30,6 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
 

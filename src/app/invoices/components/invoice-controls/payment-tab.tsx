@@ -2,7 +2,6 @@ import { kebabCase } from 'lodash';
 import { Info, LockKeyhole } from 'lucide-react';
 import { forwardRef } from 'react';
 
-import { formatWalletAddress } from '@/app/wallet/components/utils'; // TODO: Import from lib
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';

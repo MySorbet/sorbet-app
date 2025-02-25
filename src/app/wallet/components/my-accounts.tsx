@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatWalletAddress } from '@/lib/utils';
 
-import { formatCurrency, formatWalletAddress } from './utils';
+import { formatCurrency } from './utils';
 
 interface MyAccountsProps {
   usdcBalance: string;
