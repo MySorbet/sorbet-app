@@ -1,5 +1,6 @@
 'use client';
 
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Download, Send } from 'lucide-react';
 import { useState } from 'react';
 
@@ -49,10 +50,11 @@ export const PublishedInvoiceHeader = ({
           onConfirm={onSend}
         />
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <CopyButton
               stringToCopy={stringToCopy}
               className='rounded-none first:rounded-l-md'
+              aria-label='Copy invoice link'
             />
           </TooltipTrigger>
           <TooltipContent side='bottom'>Copy</TooltipContent>
@@ -65,6 +67,7 @@ export const PublishedInvoiceHeader = ({
               className='rounded-none'
               onClick={onDownload}
             >
+              <VisuallyHidden>Download invoice</VisuallyHidden>
               <Download className='size-4' />
             </Button>
           </TooltipTrigger>

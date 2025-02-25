@@ -1,3 +1,4 @@
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -5,9 +6,9 @@ import { cn } from '@/lib/utils';
 import Logo from '~/svg/logo.svg';
 
 /**
- * Header for the create invoice page
- * Will render a close button if onClose is provided
- * Renders children justified between. Use auto-margins to align as needed
+ * Base component to be composed by specific invoice header components (create, public, etc.)
+ * - Will render a close button only if `onClose` is provided
+ * - Renders children justified between. Use auto-margins to align as needed
  */
 export const InvoiceHeader = ({
   onClose,
@@ -34,6 +35,7 @@ export const InvoiceHeader = ({
           className='text-muted-foreground p-1.5'
           onClick={onClose}
         >
+          <VisuallyHidden>Close</VisuallyHidden>
           <X strokeWidth={2} />
         </Button>
       )}
