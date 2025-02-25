@@ -1,5 +1,5 @@
 import { CircleCheck, Copy } from 'lucide-react';
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -18,43 +18,55 @@ interface CopyIconButtonProps {
 /**
  * Copy icon button that shows a checkmark for 1.5 seconds after copying.
  */
-export const CopyIconButton: React.FC<CopyIconButtonProps> = ({
-  stringToCopy,
-  onCopy,
-  copyIconClassName,
-  checkIconClassName,
-  disabled,
-}) => {
-  const { isCopied, handleClick } = useCopy(stringToCopy ?? onCopy);
+export const CopyIconButton = forwardRef<
+  HTMLButtonElement,
+  CopyIconButtonProps
+>(
+  (
+    {
+      stringToCopy,
+      onCopy,
+      copyIconClassName,
+      checkIconClassName,
+      disabled,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const { isCopied, handleClick } = useCopy(stringToCopy ?? onCopy);
 
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    isFirstRender.current = false;
-  }, []);
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+      isFirstRender.current = false;
+    }, []);
 
-  return (
-    <Button
-      variant='link'
-      className='h-fit p-0 hover:scale-105'
-      onClick={handleClick}
-      disabled={isCopied || disabled}
-    >
-      {isCopied ? (
-        <CircleCheck
-          className={cn(
-            'animate-in zoom-in-0 p-0 text-green-500',
-            checkIconClassName
-          )}
-        />
-      ) : (
-        <Copy
-          className={cn(
-            'text-muted-foreground p-0',
-            !isFirstRender.current && 'animate-in zoom-in-0',
-            copyIconClassName
-          )}
-        />
-      )}
-    </Button>
-  );
-};
+    return (
+      <Button
+        ref={ref}
+        variant='link'
+        className={cn('h-fit p-0 hover:scale-105', className)}
+        onClick={handleClick}
+        disabled={isCopied || disabled}
+        {...props}
+      >
+        {isCopied ? (
+          <CircleCheck
+            className={cn(
+              'animate-in zoom-in-0 p-0 text-green-500',
+              checkIconClassName
+            )}
+          />
+        ) : (
+          <Copy
+            className={cn(
+              'text-muted-foreground p-0',
+              !isFirstRender.current && 'animate-in zoom-in-0',
+              copyIconClassName
+            )}
+          />
+        )}
+      </Button>
+    );
+  }
+);

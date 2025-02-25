@@ -47,7 +47,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
         variant='outline'
         onClick={handleClick}
         disabled={isCopied}
-        className={cn(className, 'group')}
+        className={cn('group', className)}
         {...props}
       >
         {isCopied ? (
