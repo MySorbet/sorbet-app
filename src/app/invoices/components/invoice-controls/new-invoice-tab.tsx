@@ -25,7 +25,11 @@ import { isInTheFuture } from '../../schema';
 import { ClientCardShim } from '../client-card/client-card-shim';
 import { ItemsCard } from './items-card';
 
-/** "New invoice" section of the invoice controls */
+/**
+ * The 1st tab of the invoice controls, "New invoice"
+ * - Renders form fields allowing the user to fill out most of the invoice details
+ * - Manipulates form data via `useInvoiceForm`
+ */
 export const NewInvoiceTab = () => {
   const form = useInvoiceForm();
   const { issueDate, dueDate } = form.watch();

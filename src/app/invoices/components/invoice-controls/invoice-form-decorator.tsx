@@ -10,6 +10,7 @@ import {
   invoiceFormSchema,
 } from '../../schema';
 
+/** Wrap any components that `useInvoiceForm` to provide a form context with default values for testing */
 export const InvoiceFormDecorator = (Story: StoryFn) => {
   const form = useForm<InvoiceForm>({
     resolver: zodResolver(invoiceFormSchema),

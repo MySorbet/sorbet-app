@@ -18,7 +18,10 @@ import {
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 
-/** The "Your info" section of the invoice controls */
+/**
+ * The 3rd tab of the invoice controls, "Your info"
+ * - Manipulates form data via `useInvoiceForm`
+ */
 export const YourInfoTab = () => {
   const form = useInvoiceForm();
 
