@@ -16,10 +16,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof InvoiceControls>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    walletAddress: '0x0000000000000000000000000000000000000000',
+  },
+};
 
 export const Unverified: Story = {
   args: {
+    ...Default.args,
     onGetVerified: fn(),
   },
 };

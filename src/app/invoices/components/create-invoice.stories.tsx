@@ -46,21 +46,37 @@ const samplePrefills: Required<InvoiceForm> = {
   paymentMethods: ['usdc'],
 };
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    walletAddress: '0x0000000000000000000000000000000000000000',
+  },
+};
+
+export const IsCreating: Story = {
+  args: {
+    ...Default.args,
+    isCreating: true,
+  },
+};
 
 export const Unverified: Story = {
   args: {
+    ...Default.args,
     onGetVerified: fn(),
   },
 };
 
 export const WithPrefills: Story = {
   args: {
+    ...Default.args,
     prefills: samplePrefills,
   },
 };
 
 export const WithInteraction: Story = {
+  args: {
+    ...Default.args,
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 

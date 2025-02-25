@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Authenticated } from '@/app/authenticated';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
 import { CreateInvoice } from '../components/create-invoice';
 import { useCreateInvoice } from '../hooks/use-create-invoice';
@@ -17,6 +18,8 @@ export default function CreateInvoicePage() {
   const isVerified = useIsVerified();
 
   const invoiceNumber = useInvoiceNumber();
+
+  const { smartWalletAddress } = useSmartWalletAddress();
 
   const onGetVerified = isVerified ? undefined : () => router.push('/verify');
 
@@ -36,6 +39,7 @@ export default function CreateInvoicePage() {
           onCreate={handleCreate}
           isCreating={isPending}
           onGetVerified={onGetVerified}
+          walletAddress={smartWalletAddress ?? undefined}
           prefills={{
             fromName: user?.firstName,
             fromEmail: user?.email,

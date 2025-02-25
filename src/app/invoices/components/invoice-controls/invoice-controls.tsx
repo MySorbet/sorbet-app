@@ -7,8 +7,10 @@ import { YourInfoTab } from './your-info-tab';
 /** Renders 3 tabs of controls for creating an invoice */
 export const InvoiceControls = ({
   onGetVerified,
+  walletAddress,
 }: {
   onGetVerified?: () => void;
+  walletAddress?: string;
 }) => {
   return (
     <div>
@@ -40,7 +42,10 @@ export const InvoiceControls = ({
           value='payment'
           className='animate-in fade-in-0 slide-in-from-right-5'
         >
-          <PaymentTab onGetVerified={onGetVerified} />
+          <PaymentTab
+            onGetVerified={onGetVerified}
+            walletAddress={walletAddress}
+          />
         </TabsContent>
       </Tabs>
     </div>

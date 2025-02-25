@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
@@ -28,9 +29,12 @@ import { type AcceptedPaymentMethod } from '../../schema';
  */
 export const PaymentTab = ({
   onGetVerified,
+  walletAddress,
 }: {
   /** Callback indicating the user wants to get verified. Only included if the user is not verified. */
   onGetVerified?: () => void;
+  /** The wallet address to display for the USDC payment method. Passing `undefined` will show a skeleton. */
+  walletAddress?: string;
 }) => {
   // TODO: Implement "at least one payment method" validation
   const form = useInvoiceForm();
@@ -45,9 +49,7 @@ export const PaymentTab = ({
   // If a callback is not provided, the user is verified
   const isVerified = !onGetVerified;
 
-  // TODO: Use real information
-  const walletAddress = '0x0000000000000000000000000000000000000000';
-  const formattedAddress = formatWalletAddress(walletAddress);
+  const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
 
   return (
     <Card className='h-fit'>
@@ -68,8 +70,12 @@ export const PaymentTab = ({
           <div className='flex items-center justify-between'>
             <span className='text-muted-foreground text-sm'>My Wallet</span>
             <div className='flex items-center gap-1 text-sm'>
-              {formattedAddress}
-              <CopyIconButton stringToCopy={walletAddress} className='ml-1' />
+              {formattedAddress ?? <Skeleton className='h-5 w-24' />}
+              <CopyIconButton
+                stringToCopy={walletAddress}
+                className='ml-1'
+                disabled={!walletAddress}
+              />
             </div>
           </div>
           <PaymentMethodDescription>

@@ -24,3 +24,9 @@ export const Unverified: Story = {
     onGetVerified: fn(),
   },
 };
+
+export const WithWalletAddress: Story = {
+  args: {
+    walletAddress: '0x0000000000000000000000000000000000000000',
+  },
+};
