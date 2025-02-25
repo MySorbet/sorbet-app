@@ -6,8 +6,6 @@ import { cn } from '@/lib/utils';
 import { AcceptedPaymentMethod, Invoice, InvoiceForm } from '../schema';
 import { calculateSubtotalTaxAndTotal, formatDate } from '../utils';
 
-//  TODO: Make sure this matches new designs
-
 /**
  * Render a PDF-like document displaying the invoice details.
  *
@@ -42,9 +40,11 @@ export const InvoiceDocument = forwardRef<
       )}
       ref={ref}
     >
-      <h1 className='mb-16 text-5xl font-semibold'>Invoice</h1>
+      <h1 className='text-5xl font-semibold'>Invoice</h1>
+      <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
+      {projectName && <p className='pt-1 text-xs'>{projectName}</p>}
 
-      <table className='mb-20 w-full'>
+      <table className='mb-20 mt-16 w-full'>
         <thead>
           <tr className='border-muted border-b'>
             <th className='pb-3 text-left'>
@@ -55,11 +55,6 @@ export const InvoiceDocument = forwardRef<
             <th className='pb-3 text-left'>
               <h2 className='text-muted-foreground text-xs font-semibold'>
                 To
-              </h2>
-            </th>
-            <th className='pb-3 text-left'>
-              <h2 className='text-muted-foreground text-xs font-semibold'>
-                Details
               </h2>
             </th>
           </tr>
@@ -73,10 +68,6 @@ export const InvoiceDocument = forwardRef<
             <td className='pt-2'>
               <p className='pt-1 text-xs'>{invoice.toName}</p>
               <p className='pt-1 text-xs'>{invoice.toEmail}</p>
-            </td>
-            <td className='pt-2'>
-              {projectName && <p className='pt-1 text-xs'>{projectName}</p>}
-              <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
             </td>
           </tr>
         </tbody>
