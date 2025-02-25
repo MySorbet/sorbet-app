@@ -280,6 +280,14 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
             </AccordionTrigger>
             <AccordionContent className='flex flex-col gap-2 p-0'>
               <VirtualAccountRow>
+                <VirtualAccountRowLabel>
+                  Recipient address
+                </VirtualAccountRowLabel>
+                <VirtualAccountRowValue>
+                  {account.beneficiary.address}
+                </VirtualAccountRowValue>
+              </VirtualAccountRow>
+              <VirtualAccountRow>
                 <VirtualAccountRowLabel>Bank name</VirtualAccountRowLabel>
                 <VirtualAccountRowValue>
                   {account.bank.name}
@@ -291,7 +299,6 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
                   {account.bank.address}
                 </VirtualAccountRowValue>
               </VirtualAccountRow>
-              {/* //TODO: Any more additional details? */}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -303,7 +310,9 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
 // 👇 Local components to keep virtual account render DRY
 
 const VirtualAccountRow: FC<PropsWithChildren> = ({ children }) => {
-  return <div className='flex items-center justify-between'>{children}</div>;
+  return (
+    <div className='flex items-center justify-between gap-2'>{children}</div>
+  );
 };
 
 const VirtualAccountRowLabel: FC<PropsWithChildren> = ({ children }) => {
@@ -311,5 +320,9 @@ const VirtualAccountRowLabel: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const VirtualAccountRowValue: FC<PropsWithChildren> = ({ children }) => {
-  return <span className='flex items-center gap-1 text-sm'>{children}</span>;
+  return (
+    <span className='flex max-w-[70%] items-center gap-1 text-right text-sm'>
+      {children}
+    </span>
+  );
 };
