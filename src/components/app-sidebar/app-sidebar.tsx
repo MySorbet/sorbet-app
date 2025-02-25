@@ -133,7 +133,11 @@ const accountItems: MenuItem[] = [
         title: 'Feedback',
         icon: MessageSquareIcon,
       };
-      return <FeaturebaseLinkButton item={item} />;
+      return (
+        <SidebarMenuItem key={item.title}>
+          <FeaturebaseLinkButton item={item} />
+        </SidebarMenuItem>
+      );
     },
   },
   // TODO: Remove this ugly hack once settings is enabled and we can remove the feature flag

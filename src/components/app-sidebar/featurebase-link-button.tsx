@@ -4,7 +4,8 @@ import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 
 import { MenuItemProps } from '@/components/app-sidebar/app-sidebar';
-import { SidebarMenuButton } from '@/components/ui/sidebar';
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import { isAnimatedIcon, SidebarIcon } from './sidebar-icon';
 
@@ -49,6 +50,9 @@ export const FeaturebaseLinkButton = ({
     }
   };
 
+  const isMobile = useIsMobile();
+  const { toggleSidebar } = useSidebar();
+
   return (
     <>
       <Script src='https://do.featurebase.app/js/sdk.js' id='featurebase-sdk' />
@@ -56,6 +60,7 @@ export const FeaturebaseLinkButton = ({
         data-featurebase-feedback
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={() => isMobile && toggleSidebar()}
       >
         <SidebarIcon iconRef={iconRef} Icon={item.icon} />
         <span>{item.title}</span>

@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useRef } from 'react';
 
-import { SidebarMenuButton } from '@/components/ui/sidebar';
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 import type { MenuItemProps } from './app-sidebar';
 import { isAnimatedIcon, SidebarIcon } from './sidebar-icon';
@@ -32,12 +33,16 @@ export const SidebarLinkButton = ({
     }
   };
 
+  const isMobile = useIsMobile();
+  const { toggleSidebar } = useSidebar();
+
   return (
     <SidebarMenuButton asChild>
       <Link
         href={item.url}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={() => isMobile && toggleSidebar()}
       >
         <SidebarIcon
           iconRef={iconRef}
