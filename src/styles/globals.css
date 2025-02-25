@@ -123,6 +123,7 @@
   }
 }
 
+/* TODO Should this be in a layer? */
 /* Print invoices at A4 size */
 @page {
   size: A4;
