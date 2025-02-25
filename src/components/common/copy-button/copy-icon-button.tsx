@@ -12,6 +12,7 @@ interface CopyIconButtonProps {
   className?: string /** Applied to the root button */;
   copyIconClassName?: string /** Applied to the copy icon */;
   checkIconClassName?: string /** Applied to the check icon */;
+  disabled?: boolean /** If true, the button will not be interactive */;
 }
 
 /**
@@ -22,6 +23,7 @@ export const CopyIconButton: React.FC<CopyIconButtonProps> = ({
   onCopy,
   copyIconClassName,
   checkIconClassName,
+  disabled,
 }) => {
   const { isCopied, handleClick } = useCopy(stringToCopy ?? onCopy);
 
@@ -35,7 +37,7 @@ export const CopyIconButton: React.FC<CopyIconButtonProps> = ({
       variant='link'
       className='h-fit p-0 hover:scale-105'
       onClick={handleClick}
-      disabled={isCopied}
+      disabled={isCopied || disabled}
     >
       {isCopied ? (
         <CircleCheck
