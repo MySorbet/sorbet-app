@@ -42,9 +42,7 @@ export const SidebarLinkButton = ({
         href={item.url}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={() => {
-          isMobile && toggleSidebar();
-        }}
+        onClick={() => isMobile && toggleSidebar()}
       >
         <SidebarIcon
           iconRef={iconRef}
