@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 import { Authenticated } from '@/app/authenticated';
+import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
 
 import { CreateInvoice } from '../components/create-invoice';
@@ -12,15 +13,20 @@ import { InvoiceForm } from '../schema';
 
 export default function CreateInvoicePage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const isVerified = useIsVerified();
+
+  const invoiceNumber = useInvoiceNumber();
+
+  const onGetVerified = isVerified ? undefined : () => router.push('/verify');
+
   const handleClose = () => router.push('/invoices');
+
   const { mutateAsync: createInvoice, isPending } = useCreateInvoice();
   const handleCreate = async (invoice: InvoiceForm) => {
     const newInvoice = await createInvoice(invoice);
     router.push(`/invoices/${newInvoice.id}`);
   };
-  const { user } = useAuth();
-  const invoiceNumber = useInvoiceNumber();
-  // TODO: Can probably prefill usd payment if the user is verified
 
   return (
     <Authenticated>
@@ -29,10 +35,12 @@ export default function CreateInvoicePage() {
           onClose={handleClose}
           onCreate={handleCreate}
           isCreating={isPending}
+          onGetVerified={onGetVerified}
           prefills={{
             fromName: user?.firstName,
             fromEmail: user?.email,
             invoiceNumber,
+            // TODO: prefill usd payment if the user is verified
           }}
         />
       </main>

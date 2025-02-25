@@ -1,3 +1,5 @@
+'use client';
+
 import { kebabCase } from 'lodash';
 import { Info, LockKeyhole } from 'lucide-react';
 import { forwardRef } from 'react';
@@ -24,7 +26,12 @@ import { type AcceptedPaymentMethod } from '../../schema';
  * - Renders the payment tab allowing the user to choose which payment methods to accept
  * - Manipulates form data via `useInvoiceForm`
  */
-export const PaymentTab = () => {
+export const PaymentTab = ({
+  onGetVerified,
+}: {
+  /** Callback indicating the user wants to get verified. Only included if the user is not verified. */
+  onGetVerified?: () => void;
+}) => {
   // TODO: Implement "at least one payment method" validation
   const form = useInvoiceForm();
   const { paymentMethods } = form.watch();
@@ -35,14 +42,12 @@ export const PaymentTab = () => {
     form.setValue('paymentMethods', newPaymentMethods);
   };
 
-  const handleGetVerified = () => {
-    // TODO: route to the verification page
-  };
+  // If a callback is not provided, the user is verified
+  const isVerified = !onGetVerified;
 
   // TODO: Use real information
   const walletAddress = '0x0000000000000000000000000000000000000000';
   const formattedAddress = formatWalletAddress(walletAddress);
-  const isVerified = true;
 
   return (
     <Card className='h-fit'>
@@ -90,7 +95,7 @@ export const PaymentTab = () => {
             <Button
               variant='outline'
               className='w-full'
-              onClick={handleGetVerified}
+              onClick={onGetVerified}
             >
               Get verified in minutes
             </Button>

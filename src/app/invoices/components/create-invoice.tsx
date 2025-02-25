@@ -20,11 +20,13 @@ export const CreateInvoice = ({
   onClose,
   onCreate,
   isCreating,
+  onGetVerified,
 }: {
   prefills?: Partial<InvoiceForm>;
   onClose?: () => void;
   onCreate?: (invoice: InvoiceForm) => void;
   isCreating?: boolean;
+  onGetVerified?: () => void;
 }) => {
   // Form lives at the top level. Controls access this form via context
   const form = useForm<InvoiceForm>({
@@ -65,7 +67,7 @@ export const CreateInvoice = ({
               <InvoiceDocument invoice={form.watch()} />
             </InvoiceDocumentShell>
           </Card>
-          <InvoiceControls />
+          <InvoiceControls onGetVerified={onGetVerified} />
         </form>
       </div>
     </Form>

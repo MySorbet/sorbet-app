@@ -48,6 +48,12 @@ const samplePrefills: Required<InvoiceForm> = {
 
 export const Default: Story = {};
 
+export const Unverified: Story = {
+  args: {
+    onGetVerified: fn(),
+  },
+};
+
 export const WithPrefills: Story = {
   args: {
     prefills: samplePrefills,

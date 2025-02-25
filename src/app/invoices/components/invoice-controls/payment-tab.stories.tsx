@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { InvoiceFormDecorator } from './invoice-form-decorator';
 import { PaymentTab } from './payment-tab';
@@ -17,3 +18,9 @@ const meta = {
 export default meta;
 
 export const Default: Story = {};
+
+export const Unverified: Story = {
+  args: {
+    onGetVerified: fn(),
+  },
+};
