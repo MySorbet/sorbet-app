@@ -9,7 +9,11 @@ import { Input } from '@/components/ui/input';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 
-export const FakeClientCard = () => {
+/**
+ * A fake client card that renders form fields for the client name and email.
+ * This is used instead of hte real client card until we perform the necessary DB migrations.
+ */
+export const ClientCardShim = () => {
   const form = useInvoiceForm();
   return (
     <div className='flex w-full justify-between gap-2'>

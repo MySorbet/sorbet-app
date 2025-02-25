@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { isInTheFuture } from '../../schema';
-import { FakeClientCard } from '../client-card/fake-client-card';
+import { ClientCardShim } from '../client-card/client-card-shim';
 import { ItemsCard } from './items-card';
 
 /** "New invoice" section of the invoice controls */
@@ -33,7 +33,7 @@ export const NewInvoiceTab = () => {
   return (
     <div className='flex w-full flex-col gap-10'>
       {/* // TODO: Use client card component and hooks instead */}
-      <FakeClientCard />
+      <ClientCardShim />
       <ItemsCard
         items={form.watch('items')}
         onItemsChange={(items) => form.setValue('items', items)}

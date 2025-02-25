@@ -5,8 +5,9 @@ import { Invoice } from '@/app/invoices/schema';
 /**
  * Set of mock data for invoices. For use in development only.
  *
+ * Notes:
  * When invoices 2.0 was implemented, we added payment methods and made projectName optional.
- * These changes are reflected here.
+ * These changes are reflected here. Some invoices retain the old projectName to simulate the old data in the DB.
  */
 export const sampleInvoices: Invoice[] = [
   {

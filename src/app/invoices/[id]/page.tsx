@@ -10,10 +10,7 @@ import { useInvoice } from '../hooks/use-invoice';
 
 export default function InvoicePage({ params }: { params: { id: string } }) {
   const { data, isLoading, isError } = useInvoice(params.id, {
-    retry: (_, error) => {
-      // Only retry if the error is not a 404
-      return !(isAxiosError(error) && error.status === 404);
-    },
+    retry: (_, error) => !(isAxiosError(error) && error.status === 404),
   });
   const { user } = useAuth();
   const isFreelancer = user?.id === data?.userId;
