@@ -3,7 +3,7 @@
 import type { Variants } from 'motion/react';
 import { motion, useAnimation } from 'motion/react';
 import type { HTMLAttributes } from 'react';
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef, useEffect } from 'react';
 
 export interface SquareGanttChartIconHandle {
   startAnimation: () => void;
@@ -21,40 +21,75 @@ const SquareGanttChartIcon = forwardRef<
 >(({ onMouseEnter, onMouseLeave, ...props }, ref) => {
   const controls = useAnimation();
   const isControlledRef = useRef(false);
+  const animationAbortController = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      // Cleanup any ongoing animations on unmount
+      animationAbortController.current?.abort();
+    };
+  }, []);
+
+  const safeAnimate = async (animationFn: () => Promise<void>) => {
+    // Abort any existing animation
+    animationAbortController.current?.abort();
+    // Create new abort controller for this animation sequence
+    animationAbortController.current = new AbortController();
+    const signal = animationAbortController.current.signal;
+
+    try {
+      await animationFn();
+    } catch (e) {
+      if (signal.aborted) {
+        // Animation was cancelled, which is expected during cleanup
+        return;
+      }
+      // Re-throw unexpected errors
+      throw e;
+    }
+  };
 
   useImperativeHandle(ref, () => {
     isControlledRef.current = true;
 
     return {
-      startAnimation: async () => {
-        await controls.start((i) => ({
-          pathLength: 0,
-          opacity: 0,
-          transition: { delay: i * 0.1, duration: 0.3 },
-        }));
-        await controls.start((i) => ({
-          pathLength: 1,
-          opacity: 1,
-          transition: { delay: i * 0.1, duration: 0.3 },
-        }));
+      startAnimation: () => {
+        safeAnimate(async () => {
+          await controls.start((i) => ({
+            pathLength: 0,
+            opacity: 0,
+            transition: { delay: i * 0.1, duration: 0.3 },
+          }));
+          await controls.start((i) => ({
+            pathLength: 1,
+            opacity: 1,
+            transition: { delay: i * 0.1, duration: 0.3 },
+          }));
+        });
       },
-      stopAnimation: () => controls.start('visible'),
+      stopAnimation: () => {
+        // Cancel any ongoing animation
+        animationAbortController.current?.abort();
+        controls.start('visible');
+      },
     };
   });
 
   const handleMouseEnter = useCallback(
-    async (e: React.MouseEvent<HTMLDivElement>) => {
+    (e: React.MouseEvent<HTMLDivElement>) => {
       if (!isControlledRef.current) {
-        await controls.start((i) => ({
-          pathLength: 0,
-          opacity: 0,
-          transition: { delay: i * 0.1, duration: 0.3 },
-        }));
-        await controls.start((i) => ({
-          pathLength: 1,
-          opacity: 1,
-          transition: { delay: i * 0.1, duration: 0.3 },
-        }));
+        safeAnimate(async () => {
+          await controls.start((i) => ({
+            pathLength: 0,
+            opacity: 0,
+            transition: { delay: i * 0.1, duration: 0.3 },
+          }));
+          await controls.start((i) => ({
+            pathLength: 1,
+            opacity: 1,
+            transition: { delay: i * 0.1, duration: 0.3 },
+          }));
+        });
       } else {
         onMouseEnter?.(e);
       }
@@ -65,6 +100,8 @@ const SquareGanttChartIcon = forwardRef<
   const handleMouseLeave = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (!isControlledRef.current) {
+        // Cancel any ongoing animation
+        animationAbortController.current?.abort();
         controls.start('visible');
       } else {
         onMouseLeave?.(e);
