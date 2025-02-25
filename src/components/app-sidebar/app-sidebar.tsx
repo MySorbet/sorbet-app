@@ -131,7 +131,11 @@ const accountItems: MenuItem[] = [
         title: 'Feedback',
         icon: MessageSquareIcon,
       };
-      return <FeaturebaseLinkButton item={item} />;
+      return (
+        <SidebarMenuItem key={item.title}>
+          <FeaturebaseLinkButton item={item} />
+        </SidebarMenuItem>
+      );
     },
   },
   // {
