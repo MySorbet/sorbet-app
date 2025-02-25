@@ -51,12 +51,6 @@ export const Dashboard = () => {
 
   const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
 
-  // Just need the setter to open the sidebar
-  const [, setIsSidebarOpen] = useQueryState(
-    'sidebarOpen',
-    parseAsBoolean.withDefault(false)
-  );
-
   const unlessMobile = (fn: () => void) => {
     if (isMobile) {
       setIsDesktopDrawerOpen(true);
@@ -80,7 +74,7 @@ export const Dashboard = () => {
 
       // Tasks
       case 'verified':
-        unlessMobile(() => setIsSidebarOpen(true));
+        unlessMobile(() => router.push('/verify'));
         break;
       case 'invoice':
         unlessMobile(() => router.push('/invoices/create'));
