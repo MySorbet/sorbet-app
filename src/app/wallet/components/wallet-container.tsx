@@ -17,9 +17,9 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { env } from '@/lib/env';
 import { Transaction, TransactionOverview } from '@/types/transactions';
 
+import { SelectDuration } from './balance-card/select-duration';
+import { WalletBalance } from './balance-card/wallet-balance';
 import { MyAccounts } from './my-accounts';
-import { SelectDuration } from './select-duration';
-import { WalletBalance } from './wallet-balance';
 
 export const WalletContainer = () => {
   const {
