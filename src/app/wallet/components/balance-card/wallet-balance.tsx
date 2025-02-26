@@ -9,9 +9,9 @@ import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
 
 import { formatCurrency } from '../utils';
 import { WalletSendDialog } from '../wallet-send-dialog';
-import { BalanceChart } from './balance-chart';
+import { DeprecatedBalanceChart } from './deprecated-balance-chart';
 import { PercentageChange } from './percent-change';
-import { SelectDuration } from './select-duration';
+import { Duration, SelectDuration } from './select-duration';
 
 interface WalletBalanceProps {
   usdcBalance: string;
@@ -99,11 +99,11 @@ export const WalletBalance: React.FC<WalletBalanceProps> = ({
         </div>
         <div className='mb-2 ml-6 mt-2'>
           <SelectDuration
-            selectedValue={selectedDuration}
+            selectedValue={selectedDuration as Duration}
             onChange={(value) => onTxnDurationChange(value)}
           />
         </div>
-        <BalanceChart balanceHistory={cumulativeBalanceHistory} />
+        <DeprecatedBalanceChart balanceHistory={cumulativeBalanceHistory} />
       </div>
     </Card>
   );

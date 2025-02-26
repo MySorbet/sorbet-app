@@ -1,53 +1,86 @@
-import { parse } from 'date-fns';
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+'use client';
 
-export type BalanceHistory = { date: string; balance: number }[];
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+
+const chartConfig = {
+  balance: {
+    label: 'Balance',
+    color: 'hsl(var(--sorbet))',
+  },
+} satisfies ChartConfig;
+
+export type BalanceHistory = { iso: string; balance: number }[];
 
 interface BalanceChartProps {
-  balanceHistory: BalanceHistory | undefined;
+  history?: BalanceHistory;
+}
+// TODO: Add a groupByMonth mode
+// TODO Sick loading animation
+
+/** Renders a chart of the balance history as a beautiful shadcn chart */
+export function BalanceChart({ history }: BalanceChartProps) {
+  return (
+    <div>
+      <ChartContainer config={chartConfig} className='min-h-[200px]'>
+        <AreaChart
+          accessibilityLayer
+          data={history}
+          margin={{
+            left: 12,
+            right: 12,
+          }}
+        >
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey='iso'
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={formatDate}
+          />
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent />}
+            labelFormatter={formatDate}
+          />
+          <defs>
+            <linearGradient id='fillBalance' x1='0' y1='0' x2='0' y2='1'>
+              <stop
+                offset='5%'
+                stopColor='var(--color-balance)'
+                stopOpacity={0.8}
+              />
+              <stop
+                offset='95%'
+                stopColor='var(--color-balance)'
+                stopOpacity={0.1}
+              />
+            </linearGradient>
+          </defs>
+          <Area
+            dataKey='balance'
+            type='natural'
+            fill='url(#fillBalance)'
+            fillOpacity={0.4}
+            stroke='var(--color-balance)'
+            stackId='a'
+          />
+        </AreaChart>
+      </ChartContainer>
+    </div>
+  );
 }
 
-/** The graph of balance history underneath the balance widget in the wallet page */
-export const BalanceChart: React.FC<BalanceChartProps> = ({
-  balanceHistory,
-}) => {
-  // sort everything in ascending order since transactions are ordered by block number, and not necessarily timestamp
-  // (according to the docs: https://docs.moralis.com/web3-data-api/evm/reference/get-token-transfers)
-  const sortedBalanceHistory = balanceHistory?.sort((a, b) => {
-    const dateA = parse(a.date, 'M/d/yyyy, h:mm:ss a', new Date());
-    const dateB = parse(b.date, 'M/d/yyyy, h:mm:ss a', new Date());
-    return dateA.getTime() - dateB.getTime();
-  });
-
-  // get highest balance value for setting y axis domain
-  const maxBalance = Math.max(
-    ...(sortedBalanceHistory?.map((item) => item.balance) || [0])
-  );
-
-  return (
-    <ResponsiveContainer width='100%' height={200}>
-      <AreaChart
-        data={sortedBalanceHistory}
-        margin={{ top: 0, right: 0, left: -60, bottom: 0 }}
-      >
-        <defs>
-          <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-            <stop offset='5%' stopColor='#573DF5' stopOpacity={0.3} />
-            <stop offset='95%' stopColor='#573DF5' stopOpacity={0} />
-          </linearGradient>
-        </defs>
-
-        <XAxis dataKey='date' tick={false} axisLine={false} />
-        <YAxis axisLine={false} tick={false} domain={[0, maxBalance + 100]} />
-
-        <Area
-          type='monotone'
-          dataKey='balance'
-          stroke='#573DF5'
-          fillOpacity={1}
-          fill='url(#colorUv)'
-        />
-      </AreaChart>
-    </ResponsiveContainer>
-  );
+const formatDate = (iso: string) => {
+  const date = new Date(iso);
+  const month = date.toLocaleString('default', { month: 'short' });
+  const day = date.getDate().toString();
+  return `${month} ${day}`;
 };

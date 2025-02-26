@@ -43,7 +43,7 @@ export const BalanceCard = ({
         </div>
       </CardHeader>
       <CardContent>
-        <BalanceChart balanceHistory={history} />
+        <BalanceChart history={history} />
       </CardContent>
     </Card>
   );

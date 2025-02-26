@@ -5,6 +5,7 @@ import { BalanceCard } from './balance-card';
 import {
   balanceHistoryComplex,
   balanceHistoryDecline,
+  balanceHistoryFromSampleTransactions,
   balanceHistoryGrowth,
   balanceHistorySimple,
   balanceHistoryVolatile,
@@ -77,5 +78,12 @@ export const DeclineBalance: Story = {
   args: {
     balance: 1000,
     history: balanceHistoryDecline,
+  },
+};
+
+export const FromTransactions: Story = {
+  args: {
+    balance: 1000,
+    history: balanceHistoryFromSampleTransactions,
   },
 };
