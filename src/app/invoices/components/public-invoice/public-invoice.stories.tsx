@@ -4,8 +4,8 @@ import { mockACHWireDetailsHandler } from '@/api/bridge/msw-handlers';
 import { mockInvoiceHandler } from '@/api/invoices/msw-handlers';
 import { mockCurrentWalletAddressHandler } from '@/api/invoices/msw-handlers';
 import { sampleInvoices } from '@/api/invoices/sample-invoices';
-import { useInvoice } from '@/app/invoices/hooks/use-invoice';
 
+import { useInvoice } from '../../hooks/use-invoice';
 import { PublicInvoice } from './public-invoice';
 
 const meta = {

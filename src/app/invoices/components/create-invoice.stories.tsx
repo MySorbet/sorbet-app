@@ -5,8 +5,8 @@ import { addDays } from 'date-fns';
 import { useEffect, useState } from 'react';
 
 import { mockCheckInvoiceNumberHandler } from '@/api/invoices/msw-handlers';
-import { useInvoiceNumber } from '@/app/invoices/hooks/use-invoice-number';
 
+import { useInvoiceNumber } from '../hooks/use-invoice-number';
 import { AcceptedPaymentMethod, InvoiceForm } from '../schema';
 import { CreateInvoice } from './create-invoice';
 

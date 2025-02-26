@@ -1,15 +1,15 @@
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-import { InvoiceDocument } from '@/app/invoices/components/invoice-document';
-import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 import { cn } from '@/lib/utils';
 
+import { useACHWireDetails } from '../../hooks/use-ach-wire-details';
 import { Invoice } from '../../schema';
+import { InvoiceDocument } from '../invoice-document';
 import { InvoiceDocumentShell } from '../invoice-document-shell';
 import { PublicInvoiceHeader } from '../invoice-header/public-invoice-header';
 import { ClientPaymentCard } from './client-payment-card';

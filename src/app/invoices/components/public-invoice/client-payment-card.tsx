@@ -1,10 +1,8 @@
-import { CornerDownRight } from '@untitled-ui/icons-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign, Info } from 'lucide-react';
+import { BadgeDollarSign, CornerDownRight,Info } from 'lucide-react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { FC } from 'react';
 
-import { ACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 import { BaseAlert } from '@/components/common/base-alert';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import {
@@ -33,6 +31,7 @@ import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
 
+import { ACHWireDetails } from '../../hooks/use-ach-wire-details';
 import { useBaseQRCode } from '../../hooks/use-base-qr-code';
 import { AcceptedPaymentMethod } from '../../schema';
 import { formatDate } from '../../utils';
