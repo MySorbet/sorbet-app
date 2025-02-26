@@ -10,4 +10,5 @@ export const featureFlags = {
   verification: true,
   sectionTitles: true,
   skipAuthHeader: false,
+  settings: !(process.env.NODE_ENV === 'production'),
 } as const;

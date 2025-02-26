@@ -8,6 +8,7 @@ import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
 import { MessageSquareIcon } from '@/components/ui/message-square';
+import { SettingsIcon } from '@/components/ui/settings';
 import { ShieldCheckIcon } from '@/components/ui/shield-check';
 import {
   Sidebar,
@@ -26,6 +27,7 @@ import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { WalletIcon } from '@/components/ui/wallet';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { featureFlags } from '@/lib/flags';
 import { cn } from '@/lib/utils';
 
 import { NavUser } from './nav-user';
@@ -138,11 +140,16 @@ const accountItems: MenuItem[] = [
       );
     },
   },
-  // {
-  //   title: 'Settings',
-  //   url: '/settings',
-  //   icon: SettingsIcon,
-  // },
+  // TODO: Remove this ugly hack once settings is enabled and we can remove the feature flag
+  ...(featureFlags.settings
+    ? [
+        {
+          title: 'Settings',
+          url: '/settings',
+          icon: SettingsIcon,
+        },
+      ]
+    : []),
 ];
 
 /** A global sidebar */
