@@ -48,10 +48,12 @@ export const ClientPaymentCard = ({
   address,
   account,
   dueDate,
+  isLoading,
 }: {
   address?: string;
   account?: ACHWireDetails;
   dueDate?: Date;
+  isLoading?: boolean;
 }) => {
   const [selectedTab, setSelectedTab] = useState<
     AcceptedPaymentMethod | undefined
@@ -60,26 +62,23 @@ export const ClientPaymentCard = ({
     setSelectedTab(value as AcceptedPaymentMethod);
   };
 
-  const isLoading = !dueDate;
-  const title = `Payment due by ${formatDate(dueDate)}`;
+  const title = dueDate
+    ? `Payment due by ${formatDate(dueDate)}`
+    : 'Payment due';
   const description =
     selectedTab === 'usdc'
       ? 'Send USDC on Base network'
       : 'Transfer via ACH/Wire';
 
-  const hideUSDC = Boolean(!isLoading && !address && account);
-  const hideUSD = Boolean(!isLoading && address && !account);
+  const hideUSDCTab = Boolean(!isLoading && !address && account);
+  const hideUSDTab = Boolean(!isLoading && address && !account);
 
   // If one of the payment methods is hidden,
   // set the selected tab to the other payment method
   useEffect(() => {
-    if (hideUSDC) {
-      setSelectedTab('usd');
-    }
-    if (hideUSD) {
-      setSelectedTab('usdc');
-    }
-  }, [hideUSDC, hideUSD]);
+    hideUSDCTab && setSelectedTab('usd');
+    hideUSDTab && setSelectedTab('usdc');
+  }, [hideUSDCTab, hideUSDTab]);
 
   return (
     <Card className='max-w-lg'>
@@ -90,20 +89,20 @@ export const ClientPaymentCard = ({
         className='w-full'
       >
         <TabsList className='w-full justify-around rounded-b-none'>
-          {!hideUSDC && (
+          {!hideUSDCTab && (
             <TabsTrigger
               className='w-1/2'
               value='usdc'
-              disabled={isLoading || hideUSD}
+              disabled={isLoading || hideUSDTab}
             >
               Pay USDC
             </TabsTrigger>
           )}
-          {!hideUSD && (
+          {!hideUSDTab && (
             <TabsTrigger
               className='w-1/2'
               value='usd'
-              disabled={isLoading || hideUSDC}
+              disabled={isLoading || hideUSDCTab}
             >
               Pay via ACH/Wire
             </TabsTrigger>
@@ -138,13 +137,13 @@ export const ClientPaymentCard = ({
             value='usdc'
             className='animate-in fade-in-0 slide-in-from-top-1'
           >
-            {address && <PaymentMethodUSDC address={address} />}
+            {!isLoading && address && <PaymentMethodUSDC address={address} />}
           </TabsContent>
           <TabsContent
             value='usd'
             className='animate-in fade-in-0 slide-in-from-top-1'
           >
-            {account && <PaymentMethodUSD account={account} />}
+            {!isLoading && account && <PaymentMethodUSD account={account} />}
           </TabsContent>
         </CardContent>
       </Tabs>

@@ -38,22 +38,30 @@ export const Default: Story = {
   },
 };
 
+export const NoDate: Story = {
+  args: {
+    ...Default.args,
+    dueDate: undefined,
+  },
+};
+
 export const Loading: Story = {
   args: {
-    dueDate: undefined,
+    ...Default.args,
+    isLoading: true,
   },
 };
 
 export const USDOnly: Story = {
   args: {
-    account: account,
-    dueDate: new Date('2024-04-15'),
+    ...Default.args,
+    address: undefined,
   },
 };
 
 export const USDCOnly: Story = {
   args: {
-    address: '0x1234567890123456789012345678901234567890',
-    dueDate: new Date('2024-04-15'),
+    ...Default.args,
+    account: undefined,
   },
 };

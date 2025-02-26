@@ -1,13 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { getACHWireDetails } from '@/api/bridge';
 import { SourceDepositInstructions } from '@/types';
 
 // TODO: Have to make this grab the ACH info for any user, not the logged in user
-export const useACHWireDetails = (userId: string) => {
+export const useACHWireDetails = (
+  userId: string,
+  options?: Partial<UseQueryOptions<SourceDepositInstructions>>
+) => {
   const query = useQuery({
     queryKey: ['achWireDetails', userId],
     queryFn: () => getACHWireDetails(userId),
+    ...options,
   });
 
   const mappedData = query.data ? mapToACHWireDetails(query.data) : undefined;

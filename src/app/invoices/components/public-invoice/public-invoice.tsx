@@ -34,8 +34,10 @@ export const PublicInvoice = ({
   const { data: walletAddress, isLoading: isLoadingWalletAddress } =
     useWalletAddressByUserId(invoice?.userId ?? '');
 
-  // TODO: Should we display a loading state when seeing if there are ACH wire details?
-  const { data: achWireDetails } = useACHWireDetails(invoice?.userId ?? '');
+  const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
+    useACHWireDetails(invoice?.userId ?? '', {
+      enabled: invoice?.paymentMethods?.includes('usdc'),
+    });
 
   // Render the receipt jerryrigged for an error in the case of an error
   if (isError) {
@@ -84,6 +86,9 @@ export const PublicInvoice = ({
             address={walletAddress}
             account={achWireDetails}
             dueDate={invoice?.dueDate}
+            isLoading={
+              isLoading || isLoadingWalletAddress || isLoadingACHWireDetails
+            }
           />
           <FollowButton />
         </div>
