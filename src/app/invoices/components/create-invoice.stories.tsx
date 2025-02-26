@@ -18,10 +18,10 @@ const meta = {
     msw: {
       handlers: [mockCheckInvoiceNumberHandler],
     },
-    args: {
-      onCreate: fn(),
-      onClose: fn(),
-    },
+  },
+  args: {
+    onCreate: fn(),
+    onClose: fn(),
   },
 } satisfies Meta<typeof CreateInvoice>;
 

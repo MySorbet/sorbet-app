@@ -54,7 +54,16 @@ export const CreateInvoice = ({
 
   // Curry our callback with RHF's handleSubmit
   const onSubmit = form.handleSubmit((data) => {
-    onCreate?.(data);
+    // Transform tax value of 0 to undefined before submitting
+    // We do this because we currently don't support tax of 0
+    // Instead, we used undefined to indicate that there is no tax
+    // Accordingly, the backend will not accept 0, so we transform it to undefined here
+    const transformedData = {
+      ...data,
+      tax: data.tax === 0 ? undefined : data.tax,
+    };
+
+    onCreate?.(transformedData);
   });
 
   // Call the submit handler by executing the returned function
