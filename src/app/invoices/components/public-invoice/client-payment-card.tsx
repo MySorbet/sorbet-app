@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign, CornerDownRight,Info } from 'lucide-react';
+import { BadgeDollarSign, CornerDownRight, Info } from 'lucide-react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { FC } from 'react';
 
