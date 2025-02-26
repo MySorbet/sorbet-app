@@ -1,8 +1,10 @@
 import { parse } from 'date-fns';
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
+export type BalanceHistory = { date: string; balance: number }[];
+
 interface BalanceChartProps {
-  balanceHistory: { date: string; balance: number }[] | undefined;
+  balanceHistory: BalanceHistory | undefined;
 }
 
 /** The graph of balance history underneath the balance widget in the wallet page */

@@ -1,5 +1,4 @@
-import { LinkExternal02 } from '@untitled-ui/icons-react';
-import { ArrowDown, Plus, Send } from 'lucide-react';
+import { ArrowDown, ExternalLink, Plus, Send } from 'lucide-react';
 import React, { useState } from 'react';
 
 import useCopy from '@/components/common/copy-button/use-copy';
@@ -10,9 +9,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
-import { formatCurrency, formatTransactionDate } from './utils';
+import { formatTransactionDate } from './utils';
 
 export interface TableTransaction {
   account: string;
@@ -60,7 +60,7 @@ export const TransactionTable = ({
             </th>
           </tr>
         </thead>
-        <tbody className='bg-white'>
+        <tbody className='bg-background'>
           {isLoading ? (
             <TableSkeleton />
           ) : transactions.length === 0 ? (
@@ -77,22 +77,10 @@ export const TransactionTable = ({
               <tr key={index} className='animate-in fade-in'>
                 <td className='w-2/5 whitespace-nowrap py-4'>
                   <div className='flex items-center'>
-                    <div className='h-12 w-12 flex-shrink-0'>
-                      <span className='flex h-12 w-12 items-center justify-center rounded-full bg-[#D7D7D7]'>
-                        {transaction.type === 'Sent' && (
-                          <ArrowDown className='size-6 text-white' />
-                        )}
-                        {transaction.type === 'Received' && (
-                          <Send className='size-6 text-white' />
-                        )}
-                        {transaction.type === 'Self-transfer' && (
-                          <Plus className='size-6 text-white' />
-                        )}
-                      </span>
-                    </div>
-                    <div className='ml-4'>
+                    <TransactionTypeIcon type={transaction.type} />
+                    <div className='ml-2'>
                       <AddressText address={transaction.account} />
-                      <div className='mt-1 text-xs text-[#595B5A]'>
+                      <div className='text-muted-foreground text-xs'>
                         {transaction.type === 'Self-transfer'
                           ? 'Added'
                           : transaction.type}
@@ -101,7 +89,7 @@ export const TransactionTable = ({
                   </div>
                 </td>
                 <td className='w-1/5 whitespace-nowrap py-4'>
-                  <div className='text-sm font-medium text-gray-900'>
+                  <div className='text-sm'>
                     {formatTransactionDate(transaction.date)}
                   </div>
                 </td>
@@ -110,11 +98,10 @@ export const TransactionTable = ({
                   onClick={() => onTransactionClick?.(transaction.hash)}
                 >
                   <div className='flex items-center justify-end gap-2'>
-                    <div className='text-sm font-medium'>
-                      {transaction.type === 'Sent' ? '-' : '+'}{' '}
-                      {formatCurrency(transaction.amount)} USDC
+                    <div className='text-sm'>
+                      {formatCurrency(transaction.amount)}
                     </div>
-                    <LinkExternal02 className='size-[1.125rem] text-[#595B5A]' />
+                    <ExternalLink className='text-muted-foreground size-4' />
                   </div>
                 </td>
               </tr>
@@ -122,6 +109,18 @@ export const TransactionTable = ({
           )}
         </tbody>
       </table>
+    </div>
+  );
+};
+
+/** Local component to display a transaction type icon */
+const TransactionTypeIcon = ({ type }: { type: TableTransaction['type'] }) => {
+  // TODO: Remove hardcoded color?
+  return (
+    <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-[#E4E4E7]'>
+      {type === 'Received' && <ArrowDown className='size-5 text-white' />}
+      {type === 'Sent' && <Send className='size-5 text-white' />}
+      {type === 'Self-transfer' && <Plus className='size-5 text-white' />}
     </div>
   );
 };
@@ -149,7 +148,7 @@ const TableSkeleton = () => {
           <td className='w-1/5 whitespace-nowrap py-4'>
             <div className='flex items-center justify-end gap-2'>
               <Skeleton className='h-5 w-28' />
-              <Skeleton className='size-[1.125rem]' />
+              <Skeleton className='size-4' />
             </div>
           </td>
         </tr>

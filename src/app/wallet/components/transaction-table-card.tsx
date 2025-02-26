@@ -8,7 +8,7 @@ export const TransactionTableCard = forwardRef<
   { children: React.ReactNode }
 >(({ children }: { children: React.ReactNode }, ref) => {
   return (
-    <Card className='relative min-h-full rounded-2xl p-6' ref={ref}>
+    <Card className='relative h-fit min-h-full rounded-2xl p-6' ref={ref}>
       {children}
     </Card>
   );

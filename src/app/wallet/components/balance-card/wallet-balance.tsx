@@ -7,11 +7,11 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCombinedBalance } from '@/hooks/wallet/useCombinedBalance';
 
+import { formatCurrency } from '../utils';
+import { WalletSendDialog } from '../wallet-send-dialog';
 import { BalanceChart } from './balance-chart';
 import { PercentageChange } from './percent-change';
 import { SelectDuration } from './select-duration';
-import { formatCurrency } from './utils';
-import { WalletSendDialog } from './wallet-send-dialog';
 
 interface WalletBalanceProps {
   usdcBalance: string;

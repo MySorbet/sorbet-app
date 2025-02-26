@@ -9,9 +9,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+export type Duration = '3' | '7' | '30' | 'all';
+
 interface SelectDurationProps {
-  selectedValue: string;
-  onChange: (value: string) => void;
+  selectedValue: Duration;
+  onChange: (value: Duration) => void;
 }
 
 export const SelectDuration: React.FC<SelectDurationProps> = ({
@@ -28,6 +30,7 @@ export const SelectDuration: React.FC<SelectDurationProps> = ({
           <SelectItem value='3'>Last 3 Days</SelectItem>
           <SelectItem value='7'>Last 7 Days</SelectItem>
           <SelectItem value='30'>Last 30 Days</SelectItem>
+          <SelectItem value='all'>All Time</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
