@@ -1,12 +1,12 @@
 import { CircleCheck, Copy } from 'lucide-react';
 import React, { forwardRef, useEffect, useRef } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import useCopy from './use-copy';
 
-interface CopyIconButtonProps {
+interface CopyIconButtonProps extends ButtonProps {
   stringToCopy?: string /** If provided, this will be copied to the clipboard. */;
   onCopy?: () => void /** Provide your own copy function to be called instead of copying the stringToCopy. */;
   className?: string /** Applied to the root button */;
@@ -29,12 +29,22 @@ export const CopyIconButton = forwardRef<
       copyIconClassName,
       checkIconClassName,
       disabled,
+      onClick,
       className,
       ...props
     },
     ref
   ) => {
-    const { isCopied, handleClick } = useCopy(stringToCopy ?? onCopy);
+    const { isCopied, handleClick: handleCopy } = useCopy(
+      stringToCopy ?? onCopy
+    );
+
+    // Similar to using `cn` for classnames, we need to manually combine out onclick with one that is passed
+    // Otherwise, the onclick passed from the parent will override the copy action
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      handleCopy();
+      onClick?.(e);
+    };
 
     const isFirstRender = useRef(true);
     useEffect(() => {

@@ -30,11 +30,20 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
       checkIconClassName,
       children,
       className,
+      disabled,
+      onClick,
       ...props
     },
     ref
   ) => {
-    const { isCopied, handleClick } = useCopy(stringToCopy);
+    const { isCopied, handleClick: handleCopy } = useCopy(stringToCopy);
+
+    // Similar to using `cn` for classnames, we need to manually combine out onclick with one that is passed
+    // Otherwise, the onclick passed from the parent will override the copy action
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      handleCopy();
+      onClick?.(e);
+    };
 
     const isFirstRender = useRef(true);
     useEffect(() => {
@@ -46,7 +55,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
         ref={ref}
         variant='outline'
         onClick={handleClick}
-        disabled={isCopied}
+        disabled={isCopied || disabled}
         className={cn('group', className)}
         {...props}
       >
