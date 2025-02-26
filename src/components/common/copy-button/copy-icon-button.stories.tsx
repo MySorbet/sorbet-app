@@ -10,3 +10,9 @@ const meta = {
 export default meta;
 
 export const Default = {};
+
+export const Disabled = {
+  args: {
+    disabled: true,
+  },
+};

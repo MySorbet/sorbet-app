@@ -1,10 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { getInvoice } from '@/api/invoices';
 
-export function useInvoice(id: string) {
+import { Invoice } from '../schema';
+export function useInvoice(
+  id: string,
+  options?: Partial<UseQueryOptions<Invoice>>
+) {
   return useQuery({
     queryKey: ['invoice', id],
     queryFn: () => getInvoice(id),
+    ...options,
   });
 }

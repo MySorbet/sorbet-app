@@ -1,0 +1,91 @@
+// This is the Trigger schema used by any knock workflow which receives an invoice
+// Keeping it in the repo allows us to edit it with cursor and have a single source of truth
+// To update it, make your changes here. And copy them into the knock workflows that require it
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "invoice": {
+      "additionalProperties": false,
+      "properties": {
+        "dueDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "fromEmail": {
+          "format": "email",
+          "type": "string"
+        },
+        "fromName": {
+          "type": "string"
+        },
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "invoiceNumber": {
+          "type": "string"
+        },
+        "issueDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "memo": {
+          "type": ["string", "null"]
+        },
+        "paymentMethods": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["usdc", "usd"]
+          },
+          "minItems": 1
+        },
+        "projectName": {
+          "type": ["string", "null"]
+        },
+        "status": {
+          "enum": ["Open", "Paid", "Cancelled"],
+          "type": "string"
+        },
+        "tax": {
+          "type": ["number", "null"]
+        },
+        "toEmail": {
+          "format": "email",
+          "type": "string"
+        },
+        "toName": {
+          "type": "string"
+        },
+        "totalAmount": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "userId": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "invoiceNumber",
+        "status",
+        "totalAmount",
+        "issueDate",
+        "dueDate",
+        "fromName",
+        "fromEmail",
+        "toName",
+        "toEmail",
+        "paymentMethods"
+      ],
+      "type": "object"
+    },
+    "isVerified": {
+      "type": "boolean"
+    }
+  },
+  "required": ["invoice"],
+  "type": "object"
+}

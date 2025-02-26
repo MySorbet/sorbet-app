@@ -1,0 +1,32 @@
+---
+description: Global Rules. Apply everywhere.
+globs: 
+alwaysApply: false
+---
+
+1. Take a look at README.md to understand this repository's structure, history, guidelines, and more.
+
+2. Take a look at the existing components and stories to understand the codebase.
+
+3. Use the most modern React, NextJS, and TailwindCSS features. Avoid using older features, patterns, and syntax when you have a modern alternative.
+
+4. When importing components or suggesting autocompletes for imports, prefer local imports if they are within 3 directories (i.e. `../../../components`). Follow `@` imports that you see elsewhere in the codebase (i.e. `@/components`, `@/lib`, etc.).
+
+5. When adding or autocompleting tsdoc / jsdoc for props of react components or their interfaces, try to keep the comment on a single line like so:
+
+```
+  /** Callback indicating the user wants to get verified */
+```
+
+5. When creating a new component or story, always use kebab case for the file name. Usually, components are the upper camel case version of their file name.
+
+6. When creating a new component, always create a story for it.
+
+7. When writing stories, always use CSF format. Define meta as a const and use TS satisfies. Define a local typ `Story` as use to type all named exports.
+
+8. When writing stories, always use fn() from `@storybook/test` rather than alert(), console.log, or an empty function.
+   
+9.  When writing stories, the default export should be `export const Default: Story = {};` if the component has no props. If it does have props, add the appropriate args for the default case.
+
+10. Prefer TS `satisfies` to `as`.
+
