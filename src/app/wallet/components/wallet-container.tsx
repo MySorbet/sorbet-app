@@ -2,29 +2,23 @@
 
 import { useFundWallet } from '@privy-io/react-auth';
 import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
-import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
-import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
 import { getOverview } from '@/api/transactions';
-import {
-  mapTransactionOverview,
-  openTransactionInExplorer,
-} from '@/app/wallet/components/utils';
+import { TransactionsCard } from '@/app/wallet/components/transactions-card';
+import { mapTransactionOverview } from '@/app/wallet/components/utils';
+import { WalletSummaryCard } from '@/app/wallet/components/wallet-summary-card';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { env } from '@/lib/env';
 import { Transaction, TransactionOverview } from '@/types/transactions';
 
-import { FundsFlow } from './funds-flow';
 import { MyAccounts } from './my-accounts';
 import { SelectDuration } from './select-duration';
-import { TransactionTable } from './transaction-table';
-import { TransactionTableCard } from './transaction-table-card';
 import { WalletBalance } from './wallet-balance';
 
 export const WalletContainer = () => {
@@ -180,71 +174,26 @@ export const WalletContainer = () => {
           />
         </div>
       </div>
-      <div className='flex flex-col gap-6 lg:flex-row'>
-        <div className='lg:w-1/2'>
-          <FundsFlow
-            isLoading={loading}
-            title='Money In'
-            balance={transactions.total_money_in}
-            icon={<ArrowDown className='text-muted size-4' />}
-            items={
-              !transactions.money_in
-                ? undefined
-                : transactions.money_in.map((transaction: Transaction) => {
-                    // check if this is a user adding funds to their account
-                    const isAdded =
-                      transaction.sender.toLowerCase() ===
-                      walletAddress?.toLowerCase();
-                    return {
-                      icon: isAdded ? (
-                        <Plus className='text-muted size-6' />
-                      ) : (
-                        <ArrowDown className='text-muted size-6' />
-                      ),
-                      label: isAdded ? 'Added' : 'Received',
-                      account: transaction.sender,
-                      balance: transaction.value,
-                    };
-                  })
-            }
-          />
-        </div>
-        <div className='lg:w-1/2'>
-          <FundsFlow
-            isLoading={loading}
-            title='Money Out'
-            balance={transactions.total_money_out}
-            icon={<ArrowUp className='text-muted size-4' />}
-            items={
-              !transactions.money_out
-                ? undefined
-                : transactions.money_out.map((transaction: Transaction) => ({
-                    icon: <ArrowUp className='size-6 text-white' />,
-                    label: 'Sent',
-                    account: transaction.receiver,
-                    balance: transaction.value,
-                  }))
-            }
-          />
-        </div>
-      </div>
-      <div className='mt-12 flex flex-col'>
-        <div className='mb-6 flex items-center'>
-          <div className='text-2xl font-semibold'>Recent Transactions</div>
-          <Link href='/wallet/all'>
-            <div className='text-sorbet ml-4 cursor-pointer text-right text-sm font-semibold'>
-              View all
-            </div>
-          </Link>
-        </div>
-        <TransactionTableCard>
-          <TransactionTable
-            isLoading={loading}
-            transactions={mappedTransactions}
-            onTransactionClick={openTransactionInExplorer}
-          />
-        </TransactionTableCard>
-      </div>
+      <WalletSummaryCard
+        label='Money In'
+        value={Number(transactions.total_money_in)}
+        // TODO: Remove Number() hack
+        // TODO: subscript should be dynamic
+        subscript='All time'
+      />
+      <WalletSummaryCard
+        label='Money Out'
+        value={Number(transactions.total_money_out)}
+        // TODO: Remove Number() hack
+        // TODO: subscript should be dynamic
+        subscript='All time'
+      />
+      <TransactionsCard
+        transactions={mappedTransactions}
+        isLoading={loading}
+        description='All time'
+        // TODO: description should be dynamic
+      />
     </div>
   );
 };
