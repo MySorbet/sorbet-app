@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
-import { InvoiceStatus, InvoiceStatuses } from './utils';
+import { InvoiceStatus, InvoiceStatuses } from '../../utils';
 
 // TODO: Match these colors exactly with design or sensibly if not
 const variants: Record<InvoiceStatus, string> = {

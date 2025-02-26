@@ -3,8 +3,9 @@ import React from 'react';
 
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatWalletAddress } from '@/lib/utils';
 
-import { formatCurrency, formatWalletAddress } from './utils';
+import { formatCurrency } from './utils';
 
 interface FundsFlowProps {
   icon: React.ReactNode;

@@ -142,6 +142,7 @@ const config = {
       },
       boxShadow: {
         widget: '0px 20px 120px 0px rgba(52, 64, 84, 0.06)',
+        invoice: '0px 20px 110px 0px #3440540F',
       },
       transitionDuration: {
         '5000': '5000ms',

@@ -15,8 +15,10 @@ export const AwareAppSideBar = () => {
   const { user } = useAuth();
   const pathName = usePathname();
   const isCreateInvoice = pathName.includes('/invoices/create');
+  const isInvoiceIdPage = pathName.match(/^\/invoices\/[a-zA-Z0-9-]+$/); // Matches a page like /invoices/123 (guid)
   const isSignIn = pathName.includes('/signin');
   const isSplash = pathName === '/';
-  const showSidebar = user && !isCreateInvoice && !isSignIn && !isSplash;
+  const showSidebar =
+    user && !isCreateInvoice && !isInvoiceIdPage && !isSignIn && !isSplash;
   return showSidebar ? <AppSidebar /> : null;
 };

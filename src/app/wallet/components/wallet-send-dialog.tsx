@@ -22,7 +22,7 @@ import useMeasure from 'react-use-measure';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { BaseAlert } from '@/components/common/base-alert';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -41,7 +41,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { env } from '@/lib/env';
-import BaseInProduct from '~/svg/base-in-product.svg';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
@@ -348,7 +347,10 @@ const Step1 = ({
                 </FormItem>
               )}
             />
-            <BaseAlert />
+            <BaseAlert
+              title='Is this a Base network address?'
+              description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+            />
           </div>
           <Button
             className='mt-6 w-full'
@@ -361,19 +363,6 @@ const Step1 = ({
         </form>
       </Form>
     </div>
-  );
-};
-
-const BaseAlert = ({ className }: { className?: string }) => {
-  return (
-    <Alert className={className}>
-      <BaseInProduct className='size-5' />
-      <AlertTitle>Is this a Base network address?</AlertTitle>
-      <AlertDescription>
-        Make sure this address can accept USDC on Base. If not, you could lose
-        your funds.
-      </AlertDescription>
-    </Alert>
   );
 };
 
@@ -430,7 +419,10 @@ const Step2 = ({
         <div className='flex w-full items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] px-4 py-6'>
           <p className='text-md w-full truncate'>{recipientWalletAddress}</p>
         </div>
-        <BaseAlert />
+        <BaseAlert
+          title='Is this a Base network address?'
+          description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+        />
       </div>
       <div className='mt-4 flex gap-3'>
         <Button

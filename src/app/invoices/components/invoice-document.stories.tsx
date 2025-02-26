@@ -1,78 +1,70 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
+import { addDays } from 'date-fns';
 
-import { longestMemo, sampleInvoices } from '@/api/invoices/sample-invoices';
-import { InvoiceFormData } from '@/app/invoices/components/create/invoice-form-context';
+import { sampleInvoices } from '@/api/invoices/sample-invoices';
 
+import { InvoiceForm } from '../schema';
 import { InvoiceDocument } from './invoice-document';
 
-const meta: Meta<typeof InvoiceDocument> = {
+const meta = {
   title: 'Invoices/InvoiceDocument',
   component: InvoiceDocument,
   parameters: {
     layout: 'centered',
-    background: {
-      default: 'sorbet',
-    },
   },
+} satisfies Meta<typeof InvoiceDocument>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+/**
+ * Example of rendering the InvoiceDocument with a complete Invoice from the database.
+ */
+export const WithInvoice: Story = {
   args: {
     invoice: sampleInvoices[0],
   },
 };
 
-export default meta;
-type Story = StoryObj<typeof InvoiceDocument>;
-
-export const Default: Story = {};
-
-export const WithTax: Story = {
+/**
+ * Example of rendering the InvoiceDocument with an Invoice that has a project name.
+ */
+export const WithProjectName: Story = {
   args: {
-    invoice: {
-      ...sampleInvoices[1],
-    },
+    invoice: sampleInvoices[1],
   },
 };
 
-const sampleInvoiceFormData: InvoiceFormData = {
-  invoiceNumber: 'INV005',
-  issueDate: new Date(),
-  dueDate: new Date(),
-  memo: 'Payment received with thanks',
-  fromName: 'Your Company',
-  fromEmail: 'billing@yourcompany.com',
-  toName: 'Mega Industries',
-  toEmail: 'invoices@megaindustries.com',
-  projectName: 'AI Research Project',
-  items: [
-    {
-      name: 'AI Algorithm Development',
-      quantity: 1,
-      amount: 1000.0,
-    },
-    {
-      name: 'Technical Documentation',
-      quantity: 5,
-      amount: 50.0,
-    },
-    {
-      name: 'Technical Documentation',
-      quantity: 5,
-      amount: 50.0,
-    },
-  ],
-  tax: 10,
-};
-
-export const WithOnlyFormData: Story = {
-  args: {
-    invoice: sampleInvoiceFormData,
-  },
-};
-
-export const LongMemo: Story = {
+/**
+ * Example of rendering the InvoiceDocument with form data that would be used
+ * during the invoice creation process.
+ */
+export const WithFormData: Story = {
   args: {
     invoice: {
-      ...sampleInvoices[0],
-      memo: longestMemo,
-    },
+      fromName: 'Your Company',
+      fromEmail: 'billing@yourcompany.com',
+      toName: 'New Client',
+      toEmail: 'client@example.com',
+      invoiceNumber: 'INV-2023-001',
+      issueDate: new Date(),
+      dueDate: addDays(new Date(), 30),
+      memo: 'Thank you for your business!',
+      items: [
+        {
+          name: 'Web Development',
+          quantity: 1,
+          amount: 1500,
+        },
+        {
+          name: 'Design Services',
+          quantity: 2,
+          amount: 500,
+        },
+      ],
+      tax: 10,
+      paymentMethods: ['usdc', 'usd'],
+    } satisfies InvoiceForm,
   },
 };

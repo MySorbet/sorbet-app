@@ -1,9 +1,13 @@
 import { addDays, subDays } from 'date-fns';
 
-import { Invoice } from '@/app/invoices/components/dashboard/utils';
+import { Invoice } from '@/app/invoices/schema';
 
 /**
  * Set of mock data for invoices. For use in development only.
+ *
+ * Notes:
+ * When invoices 2.0 was implemented, we added payment methods and made projectName optional.
+ * These changes are reflected here. Some invoices retain the old projectName to simulate the old data in the DB.
  */
 export const sampleInvoices: Invoice[] = [
   {
@@ -19,7 +23,6 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Quantum Dynamics Ltd.',
     toEmail: 'finance@quantumdynamics.com',
-    projectName: 'Data Analysis Service',
     items: [
       {
         name: 'Data Analysis Report',
@@ -32,6 +35,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 30.0,
       },
     ],
+    paymentMethods: ['usdc'],
   },
   {
     id: '1a2b3c4d-5e6f-4a5b-9c8d-7e6f5a4b3c2d',
@@ -60,6 +64,7 @@ export const sampleInvoices: Invoice[] = [
       },
     ],
     tax: 10,
+    paymentMethods: ['usdc', 'usd'],
   },
   {
     id: 'c2d8f3a1-8f7b-4e3c-9d6a-8b7f9e2c1d3b',
@@ -87,6 +92,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 25.5,
       },
     ],
+    paymentMethods: ['usdc'],
   },
   {
     id: 'a1b2c3d4-e5f6-4a5b-9c8d-7e6f5a4b3c2d',
@@ -114,6 +120,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 20.75,
       },
     ],
+    paymentMethods: ['usd'],
   },
   {
     id: 'f1e2d3c4-b5a6-4c5d-8e7f-9a8b7c6d5e4f',
@@ -128,7 +135,6 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Smith Consulting',
     toEmail: 'accounting@smithconsulting.com',
-    projectName: 'Marketing Strategy',
     items: [
       {
         name: 'Marketing Strategy Session',
@@ -136,6 +142,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 40.0,
       },
     ],
+    paymentMethods: ['usdc'],
   },
   {
     id: '3f7af738-5d50-4d62-9fe9-1e2c1c8b9e9a',
@@ -163,6 +170,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 100.0,
       },
     ],
+    paymentMethods: ['usdc', 'usd'],
   },
   {
     id: 'b1c2d3e4-f5a6-4b5c-8d7e-9f8a7b6c5d4e',
@@ -190,6 +198,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 5.0,
       },
     ],
+    paymentMethods: ['usdc'],
   },
 ];
 

@@ -2,9 +2,8 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
-import { InvoiceDocument } from '@/app/invoices/components/invoice-document';
-
-import { Invoice } from '../components/dashboard/utils';
+import { InvoiceDocument } from '../components/invoice-document';
+import { Invoice } from '../schema';
 
 /**
  * Use this hook to print an invoice in a place where it's not visible to the user.

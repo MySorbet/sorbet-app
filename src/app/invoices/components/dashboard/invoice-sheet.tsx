@@ -21,10 +21,10 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
+import { Invoice } from '../../schema';
+import { checkOverdue, formatDate, InvoiceStatus } from '../../utils';
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 import { InvoiceStatusBadge } from './invoice-status-badge';
-import { checkOverdue, Invoice, InvoiceStatus } from './utils';
-import { formatDate } from './utils';
 
 // TODO: Is there a better scroll solution? Perhaps with sticky header and footer?
 // TODO: Use custom easing curves to improve the feel of the sheet open animation (match vaul?)
@@ -149,7 +149,12 @@ export default function InvoiceSheet({
                 label='Invoice no.'
                 value={invoice.invoiceNumber}
               />
-              <InvoiceDetail label='Project name' value={invoice.projectName} />
+              {invoice.projectName && (
+                <InvoiceDetail
+                  label='Project name'
+                  value={invoice.projectName}
+                />
+              )}
             </div>
 
             <Separator />

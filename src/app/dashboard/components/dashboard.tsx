@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { parseAsBoolean, useQueryState } from 'nuqs';
 import { useEffect, useMemo, useState } from 'react';
 
 import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer';

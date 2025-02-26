@@ -1,26 +1,10 @@
-'use client';
+import { Metadata } from 'next';
 
-import { useRouter } from 'next/navigation';
+export const metadata: Metadata = {
+  title: 'Create Invoice',
+};
 
-import { CreateInvoicePageHeader } from '@/app/invoices/components/create/create-invoice-page-header';
-
-import { Authenticated } from '../../authenticated';
-import { InvoiceFormProvider } from '../components/create/invoice-form-context';
-
-// TODO: each route should prefetch the next one
-
-export default function CreateInvoiceLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const router = useRouter();
-  return (
-    <Authenticated>
-      <main className='flex size-full flex-col'>
-        <CreateInvoicePageHeader onClose={() => router.push('/invoices')} />
-        <InvoiceFormProvider>{children}</InvoiceFormProvider>
-      </main>
-    </Authenticated>
-  );
+/** Noop layout. We just use this file to set metadata */
+export default function CreateInvoiceLayout(props: React.PropsWithChildren) {
+  return props.children;
 }

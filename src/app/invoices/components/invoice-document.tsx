@@ -1,19 +1,17 @@
 import { forwardRef } from 'react';
 
 import { formatCurrency } from '@/lib/currency';
+import { cn } from '@/lib/utils';
 
-import { InvoiceFormData } from './create/invoice-form-context';
-import {
-  calculateSubtotalTaxAndTotal,
-  formatDate,
-  Invoice,
-} from './dashboard/utils';
+import { AcceptedPaymentMethod, Invoice, InvoiceForm } from '../schema';
+import { calculateSubtotalTaxAndTotal, formatDate } from '../utils';
+
 /**
  * Render a PDF-like document displaying the invoice details.
  *
  * Can accept either an
  *
- * - `InvoiceFormData` object (in the case you use it to review details). In this
+ * - `InvoiceForm` object (in the case you use it to live render the invoice form). In this
  * case, the `totalAmount` will be calculated on the frontend by totalling the items.
  *
  * - Or an `Invoice` object (in the case you use it to display a finalized invoice). In this
@@ -21,22 +19,32 @@ import {
  */
 export const InvoiceDocument = forwardRef<
   HTMLDivElement,
-  { invoice: InvoiceFormData | Invoice }
->(({ invoice }, ref) => {
+  { invoice: InvoiceForm | Invoice; className?: string }
+>(({ invoice, className }, ref) => {
   const { taxAmount, total } = calculateSubtotalTaxAndTotal(invoice);
   // Total amount is dependent on which type of invoice we get
   // If this is full invoice from the server, the amount has been calculated already
   // If this is form data, we'll need to calculate it ourselves
   const totalAmount = 'totalAmount' in invoice ? invoice.totalAmount : total;
 
+  // Backwards compatibility
+  const projectName =
+    'projectName' in invoice ? invoice.projectName : undefined;
+
   return (
     <div
-      className='mx-auto min-w-[800px] max-w-4xl rounded-2xl bg-white p-16'
+      className={cn(
+        'mx-auto w-[21cm] rounded-2xl bg-white p-16',
+        // 'min-h-[29.7cm]', // Note: Use this if you want A4 height
+        className
+      )}
       ref={ref}
     >
-      <h1 className='mb-16 text-5xl font-semibold'>Invoice</h1>
+      <h1 className='text-5xl font-semibold'>Invoice</h1>
+      <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
+      {projectName && <p className='pt-1 text-xs'>{projectName}</p>}
 
-      <table className='mb-20 w-full'>
+      <table className='mb-20 mt-16 w-full'>
         <thead>
           <tr className='border-muted border-b'>
             <th className='pb-3 text-left'>
@@ -47,11 +55,6 @@ export const InvoiceDocument = forwardRef<
             <th className='pb-3 text-left'>
               <h2 className='text-muted-foreground text-xs font-semibold'>
                 To
-              </h2>
-            </th>
-            <th className='pb-3 text-left'>
-              <h2 className='text-muted-foreground text-xs font-semibold'>
-                Details
               </h2>
             </th>
           </tr>
@@ -65,10 +68,6 @@ export const InvoiceDocument = forwardRef<
             <td className='pt-2'>
               <p className='pt-1 text-xs'>{invoice.toName}</p>
               <p className='pt-1 text-xs'>{invoice.toEmail}</p>
-            </td>
-            <td className='pt-2'>
-              <p className='pt-1 text-xs'>{invoice.projectName}</p>
-              <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
             </td>
           </tr>
         </tbody>
@@ -145,7 +144,11 @@ export const InvoiceDocument = forwardRef<
               </div>
               <div className='flex'>
                 <p className='min-w-16 text-xs'>Pay by</p>
-                <p className='text-xs font-semibold'>USDC, ACH / Wire</p>
+                <p className='text-xs font-semibold'>
+                  {invoice.paymentMethods
+                    .map((method) => paymentMethodDisplay[method])
+                    .join(', ')}
+                </p>
               </div>
             </td>
             <td className='max-w-sm pt-2'>
@@ -157,3 +160,9 @@ export const InvoiceDocument = forwardRef<
     </div>
   );
 });
+
+/** Map all payment methods to their display name for the invoice document */
+const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
+  usdc: 'USDC',
+  usd: 'ACH / Wire',
+};
