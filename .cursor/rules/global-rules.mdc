@@ -28,3 +28,5 @@ alwaysApply: false
    
 9.  When writing stories, the default export should be `export const Default: Story = {};` if the component has no props. If it does have props, add the appropriate args for the default case.
 
+10. Prefer TS `satisfies` to `as`.
+
