@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { omitBy } from 'lodash';
 import { useForm } from 'react-hook-form';
 
 import { Card } from '@/components/ui/card';
@@ -30,12 +31,21 @@ export const CreateInvoice = ({
   onGetVerified?: () => void;
   walletAddress?: string;
 }) => {
+  // RHF will let undefined values overwrite the default values, so we filter them out
+  const filteredPrefills = omitBy(prefills, (value) => value === undefined);
+
   // Form lives at the top level. Controls access this form via context
   const form = useForm<InvoiceForm>({
     resolver: zodResolver(invoiceFormSchema),
+    // Provides synchronous prefills and default values
     defaultValues: {
       ...defaultInvoiceValues,
-      ...prefills,
+      ...filteredPrefills,
+    },
+    // Provides asynchronous prefills (spread with default values to satisfy RHF type)
+    values: {
+      ...defaultInvoiceValues,
+      ...filteredPrefills,
     },
     mode: 'all',
   });

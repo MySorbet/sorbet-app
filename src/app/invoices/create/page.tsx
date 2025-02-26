@@ -44,7 +44,7 @@ export default function CreateInvoicePage() {
             fromName: user?.firstName,
             fromEmail: user?.email,
             invoiceNumber,
-            // TODO: prefill usd payment if the user is verified
+            paymentMethods: isVerified ? ['usdc', 'usd'] : undefined,
           }}
         />
       </main>

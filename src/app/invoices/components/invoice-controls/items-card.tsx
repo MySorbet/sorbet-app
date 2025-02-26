@@ -20,6 +20,7 @@ export const ItemsCard = ({
   onItemsChange: (items: InvoiceItem[]) => void;
 }) => {
   // TODO: These handlers used to be integrated with the parent form. Either do this again, or use this as another layer
+  // Check out useFieldArray as a potential solution: https://react-hook-form.com/docs/usefieldarray
   const handleDelete = (index: number) => {
     const newItems = [...items];
     newItems.splice(index, 1);

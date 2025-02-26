@@ -2,10 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, waitFor } from '@storybook/test';
 import { userEvent, within } from '@storybook/test';
 import { addDays } from 'date-fns';
+import { useEffect, useState } from 'react';
 
 import { mockCheckInvoiceNumberHandler } from '@/api/invoices/msw-handlers';
+import { useInvoiceNumber } from '@/app/invoices/hooks/use-invoice-number';
 
-import { InvoiceForm } from '../schema';
+import { AcceptedPaymentMethod, InvoiceForm } from '../schema';
 import { CreateInvoice } from './create-invoice';
 
 const meta = {
@@ -31,8 +33,8 @@ const samplePrefills: Required<InvoiceForm> = {
   toEmail: 'john.doe@example.com',
   fromName: 'Jane Smith',
   fromEmail: 'jane.smith@example.com',
-  issueDate: new Date('2024-03-20'),
-  dueDate: addDays(new Date('2024-03-20'), 7),
+  issueDate: new Date(),
+  dueDate: addDays(new Date(), 7),
   memo: 'Sample invoice for development',
   items: [
     {
@@ -70,6 +72,34 @@ export const WithPrefills: Story = {
   args: {
     ...Default.args,
     prefills: samplePrefills,
+  },
+};
+
+export const WithDelayedInvoiceNumber: Story = {
+  args: {
+    ...Default.args,
+  },
+  render: (args) => {
+    const invoiceNumber = useInvoiceNumber();
+    return <CreateInvoice {...args} prefills={{ invoiceNumber }} />;
+  },
+};
+
+export const WithDelayedPaymentMethods: Story = {
+  args: {
+    ...Default.args,
+  },
+  render: (args) => {
+    const [paymentMethods, setPaymentMethods] =
+      useState<AcceptedPaymentMethod[]>();
+    useEffect(() => {
+      setTimeout(() => {
+        setPaymentMethods(['usdc', 'usd']);
+      }, 1000);
+    }, []);
+    return (
+      <CreateInvoice {...args} prefills={{ paymentMethods: paymentMethods }} />
+    );
   },
 };
 
