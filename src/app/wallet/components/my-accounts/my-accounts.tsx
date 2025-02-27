@@ -1,10 +1,8 @@
+'use client';
 import { BadgeDollarSign } from 'lucide-react';
 import Link from 'next/link';
 
-import {
-  ACHWireDetails,
-  useACHWireDetails,
-} from '@/app/invoices/hooks/use-ach-wire-details';
+import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { PaymentMethod } from '@/components/common/payment-methods/payment-method';
 import { PaymentMethodDescription } from '@/components/common/payment-methods/payment-method-description';
@@ -21,15 +19,8 @@ import USDCBaseIcon from '~/svg/base-usdc.svg';
 
 /** Render details for the users accounts */
 export const MyAccounts = () => {
-  // TODO: All this fetching is a little redundant. Think about this
-  const { user } = useAuth();
-  const isVerified = useIsVerified();
-  const { data: account, isLoading } = useACHWireDetails(user?.id ?? '', {
-    enabled: isVerified,
-  });
   const { smartWalletAddress } = useSmartWalletAddress();
 
-  // TODO: Loading states for virtual account
   return (
     <Card className='h-fit'>
       <CardHeader className='bg-primary-foreground rounded-t-md px-4 py-6 '>
@@ -40,7 +31,7 @@ export const MyAccounts = () => {
       </CardHeader>
       <CardContent className='space-y-6 p-3'>
         <PaymentMethodUSDC walletAddress={smartWalletAddress} />
-        <PaymentMethodUSD account={account} isVerified={isVerified} />
+        <PaymentMethodUSD />
       </CardContent>
     </Card>
   );
@@ -79,13 +70,17 @@ const PaymentMethodUSDC = ({ walletAddress }: { walletAddress: string }) => {
  * Local component specializing the PaymentMethod component for USD
  * - Pretty much identical to the payment method rendered in `ClientPaymentCard` (share?)
  */
-const PaymentMethodUSD = ({
-  account,
-  isVerified,
-}: {
-  account?: ACHWireDetails;
-  isVerified?: boolean;
-}) => {
+const PaymentMethodUSD = () => {
+  // TODO: All this fetching is a little redundant. Think about this
+  // Also note that I am experimenting with pushing data fetching to the bottom of the component tree here
+  const { user } = useAuth();
+  const isVerified = useIsVerified();
+  const { data: account, isLoading } = useACHWireDetails(user?.id ?? '', {
+    enabled: isVerified,
+  });
+
+  // TODO: We don't have a great loading state while checking verification because useIsVerified just returns false until the call completes
+
   return (
     <PaymentMethod
       title='USD Virtual account'
@@ -94,7 +89,11 @@ const PaymentMethodUSD = ({
       tooltip='Your free USD account to receive ACH/Wire payments'
     >
       {isVerified ? (
-        account && <VirtualAccountDetails account={account} />
+        account && !isLoading ? (
+          <VirtualAccountDetails account={account} />
+        ) : (
+          <Skeleton className='h-32 w-full' />
+        )
       ) : (
         <>
           <PaymentMethodDescription>
