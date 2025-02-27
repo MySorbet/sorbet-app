@@ -28,7 +28,7 @@ export const BalanceCard = ({
 }) => {
   return (
     <Card className='h-fit min-w-80'>
-      <CardHeader>
+      <CardHeader className='pb-2'>
         <div className='flex items-start justify-between gap-2'>
           <div className='space-y-2'>
             <CardDescription className='flex items-center gap-1'>
@@ -50,9 +50,9 @@ export const BalanceCard = ({
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className='px-2 pb-2'>
         {isLoading ? (
-          <Skeleton className='h-48' />
+          <Skeleton className='mx-4 mb-4 h-48' />
         ) : (
           <BalanceChart history={history} />
         )}
