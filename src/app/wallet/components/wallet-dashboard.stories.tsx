@@ -3,11 +3,11 @@ import { Meta, StoryObj } from '@storybook/react';
 import { mockOverviewHandler } from '@/api/transactions/msw-handlers';
 import { mockTransactionsHandler } from '@/api/transactions/msw-handlers';
 
-import { WalletContainer } from './wallet-container';
+import { WalletDashboard } from './wallet-dashboard';
 
 const meta = {
-  title: 'Wallet/WalletContainer',
-  component: WalletContainer,
+  title: 'Wallet/WalletDashboard',
+  component: WalletDashboard,
   parameters: {
     layout: 'fullscreen',
     msw: {
@@ -21,7 +21,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof WalletContainer>;
+} satisfies Meta<typeof WalletDashboard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

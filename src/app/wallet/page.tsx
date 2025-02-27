@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Header } from '@/components/header';
 
 import { Authenticated } from '../authenticated';
-import { WalletContainer } from './components/wallet-container';
+import { WalletDashboard } from './components/wallet-dashboard';
 import { WalletHeader } from './components/wallet-header';
 import { WalletSendDialog } from './components/wallet-send-dialog';
 import { useSendUSDC } from './hooks/use-send-usdc';
@@ -17,13 +17,13 @@ export default function Wallet() {
 
   return (
     <Authenticated>
-      <div className='flex w-full flex-col'>
+      <main className='flex w-full flex-col'>
         <Header />
         <WalletHeader onDeposit={topUp} onSend={() => setOpen(true)} />
         <div className='container flex flex-1 justify-center p-6'>
-          <WalletContainer />
+          <WalletDashboard />
         </div>
-      </div>
+      </main>
       <WalletSendDialog open={open} setOpen={setOpen} sendUSDC={sendUSDC} />
     </Authenticated>
   );
