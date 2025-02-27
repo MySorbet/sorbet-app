@@ -9,7 +9,7 @@ import { useTransactionOverview } from '../hooks/use-transaction-overview';
 import { BalanceCard } from './balance-card/balance-card';
 import { type Duration, displayDuration } from './balance-card/select-duration';
 import { combineBalance } from './balance-card/util';
-import { DeprecatedMyAccounts } from './deprecated-my-accounts';
+import { MyAccounts } from './my-accounts/my-accounts';
 import { TransactionsCard } from './transactions-card';
 import { mapTransactionOverview } from './utils';
 import { WalletSummaryCard } from './wallet-summary-card';
@@ -61,11 +61,7 @@ export const WalletDashboard = () => {
 
         {/* My Accounts - Second on mobile, right column on desktop */}
         <div className='@xl:col-start-2 @xl:row-span-2 @xl:row-start-1'>
-          <DeprecatedMyAccounts
-            usdcBalance={usdcBalance ?? ''}
-            address={walletAddress}
-            isLoading={isWalletAddressLoading}
-          />
+          <MyAccounts />
         </div>
 
         {/* Summary Cards and Transactions - Third on mobile, bottom of left column on desktop */}
