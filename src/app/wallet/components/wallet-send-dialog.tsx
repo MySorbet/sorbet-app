@@ -40,6 +40,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { env } from '@/lib/env';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
@@ -52,7 +53,6 @@ interface WalletSendDialogProps {
   ) => Promise<`0x${string}` | undefined>;
   open: boolean;
   setOpen: (open: boolean) => void;
-  usdcBalance: string;
 }
 
 type FormSchema = { amount: string; recipientWalletAddress: string };
@@ -64,19 +64,24 @@ export const WalletSendDialog = ({
   sendUSDC,
   open,
   setOpen,
-  usdcBalance,
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
 
   const [contentRef] = useMeasure();
 
+  const { data: walletBalance } = useWalletBalance();
+
   const formSchema = z.object({
     amount: z
       .string()
       .min(1, { message: 'An amount must be entered' })
-      .refine((amount) => isAmountWithinBalance(amount, usdcBalance), {
-        message: 'Amount entered exceeds available balance',
-      })
+      .refine(
+        (amount) =>
+          walletBalance && isAmountWithinBalance(amount, walletBalance),
+        {
+          message: 'Amount entered exceeds available balance',
+        }
+      )
       .refine((amount) => Number(amount) > 0, {
         message: 'Amount must be greater than 0',
       }),
@@ -186,7 +191,7 @@ export const WalletSendDialog = ({
                 <Step1
                   close={close}
                   setStep={setStep}
-                  usdcBalance={usdcBalance}
+                  usdcBalance={walletBalance ?? ''}
                   convertedUSD={convertedUSD}
                   form={form}
                   isValid={isValid}
