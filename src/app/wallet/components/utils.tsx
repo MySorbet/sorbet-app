@@ -2,11 +2,6 @@ import { TableTransaction } from '@/app/wallet/components/transaction-table';
 import { env } from '@/lib/env';
 import { Transaction } from '@/types/transactions';
 
-// TODO: Merge this with the one in @/lib/currency.ts?
-export const formatCurrency = (currency: string): string => {
-  return Number(currency).toLocaleString();
-};
-
 export const formatTransactionDate = (date: string): string => {
   return date.split(',')[0];
 };

@@ -2,17 +2,17 @@
 
 import { useState } from 'react';
 
-import { BalanceCard } from '@/app/wallet/components/balance-card/balance-card';
-import { combineBalance } from '@/app/wallet/components/balance-card/combine-balance';
-import { TransactionsCard } from '@/app/wallet/components/transactions-card';
-import { mapTransactionOverview } from '@/app/wallet/components/utils';
-import { WalletSummaryCard } from '@/app/wallet/components/wallet-summary-card';
-import { useTransactionOverview } from '@/app/wallet/hooks/use-transaction-overview';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
+import { useTransactionOverview } from '../hooks/use-transaction-overview';
+import { BalanceCard } from './balance-card/balance-card';
 import { type Duration, displayDuration } from './balance-card/select-duration';
+import { combineBalance } from './balance-card/util';
 import { MyAccounts } from './my-accounts';
+import { TransactionsCard } from './transactions-card';
+import { mapTransactionOverview } from './utils';
+import { WalletSummaryCard } from './wallet-summary-card';
 
 /** Layout all the wallet page components */
 export const WalletDashboard = () => {

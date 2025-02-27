@@ -6,8 +6,6 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatWalletAddress } from '@/lib/utils';
 
-import { formatCurrency } from './utils';
-
 interface MyAccountsProps {
   usdcBalance: string;
   address: string | null;
@@ -75,7 +73,7 @@ const USDCAccountItem: React.FC<{
           </div>
         )}
       </div>
-      <div className='ml-auto'>${formatCurrency(balance)}</div>
+      <div className='ml-auto'>${Number(balance).toLocaleString()}</div>
     </div>
   );
 };
