@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 import { sampleOverview } from '@/api/transactions/sample-transactions';
-import { calculateBalanceHistory } from '@/app/wallet/components/balance-card/util';
 
+import { calculateBalanceHistory } from '../../components/balance-card/util';
 import { BalanceCard } from './balance-card';
 import {
   balanceHistoryComplex,

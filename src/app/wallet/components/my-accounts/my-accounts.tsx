@@ -1,4 +1,5 @@
 'use client';
+
 import { BadgeDollarSign } from 'lucide-react';
 import Link from 'next/link';
 
@@ -30,7 +31,7 @@ export const MyAccounts = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className='space-y-6 p-3'>
-        <PaymentMethodUSDC walletAddress={smartWalletAddress} />
+        <PaymentMethodUSDC walletAddress={smartWalletAddress ?? undefined} />
         <PaymentMethodUSD />
       </CardContent>
     </Card>
@@ -41,7 +42,7 @@ export const MyAccounts = () => {
  * Local component specializing the PaymentMethod component for USDC
  * - Very similar to the payment method rendered in `ClientPaymentCard` (share?)
  */
-const PaymentMethodUSDC = ({ walletAddress }: { walletAddress: string }) => {
+const PaymentMethodUSDC = ({ walletAddress }: { walletAddress?: string }) => {
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
   return (
     <PaymentMethod

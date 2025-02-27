@@ -2,6 +2,10 @@ import { TableTransaction } from '@/app/wallet/components/transaction-table';
 import { env } from '@/lib/env';
 import { Transaction } from '@/types/transactions';
 
+/**
+ * This function only exists to take the date portion of a locale formatted date (i.e. "2/27/2025, 12:00:00 AM")
+ * Once the server is returning ISO strings, this will not be needed
+ */
 export const formatTransactionDate = (date: string): string => {
   return date.split(',')[0];
 };

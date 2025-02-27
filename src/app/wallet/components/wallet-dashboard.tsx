@@ -8,7 +8,7 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { useTransactionOverview } from '../hooks/use-transaction-overview';
 import { BalanceCard } from './balance-card/balance-card';
 import { type Duration, displayDuration } from './balance-card/select-duration';
-import { combineBalance } from './balance-card/util';
+import { calculateBalanceHistory } from './balance-card/util';
 import { MyAccounts } from './my-accounts/my-accounts';
 import { TransactionsCard } from './transactions-card';
 import { mapTransactionOverview } from './utils';
@@ -32,11 +32,10 @@ export const WalletDashboard = () => {
   const totalMoneyIn = Number(transactions?.total_money_in ?? 0);
   const totalMoneyOut = Number(transactions?.total_money_out ?? 0);
 
-  // TODO: Make this calculate correctly
-  const { cumulativeBalanceHistory } = combineBalance(
-    usdcBalance ?? '',
-    transactions?.money_in,
-    transactions?.money_out
+  const cumulativeBalanceHistory = calculateBalanceHistory(
+    Number(usdcBalance ?? 0),
+    transactions?.money_in ?? [],
+    transactions?.money_out ?? []
   );
 
   return (

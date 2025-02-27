@@ -21,8 +21,4 @@ export const useSmartWalletAddress = () => {
   }, [client]);
 
   return { smartWalletAddress, isLoading };
-  // return {
-  //   smartWalletAddress: '0x1231231231231231231231231231231231231231',
-  //   isLoading: false,
-  // };
 };

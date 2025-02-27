@@ -1,7 +1,7 @@
 import { sampleTransactions } from '@/api/transactions/sample-transactions';
-import { mapTransactionsToBalanceHistory } from '@/app/wallet/components/balance-card/util';
 
 import { BalanceHistory } from './balance-chart';
+import { mapTransactionsToBalanceHistory } from './util';
 
 export const balanceHistorySimple: BalanceHistory = [
   { iso: new Date('2024-01-01').toISOString(), balance: 100 },

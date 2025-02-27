@@ -60,5 +60,3 @@ export const BalanceCard = ({
     </Card>
   );
 };
-
-// TODO: Loading skeleton
