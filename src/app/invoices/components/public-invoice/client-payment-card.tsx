@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign, CornerDownRight, Info } from 'lucide-react';
+import { BadgeDollarSign, CornerDownRight } from 'lucide-react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { FC } from 'react';
 
 import { BaseAlert } from '@/components/common/base-alert';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import {
   Accordion,
   AccordionContent,
@@ -21,12 +22,6 @@ import {
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
@@ -171,16 +166,7 @@ const PaymentMethod = ({
         <div className='flex w-full items-center gap-1'>
           <Icon className='size-6 shrink-0' />
           <Label className='text-sm font-medium'>{title}</Label>
-          {tooltip && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
-                </TooltipTrigger>
-                <TooltipContent>{tooltip}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
           {timing && (
             <span className='ml-auto text-right text-xs text-[#5B6BFF]'>
               {timing}

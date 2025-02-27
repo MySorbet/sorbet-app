@@ -1,10 +1,11 @@
 'use client';
 
 import { kebabCase } from 'lodash';
-import { Info, LockKeyhole } from 'lucide-react';
+import { LockKeyhole } from 'lucide-react';
 import { forwardRef } from 'react';
 
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -179,16 +180,8 @@ const PaymentMethod = ({
           <Label className='text-sm font-medium' htmlFor={kebabCase(title)}>
             {title}
           </Label>
-          {tooltip && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
-                </TooltipTrigger>
-                <TooltipContent>{tooltip}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
+
           {timing && (
             <span className='ml-auto text-right text-xs text-[#5B6BFF]'>
               {timing}
