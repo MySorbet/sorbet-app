@@ -23,7 +23,7 @@ const meta = {
   args: {
     balance: 1000,
     history: balanceHistorySimple,
-    duration: 'all',
+    duration: '30',
     onDurationChange: fn(),
   },
 } satisfies Meta<typeof BalanceCard>;
