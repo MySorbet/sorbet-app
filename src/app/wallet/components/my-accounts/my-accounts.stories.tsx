@@ -1,5 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import {
+  mockACHWireDetailsHandler,
+  mockBridgeCustomerHandler,
+  mockBridgeCustomerHandlerKycComplete,
+} from '@/api/bridge';
+
 import { MyAccounts } from './my-accounts';
 
 const meta = {
@@ -13,4 +19,21 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        mockACHWireDetailsHandler,
+        mockBridgeCustomerHandlerKycComplete,
+      ],
+    },
+  },
+};
+
+export const NotVerified: Story = {
+  parameters: {
+    msw: {
+      handlers: [mockBridgeCustomerHandler],
+    },
+  },
+};

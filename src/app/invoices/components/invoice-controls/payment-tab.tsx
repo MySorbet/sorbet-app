@@ -2,10 +2,10 @@
 
 import { kebabCase } from 'lodash';
 import { LockKeyhole } from 'lucide-react';
-import { forwardRef } from 'react';
 
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
+import { PaymentMethodDescription } from '@/components/common/payment-methods/payment-method-description';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -116,6 +116,7 @@ type PaymentMethodProps = {
 /**
  * Local component for rendering a payment method. Essentially a checkbox with some bells and whistles.
  * - Manipulates form data via `useInvoiceForm`
+ * - Very similar to the common `PaymentMethod`, but specialized for the invoice controls
  */
 const PaymentMethod = ({
   title,
@@ -193,22 +194,3 @@ const PaymentMethod = ({
     </div>
   );
 };
-
-/** Local component for rendering a payment method description. Compose this with `PaymentMethod`. */
-const PaymentMethodDescription = forwardRef<
-  HTMLSpanElement,
-  {
-    className?: string;
-    children: React.ReactNode;
-  }
->(({ className, children, ...props }, ref) => {
-  return (
-    <span
-      ref={ref}
-      className={cn('text-muted-foreground text-sm font-normal', className)}
-      {...props}
-    >
-      {children}
-    </span>
-  );
-});

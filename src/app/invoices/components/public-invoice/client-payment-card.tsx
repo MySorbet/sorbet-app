@@ -1,17 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign, CornerDownRight } from 'lucide-react';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { FC } from 'react';
+import { BadgeDollarSign } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { BaseAlert } from '@/components/common/base-alert';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
-import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { PaymentMethod } from '@/components/common/payment-methods/payment-method';
+import { VirtualAccountDetails } from '@/components/common/payment-methods/virtual-account-details';
 import {
   Card,
   CardContent,
@@ -19,11 +13,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatWalletAddress } from '@/lib/utils';
-import { cn } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
 
 import { ACHWireDetails } from '../../hooks/use-ach-wire-details';
@@ -145,40 +137,6 @@ export const ClientPaymentCard = ({
   );
 };
 
-/** Local component to render a payment method to the client. Very similar to payment methods rendered in the invoice form for the freelancer */
-const PaymentMethod = ({
-  title,
-  tooltip,
-  timing,
-  children,
-  Icon,
-}: {
-  title: React.ReactNode;
-  tooltip?: string;
-  timing?: string;
-  children?: React.ReactNode;
-  Icon: React.ElementType;
-}) => {
-  return (
-    <div className={cn('group flex w-full gap-4')}>
-      <CornerDownRight className='text-muted-foreground ml-2 size-6 shrink-0' />
-      <div className='flex w-full flex-col gap-2 pb-3 pr-3 pt-1'>
-        <div className='flex w-full items-center gap-1'>
-          <Icon className='size-6 shrink-0' />
-          <Label className='text-sm font-medium'>{title}</Label>
-          {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
-          {timing && (
-            <span className='ml-auto text-right text-xs text-[#5B6BFF]'>
-              {timing}
-            </span>
-          )}
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-};
-
 const PaymentMethodSkeleton = () => {
   return (
     <PaymentMethod title={<Skeleton className='h-5 w-40' />} Icon={Skeleton}>
@@ -229,84 +187,7 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
       timing='Arrives in 1-2 days'
       tooltip='Send USD to this bank account to pay this invoice'
     >
-      <div className='flex w-full flex-col gap-2'>
-        <VirtualAccountRow>
-          <VirtualAccountRowLabel>Account number</VirtualAccountRowLabel>
-          <VirtualAccountRowValue>
-            {account.accountNumber}
-            <CopyIconButton stringToCopy={account.accountNumber} />
-          </VirtualAccountRowValue>
-        </VirtualAccountRow>
-        <VirtualAccountRow>
-          <VirtualAccountRowLabel>Routing number</VirtualAccountRowLabel>
-          <VirtualAccountRowValue>
-            {account.routingNumber}
-            <CopyIconButton stringToCopy={account.routingNumber} />
-          </VirtualAccountRowValue>
-        </VirtualAccountRow>
-        <VirtualAccountRow>
-          <VirtualAccountRowLabel>Account type</VirtualAccountRowLabel>
-          <VirtualAccountRowValue>
-            {account.beneficiary.accountType}
-          </VirtualAccountRowValue>
-        </VirtualAccountRow>
-        <VirtualAccountRow>
-          <VirtualAccountRowLabel>Recipient</VirtualAccountRowLabel>
-          <VirtualAccountRowValue>
-            {account.beneficiary.name}
-            <CopyIconButton stringToCopy={account.beneficiary.name} />
-          </VirtualAccountRowValue>
-        </VirtualAccountRow>
-        <Accordion type='single' collapsible>
-          <AccordionItem value='additional-details' className='border-none p-0'>
-            <AccordionTrigger className='text-muted-foreground border-none p-0 pb-2 text-sm font-normal'>
-              Additional details
-            </AccordionTrigger>
-            <AccordionContent className='flex flex-col gap-2 p-0'>
-              <VirtualAccountRow>
-                <VirtualAccountRowLabel>
-                  Recipient address
-                </VirtualAccountRowLabel>
-                <VirtualAccountRowValue>
-                  {account.beneficiary.address}
-                </VirtualAccountRowValue>
-              </VirtualAccountRow>
-              <VirtualAccountRow>
-                <VirtualAccountRowLabel>Bank name</VirtualAccountRowLabel>
-                <VirtualAccountRowValue>
-                  {account.bank.name}
-                </VirtualAccountRowValue>
-              </VirtualAccountRow>
-              <VirtualAccountRow>
-                <VirtualAccountRowLabel>Bank address</VirtualAccountRowLabel>
-                <VirtualAccountRowValue>
-                  {account.bank.address}
-                </VirtualAccountRowValue>
-              </VirtualAccountRow>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
+      <VirtualAccountDetails account={account} />
     </PaymentMethod>
-  );
-};
-
-// 👇 Local components to keep virtual account render DRY
-
-const VirtualAccountRow: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <div className='flex items-center justify-between gap-2'>{children}</div>
-  );
-};
-
-const VirtualAccountRowLabel: FC<PropsWithChildren> = ({ children }) => {
-  return <span className='text-muted-foreground text-sm'>{children}</span>;
-};
-
-const VirtualAccountRowValue: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <span className='flex max-w-[70%] items-center gap-1 text-right text-sm'>
-      {children}
-    </span>
   );
 };
