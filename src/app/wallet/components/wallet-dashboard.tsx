@@ -17,14 +17,9 @@ import { WalletSummaryCard } from './wallet-summary-card';
 /** Layout all the wallet page components */
 export const WalletDashboard = () => {
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
-
-  const {
-    smartWalletAddress: walletAddress,
-    isLoading: isWalletAddressLoading,
-  } = useSmartWalletAddress();
+  const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
 
   const [duration, setDuration] = useState<Duration>('30');
-
   const { data: transactions, isLoading: isTransactionsLoading } =
     useTransactionOverview(duration === 'all' ? undefined : parseInt(duration));
 
