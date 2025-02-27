@@ -41,44 +41,53 @@ export const WalletDashboard = () => {
 
   return (
     <div className='@container size-full max-w-7xl'>
-      {/* Col 1 */}
-      <div>
-        <BalanceCard
-          balance={Number(usdcBalance ?? 0)}
-          history={cumulativeBalanceHistory}
-          duration={duration}
-          onDurationChange={setDuration}
-          // isLoading={isBalanceLoading || isTransactionsLoading}
-        />
-        <div className='@md:flex-row flex flex-col justify-between gap-4'>
-          <WalletSummaryCard
-            label='Money In'
-            value={Number(transactions?.total_money_in ?? 0)}
-            isLoading={isTransactionsLoading}
-            // TODO: Remove Number() hack
-            subscript={displayDuration[duration]}
-          />
-          <WalletSummaryCard
-            label='Money Out'
-            value={Number(transactions?.total_money_out ?? 0)}
-            isLoading={isTransactionsLoading}
-            // TODO: Remove Number() hack
-            subscript={displayDuration[duration]}
+      {/* Grid container for responsive layout */}
+      <div className='@xl:grid-cols-[1fr_350px] grid grid-cols-1 gap-6'>
+        {/* Balance Card - First on mobile, left column on desktop */}
+        <div className='@xl:col-start-1 @xl:row-start-1'>
+          <BalanceCard
+            balance={Number(usdcBalance ?? 0)}
+            history={cumulativeBalanceHistory}
+            duration={duration}
+            onDurationChange={setDuration}
+            // isLoading={isBalanceLoading || isTransactionsLoading}
           />
         </div>
-        <TransactionsCard
-          transactions={mappedTransactions}
-          isLoading={isTransactionsLoading}
-          description={displayDuration[duration]}
-        />
-      </div>
 
-      {/* Col 2 */}
-      <MyAccounts
-        usdcBalance={usdcBalance ?? ''}
-        address={walletAddress}
-        isLoading={isWalletAddressLoading}
-      />
+        {/* My Accounts - Second on mobile, right column on desktop */}
+        <div className='@xl:col-start-2 @xl:row-span-2 @xl:row-start-1'>
+          <MyAccounts
+            usdcBalance={usdcBalance ?? ''}
+            address={walletAddress}
+            isLoading={isWalletAddressLoading}
+          />
+        </div>
+
+        {/* Summary Cards and Transactions - Third on mobile, bottom of left column on desktop */}
+        <div className='@xl:col-start-1 @xl:row-start-2 space-y-6'>
+          <div className='@xl:flex-row flex flex-col justify-between gap-4'>
+            <WalletSummaryCard
+              label='Money In'
+              value={Number(transactions?.total_money_in ?? 0)}
+              isLoading={isTransactionsLoading}
+              // TODO: Remove Number() hack
+              subscript={displayDuration[duration]}
+            />
+            <WalletSummaryCard
+              label='Money Out'
+              value={Number(transactions?.total_money_out ?? 0)}
+              isLoading={isTransactionsLoading}
+              // TODO: Remove Number() hack
+              subscript={displayDuration[duration]}
+            />
+          </div>
+          <TransactionsCard
+            transactions={mappedTransactions}
+            isLoading={isTransactionsLoading}
+            description={displayDuration[duration]}
+          />
+        </div>
+      </div>
     </div>
   );
 };
