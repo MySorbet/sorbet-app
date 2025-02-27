@@ -21,7 +21,12 @@ export type BalanceHistory = { iso: string; balance: number }[];
 // TODO: Add a groupByMonth mode for "All time" duration
 // TODO: Improve loading state
 
-/** Renders a chart of the balance history as a beautiful shadcn chart */
+/**
+ * Renders a chart of the balance history as a beautiful shadcn chart
+ *
+ * Note that the chart includes its own `mx-8` and `my-4`.
+ * Account for this when rendering it in a padded container
+ */
 export function BalanceChart({ history }: { history?: BalanceHistory }) {
   return (
     <div>
@@ -29,10 +34,7 @@ export function BalanceChart({ history }: { history?: BalanceHistory }) {
         <AreaChart
           accessibilityLayer
           data={history}
-          margin={{
-            left: 12,
-            right: 12,
-          }}
+          margin={{ left: 32, right: 32, top: 16, bottom: 16 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
@@ -41,6 +43,7 @@ export function BalanceChart({ history }: { history?: BalanceHistory }) {
             axisLine={false}
             tickMargin={8}
             tickFormatter={formatDate}
+            interval='preserveStartEnd'
           />
           <ChartTooltip
             cursor={false}
