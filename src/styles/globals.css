@@ -101,6 +101,7 @@
 }
 
 @layer utilities {
+
   /* Prevents a horizontal layout shift (for fixed elements) when radix modals are open */
   /* Use this on your fixed positioned elements that are affected by the shift */
   /* See https://github.com/radix-ui/primitives/discussions/1586#discussioncomment-6641424 */
@@ -127,4 +128,22 @@
 @page {
   size: A4;
   scale: 100%;
+}
+
+/* Added with `npx shadcn@latest add chart` */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Added to begin incorporating new theme colors */
+@layer base {
+  :root {
+    --sorbet: 265 92% 54%;
+  }
 }

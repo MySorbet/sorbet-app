@@ -14,7 +14,6 @@ const meta = {
   },
   args: {
     open: true,
-    usdcBalance: '100',
     sendUSDC: fn(),
   },
 } satisfies Meta<typeof WalletSendDialog>;

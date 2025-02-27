@@ -1,23 +1,30 @@
-import { Metadata } from 'next';
+'use client';
+import { useState } from 'react';
 
 import { Header } from '@/components/header';
 
 import { Authenticated } from '../authenticated';
-import { WalletContainer } from './components/wallet-container';
-
-export const metadata: Metadata = {
-  title: 'Wallet',
-};
+import { WalletDashboard } from './components/wallet-dashboard';
+import { WalletHeader } from './components/wallet-header';
+import { WalletSendDialog } from './components/wallet-send-dialog';
+import { useSendUSDC } from './hooks/use-send-usdc';
+import { useTopUp } from './hooks/use-top-up';
 
 export default function Wallet() {
+  const { topUp } = useTopUp();
+  const { sendUSDC } = useSendUSDC();
+  const [open, setOpen] = useState(false);
+
   return (
     <Authenticated>
-      <div className='bg-background flex w-full flex-col '>
+      <main className='flex w-full flex-col'>
         <Header />
-        <div className='container flex flex-1 justify-center p-8'>
-          <WalletContainer />
+        <WalletHeader onDeposit={topUp} onSend={() => setOpen(true)} />
+        <div className='container flex flex-1 justify-center p-6'>
+          <WalletDashboard />
         </div>
-      </div>
+      </main>
+      <WalletSendDialog open={open} setOpen={setOpen} sendUSDC={sendUSDC} />
     </Authenticated>
   );
 }
