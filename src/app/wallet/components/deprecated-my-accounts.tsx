@@ -12,7 +12,7 @@ interface MyAccountsProps {
   isLoading: boolean;
 }
 
-export const MyAccounts: React.FC<MyAccountsProps> = ({
+export const DeprecatedMyAccounts: React.FC<MyAccountsProps> = ({
   usdcBalance,
   address,
   isLoading,
