@@ -30,7 +30,7 @@ export type BalanceHistory = { iso: string; balance: number }[];
 export function BalanceChart({ history }: { history?: BalanceHistory }) {
   return (
     <div>
-      <ChartContainer config={chartConfig} className='min-h-52'>
+      <ChartContainer config={chartConfig} className='max-h-64 min-h-52 w-full'>
         <AreaChart
           accessibilityLayer
           data={history}

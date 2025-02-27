@@ -21,7 +21,7 @@ export const WalletDashboard = () => {
 
   const [duration, setDuration] = useState<Duration>('30');
   const { data: transactions, isLoading: isTransactionsLoading } =
-    useTransactionOverview(duration === 'all' ? undefined : parseInt(duration));
+    useTransactionOverview(parseInt(duration));
 
   const tableTransactions =
     walletAddress && transactions
@@ -41,7 +41,7 @@ export const WalletDashboard = () => {
   return (
     <div className='@container size-full max-w-7xl'>
       {/* Grid container for responsive layout */}
-      <div className='@xl:grid-cols-[1fr_350px] grid grid-cols-1 gap-6'>
+      <div className='@xl:grid-cols-[1fr_25rem] grid grid-cols-1 gap-6'>
         {/* Balance Card - First on mobile, left column on desktop */}
         <div className='@xl:col-start-1 @xl:row-start-1'>
           <BalanceCard
