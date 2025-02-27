@@ -18,18 +18,14 @@ const chartConfig = {
 
 export type BalanceHistory = { iso: string; balance: number }[];
 
-interface BalanceChartProps {
-  history?: BalanceHistory;
-}
-
-// TODO: Add a groupByMonth mode
-// TODO Sick loading animation
+// TODO: Add a groupByMonth mode for "All time" duration
+// TODO: Improve loading state
 
 /** Renders a chart of the balance history as a beautiful shadcn chart */
-export function BalanceChart({ history }: BalanceChartProps) {
+export function BalanceChart({ history }: { history?: BalanceHistory }) {
   return (
     <div>
-      <ChartContainer config={chartConfig} className='min-h-[200px]'>
+      <ChartContainer config={chartConfig} className='min-h-52'>
         <AreaChart
           accessibilityLayer
           data={history}

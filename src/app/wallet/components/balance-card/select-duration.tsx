@@ -22,14 +22,16 @@ export const displayDuration: Record<Duration, string> = {
 interface SelectDurationProps {
   selectedValue: Duration;
   onChange: (value: Duration) => void;
+  disabled?: boolean;
 }
 
 export const SelectDuration: React.FC<SelectDurationProps> = ({
   selectedValue,
   onChange,
+  disabled,
 }) => {
   return (
-    <Select value={selectedValue} onValueChange={onChange}>
+    <Select value={selectedValue} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger className='border-border w-[140px] border font-medium'>
         <SelectValue placeholder='Select Duration' />
       </SelectTrigger>

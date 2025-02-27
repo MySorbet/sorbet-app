@@ -17,7 +17,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   args: {
     balance: 1000,
     history: balanceHistorySimple,
@@ -32,6 +31,13 @@ type Story = StoryObj<typeof BalanceCard>;
 export const Default: Story = {
   args: {
     balance: 1000,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    balance: 1000,
+    isLoading: true,
   },
 };
 

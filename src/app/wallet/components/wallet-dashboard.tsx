@@ -28,11 +28,16 @@ export const WalletDashboard = () => {
   const { data: transactions, isLoading: isTransactionsLoading } =
     useTransactionOverview(duration === 'all' ? undefined : parseInt(duration));
 
-  const mappedTransactions =
+  const tableTransactions =
     walletAddress && transactions
       ? mapTransactionOverview(transactions.transactions, walletAddress)
       : [];
 
+  // TODO: Remove Number() hack. Figure out the contract with the backend. number or string?
+  const totalMoneyIn = Number(transactions?.total_money_in ?? 0);
+  const totalMoneyOut = Number(transactions?.total_money_out ?? 0);
+
+  // TODO: Make this calculate correctly
   const { cumulativeBalanceHistory } = combineBalance(
     usdcBalance ?? '',
     transactions?.money_in,
@@ -50,7 +55,7 @@ export const WalletDashboard = () => {
             history={cumulativeBalanceHistory}
             duration={duration}
             onDurationChange={setDuration}
-            // isLoading={isBalanceLoading || isTransactionsLoading}
+            isLoading={isBalanceLoading || isTransactionsLoading}
           />
         </div>
 
@@ -68,21 +73,19 @@ export const WalletDashboard = () => {
           <div className='@xl:flex-row flex flex-col justify-between gap-4'>
             <WalletSummaryCard
               label='Money In'
-              value={Number(transactions?.total_money_in ?? 0)}
+              value={totalMoneyIn}
               isLoading={isTransactionsLoading}
-              // TODO: Remove Number() hack
               subscript={displayDuration[duration]}
             />
             <WalletSummaryCard
               label='Money Out'
-              value={Number(transactions?.total_money_out ?? 0)}
+              value={totalMoneyOut}
               isLoading={isTransactionsLoading}
-              // TODO: Remove Number() hack
               subscript={displayDuration[duration]}
             />
           </div>
           <TransactionsCard
-            transactions={mappedTransactions}
+            transactions={tableTransactions}
             isLoading={isTransactionsLoading}
             description={displayDuration[duration]}
           />

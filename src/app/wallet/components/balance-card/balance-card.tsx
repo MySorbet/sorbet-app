@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
 
 import { BalanceChart, BalanceHistory } from './balance-chart';
@@ -17,11 +18,13 @@ export const BalanceCard = ({
   duration,
   onDurationChange,
   history,
+  isLoading,
 }: {
   balance: number;
   duration: Duration;
   onDurationChange: (duration: Duration) => void;
   history: BalanceHistory;
+  isLoading?: boolean;
 }) => {
   return (
     <Card className='h-fit min-w-80'>
@@ -34,16 +37,25 @@ export const BalanceCard = ({
                 Your non-custodial Sorbet Wallet balance in USDC
               </InfoTooltip>
             </CardDescription>
-            <CardTitle>{formatCurrency(balance)}</CardTitle>
+            {isLoading ? (
+              <Skeleton className='h-8 w-24' />
+            ) : (
+              <CardTitle>{formatCurrency(balance)}</CardTitle>
+            )}
           </div>
           <SelectDuration
             selectedValue={duration}
             onChange={onDurationChange}
+            disabled={isLoading}
           />
         </div>
       </CardHeader>
       <CardContent>
-        <BalanceChart history={history} />
+        {isLoading ? (
+          <Skeleton className='h-48' />
+        ) : (
+          <BalanceChart history={history} />
+        )}
       </CardContent>
     </Card>
   );
