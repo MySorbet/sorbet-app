@@ -21,6 +21,7 @@ export type BalanceHistory = { iso: string; balance: number }[];
 interface BalanceChartProps {
   history?: BalanceHistory;
 }
+
 // TODO: Add a groupByMonth mode
 // TODO Sick loading animation
 
