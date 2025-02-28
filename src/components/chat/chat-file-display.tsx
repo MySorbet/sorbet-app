@@ -6,7 +6,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { fetchFile } from '@/api/chat';
-import { Spinner } from '@/components/common';
+import { Spinner } from '@/components/common/spinner';
 import {
   Tooltip,
   TooltipContent,

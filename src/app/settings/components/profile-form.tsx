@@ -1,4 +1,4 @@
-import { Spinner } from '@/components/common';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
