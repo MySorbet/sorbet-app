@@ -11,7 +11,7 @@ export default meta;
 
 export const Default = {
   args: {
-    children: 'Copy',
+    children: 'Copy "Hello, world!"',
     stringToCopy: 'Hello, world!',
   },
 };

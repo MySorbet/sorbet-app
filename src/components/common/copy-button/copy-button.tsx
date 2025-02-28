@@ -75,7 +75,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
             )}
           />
         )}
-        {children && <div className='ml-2'>{children}</div>}
+        {children}
       </Button>
     );
   }
