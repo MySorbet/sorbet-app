@@ -7,6 +7,9 @@ import { MockAuthProvider } from './use-auth.mock';
 import { env } from '../../src/lib/env';
 import { Toaster } from '../../src/components/ui/sonner';
 import { SidebarProvider } from '../../src/components/ui/sidebar';
+import { OpenOnDesktopDrawer } from '../../src/components/common/open-on-desktop-drawer/open-on-desktop-drawer';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
+
 /**
  * Decorator to provide the necessary providers to the story
  *
@@ -21,15 +24,18 @@ import { SidebarProvider } from '../../src/components/ui/sidebar';
  */
 export const ProvidersDecorator = (Story: any) => {
   return (
-    <PrivyProvider appId={env.NEXT_PUBLIC_PRIVY_APP_ID}>
-      <QueryClientProvider client={new QueryClient()}>
-        <MockAuthProvider>
-          <SidebarProvider>
-            <Story />
-            <Toaster />
-          </SidebarProvider>
-        </MockAuthProvider>
-      </QueryClientProvider>
-    </PrivyProvider>
+    <NuqsTestingAdapter>
+      <PrivyProvider appId={env.NEXT_PUBLIC_PRIVY_APP_ID}>
+        <QueryClientProvider client={new QueryClient()}>
+          <MockAuthProvider>
+            <SidebarProvider>
+              <Story />
+              <Toaster />
+              <OpenOnDesktopDrawer />
+            </SidebarProvider>
+          </MockAuthProvider>
+        </QueryClientProvider>
+      </PrivyProvider>
+    </NuqsTestingAdapter>
   );
 };

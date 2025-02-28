@@ -4,6 +4,7 @@ import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { KYCStatus } from '@/types';
@@ -102,6 +103,7 @@ export const VerifyDashboard = () => {
     customer?.kyc_status === 'awaiting_ubo';
 
   const router = useRouter();
+  const unlessMobile = useUnlessMobile();
   const handleCallToActionClick = (type: 'retry' | 'create-invoice') => {
     if (type === 'retry') {
       setStep('details');
@@ -110,7 +112,7 @@ export const VerifyDashboard = () => {
       // Whats worse, is that the customer -> step effect is not triggered (as refetch gives a 304),
       // but if data is changed on the bridge customer, the effect sets the step to complete, causing the user to lose KYC progress.
     } else if (type === 'create-invoice') {
-      router.push('/invoices/create');
+      unlessMobile(() => router.push('/invoices/create'));
     }
   };
 
