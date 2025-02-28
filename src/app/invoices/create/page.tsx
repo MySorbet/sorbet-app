@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 import { Authenticated } from '@/app/authenticated';
+import Page from '@/components/common/page';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
@@ -33,7 +34,7 @@ export default function CreateInvoicePage() {
 
   return (
     <Authenticated>
-      <main className='flex w-full flex-col items-center justify-center'>
+      <Page.Main>
         <CreateInvoice
           onClose={handleClose}
           onCreate={handleCreate}
@@ -47,7 +48,7 @@ export default function CreateInvoicePage() {
             paymentMethods: isVerified ? ['usdc', 'usd'] : undefined,
           }}
         />
-      </main>
+      </Page.Main>
     </Authenticated>
   );
 }

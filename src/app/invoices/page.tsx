@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
+import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
 import { Authenticated } from '../authenticated';
@@ -22,17 +23,17 @@ export default function InvoicesPage() {
 
   return (
     <Authenticated>
-      <main className='flex w-full flex-col'>
+      <Page.Main>
         <Header />
         <InvoiceDashboardHeader onCreateNew={handleCreateNew} />
-        <div className='container flex flex-1 justify-center p-6'>
+        <Page.Content>
           <InvoiceDashboard
             invoices={invoices ?? []}
             isLoading={isLoading}
             onCreateNew={handleCreateNew}
           />
-        </div>
-      </main>
+        </Page.Content>
+      </Page.Main>
     </Authenticated>
   );
 }

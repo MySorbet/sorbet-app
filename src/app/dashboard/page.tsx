@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
 import { Authenticated } from '../authenticated';
@@ -12,12 +13,12 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
   return (
     <Authenticated>
-      <div className='flex w-full flex-col'>
+      <Page.Main>
         <Header />
-        <main className='bg-background container flex flex-col items-center p-8'>
+        <Page.Content>
           <Dashboard />
-        </main>
-      </div>
+        </Page.Content>
+      </Page.Main>
     </Authenticated>
   );
 }
