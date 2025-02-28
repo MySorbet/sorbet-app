@@ -1,10 +1,10 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import posthog from 'posthog-js';
 import { useState } from 'react';
 
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
@@ -44,16 +44,14 @@ export const SigninContent = () => {
           disabled={loading}
           variant='sorbet'
         >
-          {signupLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}{' '}
-          Get started with Sorbet
+          {signupLoading && <Spinner />} Get started with Sorbet
         </Button>
         <Button
           onClick={() => handleClick('login')}
           disabled={loading}
           variant='secondary'
         >
-          {loginLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}{' '}
-          Sign in
+          {loginLoading && <Spinner />} Sign in
         </Button>
       </div>
     </div>
