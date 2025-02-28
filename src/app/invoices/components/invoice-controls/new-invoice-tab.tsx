@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { DayPickerSingleProps } from 'react-day-picker';
 
+import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -61,7 +62,13 @@ export const NewInvoiceTab = () => {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sales tax</FormLabel>
+              <div className='flex h-5 items-center gap-1'>
+                <FormLabel>Sales tax</FormLabel>
+                <InfoTooltip>
+                  You are responsible for your own taxes. Sorbet does not
+                  collect or remit them.
+                </InfoTooltip>
+              </div>
               <FormControl>
                 <div className='relative w-full'>
                   <Input
@@ -184,7 +191,9 @@ const DualFormFields = ({
   className?: string;
 }) => {
   return (
-    <div className={cn('flex w-full justify-between gap-2', className)}>
+    <div
+      className={cn('flex w-full items-end justify-between gap-2', className)}
+    >
       {children}
     </div>
   );
