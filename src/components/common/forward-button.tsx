@@ -39,7 +39,7 @@ export const ForwardButton = ({
       ) : (
         <>
           {children}
-          <ArrowRight className='animate-in fade-in-0 zoom-in-0 ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
+          <ArrowRight className='animate-in fade-in-0 zoom-in-0 h-4 w-4 transition-transform group-hover:translate-x-1' />
         </>
       )}
     </Button>
