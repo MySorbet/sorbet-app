@@ -147,6 +147,12 @@ const config = {
       transitionDuration: {
         '5000': '5000ms',
       },
+      containers: {
+        '2xs': '16rem', // 256px
+        '3xs': '12rem', // 192px
+        '4xs': '8rem', // 128px
+        '5xs': '4rem', // 64px
+      },
     },
   },
   plugins: [
