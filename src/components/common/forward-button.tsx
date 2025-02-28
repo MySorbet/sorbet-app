@@ -32,7 +32,7 @@ export const ForwardButton = ({
       {isLoading ? (
         <>
           Creating
-          <div className='animate-in fade-in-0 zoom-in-0 ml-2'>
+          <div className='animate-in fade-in-0 zoom-in-0'>
             <Spinner />
           </div>
         </>
