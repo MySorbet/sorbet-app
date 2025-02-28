@@ -10,6 +10,16 @@ const meta = {
     onTaskClick: fn(),
     onClose: fn(),
   },
+  parameters: {
+    layout: 'centered',
+  },
+  decorators: [
+    (Story) => (
+      <div className='w-96'>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof ChecklistCard>;
 
 export default meta;
