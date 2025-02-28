@@ -66,7 +66,7 @@ export function BalanceChart({ history }: { history?: BalanceHistory }) {
           </defs>
           <Area
             dataKey='balance'
-            type='natural'
+            type='monotone'
             fill='url(#fillBalance)'
             fillOpacity={0.4}
             stroke='var(--color-balance)'
