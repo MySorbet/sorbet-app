@@ -19,7 +19,9 @@ export const FAQ = ({ className }: { className?: string }) => {
         <h2 className='text-2xl font-semibold'>FAQ</h2>
         <Accordion type='multiple' className='w-full'>
           <AccordionItem value='item-1'>
-            <AccordionTrigger>What is KYC?</AccordionTrigger>
+            <AccordionTrigger className='text-left'>
+              What is KYC?
+            </AccordionTrigger>
             <AccordionContent>
               KYC ("Know Your Customer") verification is a common background
               check process to verify your identity by asking you to provide
@@ -32,7 +34,9 @@ export const FAQ = ({ className }: { className?: string }) => {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value='item-2'>
-            <AccordionTrigger>How does it work?</AccordionTrigger>
+            <AccordionTrigger className='text-left'>
+              How does it work?
+            </AccordionTrigger>
             <AccordionContent>
               Users from{' '}
               <Hyperlink href='https://docs.mysorbet.xyz/sorbet/readme/list-of-supported-countries'>
@@ -50,7 +54,9 @@ export const FAQ = ({ className }: { className?: string }) => {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value='item-3'>
-            <AccordionTrigger>Why do I need to get verified?</AccordionTrigger>
+            <AccordionTrigger className='text-left'>
+              Why do I need to get verified?
+            </AccordionTrigger>
             <AccordionContent>
               This verification will allow your clients to pay invoices in USD,
               while continuing to receive USDC in your Sorbet wallet. In order
