@@ -9,9 +9,11 @@ import { VerifyCard } from './verify-card';
 export const TosIframe = ({
   url,
   onComplete,
+  className,
 }: {
   url: string;
   onComplete?: (signedAgreementId: string) => void;
+  className?: string;
 }) => {
   const [ready, setReady] = useState(false);
 
@@ -32,7 +34,7 @@ export const TosIframe = ({
   }, [onComplete, url]);
 
   return (
-    <VerifyCard className='h-[24rem] w-[28rem]'>
+    <VerifyCard className={cn('h-[24rem] w-[28rem]', className)}>
       {!ready && <Skeleton className='size-full' />}
 
       <div

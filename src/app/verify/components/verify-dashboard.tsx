@@ -115,8 +115,8 @@ export const VerifyDashboard = () => {
   };
 
   return (
-    <div className='@container @xl:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-2 gap-4'>
-      <div className='@xl:col-span-1 col-span-2 flex flex-col gap-4'>
+    <div className='@container @2xl:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-2 gap-4'>
+      <div className='@2xl:col-span-1 col-span-2 flex flex-col gap-4'>
         <AccountVerificationCard
           className='h-fit'
           step={step}
@@ -137,7 +137,7 @@ export const VerifyDashboard = () => {
       <KYCChecklist
         onTaskClick={handleTaskClick}
         loading={isLoading}
-        className='h-fit'
+        className='@2xl:col-span-1 col-span-2 h-fit w-full'
         indeterminate={isIndeterminate}
         completedTasks={{
           terms: customer?.tos_status === 'approved',

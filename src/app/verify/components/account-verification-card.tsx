@@ -133,7 +133,11 @@ export const AccountVerificationCard = ({
         )}
 
         {tosLink && step === 'terms' && (
-          <TosIframe url={tosLink} onComplete={handleTermsComplete} />
+          <TosIframe
+            url={tosLink}
+            onComplete={handleTermsComplete}
+            className='self-center'
+          />
         )}
 
         {kycLink && !isIndeterminate && step === 'details' && (
