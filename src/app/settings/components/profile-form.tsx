@@ -61,14 +61,8 @@ export const ProfileForm = () => {
             variant='sorbet'
             disabled={updateProfilePending || !isDirty || !isValid}
           >
-            {updateProfilePending ? (
-              <>
-                <Spinner className='mr-2 h-4 w-4' />
-                Saving Changes
-              </>
-            ) : (
-              'Save Changes'
-            )}
+            {updateProfilePending && <Spinner />}
+            {updateProfilePending ? 'Saving Changes...' : 'Save Changes'}
           </Button>
         </div>
       </form>

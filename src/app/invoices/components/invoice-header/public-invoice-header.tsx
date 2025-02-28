@@ -29,7 +29,7 @@ export const PublicInvoiceHeader = ({
       )}
       <div className='flex items-center gap-2'>
         <Button variant='outline' onClick={onDownload} disabled={isLoading}>
-          <Download className='mr-2 size-4' /> Download
+          <Download /> Download
         </Button>
         <Button variant='outline' asChild>
           <Link href='/signup'>Sign up</Link>
