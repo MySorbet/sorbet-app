@@ -86,22 +86,24 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
       ) : (
         !isPending &&
         freelancer && (
-          <main className='bg-background container flex flex-col items-center p-8'>
+          <main className='flex w-full flex-col'>
             <Header />
-            <Profile
-              user={freelancer}
-              canEdit={isMyProfile}
-              onHireMeClick={() => setOfferDialogOpen(true)}
-              disableHireMe={disableHireMe}
-              hideShare={hideShare}
-            />
-            <ProjectOfferDialog
-              isOpen={isOfferDialogOpen}
-              onClose={(open) => setOfferDialogOpen(open)}
-              onSubmit={mutation.mutate}
-              name={freelancerFullName}
-              formSubmitted={mutation.isSuccess}
-            />
+            <div className='container flex flex-1 flex-col items-center p-6'>
+              <Profile
+                user={freelancer}
+                canEdit={isMyProfile}
+                onHireMeClick={() => setOfferDialogOpen(true)}
+                disableHireMe={disableHireMe}
+                hideShare={hideShare}
+              />
+              <ProjectOfferDialog
+                isOpen={isOfferDialogOpen}
+                onClose={(open) => setOfferDialogOpen(open)}
+                onSubmit={mutation.mutate}
+                name={freelancerFullName}
+                formSubmitted={mutation.isSuccess}
+              />
+            </div>
           </main>
         )
       )}
