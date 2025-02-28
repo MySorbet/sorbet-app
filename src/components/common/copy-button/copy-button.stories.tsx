@@ -5,6 +5,9 @@ import { CopyButton } from './copy-button';
 const meta = {
   title: 'Components/common/CopyButton',
   component: CopyButton,
+  parameters: {
+    layout: 'centered',
+  },
 } satisfies Meta<typeof CopyButton>;
 
 export default meta;
