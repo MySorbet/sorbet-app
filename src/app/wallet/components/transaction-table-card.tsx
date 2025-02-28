@@ -1,14 +1,15 @@
 import { forwardRef } from 'react';
 
 import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 /** A styled card for wallet page cards */
 export const TransactionTableCard = forwardRef<
   HTMLDivElement,
-  { children: React.ReactNode }
->(({ children }: { children: React.ReactNode }, ref) => {
+  { children: React.ReactNode; className?: string }
+>(({ children, className }, ref) => {
   return (
-    <Card className='relative h-fit p-6' ref={ref}>
+    <Card className={cn('relative h-fit p-6', className)} ref={ref}>
       {children}
     </Card>
   );

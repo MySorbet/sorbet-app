@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
+// TODO: Note this is a duplicate of the TransactionsCard component in the wallet page. Could they share?
+
 /**
  * Render the transaction table with some additional UI as a dashboard card
  * Note: Fetches its own data
@@ -33,7 +35,7 @@ export const TransactionCard = () => {
   }
 
   return (
-    <DashboardCard className='animate-in fade-in slide-in-from-bottom-1'>
+    <DashboardCard className='animate-in fade-in slide-in-from-bottom-1 @container'>
       <div className='mb-6 flex flex-wrap justify-between gap-3'>
         <div>
           <h2 className='mb-1 text-2xl font-semibold'>Transactions</h2>
@@ -42,9 +44,9 @@ export const TransactionCard = () => {
           </span>
         </div>
         <Button variant='secondary' asChild>
-          <Link href='/wallet/all'>
-            View all
-            <ArrowUpRight className='ml-2 size-4' />
+          <Link href='/wallet/all' aria-label='View all transactions'>
+            <span className='@xs:inline hidden'>View all</span>
+            <ArrowUpRight />
           </Link>
         </Button>
       </div>
