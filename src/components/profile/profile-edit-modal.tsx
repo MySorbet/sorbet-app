@@ -1,13 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { User01, X } from '@untitled-ui/icons-react';
-import { Loader2, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { Spinner } from '@/components/common/spinner';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -405,14 +406,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
               className='bg-sorbet w-full'
               disabled={loading || !isDirty || !isValid}
             >
-              {loading ? (
-                <>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  Saving
-                </>
-              ) : (
-                'Save Changes'
-              )}
+              {loading && <Spinner />}
+              {loading ? 'Saving...' : 'Save Changes'}
             </Button>
           </form>
         </Form>

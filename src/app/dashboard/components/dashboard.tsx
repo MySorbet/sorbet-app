@@ -3,11 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
-import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer';
+import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
-import { useIsMobile } from '@/hooks/use-is-mobile';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { User } from '@/types';
@@ -29,8 +28,6 @@ import { WelcomeCard } from './welcome-card';
  * TODO: What if this component stayed server side and just managed layout. And the former responsibilities were hoisted?
  */
 export const Dashboard = () => {
-  const [isDesktopDrawerOpen, setIsDesktopDrawerOpen] = useState(false);
-  const isMobile = useIsMobile();
   const router = useRouter();
   const { data, isLoading: isDashboardLoading } = useDashboardData();
   const { user } = useAuth();
@@ -50,14 +47,9 @@ export const Dashboard = () => {
 
   const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
 
-  const unlessMobile = (fn: () => void) => {
-    if (isMobile) {
-      setIsDesktopDrawerOpen(true);
-    } else {
-      fn();
-    }
-  };
+  const unlessMobile = useUnlessMobile();
 
+  // TODO: Consider that <Link> components could be used here instead of router.push
   const handleCardClicked = (type: StatsCardType | TaskType) => {
     switch (type) {
       // Stats cards
@@ -114,12 +106,6 @@ export const Dashboard = () => {
 
   return (
     <>
-      {/* Conditionally rendered drawer for mobile clicks */}
-      <OpenOnDesktopDrawer
-        open={isDesktopDrawerOpen}
-        onClose={() => setIsDesktopDrawerOpen(false)}
-      />
-
       {/* Conditionally rendered profile edit modal */}
       {user && (
         <ProfileEditModal

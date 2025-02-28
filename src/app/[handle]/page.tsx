@@ -10,6 +10,7 @@ import {
   ProjectFormValues,
   ProjectOfferDialog,
 } from '@/app/[handle]/project-offer-dialog';
+import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 import { Profile } from '@/components/profile';
 import { useAuth } from '@/hooks/use-auth';
@@ -86,23 +87,25 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
       ) : (
         !isPending &&
         freelancer && (
-          <main className='bg-background container flex flex-col items-center p-8'>
+          <Page.Main>
             <Header />
-            <Profile
-              user={freelancer}
-              canEdit={isMyProfile}
-              onHireMeClick={() => setOfferDialogOpen(true)}
-              disableHireMe={disableHireMe}
-              hideShare={hideShare}
-            />
-            <ProjectOfferDialog
-              isOpen={isOfferDialogOpen}
-              onClose={(open) => setOfferDialogOpen(open)}
-              onSubmit={mutation.mutate}
-              name={freelancerFullName}
-              formSubmitted={mutation.isSuccess}
-            />
-          </main>
+            <Page.Content>
+              <Profile
+                user={freelancer}
+                canEdit={isMyProfile}
+                onHireMeClick={() => setOfferDialogOpen(true)}
+                disableHireMe={disableHireMe}
+                hideShare={hideShare}
+              />
+              <ProjectOfferDialog
+                isOpen={isOfferDialogOpen}
+                onClose={(open) => setOfferDialogOpen(open)}
+                onSubmit={mutation.mutate}
+                name={freelancerFullName}
+                formSubmitted={mutation.isSuccess}
+              />
+            </Page.Content>
+          </Page.Main>
         )
       )}
     </div>

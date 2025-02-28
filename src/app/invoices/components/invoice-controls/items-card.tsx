@@ -56,7 +56,7 @@ export const ItemsCard = ({
         ))}
       </div>
       <Button variant='ghost' onClick={handleAddItem} className='w-fit'>
-        <Plus className='mr-2 size-4' />
+        <Plus />
         Add item
       </Button>
     </Card>

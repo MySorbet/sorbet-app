@@ -1,3 +1,5 @@
+import { parseAsBoolean, useQueryState } from 'nuqs';
+
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -8,20 +10,23 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 
-interface OpenOnDesktopDrawerProps {
-  /** Is the drawer is open */
-  open?: boolean;
-  /** Callback for when the drawer is closed */
-  onClose?: () => void;
-}
+/**
+ * Simple drawer notifying the user to open sorbet on desktop.
+ *
+ * The open state is managed via the url query state.
+ * Use with `useOpenOnDesktopDrawer` to manage the open state.
+ *
+ * @example
+ * ```tsx
+ * const [, setOpen] = useOpenOnDesktopDrawer();
+ * handleClick = () => setOpen(true);
+ * ```
+ */
+export const OpenOnDesktopDrawer = () => {
+  const [open, setOpen] = useOpenOnDesktopDrawer();
 
-/** Simple drawer notifying the user to open sorbet on desktop */
-export const OpenOnDesktopDrawer = ({
-  open,
-  onClose,
-}: OpenOnDesktopDrawerProps) => {
   return (
-    <Drawer open={open} onClose={onClose}>
+    <Drawer open={open} onClose={() => setOpen(false)}>
       <DrawerContent aria-describedby={undefined}>
         <DrawerHeader className='pb-1'>
           <DrawerTitle className='text-center text-lg font-semibold'>
@@ -41,5 +46,13 @@ export const OpenOnDesktopDrawer = ({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  );
+};
+
+/** Hook to manage the open state of the drawer via the url */
+export const useOpenOnDesktopDrawer = () => {
+  return useQueryState<boolean>(
+    'desktop-drawer-open',
+    parseAsBoolean.withDefault(false)
   );
 };

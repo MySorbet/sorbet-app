@@ -23,14 +23,14 @@ export const TransactionsCard = ({
   description?: string;
 }) => {
   return (
-    <TransactionTableCard>
+    <TransactionTableCard className='@container'>
       <CardHeader className='p-0 pb-6'>
         <div className='flex items-center justify-between'>
           <CardTitle>Transactions</CardTitle>
           <Button variant='secondary' asChild>
-            <Link href='/wallet/all'>
-              View all
-              <ArrowUpRight className='ml-2 size-4' />
+            <Link href='/wallet/all' aria-label='View all transactions'>
+              <span className='@xs:inline hidden'>View all</span>
+              <ArrowUpRight />
             </Link>
           </Button>
         </div>

@@ -8,9 +8,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { getTransactions } from '@/api/transactions';
+import { mapTransactionOverview } from '@/app/wallet/components/utils';
 import { useAuth } from '@/hooks';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
-import { Transaction } from '@/types/transactions';
 
 import { FilteredTransactionTable } from './filtered-transaction-table';
 import { TableTransaction } from './transaction-table';
@@ -59,28 +59,10 @@ export const TransactionsBrowser: React.FC = () => {
         before_date
       );
       if (res.status === 200 && res.data) {
-        // TODO: Is this similar to the mapTransactionOverview?
-        const formattedTransactions =
-          res.data.transactions.map<TableTransaction>(
-            (transaction: Transaction) => {
-              const type =
-                transaction.sender !== transaction.receiver
-                  ? 'Sent'
-                  : 'Received';
-              const account =
-                transaction.sender !== transaction.receiver
-                  ? transaction.receiver
-                  : transaction.sender;
-
-              return {
-                account,
-                date: transaction.timestamp,
-                amount: transaction.value,
-                hash: transaction.hash,
-                type,
-              };
-            }
-          );
+        const formattedTransactions = mapTransactionOverview(
+          res.data.transactions,
+          smartWalletAddress
+        );
         const cursor_data = res.data.cursor;
         if (cursor_data) {
           setCursorsMap((prev) => ({

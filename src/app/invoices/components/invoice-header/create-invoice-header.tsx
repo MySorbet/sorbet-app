@@ -1,4 +1,4 @@
-import { Spinner } from '@/components/common';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 
 import { InvoiceHeader } from './invoice-header';
@@ -37,7 +37,7 @@ export const CreateInvoiceHeader = ({
         onClick={onCreateInvoice}
         disabled={disabled || isCreating}
       >
-        {isCreating && <Spinner className='mr-2' />}
+        {isCreating && <Spinner />}
         {isCreating ? 'Creating...' : 'Create invoice'}
       </Button>
       {/* </div> */}

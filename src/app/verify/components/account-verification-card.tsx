@@ -127,13 +127,17 @@ export const AccountVerificationCard = ({
             disabled={isCreating}
             className='@xs:max-w-fit w-full'
           >
-            {isCreating && <Spinner className='mr-2' />}
+            {isCreating && <Spinner />}
             Get verified
           </Button>
         )}
 
         {tosLink && step === 'terms' && (
-          <TosIframe url={tosLink} onComplete={handleTermsComplete} />
+          <TosIframe
+            url={tosLink}
+            onComplete={handleTermsComplete}
+            className='self-center'
+          />
         )}
 
         {kycLink && !isIndeterminate && step === 'details' && (

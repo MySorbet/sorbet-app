@@ -2,7 +2,7 @@ import { HelpCircle, Link03 } from '@untitled-ui/icons-react';
 import { ImagePlus } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { Spinner } from '@/components/common';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
   Popover,

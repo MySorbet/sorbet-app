@@ -32,8 +32,14 @@ export const SelectDuration: React.FC<SelectDurationProps> = ({
 }) => {
   return (
     <Select value={selectedValue} onValueChange={onChange} disabled={disabled}>
-      <SelectTrigger className='border-border w-[140px] border font-medium'>
-        <SelectValue placeholder='Select Duration' />
+      <SelectTrigger
+        className='border-border w-[140px] border font-medium'
+        aria-label='Select Duration'
+      >
+        <SelectValue
+          placeholder='Select Duration'
+          aria-label='Select Duration'
+        />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

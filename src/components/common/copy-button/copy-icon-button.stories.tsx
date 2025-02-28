@@ -5,6 +5,9 @@ import { CopyIconButton } from './copy-icon-button';
 const meta = {
   title: 'Components/common/CopyIconButton',
   component: CopyIconButton,
+  parameters: {
+    layout: 'centered',
+  },
 } satisfies Meta<typeof CopyIconButton>;
 
 export default meta;

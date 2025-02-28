@@ -4,7 +4,7 @@ import { SigninContent } from './signin-content';
 
 const meta: Meta<typeof SigninContent> = {
   component: SigninContent,
-  title: 'Onboarding/SigninContent',
+  title: 'Signin/SigninContent',
   parameters: {
     layout: 'centered',
     backgrounds: { disable: true },

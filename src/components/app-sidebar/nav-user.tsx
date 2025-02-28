@@ -65,19 +65,15 @@ export const NavUser = () => {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem onSelect={handleLogout}>
+              <DropdownMenuItem onSelect={handleLogout} className='text-sm'>
                 {isLoggingOut ? (
-                  <div className='animate-in fade-in zoom-in-0'>
-                    <Spinner className='mr-2' />
+                  <div className='animate-in fade-in zoom-in-0 mr-2'>
+                    <Spinner />
                   </div>
                 ) : (
                   <LogOut className='mr-2 size-4' />
                 )}
-                {isLoggingOut ? (
-                  <span className='text-sm'>Logging out...</span>
-                ) : (
-                  <span className='text-sm'>Log out</span>
-                )}
+                {isLoggingOut ? 'Logging out...' : 'Log out'}
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

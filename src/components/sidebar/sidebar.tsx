@@ -8,8 +8,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Spinner } from '@/components/common';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { Spinner } from '@/components/common/spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {

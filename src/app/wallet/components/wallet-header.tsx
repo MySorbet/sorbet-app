@@ -12,15 +12,15 @@ export const WalletHeader = ({
   onSend?: () => void;
 }) => {
   return (
-    <Header title='Wallet'>
+    <Header title='Wallet' className='@container'>
       <div className='flex items-center gap-2'>
-        <Button variant='outline' onClick={onDeposit}>
+        <Button variant='outline' onClick={onDeposit} aria-label='Deposit'>
           <Plus className='size-4' />
-          Deposit
+          <span className='@sm:inline hidden'>Deposit</span>
         </Button>
-        <Button variant='sorbet' onClick={onSend}>
+        <Button variant='sorbet' onClick={onSend} aria-label='Send Funds'>
           <Send className='size-4' />
-          Send Funds
+          <span className='@sm:inline hidden'>Send Funds</span>
         </Button>
       </div>
     </Header>

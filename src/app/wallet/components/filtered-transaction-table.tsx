@@ -57,7 +57,7 @@ export const FilteredTransactionTable: React.FC<
                   className='w-full'
                 >
                   Date
-                  <ChevronDown className='ml-1 size-4' />
+                  <ChevronDown />
                 </Button>
               }
             />

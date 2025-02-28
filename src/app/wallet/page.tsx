@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 
+import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
 import { Authenticated } from '../authenticated';
@@ -17,13 +18,13 @@ export default function Wallet() {
 
   return (
     <Authenticated>
-      <main className='flex w-full flex-col'>
+      <Page.Main>
         <Header />
         <WalletHeader onDeposit={topUp} onSend={() => setOpen(true)} />
-        <div className='container flex flex-1 justify-center p-6'>
+        <Page.Content>
           <WalletDashboard />
-        </div>
-      </main>
+        </Page.Content>
+      </Page.Main>
       <WalletSendDialog open={open} setOpen={setOpen} sendUSDC={sendUSDC} />
     </Authenticated>
   );

@@ -1,10 +1,12 @@
 import { SigninContent } from '@/app/signin/components/signin-content';
+import Page from '@/components/common/page';
 
 const SignInPage = () => {
   return (
-    <main className='bg-background flex w-full items-center justify-center'>
+    <Page.Main className='items-center justify-center'>
+      {/* Note that we skip page content here */}
       <SigninContent />
-    </main>
+    </Page.Main>
   );
 };
 
