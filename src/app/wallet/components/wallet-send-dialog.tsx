@@ -90,8 +90,10 @@ export const WalletSendDialog = ({
     // On input error, there is a red ring and border that shows up
     recipientWalletAddress: z
       .string()
-      .max(42)
-      .refine((walletAddress) => isValidETHAddress(walletAddress)),
+      .max(42, { message: 'Must be a valid ETH address' })
+      .refine((walletAddress) => isValidETHAddress(walletAddress), {
+        message: 'Must be a valid ETH address',
+      }),
   });
 
   /**
@@ -307,9 +309,7 @@ const Step1 = ({
                   </FormControl>
                   <div className='flex justify-between'>
                     {errors.amount ? (
-                      <FormMessage className='text-xs font-semibold'>
-                        {errors.amount.message}
-                      </FormMessage>
+                      <FormMessage>{errors.amount.message}</FormMessage>
                     ) : (
                       <FormLabel className='text-xs font-semibold text-[#667085]'>
                         ~ {Math.round(Number(convertedUSD))} USD
@@ -346,6 +346,7 @@ const Step1 = ({
                       spellCheck={false}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
