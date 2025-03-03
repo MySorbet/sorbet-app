@@ -231,7 +231,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     <Dialog open={editModalVisible} onOpenChange={handleModalVisible}>
       <DialogContent
         className='sm:rounded-[32px]'
-        hideDefaultCloseButton={true}
+        hideClose
         aria-describedby={undefined}
       >
         <DialogTitle>

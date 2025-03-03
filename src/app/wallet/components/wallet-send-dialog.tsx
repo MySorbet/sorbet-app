@@ -173,10 +173,7 @@ export const WalletSendDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        className='w-[460px] rounded-2xl p-0'
-        hideDefaultCloseButton={true}
-      >
+      <DialogContent className='w-[460px] rounded-2xl p-0' hideClose>
         <motion.div
           // TODO: Come up with a solution for animating the height changes. Still having issues with the first render not being calculated correctly by useMeasure.
           // TODO: Tried passing an anonymous function instead of reference, still didn't work. Was thinking of potentially creating a piece of state (boolean) to represent if the modal was just opened,
