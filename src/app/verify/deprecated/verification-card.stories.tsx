@@ -5,7 +5,7 @@ import { fn } from '@storybook/test';
 import { VerificationCard } from './verification-card';
 
 const meta = {
-  title: 'Sidebar/Get Verified Card',
+  title: 'Deprecated/Get Verified Card',
   component: VerificationCard,
   parameters: {
     layout: 'centered',
