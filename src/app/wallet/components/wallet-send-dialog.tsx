@@ -20,6 +20,7 @@ import {
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { baseScanUrl } from '@/app/wallet/components/utils';
 import { BaseAlert } from '@/components/common/base-alert';
 import {
   Credenza,
@@ -40,7 +41,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
-import { env } from '@/lib/env';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
@@ -414,10 +414,6 @@ interface Step3Props extends ScreenProps {
  * Final screen showing success and a link to basescan for transaction hash
  */
 const Step3 = ({ transactionHash }: Step3Props) => {
-  const basescanHref = env.NEXT_PUBLIC_TESTNET
-    ? `https://sepolia.basescan.org/tx/${transactionHash}`
-    : `https://basescan.org/tx/${transactionHash}`;
-
   return (
     <div className='flex flex-col gap-6 p-6'>
       <VisuallyHidden asChild>
@@ -442,7 +438,7 @@ const Step3 = ({ transactionHash }: Step3Props) => {
           className='hover:decoration-sorbet flex w-full flex-row items-center gap-1 hover:cursor-pointer hover:underline'
           target='_blank'
           rel='noopener noreferrer'
-          href={basescanHref}
+          href={baseScanUrl(transactionHash)}
         >
           <span className='text-sorbet truncate text-sm'>
             {transactionHash}
