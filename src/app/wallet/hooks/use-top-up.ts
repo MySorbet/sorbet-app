@@ -28,11 +28,12 @@ export const useTopUp = () => {
         });
       }
 
+      // Note that awaiting the fundWallet call is not effective.
+      // Funds can take slightly longer to show up so this refetch is really just in case they show up fast
       refetch();
     } catch (e) {
       toast('Something went wrong', {
-        description:
-          'Your Privy wallet has something problem. Please try again',
+        description: 'There was an issue funding your wallet. Please try again',
       });
     }
   };
