@@ -41,6 +41,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { formatCurrency } from '@/lib/currency';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
@@ -272,7 +273,7 @@ const Step1 = ({
                       <FormMessage>{errors.amount.message}</FormMessage>
                     ) : (
                       <FormLabel className='text-xs font-semibold text-[#667085]'>
-                        ~ {Math.round(Number(convertedUSD))} USD
+                        ~ {formatCurrency(convertedUSD)}
                       </FormLabel>
                     )}
                     <FormLabel className='flex gap-1 text-xs font-semibold text-[#667085]'>
