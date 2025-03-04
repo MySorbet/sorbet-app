@@ -6,31 +6,31 @@ import {
   CheckCircle,
   LinkExternal02,
   Loading02,
-  X,
 } from '@untitled-ui/icons-react';
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import {
   FieldErrors,
   useForm,
   UseFormReturn,
   useFormState,
 } from 'react-hook-form';
-import useMeasure from 'react-use-measure';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { baseScanUrl } from '@/app/wallet/components/utils';
 import { BaseAlert } from '@/components/common/base-alert';
-import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Credenza,
+  CredenzaClose,
+  CredenzaContent,
+  CredenzaDescription,
+  CredenzaHeader,
+  CredenzaTitle,
+} from '@/components/common/credenza/credenza';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -41,7 +41,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
-import { env } from '@/lib/env';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
 
@@ -67,8 +66,6 @@ export const WalletSendDialog = ({
 }: WalletSendDialogProps) => {
   const [step, setStep] = useState<number>(1);
 
-  const [contentRef] = useMeasure();
-
   const { data: walletBalance } = useWalletBalance();
 
   const formSchema = z.object({
@@ -90,31 +87,11 @@ export const WalletSendDialog = ({
     // On input error, there is a red ring and border that shows up
     recipientWalletAddress: z
       .string()
-      .max(42)
-      .refine((walletAddress) => isValidETHAddress(walletAddress)),
+      .max(42, { message: 'Must be a valid ETH address' })
+      .refine((walletAddress) => isValidETHAddress(walletAddress), {
+        message: 'Must be a valid ETH address',
+      }),
   });
-
-  /**
-   * function that checks if a user types in a balance that exceeds the amount available.
-   * Used in zod schema declaration.
-   */
-  const isAmountWithinBalance = (amount: string, amountAvailable: string) => {
-    if (Number(amount) > Number(amountAvailable)) return false;
-    return true;
-  };
-
-  /**
-   * function that checks if an inputted wallet address is a valid ETH address.
-   * Used in zod schema declaration.
-   */
-  const isValidETHAddress = (address: string) => {
-    try {
-      ethers.utils.getAddress(address);
-    } catch (error: unknown) {
-      return false;
-    }
-    return true;
-  };
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -165,71 +142,60 @@ export const WalletSendDialog = ({
     },
   });
 
-  const close = () => {
-    setOpen(false);
-    form.reset();
-    setStep(1);
+  // This ugly block makes sure to reset state after the drawer or dialog closes
+  // This is necessary to allow the close animation to finish before resetting the state
+  // If this is not done, the UI will be put into an ugly state.
+  const closeTimer = useRef<NodeJS.Timeout>();
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+    if (!open) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = setTimeout(() => {
+        form.reset();
+        setStep(1);
+      }, 300);
+      return () => clearTimeout(closeTimer.current);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        className='w-[460px] rounded-2xl p-0'
-        hideDefaultCloseButton={true}
-      >
-        <motion.div
-          // TODO: Come up with a solution for animating the height changes. Still having issues with the first render not being calculated correctly by useMeasure.
-          // TODO: Tried passing an anonymous function instead of reference, still didn't work. Was thinking of potentially creating a piece of state (boolean) to represent if the modal was just opened,
-          // TODO: and then changing it on each action, but that is not clean and hard to maintain.
-          // * As it stands, the only two screens that would ever be rendered for the first time are Step1 and Step2
-          // * Step1 via clicking on Send button and Step2 when a user closes the Privy modal
-          className='overflow-hidden'
-        >
-          <div ref={contentRef}>
-            {step === 1 && (
-              <FadeIn>
-                <Step1
-                  close={close}
-                  setStep={setStep}
-                  usdcBalance={walletBalance ?? ''}
-                  convertedUSD={convertedUSD}
-                  form={form}
-                  isValid={isValid}
-                  errors={errors}
-                />
-              </FadeIn>
-            )}
-            {step === 2 && (
-              <FadeIn>
-                <Step2
-                  close={() => setOpen(false)}
-                  amount={amount}
-                  setStep={setStep}
-                  recipientWalletAddress={recipientWalletAddress}
-                  sendTransactionLoading={sendTransactionLoading}
-                  sendTransactionMutation={sendTransactionMutation}
-                />
-              </FadeIn>
-            )}
-            {step === 3 && (
-              <FadeIn>
-                <Step3
-                  close={close}
-                  setStep={setStep}
-                  transactionHash={transactionHash}
-                />
-              </FadeIn>
-            )}
-          </div>
-        </motion.div>
-      </DialogContent>
-    </Dialog>
+    <Credenza open={open} onOpenChange={handleOpenChange}>
+      <CredenzaContent className='p-0' key={step}>
+        {step === 1 && (
+          <FadeIn>
+            <Step1
+              setStep={setStep}
+              usdcBalance={walletBalance ?? ''}
+              convertedUSD={convertedUSD}
+              form={form}
+              isValid={isValid}
+              errors={errors}
+            />
+          </FadeIn>
+        )}
+        {step === 2 && (
+          <FadeIn>
+            <Step2
+              amount={amount}
+              setStep={setStep}
+              recipientWalletAddress={recipientWalletAddress}
+              sendTransactionLoading={sendTransactionLoading}
+              sendTransactionMutation={sendTransactionMutation}
+            />
+          </FadeIn>
+        )}
+        {step === 3 && (
+          <FadeIn>
+            <Step3 setStep={setStep} transactionHash={transactionHash} />
+          </FadeIn>
+        )}
+      </CredenzaContent>
+    </Credenza>
   );
 };
 
 interface ScreenProps {
   setStep: Dispatch<SetStateAction<number>>;
-  close: () => void;
 }
 
 interface Step1Props extends ScreenProps {
@@ -244,7 +210,6 @@ interface Step1Props extends ScreenProps {
  * Initial screen to get amount to send USDC from Privy wallet
  */
 const Step1 = ({
-  close,
   setStep,
   usdcBalance,
   convertedUSD,
@@ -258,22 +223,16 @@ const Step1 = ({
 
   return (
     <div className='flex flex-col gap-6 p-6'>
-      <DialogHeader className='flex w-full flex-row justify-between'>
-        <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
+      <CredenzaHeader className='flex w-full flex-row justify-between'>
+        <CredenzaTitle className='text-3xl leading-[38px] text-[#101828]'>
           Send
-        </DialogTitle>
+        </CredenzaTitle>
         <VisuallyHidden asChild>
-          <DialogDescription>
+          <CredenzaDescription>
             Send USDC from your Sorbet wallet
-          </DialogDescription>
+          </CredenzaDescription>
         </VisuallyHidden>
-        <button
-          className='group m-0 bg-transparent p-0 hover:bg-transparent'
-          onClick={close}
-        >
-          <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
-        </button>
-      </DialogHeader>
+      </CredenzaHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className='flex flex-col gap-6'>
@@ -310,9 +269,7 @@ const Step1 = ({
                   </FormControl>
                   <div className='flex justify-between'>
                     {errors.amount ? (
-                      <FormMessage className='text-xs font-semibold'>
-                        {errors.amount.message}
-                      </FormMessage>
+                      <FormMessage>{errors.amount.message}</FormMessage>
                     ) : (
                       <FormLabel className='text-xs font-semibold text-[#667085]'>
                         ~ {Math.round(Number(convertedUSD))} USD
@@ -349,6 +306,7 @@ const Step1 = ({
                       spellCheck={false}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -387,7 +345,6 @@ interface Step2Props extends ScreenProps {
  * Confirmation screen with option to go back
  */
 const Step2 = ({
-  close,
   amount,
   recipientWalletAddress,
   setStep,
@@ -396,22 +353,16 @@ const Step2 = ({
 }: Step2Props) => {
   return (
     <div className='flex flex-col gap-6 p-6'>
-      <DialogHeader className='flex w-full flex-row justify-between'>
-        <DialogTitle className='text-3xl leading-[38px] text-[#101828]'>
+      <CredenzaHeader className='flex w-full flex-row justify-between'>
+        <CredenzaTitle className='text-3xl leading-[38px] text-[#101828]'>
           Confirm Send
-        </DialogTitle>
+        </CredenzaTitle>
         <VisuallyHidden asChild>
-          <DialogDescription>
+          <CredenzaDescription>
             Confirm the details of the transaction
-          </DialogDescription>
+          </CredenzaDescription>
         </VisuallyHidden>
-        <button
-          className='group m-0 bg-transparent p-0 hover:bg-transparent'
-          onClick={close}
-        >
-          <X className='size-6 text-[#98A2B3] ease-out group-hover:scale-110' />
-        </button>
-      </DialogHeader>
+      </CredenzaHeader>
       <div className='flex flex-col items-center gap-6'>
         <div className='flex w-full flex-col items-center justify-center gap-[10px] rounded-2xl bg-[#FAFAFA] py-6'>
           <span className='text-3xl font-bold leading-[38px]'>{amount}</span>
@@ -462,13 +413,17 @@ interface Step3Props extends ScreenProps {
 /**
  * Final screen showing success and a link to basescan for transaction hash
  */
-const Step3 = ({ transactionHash, close }: Step3Props) => {
-  const basescanHref = env.NEXT_PUBLIC_TESTNET
-    ? `https://sepolia.basescan.org/tx/${transactionHash}`
-    : `https://basescan.org/tx/${transactionHash}`;
-
+const Step3 = ({ transactionHash }: Step3Props) => {
   return (
     <div className='flex flex-col gap-6 p-6'>
+      <VisuallyHidden asChild>
+        <CredenzaTitle>Transaction successful</CredenzaTitle>
+      </VisuallyHidden>
+      <VisuallyHidden asChild>
+        <CredenzaDescription>
+          Your transaction has been successfully sent.
+        </CredenzaDescription>
+      </VisuallyHidden>
       <div className='flex flex-col items-center justify-center gap-[10px] py-6'>
         <CheckCircle className='size-[53px] text-[#17B26A]' />
         <span className='text-3xl font-bold leading-[38px] text-[#17B26A]'>
@@ -479,12 +434,11 @@ const Step3 = ({ transactionHash, close }: Step3Props) => {
         <span className='text-sm font-medium text-[#344054]'>
           Transaction ID
         </span>
-        {/* //TODO: Have this link to the transaction hash on basescan (all we need to do is redirect the href link with the proper transaction hash) */}
         <a
-          className='hover:decoration-sorbet flex max-w-[calc(100%-40px)] flex-row items-center gap-1 hover:cursor-pointer hover:underline'
+          className='hover:decoration-sorbet flex w-full flex-row items-center gap-1 hover:cursor-pointer hover:underline'
           target='_blank'
           rel='noopener noreferrer'
-          href={basescanHref}
+          href={baseScanUrl(transactionHash)}
         >
           <span className='text-sorbet truncate text-sm'>
             {transactionHash}
@@ -492,12 +446,14 @@ const Step3 = ({ transactionHash, close }: Step3Props) => {
           <LinkExternal02 className='size-6 text-[#595B5A]' />
         </a>
       </div>
-      <Button
-        className='bg-sorbet border-sorbet-border mt-4 w-full border'
-        onClick={close}
-      >
-        Done
-      </Button>
+      <CredenzaClose asChild>
+        <Button
+          className='bg-sorbet border-sorbet-border mt-4 w-full border'
+          onClick={close}
+        >
+          Done
+        </Button>
+      </CredenzaClose>
     </div>
   );
 };
@@ -505,8 +461,33 @@ const Step3 = ({ transactionHash, close }: Step3Props) => {
 /** All this does is animate the opacity of each component and adds a delay for better timing */
 const FadeIn = ({ children }: { children: React.ReactNode }) => {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className='min-w-full'
+    >
       {children}
     </motion.div>
   );
+};
+
+/**
+ * function that checks if a user types in a balance that exceeds the amount available.
+ * Used in zod schema declaration.
+ */
+const isAmountWithinBalance = (amount: string, amountAvailable: string) => {
+  return !(Number(amount) > Number(amountAvailable));
+};
+
+/**
+ * function that checks if an inputted wallet address is a valid ETH address.
+ * Used in zod schema declaration.
+ */
+const isValidETHAddress = (address: string) => {
+  try {
+    ethers.utils.getAddress(address);
+  } catch (error: unknown) {
+    return false;
+  }
+  return true;
 };
