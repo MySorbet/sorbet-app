@@ -33,8 +33,25 @@ export const mapTransactionOverview = (
   }));
 };
 
+/**
+ * Returns the BaseScan URL for a given transaction hash and chain
+ */
+export const baseScanUrl = (hash?: string) =>
+  hash ? `${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}` : undefined;
+
 /** Open a transaction hash in the appropriate explorer (basescan) */
 export const openTransactionInExplorer = (hash: string) => {
-  // TODO: Should we use the explorer from one of our libs rather than env?
-  window.open(`${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}`, '_blank');
+  try {
+    const url = baseScanUrl(hash);
+    const encodedUrl = url ? encodeURI(url) : undefined;
+    const newWindow = window.open(encodedUrl, '_blank', 'noopener,noreferrer');
+
+    if (!newWindow) {
+      console.error(
+        'Failed to open transaction in explorer. Popup may be blocked.'
+      );
+    }
+  } catch (error) {
+    console.error('Error opening transaction in explorer:', error);
+  }
 };
