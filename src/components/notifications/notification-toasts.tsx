@@ -1,51 +1,53 @@
 'use client';
 
+import { type FeedEventCallback } from '@knocklabs/client';
 import { useKnockFeed } from '@knocklabs/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 
-const KnockContractWorkflows = new Set([
-  'contract-finished',
-  'contract-proposal-accepted',
-  'contract-proposal-rejected',
-  'contract-proposed',
-  'milestone-approved',
-  'milestone-funded',
-  'milestone-submitted',
-  'offer',
-  'offer-accepted',
-  'offer-rejected',
-]);
+import { useTransactionOverview } from '@/app/wallet/hooks/use-transaction-overview';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
 const NotificationToasts = () => {
   const { feedClient } = useKnockFeed();
-  const queryClient = useQueryClient();
+  const { refetch: refetchWalletBalance } = useWalletBalance();
+  const { refetch: refetchTransactionOverview } = useTransactionOverview();
 
-  const onNotificationsReceived = useCallback(
-    ({ items }: any) => {
-      // Whenever we receive a new notification from our real-time stream, show a toast
-      // (note here that we can receive > 1 items in a batch)
-      items.forEach((notification: any) => {
-        console.log('onNotificationsReceived ', notification);
-        if (notification.data.showToast === false) return;
-        if (KnockContractWorkflows.has(notification.data.type)) {
-          // Invalidating both because they are not mutually exclusive
-          queryClient.invalidateQueries({
-            queryKey: ['contractForOffer'],
-          });
-          queryClient.invalidateQueries({ queryKey: ['offers'] });
+  // Whenever we receive a new notification from our real-time stream, show a toast
+  // (note here that we can receive > 1 items in a batch)
+  const onNotificationsReceived: FeedEventCallback = useCallback(
+    ({ items }) => {
+      items.forEach((notification) => {
+        console.log('Notification received: ', notification);
+        const key = notification.source.key;
+
+        // Refresh the transaction overview and wallet balance when we receive a payment-received notification
+        if (key === 'payment-received') {
+          refetchTransactionOverview();
+          refetchWalletBalance();
         }
-        toast(
-          <div
-            dangerouslySetInnerHTML={{
-              __html: notification.blocks[0].rendered,
-            }}
-          />
-        );
+
+        // Toast the notification (if the type was button set, we don't know what to do)
+        if (
+          notification.blocks[0].type === 'markdown' ||
+          notification.blocks[0].type === 'text'
+        ) {
+          toast(
+            <div
+              dangerouslySetInnerHTML={{
+                __html: notification.blocks[0].rendered,
+              }}
+            />
+          );
+        } else {
+          console.error(
+            'Unsupported notification type: ',
+            notification.blocks[0].type
+          );
+        }
       });
     },
-    [queryClient]
+    [refetchTransactionOverview, refetchWalletBalance]
   );
 
   useEffect(() => {
