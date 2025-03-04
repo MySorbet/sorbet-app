@@ -1,4 +1,5 @@
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
+import { TextMorph } from '@/components/motion-primitives/text-morph';
 import {
   Card,
   CardContent,
@@ -40,7 +41,9 @@ export const BalanceCard = ({
             {isLoading ? (
               <Skeleton className='h-8 w-24' />
             ) : (
-              <CardTitle>{formatCurrency(balance)}</CardTitle>
+              <CardTitle>
+                <TextMorph>{formatCurrency(balance)}</TextMorph>
+              </CardTitle>
             )}
           </div>
           <SelectDuration

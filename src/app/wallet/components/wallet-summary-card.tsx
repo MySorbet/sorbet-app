@@ -1,3 +1,4 @@
+import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
@@ -30,7 +31,9 @@ export const WalletSummaryCard = ({
     <Card className='h-fit w-full max-w-[32rem]'>
       <CardContent className='animate-in fade-in-0 flex flex-col items-start gap-1 p-6'>
         <h2 className='text-muted-foreground text-sm'>{label}</h2>
-        <p className='text-2xl font-semibold'>{formatCurrency(value)}</p>
+        <p className='text-2xl font-semibold'>
+          <TextMorph>{formatCurrency(value)}</TextMorph>
+        </p>
         <p className='text-muted-foreground text-sm'>{subscript}</p>
       </CardContent>
     </Card>
