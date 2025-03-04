@@ -10,7 +10,7 @@ import {
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import {
   FieldErrors,
   useForm,
@@ -23,6 +23,7 @@ import { z } from 'zod';
 import { BaseAlert } from '@/components/common/base-alert';
 import {
   Credenza,
+  CredenzaClose,
   CredenzaContent,
   CredenzaDescription,
   CredenzaHeader,
@@ -141,19 +142,28 @@ export const WalletSendDialog = ({
     },
   });
 
-  const close = () => {
-    setOpen(false);
-    form.reset();
-    setStep(1);
+  // This ugly block makes sure to reset state after the drawer or dialog closes
+  // This is necessary to allow the close animation to finish before resetting the state
+  // If this is not done, the UI will be put into an ugly state.
+  const closeTimer = useRef<NodeJS.Timeout>();
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+    if (!open) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = setTimeout(() => {
+        form.reset();
+        setStep(1);
+      }, 300);
+      return () => clearTimeout(closeTimer.current);
+    }
   };
 
   return (
-    <Credenza open={open} onOpenChange={setOpen}>
-      <CredenzaContent className='p-0'>
+    <Credenza open={open} onOpenChange={handleOpenChange}>
+      <CredenzaContent className='p-0' key={step}>
         {step === 1 && (
           <FadeIn>
             <Step1
-              close={close}
               setStep={setStep}
               usdcBalance={walletBalance ?? ''}
               convertedUSD={convertedUSD}
@@ -166,7 +176,6 @@ export const WalletSendDialog = ({
         {step === 2 && (
           <FadeIn>
             <Step2
-              close={() => setOpen(false)}
               amount={amount}
               setStep={setStep}
               recipientWalletAddress={recipientWalletAddress}
@@ -177,11 +186,7 @@ export const WalletSendDialog = ({
         )}
         {step === 3 && (
           <FadeIn>
-            <Step3
-              close={close}
-              setStep={setStep}
-              transactionHash={transactionHash}
-            />
+            <Step3 setStep={setStep} transactionHash={transactionHash} />
           </FadeIn>
         )}
       </CredenzaContent>
@@ -191,7 +196,6 @@ export const WalletSendDialog = ({
 
 interface ScreenProps {
   setStep: Dispatch<SetStateAction<number>>;
-  close: () => void;
 }
 
 interface Step1Props extends ScreenProps {
@@ -206,7 +210,6 @@ interface Step1Props extends ScreenProps {
  * Initial screen to get amount to send USDC from Privy wallet
  */
 const Step1 = ({
-  close,
   setStep,
   usdcBalance,
   convertedUSD,
@@ -342,7 +345,6 @@ interface Step2Props extends ScreenProps {
  * Confirmation screen with option to go back
  */
 const Step2 = ({
-  close,
   amount,
   recipientWalletAddress,
   setStep,
@@ -411,13 +413,21 @@ interface Step3Props extends ScreenProps {
 /**
  * Final screen showing success and a link to basescan for transaction hash
  */
-const Step3 = ({ transactionHash, close }: Step3Props) => {
+const Step3 = ({ transactionHash }: Step3Props) => {
   const basescanHref = env.NEXT_PUBLIC_TESTNET
     ? `https://sepolia.basescan.org/tx/${transactionHash}`
     : `https://basescan.org/tx/${transactionHash}`;
 
   return (
     <div className='flex flex-col gap-6 p-6'>
+      <VisuallyHidden asChild>
+        <CredenzaTitle>Transaction successful</CredenzaTitle>
+      </VisuallyHidden>
+      <VisuallyHidden asChild>
+        <CredenzaDescription>
+          Your transaction has been successfully sent.
+        </CredenzaDescription>
+      </VisuallyHidden>
       <div className='flex flex-col items-center justify-center gap-[10px] py-6'>
         <CheckCircle className='size-[53px] text-[#17B26A]' />
         <span className='text-3xl font-bold leading-[38px] text-[#17B26A]'>
@@ -428,9 +438,8 @@ const Step3 = ({ transactionHash, close }: Step3Props) => {
         <span className='text-sm font-medium text-[#344054]'>
           Transaction ID
         </span>
-        {/* //TODO: Have this link to the transaction hash on basescan (all we need to do is redirect the href link with the proper transaction hash) */}
         <a
-          className='hover:decoration-sorbet flex max-w-[calc(100%-40px)] flex-row items-center gap-1 hover:cursor-pointer hover:underline'
+          className='hover:decoration-sorbet flex w-full flex-row items-center gap-1 hover:cursor-pointer hover:underline'
           target='_blank'
           rel='noopener noreferrer'
           href={basescanHref}
@@ -441,12 +450,14 @@ const Step3 = ({ transactionHash, close }: Step3Props) => {
           <LinkExternal02 className='size-6 text-[#595B5A]' />
         </a>
       </div>
-      <Button
-        className='bg-sorbet border-sorbet-border mt-4 w-full border'
-        onClick={close}
-      >
-        Done
-      </Button>
+      <CredenzaClose asChild>
+        <Button
+          className='bg-sorbet border-sorbet-border mt-4 w-full border'
+          onClick={close}
+        >
+          Done
+        </Button>
+      </CredenzaClose>
     </div>
   );
 };
@@ -454,7 +465,11 @@ const Step3 = ({ transactionHash, close }: Step3Props) => {
 /** All this does is animate the opacity of each component and adds a delay for better timing */
 const FadeIn = ({ children }: { children: React.ReactNode }) => {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className='min-w-full'
+    >
       {children}
     </motion.div>
   );
