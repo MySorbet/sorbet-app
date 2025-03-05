@@ -9,6 +9,11 @@ export const mockUser: User = {
   email: 'mock@example.com',
   bio: 'Mock bio',
   profileImage: '',
-  tags: [],
-  city: '',
+  tags: ['tag1', 'tag2', 'tag3'],
+  city: 'New York',
+};
+
+export const mockUserWithProfileImage = {
+  ...mockUser,
+  profileImage: 'https://randomuser.me/api/portraits/men/75.jpg',
 };
