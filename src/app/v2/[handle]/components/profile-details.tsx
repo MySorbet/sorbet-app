@@ -10,15 +10,17 @@ import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 /** Profile details section rendered as a column on the left of the profile page */
 export const ProfileDetails = ({
   user,
+  isMine,
+  onEdit,
   className,
 }: {
   user: User;
+  isMine?: boolean;
+  onEdit?: () => void;
   className?: string;
 }) => {
   if (!user) throw new Error('ProfileDetails requires a user');
   const name = `${user.firstName} ${user.lastName}`.trim();
-
-  // TODO: Implement a freelancer view. Currently this is just the public view
 
   return (
     <div className={cn('flex flex-col gap-6', className)}>
@@ -43,14 +45,30 @@ export const ProfileDetails = ({
           </Badge>
         ))}
       </div>
-      <div className='flex flex-col gap-3'>
-        <Button variant='sorbet' disabled>
-          Work with me
-        </Button>
-        <Button variant='secondary' disabled>
-          <Coffee /> Tip USDC
-        </Button>
-      </div>
+      {isMine ? <MyProfileButtons onEdit={onEdit} /> : <PublicProfileButtons />}
     </div>
+  );
+};
+
+/** Buttons for public view of a profile */
+const PublicProfileButtons = () => {
+  return (
+    <div className='flex flex-col gap-3'>
+      <Button variant='sorbet' disabled>
+        Work with me
+      </Button>
+      <Button variant='secondary' disabled>
+        <Coffee /> Tip USDC
+      </Button>
+    </div>
+  );
+};
+
+/** Buttons for when a user is viewing their own profile */
+const MyProfileButtons = ({ onEdit }: { onEdit?: () => void }) => {
+  return (
+    <Button variant='sorbet' className='w-fit' onClick={onEdit}>
+      Edit profile
+    </Button>
   );
 };

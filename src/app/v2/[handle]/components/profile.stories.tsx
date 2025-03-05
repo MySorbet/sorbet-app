@@ -21,3 +21,10 @@ export const Default: Story = {
     user: mockUser,
   },
 };
+
+export const Mine: Story = {
+  args: {
+    user: mockUser,
+    isMine: true,
+  },
+};
