@@ -1,7 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { mockUser, mockUserWithProfileImage } from '@/api/user';
+import {
+  mockUser,
+  mockUserMinimal,
+  mockUserWithProfileImage,
+} from '@/api/user';
 
 import { ProfileDetails } from './profile-details';
 
@@ -35,6 +39,13 @@ export const WithProfileImage: Story = {
 export const Mine: Story = {
   args: {
     user: mockUser,
+    isMine: true,
+  },
+};
+
+export const WithoutNameAndBio: Story = {
+  args: {
+    user: mockUserMinimal,
     isMine: true,
   },
 };

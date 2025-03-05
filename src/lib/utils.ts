@@ -18,3 +18,18 @@ export function sleep(ms: number) {
 export const formatWalletAddress = (account: string): string => {
   return `${account.slice(0, 5)}...${account.slice(-5)}`;
 };
+
+/**
+ * Formats a user's name
+ *
+ * - Returns `undefined` if both first and last name are `undefined`
+ * - Returns `firstName` if only first name is defined and not empty
+ * - Returns `lastName` if only last name is defined and not empty
+ * - Returns `firstName lastName` if both first and last name are defined and not empty
+ */
+export const formatName = (
+  firstName?: string,
+  lastName?: string
+): string | undefined => {
+  return [firstName, lastName].filter(Boolean).join(' ').trim() || undefined;
+};
