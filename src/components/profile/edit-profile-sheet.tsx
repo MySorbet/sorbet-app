@@ -268,6 +268,7 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
         <ScrollArea className='h-full w-full'>
           <Form {...form}>
             <form
+              id='edit-profile-form'
               onSubmit={form.handleSubmit(onSubmit)}
               className='flex flex-1 flex-col gap-5 p-1'
             >
@@ -406,6 +407,7 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
         <SheetFooter>
           <Button
             type='submit'
+            form='edit-profile-form'
             variant='sorbet'
             className='w-full'
             disabled={loading || !isDirty || !isValid}
