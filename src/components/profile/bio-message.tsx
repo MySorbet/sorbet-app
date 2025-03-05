@@ -1,5 +1,7 @@
 import { MAX_BIO_LENGTH } from '@/constant';
 
+// TODO: This could use form context to get the bio error instead of duplicating it
+
 /**
  * This component displays character count as well as an error message if bio length is exceeded
  * @param length number length of the bio

@@ -12,7 +12,6 @@ import { z } from 'zod';
 
 import { checkHandleIsAvailable } from '@/api/auth';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 
 interface HandleInputProps<T extends FieldValues>
   extends ComponentProps<'input'> {
@@ -59,10 +58,7 @@ export const HandleInput = <T extends FieldValues>({
         placeholder='my-sorbet-handle'
         onChange={(e) => handleChange(e)}
         {...props}
-        className={cn(
-          'text-textPlaceholder focus:outline-none focus:ring-0',
-          className
-        )}
+        className={className}
       />
       {error ? (
         <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />

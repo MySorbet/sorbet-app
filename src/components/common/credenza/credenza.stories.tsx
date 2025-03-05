@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 const meta = {
-  title: 'Common/Credenza',
+  title: 'components/common/Credenza',
   component: Credenza,
   parameters: {
     layout: 'centered',

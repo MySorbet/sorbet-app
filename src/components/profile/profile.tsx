@@ -1,9 +1,9 @@
 import { type FC, useState } from 'react';
 
+import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 
-import { ProfileEditModal } from './profile-edit-modal';
 import { ProfileHeader } from './profile-header';
 import { WidgetGrid } from './widgets/widget-grid';
 
@@ -20,15 +20,9 @@ export const Profile: FC<{
   disableHireMe = false,
   hideShare = false,
 }) => {
-  const [showEditModal, setShowEditModal] = useState<boolean>(false);
-
-  const handleProfileEdit = () => {
-    setShowEditModal((prev) => !prev);
-  };
-
-  const handleProfileModalVisible = (open: boolean) => {
-    setShowEditModal(open);
-  };
+  const [isEditProfileOpen, setProfileOpen] = useState(false);
+  const handleProfileEdit = () => setProfileOpen((prev) => !prev);
+  const handleSetProfileOpen = (open: boolean) => setProfileOpen(open);
 
   return (
     <div className='w-full max-w-7xl'>
@@ -41,9 +35,9 @@ export const Profile: FC<{
           disableHireMe={disableHireMe}
           hideShare={hideShare}
         />
-        <ProfileEditModal
-          editModalVisible={showEditModal}
-          handleModalVisible={handleProfileModalVisible}
+        <EditProfileSheet
+          open={isEditProfileOpen}
+          setOpen={handleSetProfileOpen}
           user={user}
         />
       </div>
