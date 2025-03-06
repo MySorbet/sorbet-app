@@ -8,6 +8,7 @@ import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 
+import { OnboardWithHandles } from './onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 
 /** Profile 2.0 */
@@ -32,8 +33,14 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
           </Button>
         </div>
       </div>
-      {/* Widgets placeholder */}
-      <div className='border-muted size-full h-full flex-1 rounded-3xl border-2 border-dashed' />
+      {/* TODO: Eventually this will be the widget grid. For now just show onboarding */}
+      <div className='size-full flex-1'>
+        {isMine && (
+          <div className='flex size-full items-center justify-center'>
+            <OnboardWithHandles />
+          </div>
+        )}
+      </div>
       <EditProfileSheet open={isEditing} setOpen={setIsEditing} user={user} />
     </div>
   );
