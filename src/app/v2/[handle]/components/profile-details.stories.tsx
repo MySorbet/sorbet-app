@@ -1,6 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
-import { mockUser, mockUserWithProfileImage } from '@/api/user';
+import {
+  mockUser,
+  mockUserMinimal,
+  mockUserWithProfileImage,
+} from '@/api/user';
 
 import { ProfileDetails } from './profile-details';
 
@@ -11,6 +16,9 @@ const meta = {
   component: ProfileDetails,
   parameters: {
     layout: 'centered',
+  },
+  args: {
+    onEdit: fn(),
   },
 } satisfies Meta<typeof ProfileDetails>;
 
@@ -25,5 +33,19 @@ export const Default: Story = {
 export const WithProfileImage: Story = {
   args: {
     user: mockUserWithProfileImage,
+  },
+};
+
+export const Mine: Story = {
+  args: {
+    user: mockUser,
+    isMine: true,
+  },
+};
+
+export const WithoutNameAndBio: Story = {
+  args: {
+    user: mockUserMinimal,
+    isMine: true,
   },
 };

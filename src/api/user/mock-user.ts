@@ -1,4 +1,10 @@
-import { User } from '@/types';
+import { MinimalUser, User } from '@/types';
+
+export const mockUserMinimal: MinimalUser = {
+  id: '1',
+  privyId: 'mock-privy-id',
+  handle: 'mock-user',
+};
 
 export const mockUser: User = {
   id: '1',
