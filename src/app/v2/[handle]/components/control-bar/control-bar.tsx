@@ -1,6 +1,8 @@
 import { PopoverAnchor } from '@radix-ui/react-popover';
-import { ImageIcon, Link2, Plus } from 'lucide-react';
+import { Link2, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
+import { checkFileValid } from '@/components/profile/widgets/util';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,11 +12,28 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
+import { AddImageButton } from './add-image-button';
+
 // TODO: Add separator (with proper height) and button border
 // TODO: Nail the size, border, and focus of the url input
 
 /** Toolbar containing controls to edit and share the profile */
-export const ControlBar = () => {
+export const ControlBar = ({
+  addImage,
+}: {
+  addImage?: (file: File) => void;
+}) => {
+  // Handle an image picked from the file system
+  const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; // Only support the first file (input should limit anyway)
+    if (!file) return;
+    if (checkFileValid(file)) {
+      toast.success('Adding image...'); // TODO: Remove
+      addImage?.(file);
+    } else {
+      toast.error('Invalid image');
+    }
+  };
   return (
     <Popover>
       <PopoverAnchor asChild>
@@ -44,9 +63,7 @@ export const ControlBar = () => {
                   <Plus />
                 </Button>
               </PopoverContent>
-              <Button variant='secondary' className='h-fit p-1'>
-                <ImageIcon />
-              </Button>
+              <AddImageButton onAdd={handleAddImage} />
             </div>
           </CardContent>
         </Card>

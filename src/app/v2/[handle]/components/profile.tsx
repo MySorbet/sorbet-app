@@ -8,6 +8,7 @@ import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 
+import { ControlBar } from './control-bar/control-bar';
 import { OnboardWithHandles } from './onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 
@@ -41,7 +42,12 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
           </div>
         )}
       </div>
+
+      {/* Elements which ignore the layout of this container */}
       <EditProfileSheet open={isEditing} setOpen={setIsEditing} user={user} />
+      <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] -translate-x-1/2 -translate-y-6 transform'>
+        <ControlBar />
+      </div>
     </div>
   );
 };
