@@ -6,12 +6,13 @@ import { useEffect } from 'react';
 import { getUserByHandle } from '@/api/user';
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
+import { useAuth } from '@/hooks/use-auth';
 
 import { Profile } from './components/profile';
 
 /** Profile 2.0 page */
 const ProfilePage = ({ params }: { params: { handle: string } }) => {
-  // const { user } = useAuth();
+  const { user } = useAuth();
 
   const queryClient = useQueryClient();
 
@@ -26,7 +27,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
 
   // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data;
-  // const isMyProfile = user?.handle === params.handle;
+  const isMine = user?.handle === params.handle;
   // const disableHireMe = isMyProfile || !user;
   // const hideShare = !isMyProfile || !user;
   // const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
@@ -47,7 +48,8 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
         {isError ? (
           <div>This profile does not exist. Claim yours now</div>
         ) : (
-          !isPending && freelancer && <Profile user={freelancer} />
+          !isPending &&
+          freelancer && <Profile user={freelancer} isMine={isMine} />
         )}
       </Page.Content>
     </Page.Main>
