@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Link2, Plus } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -35,7 +36,9 @@ export const ControlBar = ({
   onAddImage,
   onAddLink,
 }: {
+  /** Called when a valid image is added */
   onAddImage?: (image: File) => void;
+  /** Called when a valid link is added */
   onAddLink?: (link: string) => void;
 }) => {
   const form = useForm<FormSchema>({
@@ -46,12 +49,14 @@ export const ControlBar = ({
     mode: 'onChange',
   });
 
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const onSubmit = (data: FormSchema) => {
     onAddLink?.(normalizeUrl(data.link) ?? '');
+    setIsPopoverOpen(false);
   };
 
   return (
-    <Popover>
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverAnchor asChild>
         <Card className='h-fit shadow-lg'>
           <CardContent className='flex h-full items-center justify-between gap-4 px-3 py-2'>
@@ -117,6 +122,7 @@ export const ControlBar = ({
   );
 };
 
+/** Schema to validate the link input */
 const schema = z.object({
   link: z.string().refine(isValidUrl),
 });
