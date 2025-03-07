@@ -1,4 +1,5 @@
 import { PopoverAnchor } from '@radix-ui/react-popover';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Link2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -44,6 +45,7 @@ export const ControlBar = ({
               <PopoverTrigger asChild>
                 <Button variant='secondary' className='h-fit p-1'>
                   <Link2 />
+                  <VisuallyHidden>Add link</VisuallyHidden>
                 </Button>
               </PopoverTrigger>
               <PopoverContent

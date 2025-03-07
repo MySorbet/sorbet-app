@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 
 // TODO: Maybe this button should have a focus ring
-// TODO: Make sure this is accessible, has the right role, cursor, etc.
+// TODO: Make sure this is accessible, has the right role, etc.
 
 /** A button that acts as a file input to accept images */
 export const AddImageButton = ({
@@ -26,7 +26,7 @@ export const AddImageButton = ({
             htmlFor='upload-image'
             className={cn(
               buttonVariants({ variant: 'secondary' }),
-              'h-fit p-1'
+              'h-fit cursor-pointer p-1'
             )}
           >
             <input
