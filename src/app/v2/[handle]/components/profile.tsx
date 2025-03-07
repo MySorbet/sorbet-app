@@ -57,10 +57,18 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
       </div>
 
       {/* Elements which ignore the layout of this container */}
-      <EditProfileSheet open={isEditing} setOpen={setIsEditing} user={user} />
-      <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] -translate-x-1/2 -translate-y-6 transform'>
-        <ControlBar onAddImage={handleAddImage} onAddLink={handleAddLink} />
-      </div>
+      {isMine && (
+        <>
+          <EditProfileSheet
+            open={isEditing}
+            setOpen={setIsEditing}
+            user={user}
+          />
+          <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] -translate-x-1/2 -translate-y-6 transform'>
+            <ControlBar onAddImage={handleAddImage} onAddLink={handleAddLink} />
+          </div>
+        </>
+      )}
     </div>
   );
 };
