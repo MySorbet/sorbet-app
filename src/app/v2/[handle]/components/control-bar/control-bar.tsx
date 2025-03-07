@@ -52,6 +52,7 @@ export const ControlBar = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const onSubmit = (data: FormSchema) => {
     onAddLink?.(normalizeUrl(data.link) ?? '');
+    form.reset(); // TODO: reset after the popover closes, but extract to a hook (since this is a common need)
     setIsPopoverOpen(false);
   };
 
