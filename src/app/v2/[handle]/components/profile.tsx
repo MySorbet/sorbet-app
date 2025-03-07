@@ -2,18 +2,32 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 // TODO: Move to ./components
 import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 
+import { ControlBar } from './control-bar/control-bar';
 import { OnboardWithHandles } from './onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 
 /** Profile 2.0 */
 export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleAddImage = (image: File) => {
+    toast.success('Would add image', {
+      description: image.name,
+    });
+  };
+
+  const handleAddLink = (link: string) => {
+    toast.success('Would add link', {
+      description: link,
+    });
+  };
 
   return (
     <div className='flex min-h-full w-full'>
@@ -41,7 +55,20 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
           </div>
         )}
       </div>
-      <EditProfileSheet open={isEditing} setOpen={setIsEditing} user={user} />
+
+      {/* Elements which ignore the layout of this container */}
+      {isMine && (
+        <>
+          <EditProfileSheet
+            open={isEditing}
+            setOpen={setIsEditing}
+            user={user}
+          />
+          <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] -translate-x-1/2 -translate-y-6 transform'>
+            <ControlBar onAddImage={handleAddImage} onAddLink={handleAddLink} />
+          </div>
+        </>
+      )}
     </div>
   );
 };
