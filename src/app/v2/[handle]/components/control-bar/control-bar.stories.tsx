@@ -10,7 +10,8 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    addImage: fn(),
+    onAddImage: fn(),
+    onAddLink: fn(),
   },
 } satisfies Meta<typeof ControlBar>;
 

@@ -1,7 +1,10 @@
 import { ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { checkFileValid } from '@/components/profile/widgets/util';
+import {
+  checkFileValid,
+  validImageExtensions,
+} from '@/components/profile/widgets/util';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
@@ -22,13 +25,16 @@ export const AddImageButton = ({
 }) => {
   // Handle an image picked from the file system
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Only support the first file (input should limit anyway)
-    if (!file) return;
+    // Only support the first file (input should limit anyway)
+    const file = e.target.files?.[0];
     if (checkFileValid(file)) {
-      toast.success('Adding image...'); // TODO: Remove
       onAdd?.(file);
     } else {
-      toast.error('Invalid image');
+      toast.error('We couldn’t add this image', {
+        description: `Images must be smaller than 10MB and be on the following formats: ${validImageExtensions.join(
+          ', '
+        )}`,
+      });
     }
   };
 
