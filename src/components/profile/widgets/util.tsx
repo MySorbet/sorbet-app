@@ -183,6 +183,11 @@ export function normalizeUrl(url: string): string | undefined {
 
 export const validImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
 
+/** Valid file extensions with dots for use in the `accept` attribute of a file input */
+export const validImageExtensionsWithDots = validImageExtensions.map(
+  (ext) => `.${ext}`
+);
+
 export const checkFileValid = (file?: File): file is File => {
   if (!file) return false;
   const fileSize = file.size / 1024 / 1024; // in MB

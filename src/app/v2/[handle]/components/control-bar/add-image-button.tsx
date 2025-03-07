@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import {
   checkFileValid,
   validImageExtensions,
+  validImageExtensionsWithDots,
 } from '@/components/profile/widgets/util';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -30,6 +31,7 @@ export const AddImageButton = ({
     if (checkFileValid(file)) {
       onAdd?.(file);
     } else {
+      // This should only ever toast with 10mb error (since the input only accepts valid extensions)
       toast.error('We couldn’t add this image', {
         description: `Images must be smaller than 10MB and be on the following formats: ${validImageExtensions.join(
           ', '
@@ -54,7 +56,7 @@ export const AddImageButton = ({
               type='file'
               className='hidden'
               onChange={handleInputChange}
-              accept='image/*'
+              accept={validImageExtensionsWithDots.join(',')}
             />
             <ImageIcon aria-hidden='true' />
           </label>
