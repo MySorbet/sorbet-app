@@ -181,19 +181,12 @@ export function normalizeUrl(url: string): string | undefined {
   return undefined;
 }
 
-export const checkFileValid = (file: File) => {
-  if (file) {
-    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-    const fileSize = file.size / 1024 / 1024; // in MB
-    const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    if (!fileExtension) {
-      return false;
-    }
-    if (validExtensions.includes(fileExtension) && fileSize <= 10) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  return false;
+export const validImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+
+export const checkFileValid = (file?: File): file is File => {
+  if (!file) return false;
+  const fileSize = file.size / 1024 / 1024; // in MB
+  const fileExtension = file.name.split('.').pop()?.toLowerCase();
+  if (!fileExtension) return false;
+  return validImageExtensions.includes(fileExtension) && fileSize <= 10;
 };
