@@ -15,12 +15,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
+import {
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Tooltip } from '@/components/ui/tooltip';
 
 import { AddImageButton } from './add-image-button';
 
 // TODO: Add separator (with proper height) and button border
 // TODO: Read the clipboard and if it's a url, show a paste button
 // TODO: If a url is pasted with ctrl+v, submit right away
+// TODO: Find the right token for the border rather than hardcoding it
 
 /** Toolbar containing controls to edit and share the profile */
 export const ControlBar = ({
@@ -47,14 +55,27 @@ export const ControlBar = ({
       <PopoverAnchor asChild>
         <Card className='h-fit shadow-lg'>
           <CardContent className='flex h-full items-center justify-between gap-4 px-3 py-2'>
-            <Button variant='sorbet'>Share profile</Button>
+            <Button variant='sorbet' size='sm'>
+              Share profile
+            </Button>
+            <Separator orientation='vertical' className='h-9' />
             <div className='flex items-center gap-2'>
-              <PopoverTrigger asChild>
-                <Button variant='secondary' className='h-fit p-1'>
-                  <Link2 />
-                  <VisuallyHidden>Add link</VisuallyHidden>
-                </Button>
-              </PopoverTrigger>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant='secondary'
+                        className='h-fit border border-[#E5E7EB] p-1 transition-transform hover:scale-110'
+                      >
+                        <Link2 />
+                        <VisuallyHidden>Add a link</VisuallyHidden>
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>Add a link</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <PopoverContent
                 className='relative border-none p-0'
                 side='top'

@@ -17,6 +17,8 @@ import { cn } from '@/lib/utils';
 
 // TODO: Maybe this button should have a focus ring
 // TODO: Make sure this is accessible, has the right role, etc.
+// TODO: We could share this with the add link button somehow
+// TODO: IS the input nested within a label really he best approach here?
 
 /** A button that acts as a file input to accept images */
 export const AddImageButton = ({
@@ -32,7 +34,7 @@ export const AddImageButton = ({
       onAdd?.(file);
     } else {
       // This should only ever toast with 10mb error (since the input only accepts valid extensions)
-      toast.error('We couldn’t add this image', {
+      toast.error("We couldn't add this image", {
         description: `Images must be smaller than 10MB and be on the following formats: ${validImageExtensions.join(
           ', '
         )}`,
@@ -46,9 +48,13 @@ export const AddImageButton = ({
         <TooltipTrigger asChild>
           <label
             htmlFor='upload-image'
+            tabIndex={0}
+            onKeyDown={(e) => {
+              e.key === 'Enter' && e.currentTarget.click();
+            }}
             className={cn(
               buttonVariants({ variant: 'secondary' }),
-              'h-fit cursor-pointer p-1'
+              'h-fit cursor-pointer border border-[#E5E7EB] p-1 transition-transform hover:scale-110'
             )}
           >
             <input
@@ -61,7 +67,7 @@ export const AddImageButton = ({
             <ImageIcon aria-hidden='true' />
           </label>
         </TooltipTrigger>
-        <TooltipContent>Upload custom image as widget</TooltipContent>
+        <TooltipContent>Add an image</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
