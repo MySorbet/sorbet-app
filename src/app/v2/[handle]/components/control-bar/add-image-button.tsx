@@ -1,5 +1,7 @@
 import { ImageIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
+import { checkFileValid } from '@/components/profile/widgets/util';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
@@ -16,8 +18,20 @@ import { cn } from '@/lib/utils';
 export const AddImageButton = ({
   onAdd,
 }: {
-  onAdd: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onAdd?: (image: File) => void;
 }) => {
+  // Handle an image picked from the file system
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; // Only support the first file (input should limit anyway)
+    if (!file) return;
+    if (checkFileValid(file)) {
+      toast.success('Adding image...'); // TODO: Remove
+      onAdd?.(file);
+    } else {
+      toast.error('Invalid image');
+    }
+  };
+
   return (
     <TooltipProvider>
       <Tooltip>
@@ -33,7 +47,7 @@ export const AddImageButton = ({
               id='upload-image'
               type='file'
               className='hidden'
-              onChange={onAdd}
+              onChange={handleInputChange}
               accept='image/*'
             />
             <ImageIcon aria-hidden='true' />

@@ -1,9 +1,7 @@
 import { PopoverAnchor } from '@radix-ui/react-popover';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Link2, Plus } from 'lucide-react';
-import { toast } from 'sonner';
 
-import { checkFileValid } from '@/components/profile/widgets/util';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -20,21 +18,10 @@ import { AddImageButton } from './add-image-button';
 
 /** Toolbar containing controls to edit and share the profile */
 export const ControlBar = ({
-  addImage,
+  onAddImage,
 }: {
-  addImage?: (file: File) => void;
+  onAddImage?: (image: File) => void;
 }) => {
-  // Handle an image picked from the file system
-  const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; // Only support the first file (input should limit anyway)
-    if (!file) return;
-    if (checkFileValid(file)) {
-      toast.success('Adding image...'); // TODO: Remove
-      addImage?.(file);
-    } else {
-      toast.error('Invalid image');
-    }
-  };
   return (
     <Popover>
       <PopoverAnchor asChild>
@@ -49,23 +36,23 @@ export const ControlBar = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className='relative p-0'
+                className='relative border-none p-0'
                 side='top'
                 sideOffset={4}
               >
                 <Input
                   type='url'
                   placeholder='paste link'
-                  className='focus-visible:ring-transparent'
+                  className='focus-visible:ring-0 focus-visible:ring-offset-0'
                 />
                 <Button
                   variant='sorbet'
-                  className='absolute bottom-1.5 right-1.5 top-1.5 h-fit p-1'
+                  className='absolute bottom-0 right-2 top-0 my-auto h-fit p-1'
                 >
                   <Plus />
                 </Button>
               </PopoverContent>
-              <AddImageButton onAdd={handleAddImage} />
+              <AddImageButton onAdd={onAddImage} />
             </div>
           </CardContent>
         </Card>
