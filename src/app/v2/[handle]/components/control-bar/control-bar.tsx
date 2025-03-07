@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
+import { useAfter } from '@/hooks/use-after';
 
 import { AddImageButton } from './add-image-button';
 
@@ -52,12 +53,18 @@ export const ControlBar = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const onSubmit = (data: FormSchema) => {
     onAddLink?.(normalizeUrl(data.link) ?? '');
-    form.reset(); // TODO: reset after the popover closes, but extract to a hook (since this is a common need)
-    setIsPopoverOpen(false);
+    handlePopoverOpenChange(false);
+  };
+
+  // Build a fn to reset after the popover closes
+  const reset = useAfter(form.reset);
+  const handlePopoverOpenChange = (open: boolean) => {
+    setIsPopoverOpen(open);
+    !open && reset();
   };
 
   return (
-    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+    <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverAnchor asChild>
         <Card className='h-fit shadow-lg'>
           <CardContent className='flex h-full items-center justify-between gap-4 px-3 py-2'>

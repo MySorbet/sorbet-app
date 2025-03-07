@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 // TODO: Maybe this button should have a focus ring
 // TODO: Make sure this is accessible, has the right role, etc.
 // TODO: We could share this with the add link button somehow
-// TODO: IS the input nested within a label really he best approach here?
+// TODO: IS the input nested within a label really the best approach here?
 
 /** A button that acts as a file input to accept images */
 export const AddImageButton = ({
@@ -32,6 +32,7 @@ export const AddImageButton = ({
     const file = e.target.files?.[0];
     if (checkFileValid(file)) {
       onAdd?.(file);
+      e.target.value = '';
     } else {
       // This should only ever toast with 10mb error (since the input only accepts valid extensions)
       toast.error("We couldn't add this image", {
