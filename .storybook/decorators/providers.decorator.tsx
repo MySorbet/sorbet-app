@@ -9,7 +9,7 @@ import { Toaster } from '../../src/components/ui/sonner';
 import { SidebarProvider } from '../../src/components/ui/sidebar';
 import { OpenOnDesktopDrawer } from '../../src/components/common/open-on-desktop-drawer/open-on-desktop-drawer';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
-
+import { baseSepolia } from 'viem/chains';
 /**
  * Decorator to provide the necessary providers to the story
  *
@@ -25,12 +25,18 @@ import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 export const ProvidersDecorator = (Story: any) => {
   return (
     <NuqsTestingAdapter>
-      <PrivyProvider appId={env.NEXT_PUBLIC_PRIVY_APP_ID}>
+      <PrivyProvider
+        appId={env.NEXT_PUBLIC_PRIVY_APP_ID}
+        config={{
+          supportedChains: [baseSepolia],
+          defaultChain: baseSepolia,
+        }}
+      >
         <QueryClientProvider client={new QueryClient()}>
           <MockAuthProvider>
             <SidebarProvider>
               <Story />
-              <Toaster />
+              <Toaster richColors />
               <OpenOnDesktopDrawer />
             </SidebarProvider>
           </MockAuthProvider>
