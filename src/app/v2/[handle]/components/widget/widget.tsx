@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Link } from 'lucide-react';
 import React from 'react';
 
@@ -26,18 +27,29 @@ export const Widget = ({
   loading?: boolean;
   size?: 'A' | 'B' | 'C' | 'D';
 }) => {
+  const dimensions = {
+    A: { width: '24rem', height: '24rem', flexDirection: 'column' as const }, // w-96 = 24rem
+    B: { width: '11rem', height: '11rem', flexDirection: 'column' as const }, // w-44 = 11rem
+    C: { width: '11rem', height: '24rem', flexDirection: 'column' as const },
+    D: { width: '24rem', height: '11rem', flexDirection: 'row' as const },
+  };
+
   return (
-    <a
+    <motion.a
       className={cn(
-        'bg-card text-card-foreground flex flex-col rounded-lg border shadow-sm',
-        size === 'A' && 'aspect-square w-96',
-        size === 'B' && 'aspect-square w-44',
-        size === 'C' && 'h-96 w-44',
-        size === 'D' && 'h-44 w-96 flex-row'
+        'bg-card text-card-foreground flex overflow-hidden rounded-lg border shadow-sm'
       )}
       href={href}
       target='_blank'
       rel='noopener noreferrer'
+      initial={false}
+      layout
+      animate={dimensions[size]}
+      transition={{
+        type: 'spring',
+        stiffness: 200,
+        damping: 20,
+      }}
     >
       <CardHeader className='pb-10'>
         {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
@@ -65,7 +77,7 @@ export const Widget = ({
                 alt={title}
                 className={cn(
                   'rounded-md object-cover',
-                  size === 'A' && 'size-full',
+                  size === 'A' && 'aspect-[342/230] size-full',
                   // B doesn't have a content image
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
@@ -83,7 +95,7 @@ export const Widget = ({
           </>
         )}
       </CardContent>
-    </a>
+    </motion.a>
   );
 };
 
