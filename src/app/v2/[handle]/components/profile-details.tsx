@@ -7,7 +7,8 @@ import { cn, formatName, formatWalletAddress } from '@/lib/utils';
 import { MinimalUser } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 
-import { useSendUSDCFromExternalWallet } from '../hooks/use-send-usdc-from-external-wallet';
+import { useConnectAndSend } from '../hooks/use-connect-and-send';
+import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 
 /** Profile details section rendered as a column on the left of the profile page */
 export const ProfileDetails = ({
@@ -55,14 +56,24 @@ export const ProfileDetails = ({
           ))}
         </div>
       )}
-      {isMine ? <MyProfileButtons onEdit={onEdit} /> : <PublicProfileButtons />}
+      {isMine ? (
+        <MyProfileButtons onEdit={onEdit} />
+      ) : (
+        <PublicProfileButtons userId={user.id} />
+      )}
     </div>
   );
 };
 
 /** Buttons for public view of a profile */
-const PublicProfileButtons = () => {
-  const { wallet, connectWallet, send } = useSendUSDCFromExternalWallet(false);
+const PublicProfileButtons = ({ userId }: { userId: string }) => {
+  const { data: walletAddress } = useWalletAddressByUserId(userId);
+  const { wallet, connectWallet, send } = useConnectAndSend({
+    amount: 1,
+    recipientWalletAddress: walletAddress,
+    // recipientWalletAddress: '0xBB5923098D84EB0D9DAaE2975782999364CE87A2' //uncomment for SB,
+    sendAfterConnect: false,
+  });
   return (
     <div className='flex flex-col gap-3'>
       <Button variant='sorbet' disabled>
@@ -72,7 +83,7 @@ const PublicProfileButtons = () => {
         variant='secondary'
         onClick={() => (!wallet ? connectWallet() : send())}
       >
-        <Coffee /> {wallet ? 'Tip 1 USDC' : 'Connect Wallet to Tip'}
+        <Coffee /> {wallet ? 'Tip USDC' : 'Connect Wallet to Tip'}
       </Button>
       {wallet && (
         <Button variant='destructive' onClick={() => wallet?.disconnect()}>
