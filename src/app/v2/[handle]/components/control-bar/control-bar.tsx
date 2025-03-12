@@ -36,11 +36,14 @@ import { AddImageButton } from './add-image-button';
 export const ControlBar = ({
   onAddImage,
   onAddLink,
+  onShare,
 }: {
   /** Called when a valid image is added */
   onAddImage?: (image: File) => void;
   /** Called when a valid link is added */
   onAddLink?: (link: string) => void;
+  /** Called when the share button is clicked */
+  onShare?: () => void;
 }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -68,7 +71,7 @@ export const ControlBar = ({
       <PopoverAnchor asChild>
         <Card className='h-fit shadow-lg'>
           <CardContent className='flex h-full items-center justify-between gap-4 px-3 py-2'>
-            <Button variant='sorbet' size='sm'>
+            <Button variant='sorbet' size='sm' onClick={onShare}>
               Share profile
             </Button>
             <Separator orientation='vertical' className='h-9' />

@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useGenerateQRCode } from '@/hooks/profile/useGenerateQRCode';
+import { useQRCode } from '@/hooks/profile/use-qr-code';
 
 import { Body, Header, ShareLink } from '../components';
 import { ViewProps } from '../share-profile-dialog';
@@ -53,10 +53,7 @@ export const ShareOnSocials = ({
 }: ShareOnSocialsProps) => {
   const url = `${window.location.origin}/${username}`;
 
-  const { qrCodeRef, qrCode, isLoadingQRCode } = useGenerateQRCode(
-    url,
-    qrCodeOptions
-  );
+  const { qrCodeRef, qrCode, isLoadingQRCode } = useQRCode(url, qrCodeOptions);
 
   const [isPngCopied, setIsPngCopied] = useState(false);
   const [isSvgCopied, setIsSvgCopied] = useState(false);

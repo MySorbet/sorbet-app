@@ -12,6 +12,7 @@ const meta = {
   args: {
     onAddImage: fn(),
     onAddLink: fn(),
+    onShare: fn(),
   },
 } satisfies Meta<typeof ControlBar>;
 

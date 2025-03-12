@@ -1,4 +1,4 @@
-import { Coffee, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { cn, formatName } from '@/lib/utils';
 import { MinimalUser } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
+
+import { Tip } from './tip';
 
 /** Profile details section rendered as a column on the left of the profile page */
 export const ProfileDetails = ({
@@ -53,21 +55,23 @@ export const ProfileDetails = ({
           ))}
         </div>
       )}
-      {isMine ? <MyProfileButtons onEdit={onEdit} /> : <PublicProfileButtons />}
+      {isMine ? (
+        <MyProfileButtons onEdit={onEdit} />
+      ) : (
+        <PublicProfileButtons userId={user.id} />
+      )}
     </div>
   );
 };
 
 /** Buttons for public view of a profile */
-const PublicProfileButtons = () => {
+const PublicProfileButtons = ({ userId }: { userId: string }) => {
   return (
     <div className='flex flex-col gap-3'>
       <Button variant='sorbet' disabled>
         Work with me
       </Button>
-      <Button variant='secondary' disabled>
-        <Coffee /> Tip USDC
-      </Button>
+      <Tip userId={userId} />
     </div>
   );
 };

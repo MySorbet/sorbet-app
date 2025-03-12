@@ -12,10 +12,12 @@ import { User } from '@/types';
 import { ControlBar } from './control-bar/control-bar';
 import { OnboardWithHandles } from './onboard-with-handles';
 import { ProfileDetails } from './profile-details';
+import { ShareDialog } from './share-dialog/share-dialog';
 
 /** Profile 2.0 */
 export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const handleAddImage = (image: File) => {
     toast.success('Would add image', {
@@ -59,13 +61,21 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
       {/* Elements which ignore the layout of this container */}
       {isMine && (
         <>
+          <ShareDialog
+            open={isShareDialogOpen}
+            setOpen={setIsShareDialogOpen}
+          />
           <EditProfileSheet
             open={isEditing}
             setOpen={setIsEditing}
             user={user}
           />
           <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] -translate-x-1/2 -translate-y-6 transform'>
-            <ControlBar onAddImage={handleAddImage} onAddLink={handleAddLink} />
+            <ControlBar
+              onAddImage={handleAddImage}
+              onAddLink={handleAddLink}
+              onShare={() => setIsShareDialogOpen(true)}
+            />
           </div>
         </>
       )}
