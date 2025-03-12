@@ -1,14 +1,13 @@
-import { Coffee, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { cn, formatName, formatWalletAddress } from '@/lib/utils';
+import { cn, formatName } from '@/lib/utils';
 import { MinimalUser } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 
-import { useConnectAndSend } from '../hooks/use-connect-and-send';
-import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
+import { Tip } from './tip';
 
 /** Profile details section rendered as a column on the left of the profile page */
 export const ProfileDetails = ({
@@ -67,29 +66,12 @@ export const ProfileDetails = ({
 
 /** Buttons for public view of a profile */
 const PublicProfileButtons = ({ userId }: { userId: string }) => {
-  const { data: walletAddress } = useWalletAddressByUserId(userId);
-  const { wallet, connectWallet, send } = useConnectAndSend({
-    amount: 1,
-    recipientWalletAddress: walletAddress,
-    // recipientWalletAddress: '0xBB5923098D84EB0D9DAaE2975782999364CE87A2' //uncomment for SB,
-    sendAfterConnect: false,
-  });
   return (
     <div className='flex flex-col gap-3'>
       <Button variant='sorbet' disabled>
         Work with me
       </Button>
-      <Button
-        variant='secondary'
-        onClick={() => (!wallet ? connectWallet() : send())}
-      >
-        <Coffee /> {wallet ? 'Tip USDC' : 'Connect Wallet to Tip'}
-      </Button>
-      {wallet && (
-        <Button variant='destructive' onClick={() => wallet?.disconnect()}>
-          Disconnect ({formatWalletAddress(wallet?.address)})
-        </Button>
-      )}
+      <Tip userId={userId} />
     </div>
   );
 };
