@@ -13,42 +13,49 @@ import { env } from '@/lib/env';
  * @param sendAfterConnect - Will try to send as soon as an external wallet is connected
  * @returns The wallet, connectWallet function, and send function
  */
-export const useSendUSDCFromExternalWallet = (sendAfterConnect = false) => {
+export const useConnectAndSend = ({
+  amount,
+  recipientWalletAddress,
+  sendAfterConnect = false,
+}: {
+  amount?: number;
+  recipientWalletAddress?: string;
+  sendAfterConnect?: boolean;
+}) => {
   const { connectWallet } = usePrivy();
 
-  // This gets the first non-privy wallet
   const { wallets } = useWallets();
+  /** The first non-privy wallet */
   const wallet = wallets.find((wallet) => wallet.walletClientType !== 'privy');
 
-  // TODO: getRecipientWalletAddressByHandle
-  const recipientWalletAddress = '0xBB5923098D84EB0D9DAaE2975782999364CE87A2';
-  // TODO: dynamic amount
-  const amount = '1';
   const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
 
+  /** Triggers a request to the connected wallet to send `amount` USDC to the recipient wallet address */
   const send = useCallback(async () => {
     try {
       if (!wallet) throw new Error('There was no valid connected wallet found');
-
       const provider = await wallet.getEthereumProvider();
+
+      // Transfer `amount` USDC to the recipient wallet address
       const transferData = encodeFunctionData({
         abi: TOKEN_ABI,
         functionName: 'transfer',
-        args: [recipientWalletAddress, parseUnits(amount.toString(), 6)],
+        args: [recipientWalletAddress, parseUnits(String(amount), 6)],
       });
 
+      // Issue the transfer data to the USDC contract
       const transferTransactionHash = await provider.request?.({
         method: 'eth_sendTransaction',
         params: [
           {
             from: wallet.address,
-            to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS as `0x${string}`,
+            to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
             data: transferData,
           },
         ],
       });
-      console.log(transferTransactionHash);
-      toast.success('Sent 1 USDC', {
+
+      toast.success(`Sent ${amount} USDC`, {
         description: `Transaction hash: ${transferTransactionHash}`,
       });
     } catch (error) {
@@ -57,16 +64,14 @@ export const useSendUSDCFromExternalWallet = (sendAfterConnect = false) => {
         description: <pre className='text-wrap text-xs'>{`${error}`}</pre>,
       });
     }
-  }, [recipientWalletAddress, wallet]);
+  }, [recipientWalletAddress, wallet, amount]);
 
   useEffect(() => {
     (async () => {
-      console.log('wallets');
-      console.log(wallets);
+      console.log('wallets', wallets);
       if (wallet) {
         wallet.switchChain(chain.id);
         if (sendAfterConnect) {
-          console.log('sending');
           send();
         }
       }
