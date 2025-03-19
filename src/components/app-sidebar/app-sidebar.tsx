@@ -69,7 +69,9 @@ const WalletMenuItem = () => {
         {isLoading ? (
           <Skeleton className='h-4 w-16' variant='darker' />
         ) : (
-          <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+          usdcBalance && (
+            <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+          )
         )}
       </SidebarMenuBadge>
     </SidebarMenuItem>
