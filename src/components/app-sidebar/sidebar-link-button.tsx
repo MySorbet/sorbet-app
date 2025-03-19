@@ -5,6 +5,7 @@ import { useRef } from 'react';
 
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 import type { MenuItemProps } from './app-sidebar';
 import { isAnimatedIcon, SidebarIcon } from './sidebar-icon';
@@ -14,7 +15,7 @@ export const SidebarLinkButton = ({
   item,
   iconClassName,
 }: {
-  item: Required<MenuItemProps>;
+  item: MenuItemProps;
   iconClassName?: string;
 }) => {
   // TODO: fix this typing
@@ -39,10 +40,11 @@ export const SidebarLinkButton = ({
   return (
     <SidebarMenuButton asChild>
       <Link
-        href={item.url}
+        href={item.disabled ? '#' : item.url}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={() => isMobile && toggleSidebar()}
+        className={cn(item.disabled && 'pointer-events-none opacity-50')}
       >
         <SidebarIcon
           iconRef={iconRef}
