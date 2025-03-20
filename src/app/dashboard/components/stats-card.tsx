@@ -2,6 +2,7 @@ import { ArrowRight, DollarSign, View, Wallet } from 'lucide-react';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
+import { cn } from '@/lib/utils';
 
 import { DashboardCard } from './dashboard-card';
 
@@ -32,6 +33,7 @@ export const StatsCard = ({
   onClick?: () => void;
 }) => {
   const Icon = IconMap[type];
+  const isComingSoon = type === 'views';
   return (
     <DashboardCard
       className='group flex h-fit w-full max-w-lg cursor-pointer flex-col gap-2'
@@ -48,8 +50,13 @@ export const StatsCard = ({
         {value === undefined ? (
           <Skeleton className='mb-1 h-7 w-20' />
         ) : (
-          <p className='animate-in fade-in text-2xl font-bold'>
-            {formatValue(value, type)}
+          <p
+            className={cn(
+              'animate-in fade-in text-2xl font-bold',
+              isComingSoon && 'text-muted-foreground/15'
+            )}
+          >
+            {isComingSoon ? 'coming soon' : formatValue(value, type)}
           </p>
         )}
         <p className='text-muted-foreground text-xs'>{description}</p>

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
 import { LinkInBioLinkButton } from '@/components/app-sidebar/link-in-bio-link-button';
 import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
+import { Badge } from '@/components/ui/badge';
+import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
 import { MessageSquareIcon } from '@/components/ui/message-square';
@@ -37,6 +39,7 @@ export type MenuItemProps = {
   title: string;
   url: string;
   icon: LucideIcon | AnimatedIcon;
+  disabled?: boolean;
 };
 
 type MenuItemRender = {
@@ -66,8 +69,30 @@ const WalletMenuItem = () => {
         {isLoading ? (
           <Skeleton className='h-4 w-16' variant='darker' />
         ) : (
-          <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+          usdcBalance && (
+            <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+          )
         )}
+      </SidebarMenuBadge>
+    </SidebarMenuItem>
+  );
+};
+
+const DisabledAnalyticsMenuItem = () => {
+  const item = {
+    title: 'Analytics',
+    url: '/wallet',
+    icon: ChartColumnIncreasingIcon,
+    disabled: true,
+  };
+  return (
+    <SidebarMenuItem key={item.title}>
+      <SidebarLinkButton item={item} />
+
+      <SidebarMenuBadge>
+        <Badge variant='outline' className='text-muted-foreground font-normal'>
+          coming soon 🚀
+        </Badge>
       </SidebarMenuBadge>
     </SidebarMenuItem>
   );
@@ -99,11 +124,9 @@ const profileItems: MenuItem[] = [
   {
     render: LinkInBioLinkButton,
   },
-  // {
-  //   title: 'Analytics',
-  //   url: '/wallet',
-  //   icon: ChartColumnIncreasingIcon,
-  // },
+  {
+    render: DisabledAnalyticsMenuItem,
+  },
 ];
 
 const VerifiedMenuItem = () => {
