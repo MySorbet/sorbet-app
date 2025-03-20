@@ -32,7 +32,7 @@ export const Widget = ({
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex flex-col overflow-hidden rounded-lg border shadow-sm',
+        'bg-card text-card-foreground flex flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         'size-full max-h-[390px] max-w-[390px]'
       )}
