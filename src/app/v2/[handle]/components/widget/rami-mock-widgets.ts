@@ -1,6 +1,6 @@
-import { Widget } from './grid';
+import { WidgetCustomData } from './grid';
 
-export const ramiMockWidgets: Widget[] = [
+export const ramiMockWidgets: WidgetCustomData[] = [
   {
     id: '67190d68-d362-49e3-b6bd-a4e686ad425a',
     size: 'C',

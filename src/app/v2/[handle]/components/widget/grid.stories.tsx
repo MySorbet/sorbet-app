@@ -74,7 +74,7 @@ export const Rendered = {
     const [widgets, setWidgets] = useState(ramiMockWidgets);
 
     return (
-      <div>
+      <div className='size-full'>
         <Button
           onClick={async () => {
             const newWidgets = [
