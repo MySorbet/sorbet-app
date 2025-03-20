@@ -23,31 +23,43 @@ import styles from './rgl-custom.module.css';
 const GridLayoutWithWidth = WidthProvider(Responsive);
 
 type Breakpoint = 'sm' | 'lg';
+
+type WidgetSize = 'A' | 'B' | 'C' | 'D' | 'E';
+const LayoutSizes: Record<WidgetSize, { w: number; h: number }> = {
+  A: { w: 4, h: 4 },
+  B: { w: 2, h: 2 },
+  C: { w: 2, h: 4 },
+  D: { w: 4, h: 2 },
+  E: { w: 4, h: 1 },
+} as const;
+
 const initialLayoutLG = [
-  { i: 'a', x: 0, y: 0, w: 1, h: 1 },
-  { i: 'b', x: 1, y: 0, w: 1, h: 1 },
-  { i: 'c', x: 2, y: 0, w: 1, h: 1 },
-  { i: 'd', x: 3, y: 0, w: 1, h: 1 },
+  { i: 'a', x: 0, y: 0, w: 2, h: 2 },
+  { i: 'b', x: 2, y: 0, w: 2, h: 2 },
+  { i: 'c', x: 4, y: 0, w: 2, h: 2 },
+  { i: 'd', x: 6, y: 0, w: 2, h: 2 },
 
-  { i: 'e', x: 0, y: 1, w: 2, h: 1 },
-  { i: 'f', x: 2, y: 1, w: 2, h: 1 },
+  { i: 'e', x: 0, y: 2, w: 4, h: 2 },
+  { i: 'f', x: 4, y: 2, w: 4, h: 2 },
 
-  { i: 'g', x: 0, y: 2, w: 2, h: 2 },
-  { i: 'h', x: 2, y: 2, w: 2, h: 2 },
+  { i: 'g', x: 0, y: 4, w: 4, h: 4 },
+  { i: 'h', x: 4, y: 4, w: 4, h: 4 },
+  { i: 'i', x: 8, y: 4, w: 4, h: 1 },
 ];
 
 const initialLayoutSM = [
-  { i: 'a', x: 0, y: 0, w: 1, h: 1 },
-  { i: 'b', x: 1, y: 0, w: 1, h: 1 },
+  { i: 'a', x: 0, y: 0, w: 2, h: 2 },
+  { i: 'b', x: 2, y: 0, w: 2, h: 2 },
 
-  { i: 'c', x: 0, y: 1, w: 1, h: 1 },
-  { i: 'd', x: 1, y: 1, w: 1, h: 1 },
+  { i: 'c', x: 0, y: 2, w: 2, h: 2 },
+  { i: 'd', x: 2, y: 2, w: 2, h: 2 },
 
-  { i: 'e', x: 0, y: 2, w: 2, h: 1 },
-  { i: 'f', x: 0, y: 3, w: 2, h: 1 },
+  { i: 'e', x: 0, y: 4, w: 4, h: 2 },
+  { i: 'f', x: 0, y: 6, w: 4, h: 2 },
 
-  { i: 'g', x: 0, y: 4, w: 2, h: 2 },
-  { i: 'h', x: 0, y: 6, w: 2, h: 2 },
+  { i: 'g', x: 0, y: 8, w: 4, h: 4 },
+  { i: 'h', x: 0, y: 12, w: 4, h: 4 },
+  { i: 'i', x: 0, y: 16, w: 4, h: 1 },
 ];
 
 const initialLayout: Record<Breakpoint, Layout[]> = {
@@ -56,11 +68,11 @@ const initialLayout: Record<Breakpoint, Layout[]> = {
 };
 
 const cols: Record<Breakpoint, number> = {
-  lg: 4,
-  sm: 2,
+  lg: 8,
+  sm: 4,
 };
 
-const rh = 175; // row height
+const rh = 68; // row height
 const m = 40; // margin
 
 /** Calculate the width if the grid given the above row height and margin, and the number of columns (which depends on the breakpoint) */
@@ -94,7 +106,6 @@ export const WidgetGrid = () => {
     layout: Layout[],
     allLayouts: Record<Breakpoint, Layout[]>
   ) => {
-    console.log(breakpoint);
     setLayouts(allLayouts);
   };
 
@@ -132,7 +143,7 @@ export const WidgetGrid = () => {
         }
       >
         <GridLayoutWithWidth
-          compactType='horizontal'
+          compactType='vertical'
           className={styles['rgl-custom']}
           layouts={layouts}
           breakpoints={breakpoints}
