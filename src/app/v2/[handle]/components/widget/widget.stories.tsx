@@ -20,7 +20,24 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Helper to create a container with specific dimensions */
+const createSizeContainer = (width: number, height: number) => {
+  return (Story: StoryFn) => (
+    <div className={`h-[${height}px] w-[${width}px]`}>
+      <Story />
+    </div>
+  );
+};
+
+const sizeConfigs = {
+  A: { width: 390, height: 390 },
+  B: { width: 175, height: 175 },
+  C: { width: 175, height: 390 },
+  D: { width: 390, height: 175 },
+} as const;
+
 export const Default: Story = {
+  decorators: [createSizeContainer(sizeConfigs.A.width, sizeConfigs.A.height)],
   args: {
     title: 'Widget',
     href: 'https://www.google.com',
@@ -28,7 +45,40 @@ export const Default: Story = {
   },
 };
 
+export const A: Story = {
+  decorators: [createSizeContainer(sizeConfigs.A.width, sizeConfigs.A.height)],
+  args: {
+    ...Default.args,
+    size: 'A',
+  },
+};
+
+export const B: Story = {
+  decorators: [createSizeContainer(sizeConfigs.B.width, sizeConfigs.B.height)],
+  args: {
+    ...Default.args,
+    size: 'B',
+  },
+};
+
+export const C: Story = {
+  decorators: [createSizeContainer(sizeConfigs.C.width, sizeConfigs.C.height)],
+  args: {
+    ...Default.args,
+    size: 'C',
+  },
+};
+
+export const D: Story = {
+  decorators: [createSizeContainer(sizeConfigs.D.width, sizeConfigs.D.height)],
+  args: {
+    ...Default.args,
+    size: 'D',
+  },
+};
+
 export const WithIcon: Story = {
+  decorators: [createSizeContainer(sizeConfigs.A.width, sizeConfigs.A.height)],
   args: {
     ...Default.args,
     iconUrl:
@@ -39,6 +89,7 @@ export const WithIcon: Story = {
 };
 
 export const Loading: Story = {
+  decorators: [createSizeContainer(sizeConfigs.A.width, sizeConfigs.A.height)],
   args: {
     ...Default.args,
     loading: true,

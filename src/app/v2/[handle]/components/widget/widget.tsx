@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Link } from 'lucide-react';
 import React from 'react';
 
@@ -11,6 +10,9 @@ import { cn } from '@/lib/utils';
  * - Displays a title, icon image, and content image.
  * - The idea is to pass a temp title (like url) and loading=true to display a loading state while creating the widget in the backend (i.e. grabbing favicon, og:image, etc.)
  * - Then pass a new title (website title), iconUrl (favicon), and contentUrl (og:image) to display the actual widget.
+ *
+ * Widgets will fill their container's width and height (up to a max of 390x390px)
+ * They are expected to be rendered in a container with a width and height corresponding to the the `size` prop.
  */
 export const Widget = ({
   iconUrl,
@@ -27,34 +29,22 @@ export const Widget = ({
   loading?: boolean;
   size?: 'A' | 'B' | 'C' | 'D';
 }) => {
-  const dimensions = {
-    A: { width: '24rem', height: '24rem', flexDirection: 'column' as const }, // w-96 = 24rem
-    B: { width: '11rem', height: '11rem', flexDirection: 'column' as const }, // w-44 = 11rem
-    C: { width: '11rem', height: '24rem', flexDirection: 'column' as const },
-    D: { width: '24rem', height: '11rem', flexDirection: 'row' as const },
-  };
-
   return (
-    <motion.a
+    <a
       className={cn(
-        'bg-card text-card-foreground flex overflow-hidden rounded-lg border shadow-sm'
+        'bg-card text-card-foreground flex flex-col overflow-hidden rounded-lg border shadow-sm',
+        size === 'D' && 'flex-row',
+        'size-full max-h-[390px] max-w-[390px]'
       )}
       href={href}
       target='_blank'
       rel='noopener noreferrer'
-      initial={false}
-      layout
-      animate={dimensions[size]}
-      transition={{
-        type: 'spring',
-        stiffness: 200,
-        damping: 20,
-      }}
     >
       <CardHeader className='pb-10'>
         {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
         <CardTitle className='text-sm font-normal'>{title}</CardTitle>
       </CardHeader>
+      {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
       <CardContent
         className={cn(
           'flex flex-1 items-end justify-end',
@@ -95,7 +85,7 @@ export const Widget = ({
           </>
         )}
       </CardContent>
-    </motion.a>
+    </a>
   );
 };
 
