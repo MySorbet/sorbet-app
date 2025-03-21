@@ -27,6 +27,8 @@ interface WidgetContextType {
   addWidget: () => void;
   /** Update the size of a widget */
   updateSize: (id: string, size: WidgetSize) => void;
+  /** Remove a widget */
+  removeWidget: (id: string) => void;
 }
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
@@ -75,8 +77,23 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
         },
       });
       setLayouts({
-        sm: [newWidgetLayout, ...layouts['sm']],
-        lg: [newWidgetLayout, ...layouts['lg']],
+        sm: [newWidgetLayout, ...layouts.sm],
+        lg: [newWidgetLayout, ...layouts.lg],
+      });
+    }, 0);
+  };
+
+  const removeWidget = (id: string) => {
+    // Remove widget from the map using object destructuring
+    const { [id]: _, ...remainingWidgets } = widgets;
+
+    // Batch these to make them atomic
+    // TODO: Instead, use a reducer
+    setTimeout(() => {
+      setWidgets(remainingWidgets);
+      setLayouts({
+        sm: layouts.sm.filter((item) => item.i !== id),
+        lg: layouts.lg.filter((item) => item.i !== id),
       });
     }, 0);
   };
@@ -91,6 +108,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
         onLayoutChange,
         addWidget,
         updateSize,
+        removeWidget,
       }}
     >
       {children}

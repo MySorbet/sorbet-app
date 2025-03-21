@@ -5,6 +5,7 @@ import React, { MutableRefObject, useRef } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { WidgetControls } from '@/app/v2/[handle]/components/widget/widget-controls';
+import { WidgetDeleteButton } from '@/app/v2/[handle]/components/widget/widget-delete-button';
 import { cn } from '@/lib/utils';
 
 import {
@@ -125,7 +126,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
     },
     ref
   ) => {
-    const { updateSize } = useWidgets();
+    const { updateSize, removeWidget } = useWidgets();
     return (
       <div
         style={style}
@@ -149,7 +150,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         {/* Controls */}
         <div
           className={cn(
-            'z-1 absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
+            'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
             'opacity-0 transition-opacity duration-300', // opacity
             !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
             // TODO: How to prevent click from passing down to rgl
@@ -160,6 +161,14 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
             onSizeChange={(size) => updateSize(id, size)}
           />
         </div>
+        <WidgetDeleteButton
+          onDelete={() => removeWidget(id)}
+          className={cn(
+            'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
+            'opacity-0 transition-opacity duration-300', // opacity
+            !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
+          )}
+        />
       </div>
     );
   }
