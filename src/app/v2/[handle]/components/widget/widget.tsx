@@ -5,6 +5,7 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+import { WidgetDataForDisplay } from './grid-config';
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
  * - Displays a title, icon image, and content image.
@@ -21,14 +22,7 @@ export const Widget = ({
   href,
   loading = false,
   size = 'A',
-}: {
-  iconUrl?: string;
-  title: string;
-  contentUrl?: string;
-  href?: string;
-  loading?: boolean;
-  size?: 'A' | 'B' | 'C' | 'D';
-}) => {
+}: WidgetDataForDisplay) => {
   return (
     <a
       className={cn(

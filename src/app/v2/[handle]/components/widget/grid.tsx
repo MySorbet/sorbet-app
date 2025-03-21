@@ -1,15 +1,3 @@
-// import { Widget } from './widget';
-
-export type WidgetCustomData = {
-  contentUrl?: string;
-  href?: string;
-  iconUrl?: string;
-  id: string;
-  title: string;
-  size: 'A' | 'B' | 'C' | 'D';
-  loading?: boolean;
-};
-
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -22,22 +10,29 @@ import {
   Breakpoint,
   breakpoints,
   cols,
+  getWidgetSizeFromDimensions as size,
   m,
   rh,
   w,
+  WidgetData,
   wLg,
   wSm,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
-import { sampleLayouts } from './sample-layout';
+import { sampleLayouts, sampleWidgetsMap } from './sample-layout';
+import { Widget } from './widget';
+
+// Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 /**
  * An RGL layout of widgets.
  *
- * A fixed row height drives the width, we calculate the width from a set rowheight for the grid
+ * A fixed row height drives the width, we calculate the width from a set row height for the grid
  */
 export const WidgetGrid = () => {
+  const [widgets, setWidgets] =
+    useState<Record<string, WidgetData>>(sampleWidgetsMap);
   const [layouts, setLayouts] =
     useState<Record<Breakpoint, Layout[]>>(sampleLayouts);
   const [breakpoint, setBreakpoint] = useState<Breakpoint>('lg');
@@ -95,17 +90,29 @@ export const WidgetGrid = () => {
           onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
           onLayoutChange={onLayoutChange}
         >
-          {layouts[breakpoint].map((item) => (
-            <WidgetRGLHandle key={item.i}></WidgetRGLHandle>
-          ))}
+          {layouts[breakpoint].map((layout) => {
+            const widget = widgets[layout.i];
+            // TODO: Is it possible that you don't find a widget? and if so maybe throw and wrap with error boundary?
+            return (
+              <RGLHandle key={widget.id}>
+                <Widget
+                  title={widget.title}
+                  size={size(layout.w, layout.h)}
+                  contentUrl={widget.contentUrl}
+                  href={widget.href}
+                />
+              </RGLHandle>
+            );
+          })}
         </ResponsiveGridLayout>
       </div>
     </div>
   );
 };
 
-interface WidgetRGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
+interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
+  debug?: boolean;
 }
 
 /**
@@ -113,7 +120,7 @@ interface WidgetRGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
  *
  * @see https://github.com/react-grid-layout/react-grid-layout?tab=readme-ov-file#custom-child-components-and-draggable-handles
  */
-const WidgetRGLHandle = React.forwardRef<HTMLDivElement, WidgetRGLHandleProps>(
+const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
   (
     {
       style,
@@ -122,6 +129,7 @@ const WidgetRGLHandle = React.forwardRef<HTMLDivElement, WidgetRGLHandleProps>(
       onMouseUp,
       onTouchEnd,
       children,
+      debug = false,
       ...props
     },
     ref
@@ -130,13 +138,18 @@ const WidgetRGLHandle = React.forwardRef<HTMLDivElement, WidgetRGLHandleProps>(
       <div
         style={style}
         className={cn(
-          'border-divider rounded-2xl border-2 border-dashed',
+          debug && 'border-divider rounded-2xl border-2 border-dashed',
           className
         )}
         ref={ref}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onTouchEnd={onTouchEnd}
+        // TODO: This just prevents a widget from being clicked when dropping. Fix this an make them clickable
+        onClick={(e) => {
+          console.log('clicked');
+          e.preventDefault();
+        }}
         {...props}
       >
         {children}
@@ -145,7 +158,7 @@ const WidgetRGLHandle = React.forwardRef<HTMLDivElement, WidgetRGLHandleProps>(
   }
 );
 
-WidgetRGLHandle.displayName = 'WidgetRGLHandle';
+RGLHandle.displayName = 'WidgetRGLHandle';
 
 // Helper to find an element `elementId` in `layout` and update it with the properties from `newLayout`
 const updateElementInLayout = (

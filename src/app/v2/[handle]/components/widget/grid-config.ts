@@ -1,14 +1,67 @@
 export type Breakpoint = 'sm' | 'lg';
 
 // The five supported sizes for widgets and a map describing the number of rows and cols for each size
-export type WidgetSize = 'A' | 'B' | 'C' | 'D' | 'E';
+export type WidgetSize = 'A' | 'B' | 'C' | 'D'; // | 'E';
 export const LayoutSizes: Record<WidgetSize, { w: number; h: number }> = {
   A: { w: 4, h: 4 },
   B: { w: 2, h: 2 },
   C: { w: 2, h: 4 },
   D: { w: 4, h: 2 },
-  E: { w: 4, h: 1 },
+  // E: { w: 4, h: 1 },
 } as const;
+
+/** Build a map of widget size keys to widget size values driven by the LayoutSizes object above
+ * Looks like:
+ * ```
+ * {
+ *  '4x4': 'A',
+ *  '2x2': 'B',
+ *  '2x4': 'C',
+ *  '4x2': 'D',
+ * }
+ * ```
+ */
+const dimensionToSize: Record<string, WidgetSize> = Object.entries(
+  LayoutSizes
+).reduce(
+  (acc, [size, { w, h }]) => ({
+    ...acc,
+    [`${w}x${h}`]: size,
+  }),
+  {}
+);
+
+/**
+ * Helper to look up widget size from dimensions in O(1) time
+ * We use this to drive the widget size from the layout.
+ * It's important to understand that WidgetSize is a display concept that tells a widget how to render its contents. It is not stored or persisted, but driven by the layout.
+ * It can be different between layouts.
+ */
+export const getWidgetSizeFromDimensions = (
+  w: number,
+  h: number
+): WidgetSize => {
+  const size = dimensionToSize[`${w}x${h}`];
+  if (!size) throw new Error(`Widget size not found for dimensions ${w}x${h}`);
+  return size;
+};
+
+// This is the in progress shape of the data representing a widget.
+export type WidgetData = {
+  contentUrl?: string;
+  href?: string;
+  iconUrl?: string;
+  id: string;
+  title: string;
+};
+
+// This is widget data augmented with display metadata.
+export type WidgetDataForDisplay = Omit<WidgetData, 'id'> & {
+  loading?: boolean;
+  size: WidgetSize;
+};
+
+// 👇 This is size config and calculations for the grid.
 
 export const cols: Record<Breakpoint, number> = {
   lg: 8,
