@@ -6,7 +6,7 @@ import { sleep } from '@/lib/utils';
 
 import { WidgetGrid } from './grid';
 import { ramiMockWidgets } from './rami-mock-widgets';
-import { WidgetProvider } from './use-widget-context';
+import { useWidgets, WidgetProvider } from './use-widget-context';
 
 const meta = {
   title: 'Profile/v2/WidgetGrid',
@@ -66,7 +66,7 @@ export const Default: Story = {
   },
 };
 
-export const RamiMockWidgets: Story = {
+export const RamiMockWidgetsDeprecated: Story = {
   args: {
     widgets: ramiMockWidgets,
   },
@@ -77,7 +77,7 @@ const mockFetchWidgetData = async (url: string) => {
   return { contentUrl: url, iconUrl: url };
 };
 
-export const Rendered = {
+export const RenderedDeprecated = {
   render: () => {
     const [widgets, setWidgets] = useState(ramiMockWidgets);
 
@@ -93,7 +93,7 @@ export const Rendered = {
                 size: 'C' as const,
                 loading: true,
               },
-              ...ramiMockWidgets,
+              ...Object.values(ramiMockWidgets),
             ];
             setWidgets(newWidgets);
             const data = await mockFetchWidgetData(
@@ -113,6 +113,18 @@ export const Rendered = {
           Add widget
         </Button>
         <WidgetGrid widgets={widgets} />
+      </div>
+    );
+  },
+};
+
+export const WithContext: Story = {
+  render: () => {
+    const { addWidget } = useWidgets();
+    return (
+      <div className='size-full'>
+        <Button onClick={addWidget}>Add widget</Button>
+        <WidgetGrid />
       </div>
     );
   },

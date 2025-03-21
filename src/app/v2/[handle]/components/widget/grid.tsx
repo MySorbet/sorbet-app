@@ -2,7 +2,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import React, { MutableRefObject, useRef } from 'react';
-import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
+import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { WidgetControls } from '@/app/v2/[handle]/components/widget/widget-controls';
 import { cn } from '@/lib/utils';
@@ -74,6 +74,7 @@ export const WidgetGrid = () => {
                 key={widget.id}
                 className='group'
                 size={s}
+                id={widget.id}
                 draggedRef={draggedRef}
               >
                 <Widget
@@ -94,8 +95,11 @@ export const WidgetGrid = () => {
 interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   debug?: boolean;
-  size: WidgetSize;
   draggedRef: MutableRefObject<boolean>;
+
+  // 👇 these are a little bloated I feel, maybe this wrapper should be turned into two?
+  size: WidgetSize;
+  id: string;
 }
 
 // TODO: we are starting to overload this component. Its main purpose was to handle RGL related hacks so that the widget child could not worry too much. now it is rendering controls.
@@ -115,11 +119,13 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       children,
       debug = false,
       size,
+      id,
       draggedRef,
       ...props
     },
     ref
   ) => {
+    const { updateSize } = useWidgets();
     return (
       <div
         style={style}
@@ -151,7 +157,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         >
           <WidgetControls
             size={size}
-            onSizeChange={() => console.log('size changed')}
+            onSizeChange={(size) => updateSize(id, size)}
           />
         </div>
       </div>
@@ -160,17 +166,3 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
 );
 
 RGLHandle.displayName = 'WidgetRGLHandle';
-
-// Helper to find an element `elementId` in `layout` and update it with the properties from `newLayout`
-const updateElementInLayout = (
-  layout: Layout[],
-  elementId: string,
-  newLayout: Partial<Layout>
-) => {
-  return layout.map((item) => {
-    if (item.i === elementId) {
-      return { ...item, ...newLayout };
-    }
-    return item;
-  });
-};
