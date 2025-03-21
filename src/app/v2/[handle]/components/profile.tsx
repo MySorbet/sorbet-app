@@ -10,14 +10,17 @@ import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 
 import { ControlBar } from './control-bar/control-bar';
-import { OnboardWithHandles } from './onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 import { ShareDialog } from './share-dialog/share-dialog';
+import { WidgetGrid } from './widget/grid';
+import { useWidgets } from './widget/use-widget-context';
 
 /** Profile 2.0 */
 export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+
+  const { addWidget } = useWidgets();
 
   const handleAddImage = (image: File) => {
     toast.success('Would add image', {
@@ -26,9 +29,7 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
   };
 
   const handleAddLink = (link: string) => {
-    toast.success('Would add link', {
-      description: link,
-    });
+    addWidget(link);
   };
 
   return (
@@ -51,11 +52,7 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
       </div>
       {/* TODO: Eventually this will be the widget grid. For now just show onboarding */}
       <div className='size-full flex-1'>
-        {isMine && (
-          <div className='flex size-full items-center justify-center'>
-            <OnboardWithHandles />
-          </div>
-        )}
+        <WidgetGrid />
       </div>
 
       {/* Elements which ignore the layout of this container */}

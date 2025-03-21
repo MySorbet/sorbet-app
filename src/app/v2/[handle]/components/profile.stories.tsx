@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { mockUser } from '@/api/user';
 
 import { Profile } from './profile';
+import { WidgetProvider } from './widget/use-widget-context';
 
 type Story = StoryObj<typeof Profile>;
 
@@ -12,6 +13,13 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    (Story) => (
+      <WidgetProvider>
+        <Story />
+      </WidgetProvider>
+    ),
+  ],
 } satisfies Meta<typeof Profile>;
 
 export default meta;

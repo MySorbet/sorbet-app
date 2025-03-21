@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { getUserByHandle } from '@/api/user';
+import { WidgetProvider } from '@/app/v2/[handle]/components/widget/use-widget-context';
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 import { useAuth } from '@/hooks/use-auth';
@@ -49,7 +50,11 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
           <div>This profile does not exist. Claim yours now</div>
         ) : (
           !isPending &&
-          freelancer && <Profile user={freelancer} isMine={isMine} />
+          freelancer && (
+            <WidgetProvider>
+              <Profile user={freelancer} isMine={isMine} />
+            </WidgetProvider>
+          )
         )}
       </Page.Content>
     </Page.Main>

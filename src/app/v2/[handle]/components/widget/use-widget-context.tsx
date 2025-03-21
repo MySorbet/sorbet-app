@@ -24,7 +24,7 @@ interface WidgetContextType {
     allLayouts: Record<Breakpoint, Layout[]>
   ) => void;
   /** Add a widget */
-  addWidget: () => void;
+  addWidget: (url?: string) => void;
   /** Update the size of a widget */
   updateSize: (id: string, size: WidgetSize) => void;
   /** Remove a widget */
@@ -57,7 +57,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     setLayouts({ ...layouts, [breakpoint]: newLayout });
   };
 
-  const addWidget = () => {
+  const addWidget = (url?: string) => {
     const newWidgetLayout = {
       i: String.fromCharCode(65 + Object.keys(widgets).length),
       ...LayoutSizes['B'], // Default size is the small one
@@ -73,7 +73,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
         ...widgets,
         [newWidgetLayout.i]: {
           id: newWidgetLayout.i,
-          title: 'New Widget',
+          title: url ?? `New Widget (${newWidgetLayout.i})`,
         },
       });
       setLayouts({
