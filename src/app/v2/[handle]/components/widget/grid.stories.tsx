@@ -6,6 +6,7 @@ import { sleep } from '@/lib/utils';
 
 import { WidgetGrid } from './grid';
 import { ramiMockWidgets } from './rami-mock-widgets';
+import { WidgetProvider } from './use-widget-context';
 
 const meta = {
   title: 'Profile/v2/WidgetGrid',
@@ -13,6 +14,13 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    (Story) => (
+      <WidgetProvider>
+        <Story />
+      </WidgetProvider>
+    ),
+  ],
 } satisfies Meta<typeof WidgetGrid>;
 
 export default meta;

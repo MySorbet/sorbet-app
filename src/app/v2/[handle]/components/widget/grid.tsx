@@ -1,9 +1,10 @@
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-import React, { MutableRefObject, useRef, useState } from 'react';
+import React, { MutableRefObject, useRef } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 
+import { WidgetControls } from '@/app/v2/[handle]/components/widget/widget-controls';
 import { cn } from '@/lib/utils';
 
 import {
@@ -14,15 +15,13 @@ import {
   m,
   rh,
   w,
-  WidgetData,
+  WidgetSize,
   wLg,
   wSm,
-  WidgetSize,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
-import { sampleLayouts, sampleWidgetsMap } from './sample-layout';
+import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
-import { WidgetControls } from '@/app/v2/[handle]/components/widget/widget-controls';
 
 // Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -33,38 +32,8 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
  * A fixed row height drives the width, we calculate the width from a set row height for the grid
  */
 export const WidgetGrid = () => {
-  const [widgets, setWidgets] =
-    useState<Record<string, WidgetData>>(sampleWidgetsMap);
-  const [layouts, setLayouts] =
-    useState<Record<Breakpoint, Layout[]>>(sampleLayouts);
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>('lg');
-
-  const onLayoutChange = (
-    layout: Layout[],
-    allLayouts: Record<Breakpoint, Layout[]>
-  ) => {
-    setLayouts(allLayouts);
-  };
-
-  const addWidget = () => {
-    // Find the layout for the current breakpoint
-    const newWidget = {
-      i: String.fromCharCode(65 + layouts[breakpoint].length),
-      x: 0,
-      y: 0,
-      w: 1,
-      h: 1,
-    };
-    // Add a new widget to the layouts
-    const newLayoutSm = [...layouts['sm'], newWidget];
-    const newLayoutLg = [...layouts['lg'], newWidget];
-    // Update the layouts state with the new layouts
-    setLayouts({
-      sm: newLayoutSm,
-      lg: newLayoutLg,
-    });
-  };
-
+  const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
+    useWidgets();
   const width = w(breakpoint);
 
   const draggedRef = useRef<boolean>(false);
