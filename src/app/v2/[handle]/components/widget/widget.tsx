@@ -29,7 +29,10 @@ export const Widget = ({
       className={cn(
         'bg-card text-card-foreground flex flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
-        'size-full max-h-[390px] max-w-[390px]'
+        'size-full max-h-[390px] max-w-[390px]',
+        // Just a nice little touch when a widget is added
+        // We would want to prevent this on first load, but maybe we don't even care if we are going to fade in the whole grid to hide the rgl transition?
+        'animate-in fade-in-0 zoom-in-0 duration-300'
       )}
       href={href}
       target='_blank'
