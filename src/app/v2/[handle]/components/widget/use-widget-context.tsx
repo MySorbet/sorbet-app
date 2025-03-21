@@ -46,6 +46,15 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     setLayouts(allLayouts);
   };
 
+  const updateSize = (id: string, size: WidgetSize) => {
+    // For the layout corresponding to the current breakpoint,
+    // update the size of the widget with id `id` to the size specified in `size`
+    const newLayout = updateLayout(layouts[breakpoint], id, {
+      ...LayoutSizes[size],
+    });
+    setLayouts({ ...layouts, [breakpoint]: newLayout });
+  };
+
   const addWidget = () => {
     const newWidgetLayout = {
       i: String.fromCharCode(65 + Object.keys(widgets).length),
@@ -70,15 +79,6 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
         lg: [newWidgetLayout, ...layouts['lg']],
       });
     }, 0);
-  };
-
-  const updateSize = (id: string, size: WidgetSize) => {
-    // For the layout corresponding to the current breakpoint,
-    // update the size of the widget with id `id` to the size specified in `size`
-    const newLayout = updateLayout(layouts[breakpoint], id, {
-      ...LayoutSizes[size],
-    });
-    setLayouts({ ...layouts, [breakpoint]: newLayout });
   };
 
   return (
