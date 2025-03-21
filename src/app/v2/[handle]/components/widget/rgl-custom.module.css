@@ -1,3 +1,13 @@
+/* Isolate the z-index shenanigans below to RGL */
+.rgl-custom {
+  isolation: isolate;
+}
+
+.rgl-custom :global(.react-grid-item.react-draggable-dragging) {
+  /* Stack dragged items above other items and placeholders */
+  z-index: 3;
+}
+
 /* Apply some fancy styles that imply lifting to the first child of a dragged element */
 .rgl-custom :global(.react-grid-item.react-draggable-dragging > *:first-child) {
   @apply shadow-lg;
@@ -17,12 +27,17 @@
   /* Slow animations down a little */
   transition-duration: 400ms;
 
+  /* Stack items above placeholders */
+  z-index: 2;
 
   /* Rip curve from bento, though this has a strange effect when widgets are moving over a large distance. */
   /* transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); */
 }
 
-/* Style placeholders with a dashed appearance */
 .rgl-custom :global(.react-grid-item.react-grid-placeholder) {
+  /* Stack placeholders below dragged items */
+  z-index: 1;
+
+  /* Style placeholder with a dashed appearance */
   @apply border-2 border-dashed rounded-3xl bg-transparent opacity-100;
 }
