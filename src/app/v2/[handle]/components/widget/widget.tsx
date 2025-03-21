@@ -37,7 +37,9 @@ export const Widget = ({
     >
       <CardHeader className='pb-10'>
         {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
-        <CardTitle className='text-sm font-normal'>{title}</CardTitle>
+        <CardTitle className='line-clamp-3 text-sm font-normal'>
+          {title}
+        </CardTitle>
       </CardHeader>
       {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
       <CardContent
