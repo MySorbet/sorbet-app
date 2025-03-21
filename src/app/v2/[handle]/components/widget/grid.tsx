@@ -1,7 +1,7 @@
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-import React, { useState } from 'react';
+import React, { MutableRefObject, useRef, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 
 import { cn } from '@/lib/utils';
@@ -17,10 +17,12 @@ import {
   WidgetData,
   wLg,
   wSm,
+  WidgetSize,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
 import { sampleLayouts, sampleWidgetsMap } from './sample-layout';
 import { Widget } from './widget';
+import { WidgetControls } from '@/app/v2/[handle]/components/widget/widget-controls';
 
 // Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -65,6 +67,8 @@ export const WidgetGrid = () => {
 
   const width = w(breakpoint);
 
+  const draggedRef = useRef<boolean>(false);
+
   return (
     <div className='@container size-full overflow-y-auto'>
       {/* This div responds to its parents size, going between a sm and lg size, which then triggers the grid breakpoint. centers the grid inside using mx-auto */}
@@ -89,15 +93,23 @@ export const WidgetGrid = () => {
           isResizable={false}
           onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
           onLayoutChange={onLayoutChange}
+          onDragStart={() => (draggedRef.current = true)}
+          onDragStop={() => (draggedRef.current = false)}
         >
           {layouts[breakpoint].map((layout) => {
             const widget = widgets[layout.i];
+            const s = size(layout.w, layout.h);
             // TODO: Is it possible that you don't find a widget? and if so maybe throw and wrap with error boundary?
             return (
-              <RGLHandle key={widget.id}>
+              <RGLHandle
+                key={widget.id}
+                className='group'
+                size={s}
+                draggedRef={draggedRef}
+              >
                 <Widget
                   title={widget.title}
-                  size={size(layout.w, layout.h)}
+                  size={s}
                   contentUrl={widget.contentUrl}
                   href={widget.href}
                 />
@@ -113,8 +125,11 @@ export const WidgetGrid = () => {
 interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   debug?: boolean;
+  size: WidgetSize;
+  draggedRef: MutableRefObject<boolean>;
 }
 
+// TODO: we are starting to overload this component. Its main purpose was to handle RGL related hacks so that the widget child could not worry too much. now it is rendering controls.
 /**
  * This should be the direct child mapped inside RGL. We forward all necessary props this way.
  *
@@ -130,6 +145,8 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       onTouchEnd,
       children,
       debug = false,
+      size,
+      draggedRef,
       ...props
     },
     ref
@@ -138,6 +155,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       <div
         style={style}
         className={cn(
+          'relative isolate',
           debug && 'border-divider rounded-2xl border-2 border-dashed',
           className
         )}
@@ -153,6 +171,20 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         {...props}
       >
         {children}
+        {/* Controls */}
+        <div
+          className={cn(
+            'z-1 absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
+            'opacity-0 transition-opacity duration-300', // opacity
+            !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
+            // TODO: How to prevent click from passing down to rgl
+          )}
+        >
+          <WidgetControls
+            size={size}
+            onSizeChange={() => console.log('size changed')}
+          />
+        </div>
       </div>
     );
   }

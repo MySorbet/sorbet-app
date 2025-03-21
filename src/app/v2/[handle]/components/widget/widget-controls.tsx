@@ -73,7 +73,7 @@ const SizeButton = ({
   return (
     <button
       className={cn(
-        'flex size-6 items-center justify-center rounded-sm text-white',
+        'flex size-6 min-w-fit items-center justify-center rounded-sm text-white',
         isActive && 'bg-[#D0ADFF] text-[#18181B]' // --purple-lightest
       )}
       onClick={onClick}

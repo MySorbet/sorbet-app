@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
+
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
  * - Displays a title, icon image, and content image.
