@@ -2,14 +2,21 @@
 .rgl-custom :global(.react-grid-item.react-draggable-dragging > *:first-child) {
   @apply shadow-lg;
 
-  /* Note: These are experimental. Also they will be reverted the moment an item is dropped, since the above class is removed. */
-  transition: transform 0.2s ease-in-out;
+  /* Note: These are experimental. Consider driving rotation from the mouse position? */
   transform: rotate(1deg) scale(1.05);
+}
+
+/* Applying this transition to the first child of a grid item allows the above style to be transitioned rather than snapped */
+.rgl-custom :global(.react-grid-item > *:first-child) {
+  transition-property: transform, box-shadow;
+  transition-duration: 400ms;
+  transition-timing-function: ease-in-out;
 }
 
 .rgl-custom :global(.react-grid-item) {
   /* Slow animations down a little */
   transition-duration: 400ms;
+
 
   /* Rip curve from bento, though this has a strange effect when widgets are moving over a large distance. */
   /* transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); */
