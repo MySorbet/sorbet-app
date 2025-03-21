@@ -148,27 +148,30 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       >
         {children}
         {/* Controls */}
+        {/* within containers to prevent clicks from being passed down to RGL, hover to show correctly, and position absolutely*/}
         <div
           className={cn(
             'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
             'opacity-0 transition-opacity duration-300', // opacity
             !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
-            // TODO: How to prevent click from passing down to rgl
           )}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           <WidgetControls
             size={size}
             onSizeChange={(size) => updateSize(id, size)}
           />
         </div>
-        <WidgetDeleteButton
-          onDelete={() => removeWidget(id)}
+        <div
           className={cn(
             'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
             'opacity-0 transition-opacity duration-300', // opacity
             !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
           )}
-        />
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <WidgetDeleteButton onDelete={() => removeWidget(id)} />
+        </div>
       </div>
     );
   }
