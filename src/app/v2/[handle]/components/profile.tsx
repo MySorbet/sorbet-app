@@ -54,7 +54,7 @@ export const Profile = ({
             <div className='flex gap-3'>
               {isLoggedIn ? (
                 <Button variant='secondary' asChild>
-                  <Link href='/'>My Sorbet</Link>
+                  <Link href='/'>Back to Dashboard</Link>
                 </Button>
               ) : (
                 <>
