@@ -36,5 +36,22 @@ export const Mine: Story = {
   args: {
     user: mockUser,
     isMine: true,
+    isLoggedIn: true,
+  },
+};
+
+export const LoggedInNotMine: Story = {
+  args: {
+    user: mockUser,
+    isMine: false,
+    isLoggedIn: true,
+  },
+};
+
+export const LoggedOut: Story = {
+  args: {
+    user: mockUser,
+    isMine: false,
+    isLoggedIn: false,
   },
 };

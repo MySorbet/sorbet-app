@@ -28,6 +28,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
 
   // Alias some vars for easy access in JSX
   const freelancer = freelancerResponse?.data;
+  const isLoggedIn = Boolean(user);
   const isMine = user?.handle === params.handle;
   // const disableHireMe = isMyProfile || !user;
   // const hideShare = !isMyProfile || !user;
@@ -52,7 +53,11 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
           !isPending &&
           freelancer && (
             <WidgetProvider>
-              <Profile user={freelancer} isMine={isMine} />
+              <Profile
+                user={freelancer}
+                isMine={isMine}
+                isLoggedIn={isLoggedIn}
+              />
             </WidgetProvider>
           )
         )}
