@@ -33,7 +33,7 @@ export const Profile = ({ user, isMine }: { user: User; isMine?: boolean }) => {
   };
 
   return (
-    <div className='flex min-h-full w-full'>
+    <div className='flex size-full'>
       <div className='flex h-full max-w-96 flex-col justify-between gap-6 p-6 pb-0'>
         <ProfileDetails
           user={user}

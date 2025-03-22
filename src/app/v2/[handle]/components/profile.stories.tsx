@@ -15,9 +15,11 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <WidgetProvider>
-        <Story />
-      </WidgetProvider>
+      <div className='h-screen w-full'>
+        <WidgetProvider>
+          <Story />
+        </WidgetProvider>
+      </div>
     ),
   ],
 } satisfies Meta<typeof Profile>;

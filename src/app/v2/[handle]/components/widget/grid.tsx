@@ -6,6 +6,7 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { WidgetControls } from '@/app/v2/[handle]/components/widget/widget-controls';
 import { WidgetDeleteButton } from '@/app/v2/[handle]/components/widget/widget-delete-button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 import {
@@ -30,7 +31,10 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 /**
  * An RGL layout of widgets.
  *
- * A fixed row height drives the width, we calculate the width from a set row height for the grid
+ * A fixed row height drives the entire grid width to maintain square cells.
+ * This component will fill the width and height of its parent container -- usually, this will be most of the screen.
+ * When grid content grows taller than this height, this component will render a virtual scrollbar to allow the user to scroll through the grid.
+ * It will also break between a sm and lg size, based on it's own width using a container query.
  */
 export const WidgetGrid = () => {
   const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
@@ -40,7 +44,7 @@ export const WidgetGrid = () => {
   const draggedRef = useRef<boolean>(false);
 
   return (
-    <div className='@container size-full overflow-y-auto'>
+    <ScrollArea className='@container size-full'>
       {/* This div responds to its parents size, going between a sm and lg size, which then triggers the grid breakpoint. centers the grid inside using mx-auto */}
       <div
         className='@4xl:w-[var(--wlg)] mx-auto w-[var(--wsm)]'
@@ -89,7 +93,7 @@ export const WidgetGrid = () => {
           })}
         </ResponsiveGridLayout>
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 
