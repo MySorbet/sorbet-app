@@ -71,3 +71,34 @@ export const ramiMockWidgets: Record<string, WidgetData> = {
     title: 'Sorbet',
   },
 };
+
+export const picSumoMockWidgets: Record<string, WidgetData> = {
+  a: {
+    id: 'a',
+    title: 'Widget 1',
+    contentUrl: 'https://picsum.photos/200/300',
+    href: 'https://picsum.photos/200/300',
+    iconUrl: 'https://picsum.photos/200/300',
+  },
+  b: {
+    id: 'b',
+    title: 'Widget 2',
+    contentUrl: 'https://picsum.photos/200/300',
+    href: 'https://picsum.photos/200/300',
+    iconUrl: 'https://picsum.photos/200/300',
+  },
+  c: {
+    id: 'c',
+    title: 'Widget 3',
+    contentUrl: 'https://picsum.photos/200/300',
+    href: 'https://picsum.photos/200/300',
+    iconUrl: 'https://picsum.photos/200/300',
+  },
+  d: {
+    id: 'd',
+    title: 'Widget 4',
+    contentUrl: 'https://picsum.photos/200/300',
+    href: 'https://picsum.photos/200/300',
+    iconUrl: 'https://picsum.photos/200/300',
+  },
+};

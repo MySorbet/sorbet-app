@@ -71,7 +71,7 @@ export const Profile = ({
         </div>
         {/* The right side of the profile. Should handle scroll itself */}
         <div className='size-full flex-1'>
-          <WidgetGrid />
+          <WidgetGrid immutable={!isMine} />
         </div>
 
         {/* Elements which ignore the layout of this container */}

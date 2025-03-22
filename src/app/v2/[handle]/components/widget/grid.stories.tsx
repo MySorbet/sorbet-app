@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { sleep } from '@/lib/utils';
 
 import { WidgetGrid } from './grid';
-import { ramiMockWidgets } from './rami-mock-widgets';
+import { ramiMockWidgets } from './mock-widgets';
 import { useWidgets, WidgetProvider } from './use-widget-context';
 
 const meta = {
@@ -27,48 +27,25 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Default: Story = {};
+
+export const Immutable: Story = {
   args: {
-    widgets: [
-      {
-        id: '1',
-        title: 'Widget 1',
-        contentUrl: 'https://picsum.photos/200/300',
-        href: 'https://picsum.photos/200/300',
-        iconUrl: 'https://picsum.photos/200/300',
-        size: 'A',
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        contentUrl: 'https://picsum.photos/200/300',
-        href: 'https://picsum.photos/200/300',
-        iconUrl: 'https://picsum.photos/200/300',
-        size: 'B',
-      },
-      {
-        id: '3',
-        title: 'Widget 3',
-        contentUrl: 'https://picsum.photos/200/300',
-        href: 'https://picsum.photos/200/300',
-        iconUrl: 'https://picsum.photos/200/300',
-        size: 'C',
-      },
-      {
-        id: '4',
-        title: 'Widget 4',
-        contentUrl: 'https://picsum.photos/200/300',
-        href: 'https://picsum.photos/200/300',
-        iconUrl: 'https://picsum.photos/200/300',
-        size: 'D',
-      },
-    ],
+    immutable: true,
   },
 };
 
-export const RamiMockWidgetsDeprecated: Story = {
-  args: {
-    widgets: ramiMockWidgets,
+export const WithAddButton: Story = {
+  render: () => {
+    const { addWidget } = useWidgets();
+    return (
+      <div className='size-full'>
+        <Button onClick={() => addWidget('https://mysorbet.io')}>
+          Add widget
+        </Button>
+        <WidgetGrid />
+      </div>
+    );
   },
 };
 
@@ -113,18 +90,6 @@ export const RenderedDeprecated = {
           Add widget
         </Button>
         <WidgetGrid widgets={widgets} />
-      </div>
-    );
-  },
-};
-
-export const WithContext: Story = {
-  render: () => {
-    const { addWidget } = useWidgets();
-    return (
-      <div className='size-full'>
-        <Button onClick={addWidget}>Add widget</Button>
-        <WidgetGrid />
       </div>
     );
   },

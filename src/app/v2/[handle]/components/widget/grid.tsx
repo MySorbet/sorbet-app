@@ -36,7 +36,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
  * When grid content grows taller than this height, this component will render a virtual scrollbar to allow the user to scroll through the grid.
  * It will also break between a sm and lg size, based on it's own width using a container query.
  */
-export const WidgetGrid = () => {
+export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
   const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
     useWidgets();
   const width = gw(breakpoint);
@@ -65,6 +65,7 @@ export const WidgetGrid = () => {
           margin={margins}
           width={width}
           isResizable={false}
+          isDraggable={!immutable}
           onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
           onLayoutChange={onLayoutChange}
           onDragStart={() => (draggedRef.current = true)}
@@ -81,6 +82,7 @@ export const WidgetGrid = () => {
                 size={s}
                 id={widget.id}
                 draggedRef={draggedRef}
+                hideControls={immutable}
               >
                 <Widget
                   title={widget.title}
@@ -105,6 +107,7 @@ interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   // 👇 these are a little bloated I feel, maybe this wrapper should be turned into two?
   size: WidgetSize;
   id: string;
+  hideControls?: boolean;
 }
 
 // TODO: we are starting to overload this component. Its main purpose was to handle RGL related hacks so that the widget child could not worry too much. now it is rendering controls.
@@ -126,6 +129,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       size,
       id,
       draggedRef,
+      hideControls = false,
       ...props
     },
     ref
@@ -153,29 +157,33 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         {children}
         {/* Controls */}
         {/* within containers to prevent clicks from being passed down to RGL, hover to show correctly, and position absolutely*/}
-        <div
-          className={cn(
-            'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
-            'opacity-0 transition-opacity duration-300', // opacity
-            !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
-          )}
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <WidgetControls
-            size={size}
-            onSizeChange={(size) => updateSize(id, size)}
-          />
-        </div>
-        <div
-          className={cn(
-            'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
-            'opacity-0 transition-opacity duration-300', // opacity
-            !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
-          )}
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <WidgetDeleteButton onDelete={() => removeWidget(id)} />
-        </div>
+        {!hideControls && (
+          <>
+            <div
+              className={cn(
+                'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
+                'opacity-0 transition-opacity duration-300', // opacity
+                !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
+              )}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <WidgetControls
+                size={size}
+                onSizeChange={(size) => updateSize(id, size)}
+              />
+            </div>
+            <div
+              className={cn(
+                'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
+                'opacity-0 transition-opacity duration-300', // opacity
+                !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
+              )}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              <WidgetDeleteButton onDelete={() => removeWidget(id)} />
+            </div>
+          </>
+        )}
       </div>
     );
   }
