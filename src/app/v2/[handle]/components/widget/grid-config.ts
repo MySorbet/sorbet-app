@@ -68,18 +68,25 @@ export const cols: Record<Breakpoint, number> = {
   sm: 4,
 };
 
-export const rh = 68; // row height
-export const m = 40; // margin
+export const margins: Record<Breakpoint, [number, number]> = {
+  lg: [40, 40],
+  sm: [20, 20],
+};
 
-/** Calculate the width if the grid given the above row height and margin, and the number of columns (which depends on the breakpoint) */
-export const w = (breakpoint: Breakpoint) => {
+export const rowHeight = 68;
+
+/**
+ * Calculate the width if the grid given the above row height and margin, and the number of columns (which depends on the breakpoint)
+ */
+export const gw = (breakpoint: Breakpoint) => {
   const numCols = cols[breakpoint];
-  return rh * numCols + m * (numCols + 1);
+  const margin = margins[breakpoint][0];
+  return rowHeight * numCols + margin * (numCols + 1);
 };
 
 // Precalculate the grid widths for the breakpoints
-export const wSm = w('sm');
-export const wLg = w('lg');
+export const wSm = gw('sm');
+export const wLg = gw('lg');
 
 // These are the breakpoints the grid will use to decide when to change the number of columns
 // So just go one smaller than the value of its controlling container

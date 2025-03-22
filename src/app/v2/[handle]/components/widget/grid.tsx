@@ -14,9 +14,9 @@ import {
   breakpoints,
   cols,
   getWidgetSizeFromDimensions as size,
-  m,
-  rh,
-  w,
+  gw,
+  margins,
+  rowHeight,
   WidgetSize,
   wLg,
   wSm,
@@ -39,7 +39,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 export const WidgetGrid = () => {
   const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
     useWidgets();
-  const width = w(breakpoint);
+  const width = gw(breakpoint);
 
   const draggedRef = useRef<boolean>(false);
 
@@ -61,8 +61,8 @@ export const WidgetGrid = () => {
           layouts={layouts}
           breakpoints={breakpoints}
           cols={cols}
-          rowHeight={rh}
-          margin={[m, m]}
+          rowHeight={rowHeight}
+          margin={margins}
           width={width}
           isResizable={false}
           onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
