@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 import { type Layout } from 'react-grid-layout';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   type Breakpoint,
@@ -9,20 +10,47 @@ import {
 } from './grid-config';
 import { sampleLayouts, sampleWidgetsMap } from './sample-layout';
 
+// Types for widget data
+type LoadableWidget = WidgetData & { loading?: boolean };
+type WidgetMap = Record<string, LoadableWidget>;
+type LayoutMap = Record<Breakpoint, Layout[]>;
+
+// Action payloads
+type AddWidgetStartPayload = { id: string; url?: string };
+type AddWidgetCompletePayload = { id: string; data: WidgetData };
+type RemoveWidgetPayload = { id: string };
+type UpdateLayoutsPayload = { layouts: LayoutMap };
+type UpdateWidgetSizePayload = { id: string; size: WidgetSize };
+type SetBreakpointPayload = { breakpoint: Breakpoint };
+
+// Actions
+type WidgetAction =
+  | { type: 'ADD_WIDGET_START'; payload: AddWidgetStartPayload }
+  | { type: 'ADD_WIDGET_COMPLETE'; payload: AddWidgetCompletePayload }
+  | { type: 'REMOVE_WIDGET'; payload: RemoveWidgetPayload }
+  | { type: 'UPDATE_LAYOUTS'; payload: UpdateLayoutsPayload }
+  | { type: 'UPDATE_WIDGET_SIZE'; payload: UpdateWidgetSizePayload }
+  | { type: 'SET_BREAKPOINT'; payload: SetBreakpointPayload };
+
+// State
+type WidgetState = {
+  widgets: WidgetMap;
+  layouts: LayoutMap;
+  breakpoint: Breakpoint;
+};
+
+// Context type
 interface WidgetContextType {
   /** Map of widget id to widget data */
-  widgets: Record<string, WidgetData>;
+  widgets: WidgetMap;
   /** Map of breakpoint to layout */
-  layouts: Record<Breakpoint, Layout[]>;
+  layouts: LayoutMap;
   /** Current breakpoint */
   breakpoint: Breakpoint;
   /** Set the current breakpoint */
   setBreakpoint: (breakpoint: Breakpoint) => void;
   /** Handle a layout change */
-  onLayoutChange: (
-    layout: Layout[],
-    allLayouts: Record<Breakpoint, Layout[]>
-  ) => void;
+  onLayoutChange: (layout: Layout[], allLayouts: LayoutMap) => void;
   /** Add a widget */
   addWidget: (url?: string) => void;
   /** Update the size of a widget */
@@ -33,77 +61,194 @@ interface WidgetContextType {
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
 
-/** Provider component for widget state management */
-export function WidgetProvider({ children }: { children: React.ReactNode }) {
-  const [widgets, setWidgets] =
-    useState<Record<string, WidgetData>>(sampleWidgetsMap);
-  const [layouts, setLayouts] =
-    useState<Record<Breakpoint, Layout[]>>(sampleLayouts);
-  const [breakpoint, setBreakpoint] = useState<Breakpoint>('lg');
-
-  const onLayoutChange = (
-    layout: Layout[],
-    allLayouts: Record<Breakpoint, Layout[]>
-  ) => {
-    setLayouts(allLayouts);
-  };
-
-  const updateSize = (id: string, size: WidgetSize) => {
-    // For the layout corresponding to the current breakpoint,
-    // update the size of the widget with id `id` to the size specified in `size`
-    const newLayout = updateLayout(layouts[breakpoint], id, {
-      ...LayoutSizes[size],
-    });
-    setLayouts({ ...layouts, [breakpoint]: newLayout });
-  };
-
-  const addWidget = (url?: string) => {
-    const newWidgetLayout = {
-      i: String.fromCharCode(65 + Object.keys(widgets).length),
-      ...LayoutSizes['B'], // Default size is the small one
-      // Default position is top left, but maybe we could do something more interesting (find the highest open 2x2 spot)
-      x: 0,
-      y: 0,
+// Mock API - we'll replace this later
+const mockApi = {
+  async fetchWidgetData(id: string, url: string): Promise<WidgetData> {
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    return {
+      id,
+      title: `Widget for ${url || 'unknown'}`,
+      iconUrl: 'https://placeholder.co/32x32',
     };
+  },
+};
 
-    // Batch these to make them atomic
-    // TODO: Instead, use a reducer
-    setTimeout(() => {
-      setWidgets({
-        ...widgets,
-        [newWidgetLayout.i]: {
-          id: newWidgetLayout.i,
-          title: url ?? `New Widget (${newWidgetLayout.i})`,
+function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
+  switch (action.type) {
+    /**
+     * Here, we add the widget to the layout right away in a loading state
+     * This is so that we can show a loading state in the UI immediately
+     * This will update both layout data and widget data
+     */
+    case 'ADD_WIDGET_START': {
+      const { id, url } = action.payload;
+      return {
+        ...state,
+        widgets: {
+          ...state.widgets,
+          [id]: {
+            id,
+            title: url || 'Loading...',
+            loading: true,
+          },
         },
+        // Add widget with default size to both breakpoints
+        layouts: {
+          sm: [{ i: id, ...LayoutSizes['B'], x: 0, y: 0 }, ...state.layouts.sm],
+          lg: [{ i: id, ...LayoutSizes['B'], x: 0, y: 0 }, ...state.layouts.lg],
+        },
+      };
+    }
+
+    /**
+     * Here, we update the widget data with the actual data from the API
+     * This will update only the widget data
+     */
+    case 'ADD_WIDGET_COMPLETE': {
+      const { id, data } = action.payload;
+      return {
+        ...state,
+        widgets: {
+          ...state.widgets,
+          [id]: {
+            ...data,
+            loading: false,
+          },
+        },
+      };
+    }
+
+    /**
+     * Here, we remove the widget from the layout
+     * This will update both layout data and widget data
+     */
+    case 'REMOVE_WIDGET': {
+      const { id } = action.payload;
+      const { [id]: _, ...remainingWidgets } = state.widgets;
+      return {
+        ...state,
+        widgets: remainingWidgets,
+        layouts: {
+          sm: state.layouts.sm.filter((item) => item.i !== id),
+          lg: state.layouts.lg.filter((item) => item.i !== id),
+        },
+      };
+    }
+
+    /**
+     * Here, we just replace all layouts with the new ones (usually reported by rgl)
+     * This will update only the layout data
+     */
+    case 'UPDATE_LAYOUTS': {
+      return {
+        ...state,
+        layouts: action.payload.layouts,
+      };
+    }
+
+    /**
+     * Here, we update the size of a widget
+     * This will update only the layout data
+     */
+    case 'UPDATE_WIDGET_SIZE': {
+      const { id, size } = action.payload;
+      const newLayouts = {
+        sm: updateLayoutSize(state.layouts.sm, id, LayoutSizes[size]),
+        lg: updateLayoutSize(state.layouts.lg, id, LayoutSizes[size]),
+      };
+      return {
+        ...state,
+        layouts: newLayouts,
+      };
+    }
+
+    /**
+     * Here, we update the current breakpoint
+     * We just need to maintain this state for RGL (and since we base some calculations on it)
+     */
+    case 'SET_BREAKPOINT': {
+      return {
+        ...state,
+        breakpoint: action.payload.breakpoint,
+      };
+    }
+  }
+}
+
+// Helper function for updating layout sizes
+function updateLayoutSize(
+  layouts: Layout[],
+  id: string,
+  size: { w: number; h: number }
+): Layout[] {
+  return layouts.map((item) => (item.i === id ? { ...item, ...size } : item));
+}
+
+/**
+ * Provides state and operations for widgets in an RGL grid.
+ */
+export function WidgetProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = useReducer(widgetReducer, {
+    widgets: sampleWidgetsMap,
+    layouts: sampleLayouts,
+    breakpoint: 'lg',
+  });
+
+  const addWidget = async (url?: string) => {
+    const id = uuidv4();
+
+    // Dispatch immediate update for optimistic UI
+    dispatch({
+      type: 'ADD_WIDGET_START',
+      payload: { id, url },
+    });
+
+    try {
+      // Simulate API call
+      const data = await mockApi.fetchWidgetData(id, url || '');
+
+      dispatch({
+        type: 'ADD_WIDGET_COMPLETE',
+        payload: { id, data },
       });
-      setLayouts({
-        sm: [newWidgetLayout, ...layouts.sm],
-        lg: [newWidgetLayout, ...layouts.lg],
-      });
-    }, 0);
+    } catch (error) {
+      // For now, just log the error
+      console.error('Failed to load widget data:', error);
+    }
   };
 
   const removeWidget = (id: string) => {
-    // Remove widget from the map using object destructuring
-    const { [id]: _, ...remainingWidgets } = widgets;
+    dispatch({ type: 'REMOVE_WIDGET', payload: { id } });
+  };
 
-    // Batch these to make them atomic
-    // TODO: Instead, use a reducer
-    setTimeout(() => {
-      setWidgets(remainingWidgets);
-      setLayouts({
-        sm: layouts.sm.filter((item) => item.i !== id),
-        lg: layouts.lg.filter((item) => item.i !== id),
-      });
-    }, 0);
+  const onLayoutChange = (_layout: Layout[], allLayouts: LayoutMap) => {
+    dispatch({
+      type: 'UPDATE_LAYOUTS',
+      payload: { layouts: allLayouts },
+    });
+  };
+
+  const updateSize = (id: string, size: WidgetSize) => {
+    dispatch({
+      type: 'UPDATE_WIDGET_SIZE',
+      payload: { id, size },
+    });
+  };
+
+  const setBreakpoint = (breakpoint: Breakpoint) => {
+    dispatch({
+      type: 'SET_BREAKPOINT',
+      payload: { breakpoint },
+    });
   };
 
   return (
     <WidgetContext.Provider
       value={{
-        widgets,
-        layouts,
-        breakpoint,
+        widgets: state.widgets,
+        layouts: state.layouts,
+        breakpoint: state.breakpoint,
         setBreakpoint,
         onLayoutChange,
         addWidget,
@@ -124,17 +269,3 @@ export function useWidgets(): WidgetContextType {
   }
   return context;
 }
-
-// Helper to find an element `elementId` in `layout` and update it with the properties from `newLayout`
-const updateLayout = (
-  layout: Layout[],
-  elementId: string,
-  newLayout: Omit<Partial<Layout>, 'i'>
-) => {
-  return layout.map((item) => {
-    if (item.i === elementId) {
-      return { ...item, ...newLayout };
-    }
-    return item;
-  });
-};
