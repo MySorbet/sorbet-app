@@ -3,7 +3,7 @@
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
-import { Authenticated } from '../authenticated';
+import { Authenticated } from '../../authenticated';
 import { SettingsDashboard } from './components/settings-dashboard';
 
 const SettingsPage = () => {

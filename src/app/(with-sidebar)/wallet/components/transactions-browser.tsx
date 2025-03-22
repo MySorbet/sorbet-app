@@ -8,12 +8,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { getTransactions } from '@/api/transactions';
-import { mapTransactionOverview } from '@/app/wallet/components/utils';
 import { useAuth } from '@/hooks';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
 import { FilteredTransactionTable } from './filtered-transaction-table';
 import { TableTransaction } from './transaction-table';
+import { mapTransactionOverview } from './utils';
 
 export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();

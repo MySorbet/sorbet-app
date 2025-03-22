@@ -6,10 +6,10 @@ import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unle
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
-import { Authenticated } from '../authenticated';
-import { InvoiceDashboard } from './components/dashboard/invoice-dashboard';
-import { InvoiceDashboardHeader } from './components/dashboard/invoice-dashboard-header';
-import { useInvoices } from './hooks/use-invoices';
+import { Authenticated } from '../../authenticated';
+import { InvoiceDashboard } from '../../invoices/components/dashboard/invoice-dashboard';
+import { InvoiceDashboardHeader } from '../../invoices/components/dashboard/invoice-dashboard-header';
+import { useInvoices } from '../../invoices/hooks/use-invoices';
 
 export default function InvoicesPage() {
   const { data: invoices, isLoading } = useInvoices();

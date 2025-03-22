@@ -1,16 +1,17 @@
 import { ArrowUpRight, HandCoins } from 'lucide-react';
 import Link from 'next/link';
 
-import { DashboardCard } from '@/app/dashboard/components/dashboard-card';
-import { TransactionTable } from '@/app/wallet/components/transaction-table';
+import { TransactionTable } from '@/app/(with-sidebar)/wallet/components/transaction-table';
 import {
   mapTransactionOverview,
   openTransactionInExplorer,
-} from '@/app/wallet/components/utils';
-import { useTransactionOverview } from '@/app/wallet/hooks/use-transaction-overview';
+} from '@/app/(with-sidebar)/wallet/components/utils';
+import { useTransactionOverview } from '@/app/(with-sidebar)/wallet/hooks/use-transaction-overview';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+
+import { DashboardCard } from './dashboard-card';
 
 // TODO: Note this is a duplicate of the TransactionsCard component in the wallet page. Could they share?
 

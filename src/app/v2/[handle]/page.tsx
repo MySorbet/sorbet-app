@@ -4,11 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import { getUserByHandle } from '@/api/user';
-import { WidgetProvider } from '@/app/v2/[handle]/components/widget/use-widget-context';
 import Page from '@/components/common/page';
 import { useAuth } from '@/hooks/use-auth';
 
 import { Profile } from './components/profile';
+import { WidgetProvider } from './components/widget/use-widget-context';
 
 /** Profile 2.0 page */
 const ProfilePage = ({ params }: { params: { handle: string } }) => {

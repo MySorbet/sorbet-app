@@ -5,7 +5,7 @@ import { useKnockFeed } from '@knocklabs/react';
 import { useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { useTransactionOverview } from '@/app/wallet/hooks/use-transaction-overview';
+import { useTransactionOverview } from '@/app/(with-sidebar)/wallet/hooks/use-transaction-overview';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
 const NotificationToasts = () => {

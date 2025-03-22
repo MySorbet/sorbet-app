@@ -7,7 +7,8 @@ import {
   mockBridgeCustomerHandlerTosComplete,
   mockVerifyHandler,
 } from '@/api/bridge/msw-handlers';
-import VerifyPage from '@/app/verify/page';
+
+import VerifyPage from './page';
 
 type Story = StoryObj<typeof VerifyPage>;
 

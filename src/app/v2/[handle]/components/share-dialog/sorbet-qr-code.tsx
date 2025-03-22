@@ -1,8 +1,9 @@
 import { Download } from 'lucide-react';
 
-import { useSorbetQRCode } from '@/app/v2/[handle]/hooks/use-sorbet-qr-code';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import { useSorbetQRCode } from '../../hooks/use-sorbet-qr-code';
 
 /** A card that displays a QR code and a download button */
 export const SorbetQRCode = ({

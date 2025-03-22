@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
-import { Authenticated } from '../authenticated';
+import { Authenticated } from '../../authenticated';
 import { WalletDashboard } from './components/wallet-dashboard';
 import { WalletHeader } from './components/wallet-header';
 import { WalletSendDialog } from './components/wallet-send-dialog';

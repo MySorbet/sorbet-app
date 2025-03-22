@@ -1,10 +1,8 @@
-import { useConnectAndSend } from '@/app/v2/[handle]/hooks/use-connect-and-send';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
-import { formatWalletAddress } from '@/lib/utils';
 import { Coffee, Plug, Unplug, Wallet } from 'lucide-react';
 import { useState } from 'react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,6 +10,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
+import { formatWalletAddress } from '@/lib/utils';
+
+import { useConnectAndSend } from '../hooks/use-connect-and-send';
 
 /** Tip button which expands to a card allowing users to connect and send USDC */
 export const Tip = ({ userId }: { userId: string }) => {
