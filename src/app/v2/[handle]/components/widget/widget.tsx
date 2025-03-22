@@ -6,6 +6,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
+import { WidgetIcon } from './icon';
+import { parseWidgetTypeFromUrl } from './util';
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
@@ -24,6 +26,9 @@ export const Widget = ({
   loading = false,
   size = 'A',
 }: WidgetDataForDisplay) => {
+  // Here, we can check to see if we will offer some kind of upgrade for the display of the widget.
+  const type = href ? parseWidgetTypeFromUrl(href) : undefined;
+
   return (
     <a
       className={cn(
@@ -39,8 +44,14 @@ export const Widget = ({
       rel='noopener noreferrer'
     >
       <CardHeader className='pb-10'>
-        {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
-        <CardTitle className='line-clamp-3 text-sm font-normal'>
+        {loading ? (
+          <Skeleton className='size-10' />
+        ) : type ? (
+          <WidgetIcon type={type} />
+        ) : (
+          <Icon src={iconUrl} />
+        )}
+        <CardTitle className='line-clamp-3 break-words text-sm font-normal'>
           {title}
         </CardTitle>
       </CardHeader>
