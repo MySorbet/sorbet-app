@@ -70,7 +70,8 @@ export const Profile = ({
           )}
         </div>
         {/* The right side of the profile. Should handle scroll itself */}
-        <div className='size-full flex-1'>
+        {/* Container queries set this up to be responsive to the flex change on at 3xl. TODO: Still something isn't quite right */}
+        <div className='@3xl:w-auto @3xl:h-full w-full flex-1'>
           <WidgetGrid immutable={!isMine} />
         </div>
 
@@ -86,7 +87,7 @@ export const Profile = ({
               setOpen={setIsEditing}
               user={user}
             />
-            <div className='fix-modal-layout-shift fixed bottom-0 left-[calc(50%+(var(--sidebar-width)/2))] -translate-x-1/2 -translate-y-6 transform'>
+            <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
               <ControlBar
                 onAddImage={handleAddImage}
                 onAddLink={handleAddLink}

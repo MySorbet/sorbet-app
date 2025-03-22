@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { getUserByHandle } from '@/api/user';
 import { WidgetProvider } from '@/app/v2/[handle]/components/widget/use-widget-context';
 import Page from '@/components/common/page';
-import { Header } from '@/components/header';
 import { useAuth } from '@/hooks/use-auth';
 
 import { Profile } from './components/profile';
@@ -44,9 +43,9 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   }, [queryClient, params.handle]);
 
   return (
-    <Page.Main>
-      <Header />
-      <Page.Content>
+    // We use svh and full here to make sure the profile takes up exactly the viewport. This way, widgets handle scroll themselves.
+    <Page.Main className='h-svh'>
+      <Page.Content className='h-full'>
         {isError ? (
           <div>This profile does not exist. Claim yours now</div>
         ) : (
