@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
@@ -43,18 +44,20 @@ export const Tip = ({ userId }: { userId: string }) => {
                 <Wallet className='mr-1 size-3' />
                 Connected to {formatWalletAddress(wallet?.address)}
               </Badge>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size='icon'
-                    variant='ghost'
-                    onClick={() => wallet?.disconnect()}
-                  >
-                    <Unplug />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Disconnect this wallet</TooltipContent>
-              </Tooltip>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size='icon'
+                      variant='ghost'
+                      onClick={() => wallet?.disconnect()}
+                    >
+                      <Unplug />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Disconnect this wallet</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
           {!wallet && (
