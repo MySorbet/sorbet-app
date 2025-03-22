@@ -1,6 +1,7 @@
-import { TableTransaction } from '@/app/wallet/components/transaction-table';
 import { env } from '@/lib/env';
 import { Transaction } from '@/types/transactions';
+
+import { TableTransaction } from '../components/transaction-table';
 
 /**
  * This function only exists to take the date portion of a locale formatted date (i.e. "2/27/2025, 12:00:00 AM")

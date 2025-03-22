@@ -10,9 +10,7 @@ const AuthProvider = dynamic(() => import('@/hooks/use-auth'), { ssr: false }); 
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 import { PHProvider } from '@/app/posthog-provider';
-import { AwareAppSideBar } from '@/components/app-sidebar/aware-app-sidebar';
 import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer/open-on-desktop-drawer';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { env } from '@/lib/env';
 
 const queryClient = new QueryClient();
@@ -36,12 +34,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <AuthProvider>
             <PHProvider>
               <QueryClientProvider client={queryClient}>
-                <SidebarProvider>
-                  <Toaster richColors />
-                  <OpenOnDesktopDrawer />
-                  <AwareAppSideBar />
-                  {children}
-                </SidebarProvider>
+                <Toaster richColors />
+                <OpenOnDesktopDrawer />
+                {children}
               </QueryClientProvider>
             </PHProvider>
           </AuthProvider>

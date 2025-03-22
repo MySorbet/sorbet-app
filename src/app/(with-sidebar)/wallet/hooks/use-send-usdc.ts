@@ -2,7 +2,7 @@ import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
-import { useTransactionOverview } from '@/app/wallet/hooks/use-transaction-overview';
+import { useTransactionOverview } from '@/app/(with-sidebar)/wallet/hooks/use-transaction-overview';
 import { TOKEN_ABI } from '@/constant/abis';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { env } from '@/lib/env';

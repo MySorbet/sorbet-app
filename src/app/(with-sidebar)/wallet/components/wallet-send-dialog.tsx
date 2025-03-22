@@ -20,7 +20,6 @@ import {
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { baseScanUrl } from '@/app/wallet/components/utils';
 import { BaseAlert } from '@/components/common/base-alert';
 import {
   Credenza,
@@ -44,6 +43,7 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
 
 import { useUSDCToUSD } from '../hooks/use-usdc-to-usd';
+import { baseScanUrl } from './utils';
 
 interface WalletSendDialogProps {
   /** The element that triggers the modal to open */

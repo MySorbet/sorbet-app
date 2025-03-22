@@ -4,7 +4,8 @@ import {
   mockOverviewHandler,
   mockOverviewHandlerNoTransactions,
 } from '@/api/transactions';
-import { TransactionCard } from '@/app/dashboard/components/transaction-card';
+
+import { TransactionCard } from './transaction-card';
 
 const meta = {
   title: 'Dashboard/TransactionCard',

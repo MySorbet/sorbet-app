@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
-import { Authenticated } from '../authenticated';
+import { Authenticated } from '../../authenticated';
 import { Dashboard } from './components/dashboard';
 
 export const metadata: Metadata = {
