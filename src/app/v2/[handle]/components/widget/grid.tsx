@@ -86,9 +86,11 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
               >
                 <Widget
                   title={widget.title}
-                  size={s}
+                  iconUrl={widget.iconUrl}
                   contentUrl={widget.contentUrl}
                   href={widget.href}
+                  size={s}
+                  loading={widget.loading}
                 />
               </RGLHandle>
             );

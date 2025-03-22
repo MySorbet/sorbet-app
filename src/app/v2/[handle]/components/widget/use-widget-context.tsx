@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { type Layout } from 'react-grid-layout';
+import { parseURL } from 'ufo';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
@@ -16,7 +17,7 @@ type WidgetMap = Record<string, LoadableWidget>;
 type LayoutMap = Record<Breakpoint, Layout[]>;
 
 // Action payloads
-type AddWidgetStartPayload = { id: string; url?: string };
+type AddWidgetStartPayload = { id: string; url: string };
 type AddWidgetCompletePayload = { id: string; data: WidgetData };
 type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
@@ -52,7 +53,7 @@ interface WidgetContextType {
   /** Handle a layout change */
   onLayoutChange: (layout: Layout[], allLayouts: LayoutMap) => void;
   /** Add a widget */
-  addWidget: (url?: string) => void;
+  addWidget: (url: string) => void;
   /** Update the size of a widget */
   updateSize: (id: string, size: WidgetSize) => void;
   /** Remove a widget */
@@ -65,11 +66,12 @@ const WidgetContext = createContext<WidgetContextType | null>(null);
 const mockApi = {
   async fetchWidgetData(id: string, url: string): Promise<WidgetData> {
     // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     return {
       id,
-      title: `Widget for ${url || 'unknown'}`,
-      iconUrl: 'https://placeholder.co/32x32',
+      title: `Widget for ${url}`,
+      iconUrl: 'https://placehold.co/32/orange/white',
+      contentUrl: 'https://placehold.co/400/orange/white',
     };
   },
 };
@@ -89,7 +91,7 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
           ...state.widgets,
           [id]: {
             id,
-            title: url || 'Loading...',
+            title: parseURL(url).host || url,
             loading: true,
           },
         },
@@ -195,7 +197,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     breakpoint: 'lg',
   });
 
-  const addWidget = async (url?: string) => {
+  const addWidget = async (url: string) => {
     const id = uuidv4();
 
     // Dispatch immediate update for optimistic UI
@@ -206,7 +208,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
 
     try {
       // Simulate API call
-      const data = await mockApi.fetchWidgetData(id, url || '');
+      const data = await mockApi.fetchWidgetData(id, url);
 
       dispatch({
         type: 'ADD_WIDGET_COMPLETE',
