@@ -23,7 +23,7 @@
     "docker:stop:dev": "docker compose -f docker/development/compose.yml down",
     "env": "gcloud secrets versions access latest --secret=sorbet-app-env-local --out-file=./.env && echo 'Local .env file updated successfully'",
     "env:push": "gcloud secrets versions add sorbet-app-env-local --data-file=./.env && gcloud secrets versions list sorbet-app-env-local --format='value(name)' | tail -n +2 | xargs -I {} gcloud secrets versions disable {} --secret=sorbet-app-env-local",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6300 --no-open",
     "sb": "yarn storybook",
     "build-storybook": "storybook build -o ./.storybook/storybook-static"
   },

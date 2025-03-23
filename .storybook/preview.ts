@@ -8,7 +8,10 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
  * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
  * to learn how to customize it
  */
-initialize();
+initialize({
+  // Stop MSW from logging a bunch of warnings in the console
+  onUnhandledRequest: 'bypass',
+});
 
 const preview: Preview = {
   parameters: {
