@@ -155,13 +155,16 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
      */
     case 'UPDATE_WIDGET_SIZE': {
       const { id, size } = action.payload;
-      const newLayouts = {
-        sm: updateLayoutSize(state.layouts.sm, id, LayoutSizes[size]),
-        lg: updateLayoutSize(state.layouts.lg, id, LayoutSizes[size]),
-      };
       return {
         ...state,
-        layouts: newLayouts,
+        layouts: {
+          ...state.layouts,
+          [state.breakpoint]: updateLayoutSize(
+            state.layouts[state.breakpoint],
+            id,
+            LayoutSizes[size]
+          ),
+        },
       };
     }
 
