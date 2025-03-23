@@ -16,7 +16,7 @@ const meta = {
   decorators: [
     (Story) => (
       <div className='h-screen w-full'>
-        <WidgetProvider>
+        <WidgetProvider userId={mockUser.id}>
           <Story />
         </WidgetProvider>
       </div>

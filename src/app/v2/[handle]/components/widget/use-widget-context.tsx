@@ -1,7 +1,11 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { createContext, useContext, useReducer } from 'react';
 import { type Layout } from 'react-grid-layout';
+import { toast } from 'sonner';
 import { parseURL } from 'ufo';
 import { v4 as uuidv4 } from 'uuid';
+
+import { type ApiWidget, LayoutDto, widgetsV2Api } from '@/api/widgets-v2';
 
 import {
   type Breakpoint,
@@ -9,7 +13,7 @@ import {
   LayoutSizes,
   WidgetSize,
 } from './grid-config';
-import { sampleLayouts, sampleWidgetsMap } from './sample-layout';
+import { usePendingWidgets } from './use-pending-widgets';
 
 // Types for widget data
 type LoadableWidget = WidgetData & { loading?: boolean };
@@ -23,6 +27,7 @@ type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
 type UpdateWidgetSizePayload = { id: string; size: WidgetSize };
 type SetBreakpointPayload = { breakpoint: Breakpoint };
+type SetInitialWidgetsPayload = { widgets: WidgetMap; layouts: LayoutMap };
 
 // Actions
 type WidgetAction =
@@ -31,7 +36,8 @@ type WidgetAction =
   | { type: 'REMOVE_WIDGET'; payload: RemoveWidgetPayload }
   | { type: 'UPDATE_LAYOUTS'; payload: UpdateLayoutsPayload }
   | { type: 'UPDATE_WIDGET_SIZE'; payload: UpdateWidgetSizePayload }
-  | { type: 'SET_BREAKPOINT'; payload: SetBreakpointPayload };
+  | { type: 'SET_BREAKPOINT'; payload: SetBreakpointPayload }
+  | { type: 'SET_INITIAL_WIDGETS'; payload: SetInitialWidgetsPayload };
 
 // State
 type WidgetState = {
@@ -178,6 +184,19 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
         breakpoint: action.payload.breakpoint,
       };
     }
+
+    /**
+     * Here, we update the initial widgets
+     * This will update both layout data and widget data
+     */
+    case 'SET_INITIAL_WIDGETS': {
+      const { widgets, layouts } = action.payload;
+      return {
+        ...state,
+        widgets,
+        layouts,
+      };
+    }
   }
 }
 
@@ -193,45 +212,141 @@ function updateLayoutSize(
 /**
  * Provides state and operations for widgets in an RGL grid.
  */
-export function WidgetProvider({ children }: { children: React.ReactNode }) {
+export function WidgetProvider({
+  children,
+  userId,
+}: {
+  children: React.ReactNode;
+  userId: string;
+}) {
   const [state, dispatch] = useReducer(widgetReducer, {
-    widgets: sampleWidgetsMap,
-    layouts: sampleLayouts,
+    widgets: {},
+    layouts: { sm: [], lg: [] },
     breakpoint: 'lg',
   });
 
-  const addWidget = async (url: string) => {
-    const id = uuidv4();
+  // Load initial widgets
+  const { data: widgets } = useQuery<ApiWidget[], Error>({
+    queryKey: ['widgets', userId],
+    queryFn: () => widgetsV2Api.getByUserId(userId),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
 
-    // Dispatch immediate update for optimistic UI
+  // This is a little hack to keep track of the ids of widgets that have been added to UI, but we don't know if the API
+  // has returned successfully. When layout changes happen, we choose not to update layouts for these widgets.
+  // I wonder if we should just make these static until the call has completed? It shouldn't be too long.
+  const { addPending, removePending, isPending } = usePendingWidgets();
+
+  // Transform and dispatch data when it arrives
+  React.useEffect(() => {
+    if (!widgets) return;
+    console.log('setting initial widgets', widgets);
     dispatch({
-      type: 'ADD_WIDGET_START',
-      payload: { id, url },
+      type: 'SET_INITIAL_WIDGETS',
+      payload: fromApi(widgets),
     });
+  }, [widgets]);
 
-    try {
-      // Simulate API call
-      const data = await mockApi.fetchWidgetData(id, url);
+  // Widget creation mutation
+  const createWidgetMutation = useMutation({
+    mutationFn: (params: { id: string; url: string }) =>
+      widgetsV2Api.create({
+        id: params.id,
+        url: params.url,
+        layouts: {
+          sm: { ...LayoutSizes['B'], x: 0, y: 0 },
+          lg: { ...LayoutSizes['B'], x: 0, y: 0 },
+        },
+      }),
+    onMutate: ({ id, url }) => {
+      // Track pending widget
+      addPending(id);
 
+      // Optimistic update
       dispatch({
-        type: 'ADD_WIDGET_COMPLETE',
-        payload: { id, data },
+        type: 'ADD_WIDGET_START',
+        payload: { id, url },
       });
-    } catch (error) {
-      // For now, just log the error
-      console.error('Failed to load widget data:', error);
-    }
-  };
+    },
+    onSuccess: async ({ id, href }: ApiWidget) => {
+      try {
+        removePending(id);
+        if (!href) {
+          throw new Error('New widget has no href');
+        }
+        const data = await mockApi.fetchWidgetData(id, href);
+        dispatch({
+          type: 'ADD_WIDGET_COMPLETE',
+          payload: { id, data },
+        });
+      } catch (error) {
+        console.error('Failed to load widget data:', error);
+      }
+    },
+    onError: (error, { id }) => {
+      console.error('Failed to create widget:', error);
+      // Remove from pending and rollback
+      removePending(id);
+      dispatch({
+        type: 'REMOVE_WIDGET',
+        payload: { id },
+      });
+      toast.error("We couldn't add that link", {
+        description: error.message,
+      });
+    },
+  });
 
-  const removeWidget = (id: string) => {
-    dispatch({ type: 'REMOVE_WIDGET', payload: { id } });
-  };
+  // Layout update mutation
+  const layoutMutation = useMutation({
+    mutationFn: (updatedLayouts: LayoutDto[]) => {
+      return widgetsV2Api.updateLayouts({
+        layouts: updatedLayouts,
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => widgetsV2Api.delete(id),
+  });
 
   const onLayoutChange = (_layout: Layout[], allLayouts: LayoutMap) => {
+    // This function mainly handles drag and drop changes -- position.
+    // When size or breakpoint changes, it is called AFTER state has been updated
+    // So we don't really care about those events. We could optimize this with a equality check before updating
+    // if (hasLayoutMapChanged(allLayouts, state.layouts, state.breakpoint)) {
+
     dispatch({
       type: 'UPDATE_LAYOUTS',
       payload: { layouts: allLayouts },
     });
+
+    // Filter out pending widgets and convert to API format
+    const layoutsToUpdate = [
+      ...toApi(
+        allLayouts.sm.filter((layout) => !isPending(layout.i)),
+        'sm'
+      ),
+      ...toApi(
+        allLayouts.lg.filter((layout) => !isPending(layout.i)),
+        'lg'
+      ),
+    ];
+    if (layoutsToUpdate.length > 0) {
+      layoutMutation.mutate(layoutsToUpdate);
+    }
+  };
+
+  const addWidget = (url: string) => {
+    const id = uuidv4();
+    createWidgetMutation.mutate({ id, url });
+    // mutation handles complex dispatching logic
+  };
+
+  const removeWidget = (id: string) => {
+    dispatch({ type: 'REMOVE_WIDGET', payload: { id } });
+    deleteMutation.mutate(id);
   };
 
   const updateSize = (id: string, size: WidgetSize) => {
@@ -239,6 +354,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
       type: 'UPDATE_WIDGET_SIZE',
       payload: { id, size },
     });
+    // Network sync is handled in onLayoutChange
   };
 
   const setBreakpoint = (breakpoint: Breakpoint) => {
@@ -273,4 +389,49 @@ export function useWidgets(): WidgetContextType {
     throw new Error('useWidgets must be used within a WidgetProvider');
   }
   return context;
+}
+
+/**
+ * Transform API widgets into the format needed by our app
+ */
+function fromApi(apiWidgets: ApiWidget[]): {
+  widgets: WidgetMap;
+  layouts: LayoutMap;
+} {
+  const widgetMap: WidgetMap = {};
+  const layoutMap: LayoutMap = { sm: [], lg: [] };
+
+  apiWidgets.forEach((widget) => {
+    // Transform the widgets to a map by id
+    widgetMap[widget.id] = widget;
+
+    // Bisect the layouts into a map by breakpoint
+    widget.layouts.forEach((layout) => {
+      layoutMap[layout.breakpoint].push({
+        i: widget.id,
+        x: layout.x,
+        y: layout.y,
+        w: layout.w,
+        h: layout.h,
+      });
+    });
+  });
+
+  return { widgets: widgetMap, layouts: layoutMap };
+}
+
+/**
+ * Transform our layout format into the API format
+ *
+ * Transforms i -> id and adds the breakpoint to each layout item
+ */
+function toApi(layouts: Layout[], breakpoint: Breakpoint): LayoutDto[] {
+  return layouts.map((layout) => ({
+    id: layout.i,
+    breakpoint: breakpoint,
+    x: layout.x,
+    y: layout.y,
+    w: layout.w,
+    h: layout.h,
+  }));
 }

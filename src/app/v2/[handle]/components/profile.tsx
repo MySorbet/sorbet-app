@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { toast } from 'sonner';
 
 // TODO: Move to ./components
@@ -13,6 +14,7 @@ import { ControlBar } from './control-bar/control-bar';
 import { ProfileDetails } from './profile-details';
 import { ShareDialog } from './share-dialog/share-dialog';
 import { WidgetGrid } from './widget/grid';
+import { GridErrorFallback } from './widget/grid-error-fallback';
 import { useWidgets } from './widget/use-widget-context';
 
 /** Profile 2.0 */
@@ -72,7 +74,9 @@ export const Profile = ({
         {/* The right side of the profile. Should handle scroll itself */}
         {/* Container queries set this up to be responsive to the flex change on at 3xl. TODO: Still something isn't quite right */}
         <div className='@3xl:w-auto @3xl:h-full w-full flex-1'>
-          <WidgetGrid immutable={!isMine} />
+          <ErrorBoundary FallbackComponent={GridErrorFallback}>
+            <WidgetGrid immutable={!isMine} />
+          </ErrorBoundary>
         </div>
 
         {/* Elements which ignore the layout of this container */}
