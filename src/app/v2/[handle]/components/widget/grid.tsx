@@ -73,12 +73,18 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
         >
           {layouts[breakpoint].map((layout) => {
             const widget = widgets[layout.i];
+
+            // It's possible for a bag to happen where the layout has an id that is not in the widgets map
+            // It would be better to be more explicit here and throw, but this provides a nicer experience and seems to cause no issues.
+            if (!widget) {
+              // throw new Error(`Widget with id ${layout.i} not found`);
+              console.error(`Widget with id ${layout.i} not found`);
+              return null;
+            }
             const s = size(layout.w, layout.h);
-            // TODO: Is it possible that you don't find a widget? and if so maybe throw and wrap with error boundary?
             return (
               <RGLHandle
                 key={widget.id}
-                className='group'
                 size={s}
                 id={widget.id}
                 draggedRef={draggedRef}
@@ -141,7 +147,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       <div
         style={style}
         className={cn(
-          'relative isolate',
+          'group relative isolate',
           debug && 'border-divider rounded-2xl border-2 border-dashed',
           className
         )}
@@ -151,7 +157,6 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         onTouchEnd={onTouchEnd}
         // TODO: This just prevents a widget from being clicked when dropping. Fix this an make them clickable
         onClick={(e) => {
-          console.log('clicked');
           e.preventDefault();
         }}
         {...props}
