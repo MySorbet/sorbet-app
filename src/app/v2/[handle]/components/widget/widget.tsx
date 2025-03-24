@@ -33,7 +33,7 @@ export const Widget = ({
     return (
       <ImageWidget
         contentUrl={contentUrl}
-        className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] duration-300'
+        className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] select-none duration-300'
         loading={loading}
       />
     );
@@ -44,7 +44,7 @@ export const Widget = ({
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex flex-col overflow-hidden rounded-2xl border shadow-sm',
+        'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         'size-full max-h-[390px] max-w-[390px]',
         // Just a nice little touch when a widget is added
