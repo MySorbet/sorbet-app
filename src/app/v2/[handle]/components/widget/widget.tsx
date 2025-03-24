@@ -7,8 +7,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
-import { WidgetIcon } from './icon';
 import { ImageWidget } from './image-widget';
+import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
 
 /**
@@ -59,7 +59,7 @@ export const Widget = ({
     >
       <CardHeader className='pb-10'>
         {urlType ? (
-          <WidgetIcon type={urlType} />
+          <SocialIcon type={urlType} />
         ) : loading ? (
           <Skeleton className='size-10' />
         ) : (

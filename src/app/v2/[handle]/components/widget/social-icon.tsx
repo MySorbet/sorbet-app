@@ -14,7 +14,7 @@ import youtube from '~/svg/social/youtube.svg';
 
 import { UrlType } from './url-util';
 
-interface WidgetIconProps extends React.SVGProps<SVGSVGElement> {
+interface SocialIconProps extends React.SVGProps<SVGSVGElement> {
   /** The type of icon to render. */
   type: UrlType;
   /** Optional className for the icon. */
@@ -24,17 +24,16 @@ interface WidgetIconProps extends React.SVGProps<SVGSVGElement> {
 /**
  * Renders the the appropriate social icon for a given url `type`.
  */
-export const WidgetIcon: React.FC<WidgetIconProps> = ({
+export const SocialIcon: React.FC<SocialIconProps> = ({
   type,
   className,
-
   ...rest
 }) => {
-  const Icon = socialIcons[type];
+  const Icon = iconByUrlType[type];
   return <Icon className={cn('size-10', className)} {...rest} />;
 };
 
-const socialIcons: Record<
+const iconByUrlType: Record<
   UrlType,
   React.ComponentType<React.SVGProps<SVGSVGElement>>
 > = {

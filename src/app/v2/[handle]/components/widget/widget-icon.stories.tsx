@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { WidgetIcon } from './icon';
+import { SocialIcon } from './social-icon';
 import { UrlTypes } from './url-util';
 
-const meta: Meta<typeof WidgetIcon> = {
+const meta: Meta<typeof SocialIcon> = {
   title: 'Profile/v2/WidgetIcon',
-  component: WidgetIcon,
+  component: SocialIcon,
   parameters: {
     layout: 'centered',
   },
@@ -18,7 +18,7 @@ const meta: Meta<typeof WidgetIcon> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof WidgetIcon>;
+type Story = StoryObj<typeof SocialIcon>;
 
 export const Default: Story = {
   args: {
@@ -37,7 +37,7 @@ export const AllIcons: Story = {
               key={type}
               style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
             >
-              <WidgetIcon type={type} className='m-0' />
+              <SocialIcon type={type} className='m-0' />
               <span
                 style={{
                   fontFamily: 'monospace',
@@ -57,7 +57,7 @@ export const AllIcons: Story = {
               key={type}
               style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
             >
-              <WidgetIcon type={type} className='m-0' />
+              <SocialIcon type={type} className='m-0' />
               <span
                 style={{
                   fontFamily: 'monospace',
