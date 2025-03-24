@@ -26,15 +26,25 @@ export const uploadProfileImageAsync = async (data: FormData) => {
   }
 };
 
-export const uploadWidgetsImageAsync = async (data: FormData) => {
+export const uploadWidgetsImageAsync = async (
+  data: FormData,
+  options?: {
+    signal?: AbortSignal;
+  }
+) => {
   try {
     const response = await axios.post(
       `${API_URL}/images/widgets`,
       data,
-      await withAuthHeader()
+      await withAuthHeader({
+        signal: options?.signal,
+      })
     );
     return response;
   } catch (error) {
+    if (axios.isCancel(error)) {
+      throw error;
+    }
     if (error instanceof AxiosError) {
       throw new Error(
         `Failed to upload widget image: ${error.response?.data.message}`

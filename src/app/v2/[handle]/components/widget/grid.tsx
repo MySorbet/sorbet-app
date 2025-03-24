@@ -20,6 +20,7 @@ import {
   wSm,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
+import { useHandlePaste } from './use-handle-paste';
 import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
 import { WidgetControls } from './widget-controls';
@@ -37,11 +38,19 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
  * It will also break between a sm and lg size, based on it's own width using a container query.
  */
 export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
-  const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
-    useWidgets();
+  const {
+    widgets,
+    layouts,
+    breakpoint,
+    setBreakpoint,
+    onLayoutChange,
+    addWidget,
+  } = useWidgets();
   const width = gw(breakpoint);
 
   const draggedRef = useRef<boolean>(false);
+
+  useHandlePaste(addWidget);
 
   return (
     <ScrollArea className='@container size-full'>
@@ -73,23 +82,24 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
         >
           {layouts[breakpoint].map((layout) => {
             const widget = widgets[layout.i];
+
+            // It's possible for a bag to happen where the layout has an id that is not in the widgets map
+            // It would be better to be more explicit here and throw, but this provides a nicer experience and seems to cause no issues.
+            if (!widget) {
+              // throw new Error(`Widget with id ${layout.i} not found`);
+              console.error(`Widget with id ${layout.i} not found`);
+              return null;
+            }
             const s = size(layout.w, layout.h);
-            // TODO: Is it possible that you don't find a widget? and if so maybe throw and wrap with error boundary?
             return (
               <RGLHandle
                 key={widget.id}
-                className='group'
                 size={s}
                 id={widget.id}
                 draggedRef={draggedRef}
                 hideControls={immutable}
               >
-                <Widget
-                  title={widget.title}
-                  size={s}
-                  contentUrl={widget.contentUrl}
-                  href={widget.href}
-                />
+                <Widget {...widget} size={s} />
               </RGLHandle>
             );
           })}
@@ -139,7 +149,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       <div
         style={style}
         className={cn(
-          'relative isolate',
+          'group relative isolate',
           debug && 'border-divider rounded-2xl border-2 border-dashed',
           className
         )}
@@ -149,7 +159,6 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         onTouchEnd={onTouchEnd}
         // TODO: This just prevents a widget from being clicked when dropping. Fix this an make them clickable
         onClick={(e) => {
-          console.log('clicked');
           e.preventDefault();
         }}
         {...props}

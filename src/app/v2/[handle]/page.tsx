@@ -51,7 +51,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
         ) : (
           !isPending &&
           freelancer && (
-            <WidgetProvider>
+            <WidgetProvider userId={freelancer.id}>
               <Profile
                 user={freelancer}
                 isMine={isMine}
