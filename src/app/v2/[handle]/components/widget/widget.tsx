@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
 import { ImageWidget } from './image-widget';
+import { SocialIcon } from './social-icon';
+import { getUrlType } from './url-util';
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
@@ -37,6 +39,8 @@ export const Widget = ({
     );
   }
 
+  const urlType = href && getUrlType(href);
+
   return (
     <a
       className={cn(
@@ -54,8 +58,14 @@ export const Widget = ({
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
       <CardHeader className='pb-10'>
-        {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
-        <CardTitle className='line-clamp-3 text-sm font-normal'>
+        {urlType ? (
+          <SocialIcon type={urlType} />
+        ) : loading ? (
+          <Skeleton className='size-10' />
+        ) : (
+          <Icon src={iconUrl} />
+        )}
+        <CardTitle className='line-clamp-3 break-words text-sm font-normal'>
           {title || parseURL(href).host || href}
         </CardTitle>
       </CardHeader>
