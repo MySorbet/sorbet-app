@@ -22,9 +22,9 @@ const sizeConfigs = {
 
 const urls = {
   iconUrl:
-    'https://storage.googleapis.com/bkt-ph-prod-homepage-static-public/img/favicon.d8b7874261c3.ico',
+    'https://framerusercontent.com/images/vwqrWsyZbAoCnp6U2GM5Z4ncjwo.png',
   contentUrl:
-    'https://creatorspace.imgix.net/sites/ogimages/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2xleWVfYnVja2V0L3dwLWNvbnRlbnQvdXBsb2Fkcy80NWZhOGY0MS10b21hdG8tbW96ejItMjAyMDA4MTlfbGV5ZV9iLXNxdWFyZS1waXp6YS0yNTUtNzUuanBn.jpeg?width=600&height=600',
+    'https://framerusercontent.com/images/Ioch6MVHUWTPL65cNPDslY2ZMrs.png',
 };
 
 const meta = {
