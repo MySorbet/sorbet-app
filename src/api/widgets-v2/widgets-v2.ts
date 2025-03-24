@@ -65,6 +65,7 @@ export const widgetsV2Api = {
   enrich: async (id: string) => {
     const response = await axios.post<ApiWidget>(
       `${API_URL}/v2/widgets/${id}/enrich`,
+      {}, // No data on the post, just hitting the endpoint enriches the widget
       await withAuthHeader()
     );
     return response.data;
