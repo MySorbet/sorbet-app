@@ -89,6 +89,15 @@ export const WithIcon: Story = {
   },
 };
 
+export const WithIconAndLongTitle: Story = {
+  args: {
+    ...Default.args,
+    ...urls,
+    title:
+      'This is a long title that will wrap. This is a long title that will wrap. This is a long title that will wrap. This is a long title that will wrap. This is a long title that will wrap. This is a long title that will wrap. This is a long title that will wrap. This is a long title that will wrap.',
+  },
+};
+
 export const Loading: Story = {
   args: {
     ...Default.args,
