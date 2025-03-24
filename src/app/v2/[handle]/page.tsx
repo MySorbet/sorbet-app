@@ -14,8 +14,6 @@ import { WidgetProvider } from './components/widget/use-widget-context';
 const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const { user } = useAuth();
 
-  const queryClient = useQueryClient();
-
   const {
     isPending,
     isError,
@@ -29,15 +27,13 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const freelancer = freelancerResponse?.data;
   const isLoggedIn = Boolean(user);
   const isMine = user?.handle === params.handle;
-  // const disableHireMe = isMyProfile || !user;
-  // const hideShare = !isMyProfile || !user;
-  // const freelancerFullName = `${freelancer?.firstName} ${freelancer?.lastName}`;
 
   /**
    * This effect is to refetch at the parent level when a username is updated.
    * Previously, we were refetching in the profile-edit-modal component and it was resulting
    * in stale data. For now, this manual fix works.
    */
+  const queryClient = useQueryClient();
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['freelancer', params.handle] });
   }, [queryClient, params.handle]);
@@ -45,7 +41,8 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   return (
     // We use svh and full here to make sure the profile takes up exactly the viewport. This way, widgets handle scroll themselves.
     <Page.Main className='h-svh'>
-      <Page.Content className='h-full'>
+      {/* Here, we are fighting some of the default styles of the page.content component. but this is fine for now. */}
+      <Page.Content className='h-full max-w-full pb-0'>
         {isError ? (
           <div>This profile does not exist. Claim yours now</div>
         ) : (

@@ -42,7 +42,7 @@ export const Profile = ({
   return (
     <div className='@container size-full'>
       <div className='@3xl:flex-row flex size-full flex-col items-center'>
-        <div className='@3xl:w-auto flex h-full w-[470px] max-w-96 flex-col justify-between gap-6 p-6 pb-0'>
+        <div className='@3xl:w-auto flex h-full w-[470px] max-w-96 flex-col justify-between gap-6 p-6'>
           <ProfileDetails
             user={user}
             isMine={isMine}
