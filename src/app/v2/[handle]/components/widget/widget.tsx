@@ -57,7 +57,7 @@ export const Widget = ({
       draggable={false} // disable HTML5 dnd
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
-      <CardHeader className='pb-10'>
+      <CardHeader className={cn('pb-10', size === 'D' && 'max-w-[50%]')}>
         {urlType ? (
           <SocialIcon type={urlType} />
         ) : loading ? (
@@ -92,7 +92,7 @@ export const Widget = ({
                 alt={title}
                 className={cn(
                   'rounded-md object-cover',
-                  size === 'A' && 'aspect-[342/230] size-full',
+                  size === 'A' && 'aspect-[1200/630] size-full',
                   // B doesn't have a content image
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
