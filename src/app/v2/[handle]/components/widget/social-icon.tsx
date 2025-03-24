@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import behance from '~/svg/social/behance.svg';
 import dribbble from '~/svg/social/dribbble.svg';
+import farcaster from '~/svg/social/farcaster.svg';
 import figma from '~/svg/social/figma.svg';
 import github from '~/svg/social/github.svg';
 import instagram from '~/svg/social/instagram.svg';
@@ -11,6 +12,7 @@ import spotify from '~/svg/social/spotify.svg';
 import substack from '~/svg/social/substack.svg';
 import twitter from '~/svg/social/twitter.svg';
 import youtube from '~/svg/social/youtube.svg';
+import zora from '~/svg/social/zora.svg';
 
 import { UrlType } from './url-util';
 
@@ -64,4 +66,6 @@ const iconByUrlType: Record<
   LinkedInPost: linkedin,
   LinkedInCompany: linkedin,
   Spotify: spotify,
+  Farcaster: farcaster,
+  Zora: zora, // TODO: Zora icon is just an embedded image, perhaps we should just use an image.
 };

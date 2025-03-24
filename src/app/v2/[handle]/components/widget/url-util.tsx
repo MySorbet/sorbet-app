@@ -133,6 +133,16 @@ export const getUrlType = (url: string): UrlType | undefined => {
     return 'Figma';
   }
 
+  // Farcaster posts and profiles
+  if (platform === 'warpcast') {
+    return 'Farcaster';
+  }
+
+  // Zora
+  if (platform === 'zora') {
+    return 'Zora';
+  }
+
   // If you get here, it's not a platform we explicitly support
   return undefined;
 };
@@ -165,6 +175,8 @@ export const UrlTypes = [
   'LinkedInPost',
   'LinkedInCompany',
   'Spotify',
+  'Farcaster',
+  'Zora',
 ] as const;
 
 export type UrlType = (typeof UrlTypes)[number];

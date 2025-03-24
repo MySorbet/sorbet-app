@@ -142,6 +142,8 @@ const urlsByType: Record<UrlType, string> = {
   LinkedInCompany: 'https://www.linkedin.com/company/mysorbet',
   Spotify:
     'https://open.spotify.com/album/4OlJgjlpzzUDYqdhf3vVdD?si=o3udjAIHTZGZALcuSWNwbA',
+  Farcaster: 'https://warpcast.com/mysorbet',
+  Zora: 'https://zora.co/collect/0x1234567890123456789012345678901234567890',
 } as const;
 
 // Demonstrate that widgets render first class icons if they have a supported url
@@ -151,7 +153,7 @@ export const AllFirstClassWidgets: Story = {
   },
   render: () => {
     return (
-      <div className='flex flex-wrap gap-4'>
+      <div className='flex w-full flex-wrap gap-4'>
         {UrlTypes.map((type) => (
           <div key={type} className='size-[175px]'>
             <Widget
