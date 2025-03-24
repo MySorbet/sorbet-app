@@ -32,7 +32,7 @@ export const Splash: FC = () => {
   }, [ready, authenticated, router]);
 
   return (
-    <div className='flex w-full items-center justify-center'>
+    <div className='flex size-full items-center justify-center'>
       <MutedSorbetLogo className='animate-in slide-in-from-bottom-10 fade-in-10 duration-5000 size-44' />
     </div>
   );
