@@ -81,7 +81,7 @@ export const Widget = ({
             {loading ? (
               <Skeleton
                 className={cn(
-                  size === 'A' && 'size-full',
+                  size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
                 )}
@@ -92,7 +92,7 @@ export const Widget = ({
                 alt={title}
                 className={cn(
                   'rounded-md object-cover',
-                  size === 'A' && 'aspect-[1200/630] size-full',
+                  size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
                   // B doesn't have a content image
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
@@ -127,7 +127,11 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
     <div className='flex size-10 items-center justify-center rounded-md border p-2'>
       {src ? (
         <img
-          className={cn('size-full', className)}
+          className={cn(
+            'size-full',
+            'rounded-sm', // opt all favicons in to a litttle bit of rounding
+            className
+          )}
           src={src}
           alt='Icon for widget'
           {...rest}
