@@ -2,7 +2,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { createContext, useContext, useReducer } from 'react';
 import { type Layout } from 'react-grid-layout';
 import { toast } from 'sonner';
-import { parseURL } from 'ufo';
 import { v4 as uuidv4 } from 'uuid';
 
 import { type ApiWidget, LayoutDto, widgetsV2Api } from '@/api/widgets-v2';
@@ -22,7 +21,7 @@ type LayoutMap = Record<Breakpoint, Layout[]>;
 
 // Action payloads
 type AddWidgetStartPayload = { id: string; url: string };
-type AddWidgetCompletePayload = { id: string; data: WidgetData };
+type AddWidgetCompletePayload = { id: string; data: Omit<WidgetData, 'id'> };
 type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
 type UpdateWidgetSizePayload = { id: string; size: WidgetSize };
@@ -68,20 +67,6 @@ interface WidgetContextType {
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
 
-// Mock API - we'll replace this later
-const mockApi = {
-  async fetchWidgetData(id: string, url: string): Promise<WidgetData> {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    return {
-      id,
-      title: `Widget for ${url}`,
-      iconUrl: 'https://placehold.co/32/orange/white',
-      contentUrl: 'https://placehold.co/400/orange/white',
-    };
-  },
-};
-
 function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
   switch (action.type) {
     /**
@@ -97,7 +82,7 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
           ...state.widgets,
           [id]: {
             id,
-            title: parseURL(url).host || url,
+            href: url,
             loading: true,
           },
         },
@@ -120,6 +105,7 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
         widgets: {
           ...state.widgets,
           [id]: {
+            ...state.widgets[id],
             ...data,
             loading: false,
           },
@@ -275,13 +261,18 @@ export function WidgetProvider({
         if (!href) {
           throw new Error('New widget has no href');
         }
-        const data = await mockApi.fetchWidgetData(id, href);
+        const enrichedWidget = await widgetsV2Api.enrich(id);
         dispatch({
           type: 'ADD_WIDGET_COMPLETE',
-          payload: { id, data },
+          payload: { id, data: enrichedWidget },
         });
       } catch (error) {
-        console.error('Failed to load widget data:', error);
+        console.error('Failed to enrich widget:', error);
+        // We failed, so this widget needs to stop loading and just be poor
+        dispatch({
+          type: 'ADD_WIDGET_COMPLETE',
+          payload: { id, data: {} },
+        });
       }
     },
     onError: (error, { id }) => {

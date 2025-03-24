@@ -1,5 +1,6 @@
 import { Link } from 'lucide-react';
 import React from 'react';
+import { parseURL } from 'ufo';
 
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -43,7 +44,7 @@ export const Widget = ({
       <CardHeader className='pb-10'>
         {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
         <CardTitle className='line-clamp-3 text-sm font-normal'>
-          {title}
+          {title || parseURL(href).host || href}
         </CardTitle>
       </CardHeader>
       {/* TODO: Perhaps you could extract all the size conditionals to this container? */}

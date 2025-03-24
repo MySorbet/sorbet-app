@@ -2,52 +2,15 @@ import axios from 'axios';
 
 import { env } from '@/lib/env';
 
-import { withAuthHeader } from './withAuthHeader';
+import { withAuthHeader } from '../withAuthHeader';
+import { ApiWidget, CreateWidgetDto, UpdateLayoutsDto } from './types';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
-
-type XYWH = {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-};
-
-export type LayoutDto = XYWH & {
-  id: string;
-  breakpoint: 'sm' | 'lg';
-};
-
-type CreateWidgetDto = {
-  id: string;
-  url: string;
-  layouts: {
-    sm: XYWH;
-    lg: XYWH;
-  };
-};
-
-export type UpdateLayoutsDto = {
-  layouts: LayoutDto[];
-};
-
-export type ApiWidget = {
-  id: string;
-  href?: string;
-  title?: string;
-  iconUrl?: string;
-  contentUrl?: string;
-  custom?: Record<string, unknown>;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-  layouts: LayoutDto[];
-};
 
 export const widgetsV2Api = {
   /** Create a new widget */
   create: async (data: CreateWidgetDto) => {
-    const response = await axios.post(
+    const response = await axios.post<ApiWidget>(
       `${API_URL}/v2/widgets`,
       data,
       await withAuthHeader()
@@ -71,20 +34,33 @@ export const widgetsV2Api = {
 
   /** Get widgets by handle */
   getByHandle: async (handle: string) => {
-    const response = await axios.get(`${API_URL}/v2/widgets?handle=${handle}`);
+    const response = await axios.get<ApiWidget[]>(
+      `${API_URL}/v2/widgets?handle=${handle}`
+    );
     return response.data;
   },
 
   /** Get widgets by userId */
   getByUserId: async (userId: string) => {
-    const response = await axios.get(`${API_URL}/v2/widgets?userId=${userId}`);
+    const response = await axios.get<ApiWidget[]>(
+      `${API_URL}/v2/widgets?userId=${userId}`
+    );
     return response.data;
   },
 
   /** Get widgets by privyId */
   getByPrivyId: async (privyId: string) => {
-    const response = await axios.get(
+    const response = await axios.get<ApiWidget[]>(
       `${API_URL}/v2/widgets?privyId=${privyId}`
+    );
+    return response.data;
+  },
+
+  /** Enrich a widget */
+  enrich: async (id: string) => {
+    const response = await axios.post<ApiWidget>(
+      `${API_URL}/v2/widgets/${id}/enrich`,
+      await withAuthHeader()
     );
     return response.data;
   },
