@@ -33,7 +33,7 @@ export const Widget = ({
     return (
       <ImageWidget
         contentUrl={contentUrl}
-        className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] duration-300'
+        className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] select-none duration-300'
         loading={loading}
       />
     );
@@ -44,7 +44,7 @@ export const Widget = ({
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex flex-col overflow-hidden rounded-2xl border shadow-sm',
+        'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         'size-full max-h-[390px] max-w-[390px]',
         // Just a nice little touch when a widget is added
@@ -57,7 +57,7 @@ export const Widget = ({
       draggable={false} // disable HTML5 dnd
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
-      <CardHeader className='pb-10'>
+      <CardHeader className={cn('pb-10', size === 'D' && 'max-w-[50%]')}>
         {urlType ? (
           <SocialIcon type={urlType} />
         ) : loading ? (
@@ -81,7 +81,7 @@ export const Widget = ({
             {loading ? (
               <Skeleton
                 className={cn(
-                  size === 'A' && 'size-full',
+                  size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
                 )}
@@ -92,7 +92,7 @@ export const Widget = ({
                 alt={title}
                 className={cn(
                   'rounded-md object-cover',
-                  size === 'A' && 'aspect-[342/230] size-full',
+                  size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
                   // B doesn't have a content image
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
@@ -127,7 +127,11 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
     <div className='flex size-10 items-center justify-center rounded-md border p-2'>
       {src ? (
         <img
-          className={cn('size-full', className)}
+          className={cn(
+            'size-full',
+            'rounded-sm', // opt all favicons in to a litttle bit of rounding
+            className
+          )}
           src={src}
           alt='Icon for widget'
           {...rest}

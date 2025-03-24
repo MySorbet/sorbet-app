@@ -49,13 +49,13 @@ export const Profile = ({
             onEdit={() => setIsEditing(true)}
           />
           {/* TODO: Could/should these buttons auto open the privy via a query param? */}
-          {!isMine && (
-            <div className='flex gap-3'>
-              {isLoggedIn ? (
-                <Button variant='secondary' asChild>
-                  <Link href='/dashboard'>Back to Dashboard</Link>
-                </Button>
-              ) : (
+          <div className='flex gap-3'>
+            {isLoggedIn ? (
+              <Button variant='secondary' asChild>
+                <Link href='/dashboard'>Back to Dashboard</Link>
+              </Button>
+            ) : (
+              !isMine && (
                 <>
                   <Button variant='secondary' asChild>
                     <Link href='/signin'>Create my Sorbet</Link>
@@ -64,9 +64,9 @@ export const Profile = ({
                     <Link href='/signin'>Login</Link>
                   </Button>
                 </>
-              )}
-            </div>
-          )}
+              )
+            )}
+          </div>
         </div>
         {/* The right side of the profile. Should handle scroll itself */}
         {/* Container queries set this up to be responsive to the flex change on at 3xl. TODO: Still something isn't quite right */}
