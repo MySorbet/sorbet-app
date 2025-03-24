@@ -12,7 +12,7 @@ import substack from '~/svg/social/substack.svg';
 import twitter from '~/svg/social/twitter.svg';
 import youtube from '~/svg/social/youtube.svg';
 
-import { UrlType } from './util';
+import { UrlType } from './url-util';
 
 interface WidgetIconProps extends React.SVGProps<SVGSVGElement> {
   /** The type of icon to render. */

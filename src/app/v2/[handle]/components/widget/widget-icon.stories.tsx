@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { WidgetIcon } from './icon';
-import { UrlTypes } from './util';
+import { UrlTypes } from './url-util';
 
 const meta: Meta<typeof WidgetIcon> = {
   title: 'Profile/v2/WidgetIcon',

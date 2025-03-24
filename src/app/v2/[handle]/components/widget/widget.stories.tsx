@@ -1,6 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { UrlType, UrlTypes } from './util';
+import { UrlType, UrlTypes } from './url-util';
 import { Widget } from './widget';
 
 const meta = {

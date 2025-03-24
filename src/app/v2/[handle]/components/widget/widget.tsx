@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { WidgetDataForDisplay } from './grid-config';
 import { WidgetIcon } from './icon';
 import { ImageWidget } from './image-widget';
-import { getUrlType } from './util';
+import { getUrlType } from './url-util';
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.

@@ -1,4 +1,4 @@
-import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
+import { withoutTrailingSlash } from 'ufo';
 
 // TODO: Set up test based on old tests for this stuff
 
@@ -135,51 +135,6 @@ export const getUrlType = (url: string): UrlType | undefined => {
 
   // If you get here, it's not a platform we explicitly support
   return undefined;
-};
-
-/**
- * Validates a URL by normalizing it and checking if it's in a valid format.
- * @param url The URL to validate
- * @returns True if the URL is valid, false otherwise
- */
-export function isValidUrl(url: string) {
-  return normalizeUrl(url) !== undefined;
-}
-
-/**
- * Normalizes a URL by parsing it and ensuring it's in a valid format.
- * Adds a protocol if it's missing. Returns undefined for invalid URLs.
- *
- * We use [ufo](https://github.com/unjs/ufo) to parse as opposed to `new URL` because it is more ergonomic.
- */
-export function normalizeUrl(url: string): string | undefined {
-  const parsed = parseURL(url, 'https://');
-
-  // Exclude urls without a TLD (i.e. "a.")
-  const hasTLD = (parsed.host?.split('.').filter(Boolean).length ?? 0) >= 2;
-
-  // We accept http and https urls with a TLD
-  if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && hasTLD) {
-    return stringifyParsedURL(parsed);
-  }
-
-  // invalid url
-  return undefined;
-}
-
-export const validImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
-
-/** Valid file extensions with dots for use in the `accept` attribute of a file input */
-export const validImageExtensionsWithDots = validImageExtensions.map(
-  (ext) => `.${ext}`
-);
-
-export const checkFileValid = (file?: File): file is File => {
-  if (!file) return false;
-  const fileSize = file.size / 1024 / 1024; // in MB
-  const fileExtension = file.name.split('.').pop()?.toLowerCase();
-  if (!fileExtension) return false;
-  return validImageExtensions.includes(fileExtension) && fileSize <= 10;
 };
 
 export const UrlTypes = [
