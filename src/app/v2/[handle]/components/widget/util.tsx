@@ -3,13 +3,11 @@ import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 // TODO: Set up test based on old tests for this stuff
 
 /**
- * Parses the WidgetType from a given URL
+ * Parses the UrlType from a given URL
  * Make sure to call this with a normalized URL
- * @param url The url to parse
- * @returns the WidgetType of the given URL
- * @throws an error if the URL is invalid in some way
+ * Returns undefined if the URL is not recognized as a particular type
  */
-export const parseWidgetTypeFromUrl = (url: string): WidgetType | undefined => {
+export const getUrlType = (url: string): UrlType | undefined => {
   const urlObj = new URL(url);
   const hostname = urlObj.hostname;
   const pathname = urlObj.pathname;
@@ -184,7 +182,7 @@ export const checkFileValid = (file?: File): file is File => {
   return validImageExtensions.includes(fileExtension) && fileSize <= 10;
 };
 
-export const WidgetTypes = [
+export const UrlTypes = [
   'Substack',
   'SpotifySong',
   'SpotifyAlbum',
@@ -214,4 +212,4 @@ export const WidgetTypes = [
   'Spotify',
 ] as const;
 
-export type WidgetType = (typeof WidgetTypes)[number];
+export type UrlType = (typeof UrlTypes)[number];

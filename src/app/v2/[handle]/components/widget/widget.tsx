@@ -7,9 +7,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
-import { ImageWidget } from './image-widget';
 import { WidgetIcon } from './icon';
-import { parseWidgetTypeFromUrl } from './util';
+import { ImageWidget } from './image-widget';
+import { getUrlType } from './util';
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
@@ -39,8 +39,7 @@ export const Widget = ({
     );
   }
 
-  // Here, we can check to see if we will offer some kind of upgrade for the display of the widget.
-  const iconType = href ? parseWidgetTypeFromUrl(href) : undefined;
+  const urlType = href && getUrlType(href);
 
   return (
     <a
@@ -59,10 +58,10 @@ export const Widget = ({
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
       <CardHeader className='pb-10'>
-        {loading ? (
+        {urlType ? (
+          <WidgetIcon type={urlType} />
+        ) : loading ? (
           <Skeleton className='size-10' />
-        ) : iconType ? (
-          <WidgetIcon type={iconType} />
         ) : (
           <Icon src={iconUrl} />
         )}

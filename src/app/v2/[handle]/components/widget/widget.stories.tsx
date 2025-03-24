@@ -1,6 +1,6 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { WidgetType, WidgetTypes } from './util';
+import { UrlType, UrlTypes } from './util';
 import { Widget } from './widget';
 
 const meta = {
@@ -98,7 +98,7 @@ export const Loading: Story = {
 };
 
 /** Example URLs for each widget type based on test cases */
-const widgetTypeUrls: Record<WidgetType, string> = {
+const urlsByType: Record<UrlType, string> = {
   Substack:
     'https://example.substack.com/p/heroes-who-came-to-look-for-example',
   SpotifySong:
@@ -144,11 +144,11 @@ export const AllFirstClassWidgets: Story = {
   render: () => {
     return (
       <div className='flex flex-wrap gap-4'>
-        {WidgetTypes.map((type) => (
+        {UrlTypes.map((type) => (
           <div key={type} className='size-[175px]'>
             <Widget
               {...Default.args}
-              href={widgetTypeUrls[type] || Default.args.href}
+              href={urlsByType[type] || Default.args.href}
               title={type}
               size='B'
             />

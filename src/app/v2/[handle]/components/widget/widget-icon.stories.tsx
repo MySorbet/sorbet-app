@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { WidgetIcon } from './icon';
-import { WidgetTypes } from './util';
+import { UrlTypes } from './util';
 
 const meta: Meta<typeof WidgetIcon> = {
   title: 'Profile/v2/WidgetIcon',
@@ -12,7 +12,7 @@ const meta: Meta<typeof WidgetIcon> = {
   argTypes: {
     type: {
       control: 'select',
-      options: WidgetTypes,
+      options: UrlTypes,
     },
   },
 };
@@ -32,29 +32,27 @@ export const AllIcons: Story = {
     return (
       <div style={{ display: 'flex', gap: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {WidgetTypes.slice(0, Math.ceil(WidgetTypes.length / 2)).map(
-            (type) => (
-              <div
-                key={type}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+          {UrlTypes.slice(0, Math.ceil(UrlTypes.length / 2)).map((type) => (
+            <div
+              key={type}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+            >
+              <WidgetIcon type={type} className='m-0' />
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
               >
-                <WidgetIcon type={type} className='m-0' />
-                <span
-                  style={{
-                    fontFamily: 'monospace',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {type}
-                </span>
-              </div>
-            )
-          )}
+                {type}
+              </span>
+            </div>
+          ))}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {WidgetTypes.slice(Math.ceil(WidgetTypes.length / 2)).map((type) => (
+          {UrlTypes.slice(Math.ceil(UrlTypes.length / 2)).map((type) => (
             <div
               key={type}
               style={{ display: 'flex', alignItems: 'center', gap: '10px' }}

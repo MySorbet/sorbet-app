@@ -12,17 +12,17 @@ import substack from '~/svg/social/substack.svg';
 import twitter from '~/svg/social/twitter.svg';
 import youtube from '~/svg/social/youtube.svg';
 
-import { WidgetType } from './util';
+import { UrlType } from './util';
 
 interface WidgetIconProps extends React.SVGProps<SVGSVGElement> {
-  /** The type of widget icon to render. */
-  type: WidgetType;
+  /** The type of icon to render. */
+  type: UrlType;
   /** Optional className for the icon. */
   className?: string;
 }
 
 /**
- * Renders the the appropriate social icon for a given widget `type`.
+ * Renders the the appropriate social icon for a given url `type`.
  */
 export const WidgetIcon: React.FC<WidgetIconProps> = ({
   type,
@@ -35,7 +35,7 @@ export const WidgetIcon: React.FC<WidgetIconProps> = ({
 };
 
 const socialIcons: Record<
-  WidgetType,
+  UrlType,
   React.ComponentType<React.SVGProps<SVGSVGElement>>
 > = {
   Substack: substack,
