@@ -37,6 +37,8 @@ export const Widget = ({
       href={href}
       target='_blank'
       rel='noopener noreferrer'
+      draggable={false} // disable HTML5 dnd
+      // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
       <CardHeader className='pb-10'>
         {loading ? <Skeleton className='size-10' /> : <Icon src={iconUrl} />}
