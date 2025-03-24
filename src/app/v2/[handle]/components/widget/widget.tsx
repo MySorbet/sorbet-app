@@ -1,11 +1,13 @@
 import { Link } from 'lucide-react';
 import React from 'react';
+import { parseURL } from 'ufo';
 
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
+import { ImageWidget } from './image-widget';
 import { WidgetIcon } from './icon';
 import { parseWidgetTypeFromUrl } from './util';
 
@@ -24,10 +26,21 @@ export const Widget = ({
   contentUrl,
   href,
   loading = false,
+  type,
   size = 'A',
 }: WidgetDataForDisplay) => {
+  if (type === 'image') {
+    return (
+      <ImageWidget
+        contentUrl={contentUrl}
+        className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] duration-300'
+        loading={loading}
+      />
+    );
+  }
+
   // Here, we can check to see if we will offer some kind of upgrade for the display of the widget.
-  const type = href ? parseWidgetTypeFromUrl(href) : undefined;
+  const iconType = href ? parseWidgetTypeFromUrl(href) : undefined;
 
   return (
     <a
@@ -42,17 +55,19 @@ export const Widget = ({
       href={href}
       target='_blank'
       rel='noopener noreferrer'
+      draggable={false} // disable HTML5 dnd
+      // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
       <CardHeader className='pb-10'>
         {loading ? (
           <Skeleton className='size-10' />
-        ) : type ? (
-          <WidgetIcon type={type} />
+        ) : iconType ? (
+          <WidgetIcon type={iconType} />
         ) : (
           <Icon src={iconUrl} />
         )}
         <CardTitle className='line-clamp-3 break-words text-sm font-normal'>
-          {title}
+          {title || parseURL(href).host || href}
         </CardTitle>
       </CardHeader>
       {/* TODO: Perhaps you could extract all the size conditionals to this container? */}

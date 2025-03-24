@@ -66,14 +66,16 @@ export const Tip = ({ userId }: { userId: string }) => {
                 <Unplug className='mr-1 size-3' />
                 Not connected
               </Badge>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size='icon' variant='ghost' onClick={connectWallet}>
-                    <Plug />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Connect a wallet</TooltipContent>
-              </Tooltip>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size='icon' variant='ghost' onClick={connectWallet}>
+                      <Plug />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Connect a wallet</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           )}
           <div className='flex w-full gap-2'>

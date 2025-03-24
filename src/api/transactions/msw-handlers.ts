@@ -20,8 +20,11 @@ export const mockTransactionsHandler = http.get(
 );
 
 export const mockOverviewHandler = http.get(
-  `${env.NEXT_PUBLIC_SORBET_API_URL}/transactions/overview?account=0x0000000000000000000000000000000000000000&last_days=30`,
-  async () => {
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/transactions/overview`,
+  async ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    const _account = params.get('account');
+    const _lastDays = params.get('last_days');
     await delay();
     return HttpResponse.json<TransactionOverview>({
       money_in: sampleTransactions,
@@ -34,8 +37,11 @@ export const mockOverviewHandler = http.get(
 );
 
 export const mockOverviewHandlerNoTransactions = http.get(
-  `${env.NEXT_PUBLIC_SORBET_API_URL}/transactions/overview?account=0x0000000000000000000000000000000000000000&last_days=30`,
-  async () => {
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/transactions/overview`,
+  async ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    const _account = params.get('account');
+    const _lastDays = params.get('last_days');
     await delay();
     return HttpResponse.json<TransactionOverview>({
       money_in: [],

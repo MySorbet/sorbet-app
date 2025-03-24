@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { mockUserMinimal } from '@/api/user/mock-user';
 import { Button } from '@/components/ui/button';
 import { sleep } from '@/lib/utils';
 
@@ -14,7 +15,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <WidgetProvider>
+      <WidgetProvider userId={mockUserMinimal.id}>
         <Story />
       </WidgetProvider>
     ),

@@ -52,7 +52,8 @@ export type WidgetData = {
   href?: string;
   iconUrl?: string;
   id: string;
-  title: string;
+  title?: string;
+  type?: 'image';
 };
 
 // This is widget data augmented with display metadata.
