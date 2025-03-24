@@ -24,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 /** Helper to create a container with specific dimensions */
 const createSizeContainer = (width: number, height: number) => {
   return (Story: StoryFn) => (
-    <div className={`h-[${height}px] w-[${width}px]`}>
+    <div style={{ height: `${height}px`, width: `${width}px` }}>
       <Story />
     </div>
   );
