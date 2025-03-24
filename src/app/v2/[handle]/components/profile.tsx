@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -89,11 +90,23 @@ export const Profile = ({
               user={user}
             />
             <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
-              <ControlBar
-                onAddImage={handleAddImage}
-                onAddLink={handleAddLink}
-                onShare={() => setIsShareDialogOpen(true)}
-              />
+              <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                  delay: 0.5,
+                  type: 'spring',
+                  stiffness: 150,
+                  damping: 30,
+                  mass: 2,
+                }}
+              >
+                <ControlBar
+                  onAddImage={handleAddImage}
+                  onAddLink={handleAddLink}
+                  onShare={() => setIsShareDialogOpen(true)}
+                />
+              </motion.div>
             </div>
           </>
         )}
