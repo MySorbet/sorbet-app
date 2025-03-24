@@ -77,8 +77,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
           isDraggable={!immutable}
           onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
           onLayoutChange={onLayoutChange}
-          onDragStart={() => (draggedRef.current = true)}
-          onDragStop={() => (draggedRef.current = false)}
+          onDrag={() => (draggedRef.current = true)}
         >
           {layouts[breakpoint].map((layout) => {
             const widget = widgets[layout.i];
@@ -157,9 +156,9 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onTouchEnd={onTouchEnd}
-        // TODO: This just prevents a widget from being clicked when dropping. Fix this an make them clickable
         onClick={(e) => {
-          e.preventDefault();
+          if (draggedRef.current) e.preventDefault();
+          draggedRef.current = false;
         }}
         {...props}
       >
