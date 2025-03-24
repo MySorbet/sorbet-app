@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { WidgetDataForDisplay } from './grid-config';
+import { ImageWidget } from './image-widget';
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
@@ -23,8 +24,19 @@ export const Widget = ({
   contentUrl,
   href,
   loading = false,
+  type,
   size = 'A',
 }: WidgetDataForDisplay) => {
+  if (type === 'image') {
+    return (
+      <ImageWidget
+        contentUrl={contentUrl}
+        className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] duration-300'
+        loading={loading}
+      />
+    );
+  }
+
   return (
     <a
       className={cn(

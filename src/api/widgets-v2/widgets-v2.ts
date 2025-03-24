@@ -3,7 +3,12 @@ import axios from 'axios';
 import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../withAuthHeader';
-import { ApiWidget, CreateWidgetDto, UpdateLayoutsDto } from './types';
+import {
+  ApiWidget,
+  CreateWidgetDto,
+  UpdateLayoutsDto,
+  UpdateWidgetV2Dto,
+} from './types';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
@@ -60,6 +65,16 @@ export const widgetsV2Api = {
   enrich: async (id: string) => {
     const response = await axios.post<ApiWidget>(
       `${API_URL}/v2/widgets/${id}/enrich`,
+      await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  /** Update a widget */
+  update: async (id: string, data: UpdateWidgetV2Dto) => {
+    const response = await axios.put<ApiWidget>(
+      `${API_URL}/v2/widgets/${id}`,
+      data,
       await withAuthHeader()
     );
     return response.data;

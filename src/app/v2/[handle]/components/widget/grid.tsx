@@ -99,14 +99,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 draggedRef={draggedRef}
                 hideControls={immutable}
               >
-                <Widget
-                  title={widget.title}
-                  iconUrl={widget.iconUrl}
-                  contentUrl={widget.contentUrl}
-                  href={widget.href}
-                  size={s}
-                  loading={widget.loading}
-                />
+                <Widget {...widget} size={s} />
               </RGLHandle>
             );
           })}

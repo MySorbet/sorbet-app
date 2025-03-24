@@ -1,10 +1,17 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { createContext, useContext, useReducer } from 'react';
 import { type Layout } from 'react-grid-layout';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 
-import { type ApiWidget, LayoutDto, widgetsV2Api } from '@/api/widgets-v2';
+import {
+  type ApiWidget,
+  LayoutDto,
+  widgetsV2Api,
+  WidgetType,
+} from '@/api/widgets-v2';
+import { uploadWidgetImage } from '@/api/widgets-v2/images';
 
 import {
   type Breakpoint,
@@ -12,6 +19,7 @@ import {
   LayoutSizes,
   WidgetSize,
 } from './grid-config';
+import { useAbortMap } from './use-abort-map';
 import { usePendingWidgets } from './use-pending-widgets';
 
 // Types for widget data
@@ -20,7 +28,7 @@ type WidgetMap = Record<string, LoadableWidget>;
 type LayoutMap = Record<Breakpoint, Layout[]>;
 
 // Action payloads
-type AddWidgetStartPayload = { id: string; url: string };
+type AddWidgetStartPayload = { id: string; url: string; type?: WidgetType };
 type AddWidgetCompletePayload = { id: string; data: Omit<WidgetData, 'id'> };
 type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
@@ -63,9 +71,17 @@ interface WidgetContextType {
   updateSize: (id: string, size: WidgetSize) => void;
   /** Remove a widget */
   removeWidget: (id: string) => void;
+  /** Add an image widget */
+  addImage: (image: File) => void;
 }
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
+
+const DEFAULT_WIDGET_LAYOUT = {
+  x: 0,
+  y: 0,
+  ...LayoutSizes['B'],
+};
 
 function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
   switch (action.type) {
@@ -75,21 +91,23 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
      * This will update both layout data and widget data
      */
     case 'ADD_WIDGET_START': {
-      const { id, url } = action.payload;
+      const { id, url, type } = action.payload;
       return {
         ...state,
         widgets: {
           ...state.widgets,
           [id]: {
             id,
-            href: url,
+            href: type === 'image' ? undefined : url,
+            contentUrl: type === 'image' ? url : undefined,
+            type,
             loading: true,
           },
         },
         // Add widget with default size to both breakpoints
         layouts: {
-          sm: [{ i: id, ...LayoutSizes['B'], x: 0, y: 0 }, ...state.layouts.sm],
-          lg: [{ i: id, ...LayoutSizes['B'], x: 0, y: 0 }, ...state.layouts.lg],
+          sm: [{ i: id, ...DEFAULT_WIDGET_LAYOUT }, ...state.layouts.sm],
+          lg: [{ i: id, ...DEFAULT_WIDGET_LAYOUT }, ...state.layouts.lg],
         },
       };
     }
@@ -205,11 +223,20 @@ export function WidgetProvider({
   children: React.ReactNode;
   userId: string;
 }) {
+  // The widget reducer manages grid state
   const [state, dispatch] = useReducer(widgetReducer, {
     widgets: {},
     layouts: { sm: [], lg: [] },
     breakpoint: 'lg',
   });
+
+  // This is a little hack to keep track of the ids of widgets that have been added to UI, but we don't know if the API
+  // has returned successfully. When layout changes happen, we choose not to update layouts for these widgets.
+  // I wonder if we should just make these static until the call has completed? It shouldn't be too long.
+  const { addPending, removePending, isPending } = usePendingWidgets();
+
+  // We use this to abort image uploads when an image widget is delete while an upload is in progress
+  const { addController, removeController, abortAndRemove } = useAbortMap();
 
   // Load initial widgets
   const { data: widgets } = useQuery<ApiWidget[], Error>({
@@ -218,11 +245,6 @@ export function WidgetProvider({
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
-
-  // This is a little hack to keep track of the ids of widgets that have been added to UI, but we don't know if the API
-  // has returned successfully. When layout changes happen, we choose not to update layouts for these widgets.
-  // I wonder if we should just make these static until the call has completed? It shouldn't be too long.
-  const { addPending, removePending, isPending } = usePendingWidgets();
 
   // Transform and dispatch data when it arrives
   React.useEffect(() => {
@@ -241,8 +263,8 @@ export function WidgetProvider({
         id: params.id,
         url: params.url,
         layouts: {
-          sm: { ...LayoutSizes['B'], x: 0, y: 0 },
-          lg: { ...LayoutSizes['B'], x: 0, y: 0 },
+          sm: DEFAULT_WIDGET_LAYOUT,
+          lg: DEFAULT_WIDGET_LAYOUT,
         },
       }),
     onMutate: ({ id, url }) => {
@@ -285,6 +307,90 @@ export function WidgetProvider({
       });
       toast.error("We couldn't add that link", {
         description: error.message,
+      });
+    },
+  });
+
+  const createImageWidgetMutation = useMutation({
+    mutationFn: async (params: { id: string; image: File }) => {
+      try {
+        // First create the widget in the database (at this point, it is invalid since it has no contentUrl)
+        const widget = await widgetsV2Api.create({
+          id: params.id,
+          type: 'image',
+          layouts: {
+            sm: DEFAULT_WIDGET_LAYOUT,
+            lg: DEFAULT_WIDGET_LAYOUT,
+          },
+        });
+
+        // Then upload the image with abort signal
+        const abortController = addController(params.id);
+        const contentUrl = await uploadWidgetImage(params.image, {
+          signal: abortController.signal,
+        });
+
+        // Then update the widget with the image URL
+        await widgetsV2Api.update(widget.id, {
+          contentUrl,
+        });
+
+        return { ...widget, contentUrl };
+      } catch (error) {
+        // If the error is from an abort, we want to propagate it
+        if (axios.isCancel(error)) {
+          throw error;
+        }
+        throw error;
+      } finally {
+        removeController(params.id);
+      }
+    },
+
+    onMutate: ({ id, image }) => {
+      const tempUrl = URL.createObjectURL(image);
+      addPending(id);
+      dispatch({
+        type: 'ADD_WIDGET_START',
+        payload: { id, url: tempUrl, type: 'image' },
+      });
+      return { tempUrl };
+    },
+
+    onSuccess: async ({ id, contentUrl }, _, context) => {
+      removePending(id);
+      if (context?.tempUrl) {
+        URL.revokeObjectURL(context.tempUrl);
+      }
+      dispatch({
+        type: 'ADD_WIDGET_COMPLETE',
+        payload: {
+          id,
+          data: {
+            contentUrl,
+            type: 'image',
+          },
+        },
+      });
+    },
+
+    onError: (error, { id }, context) => {
+      // Don't show error toast if it was just aborted
+      if (!axios.isCancel(error)) {
+        console.error('Failed to create image widget:', error);
+        toast.error("We couldn't add that image", {
+          description: String(error),
+        });
+      }
+
+      if (context?.tempUrl) {
+        URL.revokeObjectURL(context.tempUrl);
+      }
+
+      removePending(id);
+      dispatch({
+        type: 'REMOVE_WIDGET',
+        payload: { id },
       });
     },
   });
@@ -335,7 +441,13 @@ export function WidgetProvider({
     // mutation handles complex dispatching logic
   };
 
+  const addImage = (image: File) => {
+    const id = uuidv4();
+    createImageWidgetMutation.mutate({ id, image });
+  };
+
   const removeWidget = (id: string) => {
+    abortAndRemove(id); // Abort any ongoing upload
     dispatch({ type: 'REMOVE_WIDGET', payload: { id } });
     deleteMutation.mutate(id);
   };
@@ -364,6 +476,7 @@ export function WidgetProvider({
         setBreakpoint,
         onLayoutChange,
         addWidget,
+        addImage,
         updateSize,
         removeWidget,
       }}

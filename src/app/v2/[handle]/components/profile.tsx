@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { toast } from 'sonner';
 
 // TODO: Move to ./components
 import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
@@ -30,12 +29,10 @@ export const Profile = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
-  const { addWidget } = useWidgets();
+  const { addWidget, addImage } = useWidgets();
 
-  const handleAddImage = (image: File) => {
-    toast.success('Would add image', {
-      description: image.name,
-    });
+  const handleAddImage = async (image: File) => {
+    addImage(image);
   };
 
   const handleAddLink = (link: string) => {
