@@ -96,3 +96,23 @@ export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
     throw new Error(`Failed to update user: ${error.response.data.message}`);
   }
 };
+
+/** Contact a user */
+export const contactUser = async (
+  userId: string,
+  message: {
+    email: string;
+    subject: string;
+    body: string;
+  }
+) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/users/contact/${userId}`,
+      message
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to contact user: ${error}`);
+  }
+};

@@ -1,4 +1,4 @@
-import { MapPin } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -14,11 +14,13 @@ export const ProfileDetails = ({
   user,
   isMine,
   onEdit,
+  onContactMe,
   className,
 }: {
   user: MinimalUser;
   isMine?: boolean;
   onEdit?: () => void;
+  onContactMe?: () => void;
   className?: string;
 }) => {
   if (!user) throw new Error('ProfileDetails requires a user');
@@ -58,18 +60,25 @@ export const ProfileDetails = ({
       {isMine ? (
         <MyProfileButtons onEdit={onEdit} />
       ) : (
-        <PublicProfileButtons userId={user.id} />
+        <PublicProfileButtons userId={user.id} onContactMe={onContactMe} />
       )}
     </div>
   );
 };
 
 /** Buttons for public view of a profile */
-const PublicProfileButtons = ({ userId }: { userId: string }) => {
+const PublicProfileButtons = ({
+  userId,
+  onContactMe,
+}: {
+  userId: string;
+  onContactMe?: () => void;
+}) => {
   return (
     <div className='flex flex-col gap-3'>
-      <Button variant='sorbet' disabled>
-        Work with me
+      <Button variant='sorbet' onClick={onContactMe}>
+        <Mail />
+        Contact me
       </Button>
       <Tip userId={userId} />
     </div>

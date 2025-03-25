@@ -21,3 +21,13 @@ export const mockUserByHandleHandler = http.get(
     });
   }
 );
+
+export const mockContactMeHandler = http.post(
+  `${API_URL}/users/contact/*`,
+  async () => {
+    await delay();
+    return HttpResponse.json({
+      success: true,
+    });
+  }
+);

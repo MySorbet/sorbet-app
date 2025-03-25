@@ -10,6 +10,7 @@ import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 
+import { ContactMeDialog } from './contact-me/contact-me-dialog';
 import { ControlBar } from './control-bar/control-bar';
 import { OnboardWithHandles } from './onboard-with-handles/onboard-with-handles';
 import { ProfileDetails } from './profile-details';
@@ -30,6 +31,7 @@ export const Profile = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isContactMeDialogOpen, setIsContactMeDialogOpen] = useState(false);
 
   const { addWidget, addImage, widgets } = useWidgets();
   const showOnboarding = isMine && Object.keys(widgets).length === 0;
@@ -54,6 +56,7 @@ export const Profile = ({
             user={user}
             isMine={isMine}
             onEdit={() => setIsEditing(true)}
+            onContactMe={() => setIsContactMeDialogOpen(true)}
           />
           {/* TODO: Could/should these buttons auto open the privy via a query param? */}
           <div className='flex gap-3'>
@@ -96,6 +99,11 @@ export const Profile = ({
         </div>
 
         {/* Elements which ignore the layout of this container */}
+        <ContactMeDialog
+          open={isContactMeDialogOpen}
+          onOpenChange={setIsContactMeDialogOpen}
+          userId={user.id}
+        />
         {isMine && (
           <>
             <ShareDialog
