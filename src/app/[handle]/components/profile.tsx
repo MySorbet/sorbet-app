@@ -8,6 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 // TODO: Move to ./components
 import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { User } from '@/types';
 
 import { ContactMeDialog } from './contact-me/contact-me-dialog';
@@ -34,8 +35,9 @@ export const Profile = ({
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isContactMeDialogOpen, setIsContactMeDialogOpen] = useState(false);
 
-  const { addWidget, addImage, widgets } = useWidgets();
-  const showOnboarding = isMine && Object.keys(widgets).length === 0;
+  const { addWidget, addImage, widgets, isLoading } = useWidgets();
+  const showOnboarding =
+    isMine && !isLoading && Object.keys(widgets).length === 0;
 
   const handleAddImage = async (image: File) => {
     addImage(image);
@@ -49,12 +51,13 @@ export const Profile = ({
     await Promise.all(urls.map(addWidget));
   };
 
-  useHandlePaste(addWidget, isMine);
+  useHandlePaste(addWidget, isMine && !isLoading);
 
   return (
     <div className='@container size-full'>
       <div className='@3xl:flex-row flex size-full flex-col items-center'>
-        <div className='@3xl:w-auto flex h-full w-[470px] max-w-96 flex-col justify-between gap-6 p-6'>
+        {/* Left part of the profile. Full height on desktop, auto on mobile */}
+        <div className='@3xl:w-auto @3xl:h-full flex w-[470px] max-w-96 flex-col justify-between gap-6 p-6'>
           <ProfileDetails
             user={user}
             isMine={isMine}
@@ -83,7 +86,10 @@ export const Profile = ({
         </div>
         {/* The right side of the profile. Should handle scroll itself */}
         {/* Container queries set this up to be responsive to the flex change on at 3xl. TODO: Still something isn't quite right */}
-        <div className='@3xl:w-auto @3xl:h-full w-full flex-1'>
+        <ScrollArea
+          className='@3xl:w-auto @3xl:h-full w-full flex-1'
+          type='scroll'
+        >
           {showOnboarding ? (
             <div className='flex h-full w-full items-center justify-center'>
               <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
@@ -99,7 +105,7 @@ export const Profile = ({
               </ErrorBoundary>
             </motion.div>
           )}
-        </div>
+        </ScrollArea>
 
         {/* Elements which ignore the layout of this container */}
         <ContactMeDialog
@@ -122,9 +128,11 @@ export const Profile = ({
               <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
                 <motion.div
                   initial={{ y: 100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                  animate={
+                    !isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }
+                  }
                   transition={{
-                    delay: 0.5,
+                    delay: 1,
                     type: 'spring',
                     stiffness: 150,
                     damping: 30,

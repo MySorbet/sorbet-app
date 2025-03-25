@@ -4,7 +4,6 @@ import 'react-resizable/css/styles.css';
 import React, { MutableRefObject, useRef } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 import {
@@ -32,8 +31,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
  * An RGL layout of widgets.
  *
  * A fixed row height drives the entire grid width to maintain square cells.
- * This component will fill the width and height of its parent container -- usually, this will be most of the screen.
- * When grid content grows taller than this height, this component will render a virtual scrollbar to allow the user to scroll through the grid.
+ * This component will fill the width of its parent container -- usually, this will be most of the screen. It's height will grow to fit the grid.
  * It will also break between a sm and lg size, based on it's own width using a container query.
  */
 export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
@@ -44,7 +42,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
   const draggedRef = useRef<boolean>(false);
 
   return (
-    <ScrollArea className='@container size-full'>
+    <div className='@container w-full'>
       {/* This div responds to its parents size, going between a sm and lg size, which then triggers the grid breakpoint. centers the grid inside using mx-auto */}
       <div
         className='@4xl:w-[var(--wlg)] mx-auto w-[var(--wsm)]'
@@ -95,7 +93,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
           })}
         </ResponsiveGridLayout>
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 

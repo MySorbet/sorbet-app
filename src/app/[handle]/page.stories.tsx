@@ -18,6 +18,13 @@ const meta = {
       user: mockUser,
     },
   },
+  decorators: [
+    (Story) => (
+      <div className='h-screen'>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof ProfilePage>;
 
 export default meta;

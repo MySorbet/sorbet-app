@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { SidebarProvider } from '@/components/ui/sidebar';
+
 import SettingsPage from './page';
 
 const meta: Meta<typeof SettingsPage> = {
@@ -9,6 +11,13 @@ const meta: Meta<typeof SettingsPage> = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <SidebarProvider>
+        <Story />
+      </SidebarProvider>
+    ),
+  ],
 };
 
 export default meta;

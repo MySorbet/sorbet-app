@@ -73,6 +73,8 @@ interface WidgetContextType {
   removeWidget: (id: string) => void;
   /** Add an image widget */
   addImage: (image: File) => void;
+  /** Is fetching initial widgets */
+  isLoading: boolean;
 }
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
@@ -239,7 +241,7 @@ export function WidgetProvider({
   const { addController, removeController, abortAndRemove } = useAbortMap();
 
   // Load initial widgets
-  const { data: widgets } = useQuery<ApiWidget[], Error>({
+  const { data: widgets, isLoading } = useQuery<ApiWidget[], Error>({
     queryKey: ['widgets', userId],
     queryFn: () => widgetsV2Api.getByUserId(userId),
     staleTime: Infinity,
@@ -479,6 +481,7 @@ export function WidgetProvider({
         addImage,
         updateSize,
         removeWidget,
+        isLoading,
       }}
     >
       {children}

@@ -7,6 +7,7 @@ import {
   mockBridgeCustomerHandlerTosComplete,
   mockVerifyHandler,
 } from '@/api/bridge/msw-handlers';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 import VerifyPage from './page';
 
@@ -18,6 +19,13 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    (Story) => (
+      <SidebarProvider>
+        <Story />
+      </SidebarProvider>
+    ),
+  ],
 } satisfies Meta<typeof VerifyPage>;
 
 export default meta;

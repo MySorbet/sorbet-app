@@ -16,7 +16,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const { user } = useAuth();
 
   const {
-    isPending,
+    isLoading,
     isError,
     data: freelancerResponse,
   } = useQuery({
@@ -41,27 +41,24 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
 
   return (
     // We use svh and full here to make sure the profile takes up exactly the viewport. This way, widgets handle scroll themselves.
-    <Page.Main className='h-svh'>
-      {/* Here, we are fighting some of the default styles of the page.content component. but this is fine for now. */}
-      <Page.Content className='h-full max-w-full pb-0'>
-        {isError ? (
-          <div>This profile does not exist. Claim yours now</div>
+    <Page.Main className='size-full px-6'>
+      {isError ? (
+        <div>This profile does not exist. Claim yours now</div>
+      ) : (
+        !isLoading &&
+        freelancer &&
+        (isMine && !user?.hasClaimedHandle ? (
+          <ClaimYourHandle />
         ) : (
-          !isPending &&
-          freelancer &&
-          (isMine && !user?.hasClaimedHandle ? (
-            <ClaimYourHandle />
-          ) : (
-            <WidgetProvider userId={freelancer.id}>
-              <Profile
-                user={freelancer}
-                isMine={isMine}
-                isLoggedIn={isLoggedIn}
-              />
-            </WidgetProvider>
-          ))
-        )}
-      </Page.Content>
+          <WidgetProvider userId={freelancer.id}>
+            <Profile
+              user={freelancer}
+              isMine={isMine}
+              isLoggedIn={isLoggedIn}
+            />
+          </WidgetProvider>
+        ))
+      )}
     </Page.Main>
   );
 };

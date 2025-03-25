@@ -37,7 +37,6 @@ export const ClaimYourHandleForm = () => {
   return (
     <Form {...form}>
       <form
-        id='edit-profile-form'
         onSubmit={form.handleSubmit(onSubmit)}
         className='flex min-w-60 max-w-80 flex-col gap-6'
       >

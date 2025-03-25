@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { mockInvoicesHandler, mockPayInvoiceHandler } from '@/api/invoices';
 import { mockCancelInvoiceHandler } from '@/api/invoices';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 import InvoicesPage from './page';
 
@@ -18,6 +19,13 @@ const meta = {
       ],
     },
   },
+  decorators: [
+    (Story) => (
+      <SidebarProvider>
+        <Story />
+      </SidebarProvider>
+    ),
+  ],
 } satisfies Meta<typeof InvoicesPage>;
 
 export default meta;
