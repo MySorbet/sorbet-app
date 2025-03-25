@@ -5,14 +5,21 @@ import { z } from 'zod';
 // TODO: Update imports from @/components/profile once components are moved
 import {
   SocialHandleInput,
+  SocialHandleInputWidgetType,
   SocialHandleInputWidgetTypes,
+  typeAndHandleToWidgetUrl,
 } from '@/components/profile/widgets/onboarding-drawer/social-handle-input';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormItem } from '@/components/ui/form';
 import { FormField } from '@/components/ui/form';
 
 // TODO: See onboarding drawer to improve this
-const formSchema = z.record(z.enum(SocialHandleInputWidgetTypes), z.string());
+
+const formSchema = z
+  .record(z.enum(SocialHandleInputWidgetTypes), z.string())
+  .refine((data) => Object.values(data).some((value) => value !== ''), {
+    message: 'At least one social handle must be provided',
+  });
 type FormSchema = z.infer<typeof formSchema>;
 
 // TODO: In general, revisit this component in comparison to the onboarding drawer
@@ -21,7 +28,11 @@ type FormSchema = z.infer<typeof formSchema>;
  *
  * Originally based on the onboarding drawer, and carries over some patterns.
  */
-export const OnboardWithHandles = () => {
+export const OnboardWithHandles = ({
+  onSubmit,
+}: {
+  onSubmit?: (urls: string[]) => void;
+}) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: Object.fromEntries(
@@ -31,8 +42,25 @@ export const OnboardWithHandles = () => {
 
   // TODO: Maybe onSubmit should clear the form?
   const handleSubmit = form.handleSubmit((data) => {
-    console.log(data);
+    // Filter out empty values
+    const res = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== '')
+    );
+
+    // Convert to site urls
+    const urls = Object.entries(res).map(([type, handle]) => {
+      return typeAndHandleToWidgetUrl(
+        type as SocialHandleInputWidgetType,
+        handle
+      );
+    });
+
+    console.log(urls);
+    form.reset();
+    onSubmit?.(urls);
   });
+
+  const { isValid } = form.formState;
 
   return (
     <Form {...form}>
@@ -61,7 +89,7 @@ export const OnboardWithHandles = () => {
             />
           ))}
         </div>
-        <Button type='submit' variant='sorbet' disabled>
+        <Button type='submit' variant='sorbet' disabled={!isValid}>
           Add social accounts
         </Button>
       </form>
