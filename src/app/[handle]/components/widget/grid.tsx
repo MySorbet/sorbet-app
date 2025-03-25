@@ -20,7 +20,6 @@ import {
   wSm,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
-import { useHandlePaste } from './use-handle-paste';
 import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
 import { WidgetControls } from './widget-controls';
@@ -38,19 +37,11 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
  * It will also break between a sm and lg size, based on it's own width using a container query.
  */
 export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
-  const {
-    widgets,
-    layouts,
-    breakpoint,
-    setBreakpoint,
-    onLayoutChange,
-    addWidget,
-  } = useWidgets();
+  const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
+    useWidgets();
   const width = gw(breakpoint);
 
   const draggedRef = useRef<boolean>(false);
-
-  useHandlePaste(addWidget);
 
   return (
     <ScrollArea className='@container size-full'>

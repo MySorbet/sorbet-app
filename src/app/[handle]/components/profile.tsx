@@ -17,6 +17,7 @@ import { ProfileDetails } from './profile-details';
 import { ShareDialog } from './share-dialog/share-dialog';
 import { WidgetGrid } from './widget/grid';
 import { GridErrorFallback } from './widget/grid-error-fallback';
+import { useHandlePaste } from './widget/use-handle-paste';
 import { useWidgets } from './widget/use-widget-context';
 
 /** Profile 2.0 */
@@ -47,6 +48,8 @@ export const Profile = ({
   const handleAddMultipleWidgets = async (urls: string[]) => {
     await Promise.all(urls.map(addWidget));
   };
+
+  useHandlePaste(addWidget, isMine);
 
   return (
     <div className='@container size-full'>
