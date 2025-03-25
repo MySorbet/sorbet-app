@@ -99,9 +99,9 @@ export const Widget = ({
                 )}
               />
             ) : (
-              <NothingToSeeHere
+              <ContentPlaceholder
                 className={cn(
-                  size === 'A' && 'size-full',
+                  size === 'A' && 'aspect-[1200/630] w-full',
                   size === 'C' && 'aspect-square w-full',
                   size === 'D' && 'aspect-square h-full'
                 )}
@@ -144,20 +144,22 @@ const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
   );
 };
 
-const NothingToSeeHere = React.forwardRef<
+const ContentPlaceholder = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...rest }, ref) => {
   return (
-    <p
+    <div
       className={cn(
-        'bg-muted text-muted-foreground flex items-center justify-center rounded-md border p-2 text-center text-sm font-normal',
+        'bg-muted text-muted-foreground group flex items-center justify-center rounded-md border p-2 text-center text-sm font-normal',
         className
       )}
       ref={ref}
       {...rest}
     >
-      Nothing to see here
-    </p>
+      <p className='opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+        We couldn't find a preview for this link
+      </p>
+    </div>
   );
 });
