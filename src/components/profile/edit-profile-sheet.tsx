@@ -132,7 +132,11 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
 
   const onSubmit = async (formData: FormData) => {
     console.log('onSubmit', formData);
-    let userToUpdate: User = { ...user };
+    const { isImageUpdated: _, ...newUserData } = formData;
+    let userToUpdate = {
+      profileImage: user.profileImage,
+      id: user.id,
+    };
 
     if (user?.id && user?.profileImage != null && image === undefined) {
       await deleteProfileImageAsync(user?.id);
@@ -159,7 +163,7 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
     if (user) {
       userToUpdate = {
         ...userToUpdate,
-        ...formData,
+        ...newUserData,
       };
       // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
       await updateProfileAsync(userToUpdate);

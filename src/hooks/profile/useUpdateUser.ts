@@ -6,7 +6,11 @@ import { updateUser } from '@/api/user';
 import { useUser } from '@/hooks/use-auth';
 import { UserWithId } from '@/types';
 
-export const useUpdateUser = () => {
+export const useUpdateUser = (
+  options: {
+    toastOnSuccess?: boolean;
+  } = { toastOnSuccess: true }
+) => {
   const [, setUser] = useUser();
 
   return useMutation({
@@ -14,9 +18,11 @@ export const useUpdateUser = () => {
       await updateUser(userToUpdate, userToUpdate.id),
     onSuccess: (user: AxiosResponse) => {
       setUser(user.data);
-      toast('Profile updated', {
-        description: 'Your changes were saved successfully.',
-      });
+      if (options.toastOnSuccess) {
+        toast('Profile updated', {
+          description: 'Your changes were saved successfully.',
+        });
+      }
     },
     onError: (error: unknown) => {
       const errorMessage =

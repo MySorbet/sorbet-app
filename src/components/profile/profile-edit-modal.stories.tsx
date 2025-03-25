@@ -32,6 +32,7 @@ const mockData = {
     city: 'New York',
     tags: ['JavaScript', 'React', 'Node.js'],
     profileImage: 'https://example.com/profile-image.jpg',
+    hasClaimedHandle: false,
   },
 };
 

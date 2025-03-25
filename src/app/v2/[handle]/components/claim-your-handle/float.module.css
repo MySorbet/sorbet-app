@@ -1,0 +1,72 @@
+@keyframes float {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(5px, -5px) rotate(0.5deg);
+  }
+
+  50% {
+    transform: translate(0px, -10px) rotate(-0.5deg);
+  }
+
+  75% {
+    transform: translate(-5px, -5px) rotate(0.25deg);
+  }
+
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+}
+
+.floatingWidget {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate {
+    animation: float 12s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .delay1 {
+    animation-delay: -3s;
+    animation-duration: 11.3s;
+  }
+
+  .delay2 {
+    animation-delay: -6s;
+    animation-duration: 12.7s;
+  }
+
+  .delay3 {
+    animation-delay: -9s;
+    animation-duration: 11.7s;
+  }
+
+  .delay4 {
+    animation-delay: -12s;
+    animation-duration: 12.4s;
+  }
+}
+
+/* Create variations with different delays and durations to prevent synchronization */
+.delay1 {
+  animation-delay: -3s;
+  animation-duration: 11.3s;
+}
+
+.delay2 {
+  animation-delay: -6s;
+  animation-duration: 12.7s;
+}
+
+.delay3 {
+  animation-delay: -9s;
+  animation-duration: 11.7s;
+}
+
+.delay4 {
+  animation-delay: -12s;
+  animation-duration: 12.4s;
+}

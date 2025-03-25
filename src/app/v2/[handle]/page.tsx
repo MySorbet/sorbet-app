@@ -7,6 +7,7 @@ import { getUserByHandle } from '@/api/user';
 import Page from '@/components/common/page';
 import { useAuth } from '@/hooks/use-auth';
 
+import { ClaimYourHandle } from './components/claim-your-handle/claim-your-handle';
 import { Profile } from './components/profile';
 import { WidgetProvider } from './components/widget/use-widget-context';
 
@@ -47,7 +48,10 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
           <div>This profile does not exist. Claim yours now</div>
         ) : (
           !isPending &&
-          freelancer && (
+          freelancer &&
+          (isMine && !user?.hasClaimedHandle ? (
+            <ClaimYourHandle />
+          ) : (
             <WidgetProvider userId={freelancer.id}>
               <Profile
                 user={freelancer}
@@ -55,7 +59,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
                 isLoggedIn={isLoggedIn}
               />
             </WidgetProvider>
-          )
+          ))
         )}
       </Page.Content>
     </Page.Main>

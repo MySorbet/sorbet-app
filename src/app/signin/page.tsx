@@ -3,7 +3,7 @@ import Page from '@/components/common/page';
 
 const SignInPage = () => {
   return (
-    <Page.Main className='items-center justify-center'>
+    <Page.Main className='h-full items-center justify-center'>
       {/* Note that we skip page content here */}
       <SigninContent />
     </Page.Main>

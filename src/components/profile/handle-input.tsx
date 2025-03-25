@@ -59,6 +59,7 @@ export const HandleInput = <T extends FieldValues>({
         onChange={(e) => handleChange(e)}
         {...props}
         className={className}
+        prefix='mysorbet.io/'
       />
       {error ? (
         <CircleAlert className='absolute right-4 top-3 h-4 w-4 text-[#D92D20]' />

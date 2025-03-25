@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className='relative flex items-center'>
         {prefix && (
-          <span className='text-sm text-muted-foreground bg-muted h-10 flex flex-col justify-center border border-input rounded-md rounded-r-none p-2 border-r-0'>
+          <span className='text-sm text-muted-foreground bg-muted h-10 flex flex-col justify-center border border-input rounded-md rounded-r-none py-2 px-3 border-r-0 font-medium'>
             {prefix}
           </span>
         )}

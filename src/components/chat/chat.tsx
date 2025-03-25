@@ -42,6 +42,7 @@ const fakeOffer: PrismaOfferType = {
     profileImage: '',
     tags: [],
     city: '',
+    hasClaimedHandle: false,
   },
   recipient: {
     id: 'freelancer456',
@@ -54,6 +55,7 @@ const fakeOffer: PrismaOfferType = {
     profileImage: '',
     tags: [],
     city: '',
+    hasClaimedHandle: false,
   },
   createdAt: '2024-03-20T12:00:00Z',
   updatedAt: '2024-03-20T12:00:00Z',
