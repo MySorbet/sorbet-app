@@ -31,8 +31,8 @@ export const ClaimYourHandleForm = () => {
       handle: data.handle, // this could be the same as the existing handle but that's fine
       hasClaimedHandle: true,
     });
-    // Force a full page refresh to get the latest user state (if we use RQ for user, we could just route here)
-    window.location.replace(`/v2/${data.handle}`);
+    // Force a full page refresh to get the latest user state (if we use RQ for user, we could just next router replace here)
+    window.location.replace(`/${data.handle}`);
   };
   return (
     <Form {...form}>

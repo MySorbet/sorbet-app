@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { AddWidgets } from './add-widgets';
 
 const meta = {
-  title: 'Widgets/AddWidgets',
+  title: 'Profile/deprecated/AddWidgets',
   component: AddWidgets,
   parameters: {
     layout: 'centered',

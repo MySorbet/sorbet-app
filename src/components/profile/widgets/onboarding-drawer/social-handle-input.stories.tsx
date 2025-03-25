@@ -22,7 +22,7 @@ import {
 
 const meta: Meta<typeof SocialHandleInput> = {
   component: SocialHandleInput,
-  title: 'Widgets/HandleInput',
+  title: 'Profile/deprecated/SocialHandleInput',
   parameters: {
     layout: 'centered',
   },

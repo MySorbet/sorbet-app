@@ -4,7 +4,7 @@ import { SocialIcon } from './social-icon';
 import { UrlTypes } from './url-util';
 
 const meta: Meta<typeof SocialIcon> = {
-  title: 'Profile/v2/WidgetIcon',
+  title: 'Profile/WidgetIcon',
   component: SocialIcon,
   parameters: {
     layout: 'centered',

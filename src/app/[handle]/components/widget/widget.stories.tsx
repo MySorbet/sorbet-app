@@ -28,7 +28,7 @@ const urls = {
 };
 
 const meta = {
-  title: 'Profile/v2/Widget',
+  title: 'Profile/Widget',
   component: Widget,
   parameters: {
     layout: 'centered',

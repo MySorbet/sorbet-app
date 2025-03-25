@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { ControlBar } from './control-bar';
 
 const meta = {
-  title: 'Profile/v2/ControlBar',
+  title: 'Profile/ControlBar',
   component: ControlBar,
   parameters: {
     layout: 'centered',

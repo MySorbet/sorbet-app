@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { WidgetIcon, WidgetTypesWithIcons } from './widget-icon';
 
 const meta: Meta<typeof WidgetIcon> = {
-  title: 'Widgets/WidgetIcon',
+  title: 'Profile/deprecated/WidgetIcon',
   component: WidgetIcon,
   parameters: {
     layout: 'centered',

@@ -12,7 +12,7 @@ import { ProfileDetails } from './profile-details';
 type Story = StoryObj<typeof ProfileDetails>;
 
 const meta = {
-  title: 'Profile/v2/ProfileDetails',
+  title: 'Profile/ProfileDetails',
   component: ProfileDetails,
   parameters: {
     layout: 'centered',

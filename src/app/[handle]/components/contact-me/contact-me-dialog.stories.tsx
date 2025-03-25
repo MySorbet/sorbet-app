@@ -9,7 +9,7 @@ import { ContactMeDialog } from './contact-me-dialog';
 type Story = StoryObj<typeof ContactMeDialog>;
 
 const meta = {
-  title: 'Profile/v2/ContactMeDialog',
+  title: 'Profile/ContactMeDialog',
   component: ContactMeDialog,
   parameters: {
     layout: 'centered',

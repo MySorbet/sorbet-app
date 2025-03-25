@@ -7,7 +7,7 @@ import ProfilePage from './page';
 type Story = StoryObj<typeof ProfilePage>;
 
 const meta = {
-  title: 'Profile/v2/Profile Page',
+  title: 'Profile/Profile Page',
   component: ProfilePage,
   parameters: {
     layout: 'fullscreen',

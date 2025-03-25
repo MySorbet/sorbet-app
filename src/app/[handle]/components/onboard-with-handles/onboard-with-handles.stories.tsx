@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { OnboardWithHandles } from './onboard-with-handles';
 
 const meta = {
-  title: 'Profile/v2/OnboardWithHandles',
+  title: 'Profile/OnboardWithHandles',
   component: OnboardWithHandles,
   parameters: {
     layout: 'centered',

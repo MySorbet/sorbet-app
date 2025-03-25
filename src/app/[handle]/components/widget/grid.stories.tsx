@@ -8,7 +8,7 @@ import { WidgetGrid } from './grid';
 import { useWidgets, WidgetProvider } from './use-widget-context';
 
 const meta = {
-  title: 'Profile/v2/WidgetGrid',
+  title: 'Profile/WidgetGrid',
   component: WidgetGrid,
   parameters: {
     layout: 'fullscreen',

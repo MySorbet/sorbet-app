@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 
 const meta = {
-  title: 'Profile/ProfileEditModal',
+  title: 'Profile/deprecated/ProfileEditModal',
   component: ProfileEditModal,
   parameters: {
     layout: 'centered',

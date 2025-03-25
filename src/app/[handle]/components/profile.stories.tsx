@@ -8,7 +8,7 @@ import { WidgetProvider } from './widget/use-widget-context';
 type Story = StoryObj<typeof Profile>;
 
 const meta = {
-  title: 'Profile/v2/Profile',
+  title: 'Profile/Profile',
   component: Profile,
   parameters: {
     layout: 'fullscreen',
