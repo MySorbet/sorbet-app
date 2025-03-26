@@ -1,4 +1,4 @@
-import { Coffee, Plug, Unplug, Wallet } from 'lucide-react';
+import { Coffee, Unplug, Wallet } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -29,75 +29,65 @@ export const Tip = ({ userId }: { userId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState(0);
 
-  return (
-    <div className='flex w-full flex-col gap-2'>
-      {!isOpen && (
-        <Button variant='secondary' onClick={() => setIsOpen(true)}>
-          <Coffee /> Tip USDC
+  return !isOpen ? (
+    <Button variant='secondary' onClick={() => setIsOpen(true)}>
+      <Coffee /> Tip USDC
+    </Button>
+  ) : (
+    <Card className='animate-in fade-in-0 slide-in-from-top-5 @container flex w-full flex-col gap-2 p-4 duration-300'>
+      {wallet ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className='w-fit'>
+              <Badge
+                variant='success'
+                className='w-fit select-none py-1'
+                onClick={() => {
+                  wallet.disconnect();
+                }}
+              >
+                <Wallet className='mr-1 size-3 shrink-0' />
+                {formatWalletAddress(wallet?.address)}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>Disconnect this wallet</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className='w-fit'>
+              <Badge
+                variant='secondary'
+                className='w-fit select-none py-1'
+                onClick={connectWallet}
+              >
+                <Unplug className='mr-1 size-3 shrink-0' />
+                Connect
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>Connect a wallet to tip</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+      <div className='@2xs:flex-row flex w-full flex-col gap-2'>
+        <Input
+          type='number'
+          placeholder='Amount'
+          value={String(amount)}
+          onChange={(e) => setAmount(Number(e.target.value))}
+          className='no-spin-buttons w-24'
+          disabled={!wallet}
+        />
+        <Button
+          variant='secondary'
+          className='flex-1'
+          onClick={send}
+          disabled={!wallet || amount === 0}
+        >
+          <Coffee /> {`Tip ${amount || ''} USDC`}
         </Button>
-      )}
-      {isOpen && (
-        <Card className='animate-in fade-in-0 slide-in-from-top-5 flex w-full flex-col gap-2 p-4 duration-300'>
-          {wallet && (
-            <div className='flex items-center justify-between gap-2'>
-              <Badge variant='success' className='w-fit'>
-                <Wallet className='mr-1 size-3' />
-                Connected to {formatWalletAddress(wallet?.address)}
-              </Badge>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size='icon'
-                      variant='ghost'
-                      onClick={() => wallet?.disconnect()}
-                    >
-                      <Unplug />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Disconnect this wallet</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          )}
-          {!wallet && (
-            <div className='flex w-full items-center justify-between gap-2'>
-              <Badge variant='secondary' className='w-fit'>
-                <Unplug className='mr-1 size-3' />
-                Not connected
-              </Badge>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button size='icon' variant='ghost' onClick={connectWallet}>
-                      <Plug />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Connect a wallet</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          )}
-          <div className='flex w-full gap-2'>
-            <Input
-              type='number'
-              placeholder='Amount'
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
-              className='no-spin-buttons w-24'
-              disabled={!wallet}
-            />
-            <Button
-              variant='secondary'
-              className='flex-1'
-              onClick={send}
-              disabled={!wallet || amount === 0}
-            >
-              <Coffee /> {`Tip ${amount} USDC`}
-            </Button>
-          </div>
-        </Card>
-      )}
-    </div>
+      </div>
+    </Card>
   );
 };
