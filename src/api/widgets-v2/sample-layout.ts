@@ -1,6 +1,9 @@
 import { Layout } from 'react-grid-layout';
 
-import { Breakpoint, WidgetData } from './grid-config';
+import {
+  Breakpoint,
+  WidgetData,
+} from '@/app/[handle]/components/widget/grid-config';
 
 export const sampleWidgetsMap: Record<string, WidgetData> = {
   a: { id: 'a', title: 'Widget A' },
