@@ -9,7 +9,11 @@ import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 
 import { Tip } from './tip';
 
-/** Profile details section rendered as a column on the left of the profile page */
+/**
+ * Profile details section rendered as a column on the left of the profile page
+ *
+ * To render a mobile layout, squeeze this component width smaller than 332px.
+ */
 export const ProfileDetails = ({
   user,
   isMine,
@@ -31,8 +35,13 @@ export const ProfileDetails = ({
   const showTags = Boolean(user.tags || user.city);
 
   return (
-    <div className={cn('flex flex-col gap-6', className)}>
-      <Avatar className='size-32'>
+    <div
+      className={cn(
+        '@container relative flex min-w-56 flex-col gap-6',
+        className
+      )}
+    >
+      <Avatar className='@[332px]:size-32 size-20'>
         <AvatarImage src={user.profileImage} alt='new profile image' />
         <AvatarFallback>
           <AvatarFallbackSVG className='size-full' />
@@ -58,7 +67,9 @@ export const ProfileDetails = ({
         </div>
       )}
       {isMine ? (
-        <MyProfileButtons onEdit={onEdit} />
+        <div className='@[332px]:static absolute right-0 top-0'>
+          <MyProfileButtons onEdit={onEdit} />
+        </div>
       ) : (
         <PublicProfileButtons userId={user.id} onContactMe={onContactMe} />
       )}
@@ -75,7 +86,7 @@ const PublicProfileButtons = ({
   onContactMe?: () => void;
 }) => {
   return (
-    <div className='flex flex-col gap-3'>
+    <div className='@[332px]:flex-col flex gap-3'>
       <Button variant='sorbet' onClick={onContactMe}>
         <Mail />
         Contact me
