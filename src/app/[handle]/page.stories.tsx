@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { mockUserByHandleHandler } from '@/api/user/msw-handlers';
-import { mockGetWidgetsHandler } from '@/api/widgets-v2/msw-handlers';
+import { mockUserByHandleHandler } from '@/api/user';
+import { mockGetWidgetsHandler } from '@/api/widgets-v2';
 
 import ProfilePage from './page';
 

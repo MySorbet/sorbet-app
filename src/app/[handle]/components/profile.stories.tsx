@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { mockUser } from '@/api/user';
+import { mockUserByHandleHandler } from '@/api/user';
+import { mockGetWidgetsHandler } from '@/api/widgets-v2';
 
 import { Profile } from './profile';
 import { WidgetProvider } from './widget/use-widget-context';
-
 type Story = StoryObj<typeof Profile>;
 
 const meta = {
@@ -12,6 +13,7 @@ const meta = {
   component: Profile,
   parameters: {
     layout: 'fullscreen',
+    msw: [mockGetWidgetsHandler, mockUserByHandleHandler],
   },
   decorators: [
     (Story) => (
