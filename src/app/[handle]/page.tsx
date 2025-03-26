@@ -41,7 +41,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
 
   return (
     // We use svh and full here to make sure the profile takes up exactly the viewport. This way, widgets handle scroll themselves.
-    <Page.Main className='size-full px-6'>
+    <Page.Main className='size-full'>
       {isError ? (
         <div>This profile does not exist. Claim yours now</div>
       ) : (

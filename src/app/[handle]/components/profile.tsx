@@ -8,7 +8,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 // TODO: Move to ./components
 import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 
@@ -87,12 +86,8 @@ export const Profile = ({
             )}
           </div>
         </div>
-        {/* The right side of the profile. Should handle scroll itself */}
-        {/* Container queries set this up to be responsive to the flex change on at 3xl. TODO: Still something isn't quite right */}
-        <ScrollArea
-          className='@3xl:w-auto @3xl:h-full w-full flex-1'
-          type='scroll'
-        >
+        {/* The right side of the profile. Should handle scroll itself (except on mobile, where the whole page will scroll*/}
+        <div className='@3xl:w-auto @3xl:h-full @3xl:overflow-y-auto w-full flex-1'>
           {showOnboarding ? (
             <div className='flex h-full w-full items-center justify-center'>
               <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
@@ -108,7 +103,7 @@ export const Profile = ({
               </ErrorBoundary>
             </motion.div>
           )}
-        </ScrollArea>
+        </div>
 
         {/* Elements which ignore the layout of this container */}
         <ContactMeDialog
