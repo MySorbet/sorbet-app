@@ -33,14 +33,7 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  decorators: [
-    withSizeContainer,
-    (Story: StoryFn) => (
-      <div className='h-fit'>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [withSizeContainer],
 } satisfies Meta<typeof Widget>;
 
 export default meta;
@@ -153,7 +146,7 @@ export const AllFirstClassWidgets: Story = {
   },
   render: () => {
     return (
-      <div className='flex w-full flex-wrap gap-4'>
+      <div className='absolute left-0 top-0 flex h-screen w-screen flex-wrap gap-4 p-4'>
         {UrlTypes.map((type) => (
           <div key={type} className='size-[175px]'>
             <Widget
