@@ -4,13 +4,12 @@ export const mockUserMinimal: MinimalUser = {
   id: '1',
   privyId: 'mock-privy-id',
   handle: 'mock-user',
-  hasClaimedHandle: false,
+  hasClaimedHandle: true,
 };
 
 export const mockUser: User = {
-  id: '1',
-  privyId: 'mock-privy-id',
-  handle: 'mock-user',
+  ...mockUserMinimal,
+
   firstName: 'Mock',
   lastName: 'User',
   email: 'mock@example.com',
@@ -18,7 +17,6 @@ export const mockUser: User = {
   profileImage: '',
   tags: ['tag1', 'tag2', 'tag3'],
   city: 'New York',
-  hasClaimedHandle: false,
 };
 
 export const mockUserWithProfileImage = {

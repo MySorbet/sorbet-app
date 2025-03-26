@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { mockUser } from '@/api/user/mock-user';
+import { mockUserByHandleHandler } from '@/api/user/msw-handlers';
+import { mockGetWidgetsHandler } from '@/api/widgets-v2/msw-handlers';
 
 import ProfilePage from './page';
 
@@ -12,10 +13,12 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
     msw: {
-      // handlers: [mockUserByHandleHandler], // Uncomment to use mock data. As is, this will hit the local api
+      handlers: [mockUserByHandleHandler, mockGetWidgetsHandler], // Uncomment to use mock data. As is, this will hit the local api
     },
-    localStorage: {
-      user: mockUser,
+  },
+  args: {
+    params: {
+      handle: 'mock-user',
     },
   },
   decorators: [
@@ -29,10 +32,4 @@ const meta = {
 
 export default meta;
 
-export const Default: Story = {
-  args: {
-    params: {
-      handle: 'mock-user',
-    },
-  },
-};
+export const Default: Story = {};

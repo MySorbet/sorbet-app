@@ -2,28 +2,10 @@ import { delay, http, HttpResponse } from 'msw';
 
 import { env } from '@/lib/env';
 
-import {
-  type ApiWidget,
-  type CreateWidgetDto,
-  type UpdateWidgetV2Dto,
-} from './types';
+import { mockWidgets, sampleWidget } from './mock-widgets';
+import { type CreateWidgetDto, type UpdateWidgetV2Dto } from './types';
 
 // 👇 These handlers were AI generated and have not been tested or used yet
-
-const sampleWidget: ApiWidget = {
-  id: '123',
-  title: 'Sample Widget',
-  iconUrl: 'https://placehold.co/32/orange/white',
-  contentUrl: 'https://placehold.co/400/orange/white',
-  href: 'https://example.com',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  userId: '1',
-  layouts: [
-    { id: '123', x: 0, y: 0, w: 2, h: 2, breakpoint: 'sm' },
-    { id: '123', x: 0, y: 0, w: 4, h: 4, breakpoint: 'lg' },
-  ],
-};
 
 /**
  * Mock the data from the `/v2/widgets` POST endpoint for creating widgets
@@ -73,7 +55,7 @@ export const mockGetWidgetsHandler = http.get(
   `${env.NEXT_PUBLIC_SORBET_API_URL}/v2/widgets`,
   async () => {
     await delay();
-    return HttpResponse.json([sampleWidget]);
+    return HttpResponse.json(mockWidgets);
   }
 );
 
