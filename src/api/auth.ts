@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { env } from '@/lib/env';
-import { User } from '@/types';
+import { MinimalUser } from '@/types';
 
 // Should match the SignUpWithPrivyIdDto in the api
 type SignUpWithPrivyIdDto = {
@@ -12,7 +12,7 @@ type SignUpWithPrivyIdDto = {
 /** Create a new sorbet user with a privy id (after user signs up with privy) */
 export const signUpWithPrivyId = async (body: SignUpWithPrivyIdDto) => {
   try {
-    const res = await axios.post<Pick<User, 'id' | 'privyId' | 'handle'>>(
+    const res = await axios.post<MinimalUser>(
       `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/privy`,
       body
     );

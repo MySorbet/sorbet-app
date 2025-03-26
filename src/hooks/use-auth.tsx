@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 import { signUpWithPrivyId } from '@/api/auth';
 import { getUserByPrivyId } from '@/api/user';
-import { User, UserWithId } from '@/types';
+import { MinimalUser, User } from '@/types';
 
 import { useLocalStorage } from './use-local-storage';
 
@@ -33,7 +33,7 @@ type LoginResultSuccess = {
 type LoginResult = LoginResultFailed | LoginResultSuccess;
 
 interface AuthContextType {
-  user: UserWithId | null;
+  user: MinimalUser | null;
   logout: () => void;
   login: ReturnType<typeof useLogin>['login'];
   loading: boolean;
@@ -46,7 +46,7 @@ type AuthProviderProps = {
   value?: AuthContextType /* The value to pass to the auth context. Usually you won't use this, but can be helpful for mocking in tests and storybook */;
 };
 
-export const useUser = () => useLocalStorage<UserWithId | null>('user', null);
+export const useUser = () => useLocalStorage<MinimalUser | null>('user', null);
 
 export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
