@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import React, { createContext, useContext, useReducer } from 'react';
 import { type Layout } from 'react-grid-layout';
 import { toast } from 'sonner';
@@ -246,12 +246,12 @@ export function WidgetProvider({
     queryFn: () => widgetsV2Api.getByUserId(userId),
     staleTime: Infinity,
     refetchOnWindowFocus: false,
+    retry: (_, error) => !(isAxiosError(error) && error.status === 404),
   });
 
   // Transform and dispatch data when it arrives
   React.useEffect(() => {
     if (!widgets) return;
-    console.log('setting initial widgets', widgets);
     dispatch({
       type: 'SET_INITIAL_WIDGETS',
       payload: fromApi(widgets),
