@@ -17,6 +17,7 @@ type WidgetProps = Omit<WidgetData, 'id'> & {
   size: WidgetSize;
   editable?: boolean;
   onUpdate?: (data: Partial<WidgetData>) => void;
+  showPlaceholder?: boolean;
 };
 
 /**
@@ -39,6 +40,7 @@ export const Widget = ({
   size = 'A',
   editable = false,
   onUpdate,
+  showPlaceholder = true,
 }: WidgetProps) => {
   if (type === 'image') {
     return (
@@ -124,13 +126,15 @@ export const Widget = ({
                 )}
               />
             ) : (
-              <ContentPlaceholder
-                className={cn(
-                  size === 'A' && 'aspect-[1200/630] w-full',
-                  size === 'C' && 'aspect-square w-full',
-                  size === 'D' && 'aspect-square h-full'
-                )}
-              />
+              showPlaceholder && (
+                <ContentPlaceholder
+                  className={cn(
+                    size === 'A' && 'aspect-[1200/630] w-full',
+                    size === 'C' && 'aspect-square w-full',
+                    size === 'D' && 'aspect-square h-full'
+                  )}
+                />
+              )
             )}
           </>
         )}

@@ -103,6 +103,7 @@ export const Public: Story = {
   args: {
     ...Default.args,
     editable: false,
+    showPlaceholder: false,
   },
 };
 

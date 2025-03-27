@@ -97,6 +97,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                   {...widget}
                   size={s}
                   editable={!immutable}
+                  showPlaceholder={!immutable}
                   onUpdate={(data) => updateWidget(widget.id, data)}
                 />
               </RGLHandle>
