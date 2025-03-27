@@ -59,26 +59,24 @@ export const Dashboard = () => {
         router.push('/invoices');
         break;
       case 'views':
-        unlessMobile(() => router.push(`/${user?.handle}`));
+        router.push(`/${user?.handle}`);
         break;
 
       // Tasks
       case 'verified':
-        unlessMobile(() => router.push('/verify'));
+        router.push('/verify');
         break;
       case 'invoice':
         unlessMobile(() => router.push('/invoices/create'));
         break;
       case 'profile':
-        unlessMobile(() => setIsProfileEditOpen(true));
+        setIsProfileEditOpen(true);
         break;
       case 'widget':
-        unlessMobile(() => router.push(`/${user?.handle}?drawerOpen=true`));
+        router.push(`/${user?.handle}`);
         break;
       case 'share':
-        unlessMobile(() =>
-          router.push(`/${user?.handle}?shareDialogOpen=true`)
-        );
+        router.push(`/${user?.handle}?shareDialogOpen=true`);
         break;
       case 'payment':
         router.push('/wallet');
@@ -91,7 +89,7 @@ export const Dashboard = () => {
   };
 
   const handleClickMyProfile = () => {
-    unlessMobile(() => router.push(`/${user?.handle}`));
+    router.push(`/${user?.handle}`);
   };
 
   const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);

@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect } from 'react';
+
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import {
   Credenza,
@@ -8,6 +12,7 @@ import {
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
 import { Button } from '@/components/ui/button';
+import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 
 import { SorbetQRCode } from './sorbet-qr-code';
@@ -29,6 +34,12 @@ export const ShareDialog = ({
 
   const prettyUrl = `${hostname}/${handle}`;
   const fullUrl = `${origin}/${handle}`;
+
+  // If the share dialog opens, remember in local storage
+  const [, setHasShared] = useHasShared();
+  useEffect(() => {
+    open && setHasShared(true);
+  }, [open, setHasShared]);
 
   return (
     <Credenza open={open} onOpenChange={setOpen}>

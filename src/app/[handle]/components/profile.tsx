@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { parseAsBoolean } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -31,8 +33,12 @@ export const Profile = ({
   isLoggedIn?: boolean;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isContactMeDialogOpen, setIsContactMeDialogOpen] = useState(false);
+
+  const [isShareDialogOpen, setIsShareDialogOpen] = useQueryState(
+    'shareDialogOpen',
+    parseAsBoolean.withDefault(false)
+  );
 
   const { addWidget, addImage, widgets, isLoading } = useWidgets();
   const showOnboarding =
