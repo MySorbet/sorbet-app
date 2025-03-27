@@ -143,6 +143,11 @@ export const getUrlType = (url: string): UrlType | undefined => {
     return 'Zora';
   }
 
+  // Discord
+  if (platform === 'discord' || platform === 'discordapp') {
+    return 'Discord';
+  }
+
   // If you get here, it's not a platform we explicitly support
   return undefined;
 };
@@ -177,6 +182,7 @@ export const UrlTypes = [
   'Spotify',
   'Farcaster',
   'Zora',
+  'Discord',
 ] as const;
 
 export type UrlType = (typeof UrlTypes)[number];

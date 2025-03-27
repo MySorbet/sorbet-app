@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import behance from '~/svg/social/behance.svg';
+import discord from '~/svg/social/discord.svg';
 import dribbble from '~/svg/social/dribbble.svg';
 import farcaster from '~/svg/social/farcaster.svg';
 import figma from '~/svg/social/figma.svg';
@@ -68,4 +69,5 @@ const iconByUrlType: Record<
   Spotify: spotify,
   Farcaster: farcaster,
   Zora: zora, // TODO: Zora icon is just an embedded image, perhaps we should just use an image.
+  Discord: discord,
 };

@@ -137,6 +137,7 @@ const urlsByType: Record<UrlType, string> = {
     'https://open.spotify.com/album/4OlJgjlpzzUDYqdhf3vVdD?si=o3udjAIHTZGZALcuSWNwbA',
   Farcaster: 'https://warpcast.com/mysorbet',
   Zora: 'https://zora.co/collect/0x1234567890123456789012345678901234567890',
+  Discord: 'http://discordapp.com/users/918450985624559626',
 } as const;
 
 // Demonstrate that widgets render first class icons if they have a supported url
