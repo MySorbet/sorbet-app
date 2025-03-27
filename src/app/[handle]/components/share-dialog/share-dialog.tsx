@@ -11,6 +11,7 @@ import {
   CredenzaBody,
   CredenzaContent,
   CredenzaDescription,
+  CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
@@ -76,16 +77,19 @@ export const ShareDialog = ({
           />
 
           <SorbetQRCode url={fullUrl} handle={handle} />
+        </CredenzaBody>
+        <CredenzaFooter>
           <Button variant='sorbet' asChild>
             <a
               href={`https://www.x.com/intent/tweet?text=I%20just%20created%20my%20Sorbet%20profile%20🍧!%20Check%20it%20out%20here:&url=${prettyUrl}/`}
               target='_blank'
               rel='noopener noreferrer'
+              className='w-full'
             >
               Share on X
             </a>
           </Button>
-        </CredenzaBody>
+        </CredenzaFooter>
       </CredenzaContent>
     </Credenza>
   );
