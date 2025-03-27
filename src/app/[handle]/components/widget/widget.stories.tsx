@@ -44,6 +44,7 @@ export const Default: Story = {
     title: 'Widget',
     href: 'https://www.google.com',
     size: 'A',
+    editable: true,
   },
 };
 
@@ -95,6 +96,13 @@ export const Loading: Story = {
   args: {
     ...Default.args,
     loading: true,
+  },
+};
+
+export const Public: Story = {
+  args: {
+    ...Default.args,
+    editable: false,
   },
 };
 

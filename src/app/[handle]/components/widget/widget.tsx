@@ -2,6 +2,7 @@ import { Link } from 'lucide-react';
 import React from 'react';
 import { parseURL } from 'ufo';
 
+import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -10,6 +11,10 @@ import { WidgetDataForDisplay } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
+
+type WidgetProps = WidgetDataForDisplay & {
+  editable?: boolean;
+};
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
@@ -28,7 +33,8 @@ export const Widget = ({
   loading = false,
   type,
   size = 'A',
-}: WidgetDataForDisplay) => {
+  editable = false,
+}: WidgetProps) => {
   if (type === 'image') {
     return (
       <ImageWidget
@@ -41,15 +47,15 @@ export const Widget = ({
 
   const urlType = href && getUrlType(href);
 
+  const fallbackTitle = title || parseURL(href).host || href;
+
   return (
     <a
       className={cn(
         'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         'size-full max-h-[390px] max-w-[390px]',
-        // Just a nice little touch when a widget is added
-        // We would want to prevent this on first load, but maybe we don't even care if we are going to fade in the whole grid to hide the rgl transition?
-        'animate-in fade-in-0 zoom-in-0 duration-300'
+        'animate-in fade-in-0 zoom-in-0 duration-300' // Always have an enter animation. We hide the first one with a full grid fade anyway.
       )}
       href={href}
       target='_blank'
@@ -65,8 +71,17 @@ export const Widget = ({
         ) : (
           <Icon src={iconUrl} />
         )}
-        <CardTitle className='line-clamp-3 break-words text-sm font-normal'>
-          {title || parseURL(href).host || href}
+        <CardTitle className={cn('text-sm font-normal')}>
+          <InlineEdit
+            value={fallbackTitle || ''}
+            editable={editable}
+            placeholder={fallbackTitle || ''}
+            className={cn(
+              'line-clamp-3 break-words',
+              editable &&
+                'hover:bg-muted -ml-2 rounded-sm px-2 py-1 transition-colors duration-200'
+            )}
+          />
         </CardTitle>
       </CardHeader>
       {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
