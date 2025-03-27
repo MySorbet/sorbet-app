@@ -53,13 +53,8 @@ export type WidgetData = {
   iconUrl?: string;
   id: string;
   title?: string;
+  userTitle?: string | null; // Null explicitly means no value
   type?: 'image';
-};
-
-// This is widget data augmented with display metadata.
-export type WidgetDataForDisplay = Omit<WidgetData, 'id'> & {
-  loading?: boolean;
-  size: WidgetSize;
 };
 
 // 👇 This is size config and calculations for the grid.

@@ -2,14 +2,23 @@ import { Link } from 'lucide-react';
 import React from 'react';
 import { parseURL } from 'ufo';
 
+import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-import { WidgetDataForDisplay } from './grid-config';
+import { WidgetData, WidgetSize } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
+
+type WidgetProps = Omit<WidgetData, 'id'> & {
+  loading?: boolean;
+  size: WidgetSize;
+  editable?: boolean;
+  onUpdate?: (data: Partial<WidgetData>) => void;
+  showPlaceholder?: boolean;
+};
 
 /**
  * The most basic component to display a widget as an anchor tag styled as a card.
@@ -23,12 +32,16 @@ import { getUrlType } from './url-util';
 export const Widget = ({
   iconUrl,
   title,
+  userTitle,
   contentUrl,
   href,
   loading = false,
   type,
   size = 'A',
-}: WidgetDataForDisplay) => {
+  editable = false,
+  onUpdate,
+  showPlaceholder = true,
+}: WidgetProps) => {
   if (type === 'image') {
     return (
       <ImageWidget
@@ -41,15 +54,17 @@ export const Widget = ({
 
   const urlType = href && getUrlType(href);
 
+  // This is the title of the widget if the user has not explicitly set a title.
+  // If the user has set userTitle, it will be preferred. If they clear that, we will fall back to this.
+  const fallbackTitle = title || parseURL(href).host || href || '';
+
   return (
     <a
       className={cn(
         'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         'size-full max-h-[390px] max-w-[390px]',
-        // Just a nice little touch when a widget is added
-        // We would want to prevent this on first load, but maybe we don't even care if we are going to fade in the whole grid to hide the rgl transition?
-        'animate-in fade-in-0 zoom-in-0 duration-300'
+        'animate-in fade-in-0 zoom-in-0 duration-300' // Always have an enter animation. We hide the first one with a full grid fade anyway.
       )}
       href={href}
       target='_blank'
@@ -57,7 +72,7 @@ export const Widget = ({
       draggable={false} // disable HTML5 dnd
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
-      <CardHeader className={cn('pb-10', size === 'D' && 'max-w-[50%]')}>
+      <CardHeader className={cn('space-y-1', size === 'D' && 'max-w-[60%]')}>
         {urlType ? (
           <SocialIcon type={urlType} />
         ) : loading ? (
@@ -65,15 +80,27 @@ export const Widget = ({
         ) : (
           <Icon src={iconUrl} />
         )}
-        <CardTitle className='line-clamp-3 break-words text-sm font-normal'>
-          {title || parseURL(href).host || href}
+        <CardTitle className={cn('text-sm font-normal')}>
+          <InlineEdit
+            value={userTitle || fallbackTitle}
+            editable={editable}
+            onChange={(value) => {
+              onUpdate?.({ userTitle: value === '' ? null : value }); // If the user clears the title, set it to null to explicitly clear it
+            }}
+            placeholder={fallbackTitle}
+            className={cn(
+              'line-clamp-3 break-words',
+              editable &&
+                'hover:bg-muted -ml-2 rounded-sm px-2 py-1 transition-colors duration-200'
+            )}
+          />
         </CardTitle>
       </CardHeader>
       {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
       <CardContent
         className={cn(
           'flex flex-1 items-end justify-end',
-          size === 'D' && 'pt-6'
+          size === 'D' && 'pl-0 pt-6'
         )}
       >
         {size !== 'B' && (
@@ -99,13 +126,15 @@ export const Widget = ({
                 )}
               />
             ) : (
-              <ContentPlaceholder
-                className={cn(
-                  size === 'A' && 'aspect-[1200/630] w-full',
-                  size === 'C' && 'aspect-square w-full',
-                  size === 'D' && 'aspect-square h-full'
-                )}
-              />
+              showPlaceholder && (
+                <ContentPlaceholder
+                  className={cn(
+                    size === 'A' && 'aspect-[1200/630] w-full',
+                    size === 'C' && 'aspect-square w-full',
+                    size === 'D' && 'aspect-square h-full'
+                  )}
+                />
+              )
             )}
           </>
         )}
