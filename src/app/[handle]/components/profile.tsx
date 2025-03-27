@@ -60,7 +60,7 @@ export const Profile = ({
 
   return (
     <div className='@container size-full'>
-      <div className='@3xl:flex-row flex size-full flex-col items-center'>
+      <div className='@3xl:flex-row @3xl:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'>
         {/* Left part of the profile. desktop: full height and long enough to render profile details in desktop mode. */}
         {/* mobile: auto height and short enough to render profile details in mobile mode. */}
         <div className='@3xl:h-full @3xl:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6'>
@@ -92,7 +92,7 @@ export const Profile = ({
           </div>
         </div>
         {/* The right side of the profile. Should handle scroll itself (except on mobile, where the whole page will scroll*/}
-        <div className='@3xl:w-auto @3xl:h-full @3xl:overflow-y-auto w-full flex-1'>
+        <div className='@3xl:w-auto @3xl:h-full @3xl:overflow-y-auto @3xl:flex-1 w-full'>
           {showOnboarding ? (
             <div className='flex h-full w-full items-center justify-center'>
               <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
