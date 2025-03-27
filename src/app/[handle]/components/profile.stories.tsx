@@ -1,8 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { mockUser } from '@/api/user';
-import { mockUserByHandleHandler } from '@/api/user';
-import { mockGetWidgetsHandler } from '@/api/widgets-v2';
+import { mockUser, mockUserByHandleHandler } from '@/api/user';
+import {
+  mockGetWidgetsHandler,
+  mockUpdateWidgetHandler,
+} from '@/api/widgets-v2';
 
 import { Profile } from './profile';
 import { WidgetProvider } from './widget/use-widget-context';
@@ -13,7 +15,14 @@ const meta = {
   component: Profile,
   parameters: {
     layout: 'fullscreen',
-    msw: [mockGetWidgetsHandler, mockUserByHandleHandler],
+    // Uncomment to use mock data. As is, this will hit the local api
+    msw: {
+      handlers: [
+        mockUserByHandleHandler,
+        mockGetWidgetsHandler,
+        mockUpdateWidgetHandler,
+      ],
+    },
   },
   decorators: [
     (Story) => (
