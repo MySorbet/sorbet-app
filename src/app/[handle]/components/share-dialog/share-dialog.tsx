@@ -61,8 +61,13 @@ export const ShareDialog = ({
           <Input
             value={handle}
             prefix={`${hostname}/`}
+            aria-label='Copy profile link'
             suffix={
-              <CopyIconButton ref={copyButtonRef} stringToCopy={fullUrl} />
+              <CopyIconButton
+                ref={copyButtonRef}
+                stringToCopy={fullUrl}
+                aria-label='Copy profile link'
+              />
             }
             readOnly
             rootClassName='group cursor-pointer'
