@@ -67,7 +67,12 @@ export const Profile = ({
       <div className='@3xl:flex-row @3xl:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'>
         {/* Left part of the profile. desktop: full height and long enough to render profile details in desktop mode. */}
         {/* mobile: auto height and short enough to render profile details in mobile mode. */}
-        <div className='@3xl:h-full @3xl:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6'>
+        <div
+          className={cn(
+            '@3xl:h-full @3xl:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6',
+            'animate-in fade-in-0 duration-500'
+          )}
+        >
           <ProfileDetails
             user={user}
             isMine={isMine}
