@@ -1,8 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { CopyButton } from '@/components/common/copy-button/copy-button';
+import {
+  type CopyIconButtonHandle,
+  CopyIconButton,
+} from '@/components/common/copy-button/copy-icon-button';
 import {
   Credenza,
   CredenzaBody,
@@ -12,6 +15,7 @@ import {
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -41,6 +45,8 @@ export const ShareDialog = ({
     open && setHasShared(true);
   }, [open, setHasShared]);
 
+  const copyButtonRef = useRef<CopyIconButtonHandle>(null);
+
   return (
     <Credenza open={open} onOpenChange={setOpen}>
       <CredenzaContent>
@@ -52,13 +58,18 @@ export const ShareDialog = ({
           </CredenzaDescription>
         </CredenzaHeader>
         <CredenzaBody className='flex flex-col gap-4'>
-          {/* TODO: Use an improved readonly handle input for this */}
-          <CopyButton
-            className='w-full flex-row-reverse justify-between'
-            stringToCopy={fullUrl}
-          >
-            {prettyUrl}
-          </CopyButton>
+          <Input
+            value={handle}
+            prefix={`${hostname}/`}
+            suffix={
+              <CopyIconButton ref={copyButtonRef} stringToCopy={fullUrl} />
+            }
+            readOnly
+            rootClassName='group cursor-pointer'
+            className='hover:bg-muted cursor-pointer focus-visible:ring-0 focus-visible:ring-offset-0'
+            onClick={() => copyButtonRef.current?.copy()}
+          />
+
           <SorbetQRCode url={fullUrl} handle={handle} />
           <Button variant='sorbet' asChild>
             <a

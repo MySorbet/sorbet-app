@@ -1,5 +1,10 @@
 import { CircleCheck, Copy } from 'lucide-react';
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 
 import { Button, ButtonProps } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -15,11 +20,18 @@ interface CopyIconButtonProps extends ButtonProps {
   disabled?: boolean /** If true, the button will not be interactive */;
 }
 
+export interface CopyIconButtonHandle {
+  copy: () => void /** Programmatically trigger the copy action */;
+}
+
 /**
  * Copy icon button that shows a checkmark for 1.5 seconds after copying.
+ *
+ * You can use a ref to programmatically trigger the copy action if this is part of a larger component.
+ * Responds to group hover.
  */
 export const CopyIconButton = forwardRef<
-  HTMLButtonElement,
+  CopyIconButtonHandle,
   CopyIconButtonProps
 >(
   (
@@ -46,6 +58,10 @@ export const CopyIconButton = forwardRef<
       onClick?.(e);
     };
 
+    useImperativeHandle(ref, () => ({
+      copy: handleCopy,
+    }));
+
     const isFirstRender = useRef(true);
     useEffect(() => {
       isFirstRender.current = false;
@@ -53,9 +69,11 @@ export const CopyIconButton = forwardRef<
 
     return (
       <Button
-        ref={ref}
         variant='link'
-        className={cn('h-fit p-0 hover:scale-105', className)}
+        className={cn(
+          'h-fit p-0 transition-transform hover:scale-110 group-hover:scale-110',
+          className
+        )}
         onClick={handleClick}
         disabled={isCopied || disabled}
         {...props}
@@ -80,3 +98,5 @@ export const CopyIconButton = forwardRef<
     );
   }
 );
+
+CopyIconButton.displayName = 'CopyIconButton';
