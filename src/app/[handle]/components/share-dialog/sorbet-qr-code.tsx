@@ -2,6 +2,7 @@ import { Download } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { motion } from 'framer-motion';
 
 import { useSorbetQRCode } from '../../hooks/use-sorbet-qr-code';
 
@@ -22,7 +23,13 @@ export const SorbetQRCode = ({
       {isLoadingQRCode ? (
         <Skeleton className='size-48' />
       ) : (
-        <div ref={qrCodeRef} />
+        // Use a motion div to animate the QR code in (since the loading skeleton above never renders (since the hook is faulty))
+        <motion.div
+          ref={qrCodeRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        />
       )}
       <Button
         variant='secondary'
