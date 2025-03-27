@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import { getUserByHandle } from '@/api/user';
 import Page from '@/components/common/page';
-import { Profile } from '@/components/profile';
+import { Profile } from '@/components/profile/profile';
 import { useAuth } from '@/hooks/use-auth';
 
 import { ClaimYourProfile } from './claim-your-profile';

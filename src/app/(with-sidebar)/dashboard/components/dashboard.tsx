@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
+import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
-import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';

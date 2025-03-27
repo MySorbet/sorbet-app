@@ -5,14 +5,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-// TODO: Move to ./components
-import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 
 import { ContactMeDialog } from './contact-me/contact-me-dialog';
 import { ControlBar } from './control-bar/control-bar';
+import { EditProfileSheet } from './edit-profile-sheet/edit-profile-sheet';
 import { OnboardWithHandles } from './onboard-with-handles/onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 import { ShareDialog } from './share-dialog/share-dialog';
