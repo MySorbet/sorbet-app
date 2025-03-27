@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 
@@ -58,6 +59,9 @@ export const Profile = ({
 
   useHandlePaste(addWidget, isMine && !isLoading);
 
+  // This hook fires at 768px, aligning perfectly with our @3xl breakpoint below
+  const isMobile = useIsMobile();
+
   return (
     <div className='@container size-full'>
       <div className='@3xl:flex-row @3xl:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'>
@@ -104,7 +108,7 @@ export const Profile = ({
               transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
             >
               <ErrorBoundary FallbackComponent={GridErrorFallback}>
-                <WidgetGrid immutable={!isMine} />
+                <WidgetGrid immutable={!isMine || isMobile} />
               </ErrorBoundary>
             </motion.div>
           )}
@@ -146,6 +150,7 @@ export const Profile = ({
                     onAddImage={handleAddImage}
                     onAddLink={handleAddLink}
                     onShare={() => setIsShareDialogOpen(true)}
+                    isMobile={isMobile}
                   />
                 </motion.div>
               </div>

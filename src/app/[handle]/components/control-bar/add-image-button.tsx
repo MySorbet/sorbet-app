@@ -15,10 +15,8 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-// TODO: Maybe this button should have a focus ring
 // TODO: Make sure this is accessible, has the right role, etc.
-// TODO: We could share this with the add link button somehow
-// TODO: IS the input nested within a label really the best approach here?
+// TODO: Is the input nested within a label really the best approach here?
 
 /** A button that acts as a file input to accept images */
 export const AddImageButton = ({
@@ -53,6 +51,7 @@ export const AddImageButton = ({
             onKeyDown={(e) => {
               e.key === 'Enter' && e.currentTarget.click();
             }}
+            // TODO: These styles are duplicates of the ControlBarIconButton, but we need to apply them to the label for this to work. Any options?
             className={cn(
               buttonVariants({ variant: 'secondary' }),
               'h-fit cursor-pointer border border-[#E5E7EB] p-1 transition-transform hover:scale-110'
