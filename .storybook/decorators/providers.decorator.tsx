@@ -35,7 +35,7 @@ export const ProvidersDecorator = (Story: any) => {
         <QueryClientProvider client={new QueryClient()}>
           <MockAuthProvider>
             <Story />
-            <Toaster richColors />
+            <Toaster richColors position='top-right' />
             <OpenOnDesktopDrawer />
           </MockAuthProvider>
         </QueryClientProvider>

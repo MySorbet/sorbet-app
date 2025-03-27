@@ -34,7 +34,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <AuthProvider>
             <PHProvider>
               <QueryClientProvider client={queryClient}>
-                <Toaster richColors />
+                <Toaster richColors position='top-right' />
                 <OpenOnDesktopDrawer />
                 {children}
               </QueryClientProvider>

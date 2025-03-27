@@ -47,7 +47,7 @@ export const useUploadWidgetImage = () =>
     mutationFn: uploadWidgetImage,
     onError: (error) => {
       if (!axios.isCancel(error)) {
-        toast('Failed to upload widget image', {
+        toast.error('Failed to upload widget image', {
           description: String(error),
         });
       }

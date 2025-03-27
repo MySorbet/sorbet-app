@@ -9,7 +9,7 @@ export const useDeleteProfileImage = () => {
       return await deleteProfileImageAsync(userId);
     },
     onError: () => {
-      toast('Profile image not deleted', {
+      toast.error('Profile image not deleted', {
         description: 'Your profile image could not be deleted due to an error',
       });
     },

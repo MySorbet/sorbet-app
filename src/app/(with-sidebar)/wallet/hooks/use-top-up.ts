@@ -32,7 +32,7 @@ export const useTopUp = () => {
       // Funds can take slightly longer to show up so this refetch is really just in case they show up fast
       refetch();
     } catch (e) {
-      toast('Something went wrong', {
+      toast.error('Something went wrong', {
         description: 'There was an issue funding your wallet. Please try again',
       });
     }

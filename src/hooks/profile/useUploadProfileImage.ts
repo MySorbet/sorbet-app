@@ -22,7 +22,7 @@ export const useUploadProfileImage = () => {
       }
     },
     onError: (error) => {
-      toast('Profile Image not updated', {
+      toast.error('Profile Image not updated', {
         description: `Your profile image could not be saved due to an error: ${error}`,
       });
     },
