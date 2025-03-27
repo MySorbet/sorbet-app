@@ -37,6 +37,7 @@ interface AuthContextType {
   logout: () => void;
   login: ReturnType<typeof useLogin>['login'];
   loading: boolean;
+  dangerouslySetUser: (user: MinimalUser | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -46,11 +47,9 @@ type AuthProviderProps = {
   value?: AuthContextType /* The value to pass to the auth context. Usually you won't use this, but can be helpful for mocking in tests and storybook */;
 };
 
-export const useUser = () => useLocalStorage<MinimalUser | null>('user', null);
-
 export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
-  const [user, setUser] = useUser();
+  const [user, setUser] = useLocalStorage<MinimalUser | null>('user', null);
   const [loading, setLoading] = useState(false);
 
   const { logout: logoutPrivy } = usePrivy();
@@ -174,20 +173,20 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     setLoading(false);
   }, [logoutPrivy, setUser]);
 
-  const memoizedValue = useMemo(
-    () => ({
-      user,
-      loading,
-      login,
-      logout,
-    }),
-    [user, loading, login, logout]
+  const contextValue = useMemo(
+    () =>
+      value ?? {
+        user,
+        loading,
+        login,
+        logout,
+        dangerouslySetUser: setUser,
+      },
+    [value, user, loading, login, logout, setUser]
   );
 
   return (
-    <AuthContext.Provider value={value ?? memoizedValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 

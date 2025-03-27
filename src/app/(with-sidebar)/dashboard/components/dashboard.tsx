@@ -4,12 +4,11 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
-import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
+import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
-import { User } from '@/types';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import {
@@ -45,7 +44,7 @@ export const Dashboard = () => {
 
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
 
-  const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
+  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
 
@@ -71,7 +70,7 @@ export const Dashboard = () => {
         unlessMobile(() => router.push('/invoices/create'));
         break;
       case 'profile':
-        unlessMobile(() => setIsProfileEditModalOpen(true));
+        unlessMobile(() => setIsProfileEditOpen(true));
         break;
       case 'widget':
         unlessMobile(() => router.push(`/${user?.handle}?drawerOpen=true`));
@@ -108,10 +107,10 @@ export const Dashboard = () => {
     <>
       {/* Conditionally rendered profile edit modal */}
       {user && (
-        <ProfileEditModal
-          editModalVisible={isProfileEditModalOpen}
-          handleModalVisible={setIsProfileEditModalOpen}
-          user={user as User} // TODO: Fix User typing to remove cast
+        <EditProfileSheet
+          open={isProfileEditOpen}
+          setOpen={setIsProfileEditOpen}
+          user={user}
         />
       )}
 

@@ -1,9 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 
 import { updateUser } from '@/api/user';
-import { useUser } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth';
 import { UserWithId } from '@/types';
 
 export const useUpdateUser = (
@@ -11,15 +10,15 @@ export const useUpdateUser = (
     toastOnSuccess?: boolean;
   } = { toastOnSuccess: true }
 ) => {
-  const [, setUser] = useUser();
+  const { dangerouslySetUser } = useAuth();
 
   return useMutation({
     mutationFn: async (userToUpdate: UserWithId) =>
       await updateUser(userToUpdate, userToUpdate.id),
-    onSuccess: (user: AxiosResponse) => {
-      setUser(user.data);
+    onSuccess: async (response) => {
+      dangerouslySetUser(response.data);
       if (options.toastOnSuccess) {
-        toast('Profile updated', {
+        toast.success('Profile updated', {
           description: 'Your changes were saved successfully.',
         });
       }
@@ -27,7 +26,7 @@ export const useUpdateUser = (
     onError: (error: unknown) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      toast('User profile failed to update.', {
+      toast.error('User profile failed to update.', {
         description: errorMessage + ' If the issue persists, contact support.',
       });
     },
