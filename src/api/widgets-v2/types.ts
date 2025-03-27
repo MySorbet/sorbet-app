@@ -38,25 +38,37 @@ export type UpdateLayoutsDto = {
   layouts: LayoutDto[];
 };
 
+/**
+ * Shape of the data used to update a widget
+ * Should match the UpdateWidgetV2Dto validator in the API
+ */
 export type UpdateWidgetV2Dto = {
-  /** The title of the widget */
+  /** The title of the widget. Set by enrichment. */
   title?: string;
 
   /** The content URL of the widget */
   contentUrl?: string;
 
+  /** The title a user sets for the widget. Use null to unset */
+  userTitle?: string | null;
+
   /** Any custom data for the widget */
   custom?: Record<string, unknown>;
 };
 
+/**
+ * Shape of a widget returned from the API
+ * Should match the prisma schema
+ */
 export type ApiWidget = {
   id: string;
-  href?: string;
-  title?: string;
-  iconUrl?: string;
-  contentUrl?: string;
-  type?: WidgetType;
-  custom?: Record<string, unknown>;
+  href: string | null;
+  title: string | null;
+  userTitle: string | null;
+  iconUrl: string | null;
+  contentUrl: string | null;
+  type: WidgetType | null;
+  custom: Record<string, unknown> | null;
   createdAt: Date;
   updatedAt: Date;
   userId: string;

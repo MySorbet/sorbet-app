@@ -35,8 +35,14 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
  * It will also break between a sm and lg size, based on it's own width using a container query.
  */
 export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
-  const { widgets, layouts, breakpoint, setBreakpoint, onLayoutChange } =
-    useWidgets();
+  const {
+    widgets,
+    layouts,
+    breakpoint,
+    setBreakpoint,
+    onLayoutChange,
+    updateWidget,
+  } = useWidgets();
   const width = gw(breakpoint);
 
   const draggedRef = useRef<boolean>(false);
@@ -87,7 +93,12 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 draggedRef={draggedRef}
                 hideControls={immutable}
               >
-                <Widget {...widget} size={s} />
+                <Widget
+                  {...widget}
+                  size={s}
+                  editable={!immutable}
+                  onUpdate={(data) => updateWidget(widget.id, data)}
+                />
               </RGLHandle>
             );
           })}

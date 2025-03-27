@@ -5,8 +5,6 @@ import { env } from '@/lib/env';
 import { mockWidgets, sampleWidget } from './mock-widgets';
 import { type CreateWidgetDto, type UpdateWidgetV2Dto } from './types';
 
-// 👇 These handlers were AI generated and have not been tested or used yet
-
 /**
  * Mock the data from the `/v2/widgets` POST endpoint for creating widgets
  */
@@ -66,17 +64,30 @@ export const mockUpdateWidgetHandler = http.put(
   `${env.NEXT_PUBLIC_SORBET_API_URL}/v2/widgets/:id`,
   async ({ params, request }) => {
     const { id } = params;
+    const previousWidget = mockWidgets.find((w) => w.id === id);
+    if (!previousWidget) {
+      return new HttpResponse(null, { status: 404 });
+    }
     const updateData = (await request.json()) as UpdateWidgetV2Dto;
     await delay();
 
     return HttpResponse.json({
-      ...sampleWidget,
+      ...previousWidget,
       id: id as string,
       title: updateData.title,
       contentUrl: updateData.contentUrl,
       custom: updateData.custom,
+      userTitle: updateData.userTitle,
       updatedAt: new Date(),
     });
+  }
+);
+
+export const mockUpdateWidgetHandlerFailure = http.put(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/v2/widgets/:id`,
+  async () => {
+    await delay();
+    return new HttpResponse(null, { status: 500 });
   }
 );
 

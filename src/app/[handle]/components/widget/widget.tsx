@@ -7,13 +7,16 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-import { WidgetDataForDisplay } from './grid-config';
+import { WidgetData, WidgetSize } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
 
-type WidgetProps = WidgetDataForDisplay & {
+type WidgetProps = Omit<WidgetData, 'id'> & {
+  loading?: boolean;
+  size: WidgetSize;
   editable?: boolean;
+  onUpdate?: (data: Partial<WidgetData>) => void;
 };
 
 /**
@@ -28,12 +31,14 @@ type WidgetProps = WidgetDataForDisplay & {
 export const Widget = ({
   iconUrl,
   title,
+  userTitle,
   contentUrl,
   href,
   loading = false,
   type,
   size = 'A',
   editable = false,
+  onUpdate,
 }: WidgetProps) => {
   if (type === 'image') {
     return (
@@ -47,7 +52,9 @@ export const Widget = ({
 
   const urlType = href && getUrlType(href);
 
-  const fallbackTitle = title || parseURL(href).host || href;
+  // This is the title of the widget if the user has not explicitly set a title.
+  // If the user has set userTitle, it will be preferred. If they clear that, we will fall back to this.
+  const fallbackTitle = title || parseURL(href).host || href || '';
 
   return (
     <a
@@ -73,9 +80,12 @@ export const Widget = ({
         )}
         <CardTitle className={cn('text-sm font-normal')}>
           <InlineEdit
-            value={fallbackTitle || ''}
+            value={userTitle || fallbackTitle}
             editable={editable}
-            placeholder={fallbackTitle || ''}
+            onChange={(value) => {
+              onUpdate?.({ userTitle: value === '' ? null : value }); // If the user clears the title, set it to null to explicitly clear it
+            }}
+            placeholder={fallbackTitle}
             className={cn(
               'line-clamp-3 break-words',
               editable &&

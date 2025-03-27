@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   type ApiWidget,
   LayoutDto,
+  UpdateWidgetV2Dto,
   widgetsV2Api,
   WidgetType,
 } from '@/api/widgets-v2';
@@ -75,6 +76,8 @@ interface WidgetContextType {
   addImage: (image: File) => void;
   /** Is fetching initial widgets */
   isLoading: boolean;
+  /** Update a widget */
+  updateWidget: (id: string, data: UpdateWidgetV2Dto) => void;
 }
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
@@ -288,7 +291,7 @@ export function WidgetProvider({
         const enrichedWidget = await widgetsV2Api.enrich(id);
         dispatch({
           type: 'ADD_WIDGET_COMPLETE',
-          payload: { id, data: enrichedWidget },
+          payload: { id, data: widgetApiBoundary(enrichedWidget) },
         });
       } catch (error) {
         console.error('Failed to enrich widget:', error);
@@ -410,6 +413,58 @@ export function WidgetProvider({
     mutationFn: (id: string) => widgetsV2Api.delete(id),
   });
 
+  // TODO: Optimistic update and rollback on error
+  const updateWidgetMutation = useMutation({
+    mutationFn: async ({ id, dto }: { id: string; dto: UpdateWidgetV2Dto }) =>
+      widgetsV2Api.update(id, dto),
+    onMutate: async ({ id, dto }) => {
+      console.log('Mutating widget:', id, dto);
+      // Store the previous widget data before the optimistic update
+      const previousWidget = state.widgets[id];
+
+      dispatch({
+        type: 'ADD_WIDGET_COMPLETE',
+        payload: { id, data: dto },
+      });
+
+      // Return context with the previous widget data
+      return { previousWidget };
+    },
+    onError: (error, { id }, context) => {
+      console.error('Failed to update widget:', error);
+      toast.error('Failed to update widget', {
+        description: error.message,
+      });
+
+      // Rollback to previous state using the context
+      if (context?.previousWidget) {
+        console.log('Rolling back widget:', id, context.previousWidget);
+        // Remove id from the object to avoid it being included in the rollback
+        const { id: _id, ...previousState } = context.previousWidget;
+
+        // Ensure userTitle is explicitly null if it wasn't present
+        // Note: this could be a deviation from the previous state, where userTitle was undefined
+        // But we need to explicitly clear the value with null because dispatching with undefined means "don't touch this value"
+        const rollbackData = {
+          ...previousState,
+          userTitle: previousState.userTitle ?? null,
+        };
+
+        dispatch({
+          type: 'ADD_WIDGET_COMPLETE',
+          payload: {
+            id,
+            data: rollbackData,
+          },
+        });
+      }
+    },
+    onSuccess: async (data, { id }) => {
+      console.log('Successfully updated widget:', id, data);
+      // We don't need to do anything here since we already did the optimistic update
+    },
+  });
+
   const onLayoutChange = (_layout: Layout[], allLayouts: LayoutMap) => {
     // This function mainly handles drag and drop changes -- position.
     // When size or breakpoint changes, it is called AFTER state has been updated
@@ -469,6 +524,11 @@ export function WidgetProvider({
     });
   };
 
+  const updateWidget = (id: string, data: Partial<WidgetData>) => {
+    // Fire and forget an update. errors and rollbacks are handled in the mutation
+    updateWidgetMutation.mutate({ id, dto: data });
+  };
+
   return (
     <WidgetContext.Provider
       value={{
@@ -481,6 +541,7 @@ export function WidgetProvider({
         addImage,
         updateSize,
         removeWidget,
+        updateWidget,
         isLoading,
       }}
     >
@@ -498,6 +559,18 @@ export function useWidgets(): WidgetContextType {
   return context;
 }
 
+const widgetApiBoundary = (widget: ApiWidget): WidgetData => {
+  return {
+    id: widget.id,
+    href: widget.href ?? undefined,
+    contentUrl: widget.contentUrl ?? undefined,
+    type: widget.type ?? undefined,
+    userTitle: widget.userTitle ?? null, // null explicitly means no value
+    iconUrl: widget.iconUrl ?? undefined,
+    title: widget.title ?? undefined,
+  };
+};
+
 /**
  * Transform API widgets into the format needed by our app
  */
@@ -510,7 +583,7 @@ function fromApi(apiWidgets: ApiWidget[]): {
 
   apiWidgets.forEach((widget) => {
     // Transform the widgets to a map by id
-    widgetMap[widget.id] = widget;
+    widgetMap[widget.id] = widgetApiBoundary(widget);
 
     // Bisect the layouts into a map by breakpoint
     widget.layouts.forEach((layout) => {

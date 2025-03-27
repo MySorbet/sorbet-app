@@ -10,6 +10,7 @@ export const mockWidgetData: Record<string, WidgetData> = {
     contentUrl: 'https://picsum.photos/400/300?grayscale',
     href: 'https://picsum.photos/400/300?grayscale',
     iconUrl: 'https://picsum.photos/32/32?grayscale',
+    userTitle: 'User Title 1',
   },
   b: {
     id: 'b',
@@ -65,6 +66,7 @@ export const mockWidgetData: Record<string, WidgetData> = {
 export const sampleWidget: ApiWidget = {
   id: '123',
   title: 'Sample Widget',
+  userTitle: 'Sample User Title',
   iconUrl: 'https://placehold.co/32/orange/white',
   contentUrl: 'https://placehold.co/400/orange/white',
   href: 'https://example.com',
@@ -75,6 +77,8 @@ export const sampleWidget: ApiWidget = {
     { id: '123', x: 0, y: 0, w: 2, h: 2, breakpoint: 'sm' },
     { id: '123', x: 0, y: 0, w: 4, h: 4, breakpoint: 'lg' },
   ],
+  type: null,
+  custom: null,
 };
 
 export const mockWidgets: ApiWidget[] = Object.values(mockWidgetData).map(
@@ -84,7 +88,14 @@ export const mockWidgets: ApiWidget[] = Object.values(mockWidgetData).map(
     const lgLayout = sampleLayoutLg.find((l) => l.i === widget.id);
 
     return {
-      ...widget,
+      id: widget.id,
+      href: widget.href ?? null,
+      title: widget.title ?? null,
+      userTitle: widget.userTitle ?? null,
+      iconUrl: widget.iconUrl ?? null,
+      contentUrl: widget.contentUrl ?? null,
+      type: widget.type ?? null,
+      custom: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       userId: '1',
