@@ -33,7 +33,7 @@ export const SocialIcon: React.FC<SocialIconProps> = ({
   ...rest
 }) => {
   const Icon = iconByUrlType[type];
-  return <Icon className={cn('size-10', className)} {...rest} />;
+  return <Icon className={cn('size-10 shrink-0', className)} {...rest} />;
 };
 
 const iconByUrlType: Record<

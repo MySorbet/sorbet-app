@@ -70,7 +70,7 @@ export const Widget = ({
       draggable={false} // disable HTML5 dnd
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
-      <CardHeader className={cn('pb-10', size === 'D' && 'max-w-[50%]')}>
+      <CardHeader className={cn('space-y-1', size === 'D' && 'max-w-[60%]')}>
         {urlType ? (
           <SocialIcon type={urlType} />
         ) : loading ? (
@@ -98,7 +98,7 @@ export const Widget = ({
       <CardContent
         className={cn(
           'flex flex-1 items-end justify-end',
-          size === 'D' && 'pt-6'
+          size === 'D' && 'pl-0 pt-6'
         )}
       >
         {size !== 'B' && (
