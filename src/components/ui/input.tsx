@@ -21,15 +21,16 @@ const inputVariants = cva(
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
-  suffix?: string;
+  suffix?: React.ReactNode;
   prefix?: string;
+  rootClassName?: string;
 }
 
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, type, suffix, prefix, ...props }, ref) => {
+  ({ className, variant, type, suffix, prefix, rootClassName, ...props }, ref) => {
     return (
-      <div className='relative flex items-center'>
+      <div className={cn('relative flex items-center', rootClassName)}>
         {prefix && (
           <span className='text-sm text-muted-foreground bg-muted h-10 flex flex-col justify-center border border-input rounded-md rounded-r-none py-2 px-3 border-r-0 font-medium'>
             {prefix}
@@ -47,9 +48,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {suffix && (
-          <span className='absolute right-3 text-sm text-muted-foreground'>
+          <div className='absolute right-3 text-sm text-muted-foreground top-0 bottom-0 flex items-center'>
             {suffix}
-          </span>
+          </div>
         )}
       </div>
     );

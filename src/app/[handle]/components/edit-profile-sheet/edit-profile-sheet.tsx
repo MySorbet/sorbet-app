@@ -10,6 +10,9 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Spinner } from '@/components/common/spinner';
+import { BioMessage } from '@/components/profile/bio-message';
+import { HandleInput, validateHandle } from '@/components/profile/handle-input';
+import { LocationInput } from '@/components/profile/location-input';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -38,17 +41,13 @@ import {
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
-import type { User } from '@/types';
+import type { MinimalUser } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
-
-import { BioMessage } from './bio-message';
-import { HandleInput, validateHandle } from './handle-input';
-import { LocationInput } from './location-input';
 
 interface EditProfileSheetProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  user: User;
+  user: MinimalUser;
 }
 
 // TODO: Match design
@@ -131,57 +130,61 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
     useUpdateUser();
 
   const onSubmit = async (formData: FormData) => {
-    console.log('onSubmit', formData);
+    // Cant update a user that doesn't exist
+    if (!user) {
+      toast.error(
+        'There was an issue updating your profile. Please try again.'
+      );
+      return;
+    }
+
+    // remove isImageUpdated from formData since it is not a user field
     const { isImageUpdated: _, ...newUserData } = formData;
+    // Need to hang on to the old profile image
     let userToUpdate = {
       profileImage: user.profileImage,
       id: user.id,
     };
 
-    if (user?.id && user?.profileImage != null && image === undefined) {
-      await deleteProfileImageAsync(user?.id);
-
+    // Case: user has a profile image and deleted it in the form, so we need to delete it from the db
+    if (user.profileImage != null && image === undefined) {
+      await deleteProfileImageAsync(user.id);
       if (deleteProfileImageError) return;
-
       userToUpdate.profileImage = '';
-    } else if (user?.id && image !== user?.profileImage && file !== undefined) {
+      // Case: user has a profile image and deleted it and selected a new image, so we need to upload the new image
+    } else if (image !== user.profileImage && file !== undefined) {
       const imageFormData = new FormData();
       imageFormData.append('file', file);
       imageFormData.append('fileType', 'image');
       imageFormData.append('destination', 'profile');
-      imageFormData.append('oldImageUrl', user?.profileImage);
-      imageFormData.append('userId', user?.id);
+      imageFormData.append('oldImageUrl', user.profileImage ?? '');
+      imageFormData.append('userId', user.id);
 
       await uploadProfileImageAsync({
         imageFormData,
         userToUpdate,
       });
     }
-
     if (uploadProfileImageError) return;
 
-    if (user) {
-      userToUpdate = {
-        ...userToUpdate,
-        ...newUserData,
-      };
-      // TODO: take a deeper dive into 'mutate' vs 'mutate async' and how the flow of the onSubmit should behave.
-      await updateProfileAsync(userToUpdate);
-      // * Here, we replace the url with the user's updated username if it is changed
-      // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.
-      // If the user changes his/her username, we still want to update our cache with the new username data
-      if (dirtyFields.handle) {
-        router.replace(`/${handle}`);
-      }
-      queryClient.invalidateQueries({ queryKey: ['freelancer', handle] });
-      // Also invalidate the dashboard data (TODO: this is a hacky fix until we have more generic communication with the parent component)
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      setOpen(false);
-    } else {
-      toast.error(
-        'There was an issue updating your profile. Please try again.'
-      );
+    // Merge the updated form data with the data we were hanging on to
+    userToUpdate = {
+      ...userToUpdate,
+      ...newUserData,
+    };
+
+    await updateProfileAsync(userToUpdate);
+
+    // * Here, we replace the url with the user's updated username if it is changed
+    // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.
+    // If the user changes his/her username, we still want to update our cache with the new username data
+    if (dirtyFields.handle) {
+      router.replace(`/${handle}`);
     }
+    queryClient.invalidateQueries({ queryKey: ['freelancer', handle] });
+    // Also invalidate the dashboard data (TODO: this is a hacky fix until we have more generic communication with the parent component)
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    setOpen(false);
   };
 
   const fileChange = (e: ChangeEvent<HTMLInputElement>) => {

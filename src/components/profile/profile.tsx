@@ -1,9 +1,9 @@
 import { type FC, useState } from 'react';
 
-import { EditProfileSheet } from '@/components/profile/edit-profile-sheet';
 import { cn } from '@/lib/utils';
 import { User } from '@/types';
 
+import { ProfileEditModal } from './profile-edit-modal';
 import { ProfileHeader } from './profile-header';
 import { WidgetGrid } from './widgets/widget-grid';
 
@@ -35,9 +35,9 @@ export const Profile: FC<{
           disableHireMe={disableHireMe}
           hideShare={hideShare}
         />
-        <EditProfileSheet
-          open={isEditProfileOpen}
-          setOpen={handleSetProfileOpen}
+        <ProfileEditModal
+          editModalVisible={isEditProfileOpen}
+          handleModalVisible={handleSetProfileOpen}
           user={user}
         />
       </div>

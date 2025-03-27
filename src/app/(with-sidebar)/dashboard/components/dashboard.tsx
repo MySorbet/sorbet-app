@@ -3,13 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
+import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
-import { ProfileEditModal } from '@/components/profile/profile-edit-modal';
 import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
-import { User } from '@/types';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import {
@@ -45,7 +44,7 @@ export const Dashboard = () => {
 
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
 
-  const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
+  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
 
@@ -60,26 +59,24 @@ export const Dashboard = () => {
         router.push('/invoices');
         break;
       case 'views':
-        unlessMobile(() => router.push(`/${user?.handle}`));
+        router.push(`/${user?.handle}`);
         break;
 
       // Tasks
       case 'verified':
-        unlessMobile(() => router.push('/verify'));
+        router.push('/verify');
         break;
       case 'invoice':
         unlessMobile(() => router.push('/invoices/create'));
         break;
       case 'profile':
-        unlessMobile(() => setIsProfileEditModalOpen(true));
+        setIsProfileEditOpen(true);
         break;
       case 'widget':
-        unlessMobile(() => router.push(`/${user?.handle}?drawerOpen=true`));
+        router.push(`/${user?.handle}`);
         break;
       case 'share':
-        unlessMobile(() =>
-          router.push(`/${user?.handle}?shareDialogOpen=true`)
-        );
+        router.push(`/${user?.handle}?shareDialogOpen=true`);
         break;
       case 'payment':
         router.push('/wallet');
@@ -92,7 +89,7 @@ export const Dashboard = () => {
   };
 
   const handleClickMyProfile = () => {
-    unlessMobile(() => router.push(`/${user?.handle}`));
+    router.push(`/${user?.handle}`);
   };
 
   const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);
@@ -108,10 +105,10 @@ export const Dashboard = () => {
     <>
       {/* Conditionally rendered profile edit modal */}
       {user && (
-        <ProfileEditModal
-          editModalVisible={isProfileEditModalOpen}
-          handleModalVisible={setIsProfileEditModalOpen}
-          user={user as User} // TODO: Fix User typing to remove cast
+        <EditProfileSheet
+          open={isProfileEditOpen}
+          setOpen={setIsProfileEditOpen}
+          user={user}
         />
       )}
 
