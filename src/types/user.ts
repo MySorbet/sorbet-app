@@ -3,7 +3,7 @@ export interface User {
   firstName: string;
   lastName: string;
   privyId: string | null;
-  handle: string | null;
+  handle: string;
   email: string;
   bio: string;
   profileImage: string;

@@ -1,20 +1,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { parseAsBoolean } from 'nuqs';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { User } from '@/types';
+import { MinimalUser } from '@/types';
 
 import { ContactMeDialog } from './contact-me/contact-me-dialog';
 import { ControlBar } from './control-bar/control-bar';
 import { EditProfileSheet } from './edit-profile-sheet/edit-profile-sheet';
+import { ExitLinks } from './exit-links';
 import { OnboardWithHandles } from './onboard-with-handles/onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 import { ShareDialog } from './share-dialog/share-dialog';
@@ -29,7 +28,7 @@ export const Profile = ({
   isMine,
   isLoggedIn,
 }: {
-  user: User;
+  user: MinimalUser;
   isMine?: boolean;
   isLoggedIn?: boolean;
 }) => {
@@ -79,26 +78,12 @@ export const Profile = ({
             onEdit={() => setIsEditing(true)}
             onContactMe={() => setIsContactMeDialogOpen(true)}
           />
-          {/* TODO: Could/should these buttons auto open the privy via a query param? */}
-          {/* Temporarily just remove these buttons on mobile */}
-          <div className={cn('@3xl:flex hidden gap-3')}>
-            {isLoggedIn ? (
-              <Button variant='secondary' asChild>
-                <Link href='/dashboard'>Back to Dashboard</Link>
-              </Button>
-            ) : (
-              !isMine && (
-                <>
-                  <Button variant='secondary' asChild>
-                    <Link href='/signin'>Create my Sorbet</Link>
-                  </Button>
-                  <Button variant='ghost' asChild>
-                    <Link href='/signin'>Login</Link>
-                  </Button>
-                </>
-              )
-            )}
-          </div>
+          <ExitLinks
+            isLoggedIn={isLoggedIn}
+            isMine={isMine}
+            handle={user.handle}
+            className='@3xl:flex hidden'
+          />
         </div>
         {/* The right side of the profile. Should handle scroll itself (except on mobile, where the whole page will scroll*/}
         <div className='@3xl:w-auto @3xl:h-full @3xl:overflow-y-auto @3xl:flex-1 w-full'>
@@ -107,15 +92,33 @@ export const Profile = ({
               <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-            >
-              <ErrorBoundary FallbackComponent={GridErrorFallback}>
-                <WidgetGrid immutable={!isMine || isMobile} />
-              </ErrorBoundary>
-            </motion.div>
+            <>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+              >
+                <ErrorBoundary FallbackComponent={GridErrorFallback}>
+                  <WidgetGrid immutable={!isMine || isMobile} />
+                </ErrorBoundary>
+              </motion.div>
+              {/* Little motion hack to prevent a flash of the exit links when the page loads */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 1, delay: 0.5 }}
+              >
+                <ExitLinks
+                  isLoggedIn={isLoggedIn}
+                  isMine={isMine}
+                  handle={user.handle}
+                  className={cn(
+                    '@3xl:hidden w-full items-center justify-center p-6',
+                    isMine && 'mb-20'
+                  )}
+                />
+              </motion.div>
+            </>
           )}
         </div>
 

@@ -38,8 +38,17 @@ const meta = {
 export default meta;
 
 export const Default: Story = {
+  name: 'Default (Logged out)',
   args: {
     user: mockUser,
+  },
+};
+
+export const LoggedIn: Story = {
+  args: {
+    user: mockUser,
+    isMine: false,
+    isLoggedIn: true,
   },
 };
 
@@ -48,21 +57,5 @@ export const Mine: Story = {
     user: mockUser,
     isMine: true,
     isLoggedIn: true,
-  },
-};
-
-export const LoggedInNotMine: Story = {
-  args: {
-    user: mockUser,
-    isMine: false,
-    isLoggedIn: true,
-  },
-};
-
-export const LoggedOut: Story = {
-  args: {
-    user: mockUser,
-    isMine: false,
-    isLoggedIn: false,
   },
 };

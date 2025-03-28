@@ -133,12 +133,20 @@ const config = {
             transform: 'translateX(100%) scaleX(0.5)',
           },
         },
+        // For shiny button
+        shine: {
+          '0%': { backgroundPosition: '200% 0' },
+          '25%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         // Used for the indeterminate progress bar
         progress: 'progress 2s infinite linear',
+        // For shiny button
+        shine: 'shine 6s ease-out infinite',
       },
       boxShadow: {
         widget: '0px 20px 120px 0px rgba(52, 64, 84, 0.06)',
