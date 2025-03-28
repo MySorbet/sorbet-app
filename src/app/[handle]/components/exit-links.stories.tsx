@@ -25,7 +25,6 @@ export const LoggedIn: Story = {
   args: {
     isLoggedIn: true,
     isMine: false,
-    handle: 'mock-user',
   },
 };
 
@@ -33,6 +32,5 @@ export const Mine: Story = {
   args: {
     isLoggedIn: true,
     isMine: true,
-    handle: 'mock-user',
   },
 };

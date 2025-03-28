@@ -77,14 +77,14 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
   const schema = z.object({
     isImageUpdated: z.boolean(),
     firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required'),
+    lastName: z.string().optional(),
     bio: z
       .string()
       .max(MAX_BIO_LENGTH, `Bio must be at most ${MAX_BIO_LENGTH} characters`)
       .optional(),
     city: z.string(),
     tags: z.array(z.string()).optional(),
-    handle: validateHandle(user.handle ?? ''), // TODO: Type user to always have handle and remove ??
+    handle: validateHandle(user.handle),
     location: z.string().optional(),
   });
 
@@ -94,11 +94,11 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
     resolver: zodResolver(schema),
     defaultValues: {
       isImageUpdated: false, // --> since image is not controlled by form, this allows us to stay within RHF for disabling the 'Save Changes' button.
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      bio: user?.bio,
-      city: user?.city,
-      tags: user?.tags,
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
+      bio: user?.bio ?? '',
+      city: user?.city ?? '',
+      tags: user?.tags ?? [],
       handle: user?.handle ?? '',
     },
     mode: 'all',

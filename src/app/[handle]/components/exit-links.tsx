@@ -1,3 +1,4 @@
+'use client';
 import { Globe } from 'lucide-react';
 import Link from 'next/link';
 
@@ -8,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useAuth } from '@/hooks/use-auth';
 import { cn } from '@/lib/utils';
 import Telegram from '~/svg/telegram.svg';
 
@@ -18,15 +20,14 @@ import Telegram from '~/svg/telegram.svg';
 export const ExitLinks = ({
   isLoggedIn,
   isMine,
-  handle,
   className,
 }: {
   isLoggedIn?: boolean;
   isMine?: boolean;
-  handle?: string;
   className?: string;
 }) => {
-  const route = isMine ? '/dashboard' : `/${handle}`;
+  const { user } = useAuth();
+  const route = isMine ? '/dashboard' : `/${user?.handle}`;
   const text = isMine ? 'My dashboard' : 'My Sorbet';
   return (
     <div className={cn('flex items-center gap-3', className)}>

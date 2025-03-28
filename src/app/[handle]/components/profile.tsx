@@ -81,7 +81,6 @@ export const Profile = ({
           <ExitLinks
             isLoggedIn={isLoggedIn}
             isMine={isMine}
-            handle={user.handle}
             className='@3xl:flex hidden'
           />
         </div>
@@ -111,7 +110,6 @@ export const Profile = ({
                 <ExitLinks
                   isLoggedIn={isLoggedIn}
                   isMine={isMine}
-                  handle={user.handle}
                   className={cn(
                     '@3xl:hidden w-full items-center justify-center p-6',
                     isMine && 'mb-20'
