@@ -1,8 +1,13 @@
-import { RectangleHorizontal, RectangleVertical, Square } from 'lucide-react';
+import {
+  Link2,
+  RectangleHorizontal,
+  RectangleVertical,
+  Square,
+} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
-import { WidgetSize } from './grid-config';
+import { WidgetSize } from '../grid-config';
 
 // TODO: There is a lot to do here:
 // Add image controls
@@ -54,6 +59,13 @@ export const WidgetControls = ({
         onClick={() => onSizeChange('A')}
       >
         <Square size={19} />
+      </SizeButton>
+      <SizeButton
+        isActive={size === 'A'}
+        onClick={() => onSizeChange('A')}
+        size='A'
+      >
+        <Link2 className='size-4' />
       </SizeButton>
     </div>
   );

@@ -21,8 +21,8 @@ import {
 import styles from './rgl-custom.module.css';
 import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
-import { WidgetControls } from './widget-controls';
-import { WidgetDeleteButton } from './widget-delete-button';
+import { WidgetControls } from './widget-controls/widget-controls';
+import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
 
 // Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
 const ResponsiveGridLayout = WidthProvider(Responsive);
