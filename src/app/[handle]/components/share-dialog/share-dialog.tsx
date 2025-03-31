@@ -71,6 +71,7 @@ export const ShareDialog = ({
               />
             }
             readOnly
+            tabIndex={-1} // Since Credenza will auto focus this, we take it out of the tab order, leaving just the copy button to receive focus
             rootClassName='group cursor-pointer'
             className='hover:bg-muted cursor-pointer focus-visible:ring-0 focus-visible:ring-offset-0'
             onClick={() => copyButtonRef.current?.copy()}
