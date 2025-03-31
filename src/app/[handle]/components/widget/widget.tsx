@@ -46,6 +46,7 @@ export const Widget = ({
     return (
       <ImageWidget
         contentUrl={contentUrl}
+        href={href}
         className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] select-none duration-300'
         loading={loading}
       />
