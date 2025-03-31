@@ -45,3 +45,11 @@ export const WithState: Story = {
     );
   },
 };
+
+export const WithLink: Story = {
+  args: {
+    size: 'A',
+    href: 'https://www.google.com',
+    onAddLink: fn(),
+  },
+};

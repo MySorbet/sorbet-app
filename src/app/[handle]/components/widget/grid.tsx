@@ -21,7 +21,11 @@ import {
 import styles from './rgl-custom.module.css';
 import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
-import { WidgetControls } from './widget-controls/widget-controls';
+import {
+  Control,
+  ImageWidgetControls,
+  WidgetControls,
+} from './widget-controls/widget-controls';
 import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
 
 // Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
@@ -92,6 +96,10 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 id={widget.id}
                 draggedRef={draggedRef}
                 hideControls={immutable}
+                href={widget.href}
+                controls={
+                  widget.type === 'image' ? ImageWidgetControls : undefined
+                }
               >
                 <Widget
                   {...widget}
@@ -118,6 +126,8 @@ interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   size: WidgetSize;
   id: string;
   hideControls?: boolean;
+  href?: string;
+  controls?: Control[];
 }
 
 // TODO: we are starting to overload this component. Its main purpose was to handle RGL related hacks so that the widget child could not worry too much. now it is rendering controls.
@@ -140,11 +150,13 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       id,
       draggedRef,
       hideControls = false,
+      href,
+      controls,
       ...props
     },
     ref
   ) => {
-    const { updateSize, removeWidget } = useWidgets();
+    const { updateSize, removeWidget, updateWidget } = useWidgets();
     return (
       <div
         style={style}
@@ -179,6 +191,9 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
               <WidgetControls
                 size={size}
                 onSizeChange={(size) => updateSize(id, size)}
+                href={href}
+                controls={controls}
+                onAddLink={(link) => updateWidget(id, { href: link })}
               />
             </div>
             <div

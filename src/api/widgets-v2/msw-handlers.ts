@@ -78,6 +78,7 @@ export const mockUpdateWidgetHandler = http.put(
       contentUrl: updateData.contentUrl,
       custom: updateData.custom,
       userTitle: updateData.userTitle,
+      href: updateData.href,
       updatedAt: new Date(),
     });
   }

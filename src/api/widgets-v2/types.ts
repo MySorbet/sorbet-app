@@ -49,6 +49,9 @@ export type UpdateWidgetV2Dto = {
   /** The content URL of the widget */
   contentUrl?: string;
 
+  /** The URL of the widget */
+  href?: string;
+
   /** The title a user sets for the widget. Use null to unset */
   userTitle?: string | null;
 

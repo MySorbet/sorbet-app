@@ -524,7 +524,7 @@ export function WidgetProvider({
     });
   };
 
-  const updateWidget = (id: string, data: Partial<WidgetData>) => {
+  const updateWidget = (id: string, data: UpdateWidgetV2Dto) => {
     // Fire and forget an update. errors and rollbacks are handled in the mutation
     updateWidgetMutation.mutate({ id, dto: data });
   };
