@@ -18,6 +18,8 @@ interface ImageWidgetProps {
 
 /**
  * Full bleed image widget. To be rendered by a higher up widget component.
+ *
+ * Renders a div if there is no href, or an anchor if there is a href.
  */
 export const ImageWidget: React.FC<ImageWidgetProps> = ({
   contentUrl,
@@ -25,18 +27,19 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
   className,
   loading,
 }) => {
-  // TODO: Would be better as an anchor
-  const handleExternalLinkClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-    window.open(href, '_blank');
+  const DivOrAnchor = href ? 'a' : 'div';
+  const anchorProps = {
+    href,
+    target: '_blank',
+    rel: 'noopener noreferrer',
   };
 
   return (
-    <div
-      onClick={handleExternalLinkClick}
+    <DivOrAnchor
+      {...(href ? anchorProps : {})}
+      draggable={false}
       className={cn(
-        'relative size-full overflow-hidden rounded-2xl',
+        'relative block size-full overflow-hidden rounded-2xl',
         className
       )}
     >
@@ -46,13 +49,11 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
             src={contentUrl}
             alt='Photo content'
             className='size-full object-cover'
+            draggable={false}
           />
           {loading && <Spinner className='absolute left-3 top-3' />}
           {href && (
-            <ExternalLink
-              href={href}
-              className='bg-muted/30 absolute right-3 top-3 size-5 rounded-sm p-1 backdrop-blur-sm'
-            />
+            <ExternalLink className='bg-muted/30 absolute right-3 top-3 size-5 rounded-sm p-1 backdrop-blur-sm' />
           )}
         </>
       ) : (
@@ -69,6 +70,6 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
           </TooltipProvider>
         </div>
       )}
-    </div>
+    </DivOrAnchor>
   );
 };
