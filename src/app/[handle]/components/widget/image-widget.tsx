@@ -47,7 +47,7 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
             alt='Photo content'
             className='size-full object-cover'
           />
-          {loading && <Spinner className='absolute left-4 top-4' />}
+          {loading && <Spinner className='absolute left-3 top-3' />}
           {href && (
             <ExternalLink
               href={href}
