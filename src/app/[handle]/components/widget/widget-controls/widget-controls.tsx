@@ -155,7 +155,10 @@ export const WidgetControls = ({
                               variant='ghost'
                               size='sm'
                               className='text-muted-foreground fade-in animate-in -mr-1 h-fit p-1'
-                              onClick={() => field.onChange('')}
+                              onClick={() => {
+                                field.onChange('');
+                                form.handleSubmit(onSubmit)();
+                              }}
                               type='button'
                             >
                               <X />
