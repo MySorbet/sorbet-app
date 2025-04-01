@@ -126,7 +126,7 @@ interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   size: WidgetSize;
   id: string;
   hideControls?: boolean;
-  href?: string;
+  href?: string | null;
   controls?: Control[];
 }
 

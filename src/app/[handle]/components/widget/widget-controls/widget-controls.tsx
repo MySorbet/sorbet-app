@@ -29,7 +29,7 @@ import { WidgetSize, WidgetSizes } from '../grid-config';
 import { ControlButton } from './control-button';
 
 // TODO: There is a lot to do here:
-// Add image controls
+
 // integrate better with design tokens
 // better animations (maybe use a slider like in tabs component)
 // stroke is strange on the squares
@@ -49,8 +49,8 @@ export const WidgetControls = ({
 }: {
   size: WidgetSize;
   onSizeChange: (size: WidgetSize) => void;
-  onAddLink?: (link: string) => void;
-  href?: string;
+  onAddLink?: (link: string | null) => void;
+  href?: string | null;
   controls?: Control[];
 }) => {
   const form = useForm<FormSchema>({
@@ -64,10 +64,14 @@ export const WidgetControls = ({
   const link = useWatch({ name: 'link', control: form.control });
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const onSubmit = (data: FormSchema) => {
-    onAddLink?.(normalizeUrl(data.link) ?? '');
+    if (data.link === '') {
+      onAddLink?.(null);
+    } else {
+      onAddLink?.(normalizeUrl(data.link) ?? null);
+    }
     handlePopoverOpenChange(false);
-    // TODO: Make sure a '' submission sends null and that everything is typed correctly above
   };
 
   // const reset = useAfter(() => form.reset({ link: href ?? '' }));
@@ -171,7 +175,9 @@ const SizeIcons: Record<WidgetSize, React.ReactNode> = {
 
 /** Schema to validate the link input */
 const schema = z.object({
-  link: z.string().refine(isValidUrl),
+  link: z.string().refine((link) => {
+    return link === '' || isValidUrl(link);
+  }),
 });
 type FormSchema = z.infer<typeof schema>;
 

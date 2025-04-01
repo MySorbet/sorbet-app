@@ -30,7 +30,10 @@ type LayoutMap = Record<Breakpoint, Layout[]>;
 
 // Action payloads
 type AddWidgetStartPayload = { id: string; url: string; type?: WidgetType };
-type AddWidgetCompletePayload = { id: string; data: Omit<WidgetData, 'id'> };
+type AddWidgetCompletePayload = {
+  id: string;
+  data: Omit<LoadableWidget, 'id'>;
+};
 type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
 type UpdateWidgetSizePayload = { id: string; size: WidgetSize };
@@ -445,9 +448,11 @@ export function WidgetProvider({
         // Ensure userTitle is explicitly null if it wasn't present
         // Note: this could be a deviation from the previous state, where userTitle was undefined
         // But we need to explicitly clear the value with null because dispatching with undefined means "don't touch this value"
+        // Same for href
         const rollbackData = {
           ...previousState,
           userTitle: previousState.userTitle ?? null,
+          href: previousState.href ?? null,
         };
 
         dispatch({
@@ -562,7 +567,7 @@ export function useWidgets(): WidgetContextType {
 const widgetApiBoundary = (widget: ApiWidget): WidgetData => {
   return {
     id: widget.id,
-    href: widget.href ?? undefined,
+    href: widget.href ?? null,
     contentUrl: widget.contentUrl ?? undefined,
     type: widget.type ?? undefined,
     userTitle: widget.userTitle ?? null, // null explicitly means no value

@@ -50,7 +50,7 @@ export const getWidgetSizeFromDimensions = (
 // This is the in progress shape of the data representing a widget.
 export type WidgetData = {
   contentUrl?: string;
-  href?: string;
+  href?: string | null; // Null explicitly means no value
   iconUrl?: string;
   id: string;
   title?: string;
