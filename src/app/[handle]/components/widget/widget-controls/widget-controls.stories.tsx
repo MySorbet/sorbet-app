@@ -33,14 +33,17 @@ export const Default: Story = {
 export const WithState: Story = {
   args: {
     size: 'A',
+    controls: ImageWidgetControls,
+    isPopoverOpen: true,
   },
   render: (args) => {
-    const [, setSize] = useArgs();
+    const [, setArgs] = useArgs();
 
     return (
       <WidgetControls
         {...args}
-        onSizeChange={(newSize) => setSize({ size: newSize })}
+        onSizeChange={(newSize) => setArgs({ size: newSize })}
+        setIsPopoverOpen={(isPopoverOpen) => setArgs({ isPopoverOpen })}
       />
     );
   },

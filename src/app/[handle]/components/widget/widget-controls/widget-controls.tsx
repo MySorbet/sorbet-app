@@ -1,3 +1,5 @@
+'use client';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -8,7 +10,6 @@ import {
   Square,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -47,12 +48,23 @@ export const WidgetControls = ({
   onAddLink,
   href,
   controls = WidgetSizeControls,
+  isPopoverOpen = false,
+  setIsPopoverOpen,
 }: {
+  /** The active size */
   size: WidgetSize;
+  /** Callback to change the size */
   onSizeChange: (size: WidgetSize) => void;
+  /** Callback to add a link */
   onAddLink?: (link: string | null) => void;
+  /** A link to prefill the input with */
   href?: string | null;
+  /** The controls to display */
   controls?: Control[];
+  /** Whether the link popover is open */
+  isPopoverOpen?: boolean;
+  /** Callback to set the link popover open state */
+  setIsPopoverOpen?: (isPopoverOpen: boolean) => void;
 }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -67,8 +79,6 @@ export const WidgetControls = ({
 
   const link = useWatch({ name: 'link', control: form.control });
 
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
   // Transform '' to null on submit to indicate clearing the link
   const onSubmit = (data: FormSchema) => {
     console.log('onSubmit', data);
@@ -77,7 +87,7 @@ export const WidgetControls = ({
     } else {
       onAddLink?.(normalizeUrl(data.link) ?? null);
     }
-    setIsPopoverOpen(false);
+    setIsPopoverOpen?.(false);
   };
 
   // TODO: We could handle the popover close and clear the link if its not valid
@@ -123,6 +133,10 @@ export const WidgetControls = ({
             className='max-w-52 border-none p-0'
             side='bottom'
             sideOffset={4}
+            onCloseAutoFocus={(e) => {
+              // This prevents the trigger button from being focused when the popover closes. TODO: This could be an accessibility issue.
+              e.preventDefault();
+            }}
           >
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
