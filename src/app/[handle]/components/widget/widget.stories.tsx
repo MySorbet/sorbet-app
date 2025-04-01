@@ -107,6 +107,23 @@ export const Public: Story = {
   },
 };
 
+export const Image: Story = {
+  args: {
+    ...Default.args,
+    type: 'image',
+    href: undefined,
+    contentUrl: urls.contentUrl,
+  },
+};
+
+export const ImageWithLink: Story = {
+  args: {
+    ...Default.args,
+    type: 'image',
+    ...urls,
+  },
+};
+
 /** Example URLs for each widget type based on test cases */
 const urlsByType: Record<UrlType, string> = {
   Substack:

@@ -1,7 +1,7 @@
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-import React, { MutableRefObject, useRef } from 'react';
+import React, { useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { cn } from '@/lib/utils';
@@ -21,8 +21,12 @@ import {
 import styles from './rgl-custom.module.css';
 import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
-import { WidgetControls } from './widget-controls';
-import { WidgetDeleteButton } from './widget-delete-button';
+import {
+  Control,
+  ImageWidgetControls,
+  WidgetControls,
+} from './widget-controls/widget-controls';
+import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
 
 // Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -43,9 +47,11 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
     onLayoutChange,
     updateWidget,
   } = useWidgets();
+
   const width = gw(breakpoint);
 
-  const draggedRef = useRef<boolean>(false);
+  // Part of a little trick to allow both clicking and dragging on rgl children
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   return (
     <div className='@container w-full'>
@@ -72,7 +78,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
           isDraggable={!immutable}
           onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
           onLayoutChange={onLayoutChange}
-          onDrag={() => (draggedRef.current = true)}
+          onDrag={() => setIsDragging(true)}
         >
           {layouts[breakpoint].map((layout) => {
             const widget = widgets[layout.i];
@@ -88,10 +94,9 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
             return (
               <RGLHandle
                 key={widget.id}
-                size={s}
-                id={widget.id}
-                draggedRef={draggedRef}
-                hideControls={immutable}
+                dragging={isDragging}
+                setIsDragging={setIsDragging}
+                className='group relative'
               >
                 <Widget
                   {...widget}
@@ -100,6 +105,17 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                   showPlaceholder={!immutable}
                   onUpdate={(data) => updateWidget(widget.id, data)}
                 />
+                {!immutable && (
+                  <ControlOverlay
+                    size={s}
+                    id={widget.id}
+                    dragging={isDragging}
+                    href={widget.href}
+                    controls={
+                      widget.type === 'image' ? ImageWidgetControls : undefined
+                    }
+                  />
+                )}
               </RGLHandle>
             );
           })}
@@ -112,17 +128,12 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
 interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   debug?: boolean;
-  draggedRef: MutableRefObject<boolean>;
-
-  // 👇 these are a little bloated I feel, maybe this wrapper should be turned into two?
-  size: WidgetSize;
-  id: string;
-  hideControls?: boolean;
+  dragging: boolean;
+  setIsDragging: (dragging: boolean) => void;
 }
 
-// TODO: we are starting to overload this component. Its main purpose was to handle RGL related hacks so that the widget child could not worry too much. now it is rendering controls.
 /**
- * This should be the direct child mapped inside RGL. We forward all necessary props this way.
+ * This should be the direct child mapped inside RGL. We forward all necessary props this way. We also add some special sauce to make click events work correctly.
  *
  * @see https://github.com/react-grid-layout/react-grid-layout?tab=readme-ov-file#custom-child-components-and-draggable-handles
  */
@@ -136,20 +147,16 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       onTouchEnd,
       children,
       debug = false,
-      size,
-      id,
-      draggedRef,
-      hideControls = false,
+      dragging,
+      setIsDragging,
       ...props
     },
     ref
   ) => {
-    const { updateSize, removeWidget } = useWidgets();
     return (
       <div
         style={style}
         className={cn(
-          'group relative isolate',
           debug && 'border-divider rounded-2xl border-2 border-dashed',
           className
         )}
@@ -158,44 +165,72 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         onMouseUp={onMouseUp}
         onTouchEnd={onTouchEnd}
         onClick={(e) => {
-          if (draggedRef.current) e.preventDefault();
-          draggedRef.current = false;
+          if (dragging) e.preventDefault();
+          setIsDragging(false);
         }}
         {...props}
       >
         {children}
-        {/* Controls */}
-        {/* within containers to prevent clicks from being passed down to RGL, hover to show correctly, and position absolutely*/}
-        {!hideControls && (
-          <>
-            <div
-              className={cn(
-                'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
-                'opacity-0 transition-opacity duration-300', // opacity
-                !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
-              )}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <WidgetControls
-                size={size}
-                onSizeChange={(size) => updateSize(id, size)}
-              />
-            </div>
-            <div
-              className={cn(
-                'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
-                'opacity-0 transition-opacity duration-300', // opacity
-                !draggedRef.current && 'group-hover:opacity-100' // hover (only if not dragged)
-              )}
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <WidgetDeleteButton onDelete={() => removeWidget(id)} />
-            </div>
-          </>
-        )}
       </div>
     );
   }
 );
 
 RGLHandle.displayName = 'WidgetRGLHandle';
+
+/**
+ * Render widget controls and a delete button over a widget
+ *
+ * Should be rendered in a container that is the size of the widget, with `group` and `relative` classes
+ */
+const ControlOverlay = ({
+  size,
+  id,
+  dragging,
+  href,
+  controls,
+}: {
+  size: WidgetSize;
+  id: string;
+  dragging: boolean;
+  href?: string | null;
+  controls?: Control[];
+}) => {
+  const { updateSize, removeWidget, updateWidget } = useWidgets();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  // within containers to prevent clicks from being passed down to RGL, hover to show correctly, and position absolutely
+  return (
+    <>
+      <div
+        className={cn(
+          'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
+          'opacity-0 transition-opacity duration-300', // opacity
+          !dragging && 'group-hover:opacity-100', // hover (only if not dragged)
+          isPopoverOpen && 'opacity-100' // show when popover is open
+        )}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <WidgetControls
+          size={size}
+          onSizeChange={(size) => updateSize(id, size)}
+          href={href}
+          controls={controls}
+          onAddLink={(link) => updateWidget(id, { href: link })}
+          isPopoverOpen={isPopoverOpen}
+          setIsPopoverOpen={setIsPopoverOpen}
+        />
+      </div>
+      <div
+        className={cn(
+          'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
+          'opacity-0 transition-opacity duration-300', // opacity
+          !dragging && 'group-hover:opacity-100', // hover (only if not dragged)
+          isPopoverOpen && 'opacity-100' // show when popover is open
+        )}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <WidgetDeleteButton onDelete={() => removeWidget(id)} />
+      </div>
+    </>
+  );
+};

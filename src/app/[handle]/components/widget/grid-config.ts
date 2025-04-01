@@ -1,7 +1,8 @@
 export type Breakpoint = 'sm' | 'lg';
 
 // The five supported sizes for widgets and a map describing the number of rows and cols for each size
-export type WidgetSize = 'A' | 'B' | 'C' | 'D'; // | 'E';
+export const WidgetSizes = ['A', 'B', 'C', 'D'] as const;
+export type WidgetSize = (typeof WidgetSizes)[number];
 export const LayoutSizes: Record<WidgetSize, { w: number; h: number }> = {
   A: { w: 4, h: 4 },
   B: { w: 2, h: 2 },
@@ -49,7 +50,7 @@ export const getWidgetSizeFromDimensions = (
 // This is the in progress shape of the data representing a widget.
 export type WidgetData = {
   contentUrl?: string;
-  href?: string;
+  href?: string | null; // Null explicitly means no value
   iconUrl?: string;
   id: string;
   title?: string;

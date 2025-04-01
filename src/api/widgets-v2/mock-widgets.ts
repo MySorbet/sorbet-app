@@ -28,10 +28,9 @@ export const mockWidgetData: Record<string, WidgetData> = {
   },
   d: {
     id: 'd',
-    title: 'Widget 4',
     contentUrl: 'https://picsum.photos/450/300?grayscale',
     href: 'https://picsum.photos/450/300?grayscale',
-    iconUrl: 'https://picsum.photos/32/32?grayscale',
+    type: 'image',
   },
   e: {
     id: 'e',
@@ -42,10 +41,8 @@ export const mockWidgetData: Record<string, WidgetData> = {
   },
   f: {
     id: 'f',
-    title: 'Widget 6',
     contentUrl: 'https://picsum.photos/400/400?grayscale',
-    href: 'https://picsum.photos/400/400?grayscale',
-    iconUrl: 'https://picsum.photos/32/32?grayscale',
+    type: 'image',
   },
   g: {
     id: 'g',

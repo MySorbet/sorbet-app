@@ -34,18 +34,21 @@ export const Widget = ({
   title,
   userTitle,
   contentUrl,
-  href,
   loading = false,
   type,
   size = 'A',
   editable = false,
   onUpdate,
   showPlaceholder = true,
+  ...props
 }: WidgetProps) => {
+  // This is a little hack because we made href nullable. (which we had to do since we need it to be nullable in the reducer)
+  const href = props.href ?? undefined;
   if (type === 'image') {
     return (
       <ImageWidget
         contentUrl={contentUrl}
+        href={href}
         className='animate-in fade-in-0 zoom-in-0 max-h-[390px] max-w-[390px] select-none duration-300'
         loading={loading}
       />
