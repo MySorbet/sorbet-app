@@ -4,12 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
-  Link2,
+  Link,
   RectangleHorizontal,
   RectangleVertical,
   Square,
   X,
 } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -17,18 +18,18 @@ import { isValidUrl, normalizeUrl } from '@/components/profile/widgets/util';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { LinkCheckIcon, LinkCheckIconHandle } from '@/components/ui/link-check';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
+import { useAfter } from '@/hooks/use-after';
 import { cn } from '@/lib/utils';
-import LinkCheck from '~/svg/link-check.svg';
 
 import { WidgetSize, WidgetSizes } from '../grid-config';
 import { ControlButton } from './control-button';
-
 // TODO:
 // integrate better with design tokens
 // better animations (maybe use a slider like in tabs component)
@@ -80,15 +81,28 @@ export const WidgetControls = ({
   const link = useWatch({ name: 'link', control: form.control });
 
   // Transform '' to null on submit to indicate clearing the link
-  const onSubmit = (data: FormSchema) => {
-    console.log('onSubmit', data);
-    if (data.link === '') {
+  const addLink = useAfter((link: string) => {
+    if (link === '') {
       onAddLink?.(null);
     } else {
-      onAddLink?.(normalizeUrl(data.link) ?? null);
+      onAddLink?.(normalizeUrl(link) ?? null);
     }
+  });
+
+  const onSubmit = (data: FormSchema) => {
+    addLink(data.link);
     setIsPopoverOpen?.(false);
   };
+
+  // Animate the link check icon when the link is set
+  const linkCheckRef = useRef<LinkCheckIconHandle>(null);
+  useEffect(() => {
+    if (href) {
+      linkCheckRef.current?.startAnimation();
+    } else {
+      linkCheckRef.current?.stopAnimation();
+    }
+  }, [href]);
 
   // TODO: We could handle the popover close and clear the link if its not valid
 
@@ -121,9 +135,13 @@ export const WidgetControls = ({
             <PopoverTrigger asChild>
               <ControlButton isActive={isPopoverOpen}>
                 {href ? (
-                  <LinkCheck className='size-4' />
+                  <LinkCheckIcon
+                    ref={linkCheckRef}
+                    disableHoverAnimation
+                    className='[&>svg]:size-4'
+                  />
                 ) : (
-                  <Link2 className='size-4' />
+                  <Link className='size-4' />
                 )}
                 <VisuallyHidden>Add a link</VisuallyHidden>
               </ControlButton>
