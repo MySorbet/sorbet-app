@@ -2,7 +2,7 @@ import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { WidgetControls } from './widget-controls';
+import { ImageWidgetControls, WidgetControls } from './widget-controls';
 
 const meta: Meta<typeof WidgetControls> = {
   title: 'Profile/WidgetControls',
@@ -49,7 +49,13 @@ export const WithState: Story = {
 export const WithLink: Story = {
   args: {
     size: 'A',
-    href: 'https://www.google.com',
     onAddLink: fn(),
+    controls: ImageWidgetControls,
+  },
+};
+export const WithLinkPrefilled: Story = {
+  args: {
+    ...WithLink.args,
+    href: 'https://www.google.com',
   },
 };

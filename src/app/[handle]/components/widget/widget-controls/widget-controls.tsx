@@ -138,7 +138,7 @@ export const WidgetControls = ({
                             <Button
                               variant='ghost'
                               size='sm'
-                              className='text-muted-foreground fade-in animate-in h-fit p-1'
+                              className='text-muted-foreground fade-in animate-in -mr-1 h-fit p-1'
                               onClick={() => field.onChange('')}
                               type='button'
                             >
