@@ -16,6 +16,8 @@ interface ImageWidgetProps {
   loading?: boolean;
 }
 
+// TODO: Is it semantically ok to have an anchor for the root even if there is no href?
+
 /**
  * Full bleed image widget. To be rendered by a higher up widget component.
  *
@@ -27,16 +29,11 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
   className,
   loading,
 }) => {
-  const DivOrAnchor = href ? 'a' : 'div';
-  const anchorProps = {
-    href,
-    target: '_blank',
-    rel: 'noopener noreferrer',
-  };
-
   return (
-    <DivOrAnchor
-      {...(href ? anchorProps : {})}
+    <a
+      href={href}
+      target='_blank'
+      rel='noopener noreferrer'
       draggable={false}
       className={cn(
         'relative block size-full overflow-hidden rounded-2xl',
@@ -70,6 +67,6 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
           </TooltipProvider>
         </div>
       )}
-    </DivOrAnchor>
+    </a>
   );
 };
