@@ -28,17 +28,18 @@ import LinkCheck from '~/svg/link-check.svg';
 import { WidgetSize, WidgetSizes } from '../grid-config';
 import { ControlButton } from './control-button';
 
-// TODO: There is a lot to do here:
-
+// TODO:
 // integrate better with design tokens
 // better animations (maybe use a slider like in tabs component)
 // stroke is strange on the squares
+// This should close when its wrapper hides controls
 
-// Very similar to the control bar
-
-// TODO: This should close when its wrapper hides controls
 /**
- * Size controls for a widget ordered B, D, C, A
+ * Size controls for a widget ordered by default B, D, C, A
+ * Also renders a link control if the `controls` prop includes 'link'
+ * You can pick the available controls through the `controls` prop
+ *
+ * Similar to the `<ControlBar />`
  */
 export const WidgetControls = ({
   size,
@@ -55,37 +56,34 @@ export const WidgetControls = ({
 }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
+    values: {
+      link: href ?? '',
+    },
     defaultValues: {
       link: href ?? '',
     },
-    mode: 'onChange',
+    mode: 'all',
   });
 
   const link = useWatch({ name: 'link', control: form.control });
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  // Transform '' to null on submit to indicate clearing the link
   const onSubmit = (data: FormSchema) => {
+    console.log('onSubmit', data);
     if (data.link === '') {
       onAddLink?.(null);
     } else {
       onAddLink?.(normalizeUrl(data.link) ?? null);
     }
-    handlePopoverOpenChange(false);
+    setIsPopoverOpen(false);
   };
 
-  // const reset = useAfter(() => form.reset({ link: href ?? '' }));
-  const handlePopoverOpenChange = (open: boolean) => {
-    setIsPopoverOpen(open);
-    // TODO: Should we reset the form when the popover closes? OR should we submit it?
-    // Maybe: close when no valid url: reset
-    //        close when url is valid, submit
-    //        close from submit, do nothing
-    // !open && reset();
-  };
+  // TODO: We could handle the popover close and clear the link if its not valid
 
   return (
-    <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverAnchor asChild>
         <div
           className={cn(

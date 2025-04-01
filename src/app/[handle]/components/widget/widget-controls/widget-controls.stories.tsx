@@ -59,3 +59,17 @@ export const WithLinkPrefilled: Story = {
     href: 'https://www.google.com',
   },
 };
+
+export const WithLinkState: Story = {
+  args: {
+    size: 'A',
+    controls: ImageWidgetControls,
+  },
+  render: (args) => {
+    const [, setLink] = useArgs<{ href: string | null }>();
+
+    return (
+      <WidgetControls {...args} onAddLink={(link) => setLink({ href: link })} />
+    );
+  },
+};
