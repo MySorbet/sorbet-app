@@ -50,7 +50,7 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
           />
           {loading && <Spinner className='absolute left-3 top-3' />}
           {href && (
-            <ExternalLink className='bg-muted/30 absolute right-3 top-3 size-5 rounded-sm p-1 backdrop-blur-sm' />
+            <ExternalLink className='bg-background/40 absolute right-3 top-3 size-5 rounded-sm p-1 backdrop-blur-sm' />
           )}
         </>
       ) : (
