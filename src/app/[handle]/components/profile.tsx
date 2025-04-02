@@ -96,6 +96,7 @@ export const Profile = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+                className='@3xl:mb-20' // Little hack to make sure control bar doesn't overlap the bottommost widget controls
               >
                 <ErrorBoundary FallbackComponent={GridErrorFallback}>
                   <WidgetGrid immutable={!isMine || isMobile} />
