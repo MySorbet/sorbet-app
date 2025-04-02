@@ -3,13 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PopoverAnchor } from '@radix-ui/react-popover';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import {
-  Link,
-  RectangleHorizontal,
-  RectangleVertical,
-  Square,
-  X,
-} from 'lucide-react';
+import { Link, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -28,7 +22,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAfter } from '@/hooks/use-after';
 import { cn } from '@/lib/utils';
 
-import { WidgetSize, WidgetSizes } from '../grid-config';
+import { LayoutSizes, WidgetSize, WidgetSizes } from '../grid-config';
 import { ControlButton } from './control-button';
 // TODO:
 // integrate better with design tokens
@@ -123,7 +117,7 @@ export const WidgetControls = ({
                 isActive={size === s}
                 onClick={() => onSizeChange(s)}
               >
-                {SizeIcons[s]}
+                <SizeIcon size={s} />
               </ControlButton>
             ))}
           {/* Separator (only if we have link or crop) */}
@@ -198,12 +192,34 @@ export const WidgetControls = ({
   );
 };
 
-/** Icons for each size button */
-const SizeIcons: Record<WidgetSize, React.ReactNode> = {
-  B: <Square size={11} />,
-  D: <RectangleHorizontal size={19} />,
-  C: <RectangleVertical size={19} />,
-  A: <Square size={19} />,
+/** Generate an svg to be rendered as an icon for a given widget size */
+const SizeIcon = ({ size }: { size: WidgetSize }) => {
+  const { w: unitWidth, h: unitHeight } = LayoutSizes[size];
+  const scale = 4;
+  // Scale everything down by 1.2 to fit in the 16x16 box with room for stroke
+  const scaleFactor = 1.2;
+  const width = (unitWidth * scale) / scaleFactor;
+  const height = (unitHeight * scale) / scaleFactor;
+
+  return (
+    <svg
+      width='16'
+      height='16'
+      viewBox='0 0 16 16'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <rect
+        x={8 - width / 2}
+        y={8 - height / 2}
+        width={width}
+        height={height}
+        rx='0.5'
+        strokeWidth='1.3'
+        stroke='currentColor'
+      />
+    </svg>
+  );
 };
 
 /** Schema to validate the link input */
@@ -214,7 +230,12 @@ const schema = z.object({
 });
 type FormSchema = z.infer<typeof schema>;
 
-export const Controls = [...WidgetSizes, 'link'] as const; // TODO: Add crop
+/** All possible controls for a widget */ // TODO: Add crop
+export const Controls = [...WidgetSizes, 'link'] as const;
 export type Control = (typeof Controls)[number];
-const WidgetSizeControls: Control[] = ['B', 'D', 'C', 'A']; // Order matters // TODO: Add E
-export const ImageWidgetControls: Control[] = ['B', 'D', 'C', 'A', 'link']; // No E size for images (make sure to validate this on updates)
+
+/** Default set of size Controls for a regular widget. The order matters. */
+const WidgetSizeControls: Control[] = ['B', 'E', 'D', 'C', 'A'];
+
+/** Default set of size Controls for an image widget. The order matters. There is no E size for images */
+export const ImageWidgetControls: Control[] = ['B', 'D', 'C', 'A', 'link'];

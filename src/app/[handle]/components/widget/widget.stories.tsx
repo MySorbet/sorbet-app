@@ -1,10 +1,11 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
+import { WidgetSize } from './grid-config';
 import { UrlType, UrlTypes } from './url-util';
-import { Widget } from './widget';
+import { Widget, WidgetProps } from './widget';
 
 /** Helper to create a container based on size prop */
-const withSizeContainer = (Story: StoryFn, { args }: { args: any }) => {
+const withSizeContainer = (Story: StoryFn, { args }: { args: WidgetProps }) => {
   const config = sizeConfigs[args.size as keyof typeof sizeConfigs];
   return (
     <div style={{ height: `${config.height}px`, width: `${config.width}px` }}>
@@ -13,11 +14,13 @@ const withSizeContainer = (Story: StoryFn, { args }: { args: any }) => {
   );
 };
 
-const sizeConfigs = {
+// TODO: Drive these from grid config
+const sizeConfigs: Record<WidgetSize, { width: number; height: number }> = {
   A: { width: 390, height: 390 },
   B: { width: 175, height: 175 },
   C: { width: 175, height: 390 },
   D: { width: 390, height: 175 },
+  E: { width: 390, height: 68 },
 } as const;
 
 const urls = {
@@ -73,6 +76,12 @@ export const D: Story = {
   args: {
     ...Default.args,
     size: 'D',
+  },
+};
+export const E: Story = {
+  args: {
+    ...Default.args,
+    size: 'E',
   },
 };
 

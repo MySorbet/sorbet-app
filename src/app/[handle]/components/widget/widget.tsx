@@ -12,7 +12,7 @@ import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
 
-type WidgetProps = Omit<WidgetData, 'id'> & {
+export type WidgetProps = Omit<WidgetData, 'id'> & {
   loading?: boolean;
   size: WidgetSize;
   editable?: boolean;
@@ -66,6 +66,7 @@ export const Widget = ({
       className={cn(
         'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
+        size === 'E' && 'justify-center',
         'size-full max-h-[390px] max-w-[390px]',
         'animate-in fade-in-0 zoom-in-0 duration-300' // Always have an enter animation. We hide the first one with a full grid fade anyway.
       )}
@@ -75,15 +76,28 @@ export const Widget = ({
       draggable={false} // disable HTML5 dnd
       // TODO: Consider allowing dragging links to other programs with ondragstart="event.dataTransfer.setData('text/plain', href)">
     >
-      <CardHeader className={cn('space-y-1', size === 'D' && 'w-[60%]')}>
-        {urlType ? (
-          <SocialIcon type={urlType} />
-        ) : loading ? (
-          <Skeleton className='size-10' />
-        ) : (
-          <Icon src={iconUrl} />
+      <CardHeader
+        className={cn(
+          'space-y-1',
+          size === 'D' && 'w-[60%]',
+          size === 'E' && 'flex-row items-center gap-1 space-y-0 py-4'
         )}
-        <CardTitle className={cn('text-sm font-normal')}>
+      >
+        {urlType ? (
+          <SocialIcon type={urlType} className={cn(size === 'E' && 'size-6')} />
+        ) : loading ? (
+          <Skeleton
+            className={cn(
+              'size-10 shrink-0 rounded-lg',
+              size === 'E' && 'size-6'
+            )}
+          />
+        ) : (
+          <Icon src={iconUrl} mini={size === 'E'} />
+        )}
+        <CardTitle
+          className={cn('text-sm font-normal', size === 'E' && 'flex-1')}
+        >
           <InlineEdit
             value={userTitle || fallbackTitle}
             editable={editable}
@@ -94,54 +108,57 @@ export const Widget = ({
             className={cn(
               'line-clamp-3 break-words',
               editable &&
-                'hover:bg-muted -ml-2 rounded-sm px-2 py-1 transition-colors duration-200'
+                'hover:bg-muted -ml-2 rounded-sm px-2 py-1 transition-colors duration-200',
+              size === 'E' && 'm-0 line-clamp-1'
             )}
           />
         </CardTitle>
       </CardHeader>
       {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
-      <CardContent
-        className={cn(
-          'flex flex-1 items-end justify-end',
-          size === 'D' && 'pl-0 pt-6'
-        )}
-      >
-        {size !== 'B' && (
-          <>
-            {loading ? (
-              <Skeleton
-                className={cn(
-                  size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
-                  size === 'C' && 'aspect-square w-full',
-                  size === 'D' && 'aspect-square h-full'
-                )}
-              />
-            ) : contentUrl ? (
-              <img
-                src={contentUrl}
-                alt={title}
-                className={cn(
-                  'rounded-md object-cover',
-                  size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
-                  // B doesn't have a content image
-                  size === 'C' && 'aspect-square w-full',
-                  size === 'D' && 'aspect-square h-full'
-                )}
-              />
-            ) : (
-              showPlaceholder && (
-                <ContentPlaceholder
+      {size !== 'E' && (
+        <CardContent
+          className={cn(
+            'flex flex-1 items-end justify-end',
+            size === 'D' && 'pl-0 pt-6'
+          )}
+        >
+          {size !== 'B' && (
+            <>
+              {loading ? (
+                <Skeleton
                   className={cn(
-                    size === 'A' && 'aspect-[1200/630] w-full',
+                    size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
                     size === 'C' && 'aspect-square w-full',
                     size === 'D' && 'aspect-square h-full'
                   )}
                 />
-              )
-            )}
-          </>
-        )}
-      </CardContent>
+              ) : contentUrl ? (
+                <img
+                  src={contentUrl}
+                  alt={title}
+                  className={cn(
+                    'rounded-md object-cover',
+                    size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
+                    // B doesn't have a content image
+                    size === 'C' && 'aspect-square w-full',
+                    size === 'D' && 'aspect-square h-full'
+                  )}
+                />
+              ) : (
+                showPlaceholder && (
+                  <ContentPlaceholder
+                    className={cn(
+                      size === 'A' && 'aspect-[1200/630] w-full',
+                      size === 'C' && 'aspect-square w-full',
+                      size === 'D' && 'aspect-square h-full'
+                    )}
+                  />
+                )
+              )}
+            </>
+          )}
+        </CardContent>
+      )}
     </a>
   );
 };
@@ -150,23 +167,27 @@ export const Widget = ({
  * Local component to render a favicon.
  * - If `src` is not given, a default link icon will be rendered.
  */
-const Icon: React.FC<React.ImgHTMLAttributes<HTMLImageElement>> = ({
-  src,
-  className,
-  ...rest
-}) => {
+const Icon: React.FC<
+  React.HTMLAttributes<HTMLDivElement> & { src?: string; mini?: boolean }
+> = ({ src, className, mini = false, ...rest }) => {
   return (
-    <div className='flex size-10 items-center justify-center rounded-md border p-2'>
+    <div
+      className={cn(
+        'flex size-10 shrink-0 items-center justify-center rounded-lg border p-2',
+        mini && 'size-6 p-1',
+        mini && src && 'rounded-none border-none p-0',
+        className
+      )}
+      {...rest}
+    >
       {src ? (
         <img
           className={cn(
-            'size-full',
-            'rounded-sm', // opt all favicons in to a litttle bit of rounding
-            className
+            'size-full rounded-sm', // opt all favicons in to a litttle bit of rounding
+            mini && 'rounded-lg' // More if mini
           )}
           src={src}
           alt='Icon for widget'
-          {...rest}
         />
       ) : (
         // In the case of no src url, render a link icon.
