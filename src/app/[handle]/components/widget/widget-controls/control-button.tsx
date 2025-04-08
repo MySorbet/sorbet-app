@@ -2,6 +2,10 @@ import { forwardRef } from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Base button for widget controls.
+ * TODO: Use design tokens
+ */
 export const ControlButton = forwardRef<
   HTMLButtonElement,
   {

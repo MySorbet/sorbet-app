@@ -2,7 +2,8 @@ import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { ImageWidgetControls, WidgetControls } from './widget-controls';
+import { ImageControls } from './control-config';
+import { WidgetControls } from './widget-controls';
 
 const meta: Meta<typeof WidgetControls> = {
   title: 'Profile/WidgetControls',
@@ -10,31 +11,26 @@ const meta: Meta<typeof WidgetControls> = {
   parameters: {
     layout: 'centered',
   },
-  decorators: [
-    (Story) => (
-      <div className='h-fit'>
-        <Story />
-      </div>
-    ),
-  ],
+  args: {
+    size: 'A',
+    onSizeChange: fn(),
+    onAddLink: fn(),
+  },
 } satisfies Meta<typeof WidgetControls>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    size: 'A',
-    onSizeChange: fn(),
-  },
-};
+export const Default: Story = {};
 
-export const WithState: Story = {
+export const WithLinkAndInteractive: Story = {
+  name: 'With Link and Interactive',
   args: {
     size: 'A',
-    controls: ImageWidgetControls,
-    isPopoverOpen: true,
+    controls: ImageControls,
+    isPopoverOpen: false,
+    href: 'https://www.google.com',
   },
   render: (args) => {
     const [, setArgs] = useArgs();
@@ -44,35 +40,8 @@ export const WithState: Story = {
         {...args}
         onSizeChange={(newSize) => setArgs({ size: newSize })}
         setIsPopoverOpen={(isPopoverOpen) => setArgs({ isPopoverOpen })}
+        onAddLink={(link) => setArgs({ href: link })}
       />
-    );
-  },
-};
-
-export const WithLink: Story = {
-  args: {
-    size: 'A',
-    onAddLink: fn(),
-    controls: ImageWidgetControls,
-  },
-};
-export const WithLinkPrefilled: Story = {
-  args: {
-    ...WithLink.args,
-    href: 'https://www.google.com',
-  },
-};
-
-export const WithLinkState: Story = {
-  args: {
-    size: 'A',
-    controls: ImageWidgetControls,
-  },
-  render: (args) => {
-    const [, setLink] = useArgs<{ href: string | null }>();
-
-    return (
-      <WidgetControls {...args} onAddLink={(link) => setLink({ href: link })} />
     );
   },
 };

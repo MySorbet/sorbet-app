@@ -21,11 +21,8 @@ import {
 import styles from './rgl-custom.module.css';
 import { useWidgets } from './use-widget-context';
 import { Widget } from './widget';
-import {
-  Control,
-  ImageWidgetControls,
-  WidgetControls,
-} from './widget-controls/widget-controls';
+import { Control, ImageControls } from './widget-controls/control-config';
+import { WidgetControls } from './widget-controls/widget-controls';
 import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
 
 // Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
@@ -112,7 +109,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                     dragging={isDragging}
                     href={widget.href}
                     controls={
-                      widget.type === 'image' ? ImageWidgetControls : undefined
+                      widget.type === 'image' ? ImageControls : undefined
                     }
                   />
                 )}
