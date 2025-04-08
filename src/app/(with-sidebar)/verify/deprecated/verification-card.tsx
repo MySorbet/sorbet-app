@@ -244,7 +244,7 @@ const MissingEmailTooltip = ({
     <Tooltip>
       <TooltipTrigger>{children}</TooltipTrigger>
       {showTooltip && (
-        <TooltipContent className='max-w-72'>
+        <TooltipContent>
           You must have an email associated with your sorbet account to get
           verified
         </TooltipContent>

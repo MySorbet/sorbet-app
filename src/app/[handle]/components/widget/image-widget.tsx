@@ -59,7 +59,7 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
             <TooltipTrigger>
               <ImageOff className='text-muted-foreground size-8' />
             </TooltipTrigger>
-            <TooltipContent className='max-w-56'>
+            <TooltipContent>
               Something isn't right with this image. Delete it and try again.
             </TooltipContent>
           </Tooltip>
