@@ -17,11 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-import {
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useAfter } from '@/hooks/use-after';
 
@@ -81,19 +77,17 @@ export const ControlBar = ({
               <MobilePopoverButton />
             ) : (
               <div className='flex items-center gap-2'>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <ControlBarIconButton>
-                          <Link2 />
-                          <VisuallyHidden>Add a link</VisuallyHidden>
-                        </ControlBarIconButton>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Add a link</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <ControlBarIconButton>
+                        <Link2 />
+                        <VisuallyHidden>Add a link</VisuallyHidden>
+                      </ControlBarIconButton>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>Add a link</TooltipContent>
+                </Tooltip>
                 <PopoverContent
                   className='relative border-none p-0'
                   side='top'

@@ -13,7 +13,6 @@ import { Progress } from '@/components/ui/progress';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { KYCStatus, TOSStatus } from '@/types';
@@ -242,16 +241,14 @@ const MissingEmailTooltip = ({
   showTooltip: boolean;
 }) => {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>{children}</TooltipTrigger>
-        {showTooltip && (
-          <TooltipContent className='max-w-72'>
-            You must have an email associated with your sorbet account to get
-            verified
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger>{children}</TooltipTrigger>
+      {showTooltip && (
+        <TooltipContent className='max-w-72'>
+          You must have an email associated with your sorbet account to get
+          verified
+        </TooltipContent>
+      )}
+    </Tooltip>
   );
 };

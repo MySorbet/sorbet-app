@@ -15,11 +15,17 @@ import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+
+/* 
+ * Changelog
+ * 
+ * 2025-04-08:
+ * - Removed TooltipProvider (root layout provides this)
+ */
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -133,7 +139,6 @@ const SidebarProvider = React.forwardRef<
 
     return (
       <SidebarContext.Provider value={contextValue}>
-        <TooltipProvider delayDuration={0}>
           <div
             style={
               {
@@ -151,7 +156,6 @@ const SidebarProvider = React.forwardRef<
           >
             {children}
           </div>
-        </TooltipProvider>
       </SidebarContext.Provider>
     )
   }

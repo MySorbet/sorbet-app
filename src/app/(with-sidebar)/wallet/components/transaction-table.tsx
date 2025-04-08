@@ -6,7 +6,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { formatCurrency } from '@/lib/currency';
@@ -167,32 +166,30 @@ const AddressText = ({ address }: { address: string }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <TooltipProvider>
-      <Tooltip open={open || isCopied}>
-        <TooltipTrigger asChild>
-          <button
-            type='button'
-            className='cursor-pointer'
-            onClick={() => {
+    <Tooltip open={open || isCopied}>
+      <TooltipTrigger asChild>
+        <button
+          type='button'
+          className='cursor-pointer'
+          onClick={() => {
+            setOpen(!open);
+            handleClick();
+          }}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          onTouchStart={() => setOpen(!open)}
+          onKeyDown={(e) => {
+            e.preventDefault();
+            if (e.key === 'Enter') {
               setOpen(!open);
               handleClick();
-            }}
-            onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
-            onTouchStart={() => setOpen(!open)}
-            onKeyDown={(e) => {
-              e.preventDefault();
-              if (e.key === 'Enter') {
-                setOpen(!open);
-                handleClick();
-              }
-            }}
-          >
-            {formattedAddress}
-          </button>
-        </TooltipTrigger>
-        <TooltipContent>{isCopied ? 'Copied!' : 'Copy'}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+            }
+          }}
+        >
+          {formattedAddress}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{isCopied ? 'Copied!' : 'Copy'}</TooltipContent>
+    </Tooltip>
   );
 };

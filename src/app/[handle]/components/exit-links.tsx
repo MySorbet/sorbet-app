@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/use-auth';
@@ -58,45 +57,41 @@ export const ExitLinks = ({
 
 const XYZLink = () => {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <a
-            href='https://mysorbet.xyz'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='bg-secondary text-muted-foreground hover:bg-muted-foreground/20 size-6 rounded-full p-1 transition-all duration-200 hover:scale-110'
-          >
-            <Globe className='size-4' />
-          </a>
-        </TooltipTrigger>
-        <TooltipContent side='top' sideOffset={10}>
-          Visit our site
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <a
+          href='https://mysorbet.xyz'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='bg-secondary text-muted-foreground hover:bg-muted-foreground/20 size-6 rounded-full p-1 transition-all duration-200 hover:scale-110'
+        >
+          <Globe className='size-4' />
+        </a>
+      </TooltipTrigger>
+      <TooltipContent side='top' sideOffset={10}>
+        Visit our site
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
 const TelegramLink = () => {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <a
-            className='bg-secondary text-muted-foreground hover:bg-muted-foreground/20 size-6 rounded-full p-1 transition-all duration-200 hover:scale-110'
-            href='https://t.me/sorbetcreativecollective/1'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            {/* 14px and optically centered */}
-            <Telegram className='size-[0.875rem] pt-0.5' />
-          </a>
-        </TooltipTrigger>
-        <TooltipContent side='top' sideOffset={10}>
-          Join the community
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <a
+          className='bg-secondary text-muted-foreground hover:bg-muted-foreground/20 size-6 rounded-full p-1 transition-all duration-200 hover:scale-110'
+          href='https://t.me/sorbetcreativecollective/1'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          {/* 14px and optically centered */}
+          <Telegram className='size-[0.875rem] pt-0.5' />
+        </a>
+      </TooltipTrigger>
+      <TooltipContent side='top' sideOffset={10}>
+        Join the community
+      </TooltipContent>
+    </Tooltip>
   );
 };

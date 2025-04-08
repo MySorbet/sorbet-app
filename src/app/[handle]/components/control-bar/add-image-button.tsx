@@ -10,7 +10,6 @@ import { buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -42,33 +41,31 @@ export const AddImageButton = ({
   };
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <label
-            htmlFor='upload-image'
-            tabIndex={0}
-            onKeyDown={(e) => {
-              e.key === 'Enter' && e.currentTarget.click();
-            }}
-            // TODO: These styles are duplicates of the ControlBarIconButton, but we need to apply them to the label for this to work. Any options?
-            className={cn(
-              buttonVariants({ variant: 'secondary' }),
-              'h-fit cursor-pointer border border-[#E5E7EB] p-1 transition-transform hover:scale-110'
-            )}
-          >
-            <input
-              id='upload-image'
-              type='file'
-              className='hidden'
-              onChange={handleInputChange}
-              accept={validImageExtensionsWithDots.join(',')}
-            />
-            <ImageIcon aria-hidden='true' />
-          </label>
-        </TooltipTrigger>
-        <TooltipContent>Add an image</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <label
+          htmlFor='upload-image'
+          tabIndex={0}
+          onKeyDown={(e) => {
+            e.key === 'Enter' && e.currentTarget.click();
+          }}
+          // TODO: These styles are duplicates of the ControlBarIconButton, but we need to apply them to the label for this to work. Any options?
+          className={cn(
+            buttonVariants({ variant: 'secondary' }),
+            'h-fit cursor-pointer border border-[#E5E7EB] p-1 transition-transform hover:scale-110'
+          )}
+        >
+          <input
+            id='upload-image'
+            type='file'
+            className='hidden'
+            onChange={handleInputChange}
+            accept={validImageExtensionsWithDots.join(',')}
+          />
+          <ImageIcon aria-hidden='true' />
+        </label>
+      </TooltipTrigger>
+      <TooltipContent>Add an image</TooltipContent>
+    </Tooltip>
   );
 };

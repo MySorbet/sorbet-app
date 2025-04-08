@@ -12,7 +12,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { featureFlags } from '@/lib/flags';
@@ -201,44 +200,41 @@ export const AddWidgets: React.FC<AddWidgetsProps> = ({
 
         <div className='flex items-center gap-2'>
           {featureFlags.sectionTitles && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant='ghost'
-                    className='h-fit p-0'
-                    onClick={addSectionTitle}
-                    disabled={loading}
-                  >
-                    <SectionTitleIcon className='hover:text-sorbet size-5' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Add section title</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <label
-                  className={cn(
-                    'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
-                    loading && loadingClasses
-                  )}
+                <Button
+                  variant='ghost'
+                  className='h-fit p-0'
+                  onClick={addSectionTitle}
+                  disabled={loading}
                 >
-                  <input
-                    type='file'
-                    className='hidden'
-                    onChange={handleAddImageClick}
-                    disabled={loading}
-                    accept='image/*'
-                  />
-                  <ImagePlus size={22} />
-                </label>
+                  <SectionTitleIcon className='hover:text-sorbet size-5' />
+                </Button>
               </TooltipTrigger>
-              <TooltipContent>Upload custom image as widget</TooltipContent>
+              <TooltipContent>Add section title</TooltipContent>
             </Tooltip>
-          </TooltipProvider>
+          )}
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <label
+                className={cn(
+                  'hover:text-sorbet align-center flex cursor-pointer items-center justify-center',
+                  loading && loadingClasses
+                )}
+              >
+                <input
+                  type='file'
+                  className='hidden'
+                  onChange={handleAddImageClick}
+                  disabled={loading}
+                  accept='image/*'
+                />
+                <ImagePlus size={22} />
+              </label>
+            </TooltipTrigger>
+            <TooltipContent>Upload custom image as widget</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>
