@@ -6,10 +6,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MockAuthProvider } from './use-auth.mock';
 import { env } from '../../src/lib/env';
 import { Toaster } from '../../src/components/ui/sonner';
-import { SidebarProvider } from '../../src/components/ui/sidebar';
 import { OpenOnDesktopDrawer } from '../../src/components/common/open-on-desktop-drawer/open-on-desktop-drawer';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { baseSepolia } from 'viem/chains';
+import { TooltipProvider } from '../../src/components/ui/tooltip';
+
 /**
  * Decorator to provide the necessary providers to the story
  *
@@ -34,9 +35,11 @@ export const ProvidersDecorator = (Story: any) => {
       >
         <QueryClientProvider client={new QueryClient()}>
           <MockAuthProvider>
-            <Story />
-            <Toaster richColors position='top-right' />
-            <OpenOnDesktopDrawer />
+            <TooltipProvider delayDuration={300} skipDelayDuration={100}>
+              <Toaster richColors position='top-right' />
+              <OpenOnDesktopDrawer />
+              <Story />
+            </TooltipProvider>
           </MockAuthProvider>
         </QueryClientProvider>
       </PrivyProvider>

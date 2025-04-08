@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
@@ -60,17 +59,15 @@ export const YourInfoTab = () => {
       <div className='flex items-center justify-between gap-2'>
         <FormLabel htmlFor='tax-id-switch' className='flex items-center gap-1'>
           Tax ID
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <CircleAlert className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
-              </TooltipTrigger>
-              <TooltipContent>
-                {/* // TODO: Replace with a more detailed explanation of the tax ID field */}
-                Tax ID is not yet available. Check back soon.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CircleAlert className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
+            </TooltipTrigger>
+            <TooltipContent>
+              {/* // TODO: Replace with a more detailed explanation of the tax ID field */}
+              Tax ID is not yet available. Check back soon.
+            </TooltipContent>
+          </Tooltip>
         </FormLabel>
         <Switch id='tax-id-switch' checked={false} disabled />
       </div>

@@ -11,6 +11,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 import { PHProvider } from '@/app/posthog-provider';
 import { OpenOnDesktopDrawer } from '@/components/common/open-on-desktop-drawer/open-on-desktop-drawer';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { env } from '@/lib/env';
 
 const queryClient = new QueryClient();
@@ -34,9 +35,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           <AuthProvider>
             <PHProvider>
               <QueryClientProvider client={queryClient}>
-                <Toaster richColors position='top-right' />
-                <OpenOnDesktopDrawer />
-                {children}
+                <TooltipProvider delayDuration={300} skipDelayDuration={100}>
+                  <Toaster richColors position='top-right' />
+                  <OpenOnDesktopDrawer />
+                  {children}
+                </TooltipProvider>
               </QueryClientProvider>
             </PHProvider>
           </AuthProvider>

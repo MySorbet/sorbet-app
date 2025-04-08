@@ -10,7 +10,6 @@ import { Spinner } from '@/components/common/spinner';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -143,17 +142,15 @@ const Container = ({
 const Actions = ({ handleDownloadFile, color }: FileDisplayActionsProps) => {
   return (
     <div className='flex w-full justify-between'>
-      <TooltipProvider delayDuration={200} skipDelayDuration={100}>
-        <Tooltip>
-          <TooltipTrigger>
-            <Download
-              className={cn('h-4 w-4', color)}
-              onClick={handleDownloadFile}
-            />
-          </TooltipTrigger>
-          <TooltipContent>Download file</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <Download
+            className={cn('h-4 w-4', color)}
+            onClick={handleDownloadFile}
+          />
+        </TooltipTrigger>
+        <TooltipContent>Download file</TooltipContent>
+      </Tooltip>
     </div>
   );
 };

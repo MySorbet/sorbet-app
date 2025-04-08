@@ -1,7 +1,7 @@
 import { ExternalLink, ImageOff } from 'lucide-react';
 
 import { Spinner } from '@/components/common/spinner';
-import { TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipContent } from '@/components/ui/tooltip';
 import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -55,16 +55,14 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
         </>
       ) : (
         <div className='bg-muted flex size-full items-center justify-center'>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <ImageOff className='text-muted-foreground size-8' />
-              </TooltipTrigger>
-              <TooltipContent className='max-w-56'>
-                Something isn't right with this image. Delete it and try again.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <ImageOff className='text-muted-foreground size-8' />
+            </TooltipTrigger>
+            <TooltipContent>
+              Something isn't right with this image. Delete it and try again.
+            </TooltipContent>
+          </Tooltip>
         </div>
       )}
     </a>

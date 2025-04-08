@@ -2,6 +2,10 @@ import { forwardRef } from 'react';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * Base button for widget controls.
+ * TODO: Use design tokens
+ */
 export const ControlButton = forwardRef<
   HTMLButtonElement,
   {
@@ -15,8 +19,9 @@ export const ControlButton = forwardRef<
       ref={ref}
       type='button'
       className={cn(
-        'flex size-6 min-w-fit items-center justify-center rounded-sm text-white',
-        isActive && 'bg-[#D0ADFF] text-[#18181B]' // --purple-lightest
+        'text-primary-foreground flex size-6 min-w-fit items-center justify-center rounded-sm transition-colors',
+        isActive && 'bg-[#D0ADFF] text-[#18181B]', // --purple-lightest
+        !isActive && 'hover:bg-[#D0ADFF]/30'
       )}
       onClick={onClick}
       {...props}

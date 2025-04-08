@@ -7,7 +7,6 @@ import { checkFileValid } from '@/components/profile/widgets/util';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -55,61 +54,55 @@ export const ModifyImageControls: React.FC<ModifyImageControlsProps> = ({
 
   return (
     <div className='align-center absolute left-1/2 top-0 z-20 flex min-h-[36px] -translate-x-1/2 -translate-y-1/2 transform cursor-pointer flex-row items-center justify-center rounded-full bg-[#667085] px-2 text-white opacity-0 transition-opacity group-hover:opacity-100'>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <div className={btnClass}>
-              <label>
-                <input
-                  type='file'
-                  className='hidden'
-                  onChange={handleAddImageClick}
-                  accept='image/*'
-                />
-                <Image03 width={26} height={26} strokeWidth={2.5} />
-              </label>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>Add custom picture</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <div className={btnClass}>
+            <label>
+              <input
+                type='file'
+                className='hidden'
+                onChange={handleAddImageClick}
+                accept='image/*'
+              />
+              <Image03 width={26} height={26} strokeWidth={2.5} />
+            </label>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>Add custom picture</TooltipContent>
+      </Tooltip>
+
       {hasImage ? (
         <>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <div className={btnClass} onMouseDown={restoreImage}>
-                  <LinkedPictureIcon className='size-6 text-white' />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Use website picture</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className={btnClass} onMouseDown={restoreImage}>
+                <LinkedPictureIcon className='size-6 text-white' />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Use website picture</TooltipContent>
+          </Tooltip>
 
           <div className={dividerClass} />
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <div className={btnClass} onMouseDown={handleImageRemove}>
-                  <Trash2 size={22} />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Delete picture</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
+          <Tooltip>
+            <TooltipTrigger>
+              <div className={btnClass} onMouseDown={handleImageRemove}>
+                <Trash2 size={22} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Delete picture</TooltipContent>
+          </Tooltip>
         </>
       ) : (
         <>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <div className={btnClass} onMouseDown={restoreImage}>
-                  <LinkedPictureIcon className='size-6 text-white' />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Use website picture</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className={btnClass} onMouseDown={restoreImage}>
+                <LinkedPictureIcon className='size-6 text-white' />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Use website picture</TooltipContent>
+          </Tooltip>
         </>
       )}
     </div>

@@ -15,7 +15,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { formatWalletAddress } from '@/lib/utils';
@@ -142,36 +141,34 @@ const PaymentMethod = ({
               field.value.length === 1 && field.value.includes(method);
 
             return (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    {/* Need to wrap the checkbox in a div to prevent the tooltip from effecting the checkbox style */}
-                    <div>
-                      <Checkbox
-                        checked={field.value.includes(method)}
-                        onCheckedChange={(checked) => {
-                          field.onChange(
-                            checked
-                              ? [...field.value, method]
-                              : field.value.filter((m) => m !== method)
-                          );
-                        }}
-                        disabled={disabled || isLastSelected}
-                        id={kebabCase(title)}
-                        className='mt-2'
-                        aria-label={`Select ${title}${
-                          isLastSelected ? ' (required)' : ''
-                        }`}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  {isLastSelected && (
-                    <TooltipContent>
-                      At least one payment method is required
-                    </TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/* Need to wrap the checkbox in a div to prevent the tooltip from effecting the checkbox style */}
+                  <div>
+                    <Checkbox
+                      checked={field.value.includes(method)}
+                      onCheckedChange={(checked) => {
+                        field.onChange(
+                          checked
+                            ? [...field.value, method]
+                            : field.value.filter((m) => m !== method)
+                        );
+                      }}
+                      disabled={disabled || isLastSelected}
+                      id={kebabCase(title)}
+                      className='mt-2'
+                      aria-label={`Select ${title}${
+                        isLastSelected ? ' (required)' : ''
+                      }`}
+                    />
+                  </div>
+                </TooltipTrigger>
+                {isLastSelected && (
+                  <TooltipContent>
+                    At least one payment method is required
+                  </TooltipContent>
+                )}
+              </Tooltip>
             );
           }}
         />

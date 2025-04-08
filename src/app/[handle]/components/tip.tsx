@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
@@ -36,39 +35,35 @@ export const Tip = ({ userId }: { userId: string }) => {
   ) : (
     <Card className='animate-in fade-in-0 slide-in-from-top-5 @container flex w-full flex-col gap-2 p-4 duration-300'>
       {wallet ? (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger className='w-fit'>
-              <Badge
-                variant='success'
-                className='w-fit select-none py-1'
-                onClick={() => {
-                  wallet.disconnect();
-                }}
-              >
-                <Wallet className='mr-1 size-3 shrink-0' />
-                {formatWalletAddress(wallet?.address)}
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>Disconnect this wallet</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className='w-fit'>
+            <Badge
+              variant='success'
+              className='w-fit select-none py-1'
+              onClick={() => {
+                wallet.disconnect();
+              }}
+            >
+              <Wallet className='mr-1 size-3 shrink-0' />
+              {formatWalletAddress(wallet?.address)}
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>Disconnect this wallet</TooltipContent>
+        </Tooltip>
       ) : (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger className='w-fit'>
-              <Badge
-                variant='secondary'
-                className='w-fit select-none py-1'
-                onClick={connectWallet}
-              >
-                <Unplug className='mr-1 size-3 shrink-0' />
-                Connect
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>Connect a wallet to tip</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className='w-fit'>
+            <Badge
+              variant='secondary'
+              className='w-fit select-none py-1'
+              onClick={connectWallet}
+            >
+              <Unplug className='mr-1 size-3 shrink-0' />
+              Connect
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>Connect a wallet to tip</TooltipContent>
+        </Tooltip>
       )}
       <div className='@2xs:flex-row flex w-full flex-col gap-2'>
         <Input

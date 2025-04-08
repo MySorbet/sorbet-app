@@ -20,15 +20,13 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { useAfter } from '@/hooks/use-after';
-import { cn } from '@/lib/utils';
 
-import { LayoutSizes, WidgetSize, WidgetSizes } from '../grid-config';
+import { LayoutSizes, WidgetSize } from '../grid-config';
 import { ControlButton } from './control-button';
-// TODO:
-// integrate better with design tokens
-// better animations (maybe use a slider like in tabs component)
-// stroke is strange on the squares
-// This should close when its wrapper hides controls
+import { Control, SizeControls } from './control-config';
+import { ControlContainer } from './control-container';
+
+// TODO: better animations (maybe use a slider like in tabs component)
 
 /**
  * Size controls for a widget ordered by default B, D, C, A
@@ -42,7 +40,7 @@ export const WidgetControls = ({
   onSizeChange,
   onAddLink,
   href,
-  controls = WidgetSizeControls,
+  controls = SizeControls,
   isPopoverOpen = false,
   setIsPopoverOpen,
 }: {
@@ -100,14 +98,13 @@ export const WidgetControls = ({
 
   // TODO: We could handle the popover close and clear the link if its not valid
 
+  const showSeparator = controls.includes('link'); // TODO: Or crop
+  const showLinkButton = controls.includes('link');
+
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverAnchor asChild>
-        <div
-          className={cn(
-            'flex items-center justify-center gap-1 rounded-lg bg-[#18181B] p-1 shadow-lg'
-          )}
-        >
+        <ControlContainer>
           {/* Size Buttons */}
           {controls
             .filter((control) => control !== 'link')
@@ -120,12 +117,12 @@ export const WidgetControls = ({
                 <SizeIcon size={s} />
               </ControlButton>
             ))}
-          {/* Separator (only if we have link or crop) */}
-          {controls.includes('link') && (
+          {/* Separator */}
+          {showSeparator && (
             <Separator orientation='vertical' className='h-6 bg-[#3F3F3F]' />
           )}
           {/* Link Button */}
-          {controls.includes('link') && (
+          {showLinkButton && (
             <PopoverTrigger asChild>
               <ControlButton isActive={isPopoverOpen}>
                 {href ? (
@@ -146,7 +143,8 @@ export const WidgetControls = ({
             side='bottom'
             sideOffset={4}
             onCloseAutoFocus={(e) => {
-              // This prevents the trigger button from being focused when the popover closes. TODO: This could be an accessibility issue.
+              // This prevents the trigger button from being focused when the popover closes.
+              // TODO: This could be an accessibility issue.
               e.preventDefault();
             }}
           >
@@ -160,7 +158,7 @@ export const WidgetControls = ({
                       <Input
                         type='url'
                         placeholder='paste link'
-                        className=' text-primary-foreground border-none bg-[#18181B] focus-visible:ring-0 focus-visible:ring-offset-0'
+                        className='text-primary-foreground border-none bg-[#18181B] focus-visible:ring-0 focus-visible:ring-offset-0'
                         suffix={
                           link && (
                             <Button
@@ -186,13 +184,15 @@ export const WidgetControls = ({
               </form>
             </Form>
           </PopoverContent>
-        </div>
+        </ControlContainer>
       </PopoverAnchor>
     </Popover>
   );
 };
 
-/** Generate an svg to be rendered as an icon for a given widget size */
+// TODO: stroke is strange on the squares
+
+/** Local component to generate an SVG rendered as an icon for a given widget size */
 const SizeIcon = ({ size }: { size: WidgetSize }) => {
   const { w: unitWidth, h: unitHeight } = LayoutSizes[size];
   const scale = 4;
@@ -222,20 +222,13 @@ const SizeIcon = ({ size }: { size: WidgetSize }) => {
   );
 };
 
-/** Schema to validate the link input */
+/**
+ * Schema to validate the link input
+ * Valid of the url is valid OR the user clears the link ('')
+ */
 const schema = z.object({
   link: z.string().refine((link) => {
     return link === '' || isValidUrl(link);
   }),
 });
 type FormSchema = z.infer<typeof schema>;
-
-/** All possible controls for a widget */ // TODO: Add crop
-export const Controls = [...WidgetSizes, 'link'] as const;
-export type Control = (typeof Controls)[number];
-
-/** Default set of size Controls for a regular widget. The order matters. */
-const WidgetSizeControls: Control[] = ['B', 'E', 'D', 'C', 'A'];
-
-/** Default set of size Controls for an image widget. The order matters. There is no E size for images */
-export const ImageWidgetControls: Control[] = ['B', 'D', 'C', 'A', 'link'];

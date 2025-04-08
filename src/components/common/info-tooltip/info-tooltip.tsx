@@ -4,7 +4,6 @@ import * as React from 'react';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -15,21 +14,19 @@ export const InfoTooltip = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Info>
 >(({ children, className, ...props }, ref) => {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Info
-            ref={ref}
-            className={cn(
-              'text-muted-foreground size-4 shrink-0 cursor-help',
-              className
-            )}
-            {...props}
-          />
-        </TooltipTrigger>
-        <TooltipContent>{children}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Info
+          ref={ref}
+          className={cn(
+            'text-muted-foreground size-4 shrink-0 cursor-help',
+            className
+          )}
+          {...props}
+        />
+      </TooltipTrigger>
+      <TooltipContent>{children}</TooltipContent>
+    </Tooltip>
   );
 });
 

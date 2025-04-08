@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -50,34 +49,30 @@ export const PublishedInvoiceHeader = ({
           recipientEmail={recipientEmail}
           onConfirm={onSend}
         />
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <CopyButton
-                stringToCopy={stringToCopy}
-                className='rounded-none first:rounded-l-md'
-                aria-label='Copy invoice link'
-              />
-            </TooltipTrigger>
-            <TooltipContent side='bottom'>Copy</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <CopyButton
+              stringToCopy={stringToCopy}
+              className='rounded-none first:rounded-l-md'
+              aria-label='Copy invoice link'
+            />
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>Copy</TooltipContent>
+        </Tooltip>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant='outline'
-                className='rounded-none'
-                onClick={onDownload}
-              >
-                <VisuallyHidden>Download invoice</VisuallyHidden>
-                <Download className='size-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side='bottom'>Download</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant='outline'
+              className='rounded-none'
+              onClick={onDownload}
+            >
+              <VisuallyHidden>Download invoice</VisuallyHidden>
+              <Download className='size-4' />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom'>Download</TooltipContent>
+        </Tooltip>
 
         <Button
           variant='sorbet'

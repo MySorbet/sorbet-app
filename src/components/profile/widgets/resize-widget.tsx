@@ -11,7 +11,6 @@ import { AddLink } from '@/components/profile/widgets/add-link';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
@@ -163,21 +162,19 @@ export const ResizeWidget: React.FC<ResizeWidgetProps> = ({
           <div className={dividerClass} />
           <>
             {isSquare() ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <div
-                      className={cn(
-                        btnClass,
-                        activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
-                      )}
-                    >
-                      <Crop size={20} strokeWidth={2.5} color='#667085' />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>Fits perfectly already</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div
+                    className={cn(
+                      btnClass,
+                      activeWidget ? 'rounded-md bg-[#0ACF83]' : ''
+                    )}
+                  >
+                    <Crop size={20} strokeWidth={2.5} color='#667085' />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Fits perfectly already</TooltipContent>
+              </Tooltip>
             ) : (
               <div
                 className={cn(
