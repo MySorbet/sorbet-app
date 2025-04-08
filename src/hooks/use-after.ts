@@ -7,10 +7,10 @@ import { useCallback, useEffect, useRef } from 'react';
  * @param delay - The delay in milliseconds (defaults to the default `tailwindcss-animate` duration of 150ms)
  * @returns a function you call to kickoff running the callback after the delay
  */
-export const useAfter = <TArgs extends unknown[]>(
-  callback: (...args: TArgs) => void,
+export const useAfter = <TArgs extends unknown[], TReturn>(
+  callback: (...args: TArgs) => TReturn,
   delay = 150
-) => {
+): ((...args: TArgs) => void) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   const fn = useCallback(
