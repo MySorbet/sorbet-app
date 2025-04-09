@@ -22,8 +22,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Mobile: Story = {
+export const Disabled: Story = {
   args: {
-    isMobile: true,
+    isDisabled: true,
   },
 };

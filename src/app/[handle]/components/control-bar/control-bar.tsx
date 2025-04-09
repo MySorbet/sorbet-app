@@ -33,7 +33,7 @@ export const ControlBar = ({
   onAddImage,
   onAddLink,
   onShare,
-  isMobile,
+  isDisabled,
 }: {
   /** Called when a valid image is added */
   onAddImage?: (image: File) => void;
@@ -41,8 +41,8 @@ export const ControlBar = ({
   onAddLink?: (link: string) => void;
   /** Called when the share button is clicked */
   onShare?: () => void;
-  /** Whether the control bar is in mobile mode */
-  isMobile?: boolean;
+  /** Whether the control bar is disabled */
+  isDisabled?: boolean;
 }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -74,8 +74,8 @@ export const ControlBar = ({
               Share
             </Button>
             <Separator orientation='vertical' className='h-9' />
-            {isMobile ? (
-              <MobilePopoverButton />
+            {isDisabled ? (
+              <DisabledPopoverButton />
             ) : (
               <div className='flex items-center gap-2'>
                 <Tooltip>
@@ -140,7 +140,7 @@ const schema = z.object({
 type FormSchema = z.infer<typeof schema>;
 
 // Local component rendering a popover to let users know that editing links is desktop only
-const MobilePopoverButton = () => {
+const DisabledPopoverButton = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>

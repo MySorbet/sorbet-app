@@ -157,7 +157,7 @@ export const Profile = ({
                     onAddImage={handleAddImage}
                     onAddLink={handleAddLink}
                     onShare={() => setIsShareDialogOpen(true)}
-                    isMobile={isMobile}
+                    isDisabled={isMobile}
                   />
                 </motion.div>
               </div>
