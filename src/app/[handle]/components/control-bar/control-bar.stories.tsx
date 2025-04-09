@@ -10,9 +10,11 @@ const meta = {
     layout: 'centered',
   },
   args: {
+    isMobile: false,
     onAddImage: fn(),
     onAddLink: fn(),
     onShare: fn(),
+    onIsMobileChange: fn(),
   },
 } satisfies Meta<typeof ControlBar>;
 
@@ -25,5 +27,11 @@ export const Default: Story = {};
 export const Disabled: Story = {
   args: {
     isDisabled: true,
+  },
+};
+
+export const WithoutMobileSwitch: Story = {
+  args: {
+    onIsMobileChange: undefined,
   },
 };

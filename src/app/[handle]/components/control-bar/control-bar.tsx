@@ -33,6 +33,8 @@ export const ControlBar = ({
   onAddImage,
   onAddLink,
   onShare,
+  isMobile,
+  onIsMobileChange,
   isDisabled,
 }: {
   /** Called when a valid image is added */
@@ -43,6 +45,11 @@ export const ControlBar = ({
   onShare?: () => void;
   /** Whether the control bar is disabled */
   isDisabled?: boolean;
+
+  /** Whether the control bar is in mobile mode */
+  isMobile?: boolean;
+  /** Called when the mobile mode is toggled. Omit to hide the mobile switch */
+  onIsMobileChange?: (isMobile: boolean) => void;
 }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -64,6 +71,8 @@ export const ControlBar = ({
     setIsPopoverOpen(open);
     !open && reset();
   };
+
+  const showMobileSwitch = onIsMobileChange !== undefined;
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
@@ -124,8 +133,15 @@ export const ControlBar = ({
                 <AddImageButton onAdd={onAddImage} />
               </div>
             )}
-            <Separator orientation='vertical' className='h-9' />
-            <MobileSwitch />
+            {showMobileSwitch && (
+              <>
+                <Separator orientation='vertical' className='h-9' />
+                <MobileSwitch
+                  isMobile={Boolean(isMobile)}
+                  onIsMobileChange={onIsMobileChange}
+                />
+              </>
+            )}
           </CardContent>
         </Card>
       </PopoverAnchor>

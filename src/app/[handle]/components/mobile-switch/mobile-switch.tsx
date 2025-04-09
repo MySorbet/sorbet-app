@@ -1,14 +1,21 @@
-import { useState } from 'react';
-
 import { AnimatedTabs } from './animated-tabs';
 
-export const MobileSwitch = () => {
-  const [selectedTab, setSelectedTab] = useState(tabs[0].id);
+export const MobileSwitch = ({
+  isMobile,
+  onIsMobileChange,
+}: {
+  isMobile: boolean;
+  onIsMobileChange: (isMobile: boolean) => void;
+}) => {
+  const selectedTab = isMobile ? 'mobile' : 'desktop';
+  const onSelectTab = (tab: string) => {
+    onIsMobileChange(tab === 'mobile');
+  };
   return (
     <AnimatedTabs
       tabs={tabs}
       selectedTab={selectedTab}
-      onSelectTab={setSelectedTab}
+      onSelectTab={onSelectTab}
     />
   );
 };
