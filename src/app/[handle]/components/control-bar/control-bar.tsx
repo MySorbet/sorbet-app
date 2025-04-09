@@ -21,6 +21,7 @@ import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useAfter } from '@/hooks/use-after';
 
+import { MobileSwitch } from '../mobile-switch/mobile-switch';
 import { AddImageButton } from './add-image-button';
 
 // TODO: Read the clipboard and if it's a url, show a paste button
@@ -68,9 +69,9 @@ export const ControlBar = ({
     <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverAnchor asChild>
         <Card className='h-fit rounded-xl shadow-lg'>
-          <CardContent className='flex h-full items-center justify-between gap-4 p-2 pr-3'>
+          <CardContent className='flex h-full items-center justify-between gap-4 p-2'>
             <Button variant='sorbet' size='sm' onClick={onShare}>
-              Share profile
+              Share
             </Button>
             <Separator orientation='vertical' className='h-9' />
             {isMobile ? (
@@ -123,6 +124,8 @@ export const ControlBar = ({
                 <AddImageButton onAdd={onAddImage} />
               </div>
             )}
+            <Separator orientation='vertical' className='h-9' />
+            <MobileSwitch />
           </CardContent>
         </Card>
       </PopoverAnchor>
