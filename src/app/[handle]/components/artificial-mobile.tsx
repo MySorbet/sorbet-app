@@ -103,7 +103,7 @@ export const ArtificialMobile = ({
           animate={flashControls}
           variants={flashVariants}
         >
-          {/* Scroll area only in mobile mode (TODO: This causes rerenders, is that ok?) */}
+          {/* Scroll area only in mobile mode (Note: this causes a remount of children. If this is an issue, take a style approach) */}
           {isMobile ? (
             <ScrollArea className='size-full [mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)]'>
               {children}
