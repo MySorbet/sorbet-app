@@ -31,7 +31,7 @@ export const ArtificialMobile = ({
   const prevIsMobile = useRef(isMobile);
   const flashControls = useAnimationControls();
 
-  const mobileWidth = '448px';
+  const mobileWidth = '380px';
   const flashDuration = props.flashDuration ?? duration * 2;
 
   // Track changes to isMobile and trigger flash animation when it changes (but not on mount)
@@ -54,7 +54,7 @@ export const ArtificialMobile = ({
     mobile: {
       width: mobileWidth,
       borderWidth: '2px',
-      borderRadius: '48px',
+      borderRadius: '40px',
     },
     desktop: {
       width: '100%',
@@ -88,7 +88,7 @@ export const ArtificialMobile = ({
       <motion.div
         className={cn(
           'bg-background mx-auto size-full border-transparent transition-[border-color]',
-          isMobile && 'border-muted overflow-clip border-2 shadow-sm '
+          isMobile && 'border-muted overflow-clip border-2 py-6 shadow-sm'
         )}
         style={{ transitionDuration: `${duration}s` }}
         initial={isMobile ? 'mobile' : 'desktop'}
