@@ -1,7 +1,8 @@
+import { motion, useAnimationControls } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { motion, useAnimationControls, Variant } from 'framer-motion';
-import { useEffect, useRef } from 'react';
 
 /**
  * Fills width and height and renders children inside.
@@ -14,12 +15,14 @@ export const ArtificialMobile = ({
   isMobile,
   duration = 0.3,
   children,
+  className,
   ...props
 }: {
   isMobile?: boolean;
   children?: React.ReactNode;
   duration?: number;
   flashDuration?: number;
+  className?: string;
 }) => {
   const isInitialMount = useRef(true);
   const prevIsMobile = useRef(isMobile);
@@ -69,11 +72,12 @@ export const ArtificialMobile = ({
   };
 
   return (
-    // Root full size container which transitions the padding.
+    // Root full size container which transitions the padding
     <div
       className={cn(
         'bg-muted/70 size-full transition-[padding]',
-        isMobile && 'py-4 pb-28'
+        isMobile && 'py-4 pb-28',
+        className
       )}
       style={{ transitionDuration: `${duration}s` }}
     >
