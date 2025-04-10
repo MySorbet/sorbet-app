@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { ArtificialMobile } from '@/app/[handle]/components/artificial-mobile';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { MinimalUser } from '@/types';
@@ -59,20 +60,26 @@ export const Profile = ({
 
   useHandlePaste(addWidget, isMine && !isLoading);
 
-  // This hook fires at 768px, which we will consider the user to be on a mobile device
-  const disableControlBar = useIsMobile();
+  // This is the mobile detection we use many other places in the app. We use it to disable editing here.
+  const isMobileDevice = useIsMobile();
 
-  // Shrink the parent container to simulate a mobile view
+  // Whether or not we are using ArtificialMobile to simulate a mobile layout. Set by the mobile switch in the control bar.
   const [isArtificialMobile, setIsArtificialMobile] = useState(false);
 
-  // [81rem] is the breakpoint at which we switch from a a mobile layout to a desktop layout
+  // [81rem] is the breakpoint at which we switch from a vertical mobile layout to a horizontal desktop layout
   // We arrive at this number by finding the maximum width that can show both the left info section and the right widget grid
+  // We need to bring this breakpoint into state so that we can hide and show the mobile switch.
+  // Note that the media and container query are equivalent b/c of size-full all the way up.
+  const isMobileScreen = useMediaQuery('(max-width: 81rem)');
+
+  // Do not show artificial mobile if we are on a screen size where the profile would go into mobile mode
+  const showArtificialMobile = isArtificialMobile && !isMobileScreen;
 
   return (
     <>
       <ArtificialMobile
-        isMobile={isArtificialMobile}
-        className={cn(isArtificialMobile && 'pb-24')}
+        isMobile={showArtificialMobile}
+        className={cn(showArtificialMobile && 'pb-24')}
       >
         <div className='@container size-full'>
           {/* Main row or col of the profile. */}
@@ -113,7 +120,7 @@ export const Profile = ({
                     className={cn(!isArtificialMobile && '@[81rem]:mb-20')}
                   >
                     <ErrorBoundary FallbackComponent={GridErrorFallback}>
-                      <WidgetGrid immutable={!isMine || disableControlBar} />
+                      <WidgetGrid immutable={!isMine || isMobileDevice} />
                     </ErrorBoundary>
                   </motion.div>
                   {/* Little motion hack to prevent a flash of the exit links when the page loads */}
@@ -156,10 +163,10 @@ export const Profile = ({
               onAddImage={handleAddImage}
               onAddLink={handleAddLink}
               onShare={() => setIsShareDialogOpen(true)}
-              isDisabled={disableControlBar}
+              isDisabled={isMobileDevice}
               isMobile={isArtificialMobile}
               onIsMobileChange={
-                disableControlBar ? undefined : setIsArtificialMobile
+                isMobileScreen ? undefined : setIsArtificialMobile
               }
             />
           </motion.div>

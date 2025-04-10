@@ -20,6 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useAfter } from '@/hooks/use-after';
+import { cn } from '@/lib/utils';
 
 import { MobileSwitch } from '../mobile-switch/mobile-switch';
 import { AddImageButton } from './add-image-button';
@@ -78,7 +79,12 @@ export const ControlBar = ({
     <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverAnchor asChild>
         <Card className='h-fit rounded-xl shadow-lg'>
-          <CardContent className='flex h-full items-center justify-between gap-4 p-2'>
+          <CardContent
+            className={cn(
+              'flex h-full items-center justify-between gap-4 p-2',
+              !showMobileSwitch && 'pr-3' // concentric rounding
+            )}
+          >
             <Button variant='sorbet' size='sm' onClick={onShare}>
               Share
             </Button>
