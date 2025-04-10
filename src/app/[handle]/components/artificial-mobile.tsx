@@ -18,10 +18,13 @@ export const ArtificialMobile = ({
   className,
   ...props
 }: {
+  /** Whether the container is in mobile mode. */
   isMobile?: boolean;
-  children?: React.ReactNode;
+  /** Duration of the transition animation. Use `0` to disable. Defaults to `0.3` */
   duration?: number;
+  /** Duration of the flash animation. Use `0` to disable. Defaults to `duration * 2` */
   flashDuration?: number;
+  children?: React.ReactNode;
   className?: string;
 }) => {
   const isInitialMount = useRef(true);
