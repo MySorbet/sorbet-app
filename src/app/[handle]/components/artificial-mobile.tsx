@@ -76,7 +76,7 @@ export const ArtificialMobile = ({
     <div
       className={cn(
         'bg-muted/70 size-full transition-[padding]',
-        isMobile && 'py-4 pb-28',
+        isMobile && 'py-12',
         className
       )}
       style={{ transitionDuration: `${duration}s` }}
@@ -100,7 +100,7 @@ export const ArtificialMobile = ({
           animate={flashControls}
           variants={flashVariants}
         >
-          {/* Scroll area only in mobile mode */}
+          {/* Scroll area only in mobile mode (TODO: This causes rerenders, is that ok?) */}
           {isMobile ? (
             <ScrollArea className='size-full'>{children}</ScrollArea>
           ) : (

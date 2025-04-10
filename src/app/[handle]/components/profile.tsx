@@ -6,6 +6,7 @@ import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { ArtificialMobile } from '@/app/[handle]/components/artificial-mobile';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { MinimalUser } from '@/types';
@@ -64,115 +65,80 @@ export const Profile = ({
   // Shrink the parent container to simulate a mobile view
   const [isArtificialMobile, setIsArtificialMobile] = useState(false);
 
+  // [81rem] is the breakpoint at which we switch from a a mobile layout to a desktop layout
+  // We arrive at this number by finding the maximum width that can show both the left info section and the right widget grid
+
   return (
-    <div
-      className={cn(
-        'size-full transition-all duration-300',
-        isArtificialMobile && 'bg-muted/70 py-4 pb-28'
-      )}
-    >
-      {/* This is the container which forces a mobile view or not */}
-      <motion.div
-        className={cn(
-          '@container bg-background relative mx-auto size-full',
-          isArtificialMobile &&
-            'border-muted w-[448px] overflow-clip rounded-3xl border-2 shadow-md'
-        )}
-        initial={{ width: '100%' }}
-        animate={{
-          width: isArtificialMobile ? '448px' : '100%',
-        }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+    <>
+      <ArtificialMobile
+        isMobile={isArtificialMobile}
+        className={cn(isArtificialMobile && 'pb-24')}
       >
-        {/* Main row or col of the profile. */}
-        <motion.div
-          className='@[81rem]:flex-row @[81rem]:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity: isArtificialMobile ? [1, 0, 0, 1] : 1, // Apply the opacity trick
-          }}
-          transition={{
-            duration: 1, // Total duration
-            times: [0, 0, 0.7, 1], // Quick fade-in, hold, and fade-out
-          }}
-        >
-          {/* Left part of the profile. desktop: full height and long enough to render profile details in desktop mode. */}
-          {/* mobile: auto height and short enough to render profile details in mobile mode. */}
-          <div
-            className={cn(
-              '@[81rem]:h-full @[81rem]:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6',
-              'animate-in fade-in-0 duration-500'
-            )}
-          >
-            <ProfileDetails
-              user={user}
-              isMine={isMine}
-              onEdit={() => setIsEditing(true)}
-              onContactMe={() => setIsContactMeDialogOpen(true)}
-            />
-            <ExitLinks
-              isLoggedIn={isLoggedIn}
-              isMine={isMine}
-              className='@[81rem]:flex hidden'
-            />
-          </div>
-          {/* The right side of the profile. Should handle scroll itself (except on mobile, where the whole page will scroll*/}
-          <div className='@[81rem]:max-w-none @[81rem]:h-full @[81rem]:overflow-y-auto @[81rem]:flex-1 w-full max-w-[895px]'>
-            {showOnboarding ? (
-              <div className='flex h-full w-full items-center justify-center'>
-                <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
-              </div>
-            ) : (
-              <>
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-                  className={cn(!isArtificialMobile && '@[81rem]:mb-20')} // Little hack to make sure control bar doesn't overlap the bottommost widget controls
-                >
-                  <ErrorBoundary FallbackComponent={GridErrorFallback}>
-                    <WidgetGrid immutable={!isMine || disableControlBar} />
-                  </ErrorBoundary>
-                </motion.div>
-                {/* Little motion hack to prevent a flash of the exit links when the page loads */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                >
-                  <ExitLinks
-                    isLoggedIn={isLoggedIn}
-                    isMine={isMine}
-                    className={cn(
-                      '@[81rem]:hidden w-full items-center justify-center p-6',
-                      isMine && !isArtificialMobile && 'mb-20'
-                    )}
-                  />
-                </motion.div>
-              </>
-            )}
-          </div>
-          {/* Elements which ignore the layout of this container */}
-          <ContactMeDialog
-            open={isContactMeDialogOpen}
-            onOpenChange={setIsContactMeDialogOpen}
-            userId={user.id}
-          />
-          {isMine && (
-            <>
-              <ShareDialog
-                open={isShareDialogOpen}
-                setOpen={setIsShareDialogOpen}
-              />
-              <EditProfileSheet
-                open={isEditing}
-                setOpen={setIsEditing}
+        <div className='@container size-full'>
+          {/* Main row or col of the profile. */}
+          <div className='@[81rem]:flex-row @[81rem]:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'>
+            {/* Left info section. desktop: full height and long enough width to render its child in desktop mode. */}
+            {/* mobile: auto height and short enough to render profile details in mobile mode. */}
+            <div
+              className={cn(
+                '@[81rem]:h-full @[81rem]:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6',
+                'animate-in fade-in-0 duration-500'
+              )}
+            >
+              <ProfileDetails
                 user={user}
+                isMine={isMine}
+                onEdit={() => setIsEditing(true)}
+                onContactMe={() => setIsContactMeDialogOpen(true)}
               />
-            </>
-          )}
-        </motion.div>
-      </motion.div>
+              <ExitLinks
+                isLoggedIn={isLoggedIn}
+                isMine={isMine}
+                className='@[81rem]:flex hidden'
+              />
+            </div>
+            {/* The right side of the profile. Desktop: Handles scroll itself. Mobile: Scrolls the parent container */}
+            <div className='@[81rem]:max-w-none @[81rem]:h-full @[81rem]:overflow-y-auto @[81rem]:flex-1 w-full max-w-[895px]'>
+              {showOnboarding ? (
+                <div className='flex h-full w-full items-center justify-center'>
+                  <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
+                </div>
+              ) : (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+                    // Little hack to make sure control bar doesn't overlap the bottommost widget controls
+                    className={cn(!isArtificialMobile && '@[81rem]:mb-20')}
+                  >
+                    <ErrorBoundary FallbackComponent={GridErrorFallback}>
+                      <WidgetGrid immutable={!isMine || disableControlBar} />
+                    </ErrorBoundary>
+                  </motion.div>
+                  {/* Little motion hack to prevent a flash of the exit links when the page loads */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                  >
+                    <ExitLinks
+                      isLoggedIn={isLoggedIn}
+                      isMine={isMine}
+                      className={cn(
+                        '@[81rem]:hidden w-full items-center justify-center p-6',
+                        isMine && !isArtificialMobile && 'mb-20'
+                      )}
+                    />
+                  </motion.div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </ArtificialMobile>
+
+      {/* Elements which ignore the layout of this container */}
       {!showOnboarding && (
         <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
           <motion.div
@@ -199,6 +165,24 @@ export const Profile = ({
           </motion.div>
         </div>
       )}
-    </div>
+      <ContactMeDialog
+        open={isContactMeDialogOpen}
+        onOpenChange={setIsContactMeDialogOpen}
+        userId={user.id}
+      />
+      {isMine && (
+        <>
+          <ShareDialog
+            open={isShareDialogOpen}
+            setOpen={setIsShareDialogOpen}
+          />
+          <EditProfileSheet
+            open={isEditing}
+            setOpen={setIsEditing}
+            user={user}
+          />
+        </>
+      )}
+    </>
   );
 };
