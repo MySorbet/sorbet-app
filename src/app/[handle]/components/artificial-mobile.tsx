@@ -105,7 +105,9 @@ export const ArtificialMobile = ({
         >
           {/* Scroll area only in mobile mode (TODO: This causes rerenders, is that ok?) */}
           {isMobile ? (
-            <ScrollArea className='size-full'>{children}</ScrollArea>
+            <ScrollArea className='size-full [mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)]'>
+              {children}
+            </ScrollArea>
           ) : (
             children
           )}
