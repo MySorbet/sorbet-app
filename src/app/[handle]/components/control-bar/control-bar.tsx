@@ -20,7 +20,9 @@ import { Separator } from '@/components/ui/separator';
 import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useAfter } from '@/hooks/use-after';
+import { cn } from '@/lib/utils';
 
+import { MobileSwitch } from '../mobile-switch/mobile-switch';
 import { AddImageButton } from './add-image-button';
 
 // TODO: Read the clipboard and if it's a url, show a paste button
@@ -33,6 +35,8 @@ export const ControlBar = ({
   onAddLink,
   onShare,
   isMobile,
+  onIsMobileChange,
+  isDisabled,
 }: {
   /** Called when a valid image is added */
   onAddImage?: (image: File) => void;
@@ -40,8 +44,13 @@ export const ControlBar = ({
   onAddLink?: (link: string) => void;
   /** Called when the share button is clicked */
   onShare?: () => void;
+  /** Whether the control bar is disabled */
+  isDisabled?: boolean;
+
   /** Whether the control bar is in mobile mode */
   isMobile?: boolean;
+  /** Called when the mobile mode is toggled. Omit to hide the mobile switch */
+  onIsMobileChange?: (isMobile: boolean) => void;
 }) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -64,17 +73,24 @@ export const ControlBar = ({
     !open && reset();
   };
 
+  const showMobileSwitch = onIsMobileChange !== undefined;
+
   return (
     <Popover open={isPopoverOpen} onOpenChange={handlePopoverOpenChange}>
       <PopoverAnchor asChild>
         <Card className='h-fit rounded-xl shadow-lg'>
-          <CardContent className='flex h-full items-center justify-between gap-4 p-2 pr-3'>
-            <Button variant='sorbet' size='sm' onClick={onShare}>
-              Share profile
+          <CardContent
+            className={cn(
+              'flex h-full items-center justify-between gap-4 p-2',
+              !showMobileSwitch && 'pr-3' // concentric rounding
+            )}
+          >
+            <Button variant='sorbet' size='sm' effect='shine' onClick={onShare}>
+              Share
             </Button>
             <Separator orientation='vertical' className='h-9' />
-            {isMobile ? (
-              <MobilePopoverButton />
+            {isDisabled ? (
+              <DisabledPopoverButton />
             ) : (
               <div className='flex items-center gap-2'>
                 <Tooltip>
@@ -123,6 +139,15 @@ export const ControlBar = ({
                 <AddImageButton onAdd={onAddImage} />
               </div>
             )}
+            {showMobileSwitch && (
+              <>
+                <Separator orientation='vertical' className='h-9' />
+                <MobileSwitch
+                  isMobile={Boolean(isMobile)}
+                  onIsMobileChange={onIsMobileChange}
+                />
+              </>
+            )}
           </CardContent>
         </Card>
       </PopoverAnchor>
@@ -137,7 +162,7 @@ const schema = z.object({
 type FormSchema = z.infer<typeof schema>;
 
 // Local component rendering a popover to let users know that editing links is desktop only
-const MobilePopoverButton = () => {
+const DisabledPopoverButton = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>

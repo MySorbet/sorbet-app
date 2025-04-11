@@ -6,6 +6,8 @@ import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { ArtificialMobile } from '@/app/[handle]/components/artificial-mobile';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { MinimalUser } from '@/types';
@@ -58,113 +60,138 @@ export const Profile = ({
 
   useHandlePaste(addWidget, isMine && !isLoading);
 
-  // This hook fires at 768px, aligning perfectly with our @3xl breakpoint below
-  const isMobile = useIsMobile();
+  // This is the mobile detection we use many other places in the app. We use it to disable editing here.
+  const isMobileDevice = useIsMobile();
+
+  // Whether or not we are using ArtificialMobile to simulate a mobile layout. Set by the mobile switch in the control bar.
+  const [isArtificialMobile, setIsArtificialMobile] = useState(false);
+
+  // [81rem] is the breakpoint at which we switch from a vertical mobile layout to a horizontal desktop layout
+  // We arrive at this number by finding the maximum width that can show both the left info section and the right widget grid
+  // We need to bring this breakpoint into state so that we can hide and show the mobile switch.
+  // Note that the media and container query are equivalent b/c of size-full all the way up.
+  const isMobileScreen = useMediaQuery('(max-width: 81rem)');
+
+  // Do not show artificial mobile if we are on a screen size where the profile would go into mobile mode
+  const showArtificialMobile = isArtificialMobile && !isMobileScreen;
 
   return (
-    <div className='@container size-full'>
-      <div className='@3xl:flex-row @3xl:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'>
-        {/* Left part of the profile. desktop: full height and long enough to render profile details in desktop mode. */}
-        {/* mobile: auto height and short enough to render profile details in mobile mode. */}
-        <div
-          className={cn(
-            '@3xl:h-full @3xl:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6',
-            'animate-in fade-in-0 duration-500'
-          )}
-        >
-          <ProfileDetails
-            user={user}
-            isMine={isMine}
-            onEdit={() => setIsEditing(true)}
-            onContactMe={() => setIsContactMeDialogOpen(true)}
-          />
-          <ExitLinks
-            isLoggedIn={isLoggedIn}
-            isMine={isMine}
-            className='@3xl:flex hidden'
-          />
-        </div>
-        {/* The right side of the profile. Should handle scroll itself (except on mobile, where the whole page will scroll*/}
-        <div className='@3xl:w-auto @3xl:h-full @3xl:overflow-y-auto @3xl:flex-1 w-full'>
-          {showOnboarding ? (
-            <div className='flex h-full w-full items-center justify-center'>
-              <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
+    <>
+      <ArtificialMobile
+        isMobile={showArtificialMobile}
+        className={cn(showArtificialMobile && 'pb-24')}
+      >
+        <div className='@container size-full'>
+          {/* Main row or col of the profile. */}
+          <div className='@[81rem]:flex-row @[81rem]:overflow-y-visible flex size-full flex-col items-center overflow-y-auto'>
+            {/* Left info section. desktop: full height and long enough width to render its child in desktop mode. */}
+            {/* mobile: auto height and short enough to render profile details in mobile mode. */}
+            <div
+              className={cn(
+                '@[81rem]:h-full @[81rem]:min-w-96 flex w-[328px] flex-col justify-between gap-6 p-6',
+                'animate-in fade-in-0 duration-500'
+              )}
+            >
+              <ProfileDetails
+                user={user}
+                isMine={isMine}
+                onEdit={() => setIsEditing(true)}
+                onContactMe={() => setIsContactMeDialogOpen(true)}
+              />
+              <ExitLinks
+                isLoggedIn={isLoggedIn}
+                isMine={isMine}
+                className='@[81rem]:flex hidden'
+              />
             </div>
-          ) : (
-            <>
+            {/* The right side of the profile. Desktop: Handles scroll itself. Mobile: Scrolls the parent container */}
+            <div className='@[81rem]:max-w-none @[81rem]:h-full @[81rem]:overflow-y-auto @[81rem]:flex-1 w-full max-w-[895px]'>
+              {showOnboarding ? (
+                <div className='flex h-full w-full items-center justify-center'>
+                  <OnboardWithHandles onSubmit={handleAddMultipleWidgets} />
+                </div>
+              ) : (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+                    // Little hack to make sure control bar doesn't overlap the bottommost widget controls
+                    className={cn(!showArtificialMobile && '@[81rem]:mb-20')}
+                  >
+                    <ErrorBoundary FallbackComponent={GridErrorFallback}>
+                      <WidgetGrid immutable={!isMine || isMobileDevice} />
+                    </ErrorBoundary>
+                  </motion.div>
+                  {/* Little motion hack to prevent a flash of the exit links when the page loads */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                  >
+                    <ExitLinks
+                      isLoggedIn={isLoggedIn}
+                      isMine={isMine}
+                      className={cn(
+                        '@[81rem]:hidden w-full items-center justify-center p-6',
+                        isMine && !showArtificialMobile && 'mb-20'
+                      )}
+                    />
+                  </motion.div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </ArtificialMobile>
+
+      {/* Elements which ignore the layout of this container */}
+      <ContactMeDialog
+        open={isContactMeDialogOpen}
+        onOpenChange={setIsContactMeDialogOpen}
+        userId={user.id}
+      />
+      {isMine && (
+        <>
+          <ShareDialog
+            open={isShareDialogOpen}
+            setOpen={setIsShareDialogOpen}
+          />
+          <EditProfileSheet
+            open={isEditing}
+            setOpen={setIsEditing}
+            user={user}
+          />
+          {!showOnboarding && (
+            <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
-                className='@3xl:mb-20' // Little hack to make sure control bar doesn't overlap the bottommost widget controls
+                initial={{ y: 100, opacity: 0 }}
+                animate={
+                  !isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }
+                }
+                transition={{
+                  delay: 1,
+                  type: 'spring',
+                  stiffness: 150,
+                  damping: 30,
+                  mass: 2,
+                }}
               >
-                <ErrorBoundary FallbackComponent={GridErrorFallback}>
-                  <WidgetGrid immutable={!isMine || isMobile} />
-                </ErrorBoundary>
-              </motion.div>
-              {/* Little motion hack to prevent a flash of the exit links when the page loads */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={!isLoading ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 1, delay: 0.5 }}
-              >
-                <ExitLinks
-                  isLoggedIn={isLoggedIn}
-                  isMine={isMine}
-                  className={cn(
-                    '@3xl:hidden w-full items-center justify-center p-6',
-                    isMine && 'mb-20'
-                  )}
+                <ControlBar
+                  onAddImage={handleAddImage}
+                  onAddLink={handleAddLink}
+                  onShare={() => setIsShareDialogOpen(true)}
+                  isDisabled={isMobileDevice}
+                  isMobile={isArtificialMobile}
+                  onIsMobileChange={
+                    isMobileScreen ? undefined : setIsArtificialMobile
+                  }
                 />
               </motion.div>
-            </>
+            </div>
           )}
-        </div>
-
-        {/* Elements which ignore the layout of this container */}
-        <ContactMeDialog
-          open={isContactMeDialogOpen}
-          onOpenChange={setIsContactMeDialogOpen}
-          userId={user.id}
-        />
-        {isMine && (
-          <>
-            <ShareDialog
-              open={isShareDialogOpen}
-              setOpen={setIsShareDialogOpen}
-            />
-            <EditProfileSheet
-              open={isEditing}
-              setOpen={setIsEditing}
-              user={user}
-            />
-            {!showOnboarding && (
-              <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
-                <motion.div
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={
-                    !isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }
-                  }
-                  transition={{
-                    delay: 1,
-                    type: 'spring',
-                    stiffness: 150,
-                    damping: 30,
-                    mass: 2,
-                  }}
-                >
-                  <ControlBar
-                    onAddImage={handleAddImage}
-                    onAddLink={handleAddLink}
-                    onShare={() => setIsShareDialogOpen(true)}
-                    isMobile={isMobile}
-                  />
-                </motion.div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+        </>
+      )}
+    </>
   );
 };

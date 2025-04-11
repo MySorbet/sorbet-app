@@ -189,5 +189,29 @@
     "body": [
       "logger({ ${1:${CLIPBOARD}} }, '${TM_FILENAME} line ${TM_LINE_NUMBER}')"
     ]
+  },
+  "Storybook": {
+    "prefix": "sb",
+    "body": [
+      "import { Meta, StoryObj } from '@storybook/react';",
+      "import { fn } from '@storybook/test';",
+      "",
+      "import { ${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}} } from './${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}}';",
+      "",
+      "const meta = {",
+      "  title: '${2:Component}/${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}}',",
+      "  component: ${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}},",
+      "  parameters: {",
+      "    layout: 'centered',",
+      "  },",
+      "} satisfies Meta<typeof ${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}}>;",
+      "",
+      "export default meta;",
+      "",
+      "type Story = StoryObj<typeof ${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}}>;",
+      "",
+      "export const Default: Story = {};",
+      ""
+    ]
   }
 }

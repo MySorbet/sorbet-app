@@ -1,14 +1,12 @@
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-import React, { useState } from 'react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import React, { useEffect, useState } from 'react';
+import { Responsive as RRGL } from 'react-grid-layout';
 
 import { cn } from '@/lib/utils';
 
 import {
-  Breakpoint,
-  breakpoints,
   cols,
   getWidgetSizeFromDimensions as size,
   gw,
@@ -17,6 +15,7 @@ import {
   WidgetSize,
   wLg,
   wSm,
+  breakpoints,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
 import { useWidgets } from './use-widget-context';
@@ -24,9 +23,7 @@ import { Widget } from './widget';
 import { Control, ImageControls } from './widget-controls/control-config';
 import { WidgetControls } from './widget-controls/widget-controls';
 import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
-
-// Wrap Responsive in WidthProvider to enable it to trigger breakpoint layouts according to it's parent's size
-const ResponsiveGridLayout = WidthProvider(Responsive);
+import { useContainerQuery } from '@/hooks/use-container-query';
 
 /**
  * An RGL layout of widgets.
@@ -50,11 +47,18 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
   // Part of a little trick to allow both clicking and dragging on rgl children
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
+  // This trick puts us in control of the breakpoint via a container query rather than
+  // setting up a width listener on the grid and relying on that to trigger onBreakpointChange
+  // Note: this should also line up with `wLg` from `grid-config.ts`
+  const { ref, matches } = useContainerQuery<HTMLDivElement>('56rem');
+  useEffect(() => setBreakpoint(matches ? 'lg' : 'sm'), [matches]);
+
   return (
     <div className='@container w-full'>
       {/* This div responds to its parents size, going between a sm and lg size, which then triggers the grid breakpoint. centers the grid inside using mx-auto */}
       <div
         className='@4xl:w-[var(--wlg)] mx-auto w-[var(--wsm)]'
+        ref={ref}
         style={
           {
             '--wsm': `${wSm}px`,
@@ -62,18 +66,18 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
           } as React.CSSProperties
         }
       >
-        <ResponsiveGridLayout
+        <RRGL
           compactType='vertical'
           className={styles['rgl-custom']}
           layouts={layouts}
-          breakpoints={breakpoints}
           cols={cols}
           rowHeight={rowHeight}
           margin={margins}
           width={width}
           isResizable={false}
           isDraggable={!immutable}
-          onBreakpointChange={(b: Breakpoint) => setBreakpoint(b)}
+          breakpoints={breakpoints}
+          breakpoint={breakpoint}
           onLayoutChange={onLayoutChange}
           onDrag={() => setIsDragging(true)}
         >
@@ -116,7 +120,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
               </RGLHandle>
             );
           })}
-        </ResponsiveGridLayout>
+        </RRGL>
       </div>
     </div>
   );
