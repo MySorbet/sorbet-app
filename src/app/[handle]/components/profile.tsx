@@ -117,7 +117,7 @@ export const Profile = ({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
                     // Little hack to make sure control bar doesn't overlap the bottommost widget controls
-                    className={cn(!isArtificialMobile && '@[81rem]:mb-20')}
+                    className={cn(!showArtificialMobile && '@[81rem]:mb-20')}
                   >
                     <ErrorBoundary FallbackComponent={GridErrorFallback}>
                       <WidgetGrid immutable={!isMine || isMobileDevice} />
@@ -134,7 +134,7 @@ export const Profile = ({
                       isMine={isMine}
                       className={cn(
                         '@[81rem]:hidden w-full items-center justify-center p-6',
-                        isMine && !isArtificialMobile && 'mb-20'
+                        isMine && !showArtificialMobile && 'mb-20'
                       )}
                     />
                   </motion.div>
