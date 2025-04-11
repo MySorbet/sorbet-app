@@ -141,7 +141,11 @@ export const AccountVerificationCard = ({
         )}
 
         {kycLink && !isIndeterminate && step === 'details' && (
-          <PersonaCard url={kycLink} onComplete={handleDetailsComplete} />
+          <PersonaCard
+            url={kycLink}
+            onComplete={handleDetailsComplete}
+            className='self-center'
+          />
         )}
 
         {isComplete && (

@@ -30,9 +30,11 @@ const getParams = (urlString: string) => {
 export const PersonaCard = ({
   onComplete,
   url,
+  className,
 }: {
   onComplete?: () => void;
   url: string;
+  className?: string;
 }) => {
   const params = getParams(url);
   const [ready, setReady] = useState(false);
@@ -47,7 +49,12 @@ export const PersonaCard = ({
   }, [isError]);
 
   return (
-    <VerifyCard className='flex h-[41rem] w-full max-w-[22rem] items-center justify-center'>
+    <VerifyCard
+      className={cn(
+        'flex h-[41rem] w-full max-w-[22rem] items-center justify-center',
+        className
+      )}
+    >
       {isError ? (
         <ErrorFallback />
       ) : (
