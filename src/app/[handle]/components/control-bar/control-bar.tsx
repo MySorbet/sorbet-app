@@ -85,7 +85,7 @@ export const ControlBar = ({
               !showMobileSwitch && 'pr-3' // concentric rounding
             )}
           >
-            <Button variant='sorbet' size='sm' onClick={onShare}>
+            <Button variant='sorbet' size='sm' effect='shine' onClick={onShare}>
               Share
             </Button>
             <Separator orientation='vertical' className='h-9' />
