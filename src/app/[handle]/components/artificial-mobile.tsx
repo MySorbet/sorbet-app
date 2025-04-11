@@ -31,7 +31,6 @@ export const ArtificialMobile = ({
   const prevIsMobile = useRef(isMobile);
   const flashControls = useAnimationControls();
 
-  const mobileWidth = '380px';
   const flashDuration = props.flashDuration ?? duration * 2.1;
 
   // Track changes to isMobile and trigger flash animation when it changes (but not on mount)
