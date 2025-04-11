@@ -146,32 +146,6 @@ export const Profile = ({
       </ArtificialMobile>
 
       {/* Elements which ignore the layout of this container */}
-      {!showOnboarding && (
-        <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={!isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
-            transition={{
-              delay: 1,
-              type: 'spring',
-              stiffness: 150,
-              damping: 30,
-              mass: 2,
-            }}
-          >
-            <ControlBar
-              onAddImage={handleAddImage}
-              onAddLink={handleAddLink}
-              onShare={() => setIsShareDialogOpen(true)}
-              isDisabled={isMobileDevice}
-              isMobile={isArtificialMobile}
-              onIsMobileChange={
-                isMobileScreen ? undefined : setIsArtificialMobile
-              }
-            />
-          </motion.div>
-        </div>
-      )}
       <ContactMeDialog
         open={isContactMeDialogOpen}
         onOpenChange={setIsContactMeDialogOpen}
@@ -188,6 +162,34 @@ export const Profile = ({
             setOpen={setIsEditing}
             user={user}
           />
+          {!showOnboarding && (
+            <div className='fix-modal-layout-shift fixed bottom-0 left-1/2 -translate-x-1/2 -translate-y-6 transform'>
+              <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={
+                  !isLoading ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }
+                }
+                transition={{
+                  delay: 1,
+                  type: 'spring',
+                  stiffness: 150,
+                  damping: 30,
+                  mass: 2,
+                }}
+              >
+                <ControlBar
+                  onAddImage={handleAddImage}
+                  onAddLink={handleAddLink}
+                  onShare={() => setIsShareDialogOpen(true)}
+                  isDisabled={isMobileDevice}
+                  isMobile={isArtificialMobile}
+                  onIsMobileChange={
+                    isMobileScreen ? undefined : setIsArtificialMobile
+                  }
+                />
+              </motion.div>
+            </div>
+          )}
         </>
       )}
     </>
