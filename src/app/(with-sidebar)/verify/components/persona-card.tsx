@@ -47,12 +47,14 @@ export const PersonaCard = ({
   }, [isError]);
 
   return (
-    <VerifyCard className='flex h-[41rem] w-[28rem] items-center justify-center'>
+    <VerifyCard className='flex h-[41rem] w-full max-w-[22rem] items-center justify-center'>
       {isError ? (
         <ErrorFallback />
       ) : (
         <>
-          <Skeleton className={cn('size-full', ready ? 'hidden' : 'block')} />
+          <Skeleton
+            className={cn('size-full', ready ? 'hidden' : 'block w-[300px]')} // 300px seems to be what the persona iframe wants to take up, so match it for loading
+          />
           <div
             className={cn(
               'size-full [&_iframe]:size-full',

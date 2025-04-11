@@ -34,7 +34,12 @@ export const TosIframe = ({
   }, [onComplete, url]);
 
   return (
-    <VerifyCard className={cn('h-[24rem] w-[28rem]', className)}>
+    <VerifyCard
+      className={cn(
+        'h-[30rem] w-full max-w-[28rem] overflow-clip p-0',
+        className
+      )}
+    >
       {!ready && <Skeleton className='size-full' />}
 
       <div
@@ -46,10 +51,6 @@ export const TosIframe = ({
         <iframe
           src={url}
           className='h-full w-full'
-          style={{
-            overflow: 'hidden',
-          }}
-          scrolling='no'
           onLoad={() => setTimeout(() => setReady(true), 500)}
         />
       </div>

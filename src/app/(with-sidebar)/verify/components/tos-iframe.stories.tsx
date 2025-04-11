@@ -22,3 +22,9 @@ const meta = {
 export default meta;
 
 export const Default: Story = {};
+
+export const Small: Story = {
+  render: (args) => {
+    return <TosIframe {...args} className='h-[20rem] w-[20rem]' />;
+  },
+};
