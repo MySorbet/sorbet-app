@@ -45,6 +45,13 @@ export const Mobile: Story = {
   },
 };
 
+export const NoFlash: Story = {
+  args: {
+    ...Default.args,
+    flashDuration: false,
+  },
+};
+
 export const ShowMotion: Story = {
   args: {
     ...Default.args,

@@ -13,17 +13,17 @@ import { cn } from '@/lib/utils';
  */
 export const ArtificialMobile = ({
   isMobile,
-  duration = 0.3,
+  duration = 0.4,
   children,
   className,
   ...props
 }: {
   /** Whether the container is in mobile mode. */
   isMobile?: boolean;
-  /** Duration of the transition animation in seconds. Use `0` to disable. Defaults to `0.3` */
+  /** Duration of the transition animation in seconds. Use `0` to disable. Defaults to `0.4` */
   duration?: number;
   /** Duration of the flash animation in seconds. Use `0` to disable. Defaults to `duration * 2.1` */
-  flashDuration?: number;
+  flashDuration?: number | false;
   children?: React.ReactNode;
   className?: string;
 }) => {
@@ -36,6 +36,10 @@ export const ArtificialMobile = ({
 
   // Track changes to isMobile and trigger flash animation when it changes (but not on mount)
   useEffect(() => {
+    if (flashDuration === false) {
+      return;
+    }
+
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
@@ -47,19 +51,19 @@ export const ArtificialMobile = ({
     }
 
     prevIsMobile.current = isMobile;
-  }, [isMobile, flashControls]);
+  }, [isMobile, flashControls, flashDuration]);
 
   // Animation variants
   const containerVariants = {
     mobile: {
-      width: mobileWidth,
       borderWidth: '2px',
       borderRadius: '40px',
+      borderColor: 'hsl(var(--border))',
     },
     desktop: {
-      width: '100%',
       borderWidth: '0px',
       borderRadius: '0px',
+      borderColor: 'transparent',
     },
   };
 
@@ -78,23 +82,22 @@ export const ArtificialMobile = ({
     // Root full size container which transitions the padding
     <div
       className={cn(
-        'bg-muted/70 size-full transition-[padding]',
+        'bg-muted/70 flex size-full flex-col items-center justify-center',
         isMobile && 'py-12',
         className
       )}
-      style={{ transitionDuration: `${duration}s` }}
     >
       {/* Artificial Mobile container transitions everything else */}
       <motion.div
         className={cn(
-          'bg-background mx-auto size-full border-transparent transition-[border-color]',
-          isMobile && 'border-muted overflow-clip border-2 py-6 shadow-sm'
+          'bg-background size-full overflow-clip',
+          isMobile && 'max-h-[48rem] w-[28rem] py-8 shadow-sm'
         )}
-        style={{ transitionDuration: `${duration}s` }}
+        layout
         initial={false}
         animate={isMobile ? 'mobile' : 'desktop'}
         variants={containerVariants}
-        transition={{ duration, ease: 'easeOut' }}
+        transition={{ duration, ease: 'easeInOut' }}
       >
         {/* Full size container handles the flash during transition. */}
         <motion.div
