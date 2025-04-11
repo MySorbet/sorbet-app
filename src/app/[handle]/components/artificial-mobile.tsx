@@ -20,9 +20,9 @@ export const ArtificialMobile = ({
 }: {
   /** Whether the container is in mobile mode. */
   isMobile?: boolean;
-  /** Duration of the transition animation. Use `0` to disable. Defaults to `0.3` */
+  /** Duration of the transition animation in seconds. Use `0` to disable. Defaults to `0.3` */
   duration?: number;
-  /** Duration of the flash animation. Use `0` to disable. Defaults to `duration * 2` */
+  /** Duration of the flash animation in seconds. Use `0` to disable. Defaults to `duration * 2.1` */
   flashDuration?: number;
   children?: React.ReactNode;
   className?: string;
@@ -32,7 +32,7 @@ export const ArtificialMobile = ({
   const flashControls = useAnimationControls();
 
   const mobileWidth = '380px';
-  const flashDuration = props.flashDuration ?? duration * 2;
+  const flashDuration = props.flashDuration ?? duration * 2.1;
 
   // Track changes to isMobile and trigger flash animation when it changes (but not on mount)
   useEffect(() => {
@@ -91,7 +91,7 @@ export const ArtificialMobile = ({
           isMobile && 'border-muted overflow-clip border-2 py-6 shadow-sm'
         )}
         style={{ transitionDuration: `${duration}s` }}
-        initial={isMobile ? 'mobile' : 'desktop'}
+        initial={false}
         animate={isMobile ? 'mobile' : 'desktop'}
         variants={containerVariants}
         transition={{ duration, ease: 'easeOut' }}
@@ -99,7 +99,7 @@ export const ArtificialMobile = ({
         {/* Full size container handles the flash during transition. */}
         <motion.div
           className='size-full'
-          initial='initial'
+          initial={false}
           animate={flashControls}
           variants={flashVariants}
         >
