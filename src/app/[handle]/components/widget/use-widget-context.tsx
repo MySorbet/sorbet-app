@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios, { isAxiosError } from 'axios';
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext } from 'react';
 import { type Layout } from 'react-grid-layout';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,54 +10,19 @@ import {
   LayoutDto,
   UpdateWidgetV2Dto,
   widgetsV2Api,
-  WidgetType,
 } from '@/api/widgets-v2';
 import { uploadWidgetImage } from '@/api/widgets-v2/images';
-
 import {
-  type Breakpoint,
-  type WidgetData,
-  LayoutSizes,
-  WidgetSize,
-} from './grid-config';
+  DEFAULT_WIDGET_LAYOUT,
+  useWidgetReducer,
+} from '@/app/[handle]/components/widget/grid-reducer';
+import { LayoutMap } from '@/app/[handle]/components/widget/grid-reducer';
+import { WidgetMap } from '@/app/[handle]/components/widget/grid-reducer';
+
+import { type Breakpoint, type WidgetData, WidgetSize } from './grid-config';
 import { useAbortMap } from './use-abort-map';
 import { usePendingWidgets } from './use-pending-widgets';
 
-// Types for widget data
-type LoadableWidget = WidgetData & { loading?: boolean };
-type WidgetMap = Record<string, LoadableWidget>;
-type LayoutMap = Record<Breakpoint, Layout[]>;
-
-// Action payloads
-type AddWidgetStartPayload = { id: string; url: string; type?: WidgetType };
-type AddWidgetCompletePayload = {
-  id: string;
-  data: Omit<LoadableWidget, 'id'>;
-};
-type RemoveWidgetPayload = { id: string };
-type UpdateLayoutsPayload = { layouts: LayoutMap };
-type UpdateWidgetSizePayload = { id: string; size: WidgetSize };
-type SetBreakpointPayload = { breakpoint: Breakpoint };
-type SetInitialWidgetsPayload = { widgets: WidgetMap; layouts: LayoutMap };
-
-// Actions
-type WidgetAction =
-  | { type: 'ADD_WIDGET_START'; payload: AddWidgetStartPayload }
-  | { type: 'ADD_WIDGET_COMPLETE'; payload: AddWidgetCompletePayload }
-  | { type: 'REMOVE_WIDGET'; payload: RemoveWidgetPayload }
-  | { type: 'UPDATE_LAYOUTS'; payload: UpdateLayoutsPayload }
-  | { type: 'UPDATE_WIDGET_SIZE'; payload: UpdateWidgetSizePayload }
-  | { type: 'SET_BREAKPOINT'; payload: SetBreakpointPayload }
-  | { type: 'SET_INITIAL_WIDGETS'; payload: SetInitialWidgetsPayload };
-
-// State
-type WidgetState = {
-  widgets: WidgetMap;
-  layouts: LayoutMap;
-  breakpoint: Breakpoint;
-};
-
-// Context type
 interface WidgetContextType {
   /** Map of widget id to widget data */
   widgets: WidgetMap;
@@ -85,142 +50,6 @@ interface WidgetContextType {
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
 
-const DEFAULT_WIDGET_LAYOUT = {
-  x: 0,
-  y: 0,
-  ...LayoutSizes['B'],
-};
-
-function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
-  switch (action.type) {
-    /**
-     * Here, we add the widget to the layout right away in a loading state
-     * This is so that we can show a loading state in the UI immediately
-     * This will update both layout data and widget data
-     */
-    case 'ADD_WIDGET_START': {
-      const { id, url, type } = action.payload;
-      return {
-        ...state,
-        widgets: {
-          ...state.widgets,
-          [id]: {
-            id,
-            href: type === 'image' ? undefined : url,
-            contentUrl: type === 'image' ? url : undefined,
-            type,
-            loading: true,
-          },
-        },
-        // Add widget with default size to both breakpoints
-        layouts: {
-          sm: [{ i: id, ...DEFAULT_WIDGET_LAYOUT }, ...state.layouts.sm],
-          lg: [{ i: id, ...DEFAULT_WIDGET_LAYOUT }, ...state.layouts.lg],
-        },
-      };
-    }
-
-    /**
-     * Here, we update the widget data with the actual data from the API
-     * This will update only the widget data
-     */
-    case 'ADD_WIDGET_COMPLETE': {
-      const { id, data } = action.payload;
-      return {
-        ...state,
-        widgets: {
-          ...state.widgets,
-          [id]: {
-            ...state.widgets[id],
-            ...data,
-            loading: false,
-          },
-        },
-      };
-    }
-
-    /**
-     * Here, we remove the widget from the layout
-     * This will update both layout data and widget data
-     */
-    case 'REMOVE_WIDGET': {
-      const { id } = action.payload;
-      const { [id]: _, ...remainingWidgets } = state.widgets;
-      return {
-        ...state,
-        widgets: remainingWidgets,
-        layouts: {
-          sm: state.layouts.sm.filter((item) => item.i !== id),
-          lg: state.layouts.lg.filter((item) => item.i !== id),
-        },
-      };
-    }
-
-    /**
-     * Here, we just replace all layouts with the new ones (usually reported by rgl)
-     * This will update only the layout data
-     */
-    case 'UPDATE_LAYOUTS': {
-      return {
-        ...state,
-        layouts: action.payload.layouts,
-      };
-    }
-
-    /**
-     * Here, we update the size of a widget
-     * This will update only the layout data
-     */
-    case 'UPDATE_WIDGET_SIZE': {
-      const { id, size } = action.payload;
-      return {
-        ...state,
-        layouts: {
-          ...state.layouts,
-          [state.breakpoint]: updateLayoutSize(
-            state.layouts[state.breakpoint],
-            id,
-            LayoutSizes[size]
-          ),
-        },
-      };
-    }
-
-    /**
-     * Here, we update the current breakpoint
-     * We just need to maintain this state for RGL (and since we base some calculations on it)
-     */
-    case 'SET_BREAKPOINT': {
-      return {
-        ...state,
-        breakpoint: action.payload.breakpoint,
-      };
-    }
-
-    /**
-     * Here, we update the initial widgets
-     * This will update both layout data and widget data
-     */
-    case 'SET_INITIAL_WIDGETS': {
-      const { widgets, layouts } = action.payload;
-      return {
-        ...state,
-        widgets,
-        layouts,
-      };
-    }
-  }
-}
-
-// Helper function for updating layout sizes
-function updateLayoutSize(
-  layouts: Layout[],
-  id: string,
-  size: { w: number; h: number }
-): Layout[] {
-  return layouts.map((item) => (item.i === id ? { ...item, ...size } : item));
-}
-
 /**
  * Provides state and operations for widgets in an RGL grid.
  */
@@ -232,11 +61,7 @@ export function WidgetProvider({
   userId: string;
 }) {
   // The widget reducer manages grid state
-  const [state, dispatch] = useReducer(widgetReducer, {
-    widgets: {},
-    layouts: { sm: [], lg: [] },
-    breakpoint: 'lg',
-  });
+  const [state, dispatch] = useWidgetReducer();
 
   // This is a little hack to keep track of the ids of widgets that have been added to UI, but we don't know if the API
   // has returned successfully. When layout changes happen, we choose not to update layouts for these widgets.
@@ -262,7 +87,7 @@ export function WidgetProvider({
       type: 'SET_INITIAL_WIDGETS',
       payload: fromApi(widgets),
     });
-  }, [widgets]);
+  }, [dispatch, widgets]);
 
   // Widget creation mutation
   const createWidgetMutation = useMutation({
@@ -564,6 +389,11 @@ export function useWidgets(): WidgetContextType {
   return context;
 }
 
+/**
+ * We run widgets we get from the API through this boundary function
+ * We transform most nulls to undefined, save for explicitly 'clearable' fields
+ * TODO: we should probably just leave nulls alone and use nulls in the reducer
+ */
 const widgetApiBoundary = (widget: ApiWidget): WidgetData => {
   return {
     id: widget.id,
@@ -578,6 +408,8 @@ const widgetApiBoundary = (widget: ApiWidget): WidgetData => {
 
 /**
  * Transform API widgets into the format needed by our app
+ * Widgets come as an array with a layout for each breakpoint
+ * We transform this into a map of widgets by id and a map of layouts by breakpoint (as the WidgetReducer expects)
  */
 function fromApi(apiWidgets: ApiWidget[]): {
   widgets: WidgetMap;
