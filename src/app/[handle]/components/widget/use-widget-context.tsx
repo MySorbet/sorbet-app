@@ -85,7 +85,7 @@ export function WidgetProvider({
     if (!widgets) return;
     dispatch({
       type: 'SET_INITIAL_WIDGETS',
-      payload: fromApi(widgets),
+      payload: toReducer(widgets),
     });
   }, [dispatch, widgets]);
 
@@ -379,11 +379,11 @@ export function useWidgets(): WidgetContextType {
   return context;
 }
 /**
- * Transform API widgets into the format needed by our app
- * Widgets come as an array with a layout for each breakpoint
- * We transform this into a map of widgets by id and a map of layouts by breakpoint (as the WidgetReducer expects)
+ * Transform API widgets into the format needed by the grid reducer
+ * - Widgets come as an array with a layout for each breakpoint
+ * - We transform this into a map of widgets by id and a map of layouts by breakpoint (as the WidgetReducer expects)
  */
-function fromApi(apiWidgets: ApiWidget[]): {
+function toReducer(apiWidgets: ApiWidget[]): {
   widgets: WidgetMap;
   layouts: LayoutMap;
 } {
