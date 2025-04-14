@@ -106,7 +106,7 @@ export function WidgetProvider({
 
       // Optimistic update
       dispatch({
-        type: 'ADD_WIDGET_START',
+        type: 'ADD_WIDGET',
         payload: { id, url },
       });
     },
@@ -118,14 +118,14 @@ export function WidgetProvider({
         }
         const enrichedWidget = await widgetsV2Api.enrich(id);
         dispatch({
-          type: 'ADD_WIDGET_COMPLETE',
+          type: 'UPDATE_WIDGET',
           payload: { id, data: widgetApiBoundary(enrichedWidget) },
         });
       } catch (error) {
         console.error('Failed to enrich widget:', error);
         // We failed, so this widget needs to stop loading and just be poor
         dispatch({
-          type: 'ADD_WIDGET_COMPLETE',
+          type: 'UPDATE_WIDGET',
           payload: { id, data: {} },
         });
       }
@@ -184,7 +184,7 @@ export function WidgetProvider({
       const tempUrl = URL.createObjectURL(image);
       addPending(id);
       dispatch({
-        type: 'ADD_WIDGET_START',
+        type: 'ADD_WIDGET',
         payload: { id, url: tempUrl, type: 'image' },
       });
       return { tempUrl };
@@ -196,7 +196,7 @@ export function WidgetProvider({
         URL.revokeObjectURL(context.tempUrl);
       }
       dispatch({
-        type: 'ADD_WIDGET_COMPLETE',
+        type: 'UPDATE_WIDGET',
         payload: {
           id,
           data: {
@@ -251,7 +251,7 @@ export function WidgetProvider({
       const previousWidget = state.widgets[id];
 
       dispatch({
-        type: 'ADD_WIDGET_COMPLETE',
+        type: 'UPDATE_WIDGET',
         payload: { id, data: dto },
       });
 
@@ -281,7 +281,7 @@ export function WidgetProvider({
         };
 
         dispatch({
-          type: 'ADD_WIDGET_COMPLETE',
+          type: 'UPDATE_WIDGET',
           payload: {
             id,
             data: rollbackData,

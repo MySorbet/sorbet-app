@@ -16,11 +16,8 @@ export type WidgetMap = Record<string, LoadableWidget>;
 export type LayoutMap = Record<Breakpoint, Layout[]>;
 
 // Action payloads
-type AddWidgetStartPayload = { id: string; url: string; type?: WidgetType };
-type AddWidgetCompletePayload = {
-  id: string;
-  data: Omit<LoadableWidget, 'id'>;
-};
+type AddWidgetPayload = { id: string; url: string; type?: WidgetType };
+type UpdateWidgetPayload = { id: string; data: Omit<LoadableWidget, 'id'> };
 type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
 type UpdateWidgetSizePayload = { id: string; size: WidgetSize };
@@ -29,8 +26,8 @@ type SetInitialWidgetsPayload = { widgets: WidgetMap; layouts: LayoutMap };
 
 // Actions
 type WidgetAction =
-  | { type: 'ADD_WIDGET_START'; payload: AddWidgetStartPayload }
-  | { type: 'ADD_WIDGET_COMPLETE'; payload: AddWidgetCompletePayload }
+  | { type: 'ADD_WIDGET'; payload: AddWidgetPayload }
+  | { type: 'UPDATE_WIDGET'; payload: UpdateWidgetPayload }
   | { type: 'REMOVE_WIDGET'; payload: RemoveWidgetPayload }
   | { type: 'UPDATE_LAYOUTS'; payload: UpdateLayoutsPayload }
   | { type: 'UPDATE_WIDGET_SIZE'; payload: UpdateWidgetSizePayload }
@@ -57,7 +54,7 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
      * This is so that we can show a loading state in the UI immediately
      * This will update both layout data and widget data
      */
-    case 'ADD_WIDGET_START': {
+    case 'ADD_WIDGET': {
       const { id, url, type } = action.payload;
       return {
         ...state,
@@ -82,8 +79,9 @@ function widgetReducer(state: WidgetState, action: WidgetAction): WidgetState {
     /**
      * Here, we update the widget data with the actual data from the API
      * This will update only the widget data
+     * This will set loading to false
      */
-    case 'ADD_WIDGET_COMPLETE': {
+    case 'UPDATE_WIDGET': {
       const { id, data } = action.payload;
       return {
         ...state,
