@@ -196,7 +196,7 @@
       "import { Meta, StoryObj } from '@storybook/react';",
       "import { fn } from '@storybook/test';",
       "",
-      "import { ${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}} } from './${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}}';",
+      "import { ${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}} } from './${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}';",
       "",
       "const meta = {",
       "  title: '${2:Component}/${1:${TM_FILENAME_BASE/(.*?)[-.]stories$/$1/}}',",

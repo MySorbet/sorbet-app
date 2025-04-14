@@ -4,9 +4,11 @@ import 'react-resizable/css/styles.css';
 import React, { useEffect, useState } from 'react';
 import { Responsive as RRGL } from 'react-grid-layout';
 
+import { useContainerQuery } from '@/hooks/use-container-query';
 import { cn } from '@/lib/utils';
 
 import {
+  breakpoints,
   cols,
   getWidgetSizeFromDimensions as size,
   gw,
@@ -15,7 +17,6 @@ import {
   WidgetSize,
   wLg,
   wSm,
-  breakpoints,
 } from './grid-config';
 import styles from './rgl-custom.module.css';
 import { useWidgets } from './use-widget-context';
@@ -23,7 +24,6 @@ import { Widget } from './widget';
 import { Control, ImageControls } from './widget-controls/control-config';
 import { WidgetControls } from './widget-controls/widget-controls';
 import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
-import { useContainerQuery } from '@/hooks/use-container-query';
 
 /**
  * An RGL layout of widgets.

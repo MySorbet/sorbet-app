@@ -1,9 +1,11 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { useEffect } from 'react';
 
 import { getUserByHandle } from '@/api/user';
+import { HandleAvailable } from '@/app/[handle]/components/handle-available';
 import Page from '@/components/common/page';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -18,14 +20,14 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const {
     isLoading,
     isError,
-    data: freelancerResponse,
+    data: freelancer,
   } = useQuery({
     queryKey: ['freelancer', params.handle],
     queryFn: () => getUserByHandle(params.handle),
+    retry: (_, error) => !(isAxiosError(error) && error.status === 404),
   });
 
   // Alias some vars for easy access in JSX
-  const freelancer = freelancerResponse?.data;
   const isLoggedIn = Boolean(user);
   const isMine = user?.handle === params.handle;
 
@@ -42,7 +44,7 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   return (
     <Page.Main className='size-full'>
       {isError ? (
-        <div>This profile does not exist. Claim yours now</div>
+        <HandleAvailable handle={params.handle} />
       ) : (
         !isLoading &&
         freelancer &&

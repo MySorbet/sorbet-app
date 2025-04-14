@@ -22,6 +22,16 @@ export const mockUserByHandleHandler = http.get(
   }
 );
 
+export const mockUserByHandleHandlerFailure = http.get(
+  `${API_URL}/users/handle/*`,
+  async () => {
+    await delay();
+    return new HttpResponse(null, {
+      status: 404,
+    });
+  }
+);
+
 export const mockContactMeHandler = http.post(
   `${API_URL}/users/contact/*`,
   async () => {

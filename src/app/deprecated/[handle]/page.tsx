@@ -51,14 +51,13 @@ const ProfilePage = ({ params }: { params: { handle: string } }) => {
   const {
     isPending,
     isError,
-    data: freelancerResponse,
+    data: freelancer,
   } = useQuery({
     queryKey: ['freelancer', params.handle], // --> 2nd arg is for a more detailed query key
     queryFn: () => getUserByHandle(params.handle),
   });
 
   // Alias some vars for easy access in JSX
-  const freelancer = freelancerResponse?.data;
   const isMyProfile = user?.handle === params.handle;
   const disableHireMe = isMyProfile || !user;
   const hideShare = !isMyProfile || !user;

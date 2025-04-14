@@ -7,20 +7,13 @@ import { withAuthHeader } from '../withAuthHeader';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
-/** Get a user from the db by their handle */
+/**
+ * Get a user from the db by their handle
+ * @throws what axios throws
+ */
 export const getUserByHandle = async (handle: string) => {
-  try {
-    const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);
-    return response;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(
-        `Failed to get user by handle: ${error.response?.data.message}`
-      );
-    } else {
-      throw new Error(`Failed to get user by handle: ${error}`);
-    }
-  }
+  const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);
+  return response.data;
 };
 
 /** Get a user from the db by their privy id */
