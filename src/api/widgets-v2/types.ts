@@ -39,27 +39,6 @@ export type UpdateLayoutsDto = {
 };
 
 /**
- * Shape of the data used to update a widget
- * Should match the UpdateWidgetV2Dto validator in the API
- */
-export type UpdateWidgetV2Dto = {
-  /** The title of the widget. Set by enrichment. */
-  title?: string;
-
-  /** The content URL of the widget */
-  contentUrl?: string;
-
-  /** The URL of the widget. Use null to unset */
-  href?: string | null;
-
-  /** The title a user sets for the widget. Use null to unset */
-  userTitle?: string | null;
-
-  /** Any custom data for the widget */
-  custom?: Record<string, unknown>;
-};
-
-/**
  * Shape of a widget returned from the API
  * Should match the prisma schema
  */
@@ -77,3 +56,22 @@ export type ApiWidget = {
   userId: string;
   layouts: LayoutDto[];
 };
+
+/** This is the subset of information we will actually store about a widget */
+export type WidgetData = Pick<
+  ApiWidget,
+  | 'id'
+  | 'href'
+  | 'title'
+  | 'userTitle'
+  | 'iconUrl'
+  | 'contentUrl'
+  | 'type'
+  | 'custom'
+>;
+
+/**
+ * This is the shape of the data used to update a widget
+ * You can update anything we store besides id
+ */
+export type UpdateWidgetDto = Partial<Omit<WidgetData, 'id'>>;

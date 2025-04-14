@@ -15,7 +15,7 @@ const meta = {
   component: Profile,
   parameters: {
     layout: 'fullscreen',
-    // Uncomment to use mock data. As is, this will hit the local api
+    // Comment MSW to hit the local API
     msw: {
       handlers: [
         mockUserByHandleHandler,

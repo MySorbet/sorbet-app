@@ -7,7 +7,7 @@ import {
   ApiWidget,
   CreateWidgetDto,
   UpdateLayoutsDto,
-  UpdateWidgetV2Dto,
+  UpdateWidgetDto,
 } from './types';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
@@ -72,7 +72,7 @@ export const widgetsV2Api = {
   },
 
   /** Update a widget */
-  update: async (id: string, data: UpdateWidgetV2Dto) => {
+  update: async (id: string, data: UpdateWidgetDto) => {
     const response = await axios.put<ApiWidget>(
       `${API_URL}/v2/widgets/${id}`,
       data,

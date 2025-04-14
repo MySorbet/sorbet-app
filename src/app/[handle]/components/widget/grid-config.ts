@@ -50,17 +50,6 @@ export const getWidgetSizeFromDimensions = (
   return size;
 };
 
-// This is the in progress shape of the data representing a widget.
-export type WidgetData = {
-  contentUrl?: string;
-  href?: string | null; // Null explicitly means no value
-  iconUrl?: string;
-  id: string;
-  title?: string;
-  userTitle?: string | null; // Null explicitly means no value
-  type?: 'image';
-};
-
 // 👇 This is size config and calculations for the grid.
 
 export const cols: Record<Breakpoint, number> = {
@@ -68,11 +57,19 @@ export const cols: Record<Breakpoint, number> = {
   sm: 4,
 };
 
+/**
+ * 40px margins for lg breakpoint
+ * 20px for sm breakpoint
+ */
 export const margins: Record<Breakpoint, [number, number]> = {
   lg: [40, 40],
   sm: [20, 20],
 };
 
+/**
+ * This number drives calculations for the rest of the grid.
+ * We say that widgets will be 68px tall, and  everything else is calculated to be square.
+ */
 export const rowHeight = 68;
 
 /**

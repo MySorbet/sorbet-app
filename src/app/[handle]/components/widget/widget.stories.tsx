@@ -1,4 +1,5 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { WidgetSize } from './grid-config';
 import { UrlType, UrlTypes } from './url-util';
@@ -35,6 +36,26 @@ const meta = {
   component: Widget,
   parameters: {
     layout: 'centered',
+  },
+  args: {
+    onUpdate: fn(),
+  },
+  argTypes: {
+    size: {
+      control: {
+        type: 'select',
+      },
+    },
+    type: {
+      control: {
+        type: 'select',
+      },
+    },
+    onUpdate: {
+      table: {
+        disable: true,
+      },
+    },
   },
   decorators: [withSizeContainer],
 } satisfies Meta<typeof Widget>;
@@ -85,14 +106,14 @@ export const E: Story = {
   },
 };
 
-export const WithIcon: Story = {
+export const WithContent: Story = {
   args: {
     ...Default.args,
     ...urls,
   },
 };
 
-export const WithIconAndLongTitle: Story = {
+export const WithContentAndLongTitle: Story = {
   args: {
     ...Default.args,
     ...urls,
