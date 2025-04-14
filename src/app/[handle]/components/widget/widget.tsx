@@ -2,21 +2,22 @@ import { Link } from 'lucide-react';
 import React from 'react';
 import { parseURL } from 'ufo';
 
+import { UpdateWidgetDto, WidgetData } from '@/api/widgets-v2';
+import { WidgetSize } from '@/app/[handle]/components/widget/grid-config';
 import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-import { WidgetData, WidgetSize } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
 
-export type WidgetProps = Omit<WidgetData, 'id'> & {
+export type WidgetProps = Partial<Omit<WidgetData, 'id'>> & {
   loading?: boolean;
   size: WidgetSize;
   editable?: boolean;
-  onUpdate?: (data: Partial<WidgetData>) => void;
+  onUpdate?: (data: UpdateWidgetDto) => void;
   showPlaceholder?: boolean;
 };
 
@@ -30,20 +31,25 @@ export type WidgetProps = Omit<WidgetData, 'id'> & {
  * They are expected to be rendered in a container with a width and height corresponding to the the `size` prop.
  */
 export const Widget = ({
-  iconUrl,
-  title,
-  userTitle,
-  contentUrl,
   loading = false,
-  type,
   size = 'A',
   editable = false,
   onUpdate,
   showPlaceholder = true,
   ...props
 }: WidgetProps) => {
-  // This is a little hack because we made href nullable. (which we had to do since we need it to be nullable in the reducer)
-  const href = props.href ?? undefined;
+  // We store widgets state as nullable for good reason.
+  // So the easiest way to handle this is to just accept null and undefined props.
+  // And convert here for convenience below.
+  const { href, contentUrl, iconUrl, title, userTitle, type } = {
+    href: props.href ?? undefined,
+    contentUrl: props.contentUrl ?? undefined,
+    iconUrl: props.iconUrl ?? undefined,
+    title: props.title ?? undefined,
+    userTitle: props.userTitle ?? undefined,
+    type: props.type ?? undefined,
+  };
+
   if (type === 'image') {
     return (
       <ImageWidget

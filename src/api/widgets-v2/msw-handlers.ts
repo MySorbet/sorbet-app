@@ -3,7 +3,7 @@ import { delay, http, HttpResponse } from 'msw';
 import { env } from '@/lib/env';
 
 import { mockWidgets, sampleWidget } from './mock-widgets';
-import { type CreateWidgetDto, type UpdateWidgetV2Dto } from './types';
+import { type CreateWidgetDto, UpdateWidgetDto } from './types';
 
 /**
  * Mock the data from the `/v2/widgets` POST endpoint for creating widgets
@@ -68,7 +68,7 @@ export const mockUpdateWidgetHandler = http.put(
     if (!previousWidget) {
       return new HttpResponse(null, { status: 404 });
     }
-    const updateData = (await request.json()) as UpdateWidgetV2Dto;
+    const updateData = (await request.json()) as UpdateWidgetDto;
     await delay();
 
     return HttpResponse.json({

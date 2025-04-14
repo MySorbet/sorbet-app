@@ -1,8 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { mockUserMinimal } from '@/api/user/mock-user';
+import { mockUserByHandleHandler } from '@/api/user/msw-handlers';
+import {
+  mockCreateWidgetHandler,
+  mockEnrichWidgetHandler,
+  mockGetWidgetsHandler,
+  mockUpdateWidgetHandler,
+} from '@/api/widgets-v2/msw-handlers';
 import { Button } from '@/components/ui/button';
-import { sleep } from '@/lib/utils';
 
 import { WidgetGrid } from './grid';
 import { useWidgets, WidgetProvider } from './use-widget-context';
@@ -12,6 +18,15 @@ const meta = {
   component: WidgetGrid,
   parameters: {
     layout: 'fullscreen',
+    msw: {
+      handlers: [
+        mockUserByHandleHandler,
+        mockGetWidgetsHandler,
+        mockUpdateWidgetHandler,
+        mockCreateWidgetHandler,
+        mockEnrichWidgetHandler,
+      ],
+    },
   },
   decorators: [
     (Story) => (
@@ -38,7 +53,7 @@ export const WithAddButton: Story = {
   render: () => {
     const { addWidget } = useWidgets();
     return (
-      <div className='size-full'>
+      <div className='size-full p-4'>
         <Button onClick={() => addWidget('https://mysorbet.io')}>
           Add widget
         </Button>
@@ -46,9 +61,4 @@ export const WithAddButton: Story = {
       </div>
     );
   },
-};
-
-const mockFetchWidgetData = async (url: string) => {
-  await sleep(3000);
-  return { contentUrl: url, iconUrl: url };
 };

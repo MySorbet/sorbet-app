@@ -8,18 +8,18 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   type ApiWidget,
   LayoutDto,
-  UpdateWidgetV2Dto,
+  UpdateWidgetDto,
   widgetsV2Api,
 } from '@/api/widgets-v2';
 import { uploadWidgetImage } from '@/api/widgets-v2/images';
 import {
   DEFAULT_WIDGET_LAYOUT,
-  useWidgetReducer,
+  useGridReducer,
 } from '@/app/[handle]/components/widget/grid-reducer';
 import { LayoutMap } from '@/app/[handle]/components/widget/grid-reducer';
 import { WidgetMap } from '@/app/[handle]/components/widget/grid-reducer';
 
-import { type Breakpoint, type WidgetData, WidgetSize } from './grid-config';
+import { type Breakpoint, WidgetSize } from './grid-config';
 import { useAbortMap } from './use-abort-map';
 import { usePendingWidgets } from './use-pending-widgets';
 
@@ -45,7 +45,7 @@ interface WidgetContextType {
   /** Is fetching initial widgets */
   isLoading: boolean;
   /** Update a widget */
-  updateWidget: (id: string, data: UpdateWidgetV2Dto) => void;
+  updateWidget: (id: string, data: UpdateWidgetDto) => void;
 }
 
 const WidgetContext = createContext<WidgetContextType | null>(null);
@@ -60,8 +60,8 @@ export function WidgetProvider({
   children: React.ReactNode;
   userId: string;
 }) {
-  // The widget reducer manages grid state
-  const [state, dispatch] = useWidgetReducer();
+  // The grid reducer manages grid state
+  const [state, dispatch] = useGridReducer();
 
   // This is a little hack to keep track of the ids of widgets that have been added to UI, but we don't know if the API
   // has returned successfully. When layout changes happen, we choose not to update layouts for these widgets.
@@ -119,7 +119,7 @@ export function WidgetProvider({
         const enrichedWidget = await widgetsV2Api.enrich(id);
         dispatch({
           type: 'UPDATE_WIDGET',
-          payload: { id, data: widgetApiBoundary(enrichedWidget) },
+          payload: { id, data: enrichedWidget },
         });
       } catch (error) {
         console.error('Failed to enrich widget:', error);
@@ -243,7 +243,7 @@ export function WidgetProvider({
 
   // TODO: Optimistic update and rollback on error
   const updateWidgetMutation = useMutation({
-    mutationFn: async ({ id, dto }: { id: string; dto: UpdateWidgetV2Dto }) =>
+    mutationFn: async ({ id, dto }: { id: string; dto: UpdateWidgetDto }) =>
       widgetsV2Api.update(id, dto),
     onMutate: async ({ id, dto }) => {
       console.log('Mutating widget:', id, dto);
@@ -270,21 +270,11 @@ export function WidgetProvider({
         // Remove id from the object to avoid it being included in the rollback
         const { id: _id, ...previousState } = context.previousWidget;
 
-        // Ensure userTitle is explicitly null if it wasn't present
-        // Note: this could be a deviation from the previous state, where userTitle was undefined
-        // But we need to explicitly clear the value with null because dispatching with undefined means "don't touch this value"
-        // Same for href
-        const rollbackData = {
-          ...previousState,
-          userTitle: previousState.userTitle ?? null,
-          href: previousState.href ?? null,
-        };
-
         dispatch({
           type: 'UPDATE_WIDGET',
           payload: {
             id,
-            data: rollbackData,
+            data: previousState,
           },
         });
       }
@@ -308,11 +298,11 @@ export function WidgetProvider({
 
     // Filter out pending widgets and convert to API format
     const layoutsToUpdate = [
-      ...toApi(
+      ...toApiLayouts(
         allLayouts.sm.filter((layout) => !isPending(layout.i)),
         'sm'
       ),
-      ...toApi(
+      ...toApiLayouts(
         allLayouts.lg.filter((layout) => !isPending(layout.i)),
         'lg'
       ),
@@ -354,7 +344,7 @@ export function WidgetProvider({
     });
   };
 
-  const updateWidget = (id: string, data: UpdateWidgetV2Dto) => {
+  const updateWidget = (id: string, data: UpdateWidgetDto) => {
     // Fire and forget an update. errors and rollbacks are handled in the mutation
     updateWidgetMutation.mutate({ id, dto: data });
   };
@@ -388,24 +378,6 @@ export function useWidgets(): WidgetContextType {
   }
   return context;
 }
-
-/**
- * We run widgets we get from the API through this boundary function
- * We transform most nulls to undefined, save for explicitly 'clearable' fields
- * TODO: we should probably just leave nulls alone and use nulls in the reducer
- */
-const widgetApiBoundary = (widget: ApiWidget): WidgetData => {
-  return {
-    id: widget.id,
-    href: widget.href ?? null,
-    contentUrl: widget.contentUrl ?? undefined,
-    type: widget.type ?? undefined,
-    userTitle: widget.userTitle ?? null, // null explicitly means no value
-    iconUrl: widget.iconUrl ?? undefined,
-    title: widget.title ?? undefined,
-  };
-};
-
 /**
  * Transform API widgets into the format needed by our app
  * Widgets come as an array with a layout for each breakpoint
@@ -420,7 +392,7 @@ function fromApi(apiWidgets: ApiWidget[]): {
 
   apiWidgets.forEach((widget) => {
     // Transform the widgets to a map by id
-    widgetMap[widget.id] = widgetApiBoundary(widget);
+    widgetMap[widget.id] = widget;
 
     // Bisect the layouts into a map by breakpoint
     widget.layouts.forEach((layout) => {
@@ -438,14 +410,15 @@ function fromApi(apiWidgets: ApiWidget[]): {
 }
 
 /**
- * Transform our layout format into the API format
+ * Transform an array of layouts into the API format
  *
- * Transforms i -> id and adds the breakpoint to each layout item
+ * - Transforms `i` -> `id`
+ * - Adds the `breakpoint` to each layout item
  */
-function toApi(layouts: Layout[], breakpoint: Breakpoint): LayoutDto[] {
+function toApiLayouts(layouts: Layout[], breakpoint: Breakpoint): LayoutDto[] {
   return layouts.map((layout) => ({
     id: layout.i,
-    breakpoint: breakpoint,
+    breakpoint,
     x: layout.x,
     y: layout.y,
     w: layout.w,

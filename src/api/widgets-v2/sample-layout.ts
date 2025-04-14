@@ -1,20 +1,29 @@
 import { Layout } from 'react-grid-layout';
 
-import {
-  Breakpoint,
-  WidgetData,
-} from '@/app/[handle]/components/widget/grid-config';
+import { WidgetData } from '@/api/widgets-v2/types';
+import { Breakpoint } from '@/app/[handle]/components/widget/grid-config';
+
+const nulls: Omit<WidgetData, 'id'> = {
+  contentUrl: null,
+  href: null,
+  iconUrl: null,
+  title: null,
+  userTitle: null,
+  type: null,
+  custom: null,
+};
 
 export const sampleWidgetsMap: Record<string, WidgetData> = {
-  a: { id: 'a', title: 'Widget A' },
-  b: { id: 'b', title: 'Widget B' },
-  c: { id: 'c', title: 'Widget C' },
-  d: { id: 'd', title: 'Widget D' },
-  e: { id: 'e', title: 'Widget E' },
-  f: { id: 'f', title: 'Widget F' },
-  g: { id: 'g', title: 'Widget G' },
-  h: { id: 'h', title: 'Widget H' },
-  // i: { id: 'i', title: 'Widget I' },
+  a: { ...nulls, id: 'a', title: 'Widget A' },
+  b: { ...nulls, id: 'b', title: 'Widget B' },
+  c: { ...nulls, id: 'c', title: 'Widget C' },
+  d: { ...nulls, id: 'd', title: 'Widget D' },
+  e: { ...nulls, id: 'e', title: 'Widget E' },
+  f: { ...nulls, id: 'f', title: 'Widget F' },
+  g: { ...nulls, id: 'g', title: 'Widget G' },
+  h: { ...nulls, id: 'h', title: 'Widget H' },
+  i: { ...nulls, id: 'i', title: 'Widget I' },
+  j: { ...nulls, id: 'j', title: 'Widget J' },
 };
 
 export const sampleLayoutLg: Layout[] = [
@@ -28,7 +37,8 @@ export const sampleLayoutLg: Layout[] = [
 
   { i: 'g', x: 0, y: 4, w: 4, h: 4 }, // Size A
   { i: 'h', x: 4, y: 4, w: 4, h: 4 }, // Size A
-  // { i: 'i', x: 8, y: 4, w: 4, h: 1 }, // Size E
+  { i: 'i', x: 8, y: 4, w: 4, h: 1 }, // Size E
+  { i: 'j', x: 0, y: 4, w: 4, h: 1 }, // Size E
 ];
 
 export const sampleLayoutSm: Layout[] = [
@@ -43,7 +53,8 @@ export const sampleLayoutSm: Layout[] = [
 
   { i: 'g', x: 0, y: 8, w: 4, h: 4 }, // Size A
   { i: 'h', x: 0, y: 12, w: 4, h: 4 }, // Size A
-  // { i: 'i', x: 0, y: 16, w: 4, h: 1 }, // Size E
+  { i: 'i', x: 0, y: 16, w: 4, h: 1 }, // Size E
+  { i: 'j', x: 0, y: 17, w: 4, h: 1 }, // Size E
 ];
 
 export const sampleLayouts: Record<Breakpoint, Layout[]> = {
