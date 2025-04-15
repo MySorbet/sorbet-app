@@ -3,7 +3,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useQueryClient } from '@tanstack/react-query';
 import { Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -41,6 +41,7 @@ import {
   useUpdateUser,
   useUploadProfileImage,
 } from '@/hooks';
+import { useAfter } from '@/hooks/use-after';
 import type { MinimalUser } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 
@@ -246,20 +247,15 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
     form.reset({ ...values, isImageUpdated: false });
   }, [isSubmitSuccessful, user?.profileImage, form]);
 
-  // This ugly block makes sure to reset state after the sheet closes
-  // This is necessary to allow the close animation to finish before resetting the state
-  // If this is not done, the UI will be put into an ugly state.
-  const closeTimer = useRef<NodeJS.Timeout>();
+  // Build a fn to clear the form after the sheet closes
+  const clearForm = useAfter(() => {
+    form.reset();
+    setImage(user?.profileImage);
+  }, 300);
+
   const handleOpenChange = (open: boolean) => {
     setOpen(open);
-    if (!open) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = setTimeout(() => {
-        form.reset();
-        setImage(user?.profileImage);
-      }, 300);
-      return () => clearTimeout(closeTimer.current);
-    }
+    !open && clearForm();
   };
 
   return (

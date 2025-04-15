@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { useAfter } from '@/hooks/use-after';
 import { cn } from '@/lib/utils';
 
 type InvoiceSheetCancelDrawerProps = {
@@ -27,15 +28,16 @@ export const InvoiceSheetCancelDrawer = ({
 }: InvoiceSheetCancelDrawerProps) => {
   const [isVisible, setIsVisible] = useState(open);
 
+  // Build fn to set isVisible to false after the animation is complete
+  // 150ms animation - 10ms to avoid flickering
+  const setVisibleFalse = useAfter(() => {
+    setIsVisible(false);
+  }, 150 - 10);
+
   // Animate out the drawer before setting it to display: hidden
   useEffect(() => {
-    if (open) {
-      setIsVisible(true);
-    } else {
-      const timer = setTimeout(() => setIsVisible(false), 150 - 10); // Matches default animation duration (minus 10ms to avoid flickering)
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
+    open ? setIsVisible(true) : setVisibleFalse();
+  }, [open, setVisibleFalse]);
 
   const handleBack = () => {
     setOpen?.(false);

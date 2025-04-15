@@ -1,3 +1,4 @@
+import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
@@ -18,6 +19,16 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  render: (args) => {
+    const [{ open }, setArgs] = useArgs();
+    return (
+      <EditProfileSheet
+        {...args}
+        open={open}
+        setOpen={(open) => setArgs({ open })}
+      />
+    );
+  },
   args: {
     open: true,
     setOpen: fn(),

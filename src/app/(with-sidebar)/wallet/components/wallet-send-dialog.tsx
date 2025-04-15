@@ -10,7 +10,7 @@ import {
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
   FieldErrors,
   useForm,
@@ -39,6 +39,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useAfter } from '@/hooks/use-after';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
 
@@ -143,20 +144,15 @@ export const WalletSendDialog = ({
     },
   });
 
-  // This ugly block makes sure to reset state after the drawer or dialog closes
-  // This is necessary to allow the close animation to finish before resetting the state
-  // If this is not done, the UI will be put into an ugly state.
-  const closeTimer = useRef<NodeJS.Timeout>();
+  // Build a fn to clear the form after the dialog closes
+  const clearForm = useAfter(() => {
+    form.reset();
+    setStep(1);
+  }, 300);
+
   const handleOpenChange = (open: boolean) => {
     setOpen(open);
-    if (!open) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = setTimeout(() => {
-        form.reset();
-        setStep(1);
-      }, 300);
-      return () => clearTimeout(closeTimer.current);
-    }
+    !open && clearForm();
   };
 
   return (
