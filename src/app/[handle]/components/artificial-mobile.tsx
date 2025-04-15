@@ -1,4 +1,4 @@
-import { motion, useAnimationControls } from 'framer-motion';
+import { motion, useAnimationControls, Variants } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
  */
 export const ArtificialMobile = ({
   isMobile,
-  duration = 0.4,
+  duration = 0.5,
   children,
   className,
   ...props
@@ -62,11 +62,11 @@ export const ArtificialMobile = ({
     desktop: {
       borderWidth: '0px',
       borderRadius: '0px',
-      borderColor: 'transparent',
+      borderColor: 'none',
     },
   };
 
-  const flashVariants = {
+  const flashVariants: Variants = {
     initial: { opacity: 1 },
     flash: {
       opacity: [1, 0, 0, 1],
@@ -96,7 +96,7 @@ export const ArtificialMobile = ({
         initial={false}
         animate={isMobile ? 'mobile' : 'desktop'}
         variants={containerVariants}
-        transition={{ duration, ease: 'easeInOut' }}
+        transition={{ duration, type: 'spring', bounce: 0 }}
       >
         {/* Full size container handles the flash during transition. */}
         <motion.div
@@ -107,7 +107,7 @@ export const ArtificialMobile = ({
         >
           {/* Scroll area only in mobile mode (Note: this causes a remount of children. If this is an issue, take a style approach) */}
           {isMobile ? (
-            <ScrollArea className='size-full [mask-image:linear-gradient(to_bottom,transparent,black_32px,black_calc(100%-32px),transparent)]'>
+            <ScrollArea className='size-full [mask-image:linear-gradient(to_bottom,transparent,black_36px,black_calc(100%-32px),transparent)]'>
               {children}
             </ScrollArea>
           ) : (

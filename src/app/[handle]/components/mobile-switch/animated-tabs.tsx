@@ -52,7 +52,7 @@ export const AnimatedTabs = ({
                   layoutDependency={selectedTab}
                   className='absolute inset-0 z-10 bg-white mix-blend-difference'
                   style={{ borderRadius: 9999 }}
-                  transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}
+                  transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
                 />
               )}
               {tab.icon}
