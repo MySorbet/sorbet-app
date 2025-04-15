@@ -5,8 +5,9 @@ import { MinimalUser } from '@/types';
 
 // Should match the SignUpWithPrivyIdDto in the api
 type SignUpWithPrivyIdDto = {
-  id: string;
+  privyId: string;
   email?: string;
+  handle?: string;
 };
 
 /** Create a new sorbet user with a privy id (after user signs up with privy) */

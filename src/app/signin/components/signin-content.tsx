@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import posthog from 'posthog-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,15 @@ export const SigninContent = () => {
   };
   const loginLoading = loading && pressedButton === 'login';
   const signupLoading = loading && pressedButton === 'signup';
+
+  // Logged in users who visit signin page will be redirected to the home page
+  const router = useRouter();
+  const { user } = useAuth();
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   return (
     <div className='container flex max-w-96 flex-col items-center justify-center gap-14'>

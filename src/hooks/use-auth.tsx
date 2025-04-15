@@ -2,6 +2,7 @@
 
 import { useLogin, usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import {
   createContext,
   ReactNode,
@@ -55,6 +56,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   const { logout: logoutPrivy } = usePrivy();
   const router = useRouter();
 
+  const [desiredHandle] = useQueryState('handle');
+
   /**
    * Local helper to find a user by privy id in the sorbet db,
    * storing the access token and user if successful
@@ -106,8 +109,9 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         setLoading(true);
         // TODO: What if this fails? We have a privy user but no sorbet. Handle this case.
         const signUpResponse = await signUpWithPrivyId({
-          id: user.id,
+          privyId: user.id,
           email: user.email?.address, // If they sign up with email, we'll store that in the sorbet db too
+          handle: desiredHandle ?? undefined, // Request a handle if one was provided in QP. They will only be given this handle if it is available. If not, a new one will be generated
         });
         const newSorbetUser = signUpResponse.data;
         setUser(newSorbetUser);
