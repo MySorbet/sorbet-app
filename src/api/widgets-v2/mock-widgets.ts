@@ -75,7 +75,6 @@ export const mockWidgetData: Record<string, WidgetData> = {
     ...nulls,
     id: 'h',
     title: 'Widget 8',
-    contentUrl: 'https://picsum.photos/550/550?grayscale',
     href: 'https://picsum.photos/550/550?grayscale',
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },

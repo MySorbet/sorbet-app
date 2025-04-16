@@ -188,19 +188,19 @@ const Icon: React.FC<
 };
 
 const ContentPlaceholder = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...rest }, ref) => {
   return (
     <div
       className={cn(
-        'bg-muted text-muted-foreground group flex items-center justify-center rounded-md border p-2 text-center text-sm font-normal',
+        'bg-muted text-muted-foreground group/placeholder flex items-center justify-center rounded-md border p-2 text-center text-sm font-normal',
         className
       )}
       ref={ref}
       {...rest}
     >
-      <p className='opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+      <p className='opacity-0 transition-opacity duration-500 group-hover/placeholder:opacity-100'>
         We couldn't find a preview for this link
       </p>
     </div>
