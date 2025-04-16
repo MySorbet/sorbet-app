@@ -1,6 +1,7 @@
 'use client';
 
 import { usePrivy } from '@privy-io/react-auth';
+import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { FC, useEffect } from 'react';
 
@@ -13,9 +14,8 @@ import MutedSorbetLogo from '~/svg/muted-sorbet-logo.svg';
  * based on their authentication status.
  *
  * 1. Wait until privy is ready
- * 2. If authenticated and there is a user, redirect to the user's handle
- * 3. If authenticated and there is no user, do nothing and console error
- * 4. If not authenticated, redirect to signin
+ * 2. If authenticated and there is a user, redirect to the user's dashboard
+ * 3. If not authenticated, redirect to signin
  */
 export const Splash: FC = () => {
   const { ready, authenticated } = usePrivy();
@@ -33,7 +33,23 @@ export const Splash: FC = () => {
 
   return (
     <div className='flex size-full items-center justify-center'>
-      <MutedSorbetLogo className='animate-in slide-in-from-bottom-10 fade-in-10 duration-5000 size-44' />
+      <div className='space-y-4 text-center'>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 5, type: 'spring', bounce: 0 }}
+        >
+          <MutedSorbetLogo className='mx-auto size-32' />
+        </motion.div>
+        <motion.div
+          className='text-muted-foreground text-sm'
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 5, type: 'spring', bounce: 0 }}
+        >
+          Getting your dashboard ready...
+        </motion.div>
+      </div>
     </div>
   );
 };

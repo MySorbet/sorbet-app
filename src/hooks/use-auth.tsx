@@ -94,7 +94,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   );
 
   /**
-   * Login with privy, redirecting to signup if the user is new and to their profile if they already have an account.
+   * Login with privy, redirecting to signup if the user is new and to their dashboard if they already have an account.
    * Note: No redirect will happen if the user is already authenticated
    */
   const { login } = useLogin({
@@ -141,7 +141,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         return;
       }
 
-      // If you get here, the login was successful and you have a sorbet user. Route to their profile
+      // If you get here, the login was successful and you have a sorbet user. Route to their dashboard
       const sorbetUser = loginResult.data;
       console.log('Existing sorbet user:');
       console.dir(sorbetUser);
