@@ -70,7 +70,7 @@ export const Widget = ({
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
+        'bg-card text-card-foreground flex select-none flex-col overflow-clip rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         size === 'E' && 'justify-center',
         'size-full max-h-[390px] max-w-[390px]',
