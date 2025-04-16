@@ -113,9 +113,9 @@ export const Widget = ({
             }}
             placeholder={fallbackTitle}
             className={cn(
-              'line-clamp-3 break-words',
+              '-ml-2 line-clamp-3 break-words px-2 py-1',
               editable &&
-                'hover:bg-muted -ml-2 rounded-sm px-2 py-1 transition-colors duration-200',
+                'hover:bg-muted rounded-sm transition-colors duration-200',
               size === 'E' && 'm-0 line-clamp-1'
             )}
           />
