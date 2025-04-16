@@ -108,7 +108,8 @@ export const Widget = ({
             value={userTitle || fallbackTitle}
             editable={editable}
             onChange={(value) => {
-              onUpdate?.({ userTitle: value === '' ? null : value }); // If the user clears the title, set it to null to explicitly clear it
+              // If the user clears the title, set it to null to explicitly clear it
+              onUpdate?.({ userTitle: value === '' ? null : value });
             }}
             placeholder={fallbackTitle}
             className={cn(
@@ -120,49 +121,32 @@ export const Widget = ({
           />
         </CardTitle>
       </CardHeader>
-      {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
-      {size !== 'E' && (
+      {size !== 'E' && size !== 'B' && (
         <CardContent
           className={cn(
             'flex flex-1 items-end justify-end',
             size === 'D' && 'pl-0 pt-6'
           )}
         >
-          {size !== 'B' && (
-            <>
-              {loading ? (
-                <Skeleton
-                  className={cn(
-                    size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
-                    size === 'C' && 'aspect-square w-full',
-                    size === 'D' && 'aspect-square h-full'
-                  )}
-                />
-              ) : contentUrl ? (
-                <img
-                  src={contentUrl}
-                  alt={title}
-                  className={cn(
-                    'rounded-md object-cover',
-                    size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
-                    // B doesn't have a content image
-                    size === 'C' && 'aspect-square w-full',
-                    size === 'D' && 'aspect-square h-full'
-                  )}
-                />
-              ) : (
-                showPlaceholder && (
-                  <ContentPlaceholder
-                    className={cn(
-                      size === 'A' && 'aspect-[1200/630] w-full',
-                      size === 'C' && 'aspect-square w-full',
-                      size === 'D' && 'aspect-square h-full'
-                    )}
-                  />
-                )
-              )}
-            </>
-          )}
+          <div
+            className={cn(
+              size === 'A' && 'aspect-[1200/630] w-full',
+              size === 'C' && 'aspect-square w-full',
+              size === 'D' && 'aspect-square h-full'
+            )}
+          >
+            {loading ? (
+              <Skeleton className='size-full' />
+            ) : contentUrl ? (
+              <img
+                src={contentUrl}
+                alt={title}
+                className='size-full rounded-md object-cover'
+              />
+            ) : showPlaceholder ? (
+              <ContentPlaceholder className='size-full' />
+            ) : null}
+          </div>
         </CardContent>
       )}
     </a>
