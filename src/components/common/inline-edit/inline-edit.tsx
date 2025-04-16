@@ -42,18 +42,13 @@ export const InlineEdit = ({
   };
 
   const handleClick = (e: React.MouseEvent) => {
-    // Always prevent parent link activation
-    e.preventDefault();
-    e.stopPropagation();
+    // If this is an editable text, prevent parent events
+    // Otherwise, we want to allow the parent to handle the click event
+    editable && e.preventDefault();
 
     if (editable && !isEditing) {
       setIsEditing(true);
     }
-  };
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    // Prevent parent link activation but allow text selection
-    e.stopPropagation();
   };
 
   // Update local state when prop value changes
@@ -64,7 +59,6 @@ export const InlineEdit = ({
   return (
     <div
       onClick={handleClick}
-      onMouseDown={handleMouseDown}
       className={cn(editable && 'cursor-text', className)}
     >
       {editable && isEditing ? (

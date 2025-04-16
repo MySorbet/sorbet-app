@@ -70,7 +70,7 @@ export const Widget = ({
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
+        'bg-card text-card-foreground flex select-none flex-col overflow-clip rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         size === 'E' && 'justify-center',
         'size-full max-h-[390px] max-w-[390px]',
@@ -108,61 +108,45 @@ export const Widget = ({
             value={userTitle || fallbackTitle}
             editable={editable}
             onChange={(value) => {
-              onUpdate?.({ userTitle: value === '' ? null : value }); // If the user clears the title, set it to null to explicitly clear it
+              // If the user clears the title, set it to null to explicitly clear it
+              onUpdate?.({ userTitle: value === '' ? null : value });
             }}
             placeholder={fallbackTitle}
             className={cn(
-              'line-clamp-3 break-words',
+              '-ml-2 line-clamp-3 break-words px-2 py-1',
               editable &&
-                'hover:bg-muted -ml-2 rounded-sm px-2 py-1 transition-colors duration-200',
+                'hover:bg-muted rounded-sm transition-colors duration-200',
               size === 'E' && 'm-0 line-clamp-1'
             )}
           />
         </CardTitle>
       </CardHeader>
-      {/* TODO: Perhaps you could extract all the size conditionals to this container? */}
-      {size !== 'E' && (
+      {size !== 'E' && size !== 'B' && (
         <CardContent
           className={cn(
             'flex flex-1 items-end justify-end',
             size === 'D' && 'pl-0 pt-6'
           )}
         >
-          {size !== 'B' && (
-            <>
-              {loading ? (
-                <Skeleton
-                  className={cn(
-                    size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
-                    size === 'C' && 'aspect-square w-full',
-                    size === 'D' && 'aspect-square h-full'
-                  )}
-                />
-              ) : contentUrl ? (
-                <img
-                  src={contentUrl}
-                  alt={title}
-                  className={cn(
-                    'rounded-md object-cover',
-                    size === 'A' && 'aspect-[1200/630] w-full', // common og image aspect
-                    // B doesn't have a content image
-                    size === 'C' && 'aspect-square w-full',
-                    size === 'D' && 'aspect-square h-full'
-                  )}
-                />
-              ) : (
-                showPlaceholder && (
-                  <ContentPlaceholder
-                    className={cn(
-                      size === 'A' && 'aspect-[1200/630] w-full',
-                      size === 'C' && 'aspect-square w-full',
-                      size === 'D' && 'aspect-square h-full'
-                    )}
-                  />
-                )
-              )}
-            </>
-          )}
+          <div
+            className={cn(
+              size === 'A' && 'aspect-[1200/630] w-full',
+              size === 'C' && 'aspect-square w-full',
+              size === 'D' && 'aspect-square h-full'
+            )}
+          >
+            {loading ? (
+              <Skeleton className='size-full' />
+            ) : contentUrl ? (
+              <img
+                src={contentUrl}
+                alt={title}
+                className='size-full rounded-md object-cover'
+              />
+            ) : showPlaceholder ? (
+              <ContentPlaceholder className='size-full' />
+            ) : null}
+          </div>
         </CardContent>
       )}
     </a>
@@ -204,19 +188,19 @@ const Icon: React.FC<
 };
 
 const ContentPlaceholder = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...rest }, ref) => {
   return (
     <div
       className={cn(
-        'bg-muted text-muted-foreground group flex items-center justify-center rounded-md border p-2 text-center text-sm font-normal',
+        'bg-muted text-muted-foreground group/placeholder flex items-center justify-center rounded-md border p-2 text-center text-sm font-normal',
         className
       )}
       ref={ref}
       {...rest}
     >
-      <p className='opacity-0 transition-opacity duration-500 group-hover:opacity-100'>
+      <p className='opacity-0 transition-opacity duration-500 group-hover/placeholder:opacity-100'>
         We couldn't find a preview for this link
       </p>
     </div>

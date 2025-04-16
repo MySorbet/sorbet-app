@@ -97,7 +97,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 key={widget.id}
                 dragging={isDragging}
                 setIsDragging={setIsDragging}
-                className='group relative'
+                className='group/widget'
               >
                 <Widget
                   {...widget}
@@ -206,7 +206,7 @@ const ControlOverlay = ({
         className={cn(
           'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
           'opacity-0 transition-opacity duration-300', // opacity
-          !dragging && 'group-hover:opacity-100', // hover (only if not dragged)
+          !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
         onMouseDown={(e) => e.stopPropagation()}
@@ -225,7 +225,7 @@ const ControlOverlay = ({
         className={cn(
           'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
           'opacity-0 transition-opacity duration-300', // opacity
-          !dragging && 'group-hover:opacity-100', // hover (only if not dragged)
+          !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
         onMouseDown={(e) => e.stopPropagation()}
