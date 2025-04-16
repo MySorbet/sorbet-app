@@ -65,6 +65,7 @@ export const PreviewControls = ({
               <InvisibleInput
                 handleInputChange={handleInputChange}
                 inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
+                className='cursor-pointer'
               >
                 <ImageIcon className='size-4' />
               </InvisibleInput>
