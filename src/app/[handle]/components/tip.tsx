@@ -17,16 +17,16 @@ import { useConnectAndSend } from '../hooks/use-connect-and-send';
 
 /** Tip button which expands to a card allowing users to connect and send USDC */
 export const Tip = ({ userId }: { userId: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [amount, setAmount] = useState(0);
+
   const { data: walletAddress } = useWalletAddressByUserId(userId);
   const { wallet, connectWallet, send } = useConnectAndSend({
-    amount: 1,
+    amount: amount,
     recipientWalletAddress: walletAddress,
     // recipientWalletAddress: '0xBB5923098D84EB0D9DAaE2975782999364CE87A2', //uncomment for SB,
     sendAfterConnect: false,
   });
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [amount, setAmount] = useState(0);
 
   return !isOpen ? (
     <Button variant='secondary' onClick={() => setIsOpen(true)}>
