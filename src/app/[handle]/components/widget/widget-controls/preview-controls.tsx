@@ -60,16 +60,14 @@ export const PreviewControls = ({
       {showUpload && (
         <Tooltip>
           <TooltipTrigger asChild>
-            {/* TODO: Button and input can be focused here, fix this */}
-            <ControlButton>
-              <InvisibleInput
-                handleInputChange={handleInputChange}
-                inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
-                className='cursor-pointer'
-              >
-                <ImageIcon className='size-4' />
-              </InvisibleInput>
-            </ControlButton>
+            <InvisibleInput
+              handleInputChange={handleInputChange}
+              inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
+              // TODO: These styles are duplication of ControlButton styles
+              className='text-primary-foreground flex size-6 min-w-fit cursor-pointer items-center justify-center rounded-sm transition-colors hover:bg-[#D0ADFF]/30'
+            >
+              <ImageIcon className='size-4' />
+            </InvisibleInput>
           </TooltipTrigger>
           <TooltipContent side='top' sideOffset={8}>
             <p>Upload custom image</p>
