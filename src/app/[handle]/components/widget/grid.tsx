@@ -4,6 +4,7 @@ import 'react-resizable/css/styles.css';
 import React, { useEffect, useState } from 'react';
 import { Responsive as RRGL } from 'react-grid-layout';
 
+import { WidgetData } from '@/api/widgets-v2/types';
 import { PreviewControls } from '@/app/[handle]/components/widget/widget-controls/preview-controls';
 import { useContainerQuery } from '@/hooks/use-container-query';
 import { cn } from '@/lib/utils';
@@ -109,10 +110,9 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 />
                 {!immutable && (
                   <ControlOverlay
+                    widget={widget}
                     size={s}
-                    id={widget.id}
                     dragging={isDragging}
-                    href={widget.href}
                     controls={
                       widget.type === 'image' ? ImageControls : undefined
                     }
@@ -186,16 +186,14 @@ RGLHandle.displayName = 'WidgetRGLHandle';
  * Should be rendered in a container that is the size of the widget, with `group` and `relative` classes
  */
 const ControlOverlay = ({
+  widget,
   size,
-  id,
   dragging,
-  href,
   controls,
 }: {
+  widget: WidgetData;
   size: WidgetSize;
-  id: string;
   dragging: boolean;
-  href?: string | null;
   controls?: Control[];
 }) => {
   const { updateSize, removeWidget, updateWidget, updatePreview } =
@@ -205,9 +203,30 @@ const ControlOverlay = ({
   const showPreviewControls =
     size !== 'B' && size !== 'E' && !controls?.includes('link');
 
-  // const showDeletePreview = !widget.hideContent
-  // const showRevert = widget.userContentUrl !== null || (widget.contentUrl !== null && widget.hideContent)
-  // const showUpload = true // always can upload a new image
+  const { id, href, hideContent, userContentUrl, contentUrl } = widget;
+
+  // Build conditionally available functions to handle actions on the preview controls as well as control their visibility
+  const showDelete = !hideContent;
+  const showRevert =
+    userContentUrl !== null || (contentUrl !== null && hideContent);
+  const showUpload = true; // always can upload a new image
+  const handleUpload = showUpload
+    ? (image: File) => updatePreview(id, image)
+    : undefined;
+  const handleRevert = showRevert
+    ? () =>
+        updateWidget(id, {
+          userContentUrl: null,
+          hideContent: false,
+        })
+    : undefined;
+  const handleDelete = showDelete
+    ? () =>
+        updateWidget(id, {
+          userContentUrl: null,
+          hideContent: true,
+        })
+    : undefined;
 
   // Containers implement hover behavior and position absolutely
   return (
@@ -249,13 +268,9 @@ const ControlOverlay = ({
       >
         {showPreviewControls && (
           <PreviewControls
-            onUpload={(image) => updatePreview(id, image)}
-            onRevert={() =>
-              updateWidget(id, { userContentUrl: null, hideContent: false })
-            }
-            onDelete={() =>
-              updateWidget(id, { userContentUrl: null, hideContent: true })
-            }
+            onUpload={handleUpload}
+            onRevert={handleRevert}
+            onDelete={handleDelete}
           />
         )}
       </div>

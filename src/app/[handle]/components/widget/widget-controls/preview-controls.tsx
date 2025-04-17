@@ -20,6 +20,8 @@ import { ControlContainer } from './control-container';
 
 /**
  * Controls for the preview image of a widget. Allowing delete, custom upload, and revert.
+ *
+ * To hide an action, pass undefined for its callback.
  */
 export const PreviewControls = ({
   className,
@@ -32,10 +34,9 @@ export const PreviewControls = ({
   onRevert?: () => void;
   onDelete?: () => void;
 }) => {
-  // Could be props
-  const showUpload = true;
-  const showRevert = true;
-  const showDelete = true;
+  const showUpload = Boolean(onUpload);
+  const showRevert = Boolean(onRevert);
+  const showDelete = Boolean(onDelete);
 
   // TODO: Consider sharing this fn with control bar
   // Handle an image picked from the file system
