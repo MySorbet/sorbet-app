@@ -15,7 +15,6 @@ const meta = {
   component: Profile,
   parameters: {
     layout: 'fullscreen',
-    // Comment MSW to hit the local API
     msw: {
       handlers: [
         mockUserByHandleHandler,
@@ -53,6 +52,18 @@ export const LoggedIn: Story = {
 };
 
 export const Mine: Story = {
+  args: {
+    user: mockUser,
+    isMine: true,
+    isLoggedIn: true,
+  },
+};
+
+export const MineDisableMSW: Story = {
+  name: 'Mine (Disable MSW)',
+  parameters: {
+    msw: undefined,
+  },
   args: {
     user: mockUser,
     isMine: true,
