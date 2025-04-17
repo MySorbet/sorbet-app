@@ -205,6 +205,10 @@ const ControlOverlay = ({
   const showPreviewControls =
     size !== 'B' && size !== 'E' && !controls?.includes('link');
 
+  // const showDeletePreview = !widget.hideContent
+  // const showRevert = widget.userContentUrl !== null || (widget.contentUrl !== null && widget.hideContent)
+  // const showUpload = true // always can upload a new image
+
   // Containers implement hover behavior and position absolutely
   return (
     <>
