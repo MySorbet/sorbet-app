@@ -3,7 +3,9 @@ import 'react-resizable/css/styles.css';
 
 import React, { useEffect, useState } from 'react';
 import { Responsive as RRGL } from 'react-grid-layout';
+import { toast } from 'sonner';
 
+import { PreviewControls } from '@/app/[handle]/components/widget/widget-controls/preview-controls';
 import { useContainerQuery } from '@/hooks/use-container-query';
 import { cn } from '@/lib/utils';
 
@@ -199,7 +201,25 @@ const ControlOverlay = ({
 }) => {
   const { updateSize, removeWidget, updateWidget } = useWidgets();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  // within containers to prevent clicks from being passed down to RGL, hover to show correctly, and position absolutely
+
+  const showPreviewControls =
+    size !== 'B' && size !== 'E' && !controls?.includes('link');
+
+  // const handleDelete = () => {
+  //   toast('Deleting image');
+  //   updateWidget(id, { userContentUrl: null, hideContent: true });
+  // };
+  // const handleUpload = (image) => {
+  //   // set contentUrl to local url, set image loading to true, do upload, and replace url when done
+  //   updatePreview(id, { image });
+  //   toast('Uploading image');
+  // };
+  // const handleRevert = () => {
+  //   toast('Reverting image');
+  //   updateWidget(id, { userContentUrl: null, hideContent: false });
+  // };
+
+  // Containers implement hover behavior and position absolutely
   return (
     <>
       <div
@@ -209,7 +229,6 @@ const ControlOverlay = ({
           !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
-        onMouseDown={(e) => e.stopPropagation()}
       >
         <WidgetControls
           size={size}
@@ -228,9 +247,29 @@ const ControlOverlay = ({
           !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
-        onMouseDown={(e) => e.stopPropagation()}
       >
         <WidgetDeleteButton onDelete={() => removeWidget(id)} />
+      </div>
+      <div
+        className={cn(
+          'absolute left-0 top-0 -translate-x-3 -translate-y-1/2', // position
+          'opacity-0 transition-opacity duration-300', // opacity
+          !dragging && 'group-hover/widget:opacity-100' // hover (only if not dragged)
+        )}
+      >
+        {showPreviewControls && (
+          <PreviewControls
+            onUpload={() => {
+              toast('upload');
+            }}
+            onRevert={() => {
+              toast('revert');
+            }}
+            onDelete={() => {
+              toast('delete');
+            }}
+          />
+        )}
       </div>
     </>
   );
