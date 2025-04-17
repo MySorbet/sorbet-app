@@ -76,6 +76,8 @@ export type WidgetData = Pick<
 
 /**
  * This is the shape of the data used to update a widget
- * You can update anything we store besides id
+ * You can update anything we store besides id, iconUrl, or type (match backend DTO)
  */
-export type UpdateWidgetDto = Partial<Omit<WidgetData, 'id'>>;
+export type UpdateWidgetDto = Partial<
+  Omit<WidgetData, 'id' | 'iconUrl' | 'type'>
+>;

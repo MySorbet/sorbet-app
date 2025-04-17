@@ -3,7 +3,6 @@ import 'react-resizable/css/styles.css';
 
 import React, { useEffect, useState } from 'react';
 import { Responsive as RRGL } from 'react-grid-layout';
-import { toast } from 'sonner';
 
 import { PreviewControls } from '@/app/[handle]/components/widget/widget-controls/preview-controls';
 import { useContainerQuery } from '@/hooks/use-container-query';
@@ -199,23 +198,12 @@ const ControlOverlay = ({
   href?: string | null;
   controls?: Control[];
 }) => {
-  const { updateSize, removeWidget, updateWidget } = useWidgets();
+  const { updateSize, removeWidget, updateWidget, updatePreview } =
+    useWidgets();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const showPreviewControls =
     size !== 'B' && size !== 'E' && !controls?.includes('link');
-
-  // const handleUpload = (image) => {
-  //   // set contentUrl to local url, set image loading to true, do upload, and replace url when done
-  //   updatePreview(id, { image });
-  //   toast('Uploading image');
-  // };
-  const handleDelete = () => {
-    updateWidget(id, { userContentUrl: null, hideContent: true });
-  };
-  const handleRevert = () => {
-    updateWidget(id, { userContentUrl: null, hideContent: false });
-  };
 
   // Containers implement hover behavior and position absolutely
   return (
@@ -257,11 +245,13 @@ const ControlOverlay = ({
       >
         {showPreviewControls && (
           <PreviewControls
-            onUpload={() => {
-              toast('Stub: image ready for upload');
-            }}
-            onRevert={handleRevert}
-            onDelete={handleDelete}
+            onUpload={(image) => updatePreview(id, image)}
+            onRevert={() =>
+              updateWidget(id, { userContentUrl: null, hideContent: false })
+            }
+            onDelete={() =>
+              updateWidget(id, { userContentUrl: null, hideContent: true })
+            }
           />
         )}
       </div>

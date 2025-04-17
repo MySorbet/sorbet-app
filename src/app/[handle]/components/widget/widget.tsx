@@ -5,6 +5,7 @@ import { parseURL } from 'ufo';
 import { UpdateWidgetDto, WidgetData } from '@/api/widgets-v2';
 import { WidgetSize } from '@/app/[handle]/components/widget/grid-config';
 import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
+import { Spinner } from '@/components/common/spinner';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -15,6 +16,7 @@ import { getUrlType } from './url-util';
 
 export type WidgetProps = Partial<Omit<WidgetData, 'id'>> & {
   loading?: boolean;
+  previewLoading?: boolean;
   size: WidgetSize;
   editable?: boolean;
   onUpdate?: (data: UpdateWidgetDto) => void;
@@ -32,6 +34,7 @@ export type WidgetProps = Partial<Omit<WidgetData, 'id'>> & {
  */
 export const Widget = ({
   loading = false,
+  previewLoading = false,
   size = 'A',
   editable = false,
   onUpdate,
@@ -144,6 +147,7 @@ export const Widget = ({
         >
           <div
             className={cn(
+              'relative',
               size === 'A' && 'aspect-[1200/630] w-full',
               size === 'C' && 'aspect-square w-full',
               size === 'D' && 'aspect-square h-full'
@@ -160,6 +164,7 @@ export const Widget = ({
             ) : showPlaceholder ? (
               <ContentPlaceholder className='size-full' />
             ) : null}
+            {previewLoading && <Spinner className='absolute left-3 top-3' />}
           </div>
         </CardContent>
       )}
