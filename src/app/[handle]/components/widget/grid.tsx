@@ -238,7 +238,7 @@ const ControlOverlay = ({
       </div>
       <div
         className={cn(
-          'absolute left-0 top-0 -translate-x-3 -translate-y-1/2', // position
+          'absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/3', // position
           'opacity-0 transition-opacity duration-300', // opacity
           !dragging && 'group-hover/widget:opacity-100' // hover (only if not dragged)
         )}
