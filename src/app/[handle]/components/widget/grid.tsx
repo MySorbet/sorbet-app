@@ -205,19 +205,17 @@ const ControlOverlay = ({
   const showPreviewControls =
     size !== 'B' && size !== 'E' && !controls?.includes('link');
 
-  // const handleDelete = () => {
-  //   toast('Deleting image');
-  //   updateWidget(id, { userContentUrl: null, hideContent: true });
-  // };
   // const handleUpload = (image) => {
   //   // set contentUrl to local url, set image loading to true, do upload, and replace url when done
   //   updatePreview(id, { image });
   //   toast('Uploading image');
   // };
-  // const handleRevert = () => {
-  //   toast('Reverting image');
-  //   updateWidget(id, { userContentUrl: null, hideContent: false });
-  // };
+  const handleDelete = () => {
+    updateWidget(id, { userContentUrl: null, hideContent: true });
+  };
+  const handleRevert = () => {
+    updateWidget(id, { userContentUrl: null, hideContent: false });
+  };
 
   // Containers implement hover behavior and position absolutely
   return (
@@ -260,14 +258,10 @@ const ControlOverlay = ({
         {showPreviewControls && (
           <PreviewControls
             onUpload={() => {
-              toast('upload');
+              toast('Stub: image ready for upload');
             }}
-            onRevert={() => {
-              toast('revert');
-            }}
-            onDelete={() => {
-              toast('delete');
-            }}
+            onRevert={handleRevert}
+            onDelete={handleDelete}
           />
         )}
       </div>

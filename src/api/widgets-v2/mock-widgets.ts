@@ -11,6 +11,8 @@ const nulls: Omit<WidgetData, 'id'> = {
   custom: null,
   contentUrl: null,
   href: null,
+  userContentUrl: null,
+  hideContent: false,
 };
 
 export const mockWidgetData: Record<string, WidgetData> = {
@@ -54,6 +56,7 @@ export const mockWidgetData: Record<string, WidgetData> = {
     id: 'e',
     title: 'Widget 5',
     contentUrl: 'https://picsum.photos/500/250?grayscale',
+    userContentUrl: 'https://picsum.photos/500/250',
     href: 'https://picsum.photos/500/250?grayscale',
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },
@@ -112,6 +115,8 @@ export const sampleWidget: ApiWidget = {
   ],
   type: null,
   custom: null,
+  userContentUrl: null,
+  hideContent: false,
 };
 
 export const mockWidgets: ApiWidget[] = Object.values(mockWidgetData).map(

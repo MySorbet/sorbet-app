@@ -41,13 +41,24 @@ export const Widget = ({
   // We store widgets state as nullable for good reason.
   // So the easiest way to handle this is to just accept null and undefined props.
   // And convert here for convenience below.
-  const { href, contentUrl, iconUrl, title, userTitle, type } = {
+  const {
+    href,
+    contentUrl,
+    iconUrl,
+    title,
+    userTitle,
+    type,
+    userContentUrl,
+    hideContent,
+  } = {
     href: props.href ?? undefined,
     contentUrl: props.contentUrl ?? undefined,
     iconUrl: props.iconUrl ?? undefined,
     title: props.title ?? undefined,
     userTitle: props.userTitle ?? undefined,
     type: props.type ?? undefined,
+    userContentUrl: props.userContentUrl ?? undefined,
+    hideContent: props.hideContent ?? undefined,
   };
 
   if (type === 'image') {
@@ -66,6 +77,9 @@ export const Widget = ({
   // This is the title of the widget if the user has not explicitly set a title.
   // If the user has set userTitle, it will be preferred. If they clear that, we will fall back to this.
   const fallbackTitle = title || parseURL(href).host || href || '';
+
+  // userContentUrl overrides contentUrl, hideContent overrides both
+  const _contentUrl = hideContent ? undefined : userContentUrl || contentUrl;
 
   return (
     <a
@@ -137,9 +151,9 @@ export const Widget = ({
           >
             {loading ? (
               <Skeleton className='size-full' />
-            ) : contentUrl ? (
+            ) : _contentUrl ? (
               <img
-                src={contentUrl}
+                src={_contentUrl}
                 alt={title}
                 className='size-full rounded-md object-cover'
               />

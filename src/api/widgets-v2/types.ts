@@ -49,6 +49,8 @@ export type ApiWidget = {
   userTitle: string | null;
   iconUrl: string | null;
   contentUrl: string | null;
+  userContentUrl: string | null;
+  hideContent: boolean;
   type: WidgetType | null;
   custom: Record<string, unknown> | null;
   createdAt: Date;
@@ -66,6 +68,8 @@ export type WidgetData = Pick<
   | 'userTitle'
   | 'iconUrl'
   | 'contentUrl'
+  | 'userContentUrl'
+  | 'hideContent'
   | 'type'
   | 'custom'
 >;
