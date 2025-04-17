@@ -31,11 +31,16 @@ export const HandleAvailable = ({ handle }: { handle: string }) => {
         <div className='flex w-full flex-col items-center gap-1'>
           <p className='text-muted-foreground text-sm'>Handle available</p>
           <Button variant='sorbet' className='w-full' asChild>
-            {/* TODO: Implement signup with handle from QP */}
-            <Link href={`/signin?handle=${handle}`}>Claim handle now</Link>
+            <Link href={`/signin?handle=${handle}`}>Sign up to claim</Link>
           </Button>
           <Button variant='secondary' className='w-full' asChild>
-            <a href='https://mysorbet.xyz/'>Learn more</a>
+            <a
+              href='https://mysorbet.xyz/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              Learn more
+            </a>
           </Button>
         </div>
       </div>
