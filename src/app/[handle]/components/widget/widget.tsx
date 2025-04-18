@@ -4,6 +4,7 @@ import { parseURL } from 'ufo';
 
 import { UpdateWidgetDto, WidgetData } from '@/api/widgets-v2';
 import { WidgetSize } from '@/app/[handle]/components/widget/grid-config';
+import { PreviewControlsConnected } from '@/app/[handle]/components/widget/widget-controls/preview-controls';
 import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
 import { Spinner } from '@/components/common/spinner';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,13 +15,14 @@ import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
 
-export type WidgetProps = Partial<Omit<WidgetData, 'id'>> & {
+export type WidgetProps = Partial<WidgetData> & {
   loading?: boolean;
   previewLoading?: boolean;
   size: WidgetSize;
   editable?: boolean;
   onUpdate?: (data: UpdateWidgetDto) => void;
   showPlaceholder?: boolean;
+  isDragging?: boolean;
 };
 
 /**
@@ -37,8 +39,10 @@ export const Widget = ({
   previewLoading = false,
   size = 'A',
   editable = false,
+  isDragging = false,
   onUpdate,
   showPlaceholder = true,
+  id,
   ...props
 }: WidgetProps) => {
   // We store widgets state as nullable for good reason.
@@ -84,10 +88,13 @@ export const Widget = ({
   // userContentUrl overrides contentUrl, hideContent overrides both
   const _contentUrl = hideContent ? undefined : userContentUrl || contentUrl;
 
+  const showPreviewControls =
+    id && size !== 'B' && size !== 'E' && type !== 'image';
+
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex select-none flex-col overflow-clip rounded-2xl border shadow-sm',
+        'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         size === 'E' && 'justify-center',
         'size-full max-h-[390px] max-w-[390px]',
@@ -147,7 +154,7 @@ export const Widget = ({
         >
           <div
             className={cn(
-              'relative',
+              'group/preview relative',
               size === 'A' && 'aspect-[1200/630] w-full',
               size === 'C' && 'aspect-square w-full',
               size === 'D' && 'aspect-square h-full'
@@ -164,7 +171,18 @@ export const Widget = ({
             ) : showPlaceholder ? (
               <ContentPlaceholder className='size-full' />
             ) : null}
-            {previewLoading && <Spinner className='absolute left-3 top-3' />}
+            {previewLoading && <Spinner className='absolute right-3 top-3' />}
+            {showPreviewControls && (
+              <div
+                className={cn(
+                  'absolute left-0 top-0 -translate-x-[0.75rem] -translate-y-1/2', // position
+                  'opacity-0 transition-opacity duration-300', // opacity
+                  !isDragging && 'group-hover/preview:opacity-100' // hover (only if not dragged)
+                )}
+              >
+                <PreviewControlsConnected widget={{ ...props, id }} />
+              </div>
+            )}
           </div>
         </CardContent>
       )}

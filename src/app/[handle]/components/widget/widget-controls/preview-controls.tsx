@@ -3,7 +3,9 @@
 import { ImageIcon, ImageOff, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { WidgetData } from '@/api/widgets-v2';
 import { InvisibleInput } from '@/app/[handle]/components/control-bar/invisible-input';
+import { useWidgets } from '@/app/[handle]/components/widget/use-widget-context';
 import { ControlButton } from '@/app/[handle]/components/widget/widget-controls/control-button';
 import {
   validImageExtensions,
@@ -28,19 +30,22 @@ export const PreviewControls = ({
   onUpload,
   onRevert,
   onDelete,
+  showDelete,
+  showRevert,
+  showUpload,
 }: {
   className?: string;
   onUpload?: (image: File) => void;
   onRevert?: () => void;
   onDelete?: () => void;
+  showDelete?: boolean;
+  showRevert?: boolean;
+  showUpload?: boolean;
 }) => {
-  const showUpload = Boolean(onUpload);
-  const showRevert = Boolean(onRevert);
-  const showDelete = Boolean(onDelete);
-
   // TODO: Consider sharing this fn with control bar
   // Handle an image picked from the file system
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     // Only support the first file (input should limit anyway)
     const file = e.target.files?.[0];
     if (checkFileValid(file)) {
@@ -101,5 +106,44 @@ export const PreviewControls = ({
         </Tooltip>
       )}
     </ControlContainer>
+  );
+};
+
+// Connect Preview control UI to widget state and actions
+export const PreviewControlsConnected = ({
+  widget,
+}: {
+  widget: Partial<
+    Pick<WidgetData, 'hideContent' | 'contentUrl' | 'userContentUrl'>
+  > & { id: string };
+}) => {
+  const { hideContent, contentUrl, userContentUrl, id } = widget;
+  const showDelete = Boolean(!hideContent && (contentUrl || userContentUrl));
+  const showRevert = Boolean(userContentUrl || (contentUrl && !hideContent));
+  const showUpload = true; // always can upload a new image
+
+  const { updatePreview, updateWidget } = useWidgets();
+
+  const handleUpload = (image: File) => updatePreview(id, image);
+  const handleRevert = () =>
+    updateWidget(id, {
+      userContentUrl: null,
+      hideContent: false,
+    });
+  const handleDelete = () =>
+    updateWidget(id, {
+      userContentUrl: null,
+      hideContent: true,
+    });
+
+  return (
+    <PreviewControls
+      showDelete={showDelete}
+      showRevert={showRevert}
+      showUpload={showUpload}
+      onUpload={handleUpload}
+      onRevert={handleRevert}
+      onDelete={handleDelete}
+    />
   );
 };

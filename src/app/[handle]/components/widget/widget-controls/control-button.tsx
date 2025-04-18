@@ -23,7 +23,11 @@ export const ControlButton = forwardRef<
         isActive && 'bg-[#D0ADFF] text-[#18181B]', // --purple-lightest
         !isActive && 'hover:bg-[#D0ADFF]/30'
       )}
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        onClick?.();
+      }}
       {...props}
     >
       {children}

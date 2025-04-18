@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 import { Responsive as RRGL } from 'react-grid-layout';
 
 import { WidgetData } from '@/api/widgets-v2/types';
-import { PreviewControls } from '@/app/[handle]/components/widget/widget-controls/preview-controls';
 import { useContainerQuery } from '@/hooks/use-container-query';
 import { cn } from '@/lib/utils';
 
@@ -104,6 +103,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 <Widget
                   {...widget}
                   size={s}
+                  isDragging={isDragging}
                   editable={!immutable}
                   showPlaceholder={!immutable}
                   onUpdate={(data) => updateWidget(widget.id, data)}
@@ -196,38 +196,10 @@ const ControlOverlay = ({
   dragging: boolean;
   controls?: Control[];
 }) => {
-  const { updateSize, removeWidget, updateWidget, updatePreview } =
-    useWidgets();
+  const { updateSize, removeWidget, updateWidget } = useWidgets();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const showPreviewControls =
-    size !== 'B' && size !== 'E' && !controls?.includes('link');
-
-  const { id, href, hideContent, userContentUrl, contentUrl } = widget;
-
-  // Build conditionally available functions to handle actions on the preview controls as well as control their visibility
-  const showDelete =
-    !hideContent && (contentUrl !== null || userContentUrl !== null);
-  const showRevert =
-    userContentUrl !== null || (contentUrl !== null && hideContent);
-  const showUpload = true; // always can upload a new image
-  const handleUpload = showUpload
-    ? (image: File) => updatePreview(id, image)
-    : undefined;
-  const handleRevert = showRevert
-    ? () =>
-        updateWidget(id, {
-          userContentUrl: null,
-          hideContent: false,
-        })
-    : undefined;
-  const handleDelete = showDelete
-    ? () =>
-        updateWidget(id, {
-          userContentUrl: null,
-          hideContent: true,
-        })
-    : undefined;
+  const { id, href } = widget;
 
   // Containers implement hover behavior and position absolutely
   return (
@@ -259,21 +231,6 @@ const ControlOverlay = ({
         )}
       >
         <WidgetDeleteButton onDelete={() => removeWidget(id)} />
-      </div>
-      <div
-        className={cn(
-          'absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/3', // position
-          'opacity-0 transition-opacity duration-300', // opacity
-          !dragging && 'group-hover/widget:opacity-100' // hover (only if not dragged)
-        )}
-      >
-        {showPreviewControls && (
-          <PreviewControls
-            onUpload={handleUpload}
-            onRevert={handleRevert}
-            onDelete={handleDelete}
-          />
-        )}
       </div>
     </>
   );
