@@ -4,6 +4,7 @@ import 'react-resizable/css/styles.css';
 import React, { useEffect, useState } from 'react';
 import { Responsive as RRGL } from 'react-grid-layout';
 
+import { WidgetData } from '@/api/widgets-v2/types';
 import { useContainerQuery } from '@/hooks/use-container-query';
 import { cn } from '@/lib/utils';
 
@@ -102,16 +103,16 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                 <Widget
                   {...widget}
                   size={s}
+                  isDragging={isDragging}
                   editable={!immutable}
                   showPlaceholder={!immutable}
                   onUpdate={(data) => updateWidget(widget.id, data)}
                 />
                 {!immutable && (
                   <ControlOverlay
+                    widget={widget}
                     size={s}
-                    id={widget.id}
                     dragging={isDragging}
-                    href={widget.href}
                     controls={
                       widget.type === 'image' ? ImageControls : undefined
                     }
@@ -185,21 +186,22 @@ RGLHandle.displayName = 'WidgetRGLHandle';
  * Should be rendered in a container that is the size of the widget, with `group` and `relative` classes
  */
 const ControlOverlay = ({
+  widget,
   size,
-  id,
   dragging,
-  href,
   controls,
 }: {
+  widget: WidgetData;
   size: WidgetSize;
-  id: string;
   dragging: boolean;
-  href?: string | null;
   controls?: Control[];
 }) => {
   const { updateSize, removeWidget, updateWidget } = useWidgets();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  // within containers to prevent clicks from being passed down to RGL, hover to show correctly, and position absolutely
+
+  const { id, href } = widget;
+
+  // Containers implement hover behavior and position absolutely
   return (
     <>
       <div
@@ -209,7 +211,6 @@ const ControlOverlay = ({
           !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
-        onMouseDown={(e) => e.stopPropagation()}
       >
         <WidgetControls
           size={size}
@@ -228,7 +229,6 @@ const ControlOverlay = ({
           !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
-        onMouseDown={(e) => e.stopPropagation()}
       >
         <WidgetDeleteButton onDelete={() => removeWidget(id)} />
       </div>

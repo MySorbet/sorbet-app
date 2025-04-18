@@ -49,6 +49,8 @@ export type ApiWidget = {
   userTitle: string | null;
   iconUrl: string | null;
   contentUrl: string | null;
+  userContentUrl: string | null;
+  hideContent: boolean;
   type: WidgetType | null;
   custom: Record<string, unknown> | null;
   createdAt: Date;
@@ -66,12 +68,16 @@ export type WidgetData = Pick<
   | 'userTitle'
   | 'iconUrl'
   | 'contentUrl'
+  | 'userContentUrl'
+  | 'hideContent'
   | 'type'
   | 'custom'
 >;
 
 /**
  * This is the shape of the data used to update a widget
- * You can update anything we store besides id
+ * You can update anything we store besides id, iconUrl, or type (match backend DTO)
  */
-export type UpdateWidgetDto = Partial<Omit<WidgetData, 'id'>>;
+export type UpdateWidgetDto = Partial<
+  Omit<WidgetData, 'id' | 'iconUrl' | 'type'>
+>;

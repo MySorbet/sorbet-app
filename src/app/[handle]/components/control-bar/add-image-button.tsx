@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
+import { InvisibleInput } from './invisible-input';
+
 // TODO: Make sure this is accessible, has the right role, etc.
 // TODO: Is the input nested within a label really the best approach here?
 
@@ -43,27 +45,17 @@ export const AddImageButton = ({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <label
-          htmlFor='upload-image'
-          tabIndex={0}
-          onKeyDown={(e) => {
-            e.key === 'Enter' && e.currentTarget.click();
-          }}
-          // TODO: These styles are duplicates of the ControlBarIconButton, but we need to apply them to the label for this to work. Any options?
+        <InvisibleInput
+          handleInputChange={handleInputChange}
+          inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
           className={cn(
+            // TODO: These styles are duplicates of the ControlBarIconButton, but we need to apply them to the label for this to work. Any options?
             buttonVariants({ variant: 'secondary' }),
             'h-fit cursor-pointer border border-[#E5E7EB] p-1 transition-transform hover:scale-110'
           )}
         >
-          <input
-            id='upload-image'
-            type='file'
-            className='hidden'
-            onChange={handleInputChange}
-            accept={validImageExtensionsWithDots.join(',')}
-          />
           <ImageIcon aria-hidden='true' />
-        </label>
+        </InvisibleInput>
       </TooltipTrigger>
       <TooltipContent>Add an image</TooltipContent>
     </Tooltip>
