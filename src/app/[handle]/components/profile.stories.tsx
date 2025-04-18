@@ -62,7 +62,9 @@ export const Mine: Story = {
 export const MineDisableMSW: Story = {
   name: 'Mine (Disable MSW)',
   parameters: {
-    msw: undefined,
+    msw: {
+      handlers: [],
+    },
   },
   args: {
     user: mockUser,
