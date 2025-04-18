@@ -1,4 +1,4 @@
-import { Mail, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -86,13 +86,14 @@ const PublicProfileButtons = ({
   onContactMe?: () => void;
 }) => {
   return (
-    <div className='@[332px]:flex-col flex gap-3'>
-      <Button variant='sorbet' onClick={onContactMe}>
-        <Mail />
-        Contact me
-      </Button>
-      <Tip userId={userId} />
-    </div>
+    // Hiding Contact me temporarily, show with setting later on
+    // <div className='@[332px]:flex-col flex gap-3'>
+    //   <Button variant='sorbet' onClick={onContactMe}>
+    //     <Mail />
+    //     Contact me
+    //   </Button>
+    <Tip userId={userId} />
+    // </div>
   );
 };
 
