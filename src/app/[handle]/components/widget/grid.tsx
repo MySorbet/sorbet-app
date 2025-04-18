@@ -206,7 +206,8 @@ const ControlOverlay = ({
   const { id, href, hideContent, userContentUrl, contentUrl } = widget;
 
   // Build conditionally available functions to handle actions on the preview controls as well as control their visibility
-  const showDelete = !hideContent;
+  const showDelete =
+    !hideContent && (contentUrl !== null || userContentUrl !== null);
   const showRevert =
     userContentUrl !== null || (contentUrl !== null && hideContent);
   const showUpload = true; // always can upload a new image
