@@ -3,17 +3,17 @@ import React from 'react';
 import { parseURL } from 'ufo';
 
 import { UpdateWidgetDto, WidgetData } from '@/api/widgets-v2';
-import { WidgetSize } from '@/app/[handle]/components/widget/grid-config';
-import { PreviewControlsConnected } from '@/app/[handle]/components/widget/widget-controls/preview-controls';
 import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
 import { Spinner } from '@/components/common/spinner';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+import { WidgetSize } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
+import { ConnectedPreviewControls } from './widget-controls/preview-controls';
 
 export type WidgetProps = Partial<WidgetData> & {
   loading?: boolean;
@@ -180,7 +180,7 @@ export const Widget = ({
                   !isDragging && 'group-hover/preview:opacity-100' // hover (only if not dragged)
                 )}
               >
-                <PreviewControlsConnected widget={{ ...props, id }} />
+                <ConnectedPreviewControls widget={{ ...props, id }} />
               </div>
             )}
           </div>

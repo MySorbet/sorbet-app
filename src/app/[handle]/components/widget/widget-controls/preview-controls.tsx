@@ -22,8 +22,7 @@ import { ControlContainer } from './control-container';
 
 /**
  * Controls for the preview image of a widget. Allowing delete, custom upload, and revert.
- *
- * To hide an action, pass undefined for its callback.
+ * - Each action has a corresponding callback and a boolean to show/hide.
  */
 export const PreviewControls = ({
   className,
@@ -109,8 +108,13 @@ export const PreviewControls = ({
   );
 };
 
-// Connect Preview control UI to widget state and actions
-export const PreviewControlsConnected = ({
+/**
+ * Connect Preview control UI to widget state and actions
+ * - Hide and show actions based on the widget props this component receives
+ * - Connect action callbacks to `useWidgets`
+ * - Make sure to use within `WidgetContext`
+ */
+export const ConnectedPreviewControls = ({
   widget,
 }: {
   widget: Partial<
