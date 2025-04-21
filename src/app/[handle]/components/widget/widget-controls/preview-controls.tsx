@@ -119,7 +119,9 @@ export const PreviewControlsConnected = ({
 }) => {
   const { hideContent, contentUrl, userContentUrl, id } = widget;
   const showDelete = Boolean(!hideContent && (contentUrl || userContentUrl));
-  const showRevert = Boolean(userContentUrl || (contentUrl && !hideContent));
+  const showRevert = Boolean(
+    (userContentUrl && contentUrl) || (contentUrl && hideContent)
+  );
   const showUpload = true; // always can upload a new image
 
   const { updatePreview, updateWidget } = useWidgets();
