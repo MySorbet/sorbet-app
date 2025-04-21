@@ -89,7 +89,7 @@ export const Widget = ({
   const _contentUrl = hideContent ? undefined : userContentUrl || contentUrl;
 
   const showPreviewControls =
-    id && size !== 'B' && size !== 'E' && type !== 'image';
+    editable && id && size !== 'B' && size !== 'E' && type !== 'image';
 
   return (
     <a
