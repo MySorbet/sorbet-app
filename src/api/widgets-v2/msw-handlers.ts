@@ -114,7 +114,7 @@ export const mockImageUploadHandler = http.post(
   async ({ request }) => {
     const formData = await request.formData();
     const _file = formData.get('file') as File;
-    await delay();
+    await delay(4000);
     return HttpResponse.json({
       fileUrl: 'https://placehold.co/400/orange/white',
     });
