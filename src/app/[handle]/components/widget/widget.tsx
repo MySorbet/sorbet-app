@@ -22,7 +22,7 @@ export type WidgetProps = Partial<WidgetData> & {
   editable?: boolean;
   onUpdate?: (data: UpdateWidgetDto) => void;
   showPlaceholder?: boolean;
-  isDragging?: boolean;
+  dragging?: boolean;
 };
 
 /**
@@ -39,7 +39,7 @@ export const Widget = ({
   previewLoading = false,
   size = 'A',
   editable = false,
-  isDragging = false,
+  dragging = false,
   onUpdate,
   showPlaceholder = true,
   id,
@@ -177,7 +177,7 @@ export const Widget = ({
                 className={cn(
                   'absolute left-0 top-0 -translate-x-[0.75rem] -translate-y-1/2', // position
                   'opacity-0 transition-opacity duration-300 ease-out', // opacity
-                  !isDragging && 'group-hover/preview:opacity-100' // hover (only if not dragged)
+                  !dragging && 'group-hover/preview:opacity-100' // hover (only if not dragged)
                 )}
               >
                 <ConnectedPreviewControls widget={{ ...props, id }} />

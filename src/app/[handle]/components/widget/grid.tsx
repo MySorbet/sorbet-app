@@ -46,7 +46,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
   const width = gw(breakpoint);
 
   // Part of a little trick to allow both clicking and dragging on rgl children
-  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [dragging, setDragging] = useState(false);
 
   // This trick puts us in control of the breakpoint via a container query rather than
   // setting up a width listener on the grid and relying on that to trigger onBreakpointChange
@@ -80,7 +80,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
           breakpoints={breakpoints}
           breakpoint={breakpoint}
           onLayoutChange={onLayoutChange}
-          onDrag={() => setIsDragging(true)}
+          onDrag={() => setDragging(true)}
         >
           {layouts[breakpoint].map((layout) => {
             const widget = widgets[layout.i];
@@ -96,14 +96,14 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
             return (
               <RGLHandle
                 key={widget.id}
-                dragging={isDragging}
-                setIsDragging={setIsDragging}
+                dragging={dragging}
+                setDragging={setDragging}
                 className='group/widget'
               >
                 <Widget
                   {...widget}
                   size={s}
-                  isDragging={isDragging}
+                  dragging={dragging}
                   editable={!immutable}
                   showPlaceholder={!immutable}
                   onUpdate={(data) => updateWidget(widget.id, data)}
@@ -112,7 +112,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                   <ControlOverlay
                     widget={widget}
                     size={s}
-                    dragging={isDragging}
+                    dragging={dragging}
                     controls={
                       widget.type === 'image' ? ImageControls : undefined
                     }
@@ -131,7 +131,7 @@ interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   debug?: boolean;
   dragging: boolean;
-  setIsDragging: (dragging: boolean) => void;
+  setDragging: (dragging: boolean) => void;
 }
 
 /**
@@ -150,7 +150,7 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
       children,
       debug = false,
       dragging,
-      setIsDragging,
+      setDragging,
       ...props
     },
     ref
@@ -167,8 +167,8 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
         onMouseUp={onMouseUp}
         onTouchEnd={onTouchEnd}
         onClick={(e) => {
-          if (dragging) e.preventDefault();
-          setIsDragging(false);
+          dragging && e.preventDefault();
+          setDragging(false);
         }}
         {...props}
       >
