@@ -94,7 +94,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
             }
             const s = size(layout.w, layout.h);
             return (
-              <RGLHandle
+              <RGLNode
                 key={widget.id}
                 dragging={dragging}
                 setDragging={setDragging}
@@ -118,7 +118,7 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
                     }
                   />
                 )}
-              </RGLHandle>
+              </RGLNode>
             );
           })}
         </RRGL>
@@ -127,45 +127,34 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
   );
 };
 
-interface RGLHandleProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
-  debug?: boolean;
-  dragging: boolean;
-  setDragging: (dragging: boolean) => void;
-}
-
 /**
- * This should be the direct child mapped inside RGL. We forward all necessary props this way. We also add some special sauce to make click events work correctly.
+ * This should be the direct child mapped inside RGL. This component:
+ * 1. Forwards a ref to the underlying DOM node
+ * 2. Forwards `style`, `className` (through cn), `onMouseDown`, `onMouseUp` and `onTouchEnd` to that same DOM node.
+ * 3. Adds some special sauce to prevent clicks from being triggered when dragging.
  *
  * @see https://github.com/react-grid-layout/react-grid-layout?tab=readme-ov-file#custom-child-components-and-draggable-handles
  */
-const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
+const RGLNode = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    children?: React.ReactNode;
+    debug?: boolean;
+    dragging: boolean;
+    setDragging: (dragging: boolean) => void;
+  }
+>(
   (
-    {
-      style,
-      className,
-      onMouseDown,
-      onMouseUp,
-      onTouchEnd,
-      children,
-      debug = false,
-      dragging,
-      setDragging,
-      ...props
-    },
+    { className, children, debug = false, dragging, setDragging, ...props },
     ref
   ) => {
     return (
       <div
-        style={style}
+        ref={ref}
         className={cn(
           debug && 'border-divider rounded-2xl border-2 border-dashed',
           className
         )}
-        ref={ref}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-        onTouchEnd={onTouchEnd}
         onClick={(e) => {
           dragging && e.preventDefault();
           setDragging(false);
@@ -178,12 +167,12 @@ const RGLHandle = React.forwardRef<HTMLDivElement, RGLHandleProps>(
   }
 );
 
-RGLHandle.displayName = 'WidgetRGLHandle';
+RGLNode.displayName = 'RGLNode';
 
 /**
  * Render widget controls and a delete button over a widget
  *
- * Should be rendered in a container that is the size of the widget, with `group` and `relative` classes
+ * Should be rendered in a container that is the size of the widget, with `group/widget` and `relative` classes
  */
 const ControlOverlay = ({
   widget,
