@@ -1,9 +1,9 @@
-import { ExternalLink, ImageOff } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 import { Spinner } from '@/components/common/spinner';
-import { TooltipContent } from '@/components/ui/tooltip';
-import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+
+import { ImageErrorFallback } from './image-error-fallback';
 
 interface ImageWidgetProps {
   /** The url of the image to display. If not provided, the widget will display an error state. */
@@ -54,16 +54,7 @@ export const ImageWidget: React.FC<ImageWidgetProps> = ({
           )}
         </>
       ) : (
-        <div className='bg-muted flex size-full items-center justify-center'>
-          <Tooltip>
-            <TooltipTrigger>
-              <ImageOff className='text-muted-foreground size-8' />
-            </TooltipTrigger>
-            <TooltipContent>
-              Something isn't right with this image. Delete it and try again.
-            </TooltipContent>
-          </Tooltip>
-        </div>
+        <ImageErrorFallback className='size-full' />
       )}
     </a>
   );

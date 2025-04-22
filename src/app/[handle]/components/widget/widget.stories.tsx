@@ -122,6 +122,14 @@ export const WithContentAndLongTitle: Story = {
   },
 };
 
+export const WithBrokenImage: Story = {
+  args: {
+    ...Default.args,
+    ...urls,
+    contentUrl: 'not-a-url',
+  },
+};
+
 export const Loading: Story = {
   args: {
     ...Default.args,
@@ -151,6 +159,13 @@ export const ImageWithLink: Story = {
     ...Default.args,
     type: 'image',
     ...urls,
+  },
+};
+export const BrokenImage: Story = {
+  args: {
+    ...Default.args,
+    type: 'image',
+    contentUrl: undefined,
   },
 };
 

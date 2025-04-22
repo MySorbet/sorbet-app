@@ -1,6 +1,6 @@
 'use client';
 
-import { ImageIcon, ImageOff, Trash2 } from 'lucide-react';
+import { ImageIcon, Trash2, Undo2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { WidgetData } from '@/api/widgets-v2';
@@ -89,7 +89,7 @@ export const PreviewControls = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <ControlButton onClick={onRevert}>
-              <ImageOff className='size-4' />
+              <Undo2 className='size-4' />
             </ControlButton>
           </TooltipTrigger>
           <TooltipContent side='top' sideOffset={8}>

@@ -1,8 +1,11 @@
+'use client';
+
 import { Link } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { parseURL } from 'ufo';
 
 import { UpdateWidgetDto, WidgetData } from '@/api/widgets-v2';
+import { ImageErrorFallback } from '@/app/[handle]/components/widget/image-error-fallback';
 import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
 import { Spinner } from '@/components/common/spinner';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,6 +70,8 @@ export const Widget = ({
     userTitle: props.userTitle ?? undefined,
     type: props.type ?? undefined,
   };
+
+  const [isImageError, setIsImageError] = useState(false);
 
   if (type === 'image') {
     return (
@@ -163,11 +168,18 @@ export const Widget = ({
             {loading ? (
               <Skeleton className='size-full' />
             ) : _contentUrl ? (
-              <img
-                src={_contentUrl}
-                alt={title}
-                className='size-full rounded-md object-cover'
-              />
+              isImageError ? (
+                editable ? (
+                  <ImageErrorFallback className='size-full rounded-md' />
+                ) : null
+              ) : (
+                <img
+                  src={_contentUrl}
+                  alt={title}
+                  className='size-full rounded-md object-cover'
+                  onError={() => setIsImageError(true)}
+                />
+              )
             ) : showPlaceholder ? (
               <ContentPlaceholder className='size-full' />
             ) : null}
@@ -238,7 +250,7 @@ const ContentPlaceholder = React.forwardRef<
       {...rest}
     >
       <p className='opacity-0 transition-opacity duration-500 group-hover/placeholder:opacity-100'>
-        We couldn't find a preview for this link
+        There's no preview for this link
       </p>
     </div>
   );
