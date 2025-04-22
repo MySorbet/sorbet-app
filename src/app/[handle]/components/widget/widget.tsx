@@ -51,21 +51,21 @@ export const Widget = ({
   const {
     href,
     contentUrl,
+    userContentUrl,
+    hideContent,
     iconUrl,
     title,
     userTitle,
     type,
-    userContentUrl,
-    hideContent,
   } = {
     href: props.href ?? undefined,
     contentUrl: props.contentUrl ?? undefined,
+    userContentUrl: props.userContentUrl ?? undefined,
+    hideContent: props.hideContent ?? undefined,
     iconUrl: props.iconUrl ?? undefined,
     title: props.title ?? undefined,
     userTitle: props.userTitle ?? undefined,
     type: props.type ?? undefined,
-    userContentUrl: props.userContentUrl ?? undefined,
-    hideContent: props.hideContent ?? undefined,
   };
 
   if (type === 'image') {
