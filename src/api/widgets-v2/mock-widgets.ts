@@ -3,19 +3,21 @@ import { WidgetData } from '@/api/widgets-v2/types';
 import { sampleLayoutLg, sampleLayoutSm } from './sample-layout';
 import { ApiWidget } from './types';
 
-const nulls: Omit<WidgetData, 'id'> = {
+const defaults: Omit<WidgetData, 'id'> = {
   title: null,
   userTitle: null,
   iconUrl: null,
   type: null,
   custom: null,
   contentUrl: null,
+  userContentUrl: null,
+  hideContent: false,
   href: null,
 };
 
 export const mockWidgetData: Record<string, WidgetData> = {
   a: {
-    ...nulls,
+    ...defaults,
     id: 'a',
     title: 'Widget 1',
     contentUrl: 'https://picsum.photos/400/300?grayscale',
@@ -24,7 +26,7 @@ export const mockWidgetData: Record<string, WidgetData> = {
     userTitle: 'User Title 1',
   },
   b: {
-    ...nulls,
+    ...defaults,
     id: 'b',
     title: 'Widget 2',
     contentUrl: 'https://picsum.photos/300/400?grayscale',
@@ -35,7 +37,7 @@ export const mockWidgetData: Record<string, WidgetData> = {
     custom: null,
   },
   c: {
-    ...nulls,
+    ...defaults,
     id: 'c',
     title: 'Widget 3',
     contentUrl: 'https://picsum.photos/350/350?grayscale',
@@ -43,28 +45,29 @@ export const mockWidgetData: Record<string, WidgetData> = {
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },
   d: {
-    ...nulls,
+    ...defaults,
     id: 'd',
     contentUrl: 'https://picsum.photos/450/300?grayscale',
     href: 'https://picsum.photos/450/300?grayscale',
     type: 'image',
   },
   e: {
-    ...nulls,
+    ...defaults,
     id: 'e',
     title: 'Widget 5',
     contentUrl: 'https://picsum.photos/500/250?grayscale',
+    userContentUrl: 'https://picsum.photos/500/250',
     href: 'https://picsum.photos/500/250?grayscale',
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },
   f: {
-    ...nulls,
+    ...defaults,
     id: 'f',
     contentUrl: 'https://picsum.photos/400/400?grayscale',
     type: 'image',
   },
   g: {
-    ...nulls,
+    ...defaults,
     id: 'g',
     title: 'Widget 7',
     contentUrl: 'https://picsum.photos/600/600?grayscale',
@@ -72,14 +75,14 @@ export const mockWidgetData: Record<string, WidgetData> = {
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },
   h: {
-    ...nulls,
+    ...defaults,
     id: 'h',
     title: 'Widget 8',
     href: 'https://picsum.photos/550/550?grayscale',
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },
   i: {
-    ...nulls,
+    ...defaults,
     id: 'i',
     title: 'Widget 9',
     contentUrl: 'https://picsum.photos/600/600?grayscale',
@@ -87,7 +90,7 @@ export const mockWidgetData: Record<string, WidgetData> = {
     iconUrl: 'https://picsum.photos/32/32?grayscale',
   },
   j: {
-    ...nulls,
+    ...defaults,
     id: 'j',
     title: 'Widget 10',
     contentUrl: 'https://picsum.photos/600/600?grayscale',
@@ -102,6 +105,8 @@ export const sampleWidget: ApiWidget = {
   userTitle: 'Sample User Title',
   iconUrl: 'https://placehold.co/32/orange/white',
   contentUrl: 'https://placehold.co/400/orange/white',
+  userContentUrl: null,
+  hideContent: false,
   href: 'https://example.com',
   createdAt: new Date(),
   updatedAt: new Date(),

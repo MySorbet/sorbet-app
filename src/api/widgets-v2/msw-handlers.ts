@@ -73,12 +73,8 @@ export const mockUpdateWidgetHandler = http.put(
 
     return HttpResponse.json({
       ...previousWidget,
+      ...updateData,
       id: id as string,
-      title: updateData.title,
-      contentUrl: updateData.contentUrl,
-      custom: updateData.custom,
-      userTitle: updateData.userTitle,
-      href: updateData.href,
       updatedAt: new Date(),
     });
   }
@@ -109,6 +105,18 @@ export const mockEnrichWidgetHandler = http.post(
       contentUrl: 'https://placehold.co/400/orange/white',
       href: 'https://example.com',
       updatedAt: new Date(),
+    });
+  }
+);
+
+export const mockImageUploadHandler = http.post(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/images/widgets`,
+  async ({ request }) => {
+    const formData = await request.formData();
+    const _file = formData.get('file') as File;
+    await delay(4000);
+    return HttpResponse.json({
+      fileUrl: 'https://placehold.co/400/orange/white',
     });
   }
 );

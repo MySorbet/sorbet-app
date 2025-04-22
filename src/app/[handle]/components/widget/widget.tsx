@@ -3,22 +3,26 @@ import React from 'react';
 import { parseURL } from 'ufo';
 
 import { UpdateWidgetDto, WidgetData } from '@/api/widgets-v2';
-import { WidgetSize } from '@/app/[handle]/components/widget/grid-config';
 import { InlineEdit } from '@/components/common/inline-edit/inline-edit';
+import { Spinner } from '@/components/common/spinner';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+import { WidgetSize } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
 import { getUrlType } from './url-util';
+import { ConnectedPreviewControls } from './widget-controls/preview-controls';
 
-export type WidgetProps = Partial<Omit<WidgetData, 'id'>> & {
+export type WidgetProps = Partial<WidgetData> & {
   loading?: boolean;
+  previewLoading?: boolean;
   size: WidgetSize;
   editable?: boolean;
   onUpdate?: (data: UpdateWidgetDto) => void;
   showPlaceholder?: boolean;
+  dragging?: boolean;
 };
 
 /**
@@ -32,18 +36,32 @@ export type WidgetProps = Partial<Omit<WidgetData, 'id'>> & {
  */
 export const Widget = ({
   loading = false,
+  previewLoading = false,
   size = 'A',
   editable = false,
+  dragging = false,
   onUpdate,
   showPlaceholder = true,
+  id,
   ...props
 }: WidgetProps) => {
   // We store widgets state as nullable for good reason.
   // So the easiest way to handle this is to just accept null and undefined props.
   // And convert here for convenience below.
-  const { href, contentUrl, iconUrl, title, userTitle, type } = {
+  const {
+    href,
+    contentUrl,
+    userContentUrl,
+    hideContent,
+    iconUrl,
+    title,
+    userTitle,
+    type,
+  } = {
     href: props.href ?? undefined,
     contentUrl: props.contentUrl ?? undefined,
+    userContentUrl: props.userContentUrl ?? undefined,
+    hideContent: props.hideContent ?? undefined,
     iconUrl: props.iconUrl ?? undefined,
     title: props.title ?? undefined,
     userTitle: props.userTitle ?? undefined,
@@ -67,10 +85,16 @@ export const Widget = ({
   // If the user has set userTitle, it will be preferred. If they clear that, we will fall back to this.
   const fallbackTitle = title || parseURL(href).host || href || '';
 
+  // userContentUrl overrides contentUrl, hideContent overrides both
+  const _contentUrl = hideContent ? undefined : userContentUrl || contentUrl;
+
+  const showPreviewControls =
+    editable && id && size !== 'B' && size !== 'E' && type !== 'image';
+
   return (
     <a
       className={cn(
-        'bg-card text-card-foreground flex select-none flex-col overflow-clip rounded-2xl border shadow-sm',
+        'bg-card text-card-foreground flex select-none flex-col overflow-hidden rounded-2xl border shadow-sm',
         size === 'D' && 'flex-row',
         size === 'E' && 'justify-center',
         'size-full max-h-[390px] max-w-[390px]',
@@ -130,6 +154,7 @@ export const Widget = ({
         >
           <div
             className={cn(
+              'group/preview relative',
               size === 'A' && 'aspect-[1200/630] w-full',
               size === 'C' && 'aspect-square w-full',
               size === 'D' && 'aspect-square h-full'
@@ -137,15 +162,27 @@ export const Widget = ({
           >
             {loading ? (
               <Skeleton className='size-full' />
-            ) : contentUrl ? (
+            ) : _contentUrl ? (
               <img
-                src={contentUrl}
+                src={_contentUrl}
                 alt={title}
                 className='size-full rounded-md object-cover'
               />
             ) : showPlaceholder ? (
               <ContentPlaceholder className='size-full' />
             ) : null}
+            {previewLoading && <Spinner className='absolute right-3 top-3' />}
+            {showPreviewControls && (
+              <div
+                className={cn(
+                  'absolute left-0 top-0 -translate-x-[0.75rem] -translate-y-1/2', // position
+                  'opacity-0 transition-opacity duration-300 ease-out', // opacity
+                  !dragging && 'group-hover/preview:opacity-100' // hover (only if not dragged)
+                )}
+              >
+                <ConnectedPreviewControls widget={{ ...props, id }} />
+              </div>
+            )}
           </div>
         </CardContent>
       )}

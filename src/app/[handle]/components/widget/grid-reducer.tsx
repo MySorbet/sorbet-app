@@ -6,7 +6,10 @@ import { UpdateWidgetDto, WidgetData, WidgetType } from '@/api/widgets-v2';
 import { type Breakpoint, LayoutSizes, WidgetSize } from './grid-config';
 
 // Types for state
-type LoadableWidget = WidgetData & { loading?: boolean };
+type LoadableWidget = WidgetData & {
+  loading?: boolean;
+  previewLoading?: boolean; // Specifically indicates a preview loading from an update (not initial load)
+};
 export type WidgetMap = Record<string, LoadableWidget>;
 export type LayoutMap = Record<Breakpoint, Layout[]>;
 
@@ -14,7 +17,7 @@ export type LayoutMap = Record<Breakpoint, Layout[]>;
 type AddWidgetPayload = { id: string; url: string; type?: WidgetType };
 type UpdateWidgetPayload = {
   id: string;
-  data: UpdateWidgetDto;
+  data: UpdateWidgetDto & { previewLoading?: boolean };
 };
 type RemoveWidgetPayload = { id: string };
 type UpdateLayoutsPayload = { layouts: LayoutMap };
@@ -75,6 +78,8 @@ function gridReducer(state: GridState, action: GridAction): GridState {
             userTitle: null,
             iconUrl: null,
             custom: null,
+            hideContent: false,
+            userContentUrl: null,
             loading: true,
           },
         },

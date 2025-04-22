@@ -38,6 +38,8 @@ interface WidgetContextType {
   addWidget: (url: string) => void;
   /** Update the size of a widget */
   updateSize: (id: string, size: WidgetSize) => void;
+  /** Update the preview image of a widget */
+  updatePreview: (id: string, image: File) => void;
   /** Remove a widget */
   removeWidget: (id: string) => void;
   /** Add an image widget */
@@ -201,7 +203,6 @@ export function WidgetProvider({
           id,
           data: {
             contentUrl,
-            type: 'image',
           },
         },
       });
@@ -228,6 +229,101 @@ export function WidgetProvider({
     },
   });
 
+  const updatePreviewMutation = useMutation({
+    mutationFn: async (params: { id: string; image: File }) => {
+      try {
+        // First, upload the image with abort signal
+        const abortController = addController(params.id);
+        const userContentUrl = await uploadWidgetImage(params.image, {
+          signal: abortController.signal,
+        });
+
+        // Then update the widget with the image URL
+        await widgetsV2Api.update(params.id, {
+          userContentUrl,
+        });
+
+        return { id: params.id, userContentUrl };
+      } finally {
+        removeController(params.id);
+      }
+    },
+    onMutate: ({ id, image }) => {
+      // Optimistic update with local URL
+      const tempUrl = URL.createObjectURL(image);
+      dispatch({
+        type: 'UPDATE_WIDGET',
+        payload: {
+          id,
+          data: {
+            userContentUrl: tempUrl,
+            hideContent: false,
+            previewLoading: true,
+          },
+        },
+      });
+
+      const previousWidget = state.widgets[id];
+      return { tempUrl, previousWidget };
+    },
+    onSuccess: async ({ id, userContentUrl }, _, context) => {
+      // Clean up the local URL
+      context?.tempUrl && URL.revokeObjectURL(context.tempUrl);
+
+      // Final update to the widget with the real URL
+      dispatch({
+        type: 'UPDATE_WIDGET',
+        payload: {
+          id,
+          data: {
+            userContentUrl,
+            previewLoading: false,
+          },
+        },
+      });
+    },
+    onError: (error, { id }, context) => {
+      // Clean up the local URL
+      context?.tempUrl && URL.revokeObjectURL(context.tempUrl);
+
+      // Some logging
+      const message = 'Failed to update preview';
+      console.error(message, error);
+
+      // Abort causes by a preview delete, revert, or widget delete would have set appropriate properties
+      // Se we don't need to rollback or toast. Just quit loading
+      if (axios.isCancel(error)) {
+        dispatch({
+          type: 'UPDATE_WIDGET',
+          payload: {
+            id,
+            data: {
+              previewLoading: false,
+            },
+          },
+        });
+        return;
+      }
+
+      toast.error(message, {
+        description: String(error),
+      });
+
+      // Rollback the optimistic update
+      dispatch({
+        type: 'UPDATE_WIDGET',
+        payload: {
+          id,
+          data: {
+            userContentUrl: context?.previousWidget.userContentUrl,
+            hideContent: context?.previousWidget.hideContent,
+            previewLoading: false,
+          },
+        },
+      });
+    },
+  });
+
   // Layout update mutation
   const layoutMutation = useMutation({
     mutationFn: (updatedLayouts: LayoutDto[]) => {
@@ -249,6 +345,11 @@ export function WidgetProvider({
       console.log('Mutating widget:', id, dto);
       // Store the previous widget data before the optimistic update
       const previousWidget = state.widgets[id];
+
+      // Abort any ongoing uploads if this widgets userContentUrl is set to null
+      if (dto.userContentUrl === null) {
+        abortAndRemove(id);
+      }
 
       dispatch({
         type: 'UPDATE_WIDGET',
@@ -349,6 +450,10 @@ export function WidgetProvider({
     updateWidgetMutation.mutate({ id, dto: data });
   };
 
+  const updatePreview = (id: string, image: File) => {
+    updatePreviewMutation.mutate({ id, image });
+  };
+
   return (
     <WidgetContext.Provider
       value={{
@@ -360,6 +465,7 @@ export function WidgetProvider({
         addWidget,
         addImage,
         updateSize,
+        updatePreview,
         removeWidget,
         updateWidget,
         isLoading,

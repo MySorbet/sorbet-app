@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { mockUser, mockUserByHandleHandler } from '@/api/user';
 import {
   mockGetWidgetsHandler,
+  mockImageUploadHandler,
   mockUpdateWidgetHandler,
 } from '@/api/widgets-v2';
 
@@ -15,12 +16,12 @@ const meta = {
   component: Profile,
   parameters: {
     layout: 'fullscreen',
-    // Comment MSW to hit the local API
     msw: {
       handlers: [
         mockUserByHandleHandler,
         mockGetWidgetsHandler,
         mockUpdateWidgetHandler,
+        mockImageUploadHandler,
       ],
     },
   },
@@ -53,6 +54,20 @@ export const LoggedIn: Story = {
 };
 
 export const Mine: Story = {
+  args: {
+    user: mockUser,
+    isMine: true,
+    isLoggedIn: true,
+  },
+};
+
+export const MineDisableMSW: Story = {
+  name: 'Mine (Disable MSW)',
+  parameters: {
+    msw: {
+      handlers: [],
+    },
+  },
   args: {
     user: mockUser,
     isMine: true,

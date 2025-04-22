@@ -3,8 +3,10 @@ import { Layout } from 'react-grid-layout';
 import { WidgetData } from '@/api/widgets-v2/types';
 import { Breakpoint } from '@/app/[handle]/components/widget/grid-config';
 
-const nulls: Omit<WidgetData, 'id'> = {
+const defaults: Omit<WidgetData, 'id'> = {
   contentUrl: null,
+  userContentUrl: null,
+  hideContent: false,
   href: null,
   iconUrl: null,
   title: null,
@@ -14,16 +16,16 @@ const nulls: Omit<WidgetData, 'id'> = {
 };
 
 export const sampleWidgetsMap: Record<string, WidgetData> = {
-  a: { ...nulls, id: 'a', title: 'Widget A' },
-  b: { ...nulls, id: 'b', title: 'Widget B' },
-  c: { ...nulls, id: 'c', title: 'Widget C' },
-  d: { ...nulls, id: 'd', title: 'Widget D' },
-  e: { ...nulls, id: 'e', title: 'Widget E' },
-  f: { ...nulls, id: 'f', title: 'Widget F' },
-  g: { ...nulls, id: 'g', title: 'Widget G' },
-  h: { ...nulls, id: 'h', title: 'Widget H' },
-  i: { ...nulls, id: 'i', title: 'Widget I' },
-  j: { ...nulls, id: 'j', title: 'Widget J' },
+  a: { ...defaults, id: 'a', title: 'Widget A' },
+  b: { ...defaults, id: 'b', title: 'Widget B' },
+  c: { ...defaults, id: 'c', title: 'Widget C' },
+  d: { ...defaults, id: 'd', title: 'Widget D' },
+  e: { ...defaults, id: 'e', title: 'Widget E' },
+  f: { ...defaults, id: 'f', title: 'Widget F' },
+  g: { ...defaults, id: 'g', title: 'Widget G' },
+  h: { ...defaults, id: 'h', title: 'Widget H' },
+  i: { ...defaults, id: 'i', title: 'Widget I' },
+  j: { ...defaults, id: 'j', title: 'Widget J' },
 };
 
 export const sampleLayoutLg: Layout[] = [
