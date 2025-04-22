@@ -44,7 +44,6 @@ export const PreviewControls = ({
   // TODO: Consider sharing this fn with control bar
   // Handle an image picked from the file system
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
     // Only support the first file (input should limit anyway)
     const file = e.target.files?.[0];
     if (checkFileValid(file)) {
@@ -64,7 +63,14 @@ export const PreviewControls = ({
     <ControlContainer className={className}>
       {showUpload && (
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger
+            asChild
+            onMouseDown={(e) => {
+              // Don't understand why, but this fixes a bug where
+              // When a file is selected, or the file browser is closed, the tooltip is held open
+              e.preventDefault();
+            }}
+          >
             <InvisibleInput
               handleInputChange={handleInputChange}
               inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
