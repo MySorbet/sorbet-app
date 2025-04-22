@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Base button for widget controls.
+ * - Prevents event default to avoid triggering opening parent a tag (widget root)
  * TODO: Use design tokens
  */
 export const ControlButton = forwardRef<
@@ -24,7 +25,6 @@ export const ControlButton = forwardRef<
         !isActive && 'hover:bg-[#D0ADFF]/30'
       )}
       onClick={(e) => {
-        e.stopPropagation();
         e.preventDefault();
         onClick?.();
       }}
