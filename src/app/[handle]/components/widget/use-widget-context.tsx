@@ -285,15 +285,31 @@ export function WidgetProvider({
     onError: (error, { id }, context) => {
       // Clean up the local URL
       context?.tempUrl && URL.revokeObjectURL(context.tempUrl);
+
       // Some logging
       const message = 'Failed to update preview';
       console.error(message, error);
+
+      // Abort causes by a preview delete, revert, or widget delete would have set appropriate properties
+      // Se we don't need to rollback or toast. Just quit loading
+      if (axios.isCancel(error)) {
+        dispatch({
+          type: 'UPDATE_WIDGET',
+          payload: {
+            id,
+            data: {
+              previewLoading: false,
+            },
+          },
+        });
+        return;
+      }
+
       toast.error(message, {
-        description: error.message,
+        description: String(error),
       });
 
       // Rollback the optimistic update
-      // TODO: Consider skipping toasts for aborts
       dispatch({
         type: 'UPDATE_WIDGET',
         payload: {
@@ -329,6 +345,11 @@ export function WidgetProvider({
       console.log('Mutating widget:', id, dto);
       // Store the previous widget data before the optimistic update
       const previousWidget = state.widgets[id];
+
+      // Abort any ongoing uploads if this widgets userContentUrl is set to null
+      if (dto.userContentUrl === null) {
+        abortAndRemove(id);
+      }
 
       dispatch({
         type: 'UPDATE_WIDGET',
