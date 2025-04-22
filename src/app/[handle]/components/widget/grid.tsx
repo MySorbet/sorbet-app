@@ -207,7 +207,7 @@ const ControlOverlay = ({
       <div
         className={cn(
           'absolute bottom-0 left-1/2 w-fit -translate-x-1/2 translate-y-1/2', // position
-          'opacity-0 transition-opacity duration-300', // opacity
+          'opacity-0 transition-opacity duration-300 ease-out', // opacity
           !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}
@@ -225,7 +225,7 @@ const ControlOverlay = ({
       <div
         className={cn(
           'absolute right-0 top-0 -translate-y-1/3 translate-x-1/3', // position
-          'opacity-0 transition-opacity duration-300', // opacity
+          'opacity-0 transition-opacity duration-300 ease-out', // opacity
           !dragging && 'group-hover/widget:opacity-100', // hover (only if not dragged)
           isPopoverOpen && 'opacity-100' // show when popover is open
         )}

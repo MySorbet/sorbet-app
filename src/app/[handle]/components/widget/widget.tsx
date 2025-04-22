@@ -176,7 +176,7 @@ export const Widget = ({
               <div
                 className={cn(
                   'absolute left-0 top-0 -translate-x-[0.75rem] -translate-y-1/2', // position
-                  'opacity-0 transition-opacity duration-300', // opacity
+                  'opacity-0 transition-opacity duration-300 ease-out', // opacity
                   !isDragging && 'group-hover/preview:opacity-100' // hover (only if not dragged)
                 )}
               >
