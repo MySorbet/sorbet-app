@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
 
 import { SupportedWidgetTypes } from '@/api/widgets';
@@ -194,4 +195,41 @@ export const checkFileValid = (file?: File): file is File => {
   const fileExtension = file.name.split('.').pop()?.toLowerCase();
   if (!fileExtension) return false;
   return validImageExtensions.includes(fileExtension) && fileSize <= 10;
+};
+
+/**
+ * Renders an error toast if an image is not valid.
+ */
+const errorToast = () =>
+  toast.error("We couldn't add this image", {
+    description: `Images must be smaller than 10MB and be on the following formats: ${validImageExtensions.join(
+      ', '
+    )}`,
+  });
+
+/**
+ * Curry a function that calls a callback only if the file is valid, shows an error toast if it's not, and resets the input.
+ */
+export const handleImageInputChange =
+  (onAdd: (file: File) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only support the first file (input should limit anyway)
+    const file = e.target.files?.[0];
+    if (checkFileValid(file)) {
+      onAdd?.(file);
+      e.target.value = '';
+    } else {
+      // This should only ever toast with 10mb error (since the input only accepts valid extensions)
+      errorToast();
+    }
+  };
+
+/**
+ * Curry a function that calls a callback only if the file is valid, and shows an error toast if it's not.
+ */
+export const ifValidImage = (onAdd: (file: File) => void) => (file: File) => {
+  if (checkFileValid(file)) {
+    onAdd?.(file);
+  } else {
+    errorToast();
+  }
 };

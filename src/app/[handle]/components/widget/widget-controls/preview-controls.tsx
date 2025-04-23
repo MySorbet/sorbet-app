@@ -1,17 +1,15 @@
 'use client';
 
 import { ImageIcon, Trash2, Undo2 } from 'lucide-react';
-import { toast } from 'sonner';
 
 import { WidgetData } from '@/api/widgets-v2';
 import { InvisibleInput } from '@/app/[handle]/components/control-bar/invisible-input';
 import { useWidgets } from '@/app/[handle]/components/widget/use-widget-context';
 import { ControlButton } from '@/app/[handle]/components/widget/widget-controls/control-button';
 import {
-  validImageExtensions,
+  handleImageInputChange,
   validImageExtensionsWithDots,
 } from '@/components/profile/widgets/util';
-import { checkFileValid } from '@/components/profile/widgets/util';
 import {
   Tooltip,
   TooltipContent,
@@ -41,23 +39,9 @@ export const PreviewControls = ({
   showRevert?: boolean;
   showUpload?: boolean;
 }) => {
-  // TODO: Consider sharing this fn with control bar
-  // Handle an image picked from the file system
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only support the first file (input should limit anyway)
-    const file = e.target.files?.[0];
-    if (checkFileValid(file)) {
-      onUpload?.(file);
-      e.target.value = '';
-    } else {
-      // This should only ever toast with 10mb error (since the input only accepts valid extensions)
-      toast.error("We couldn't add this image", {
-        description: `Images must be smaller than 10MB and be on the following formats: ${validImageExtensions.join(
-          ', '
-        )}`,
-      });
-    }
-  };
+  const handleInputChange = onUpload
+    ? handleImageInputChange(onUpload)
+    : undefined;
 
   return (
     <ControlContainer className={className}>

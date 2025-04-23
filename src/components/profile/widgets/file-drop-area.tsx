@@ -8,6 +8,11 @@ interface FileDropAreaProps {
   className?: string;
 }
 
+/**
+ * Wrap your component in this to detect when a file is dragged over, indicate that a user can drop, and get a callback when a file is dropped.
+ *
+ * Note: This is taken mostly from Widgets 1.0 and could be updated.
+ */
 export const FileDropArea: React.FC<FileDropAreaProps> = ({
   onFileDrop,
   children,
@@ -48,9 +53,8 @@ export const FileDropArea: React.FC<FileDropAreaProps> = ({
       onDragEnd={handleDragLeave}
       onDrop={handleDrop}
       className={cn(
-        'rounded-3xl transition-all duration-300 ease-out',
-        'border-2 border-dashed',
-        fileEnter ? 'border-[#D7D7D7]' : 'border-transparent shadow-none',
+        'opacity-100 transition-opacity duration-300 ease-out',
+        fileEnter && 'opacity-50',
         className
       )}
     >

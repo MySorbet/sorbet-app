@@ -1,9 +1,7 @@
 import { ImageIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 import {
-  checkFileValid,
-  validImageExtensions,
+  handleImageInputChange,
   validImageExtensionsWithDots,
 } from '@/components/profile/widgets/util';
 import { buttonVariants } from '@/components/ui/button';
@@ -25,28 +23,13 @@ export const AddImageButton = ({
 }: {
   onAdd?: (image: File) => void;
 }) => {
-  // Handle an image picked from the file system
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only support the first file (input should limit anyway)
-    const file = e.target.files?.[0];
-    if (checkFileValid(file)) {
-      onAdd?.(file);
-      e.target.value = '';
-    } else {
-      // This should only ever toast with 10mb error (since the input only accepts valid extensions)
-      toast.error("We couldn't add this image", {
-        description: `Images must be smaller than 10MB and be on the following formats: ${validImageExtensions.join(
-          ', '
-        )}`,
-      });
-    }
-  };
+  const handleChange = onAdd ? handleImageInputChange(onAdd) : undefined;
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <InvisibleInput
-          handleInputChange={handleInputChange}
+          handleInputChange={handleChange}
           inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
           className={cn(
             // TODO: These styles are duplicates of the ControlBarIconButton, but we need to apply them to the label for this to work. Any options?

@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { ArtificialMobile } from '@/app/[handle]/components/artificial-mobile';
+import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
+import { ifValidImage } from '@/components/profile/widgets/util';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -75,6 +77,10 @@ export const Profile = ({
   // Do not show artificial mobile if we are on a screen size where the profile would go into mobile mode
   const showArtificialMobile = isArtificialMobile && !isMobileScreen;
 
+  const handleFileDrop = (file: File) => {
+    ifValidImage(addImage)(file);
+  };
+
   return (
     <>
       <ArtificialMobile
@@ -120,7 +126,9 @@ export const Profile = ({
                     className={cn(!showArtificialMobile && '@[81rem]:mb-20')}
                   >
                     <ErrorBoundary FallbackComponent={GridErrorFallback}>
-                      <WidgetGrid immutable={!isMine || isMobileDevice} />
+                      <FileDropArea onFileDrop={handleFileDrop}>
+                        <WidgetGrid immutable={!isMine || isMobileDevice} />
+                      </FileDropArea>
                     </ErrorBoundary>
                   </motion.div>
                   {/* Little motion hack to prevent a flash of the exit links when the page loads */}

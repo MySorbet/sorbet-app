@@ -2,8 +2,11 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { mockUser, mockUserByHandleHandler } from '@/api/user';
 import {
+  mockCreateWidgetHandler,
+  mockDeleteWidgetHandler,
   mockGetWidgetsHandler,
   mockImageUploadHandler,
+  mockUpdateLayoutsHandler,
   mockUpdateWidgetHandler,
 } from '@/api/widgets-v2';
 
@@ -22,6 +25,9 @@ const meta = {
         mockGetWidgetsHandler,
         mockUpdateWidgetHandler,
         mockImageUploadHandler,
+        mockUpdateLayoutsHandler,
+        mockCreateWidgetHandler,
+        mockDeleteWidgetHandler,
       ],
     },
   },
