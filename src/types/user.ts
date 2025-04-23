@@ -1,10 +1,10 @@
 export interface User {
   id: string;
   handle: string;
-  privyId: string | null; // TODO: I think this should be non-nullable and change in the schema too
+  privyId: string;
   hasClaimedHandle: boolean;
 
-  // TODO: API type would have all these as nullable by required
+  // TODO: API type would have all these as nullable but required
   firstName?: string;
   lastName?: string;
   email?: string;
