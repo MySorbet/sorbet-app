@@ -1,33 +1,28 @@
 import axios from 'axios';
 
+import { withAuthHeader } from '@/api/withAuthHeader';
 import { env } from '@/lib/env';
 import { User } from '@/types';
 
-// Should match the SignUpWithPrivyIdDto in the api
-type SignUpWithPrivyIdDto = {
-  privyId: string;
+// Should match the SignupDto in the api
+type SignupDto = {
   email?: string;
   handle?: string;
 };
 
-/** Create a new sorbet user with a privy id (after user signs up with privy) */
-export const signUpWithPrivyId = async (body: SignUpWithPrivyIdDto) => {
-  try {
-    const res = await axios.post<User>(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup/privy`,
-      body
-    );
-    return res;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(
-        `Axios error:Failed to sign up with privy id: ${error.response?.data.error}`
-      );
-    }
-    throw new Error(
-      `Non-axios error: failed to get check handle availability: ${error}`
-    );
-  }
+/**
+ * Create a new sorbet user (after user signs up with privy, this relies on an access token in local storage)
+ * - Optionally provide an email (from privy email or social login)
+ * - Optionally provide a handle to claim when signing up (this should be pre-checked for uniqueness).
+ * If the handle is taken, the signup will succeed but the handle will be different from the requested one.
+ */
+export const signup = async (body: SignupDto) => {
+  const res = await axios.post<User>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/signup`,
+    body,
+    await withAuthHeader()
+  );
+  return res.data;
 };
 
 /** Check if a handle is available */
@@ -50,24 +45,11 @@ export const checkHandleIsAvailable = async (handle: string) => {
   }
 };
 
-/** Fetch user details */
-export const fetchUserDetails = async (token: string) => {
-  const headers = { Authorization: `Bearer ${token}` };
-  const reqHeader = { headers };
-
-  try {
-    const res = await axios.get(
-      `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/me`,
-      reqHeader
-    );
-    return res;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(
-        `Failed to get user details: ${error.response?.data.message}`
-      );
-    } else {
-      throw new Error(`Non-axios error: failed to get user details: ${error}`);
-    }
-  }
+/** Fetch full user details provided there is an access token in local storage */
+export const getMe = async () => {
+  const res = await axios.get<User>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/me`,
+    await withAuthHeader()
+  );
+  return res.data;
 };

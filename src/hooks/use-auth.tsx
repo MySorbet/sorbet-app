@@ -13,8 +13,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
-import { signUpWithPrivyId } from '@/api/auth';
-import { getUserByPrivyId } from '@/api/user';
+import { getMe, signup } from '@/api/auth';
 import { User } from '@/types';
 
 import { useLocalStorage } from './use-local-storage';
@@ -60,38 +59,31 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
 
   /**
    * Local helper to find a user by privy id in the sorbet db,
-   * storing the access token and user if successful
+   * storing the user in local storage if successful.
+   * Relies on the fact that privy should have already put the auth token in local storage
    */
-  const loginWithPrivyId = useCallback(
-    async (id: string): Promise<LoginResult> => {
-      try {
-        // Get the sorbet user from their privy id, fail if there is no user
-        const response = await getUserByPrivyId(id);
-        if (!response) {
-          return {
-            status: 'failed',
-            message: 'Failed to login. Server threw an error',
-          };
-        }
-        const sorbetUser = response.data;
+  const loginWithPrivyId = useCallback(async (): Promise<LoginResult> => {
+    try {
+      // Get the sorbet user from their privy id, fail if there is no user
+      // Here we rely on the fact that privy should have already put the auth token in local storage
+      const user = await getMe();
+      if (!user) throw new Error('No user returned from getMe');
 
-        // Put the user in local storage and return a success
-        setUser(sorbetUser);
-        return {
-          status: 'success',
-          message: 'Login successful',
-          data: response.data,
-        };
-      } catch (error) {
-        return {
-          status: 'failed',
-          message: 'Login failed',
-          error: error,
-        };
-      }
-    },
-    [setUser]
-  );
+      // Put the user in local storage and return a success
+      setUser(user);
+      return {
+        status: 'success',
+        message: 'Login successful',
+        data: user,
+      };
+    } catch (error) {
+      return {
+        status: 'failed',
+        message: 'Login failed',
+        error: error,
+      };
+    }
+  }, [setUser]);
 
   /**
    * Login with privy, redirecting to signup if the user is new and to their dashboard if they already have an account.
@@ -108,12 +100,10 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         );
         setLoading(true);
         // TODO: What if this fails? We have a privy user but no sorbet. Handle this case.
-        const signUpResponse = await signUpWithPrivyId({
-          privyId: user.id,
+        const newSorbetUser = await signup({
           email: user.email?.address, // If they sign up with email, we'll store that in the sorbet db too
           handle: desiredHandle ?? undefined, // Request a handle if one was provided in QP. They will only be given this handle if it is available. If not, a new one will be generated
         });
-        const newSorbetUser = signUpResponse.data;
         setUser(newSorbetUser);
         console.log(`New sorbet user: ${newSorbetUser}`);
         setLoading(false);
@@ -125,7 +115,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
 
       // This is a login from an existing user so fetch their sorbet details
       setLoading(true);
-      const loginResult = await loginWithPrivyId(user.id);
+      const loginResult = await loginWithPrivyId();
 
       // If the login fails, log out and show an error
       if (loginResult.status === 'failed') {
@@ -143,8 +133,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
 
       // If you get here, the login was successful and you have a sorbet user. Route to their dashboard
       const sorbetUser = loginResult.data;
-      console.log('Existing sorbet user:');
-      console.dir(sorbetUser);
+      console.log('Existing User: ', sorbetUser);
       setLoading(false);
 
       // However, We only want to do this if they are logging in currently.
