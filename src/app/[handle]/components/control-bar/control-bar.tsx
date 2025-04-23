@@ -6,7 +6,6 @@ import { forwardRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { isValidUrl, normalizeUrl } from '@/components/profile/widgets/util';
 import { Button, ButtonProps } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -22,6 +21,7 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { useAfter } from '@/hooks/use-after';
 import { cn } from '@/lib/utils';
 
+import { isValidUrl, normalizeUrl } from '../../util';
 import { MobileSwitch } from '../mobile-switch/mobile-switch';
 import { AddImageButton } from './add-image-button';
 

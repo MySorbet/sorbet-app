@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { UrlTypes } from '../../util';
 import { SocialIcon } from './social-icon';
-import { UrlTypes } from './url-util';
 
 const meta: Meta<typeof SocialIcon> = {
   title: 'Profile/WidgetIcon',

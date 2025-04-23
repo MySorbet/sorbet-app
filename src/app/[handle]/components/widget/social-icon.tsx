@@ -15,7 +15,7 @@ import twitter from '~/svg/social/twitter.svg';
 import youtube from '~/svg/social/youtube.svg';
 import zora from '~/svg/social/zora.svg';
 
-import { UrlType } from './url-util';
+import { UrlType } from '../../util';
 
 interface SocialIconProps extends React.SVGProps<SVGSVGElement> {
   /** The type of icon to render. */

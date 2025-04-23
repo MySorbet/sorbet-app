@@ -12,10 +12,10 @@ import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+import { getUrlType } from '../../util';
 import { WidgetSize } from './grid-config';
 import { ImageWidget } from './image-widget';
 import { SocialIcon } from './social-icon';
-import { getUrlType } from './url-util';
 import { ConnectedPreviewControls } from './widget-controls/preview-controls';
 
 export type WidgetProps = Partial<WidgetData> & {

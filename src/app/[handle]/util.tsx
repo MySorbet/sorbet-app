@@ -1,16 +1,15 @@
 import { toast } from 'sonner';
-import { parseURL, stringifyParsedURL, withoutTrailingSlash } from 'ufo';
+import { parseURL, stringifyParsedURL } from 'ufo';
+import { withoutTrailingSlash } from 'ufo';
 
-import { SupportedWidgetTypes } from '@/api/widgets';
+// TODO: Set up test based on old tests for this stuff
 
 /**
- * Parses the WidgetType from a given URL
+ * Parses the UrlType from a given URL
  * Make sure to call this with a normalized URL
- * @param url The url to parse
- * @returns the WidgetType of the given URL
- * @throws an error if the URL is invalid in some way
+ * Returns undefined if the URL is not recognized as a particular type
  */
-export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
+export const getUrlType = (url: string): UrlType | undefined => {
   const urlObj = new URL(url);
   const hostname = urlObj.hostname;
   const pathname = urlObj.pathname;
@@ -19,17 +18,12 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
     domainParts.length > 1 ? domainParts[domainParts.length - 2] : hostname
   ).toLowerCase();
 
-  // If the URL is from a GCP storage bucket, this is a photo widget
-  if (hostname.endsWith('storage.googleapis.com')) {
-    return 'Photo';
-  }
-
   // Substack posts only
   if (platform === 'substack') {
     if (pathname.includes('/p/')) {
-      return 'Substack';
+      return 'SubstackPost';
     }
-    throw new Error('Only Substack posts are supported');
+    return 'Substack';
   }
 
   // Spotify songs and albums
@@ -39,17 +33,17 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
     } else if (pathname.includes('/track/')) {
       return 'SpotifySong';
     }
-    throw new Error('Only Spotify songs and albums are supported');
+    return 'Spotify';
   }
 
   // Soundcloud songs only
   if (platform === 'soundcloud') {
     if (pathname.includes('/sets/')) {
-      throw new Error('Soundcloud playlists and albums are not supported');
+      return 'SoundcloudPlaylistAlbum';
     }
 
     if (domainParts[0] === 'on') {
-      throw new Error('Soundcloud short links are not supported');
+      return 'SoundcloudShortLink';
     }
 
     // Songs are always under an artist, so you can check the number of segments
@@ -59,21 +53,19 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
     }
 
     // Otherwise this was not supported
-    throw new Error('Only Soundcloud songs are supported');
+    return 'Soundcloud';
   }
 
   // Instagram posts only
   if (platform === 'instagram') {
     // Explicitly exclude stories
     if (pathname.includes('stories')) {
-      throw new Error('Instagram stories are not supported');
+      return 'InstagramStory';
     }
 
     // Explicitly exclude posts
     if (pathname.includes('/p/')) {
-      throw new Error('Only Instagram profiles are supported');
-      // TODO: This will be supported
-      // return 'InstagramPost';
+      return 'InstagramPost';
     } else {
       return 'InstagramProfile';
     }
@@ -82,7 +74,7 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
   // Twitter / X. Currently only profiles are supported.
   if (platform === 'twitter' || platform === 'x') {
     if (pathname.includes('/status/')) {
-      throw new Error('Twitter posts are not supported');
+      return 'TwitterPost';
     } else {
       return 'TwitterProfile';
     }
@@ -92,11 +84,11 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
   if (platform === 'linkedin') {
     // Explicitly exclude posts
     if (pathname.includes('/posts/')) {
-      throw new Error('LinkedIn posts are not supported');
+      return 'LinkedInPost';
     }
     // Explicitly exclude posts
     if (pathname.includes('/company/')) {
-      throw new Error('LinkedIn companies are not supported');
+      return 'LinkedInCompany';
     }
     return 'LinkedInProfile';
   }
@@ -104,10 +96,10 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
   // Only youtube videos
   if (platform === 'youtu' || platform === 'youtube') {
     if (pathname.includes('/shorts/')) {
-      throw new Error('Youtube shorts are not supported');
+      return 'YoutubeShorts';
     }
     if (pathname.includes('@')) {
-      throw new Error('Youtube channels are not supported');
+      return 'YoutubeChannel';
     }
     return 'Youtube';
   }
@@ -122,7 +114,7 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
     if (pathname.includes('/shots/')) {
       return 'Dribbble';
     }
-    throw new Error('Only Dribbble shots are supported');
+    return 'DribbbleProfile';
   }
 
   // Behance galleries and profiles
@@ -138,19 +130,64 @@ export const parseWidgetTypeFromUrl = (url: string): SupportedWidgetTypes => {
   // Figma design files only
   if (platform === 'figma') {
     if (pathname.includes('/design/')) {
-      throw new Error('Figma is not yet supported');
-      // return 'Figma'; // TODO: Uncomment when Figma is supported
+      return 'FigmaDesign';
     }
-    throw new Error('Figma is not yet supported');
-    // TODO: Uncomment when Figma is supported
-    // throw new Error('Only Figma design files are supported');
+    return 'Figma';
+  }
+
+  // Farcaster posts and profiles
+  if (platform === 'warpcast') {
+    return 'Farcaster';
+  }
+
+  // Zora
+  if (platform === 'zora') {
+    return 'Zora';
+  }
+
+  // Discord
+  if (platform === 'discord' || platform === 'discordapp') {
+    return 'Discord';
   }
 
   // If you get here, it's not a platform we explicitly support
-  // So it's a generic link
-  console.log('Parsed as generic link: ', url);
-  return 'Link';
+  return undefined;
 };
+
+export const UrlTypes = [
+  'Substack',
+  'SpotifySong',
+  'SpotifyAlbum',
+  'SoundcloudSong',
+  'InstagramPost',
+  'InstagramProfile',
+  'TwitterProfile',
+  'LinkedInProfile',
+  'Youtube',
+  'Github',
+  'Dribbble',
+  'Behance',
+  'Medium',
+  'Figma',
+  'FigmaDesign',
+  'DribbbleProfile',
+  'YoutubeShorts',
+  'YoutubeChannel',
+  'TwitterPost',
+  'SubstackPost',
+  'Soundcloud',
+  'SoundcloudPlaylistAlbum',
+  'SoundcloudShortLink',
+  'InstagramStory',
+  'LinkedInPost',
+  'LinkedInCompany',
+  'Spotify',
+  'Farcaster',
+  'Zora',
+  'Discord',
+] as const;
+
+export type UrlType = (typeof UrlTypes)[number];
 
 /**
  * Validates a URL by normalizing it and checking if it's in a valid format.

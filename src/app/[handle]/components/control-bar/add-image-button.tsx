@@ -1,9 +1,5 @@
 import { ImageIcon } from 'lucide-react';
 
-import {
-  handleImageInputChange,
-  validImageExtensionsWithDots,
-} from '@/components/profile/widgets/util';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Tooltip,
@@ -12,6 +8,10 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
+import {
+  handleImageInputChange,
+  validImageExtensionsWithDots,
+} from '../../util';
 import { InvisibleInput } from './invisible-input';
 
 // TODO: Make sure this is accessible, has the right role, etc.

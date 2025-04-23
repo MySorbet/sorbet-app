@@ -149,7 +149,6 @@ const config = {
         shine: 'shine 6s ease-out infinite',
       },
       boxShadow: {
-        widget: '0px 20px 120px 0px rgba(52, 64, 84, 0.06)',
         invoice: '0px 20px 110px 0px #3440540F',
       },
       transitionDuration: {

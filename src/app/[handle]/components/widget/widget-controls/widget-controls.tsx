@@ -8,7 +8,7 @@ import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-import { isValidUrl, normalizeUrl } from '@/components/profile/widgets/util';
+import { isValidUrl, normalizeUrl } from '@/app/[handle]/util';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';

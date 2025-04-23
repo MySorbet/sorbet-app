@@ -9,7 +9,7 @@ import { ControlButton } from '@/app/[handle]/components/widget/widget-controls/
 import {
   handleImageInputChange,
   validImageExtensionsWithDots,
-} from '@/components/profile/widgets/util';
+} from '@/app/[handle]/util';
 import {
   Tooltip,
   TooltipContent,

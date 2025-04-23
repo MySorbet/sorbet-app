@@ -1,8 +1,8 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
+import { UrlType, UrlTypes } from '../../util';
 import { WidgetSize } from './grid-config';
-import { UrlType, UrlTypes } from './url-util';
 import { Widget, WidgetProps } from './widget';
 
 /** Helper to create a container based on size prop */

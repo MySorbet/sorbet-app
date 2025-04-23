@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { normalizeUrl } from '@/components/profile/widgets/util';
+import { normalizeUrl } from '../../util';
 
 /** Hook that handles pasting URLs globally, ignoring paste events in input elements */
 export const useHandlePaste = (

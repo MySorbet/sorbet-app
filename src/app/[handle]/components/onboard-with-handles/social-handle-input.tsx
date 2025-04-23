@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-import { WidgetIcon, WidgetTypeWithIcon } from '../widget-icon';
+import { UrlType } from '../../util';
+import { SocialIcon } from '../widget/social-icon';
 
 interface SocialHandleInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -76,7 +77,7 @@ export const SocialHandleInput = React.forwardRef<
         {...props}
       />
       <div className='absolute left-2 top-1/2 -translate-y-1/2 transform'>
-        <WidgetIcon type={type} className='mb-0 size-6' />
+        <SocialIcon type={type} className='mb-0 size-6' />
       </div>
       {showClearButton && (
         <Button
@@ -100,7 +101,7 @@ export const SocialHandleInputWidgetTypes = [
   'Github',
   'Behance',
   'Medium',
-] as const satisfies WidgetTypeWithIcon[];
+] as const satisfies UrlType[];
 
 /** These are the supported widget types for the onboarding flow */
 export type SocialHandleInputWidgetType =

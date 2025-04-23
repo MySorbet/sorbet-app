@@ -2,16 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-// TODO: Update imports from @/components/profile once components are moved
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormItem } from '@/components/ui/form';
+import { FormField } from '@/components/ui/form';
+
 import {
   SocialHandleInput,
   SocialHandleInputWidgetType,
   SocialHandleInputWidgetTypes,
   typeAndHandleToWidgetUrl,
-} from '@/components/profile/widgets/onboarding-drawer/social-handle-input';
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormItem } from '@/components/ui/form';
-import { FormField } from '@/components/ui/form';
+} from './social-handle-input';
 
 // TODO: See onboarding drawer to improve this
 

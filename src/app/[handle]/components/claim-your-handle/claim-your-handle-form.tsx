@@ -3,11 +3,12 @@ import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Spinner } from '@/components/common/spinner';
-import { HandleInput, validateHandle } from '@/components/profile/handle-input';
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form';
 import { Form, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import { useAuth, useUpdateUser } from '@/hooks';
+
+import { HandleInput, validateHandle } from './handle-input';
 
 export const ClaimYourHandleForm = () => {
   const { user } = useAuth();

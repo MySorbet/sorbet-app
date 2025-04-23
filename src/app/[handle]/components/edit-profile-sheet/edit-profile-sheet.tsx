@@ -10,9 +10,6 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Spinner } from '@/components/common/spinner';
-import { BioMessage } from '@/components/profile/bio-message';
-import { HandleInput, validateHandle } from '@/components/profile/handle-input';
-import { LocationInput } from '@/components/profile/location-input';
 import SkillInput from '@/components/syntax-ui/skill-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -44,6 +41,10 @@ import {
 import { useAfter } from '@/hooks/use-after';
 import type { MinimalUser } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
+
+import { HandleInput, validateHandle } from '../claim-your-handle/handle-input';
+import { BioMessage } from './bio-message';
+import { LocationInput } from './location-input';
 
 interface EditProfileSheetProps {
   open: boolean;

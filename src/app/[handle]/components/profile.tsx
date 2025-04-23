@@ -6,18 +6,18 @@ import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { ArtificialMobile } from '@/app/[handle]/components/artificial-mobile';
-import { FileDropArea } from '@/components/profile/widgets/file-drop-area';
-import { ifValidImage } from '@/components/profile/widgets/util';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { MinimalUser } from '@/types';
 
+import { ifValidImage } from '../util';
+import { ArtificialMobile } from './artificial-mobile';
 import { ContactMeDialog } from './contact-me/contact-me-dialog';
 import { ControlBar } from './control-bar/control-bar';
 import { EditProfileSheet } from './edit-profile-sheet/edit-profile-sheet';
 import { ExitLinks } from './exit-links';
+import { FileDropArea } from './file-drop-area';
 import { OnboardWithHandles } from './onboard-with-handles/onboard-with-handles';
 import { ProfileDetails } from './profile-details';
 import { ShareDialog } from './share-dialog/share-dialog';
