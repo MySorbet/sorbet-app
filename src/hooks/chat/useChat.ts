@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { sendNotification } from '@/api/chat';
 import { timestampToTime } from '@/components/chat/sendbird-utils';
 import { useSendbird } from '@/hooks/chat/useSendbird';
-import { User, UserWithId } from '@/types';
+import { User } from '@/types';
 import {
   ChatState,
   NewMessageNotificationDto,
@@ -38,7 +38,7 @@ export interface PrismaOfferType {
 }
 
 interface useChatProps {
-  user: UserWithId | null;
+  user: User | null;
   logout: () => void;
   isOpen: boolean;
   offer: PrismaOfferType | undefined;

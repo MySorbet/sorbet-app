@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 
 import { updateUser } from '@/api/user';
 import { useAuth } from '@/hooks/use-auth';
-import { UserWithId } from '@/types';
+import { User } from '@/types';
 
 export const useUpdateUser = (
   options: {
@@ -13,7 +13,7 @@ export const useUpdateUser = (
   const { dangerouslySetUser } = useAuth();
 
   return useMutation({
-    mutationFn: async (userToUpdate: UserWithId) =>
+    mutationFn: async (userToUpdate: Partial<User> & { id: string }) =>
       await updateUser(userToUpdate, userToUpdate.id),
     onSuccess: async (response) => {
       dangerouslySetUser(response.data);

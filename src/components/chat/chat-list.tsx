@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 
 import { cn } from '@/lib/utils';
-import { UserWithId } from '@/types';
+import { User } from '@/types';
 import { SBMessage, SupportedFileIcons } from '@/types/sendbird';
 
 import { FileDisplay } from './chat-file-display';
@@ -18,7 +18,7 @@ import { TypingIndicator } from './typing-indicator';
 
 interface ChatListProps {
   messages: SBMessage[];
-  selectedUser: UserWithId;
+  selectedUser: User;
   typingMembers: Member[];
   supportedIcons: SupportedFileIcons;
   chatLoading: boolean;

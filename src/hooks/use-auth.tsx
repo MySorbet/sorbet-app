@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 
 import { signUpWithPrivyId } from '@/api/auth';
 import { getUserByPrivyId } from '@/api/user';
-import { MinimalUser, User } from '@/types';
+import { User } from '@/types';
 
 import { useLocalStorage } from './use-local-storage';
 
@@ -34,11 +34,11 @@ type LoginResultSuccess = {
 type LoginResult = LoginResultFailed | LoginResultSuccess;
 
 interface AuthContextType {
-  user: MinimalUser | null;
+  user: User | null;
   logout: () => void;
   login: ReturnType<typeof useLogin>['login'];
   loading: boolean;
-  dangerouslySetUser: (user: MinimalUser | null) => void;
+  dangerouslySetUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -50,7 +50,7 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   // We store a copy of the user in local storage so we don't have to fetch it every time
-  const [user, setUser] = useLocalStorage<MinimalUser | null>('user', null);
+  const [user, setUser] = useLocalStorage<User | null>('user', null);
   const [loading, setLoading] = useState(false);
 
   const { logout: logoutPrivy } = usePrivy();

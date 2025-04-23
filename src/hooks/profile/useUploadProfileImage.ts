@@ -2,11 +2,11 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { uploadProfileImageAsync } from '@/api/images';
-import type { UserWithId } from '@/types';
+import { User } from '@/types';
 
 type uploadProfileImageParams = {
   imageFormData: FormData;
-  userToUpdate: UserWithId;
+  userToUpdate: Pick<User, 'id' | 'profileImage'>;
 };
 
 export const useUploadProfileImage = () => {

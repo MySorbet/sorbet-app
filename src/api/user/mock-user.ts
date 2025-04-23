@@ -1,6 +1,6 @@
-import { MinimalUser, User } from '@/types';
+import { User } from '@/types';
 
-export const mockUserMinimal: MinimalUser = {
+export const mockUserMinimal: User = {
   id: '1',
   privyId: 'mock-privy-id',
   handle: 'mock-user',

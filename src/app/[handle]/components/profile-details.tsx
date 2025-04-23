@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn, formatName } from '@/lib/utils';
-import { MinimalUser } from '@/types';
+import { User } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 
 import { Tip } from './tip';
@@ -21,7 +21,7 @@ export const ProfileDetails = ({
   onContactMe,
   className,
 }: {
-  user: MinimalUser;
+  user: User;
   isMine?: boolean;
   onEdit?: () => void;
   onContactMe?: () => void;

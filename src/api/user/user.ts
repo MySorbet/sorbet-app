@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { env } from '@/lib/env';
-import { MinimalUser, User, UserWithId } from '@/types';
+import { User } from '@/types';
 
 import { withAuthHeader } from '../withAuthHeader';
 
@@ -77,9 +77,12 @@ export const getUserByEmail = async (email: string) => {
 };
 
 /** Update a user's profile */
-export const updateUser = async (userToUpdate: UserWithId, userId: string) => {
+export const updateUser = async (
+  userToUpdate: Omit<Partial<User>, 'id'>,
+  userId: string
+) => {
   try {
-    const response = await axios.patch<MinimalUser>(
+    const response = await axios.patch<User>(
       `${API_URL}/users/${userId}`,
       userToUpdate,
       await withAuthHeader()
