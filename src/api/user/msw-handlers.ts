@@ -1,8 +1,8 @@
 import { delay, http, HttpResponse } from 'msw';
 
-import { mockUser } from '@/api/user/mock-user';
+import { mockUserPublic } from '@/api/user/mock-user';
 import { env } from '@/lib/env';
-import { User } from '@/types';
+import { UserPublic } from '@/types';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
@@ -15,8 +15,8 @@ export const mockUserByHandleHandler = http.get(
   async ({ params }) => {
     const { handle } = params;
     await delay();
-    return HttpResponse.json<User>({
-      ...mockUser,
+    return HttpResponse.json<UserPublic>({
+      ...mockUserPublic,
       handle: handle as string,
     });
   }

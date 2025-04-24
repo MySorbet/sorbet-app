@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { env } from '@/lib/env';
-import { User } from '@/types';
+import { User, UserPublic } from '@/types';
 
 import { withAuthHeader } from '../withAuthHeader';
 
@@ -12,24 +12,19 @@ const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
  * @throws what axios throws
  */
 export const getUserByHandle = async (handle: string) => {
-  const response = await axios.get<User>(`${API_URL}/users/handle/${handle}`);
+  const response = await axios.get<UserPublic>(
+    `${API_URL}/users/handle/${handle}`
+  );
   return response.data;
 };
 
-/** Get a user from the db by their privy id */
+/**
+ * Get a user from the db by their privy id
+ *  @throws what axios throws
+ */
 export const getUserByPrivyId = async (id: string) => {
-  try {
-    const response = await axios.get<User>(`${API_URL}/users/privy/${id}`);
-    return response;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(
-        `Failed to get user by privy id: ${error.response?.data.message}`
-      );
-    } else {
-      throw new Error(`Failed to get user by account id: ${error}`);
-    }
-  }
+  const response = await axios.get<UserPublic>(`${API_URL}/users/privy/${id}`);
+  return response.data;
 };
 
 /** Get the current wallet address of a user */

@@ -9,7 +9,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { User } from '@/types';
+import { UserPublic } from '@/types';
 
 import { ifValidImage } from '../util';
 import { ArtificialMobile } from './artificial-mobile';
@@ -32,7 +32,7 @@ export const Profile = ({
   isMine,
   isLoggedIn,
 }: {
-  user: User;
+  user: UserPublic;
   isMine?: boolean;
   isLoggedIn?: boolean;
 }) => {

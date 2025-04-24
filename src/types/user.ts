@@ -4,14 +4,31 @@ export interface User {
   privyId: string;
   hasClaimedHandle: boolean;
 
-  // TODO: API type would have all these as nullable but required
+  tags: string[];
+
+  // TODO: API type would have all these as key required but value nullable
   firstName?: string;
   lastName?: string;
   email?: string;
   bio?: string;
   profileImage?: string;
-  tags?: string[];
   city?: string;
 }
 
-// TODO: This is the only User type currently. But soon, we should distinguish between the public user and the full user
+/**
+ *  Public endpoints return a subset of User, omitting private cols: `email`, `hasClaimedHandle`, `createdAt`, and `updatedAt`
+ *
+ *  This should match the UserService in sorbet-api.
+ */
+export type UserPublic = Pick<
+  User,
+  | 'id'
+  | 'privyId'
+  | 'firstName'
+  | 'lastName'
+  | 'handle'
+  | 'bio'
+  | 'city'
+  | 'profileImage'
+  | 'tags'
+>;

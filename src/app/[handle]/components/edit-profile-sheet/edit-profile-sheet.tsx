@@ -39,7 +39,7 @@ import {
   useUploadProfileImage,
 } from '@/hooks';
 import { useAfter } from '@/hooks/use-after';
-import type { User } from '@/types';
+import type { UserPublic } from '@/types';
 import AvatarFallbackSVG from '~/svg/avatar-fallback.svg';
 
 import { HandleInput, validateHandle } from '../claim-your-handle/handle-input';
@@ -49,7 +49,7 @@ import { LocationInput } from './location-input';
 interface EditProfileSheetProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  user: User;
+  user: UserPublic;
 }
 
 // TODO: Match design
