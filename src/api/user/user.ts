@@ -64,18 +64,6 @@ export const deleteProfileImageAsync = async (userId: string) => {
   }
 };
 
-/**
- * Get a user from the db by their email
- */
-export const getUserByEmail = async (email: string) => {
-  try {
-    const response = await axios.get(`${API_URL}/users/email/${email}`);
-    return response;
-  } catch (error) {
-    console.log(`Failed to get user by email: ${JSON.stringify(error)}`);
-  }
-};
-
 /** Update a user's profile */
 export const updateUser = async (
   userToUpdate: Omit<Partial<User>, 'id'>,
