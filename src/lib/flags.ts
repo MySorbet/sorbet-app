@@ -8,4 +8,5 @@ export const featureFlags = {
   sectionTitles: true,
   skipAuthHeader: false,
   settings: !(process.env.NODE_ENV === 'production'),
+  transfers: false,
 } as const;

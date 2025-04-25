@@ -24,7 +24,7 @@ const pathVariants: Variants = {
 const secondPathVariants: Variants = {
   normal: { d: 'M4 7 L20 7' },
   animate: {
-    d: ['M4 7 L20 7', 'M7 7 L17 7', 'M4 7 L20 7'],
+    d: ['M4 7 L20 7', 'M7 7 L20 7', 'M4 7 L20 7'],
     transition: {
       duration: 0.4,
     },
@@ -46,7 +46,7 @@ const pathVariantsBottom: Variants = {
 const secondPathVariantsBottom: Variants = {
   normal: { d: 'M20 17 L4 17' },
   animate: {
-    d: ['M20 17 L4 17', 'M17 17 L7 17', 'M20 17 L4 17'],
+    d: ['M20 17 L4 17', 'M17 17 L4 17', 'M20 17 L4 17'],
     transition: {
       duration: 0.4,
     },
@@ -98,29 +98,6 @@ const ArrowLeftRightIcon = forwardRef<
       onMouseLeave={handleMouseLeave}
       {...props}
     >
-      {/* <svg
-        xmlns='http://www.w3.org/2000/svg'
-        width='28'
-        height='28'
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke='currentColor'
-        strokeWidth='2'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-      >
-        <motion.path
-          d='m12 19-7-7 7-7'
-          variants={pathVariants}
-          animate={controls}
-        />
-
-        <motion.path
-          d='M19 12H5'
-          variants={secondPathVariants}
-          animate={controls}
-        />
-      </svg> */}
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='24'
@@ -132,22 +109,25 @@ const ArrowLeftRightIcon = forwardRef<
         strokeLinecap='round'
         strokeLinejoin='round'
       >
+        {/* bottom line */}
         <motion.path
           d='M8 3 4 7l4 4'
           variants={pathVariants}
           animate={controls}
         />
+        {/* top line */}
         <motion.path
           d='M4 7 L20 7'
           variants={secondPathVariants}
           animate={controls}
         />
-
+        {/* bottom arrow */}
         <motion.path
           d='m16 21 4-4-4-4'
           variants={pathVariantsBottom}
           animate={controls}
         />
+        {/* top arrow */}
         <motion.path
           d='M20 17 L4 17'
           variants={secondPathVariantsBottom}

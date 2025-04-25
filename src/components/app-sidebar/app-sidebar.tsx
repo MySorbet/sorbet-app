@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
 import { LinkInBioLinkButton } from '@/components/app-sidebar/link-in-bio-link-button';
 import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
+import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
 import { Badge } from '@/components/ui/badge';
 import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
@@ -113,11 +114,15 @@ const items: MenuItem[] = [
     url: '/wallet/all',
     icon: HandCoinsIcon,
   },
-  // {
-  //   title: 'Transfers',
-  //   url: '/wallet',
-  //   icon: ArrowLeftRightIcon,
-  // },
+  ...(featureFlags.transfers
+    ? [
+        {
+          title: 'Transfers',
+          url: '/transfers',
+          icon: ArrowLeftRightIcon,
+        },
+      ]
+    : []),
 ];
 
 const profileItems: MenuItem[] = [
@@ -163,7 +168,6 @@ const accountItems: MenuItem[] = [
       );
     },
   },
-  // TODO: Remove this ugly hack once settings is enabled and we can remove the feature flag
   ...(featureFlags.settings
     ? [
         {
