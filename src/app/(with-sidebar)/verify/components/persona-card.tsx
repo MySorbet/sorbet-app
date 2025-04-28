@@ -51,7 +51,7 @@ export const PersonaCard = ({
   return (
     <VerifyCard
       className={cn(
-        'flex h-[41rem] w-full max-w-[22rem] items-center justify-center',
+        'flex h-[41rem] w-full max-w-[25rem] items-center justify-center',
         className
       )}
     >
