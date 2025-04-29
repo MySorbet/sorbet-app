@@ -74,7 +74,7 @@ export const Bank: Story = {
         <RecipientButtonDetail>
           Arrives in 1-2 business days
         </RecipientButtonDetail>
-      </RecipientButtonContent>{' '}
+      </RecipientButtonContent>
     </RecipientButton>
   ),
 };
@@ -89,7 +89,7 @@ export const Wallet: Story = {
           Transfer to crypto wallet or exchange
         </RecipientButtonDescription>
         <RecipientButtonDetail>Arrives instantly</RecipientButtonDetail>
-      </RecipientButtonContent>{' '}
+      </RecipientButtonContent>
     </RecipientButton>
   ),
 };
