@@ -4,7 +4,7 @@ import * as blobUtil from 'blob-util';
 import { env } from '@/lib/env';
 import { NewMessageNotificationDto } from '@/types/sendbird';
 
-import { withAuthHeader } from './withAuthHeader';
+import { withAuthHeader } from './with-auth-header';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 

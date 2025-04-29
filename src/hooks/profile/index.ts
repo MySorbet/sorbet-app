@@ -1,7 +1,7 @@
-import { useDeleteProfileImage } from './useDeleteProfileImage';
-import { useGooglePlacesApi } from './useGooglePlacesApi';
-import { useUpdateUser } from './useUpdateUser';
-import { useUploadProfileImage } from './useUploadProfileImage';
+import { useDeleteProfileImage } from './use-delete-profile-image';
+import { useGooglePlacesApi } from './use-google-places-api';
+import { useUpdateUser } from './use-update-user';
+import { useUploadProfileImage } from './use-upload-profile-image';
 
 export {
   useDeleteProfileImage,

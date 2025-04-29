@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { env } from '@/lib/env';
 import { User, UserPublic } from '@/types';
 
-import { withAuthHeader } from '../withAuthHeader';
+import { withAuthHeader } from '../with-auth-header';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 

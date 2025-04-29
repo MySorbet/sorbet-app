@@ -4,7 +4,12 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports'],
+  plugins: [
+    '@typescript-eslint',
+    'simple-import-sort',
+    'unused-imports',
+    'check-file',
+  ],
   extends: [
     'eslint:recommended',
     'next',
@@ -44,6 +49,14 @@ module.exports = {
 
     'simple-import-sort/imports': 'warn',
     'simple-import-sort/exports': 'warn',
+
+    'check-file/filename-naming-convention': [
+      'error',
+      {
+        '**/*': 'KEBAB_CASE',
+      },
+      { ignoreMiddleExtensions: true },
+    ],
   },
   globals: {
     React: true,

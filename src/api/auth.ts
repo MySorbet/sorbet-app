@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { withAuthHeader } from '@/api/withAuthHeader';
+import { withAuthHeader } from '@/api/with-auth-header';
 import { env } from '@/lib/env';
 import { User } from '@/types';
 

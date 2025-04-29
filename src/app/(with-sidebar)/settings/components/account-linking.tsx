@@ -18,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useUpdateUser } from '@/hooks/profile/useUpdateUser';
+import { useUpdateUser } from '@/hooks/profile/use-update-user';
 import { useAuth } from '@/hooks/use-auth';
 
 /** POC for managing linked accounts. Not prod ready */

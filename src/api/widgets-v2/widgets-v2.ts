@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { env } from '@/lib/env';
 
-import { withAuthHeader } from '../withAuthHeader';
+import { withAuthHeader } from '../with-auth-header';
 import {
   ApiWidget,
   CreateWidgetDto,

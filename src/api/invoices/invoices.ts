@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Invoice, InvoiceForm } from '@/app/invoices/schema';
 import { env } from '@/lib/env';
 
-import { withAuthHeader } from '../withAuthHeader';
+import { withAuthHeader } from '../with-auth-header';
 
 /**
  * Creates a new invoice.
