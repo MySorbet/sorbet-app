@@ -158,7 +158,7 @@ export const WidgetControls = ({
                       <Input
                         type='url'
                         placeholder='paste link'
-                        className='text-primary-foreground border-none bg-[#18181B] focus-visible:ring-0 focus-visible:ring-offset-0'
+                        className='text-primary-foreground bg-widget-controls-grey border-none focus-visible:ring-0 focus-visible:ring-offset-0'
                         suffix={
                           link && (
                             <Button

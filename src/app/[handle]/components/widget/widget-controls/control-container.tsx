@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 
 /**
  * Dark background container for widget controls.
- * TODO: Use design tokens
  */
 export const ControlContainer = forwardRef<
   HTMLDivElement,
@@ -14,7 +13,7 @@ export const ControlContainer = forwardRef<
     <div
       ref={ref}
       className={cn(
-        'text-primary-foreground flex items-center justify-center gap-1 rounded-lg bg-[#18181B] p-1 shadow-lg',
+        'text-primary-foreground bg-widget-controls-grey flex items-center justify-center gap-1 rounded-lg p-1 shadow-lg',
         className
       )}
       {...props}

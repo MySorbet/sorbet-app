@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 
 // TODO: The hover ring isn't quite right for this button either.
 // TODO: Note that rather than putting in time to resize the delete icon from 20 to 16, I just made this button bigger. Revisit this.
-// TODO: Use design tokens
 
 /**
  * A delete button for a widget.
@@ -20,7 +19,7 @@ export const WidgetDeleteButton = ({
     <CompactDeleteButton
       onDelete={onDelete}
       className={cn(
-        'rounded-full bg-[#18181B] p-[0.125rem] text-white shadow-lg',
+        'bg-widget-controls-grey rounded-full p-[0.125rem] text-white shadow-lg',
         className
       )}
     />

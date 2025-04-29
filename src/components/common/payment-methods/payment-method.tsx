@@ -29,7 +29,7 @@ export const PaymentMethod = ({
           <Label className='text-sm font-medium'>{title}</Label>
           {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
           {timing && (
-            <span className='ml-auto text-right text-xs text-[#5B6BFF]'>
+            <span className='text-sorbet-blue ml-auto text-right text-xs'>
               {timing}
             </span>
           )}

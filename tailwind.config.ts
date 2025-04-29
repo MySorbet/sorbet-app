@@ -77,17 +77,6 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        sorbet: {
-          DEFAULT: '#573DF5',
-          foreground: '#573DF5',
-          border: '#7F56D9',
-        },
-        textPlaceholder: {
-          DEFAULT: '#667085',
-        },
-        textSecondary: {
-          DEFAULT: '#344054',
-        },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
           foreground: 'hsl(var(--sidebar-foreground))',
@@ -98,6 +87,40 @@ const config = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        // Custom sorbet colors 👇
+        sorbet: {
+          DEFAULT: 'hsl(var(--sorbet))',
+          lighter: 'hsl(var(--sorbet-lighter))',
+          light: 'hsl(var(--sorbet-light))',
+          lightest: 'hsl(var(--sorbet-lightest))',
+        },
+        neutral: {
+          darkest: 'hsl(var(--neutral-darkest))',
+          darker: 'hsl(var(--neutral-darker))',
+          dark: 'hsl(var(--neutral-dark))',
+          light: 'hsl(var(--neutral-light))',
+          lighter: 'hsl(var(--neutral-lighter))',
+          lightest: 'hsl(var(--neutral-lightest))',
+        },
+        'sorbet-green': {
+          DEFAULT: 'hsl(var(--sorbet-green))',
+          lighter: 'hsl(var(--sorbet-green-lighter))',
+          light: 'hsl(var(--sorbet-green-light))',
+          lightest: 'hsl(var(--sorbet-green-lightest))',
+        },
+        'sorbet-blue': {
+          DEFAULT: 'hsl(var(--sorbet-blue))',
+          lighter: 'hsl(var(--sorbet-blue-lighter))',
+          light: 'hsl(var(--sorbet-blue-light))',
+          lightest: 'hsl(var(--sorbet-blue-lightest))',
+        },
+        'sorbet-orange': {
+          DEFAULT: 'hsl(var(--sorbet-orange))',
+        },
+        'sorbet-red': {
+          DEFAULT: 'hsl(var(--sorbet-red))',
+        },
+        'widget-controls-grey': 'hsl(var(--widget-controls-grey))',
       },
       borderRadius: {
         lg: 'var(--radius)',

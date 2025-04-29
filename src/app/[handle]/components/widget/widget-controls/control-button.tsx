@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 /**
  * Base button for widget controls.
  * - Prevents event default to avoid triggering opening parent a tag (widget root)
- * TODO: Use design tokens
  */
 export const ControlButton = forwardRef<
   HTMLButtonElement,
@@ -21,8 +20,8 @@ export const ControlButton = forwardRef<
       type='button'
       className={cn(
         'text-primary-foreground flex size-6 min-w-fit items-center justify-center rounded-sm transition-colors',
-        isActive && 'bg-[#D0ADFF] text-[#18181B]', // --purple-lightest
-        !isActive && 'hover:bg-[#D0ADFF]/30'
+        isActive && 'bg-sorbet-lightest text-widget-controls-grey',
+        !isActive && 'hover:bg-sorbet-lightest/30'
       )}
       onClick={(e) => {
         e.preventDefault();

@@ -285,7 +285,7 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
                 </Avatar>
                 <label
                   htmlFor='profileImage'
-                  className='text-textSecondary flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold'
+                  className='flex cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border-[1px] border-[#D0D5DD] px-3 py-2 text-sm font-semibold text-[#344054]'
                 >
                   Upload
                   <input

@@ -141,9 +141,76 @@
   }
 }
 
-/* Added to begin incorporating new theme colors */
+/* Sorbet color palette based on https://www.figma.com/design/dOeHE9vrZeuiLqfChwMPeh/Design-Library?node-id=580-9181&p=f&t=sFfupt3sa4170Mc4-0*/
 @layer base {
   :root {
+    /* Sorbet Purple Colors */
+
+    /* #761cf5 */
     --sorbet: 265 92% 54%;
+
+    /* #8124ff */
+    --sorbet-lighter: 265 100% 57%;
+
+    /* #8f3dff */
+    --sorbet-light: 265 100% 62%;
+
+    /* #d0adff */
+    --sorbet-lightest: 266 100% 84%;
+
+    /* Neutral Colors */
+
+    /* #4F4F4F */
+    --neutral-darkest: 0 0% 31%;
+
+    /* #6B6B6B */
+    --neutral-darker: 0 0% 42%;
+
+    /* #8D8D8D */
+    --neutral-dark: 0 0% 55%;
+
+    /* #C7C7C7 */
+    --neutral-light: 0 0% 78%;
+
+    /* #E6E6E6 */
+    --neutral-lighter: 0 0% 90%;
+
+    /* #F5F5F5 */
+    --neutral-lightest: 0 0% 96%;
+
+    /* Accent Colors */
+
+    /* #1BF6CA */
+    --sorbet-green: 168 92% 54%;
+
+    /* #24FFD3 */
+    --sorbet-green-lighter: 168 100% 57%;
+
+    /* #7DFFE5 */
+    --sorbet-green-light: 168 100% 75%;
+
+    /* #ADFFEF */
+    --sorbet-green-lightest: 168 100% 84%;
+
+    /* #5B6BFF */
+    --sorbet-blue: 234 100% 68%;
+
+    /* #6171FF */
+    --sorbet-blue-lighter: 234 100% 69%;
+
+    /* #7482FF */
+    --sorbet-blue-light: 234 100% 73%;
+
+    /* #949FFF */
+    --sorbet-blue-lightest: 234 100% 79%;
+
+    /* #FFA63D */
+    --sorbet-orange: 32 100% 62%;
+
+    /* #FF3D3D */
+    --sorbet-red: 0 100% 62%;
+
+    /* #18181B */
+    --widget-controls-grey: 240 6% 10%;
   }
 }

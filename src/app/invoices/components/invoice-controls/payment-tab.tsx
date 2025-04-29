@@ -181,7 +181,7 @@ const PaymentMethod = ({
           {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
 
           {timing && (
-            <span className='ml-auto text-right text-xs text-[#5B6BFF]'>
+            <span className='text-sorbet-blue ml-auto text-right text-xs'>
               {timing}
             </span>
           )}

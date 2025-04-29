@@ -59,7 +59,7 @@ export const PreviewControls = ({
               handleInputChange={handleInputChange}
               inputProps={{ accept: validImageExtensionsWithDots.join(',') }}
               // TODO: These styles are duplication of ControlButton styles
-              className='text-primary-foreground flex size-6 min-w-fit cursor-pointer items-center justify-center rounded-sm transition-colors hover:bg-[#D0ADFF]/30'
+              className='text-primary-foreground hover:bg-sorbet-lightest/30 flex size-6 min-w-fit cursor-pointer items-center justify-center rounded-sm transition-colors'
             >
               <ImageIcon className='size-4' />
             </InvisibleInput>
