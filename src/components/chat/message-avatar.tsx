@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User01 } from '@untitled-ui/icons-react';
+import { User } from 'lucide-react';
 
 interface MessageAvatarProps {
   avatar: string | undefined;
@@ -23,7 +23,7 @@ export const MessageAvatar = ({
           className='h-8 w-8 rounded-full'
         />
         <AvatarFallback className='h-full w-full overflow-clip'>
-          <User01 className='text-muted-foreground size-full' />
+          <User className='text-muted-foreground size-full' />
         </AvatarFallback>
       </Avatar>
       <span className='text-sm text-[#344054]'>{nickname}</span>

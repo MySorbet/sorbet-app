@@ -1,4 +1,4 @@
-import { ArrowRight } from '@untitled-ui/icons-react';
+import { ArrowRight } from 'lucide-react';
 
 import { Spinner } from '@/components/common/spinner';
 import { Button, ButtonProps } from '@/components/ui/button';

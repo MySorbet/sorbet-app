@@ -1,4 +1,4 @@
-import { TrendDown01, TrendUp01 } from '@untitled-ui/icons-react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 
 interface PercentageChangeProps {
   percentChange: number;
@@ -10,9 +10,9 @@ export const PercentageChange: React.FC<PercentageChangeProps> = ({
   return (
     <div className='ml-2 flex'>
       {percentChange > 0 ? (
-        <TrendUp01 color='#079455' />
+        <TrendingUp color='#079455' />
       ) : (
-        <TrendDown01 color='#dc2626' />
+        <TrendingDown color='#dc2626' />
       )}
       <div
         className={`text-md ml-1 ${

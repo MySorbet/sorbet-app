@@ -1,8 +1,7 @@
 'use client';
 
-import { ArrowNarrowLeft } from '@untitled-ui/icons-react';
 import { format } from 'date-fns';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -133,7 +132,7 @@ export const TransactionsBrowser: React.FC = () => {
             href='/wallet'
             className='flex items-center gap-1 font-semibold'
           >
-            <ArrowNarrowLeft className='size-5' />
+            <ArrowLeft className='size-5' />
             Go Back
           </Link>
         </div>

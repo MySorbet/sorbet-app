@@ -1,4 +1,4 @@
-import { MarkerPin02 } from '@untitled-ui/icons-react';
+import { MapPin } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 import {
   FieldValues,
@@ -54,7 +54,7 @@ export const LocationInput = <T extends FieldValues>({
             autoComplete='off'
             className={cn('pl-10 focus:outline-none focus:ring-0', className)}
           />
-          <MarkerPin02 className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
+          <MapPin className='absolute left-3 top-[10px] h-5 w-5 text-[#667085]' />
         </div>
         <LocationPredictionsList
           name={name}

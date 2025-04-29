@@ -21,7 +21,7 @@ const nextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ['@untitled-ui', 'lucide-react', 'msw'],
+    optimizePackageImports: ['lucide-react', 'msw'],
   },
 
   webpack(config) {

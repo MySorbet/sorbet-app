@@ -1,4 +1,4 @@
-import { X } from '@untitled-ui/icons-react';
+import { X } from 'lucide-react';
 import { useImperativeHandle, useRef, useState } from 'react';
 import React from 'react';
 

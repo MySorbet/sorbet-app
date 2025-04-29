@@ -1,4 +1,3 @@
-import { SearchLg } from '@untitled-ui/icons-react';
 import {
   AnimatePresence,
   AnimationScope,
@@ -9,6 +8,7 @@ import { ComponentProps, MouseEvent, useState } from 'react';
 
 import { SkillBadge } from './skill-badge';
 import { MAX_CHARS_PER_SKILL, MAX_NUM_SKILLS } from '@/constant';
+import { Search } from 'lucide-react';
 
 interface SkillInputProps extends ComponentProps<'input'> {
   initialSkills: string[];
@@ -130,7 +130,7 @@ const SkillInput = ({
           className='flex w-full flex-wrap items-center gap-2 overflow-y-auto'
           style={{ maxHeight: '300px' }}
         >
-          <SearchLg className='h-5 w-5 text-[#667085]' />
+          <Search className='h-5 w-5 text-[#667085]' />
           <AnimatePresence>
             {skills.map((keyword, index) => (
               <motion.div

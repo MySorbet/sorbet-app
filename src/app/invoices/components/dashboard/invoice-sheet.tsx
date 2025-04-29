@@ -1,7 +1,7 @@
 'use client';
 
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { Download01 } from '@untitled-ui/icons-react';
+import { Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { CopyButton } from '@/components/common/copy-button/copy-button';
@@ -172,7 +172,7 @@ export default function InvoiceSheet({
                   className='min-w-11'
                   onClick={onDownload}
                 >
-                  <Download01 className='size-4' />
+                  <Download className='size-4' />
                 </Button>
                 <CopyButton
                   className='w-full'

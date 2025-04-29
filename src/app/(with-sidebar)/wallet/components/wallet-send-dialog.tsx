@@ -1,14 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { UseMutateAsyncFunction, useMutation } from '@tanstack/react-query';
-import {
-  ArrowNarrowLeft,
-  CheckCircle,
-  LinkExternal02,
-  Loading02,
-} from '@untitled-ui/icons-react';
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
+import { CheckCircle, SquareArrowOutUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
@@ -20,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { BackButton } from '@/components/common/back-button';
 import { BaseAlert } from '@/components/common/base-alert';
 import {
   Credenza,
@@ -29,6 +25,7 @@ import {
   CredenzaHeader,
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -378,24 +375,15 @@ const Step2 = ({
         />
       </div>
       <div className='mt-4 flex gap-3'>
+        <BackButton onClick={() => setStep(1)}>Go back</BackButton>
         <Button
-          onClick={() => setStep(1)}
-          className='group flex items-center gap-[6px] border border-[#D0D5DD] bg-white text-[#344054] hover:bg-[#FAFAFA]'
-        >
-          <ArrowNarrowLeft className='size-3 text-[#344054] transition ease-out group-hover:translate-x-[-1px]' />
-          Go back
-        </Button>
-        <Button
-          className='bg-sorbet border-sorbet-border w-full border text-base'
+          className='w-full'
+          variant='sorbet'
           onClick={() => {
             sendTransactionMutation();
           }}
         >
-          {sendTransactionLoading ? (
-            <Loading02 className='animate-spin' />
-          ) : (
-            'Confirm send'
-          )}
+          {sendTransactionLoading ? <Spinner /> : 'Confirm send'}
         </Button>
       </div>
     </div>
@@ -440,14 +428,11 @@ const Step3 = ({ transactionHash }: Step3Props) => {
           <span className='text-sorbet truncate text-sm'>
             {transactionHash}
           </span>
-          <LinkExternal02 className='size-6 text-[#595B5A]' />
+          <SquareArrowOutUpRight className='size-6 text-[#595B5A]' />
         </a>
       </div>
       <CredenzaClose asChild>
-        <Button
-          className='bg-sorbet border-sorbet-border mt-4 w-full border'
-          onClick={close}
-        >
+        <Button className='mt-4 w-full' variant='sorbet' onClick={close}>
           Done
         </Button>
       </CredenzaClose>

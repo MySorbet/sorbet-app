@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle, Circle } from '@untitled-ui/icons-react';
+import { AlertTriangle, CheckCircle, Circle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {

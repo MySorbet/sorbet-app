@@ -1,5 +1,5 @@
 import { GroupChannel } from '@sendbird/chat/groupChannel';
-import { ArrowNarrowUp, Attachment01 } from '@untitled-ui/icons-react';
+import { ArrowUp, Paperclip } from 'lucide-react';
 import React, {
   Dispatch,
   RefObject,
@@ -228,10 +228,7 @@ const ChatActions = ({
               .map((type: string) => '.' + type)
               .join(',')}
           />
-          <Attachment01
-            className={ChatActionStyles}
-            onClick={handleFileClick}
-          />
+          <Paperclip className={ChatActionStyles} onClick={handleFileClick} />
         </div>
         {/* // ! These are currently unsupported */}
         {/* <Bold01 className={ChatActionStyles} />
@@ -244,7 +241,7 @@ const ChatActions = ({
         disabled={disabled}
         onClick={handleSend}
       >
-        <ArrowNarrowUp className='size-4 text-white transition ease-out group-hover:translate-y-[-1px]' />
+        <ArrowUp className='size-4 text-white transition ease-out group-hover:translate-y-[-1px]' />
       </button>
     </div>
   );
