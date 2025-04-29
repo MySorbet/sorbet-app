@@ -5,8 +5,7 @@ import {
   usePrivy,
   useUpdateAccount,
 } from '@privy-io/react-auth';
-import { UserPill } from '@privy-io/react-auth/ui';
-import { Mail, Settings } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -63,11 +62,8 @@ export const AccountLinking = () => {
   const hasGoogle = Boolean(user?.google?.email);
 
   return (
-    <div className='relative flex w-full flex-col gap-5'>
+    <div className='flex w-full flex-col gap-5'>
       <h2 className='text-xl font-semibold'>Accounts</h2>
-      <div className='absolute right-0 top-0 w-fit'>
-        <UserPill size={16} label={<Settings className='size-4' />} />
-      </div>
       <Card>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
