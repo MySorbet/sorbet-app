@@ -5,15 +5,9 @@ import { BaseAlert } from '@/components/common/base-alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
+import { BankForm } from './bank-form';
 import {
   RecipientButton,
   RecipientButtonContent,
@@ -121,18 +115,14 @@ const BankRecipientForm = ({
         <BackButton onClick={onBack} />
         <VaulSheetTitle>New bank recipient</VaulSheetTitle>
       </VaulSheetHeader>
-      <div className={cn('flex flex-col gap-3', className)}>
-        <Label>Currency</Label>
-        <Select>
-          <SelectTrigger>
-            <SelectValue placeholder='Select a currency' />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='usd'>USD</SelectItem>
-            {/* <SelectItem value='eur'>EUR</SelectItem> */}
-          </SelectContent>
-        </Select>
+      <div className={className}>
+        <BankForm />
       </div>
+      <VaulSheetFooter className='flex flex-row justify-end'>
+        <Button variant='sorbet' className='w-fit'>
+          Save
+        </Button>
+      </VaulSheetFooter>
     </>
   );
 };
@@ -156,9 +146,9 @@ const CryptoRecipientForm = ({
           description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
         />
         <Label>Label</Label>
-        <Input />
+        <Input placeholder='A name to remember this wallet by' />
         <Label>Wallet address</Label>
-        <Input />
+        <Input placeholder='0x...' />
       </div>
       <VaulSheetFooter className='flex flex-row justify-end'>
         <Button variant='sorbet' className='w-fit'>
