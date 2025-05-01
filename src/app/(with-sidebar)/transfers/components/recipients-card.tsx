@@ -12,14 +12,14 @@ import {
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
 
-import { mockRecipients, Recipient } from './utils';
+import { DisplayRecipient, mockRecipients } from './utils';
 
 export const RecipientsCard = ({
   onAdd,
   recipients = mockRecipients,
 }: {
   onAdd?: () => void;
-  recipients?: Recipient[];
+  recipients?: DisplayRecipient[];
 }) => {
   return (
     <Card className='overflow-clip'>
@@ -41,7 +41,11 @@ export const RecipientsCard = ({
   );
 };
 
-const RecipientsTable = ({ recipients }: { recipients: Recipient[] }) => {
+const RecipientsTable = ({
+  recipients,
+}: {
+  recipients: DisplayRecipient[];
+}) => {
   return (
     <Table>
       <TableHeader className='sr-only'>
@@ -70,7 +74,7 @@ const RecipientsTable = ({ recipients }: { recipients: Recipient[] }) => {
   );
 };
 
-const RecipientType = ({ type }: { type: Recipient['type'] }) => {
+const RecipientType = ({ type }: { type: DisplayRecipient['type'] }) => {
   const Icon = type === 'usd' ? DollarSign : type === 'eur' ? Euro : Wallet;
   const label = type === 'usd' ? 'USD' : type === 'eur' ? 'EUR' : 'Crypto';
   return (

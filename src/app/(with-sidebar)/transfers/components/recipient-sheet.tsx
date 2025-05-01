@@ -1,13 +1,14 @@
 import { ArrowLeft } from 'lucide-react';
 import { forwardRef, useState } from 'react';
 
-import { BaseAlert } from '@/components/common/base-alert';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
 import { BankForm, BankFormValues } from './bank-form';
+import {
+  CryptoRecipientForm,
+  CryptoRecipientFormValues,
+} from './crypto-recipient-form';
 import {
   RecipientButton,
   RecipientButtonContent,
@@ -20,7 +21,6 @@ import {
   VaulSheet,
   VaulSheetContent,
   VaulSheetDescription,
-  VaulSheetFooter,
   VaulSheetHeader,
   VaulSheetTitle,
 } from './vaul-sheet';
@@ -31,23 +31,24 @@ export const RecipientSheet = ({
   open = false,
   setOpen,
 }: {
-  onSubmit?: (values: BankFormValues /* | CryptoFormValues */) => void;
+  onSubmit?: (values: BankFormValues | CryptoRecipientFormValues) => void;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }) => {
   const [step, setStep] = useState<'crypto' | 'bank'>();
 
+  const handleClose = () => {
+    setStep(undefined);
+  };
+
   return (
-    <VaulSheet
-      onClose={() => setStep(undefined)}
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <VaulSheet onClose={handleClose} open={open} onOpenChange={setOpen}>
       <VaulSheetContent className='max-w-sm'>
         {step ? (
           step === 'crypto' ? (
             <CryptoRecipientStep
               onBack={() => setStep(undefined)}
+              onSubmit={onSubmit}
               className='animate-in fade-in-0 slide-in-from-right-1 duration-300'
             />
           ) : (
@@ -131,11 +132,11 @@ const BankRecipientStep = ({
       <div className={className}>
         <BankForm onSubmit={onSubmit} />
       </div>
-      <VaulSheetFooter className='flex flex-row justify-end'>
+      {/* <VaulSheetFooter className='flex flex-row justify-end'>
         <Button variant='sorbet' className='w-fit'>
           Save
         </Button>
-      </VaulSheetFooter>
+      </VaulSheetFooter> */}
     </>
   );
 };
@@ -143,9 +144,11 @@ const BankRecipientStep = ({
 const CryptoRecipientStep = ({
   onBack,
   className,
+  onSubmit,
 }: {
   onBack?: () => void;
   className?: string;
+  onSubmit?: (values: CryptoRecipientFormValues) => void;
 }) => {
   return (
     <>
@@ -153,21 +156,12 @@ const CryptoRecipientStep = ({
         <BackButton onClick={onBack} />
         <VaulSheetTitle>New crypto recipient</VaulSheetTitle>
       </VaulSheetHeader>
-      <div className={cn('flex flex-col gap-3', className)}>
-        <BaseAlert
-          title='Is this a Base network address?'
-          description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
-        />
-        <Label>Label</Label>
-        <Input placeholder='A name to remember this wallet by' />
-        <Label>Wallet address</Label>
-        <Input placeholder='0x...' />
-      </div>
-      <VaulSheetFooter className='flex flex-row justify-end'>
+      <CryptoRecipientForm className={className} onSubmit={onSubmit} />
+      {/* <VaulSheetFooter className='flex flex-row justify-end'>
         <Button variant='sorbet' className='w-fit'>
           Save
         </Button>
-      </VaulSheetFooter>
+      </VaulSheetFooter> */}
     </>
   );
 };

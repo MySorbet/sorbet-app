@@ -3,22 +3,37 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { BankFormValues } from './bank-form';
+import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
-import { mockRecipients, Recipient } from './utils';
+import { DisplayRecipient, isBankFormValues, mockRecipients } from './utils';
 
 export const RecipientPageContent = () => {
   const [open, setOpen] = useState(false);
-  const [recipients, setRecipients] = useState<Recipient[]>(mockRecipients);
+  const [recipients, setRecipients] =
+    useState<DisplayRecipient[]>(mockRecipients);
 
-  const handleSubmit = (recipient: BankFormValues) => {
+  const handleSubmit = (
+    recipient: BankFormValues | CryptoRecipientFormValues
+  ) => {
     // TODO: POST api/recipients
-    const display = {
-      id: recipients.length.toString(),
-      name: recipient.account_owner_name,
-      type: recipient.currency,
-      detail: recipient.account.account_number,
-    };
+    let display: DisplayRecipient;
+    if (isBankFormValues(recipient)) {
+      display = {
+        id: recipients.length.toString(),
+        name: recipient.account_owner_name,
+        type: recipient.currency,
+        detail: recipient.account.account_number,
+      };
+    } else {
+      display = {
+        id: recipients.length.toString(),
+        name: recipient.label,
+        type: 'crypto',
+        detail: recipient.walletAddress,
+      };
+    }
+    console.log('display', display);
     setRecipients([...recipients, display]);
     setOpen(false);
   };

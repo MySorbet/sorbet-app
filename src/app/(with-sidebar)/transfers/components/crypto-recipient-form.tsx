@@ -1,0 +1,110 @@
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useFormState } from 'react-hook-form';
+import { z } from 'zod';
+
+import { BaseAlert } from '@/components/common/base-alert';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+
+const formSchema = z.object({
+  /** A name to remember this wallet by */
+  label: z.string().min(1, 'Label is required'),
+  /** The wallet address that will receive the funds */
+  walletAddress: z
+    .string()
+    .min(1, 'Wallet address is required')
+    .regex(/^0x[a-fA-F0-9]{40}$/, 'Must be a valid Ethereum address'),
+});
+
+export type CryptoRecipientFormValues = z.infer<typeof formSchema>;
+
+export const cryptoFormId = 'crypto-recipient-form';
+
+export const CryptoRecipientForm = ({
+  className,
+  onSubmit,
+}: {
+  className?: string;
+  onSubmit?: (values: CryptoRecipientFormValues) => void;
+}) => {
+  const form = useForm<CryptoRecipientFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      label: '',
+      walletAddress: '',
+    },
+    mode: 'onBlur',
+  });
+
+  function handleSubmit(values: CryptoRecipientFormValues) {
+    onSubmit?.(values);
+  }
+
+  const { isValid } = useFormState({ control: form.control });
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className={cn('flex flex-col gap-3', className)}
+        id={cryptoFormId}
+      >
+        <BaseAlert
+          title='Is this a Base network address?'
+          description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+        />
+
+        <FormField
+          control={form.control}
+          name='label'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Label</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder='A name to remember this wallet by'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name='walletAddress'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Wallet address</FormLabel>
+              <FormControl>
+                <Input placeholder='0x...' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          variant='sorbet'
+          type='submit'
+          className='mt-2 w-fit'
+          disabled={!isValid}
+        >
+          Save
+        </Button>
+      </form>
+    </Form>
+  );
+};
