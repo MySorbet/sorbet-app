@@ -29,6 +29,7 @@ import {
   AddressFormFields,
   addressSchema,
 } from './address-form';
+import { removeEmptyStrings } from './utils';
 
 const usAccountSchema = z.object({
   account_number: z.string().min(1, 'Account number is required'),
@@ -46,7 +47,7 @@ const usAccountDefaultValues: USAccount = {
 };
 
 const formSchema = z.object({
-  currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban
+  currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
   bank_name: z.string().min(1).max(256).optional(),
   account_owner_name: z
     .string()
@@ -72,7 +73,21 @@ const formSchema = z.object({
   ...addressSchema.shape,
 });
 
+type BankFormValues = z.infer<typeof formSchema>;
+
 export const bankFormId = 'bank-form';
+
+// Add the remaining values we need to send this to bridge
+const addRequiredValues = (
+  values: BankFormValues
+): BankFormValues & {
+  account_type: 'us' | 'iban';
+} => {
+  return {
+    ...values,
+    account_type: values.currency === 'usd' ? 'us' : 'iban',
+  };
+};
 
 export const BankForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -88,10 +103,15 @@ export const BankForm = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log(values);
+      // Clean the values by removing empty strings recursively
+      const formValues = removeEmptyStrings(values);
+      const valuesWithRequiredFields = addRequiredValues(formValues);
+
       toast(
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
+          <code className='text-white'>
+            {JSON.stringify(valuesWithRequiredFields, null, 2)}
+          </code>
         </pre>
       );
     } catch (error) {

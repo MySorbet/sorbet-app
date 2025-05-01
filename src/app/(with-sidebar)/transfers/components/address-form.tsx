@@ -23,15 +23,21 @@ import { isISO31662, StateSelect } from './state-select';
 /** Zod schema for a bank address */
 export const addressSchema = z.object({
   address: z.object({
-    addressLine1: z.string().min(5).max(100),
-    addressLine2: z.string().max(100),
+    address_line_1: z.string().min(5).max(100),
+    address_line_2: z.string().max(100).optional(),
     city: z.string().min(2).max(50),
-    state: z.string().refine((val) => isISO31662(val), {
-      message: 'Invalid state code',
-    }),
-    postalCode: z.string().refine((val) => isPostalCode(val, 'US'), {
-      message: 'Invalid postal code',
-    }),
+    state: z
+      .string()
+      .refine((val) => !val || isISO31662(val), {
+        message: 'Invalid state code',
+      })
+      .optional(),
+    postal_code: z
+      .string()
+      .refine((val) => !val || isPostalCode(val, 'US'), {
+        message: 'Invalid postal code',
+      })
+      .optional(),
     country: z.string().refine((val) => isISO31661Alpha3(val), {
       message: 'Invalid country code',
     }),
@@ -42,11 +48,11 @@ export type AddressFormValues = z.infer<typeof addressSchema>;
 
 export const addressDefaultValues: AddressFormValues = {
   address: {
-    addressLine1: '',
-    addressLine2: '',
+    address_line_1: '',
+    address_line_2: '',
     city: '',
     state: '',
-    postalCode: '',
+    postal_code: '',
     country: 'USA',
   },
 };
@@ -84,7 +90,7 @@ export const AddressFormFields = () => {
     <>
       <FormField
         control={form.control}
-        name='address.addressLine1'
+        name='address.address_line_1'
         render={({ field }) => (
           <FormItem>
             <FormLabel>Address Line 1</FormLabel>
@@ -97,7 +103,7 @@ export const AddressFormFields = () => {
       />
       <FormField
         control={form.control}
-        name='address.addressLine2'
+        name='address.address_line_2'
         render={({ field }) => (
           <FormItem>
             <FormLabel>Address Line 2</FormLabel>
@@ -129,7 +135,7 @@ export const AddressFormFields = () => {
             <FormLabel>State</FormLabel>
             <FormControl>
               <StateSelect
-                value={field.value}
+                value={field.value ?? ''}
                 onChange={(value) => {
                   field.onChange(value);
                 }}
@@ -141,7 +147,7 @@ export const AddressFormFields = () => {
       />
       <FormField
         control={form.control}
-        name='address.postalCode'
+        name='address.postal_code'
         render={({ field }) => (
           <FormItem>
             <FormLabel>Postal Code</FormLabel>
