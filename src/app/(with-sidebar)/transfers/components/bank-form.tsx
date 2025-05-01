@@ -73,7 +73,7 @@ const formSchema = z.object({
   ...addressSchema.shape,
 });
 
-type BankFormValues = z.infer<typeof formSchema>;
+export type BankFormValues = z.infer<typeof formSchema>;
 
 export const bankFormId = 'bank-form';
 
@@ -89,7 +89,11 @@ const addRequiredValues = (
   };
 };
 
-export const BankForm = () => {
+export const BankForm = ({
+  onSubmit,
+}: {
+  onSubmit: (values: BankFormValues) => void;
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -101,7 +105,7 @@ export const BankForm = () => {
     mode: 'onBlur',
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function handleSubmit(values: z.infer<typeof formSchema>) {
     try {
       // Clean the values by removing empty strings recursively
       const formValues = removeEmptyStrings(values);
@@ -114,6 +118,7 @@ export const BankForm = () => {
           </code>
         </pre>
       );
+      onSubmit(valuesWithRequiredFields);
     } catch (error) {
       console.error('Form submission error', error);
       toast.error('Failed to submit the form. Please try again.');
@@ -123,7 +128,7 @@ export const BankForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className='mx-auto w-full max-w-sm space-y-4'
         id={bankFormId}
       >

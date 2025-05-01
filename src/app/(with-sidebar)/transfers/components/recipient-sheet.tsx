@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
-import { BankForm } from './bank-form';
+import { BankForm, BankFormValues } from './bank-form';
 import {
   RecipientButton,
   RecipientButtonContent,
@@ -27,7 +27,11 @@ import {
 } from './vaul-sheet';
 
 /** Render a sheet to walk the user through new recipient creation */
-export const RecipientSheet = () => {
+export const RecipientSheet = ({
+  onSubmit,
+}: {
+  onSubmit: (values: BankFormValues /* | CryptoFormValues */) => void;
+}) => {
   const [step, setStep] = useState<'crypto' | 'bank'>();
 
   return (
@@ -36,12 +40,13 @@ export const RecipientSheet = () => {
       <VaulSheetContent className='max-w-sm'>
         {step ? (
           step === 'crypto' ? (
-            <CryptoRecipientForm
+            <CryptoRecipientStep
               onBack={() => setStep(undefined)}
               className='animate-in fade-in-0 slide-in-from-right-1 duration-300'
             />
           ) : (
-            <BankRecipientForm
+            <BankRecipientStep
+              onSubmit={onSubmit}
               onBack={() => setStep(undefined)}
               className='animate-in fade-in-0 slide-in-from-right-1 duration-300'
             />
@@ -102,12 +107,14 @@ const BankOrCrypto = ({
   );
 };
 
-const BankRecipientForm = ({
+const BankRecipientStep = ({
+  onSubmit,
   onBack,
   className,
 }: {
   onBack?: () => void;
   className?: string;
+  onSubmit: (values: BankFormValues) => void;
 }) => {
   return (
     <>
@@ -116,7 +123,7 @@ const BankRecipientForm = ({
         <VaulSheetTitle>New bank recipient</VaulSheetTitle>
       </VaulSheetHeader>
       <div className={className}>
-        <BankForm />
+        <BankForm onSubmit={onSubmit} />
       </div>
       <VaulSheetFooter className='flex flex-row justify-end'>
         <Button variant='sorbet' className='w-fit'>
@@ -127,7 +134,7 @@ const BankRecipientForm = ({
   );
 };
 
-const CryptoRecipientForm = ({
+const CryptoRecipientStep = ({
   onBack,
   className,
 }: {

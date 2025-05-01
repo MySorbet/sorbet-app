@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { RecipientSheet } from './recipient-sheet';
 
@@ -7,6 +8,9 @@ const meta = {
   component: RecipientSheet,
   parameters: {
     layout: 'centered',
+  },
+  args: {
+    onSubmit: fn(),
   },
 } satisfies Meta<typeof RecipientSheet>;
 
