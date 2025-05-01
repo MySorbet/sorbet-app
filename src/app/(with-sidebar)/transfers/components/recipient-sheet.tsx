@@ -23,20 +23,26 @@ import {
   VaulSheetFooter,
   VaulSheetHeader,
   VaulSheetTitle,
-  VaulSheetTrigger,
 } from './vaul-sheet';
 
 /** Render a sheet to walk the user through new recipient creation */
 export const RecipientSheet = ({
   onSubmit,
+  open = false,
+  setOpen,
 }: {
-  onSubmit: (values: BankFormValues /* | CryptoFormValues */) => void;
+  onSubmit?: (values: BankFormValues /* | CryptoFormValues */) => void;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 }) => {
   const [step, setStep] = useState<'crypto' | 'bank'>();
 
   return (
-    <VaulSheet onClose={() => setStep(undefined)}>
-      <VaulSheetTrigger>Open</VaulSheetTrigger>
+    <VaulSheet
+      onClose={() => setStep(undefined)}
+      open={open}
+      onOpenChange={setOpen}
+    >
       <VaulSheetContent className='max-w-sm'>
         {step ? (
           step === 'crypto' ? (
@@ -114,7 +120,7 @@ const BankRecipientStep = ({
 }: {
   onBack?: () => void;
   className?: string;
-  onSubmit: (values: BankFormValues) => void;
+  onSubmit?: (values: BankFormValues) => void;
 }) => {
   return (
     <>

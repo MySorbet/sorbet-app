@@ -92,7 +92,7 @@ const addRequiredValues = (
 export const BankForm = ({
   onSubmit,
 }: {
-  onSubmit: (values: BankFormValues) => void;
+  onSubmit?: (values: BankFormValues) => void;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -118,7 +118,7 @@ export const BankForm = ({
           </code>
         </pre>
       );
-      onSubmit(valuesWithRequiredFields);
+      onSubmit?.(valuesWithRequiredFields);
     } catch (error) {
       console.error('Form submission error', error);
       toast.error('Failed to submit the form. Please try again.');

@@ -31,3 +31,31 @@ export const removeEmptyStrings = <T extends Record<string, unknown>>(
 
   return result as T;
 };
+
+export type Recipient = {
+  id: string;
+  name: string;
+  type: 'usd' | 'eur' | 'crypto';
+  detail: string;
+};
+
+export const mockRecipients: Recipient[] = [
+  {
+    id: '1',
+    name: 'Dillon Cutaiar',
+    type: 'usd',
+    detail: '0123456789',
+  },
+  {
+    id: '2',
+    name: 'Dillon Cutaiar',
+    type: 'eur',
+    detail: '0123456789',
+  },
+  {
+    id: '3',
+    name: 'Dillon Cutaiar',
+    type: 'crypto',
+    detail: '0x1234567890123456789012345678901234567890',
+  },
+];

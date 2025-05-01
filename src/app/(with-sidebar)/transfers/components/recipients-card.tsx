@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
 
+import { mockRecipients, Recipient } from './utils';
+
 export const RecipientsCard = ({
   onAdd,
   recipients = mockRecipients,
@@ -57,7 +59,7 @@ const RecipientsTable = ({ recipients }: { recipients: Recipient[] }) => {
               <RecipientType type={recipient.type} />
             </TableCell>
             <TableCell>
-              {recipient.type === 'CRYPTO'
+              {recipient.type === 'crypto'
                 ? formatWalletAddress(recipient.detail)
                 : recipient.detail}
             </TableCell>
@@ -69,11 +71,12 @@ const RecipientsTable = ({ recipients }: { recipients: Recipient[] }) => {
 };
 
 const RecipientType = ({ type }: { type: Recipient['type'] }) => {
-  const Icon = type === 'USD' ? DollarSign : type === 'EUR' ? Euro : Wallet;
+  const Icon = type === 'usd' ? DollarSign : type === 'eur' ? Euro : Wallet;
+  const label = type === 'usd' ? 'USD' : type === 'eur' ? 'EUR' : 'Crypto';
   return (
     <div className='flex flex-row items-center gap-1 text-sm'>
       <Icon className='size-6' strokeWidth={1} />
-      {type}
+      {label}
     </div>
   );
 };
@@ -85,31 +88,3 @@ const EmptyState = () => {
     </div>
   );
 };
-
-type Recipient = {
-  id: string;
-  name: string;
-  type: 'USD' | 'EUR' | 'CRYPTO';
-  detail: string;
-};
-
-const mockRecipients: Recipient[] = [
-  {
-    id: '1',
-    name: 'Dillon Cutaiar',
-    type: 'USD',
-    detail: '0123456789',
-  },
-  {
-    id: '2',
-    name: 'Dillon Cutaiar',
-    type: 'EUR',
-    detail: '0123456789',
-  },
-  {
-    id: '3',
-    name: 'Dillon Cutaiar',
-    type: 'CRYPTO',
-    detail: '0x1234567890123456789012345678901234567890',
-  },
-];
