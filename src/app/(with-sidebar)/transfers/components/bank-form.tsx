@@ -24,6 +24,12 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import {
+  addressDefaultValues,
+  AddressFormFields,
+  addressSchema,
+} from './address-form';
+
 const usAccountSchema = z.object({
   account_number: z.string().min(1, 'Account number is required'),
   routing_number: z
@@ -31,6 +37,13 @@ const usAccountSchema = z.object({
     .length(9, 'Routing number must be exactly 9 characters'),
   checking_or_savings: z.string().optional().default('checking'),
 });
+type USAccount = z.infer<typeof usAccountSchema>;
+
+const usAccountDefaultValues: USAccount = {
+  account_number: '',
+  routing_number: '',
+  checking_or_savings: 'checking',
+};
 
 const formSchema = z.object({
   currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban
@@ -56,7 +69,10 @@ const formSchema = z.object({
   // iban: ibanAccountSchema
 
   // Address
+  ...addressSchema.shape,
 });
+
+export const bankFormId = 'bank-form';
 
 export const BankForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,13 +80,10 @@ export const BankForm = () => {
     defaultValues: {
       currency: 'usd',
       account_owner_type: 'individual',
-      account: {
-        account_number: '',
-        routing_number: '',
-        checking_or_savings: 'checking',
-      },
+      account: usAccountDefaultValues,
+      ...addressDefaultValues,
     },
-    mode: 'all',
+    mode: 'onBlur',
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -92,6 +105,7 @@ export const BankForm = () => {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className='mx-auto w-full max-w-sm space-y-4'
+        id={bankFormId}
       >
         <FormField
           control={form.control}
@@ -220,8 +234,15 @@ export const BankForm = () => {
           )}
         />
 
-        <Button type='submit' disabled={!form.formState.isValid}>
-          Submit
+        <AddressFormFields />
+
+        <Button
+          variant='sorbet'
+          type='submit'
+          disabled={!form.formState.isValid}
+          className='ml-auto'
+        >
+          Save
         </Button>
       </form>
     </Form>
