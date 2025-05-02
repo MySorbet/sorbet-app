@@ -12,7 +12,7 @@ import { RecipientsCard } from './recipients-card';
 
 export const RecipientPageContent = () => {
   const [open, setOpen] = useState(false);
-  const { data: recipients } = useRecipients();
+  const { data: recipients, isLoading: loading } = useRecipients();
   const { mutateAsync: createRecipient } = useCreateRecipient();
 
   const handleSubmit = async (
@@ -45,7 +45,11 @@ export const RecipientPageContent = () => {
         </CardHeader>
         <CardContent className='size-64'></CardContent>
       </Card>
-      <RecipientsCard onAdd={() => setOpen(true)} recipients={recipients} />
+      <RecipientsCard
+        onAdd={() => setOpen(true)}
+        recipients={recipients}
+        loading={loading}
+      />
       <RecipientSheet open={open} setOpen={setOpen} onSubmit={handleSubmit} />
     </div>
   );

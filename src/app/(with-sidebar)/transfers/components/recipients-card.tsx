@@ -12,14 +12,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /** Displays a list of recipients and a button to add a new recipient */
 export const RecipientsCard = ({
   onAdd,
   recipients,
+  loading,
 }: {
   onAdd?: () => void;
   recipients?: RecipientAPI[];
+  loading?: boolean;
 }) => {
   return (
     <Card className='overflow-clip'>
@@ -31,7 +34,9 @@ export const RecipientsCard = ({
         </Button>
       </CardHeader>
       <CardContent className='p-3'>
-        {recipients && recipients.length !== 0 ? (
+        {loading ? (
+          <RecipientsTableSkeleton length={4} />
+        ) : recipients && recipients?.length !== 0 ? (
           <RecipientsTable recipients={recipients} />
         ) : (
           <EmptyState />
@@ -86,5 +91,27 @@ const EmptyState = () => {
     <div className='flex flex-col items-center justify-center gap-4'>
       <p className='text-muted-foreground text-sm'>No recipients</p>
     </div>
+  );
+};
+
+const RecipientsTableSkeleton = ({ length }: { length: number }) => {
+  return (
+    <Table>
+      <TableBody>
+        {Array.from({ length }).map((_, index) => (
+          <TableRow key={index}>
+            <TableCell>
+              <Skeleton className='h-6 w-24' />
+            </TableCell>
+            <TableCell>
+              <Skeleton className='h-6 w-24' />
+            </TableCell>
+            <TableCell>
+              <Skeleton className='h-6 w-24' />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
