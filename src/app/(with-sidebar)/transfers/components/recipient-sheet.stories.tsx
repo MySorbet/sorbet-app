@@ -40,7 +40,9 @@ export const Default: Story = {
     const setOpen = (open: boolean) => setArgs({ open });
     return (
       <>
-        <Button onClick={() => setOpen(true)}>Open</Button>
+        <Button variant='sorbet' size='sm' onClick={() => setOpen(true)}>
+          Open
+        </Button>
         <RecipientSheet {...args} open={open} setOpen={setOpen} />
       </>
     );

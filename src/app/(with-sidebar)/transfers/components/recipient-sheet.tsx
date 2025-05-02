@@ -13,7 +13,9 @@ import {
 } from './bank-recipient-form';
 import {
   CryptoRecipientForm,
+  CryptoRecipientFormContext,
   CryptoRecipientFormValues,
+  CryptoRecipientSubmitButton,
 } from './crypto-recipient-form';
 import {
   RecipientButton,
@@ -169,14 +171,14 @@ const CryptoRecipientStep = ({
         <BackButton onClick={onBack} />
         <VaulSheetTitle>New crypto recipient</VaulSheetTitle>
       </VaulSheetHeader>
-      <ScrollArea className='size-full flex-1'>
-        <CryptoRecipientForm className={className} onSubmit={onSubmit} />
-      </ScrollArea>
-      <VaulSheetFooter className='flex flex-row justify-end'>
-        <Button variant='sorbet' className='w-fit'>
-          Save
-        </Button>
-      </VaulSheetFooter>
+      <CryptoRecipientFormContext>
+        <ScrollArea className='size-full flex-1'>
+          <CryptoRecipientForm className={className} onSubmit={onSubmit} />
+        </ScrollArea>
+        <VaulSheetFooter className='flex flex-row justify-end'>
+          <CryptoRecipientSubmitButton className='w-fit' />
+        </VaulSheetFooter>
+      </CryptoRecipientFormContext>
     </>
   );
 };

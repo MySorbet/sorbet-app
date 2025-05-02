@@ -1,7 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useFormState } from 'react-hook-form';
+import { forwardRef } from 'react';
+import { useForm, useFormContext, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { BaseAlert } from '@/components/common/base-alert';
@@ -31,12 +32,10 @@ export type CryptoRecipientFormValues = z.infer<typeof formSchema>;
 
 export const cryptoFormId = 'crypto-recipient-form';
 
-export const CryptoRecipientForm = ({
-  className,
-  onSubmit,
+export const CryptoRecipientFormContext = ({
+  children,
 }: {
-  className?: string;
-  onSubmit?: (values: CryptoRecipientFormValues) => void;
+  children: React.ReactNode;
 }) => {
   const form = useForm<CryptoRecipientFormValues>({
     resolver: zodResolver(formSchema),
@@ -44,67 +43,91 @@ export const CryptoRecipientForm = ({
       label: '',
       walletAddress: '',
     },
-    mode: 'onBlur',
   });
+
+  return <Form {...form}>{children}</Form>;
+};
+
+const useCryptoRecipientForm = () =>
+  useFormContext<CryptoRecipientFormValues>();
+
+export const CryptoRecipientForm = ({
+  className,
+  onSubmit,
+}: {
+  className?: string;
+  onSubmit?: (values: CryptoRecipientFormValues) => void;
+}) => {
+  const form = useCryptoRecipientForm();
 
   function handleSubmit(values: CryptoRecipientFormValues) {
     onSubmit?.(values);
   }
 
+  return (
+    <form
+      onSubmit={form.handleSubmit(handleSubmit)}
+      // TODO: p-1 prevents focus rings from clipping. Find a better solution that doesn't throw off alignment
+      className={cn('flex flex-col gap-3 p-1', className)}
+      id={cryptoFormId}
+    >
+      <BaseAlert
+        title='Is this a Base network address?'
+        description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+      />
+
+      <FormField
+        control={form.control}
+        name='label'
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Label</FormLabel>
+            <FormControl>
+              <Input
+                placeholder='A name to remember this wallet by'
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name='walletAddress'
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Wallet address</FormLabel>
+            <FormControl>
+              <Input placeholder='0x...' {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </form>
+  );
+};
+
+export const CryptoRecipientSubmitButton = forwardRef<
+  HTMLButtonElement,
+  React.ComponentPropsWithoutRef<typeof Button>
+>(({ className, ...props }, ref) => {
+  const form = useCryptoRecipientForm();
   const { isValid } = useFormState({ control: form.control });
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className={cn('flex flex-col gap-3', className)}
-        id={cryptoFormId}
-      >
-        <BaseAlert
-          title='Is this a Base network address?'
-          description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
-        />
-
-        <FormField
-          control={form.control}
-          name='label'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Label</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder='A name to remember this wallet by'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='walletAddress'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Wallet address</FormLabel>
-              <FormControl>
-                <Input placeholder='0x...' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button
-          variant='sorbet'
-          type='submit'
-          className='mt-2 w-fit'
-          disabled={!isValid}
-        >
-          Save
-        </Button>
-      </form>
-    </Form>
+    <Button
+      ref={ref}
+      variant='sorbet'
+      type='submit'
+      form={cryptoFormId}
+      disabled={!isValid}
+      className={className}
+      {...props}
+    >
+      Save
+    </Button>
   );
-};
+});

@@ -106,7 +106,7 @@ export const NakedBankRecipientForm = ({
   return (
     <form
       onSubmit={form.handleSubmit(handleSubmit)}
-      className='mx-auto w-full max-w-sm space-y-4'
+      className='mx-auto w-full max-w-sm space-y-4 p-1'
       id={bankFormId}
     >
       <FormField
