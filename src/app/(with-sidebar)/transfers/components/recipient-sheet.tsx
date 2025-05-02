@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import { forwardRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 import { BankForm, BankFormValues } from './bank-form';
@@ -21,6 +22,7 @@ import {
   VaulSheet,
   VaulSheetContent,
   VaulSheetDescription,
+  VaulSheetFooter,
   VaulSheetHeader,
   VaulSheetTitle,
 } from './vaul-sheet';
@@ -86,30 +88,32 @@ const BankOrCrypto = ({
           Select how you want to transfer funds
         </VaulSheetDescription>
       </VaulSheetHeader>
-      <div className={cn('flex flex-col gap-3', className)}>
-        <RecipientButton onClick={() => setStep('bank')}>
-          <RecipientButtonIcon type='bank' />
-          <RecipientButtonContent>
-            <RecipientButtonTitle>Bank recipient</RecipientButtonTitle>
-            <RecipientButtonDescription>
-              Transfer to a business or individual bank
-            </RecipientButtonDescription>
-            <RecipientButtonDetail>
-              Arrives in 1-2 business days
-            </RecipientButtonDetail>
-          </RecipientButtonContent>
-        </RecipientButton>
-        <RecipientButton onClick={() => setStep('crypto')}>
-          <RecipientButtonIcon type='wallet' />
-          <RecipientButtonContent>
-            <RecipientButtonTitle>Crypto wallet</RecipientButtonTitle>
-            <RecipientButtonDescription>
-              Transfer to crypto wallet or exchange
-            </RecipientButtonDescription>
-            <RecipientButtonDetail>Arrives instantly</RecipientButtonDetail>
-          </RecipientButtonContent>
-        </RecipientButton>
-      </div>
+      <ScrollArea className='size-full flex-1'>
+        <div className={cn('flex flex-col gap-3', className)}>
+          <RecipientButton onClick={() => setStep('bank')}>
+            <RecipientButtonIcon type='bank' />
+            <RecipientButtonContent>
+              <RecipientButtonTitle>Bank recipient</RecipientButtonTitle>
+              <RecipientButtonDescription>
+                Transfer to a business or individual bank
+              </RecipientButtonDescription>
+              <RecipientButtonDetail>
+                Arrives in 1-2 business days
+              </RecipientButtonDetail>
+            </RecipientButtonContent>
+          </RecipientButton>
+          <RecipientButton onClick={() => setStep('crypto')}>
+            <RecipientButtonIcon type='wallet' />
+            <RecipientButtonContent>
+              <RecipientButtonTitle>Crypto wallet</RecipientButtonTitle>
+              <RecipientButtonDescription>
+                Transfer to crypto wallet or exchange
+              </RecipientButtonDescription>
+              <RecipientButtonDetail>Arrives instantly</RecipientButtonDetail>
+            </RecipientButtonContent>
+          </RecipientButton>
+        </div>
+      </ScrollArea>
     </>
   );
 };
@@ -129,14 +133,16 @@ const BankRecipientStep = ({
         <BackButton onClick={onBack} />
         <VaulSheetTitle>New bank recipient</VaulSheetTitle>
       </VaulSheetHeader>
-      <div className={className}>
-        <BankForm onSubmit={onSubmit} />
-      </div>
-      {/* <VaulSheetFooter className='flex flex-row justify-end'>
+      <ScrollArea className='size-full flex-1'>
+        <div className={className}>
+          <BankForm onSubmit={onSubmit} />
+        </div>
+      </ScrollArea>
+      <VaulSheetFooter className='flex flex-row justify-end'>
         <Button variant='sorbet' className='w-fit'>
           Save
         </Button>
-      </VaulSheetFooter> */}
+      </VaulSheetFooter>
     </>
   );
 };
@@ -156,12 +162,14 @@ const CryptoRecipientStep = ({
         <BackButton onClick={onBack} />
         <VaulSheetTitle>New crypto recipient</VaulSheetTitle>
       </VaulSheetHeader>
-      <CryptoRecipientForm className={className} onSubmit={onSubmit} />
-      {/* <VaulSheetFooter className='flex flex-row justify-end'>
+      <ScrollArea className='size-full flex-1'>
+        <CryptoRecipientForm className={className} onSubmit={onSubmit} />
+      </ScrollArea>
+      <VaulSheetFooter className='flex flex-row justify-end'>
         <Button variant='sorbet' className='w-fit'>
           Save
         </Button>
-      </VaulSheetFooter> */}
+      </VaulSheetFooter>
     </>
   );
 };

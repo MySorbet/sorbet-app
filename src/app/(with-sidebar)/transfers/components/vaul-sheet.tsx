@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 /** Render a vaul drawer as a sheet from the right. This is the default shadcn drawer component with styles tweaked for a side drawer. */
@@ -53,24 +52,22 @@ const VaulSheetContent = React.forwardRef<
       )}
       {...props}
     >
-      <ScrollArea className='size-full'>
-        <div className='relative flex flex-col gap-6 p-6'>
-          {children}
-          <DrawerPrimitive.Close asChild>
-            <Button
-              variant='ghost'
-              size='icon'
-              aria-label='Close'
-              className={cn(
-                'group -mr-1 -mt-1 size-6',
-                'ring-offset-background focus-visible:ring-ring absolute right-4 top-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none'
-              )}
-            >
-              <X />
-            </Button>
-          </DrawerPrimitive.Close>
-        </div>
-      </ScrollArea>
+      <div className='relative flex size-full flex-col gap-6 p-6'>
+        {children}
+        <DrawerPrimitive.Close asChild>
+          <Button
+            variant='ghost'
+            size='icon'
+            aria-label='Close'
+            className={cn(
+              'group -mr-1 -mt-1 size-6',
+              'ring-offset-background focus-visible:ring-ring absolute right-4 top-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none'
+            )}
+          >
+            <X />
+          </Button>
+        </DrawerPrimitive.Close>
+      </div>
     </DrawerPrimitive.Content>
   </VaulSheetPortal>
 ));
