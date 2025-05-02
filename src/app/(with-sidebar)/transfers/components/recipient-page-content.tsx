@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { sleep } from '@/lib/utils';
 
 import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
@@ -13,9 +14,10 @@ export const RecipientPageContent = () => {
   const [recipients, setRecipients] =
     useState<DisplayRecipient[]>(mockRecipients);
 
-  const handleSubmit = (
+  const handleSubmit = async (
     recipient: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
+    await sleep(1000);
     // TODO: POST api/recipients
     let display: DisplayRecipient;
     if (isBankFormValues(recipient)) {

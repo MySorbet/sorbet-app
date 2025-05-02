@@ -48,13 +48,12 @@ export const RecipientSheet = ({
 }) => {
   const [step, setStep] = useState<'crypto' | 'bank'>();
 
-  const handleClose = () => {
-    setStep(undefined);
-  };
-
   return (
-    <VaulSheet onClose={handleClose} open={open} onOpenChange={setOpen}>
-      <VaulSheetContent className='max-w-sm'>
+    <VaulSheet open={open} onOpenChange={setOpen}>
+      <VaulSheetContent
+        className='max-w-sm'
+        onAnimationEnd={() => !open && setStep(undefined)}
+      >
         {step ? (
           step === 'crypto' ? (
             <CryptoRecipientStep
