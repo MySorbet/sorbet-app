@@ -5,6 +5,7 @@ import { forwardRef } from 'react';
 import { useForm, useFormContext, useFormState } from 'react-hook-form';
 import * as z from 'zod';
 
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 import {
   addressDefaultValues,
@@ -92,13 +94,13 @@ const addRequiredValues = (
 export const NakedBankRecipientForm = ({
   onSubmit,
 }: {
-  onSubmit?: (values: BankRecipientFormValues) => void;
+  onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
-  function handleSubmit(values: z.infer<typeof formSchema>) {
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
     // Clean the values by removing empty strings recursively
     const cleanedValues = removeEmptyStrings(values);
     const transformedValues = addRequiredValues(cleanedValues);
-    onSubmit?.(transformedValues);
+    await onSubmit?.(transformedValues);
   }
 
   const form = useBankRecipientForm();
@@ -267,7 +269,7 @@ export const BankRecipientSubmitButton = forwardRef<
   React.ComponentPropsWithoutRef<typeof Button>
 >(({ className, ...props }, ref) => {
   const form = useBankRecipientForm();
-  const { isValid } = useFormState({ control: form.control });
+  const { isValid, isSubmitting } = useFormState({ control: form.control });
 
   return (
     <Button
@@ -275,11 +277,17 @@ export const BankRecipientSubmitButton = forwardRef<
       variant='sorbet'
       type='submit'
       form={bankFormId}
-      disabled={!isValid}
-      className={className}
+      disabled={!isValid || isSubmitting}
+      className={cn(className, 'w-fit')}
       {...props}
     >
-      Save
+      {isSubmitting ? (
+        <>
+          <Spinner /> Saving...
+        </>
+      ) : (
+        'Save'
+      )}
     </Button>
   );
 });

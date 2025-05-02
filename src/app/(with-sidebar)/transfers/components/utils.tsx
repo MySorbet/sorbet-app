@@ -1,5 +1,4 @@
 import { cloneDeep, isObject } from 'lodash';
-import { toast } from 'sonner';
 
 import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
@@ -69,12 +68,4 @@ export const isBankFormValues = (
   values: BankRecipientFormValues | CryptoRecipientFormValues
 ): values is BankRecipientFormValues => {
   return 'account_owner_name' in values;
-};
-
-export const debugToast = (values: unknown) => {
-  toast(
-    <pre className='max-w-xs rounded-md bg-slate-950 p-4'>
-      <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
-    </pre>
-  );
 };

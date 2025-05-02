@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
 import { AddressForm } from './address-form';
-import { debugToast } from './utils';
+import { debugToast } from './story-utils';
 
 const meta = {
   title: 'Transfers/AddressForm',

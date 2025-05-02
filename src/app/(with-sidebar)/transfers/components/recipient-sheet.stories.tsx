@@ -5,7 +5,7 @@ import { fn } from '@storybook/test';
 import { Button } from '@/components/ui/button';
 
 import { RecipientSheet } from './recipient-sheet';
-import { debugToast } from './utils';
+import { debugToast } from './story-utils';
 
 const meta = {
   title: 'Transfers/RecipientSheet',

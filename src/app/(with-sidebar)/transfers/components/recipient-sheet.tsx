@@ -42,7 +42,7 @@ export const RecipientSheet = ({
 }: {
   onSubmit?: (
     values: BankRecipientFormValues | CryptoRecipientFormValues
-  ) => void;
+  ) => Promise<void>;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }) => {
@@ -99,7 +99,10 @@ const BankOrCrypto = ({
       </VaulSheetHeader>
       <ScrollArea className='size-full flex-1'>
         <div className={cn('flex flex-col gap-3', className)}>
-          <RecipientButton onClick={() => setStep('bank')}>
+          <RecipientButton
+            onClick={() => setStep('bank')}
+            aria-label='Bank recipient'
+          >
             <RecipientButtonIcon type='bank' />
             <RecipientButtonContent>
               <RecipientButtonTitle>Bank recipient</RecipientButtonTitle>
@@ -111,7 +114,10 @@ const BankOrCrypto = ({
               </RecipientButtonDetail>
             </RecipientButtonContent>
           </RecipientButton>
-          <RecipientButton onClick={() => setStep('crypto')}>
+          <RecipientButton
+            onClick={() => setStep('crypto')}
+            aria-label='Crypto wallet'
+          >
             <RecipientButtonIcon type='wallet' />
             <RecipientButtonContent>
               <RecipientButtonTitle>Crypto wallet</RecipientButtonTitle>
@@ -134,7 +140,7 @@ const BankRecipientStep = ({
 }: {
   onBack?: () => void;
   className?: string;
-  onSubmit?: (values: BankRecipientFormValues) => void;
+  onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
   return (
     <>
@@ -149,7 +155,7 @@ const BankRecipientStep = ({
           </div>
         </ScrollArea>
         <VaulSheetFooter className='flex flex-row justify-end'>
-          <BankRecipientSubmitButton className='w-fit' />
+          <BankRecipientSubmitButton />
         </VaulSheetFooter>
       </BankRecipientFormContext>
     </>
@@ -163,7 +169,7 @@ const CryptoRecipientStep = ({
 }: {
   onBack?: () => void;
   className?: string;
-  onSubmit?: (values: CryptoRecipientFormValues) => void;
+  onSubmit?: (values: CryptoRecipientFormValues) => Promise<void>;
 }) => {
   return (
     <>
@@ -176,7 +182,7 @@ const CryptoRecipientStep = ({
           <CryptoRecipientForm className={className} onSubmit={onSubmit} />
         </ScrollArea>
         <VaulSheetFooter className='flex flex-row justify-end'>
-          <CryptoRecipientSubmitButton className='w-fit' />
+          <CryptoRecipientSubmitButton />
         </VaulSheetFooter>
       </CryptoRecipientFormContext>
     </>

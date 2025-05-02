@@ -6,6 +6,7 @@ import { useForm, useFormContext, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { BaseAlert } from '@/components/common/base-alert';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -43,6 +44,7 @@ export const CryptoRecipientFormContext = ({
       label: '',
       walletAddress: '',
     },
+    mode: 'onBlur',
   });
 
   return <Form {...form}>{children}</Form>;
@@ -56,13 +58,13 @@ export const CryptoRecipientForm = ({
   onSubmit,
 }: {
   className?: string;
-  onSubmit?: (values: CryptoRecipientFormValues) => void;
+  onSubmit?: (values: CryptoRecipientFormValues) => Promise<void>;
 }) => {
   const form = useCryptoRecipientForm();
 
-  function handleSubmit(values: CryptoRecipientFormValues) {
-    onSubmit?.(values);
-  }
+  const handleSubmit = async (values: CryptoRecipientFormValues) => {
+    await onSubmit?.(values);
+  };
 
   return (
     <form
@@ -115,7 +117,7 @@ export const CryptoRecipientSubmitButton = forwardRef<
   React.ComponentPropsWithoutRef<typeof Button>
 >(({ className, ...props }, ref) => {
   const form = useCryptoRecipientForm();
-  const { isValid } = useFormState({ control: form.control });
+  const { isValid, isSubmitting } = useFormState({ control: form.control });
 
   return (
     <Button
@@ -123,11 +125,17 @@ export const CryptoRecipientSubmitButton = forwardRef<
       variant='sorbet'
       type='submit'
       form={cryptoFormId}
-      disabled={!isValid}
-      className={className}
+      disabled={!isValid || isSubmitting}
+      className={cn(className, 'w-fit')}
       {...props}
     >
-      Save
+      {isSubmitting ? (
+        <>
+          <Spinner /> Saving...
+        </>
+      ) : (
+        'Save'
+      )}
     </Button>
   );
 });
