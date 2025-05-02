@@ -1,26 +1,37 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
+import { fn, userEvent, within } from '@storybook/test';
 
-import { BankForm } from './bank-form';
+import {
+  BankRecipientFormContext,
+  BankRecipientSubmitButton,
+} from './bank-recipient-form';
+import { NakedBankRecipientForm } from './bank-recipient-form';
+import { debugToast } from './utils';
 
 const meta = {
-  title: 'Transfers/BankForm',
-  component: BankForm,
+  title: 'Transfers/BankRecipientForm',
+  component: NakedBankRecipientForm,
   parameters: {
     layout: 'centered',
   },
+  args: {
+    onSubmit: fn(debugToast),
+  },
   decorators: [
     (Story) => (
-      <div className='w-[340px]'>
-        <Story />
-      </div>
+      <BankRecipientFormContext>
+        <div className='w-[340px]'>
+          <Story />
+          <BankRecipientSubmitButton />
+        </div>
+      </BankRecipientFormContext>
     ),
   ],
-} satisfies Meta<typeof BankForm>;
+} satisfies Meta<typeof NakedBankRecipientForm>;
 
 export default meta;
 
-type Story = StoryObj<typeof BankForm>;
+type Story = StoryObj<typeof NakedBankRecipientForm>;
 
 export const Default: Story = {};
 
@@ -57,6 +68,6 @@ export const FillForm: Story = {
     // Skip country
 
     // Submit the form
-    // await userEvent.click(canvas.getByRole('button', { name: /Save/i }));
+    await userEvent.click(canvas.getByRole('button', { name: /Save/i }));
   },
 };

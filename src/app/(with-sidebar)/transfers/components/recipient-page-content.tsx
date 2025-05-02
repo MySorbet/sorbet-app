@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { BankFormValues } from './bank-form';
+import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
@@ -14,7 +14,7 @@ export const RecipientPageContent = () => {
     useState<DisplayRecipient[]>(mockRecipients);
 
   const handleSubmit = (
-    recipient: BankFormValues | CryptoRecipientFormValues
+    recipient: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
     // TODO: POST api/recipients
     let display: DisplayRecipient;

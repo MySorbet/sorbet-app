@@ -1,12 +1,17 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { AddressForm } from './address-form';
+import { debugToast } from './utils';
 
 const meta = {
   title: 'Transfers/AddressForm',
   component: AddressForm,
   parameters: {
     layout: 'centered',
+  },
+  args: {
+    onSubmit: fn(debugToast),
   },
   decorators: [
     (Story) => (

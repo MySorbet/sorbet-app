@@ -5,6 +5,7 @@ import { fn } from '@storybook/test';
 import { Button } from '@/components/ui/button';
 
 import { RecipientSheet } from './recipient-sheet';
+import { debugToast } from './utils';
 
 const meta = {
   title: 'Transfers/RecipientSheet',
@@ -13,7 +14,7 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    onSubmit: fn(),
+    onSubmit: fn(debugToast),
   },
   argTypes: {
     setOpen: {

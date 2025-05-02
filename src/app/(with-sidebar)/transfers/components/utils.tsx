@@ -1,6 +1,7 @@
 import { cloneDeep, isObject } from 'lodash';
+import { toast } from 'sonner';
 
-import { BankFormValues } from './bank-form';
+import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 
 // Recursively remove empty strings from an object
@@ -65,7 +66,15 @@ export const mockRecipients: DisplayRecipient[] = [
 
 // type guard between BankFormValues and CryptoRecipientFormValues
 export const isBankFormValues = (
-  values: BankFormValues | CryptoRecipientFormValues
-): values is BankFormValues => {
+  values: BankRecipientFormValues | CryptoRecipientFormValues
+): values is BankRecipientFormValues => {
   return 'account_owner_name' in values;
+};
+
+export const debugToast = (values: unknown) => {
+  toast(
+    <pre className='max-w-xs rounded-md bg-slate-950 p-4'>
+      <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
+    </pre>
+  );
 };

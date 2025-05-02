@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
-import { BankForm, BankFormValues } from './bank-form';
+import {
+  BankRecipientFormContext,
+  BankRecipientFormValues,
+  BankRecipientSubmitButton,
+  NakedBankRecipientForm,
+} from './bank-recipient-form';
 import {
   CryptoRecipientForm,
   CryptoRecipientFormValues,
@@ -33,7 +38,9 @@ export const RecipientSheet = ({
   open = false,
   setOpen,
 }: {
-  onSubmit?: (values: BankFormValues | CryptoRecipientFormValues) => void;
+  onSubmit?: (
+    values: BankRecipientFormValues | CryptoRecipientFormValues
+  ) => void;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }) => {
@@ -125,7 +132,7 @@ const BankRecipientStep = ({
 }: {
   onBack?: () => void;
   className?: string;
-  onSubmit?: (values: BankFormValues) => void;
+  onSubmit?: (values: BankRecipientFormValues) => void;
 }) => {
   return (
     <>
@@ -133,16 +140,16 @@ const BankRecipientStep = ({
         <BackButton onClick={onBack} />
         <VaulSheetTitle>New bank recipient</VaulSheetTitle>
       </VaulSheetHeader>
-      <ScrollArea className='size-full flex-1'>
-        <div className={className}>
-          <BankForm onSubmit={onSubmit} />
-        </div>
-      </ScrollArea>
-      <VaulSheetFooter className='flex flex-row justify-end'>
-        <Button variant='sorbet' className='w-fit'>
-          Save
-        </Button>
-      </VaulSheetFooter>
+      <BankRecipientFormContext>
+        <ScrollArea className='size-full flex-1'>
+          <div className={className}>
+            <NakedBankRecipientForm onSubmit={onSubmit} />
+          </div>
+        </ScrollArea>
+        <VaulSheetFooter className='flex flex-row justify-end'>
+          <BankRecipientSubmitButton className='w-fit' />
+        </VaulSheetFooter>
+      </BankRecipientFormContext>
     </>
   );
 };
