@@ -76,15 +76,17 @@ const formSchema = z.object({
 });
 
 export type BankRecipientFormValues = z.infer<typeof formSchema>;
+export type BankRecipientFormValuesWithRequiredValues =
+  BankRecipientFormValues & {
+    account_type: 'us' | 'iban';
+  };
 
 export const bankFormId = 'bank-form';
 
 // Add the remaining values we need to send this to bridge
 const addRequiredValues = (
   values: BankRecipientFormValues
-): BankRecipientFormValues & {
-  account_type: 'us' | 'iban';
-} => {
+): BankRecipientFormValuesWithRequiredValues => {
   return {
     ...values,
     account_type: values.currency === 'usd' ? 'us' : 'iban',
@@ -94,11 +96,14 @@ const addRequiredValues = (
 export const NakedBankRecipientForm = ({
   onSubmit,
 }: {
-  onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
+  onSubmit?: (
+    values: BankRecipientFormValuesWithRequiredValues
+  ) => Promise<void>;
 }) => {
-  async function handleSubmit(values: z.infer<typeof formSchema>) {
+  async function handleSubmit(values: BankRecipientFormValues) {
     // Clean the values by removing empty strings recursively
     const cleanedValues = removeEmptyStrings(values);
+    // Infer the remaining values bridge needs
     const transformedValues = addRequiredValues(cleanedValues);
     await onSubmit?.(transformedValues);
   }

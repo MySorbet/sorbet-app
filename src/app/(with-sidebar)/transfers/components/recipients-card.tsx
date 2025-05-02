@@ -1,5 +1,6 @@
 import { DollarSign, Euro, Plus, Wallet } from 'lucide-react';
 
+import { RecipientAPI, RecipientType } from '@/api/recipients/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -12,14 +13,13 @@ import {
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
 
-import { DisplayRecipient, mockRecipients } from './utils';
-
+/** Displays a list of recipients and a button to add a new recipient */
 export const RecipientsCard = ({
   onAdd,
-  recipients = mockRecipients,
+  recipients,
 }: {
   onAdd?: () => void;
-  recipients?: DisplayRecipient[];
+  recipients?: RecipientAPI[];
 }) => {
   return (
     <Card className='overflow-clip'>
@@ -41,11 +41,7 @@ export const RecipientsCard = ({
   );
 };
 
-const RecipientsTable = ({
-  recipients,
-}: {
-  recipients: DisplayRecipient[];
-}) => {
+const RecipientsTable = ({ recipients }: { recipients: RecipientAPI[] }) => {
   return (
     <Table>
       <TableHeader className='sr-only'>
@@ -58,9 +54,9 @@ const RecipientsTable = ({
       <TableBody>
         {recipients.map((recipient) => (
           <TableRow key={recipient.id}>
-            <TableCell className='font-medium'>{recipient.name}</TableCell>
+            <TableCell className='font-medium'>{recipient.label}</TableCell>
             <TableCell>
-              <RecipientType type={recipient.type} />
+              <Type type={recipient.type} />
             </TableCell>
             <TableCell>
               {recipient.type === 'crypto'
@@ -74,7 +70,7 @@ const RecipientsTable = ({
   );
 };
 
-const RecipientType = ({ type }: { type: DisplayRecipient['type'] }) => {
+const Type = ({ type }: { type: RecipientType }) => {
   const Icon = type === 'usd' ? DollarSign : type === 'eur' ? Euro : Wallet;
   const label = type === 'usd' ? 'USD' : type === 'eur' ? 'EUR' : 'Crypto';
   return (

@@ -1,6 +1,6 @@
 import { cloneDeep, isObject } from 'lodash';
 
-import { BankRecipientFormValues } from './bank-recipient-form';
+import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 
 // Recursively remove empty strings from an object
@@ -35,37 +35,9 @@ export const removeEmptyStrings = <T extends Record<string, unknown>>(
   return result as T;
 };
 
-export type DisplayRecipient = {
-  id: string;
-  name: string;
-  type: 'usd' | 'eur' | 'crypto';
-  detail: string;
-};
-
-export const mockRecipients: DisplayRecipient[] = [
-  {
-    id: '0',
-    name: 'Dillon Cutaiar',
-    type: 'usd',
-    detail: '0123456789',
-  },
-  {
-    id: '1',
-    name: 'Dillon Cutaiar',
-    type: 'eur',
-    detail: '0123456789',
-  },
-  {
-    id: '2',
-    name: 'Dillon Cutaiar',
-    type: 'crypto',
-    detail: '0x1234567890123456789012345678901234567890',
-  },
-];
-
 // type guard between BankFormValues and CryptoRecipientFormValues
-export const isBankFormValues = (
-  values: BankRecipientFormValues | CryptoRecipientFormValues
-): values is BankRecipientFormValues => {
-  return 'account_owner_name' in values;
+export const isCryptoFormValues = (
+  values: BankRecipientFormValuesWithRequiredValues | CryptoRecipientFormValues
+): values is CryptoRecipientFormValues => {
+  return 'walletAddress' in values;
 };

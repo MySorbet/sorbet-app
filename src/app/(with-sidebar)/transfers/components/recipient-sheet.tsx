@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 import {
   BankRecipientFormContext,
-  BankRecipientFormValues,
+  BankRecipientFormValuesWithRequiredValues,
   BankRecipientSubmitButton,
   NakedBankRecipientForm,
 } from './bank-recipient-form';
@@ -41,7 +41,9 @@ export const RecipientSheet = ({
   setOpen,
 }: {
   onSubmit?: (
-    values: BankRecipientFormValues | CryptoRecipientFormValues
+    values:
+      | BankRecipientFormValuesWithRequiredValues
+      | CryptoRecipientFormValues
   ) => Promise<void>;
   open?: boolean;
   setOpen?: (open: boolean) => void;
@@ -139,7 +141,9 @@ const BankRecipientStep = ({
 }: {
   onBack?: () => void;
   className?: string;
-  onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
+  onSubmit?: (
+    values: BankRecipientFormValuesWithRequiredValues
+  ) => Promise<void>;
 }) => {
   return (
     <>

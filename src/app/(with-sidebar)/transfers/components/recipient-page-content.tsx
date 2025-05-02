@@ -1,42 +1,39 @@
 import { useState } from 'react';
 
+import { isCryptoFormValues } from '@/app/(with-sidebar)/transfers/components/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { sleep } from '@/lib/utils';
 
-import { BankRecipientFormValues } from './bank-recipient-form';
+import { useCreateRecipient } from '../hooks/use-create-recipient';
+import { useRecipients } from '../hooks/use-recipients';
+import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
-import { DisplayRecipient, isBankFormValues, mockRecipients } from './utils';
 
 export const RecipientPageContent = () => {
   const [open, setOpen] = useState(false);
-  const [recipients, setRecipients] =
-    useState<DisplayRecipient[]>(mockRecipients);
+  const { data: recipients } = useRecipients();
+  const { mutateAsync: createRecipient } = useCreateRecipient();
 
   const handleSubmit = async (
-    recipient: BankRecipientFormValues | CryptoRecipientFormValues
+    recipient:
+      | BankRecipientFormValuesWithRequiredValues
+      | CryptoRecipientFormValues
   ) => {
-    await sleep(1000);
-    // TODO: POST api/recipients
-    let display: DisplayRecipient;
-    if (isBankFormValues(recipient)) {
-      display = {
-        id: recipients.length.toString(),
-        name: recipient.account_owner_name,
-        type: recipient.currency,
-        detail: recipient.account.account_number,
-      };
-    } else {
-      display = {
-        id: recipients.length.toString(),
-        name: recipient.label,
-        type: 'crypto',
-        detail: recipient.walletAddress,
-      };
-    }
-    console.log('display', display);
-    setRecipients([...recipients, display]);
+    // TODO: Support EUR here
+    const type = isCryptoFormValues(recipient) ? 'crypto' : 'usd';
+    const data =
+      type === 'crypto'
+        ? {
+            type: 'crypto' as const,
+            values: recipient,
+          }
+        : {
+            type: 'usd' as const,
+            values: recipient,
+          };
+    // TODO: Figure out this type error
+    await createRecipient(data);
     setOpen(false);
   };
 
@@ -46,7 +43,7 @@ export const RecipientPageContent = () => {
         <CardHeader>
           <CardTitle>Send to</CardTitle>
         </CardHeader>
-        <CardContent className='size-52'></CardContent>
+        <CardContent className='size-64'></CardContent>
       </Card>
       <RecipientsCard onAdd={() => setOpen(true)} recipients={recipients} />
       <RecipientSheet open={open} setOpen={setOpen} onSubmit={handleSubmit} />
