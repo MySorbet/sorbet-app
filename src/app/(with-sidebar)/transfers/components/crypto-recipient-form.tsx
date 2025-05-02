@@ -44,7 +44,7 @@ export const CryptoRecipientFormContext = ({
       label: '',
       walletAddress: '',
     },
-    mode: 'onBlur',
+    mode: 'onChange',
   });
 
   return <Form {...form}>{children}</Form>;
@@ -85,10 +85,7 @@ export const CryptoRecipientForm = ({
           <FormItem>
             <FormLabel>Label</FormLabel>
             <FormControl>
-              <Input
-                placeholder='A name to remember this wallet by'
-                {...field}
-              />
+              <Input placeholder='Who does this belong to?' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -102,7 +99,7 @@ export const CryptoRecipientForm = ({
           <FormItem>
             <FormLabel>Wallet address</FormLabel>
             <FormControl>
-              <Input placeholder='0x...' {...field} />
+              <Input placeholder='0x...' {...field} className='text-ellipsis' />
             </FormControl>
             <FormMessage />
           </FormItem>

@@ -10,7 +10,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
     msw: {
-      handlers: [...handlers],
+      handlers: [...handlers(false)],
     },
   },
 } satisfies Meta<typeof TransfersPage>;
@@ -21,6 +21,14 @@ type Story = StoryObj<typeof TransfersPage>;
 
 // Currently, you will need to comment the authenticated wrapper to see the page
 export const Default: Story = {};
+
+export const CreateRecipientFailure: Story = {
+  parameters: {
+    msw: {
+      handlers: [...handlers(true)],
+    },
+  },
+};
 
 export const DisableMSW: Story = {
   parameters: {

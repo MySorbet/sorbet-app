@@ -44,4 +44,18 @@ export const createRecipientHandler = http.post(
   }
 );
 
-export const handlers = [getRecipientsHandler, createRecipientHandler];
+export const createRecipientHandlerFailure = http.post(
+  `${API_URL}/recipients`,
+  async () => {
+    await delay();
+    return HttpResponse.json(
+      { error: 'Failed to create recipient' },
+      { status: 500 }
+    );
+  }
+);
+
+export const handlers = (failure: boolean) => [
+  getRecipientsHandler,
+  failure ? createRecipientHandlerFailure : createRecipientHandler,
+];
