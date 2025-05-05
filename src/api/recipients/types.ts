@@ -16,8 +16,10 @@ type RecipientAPIBase = {
   walletAddress: string;
   label: string;
   detail: string;
-  // created_at: string;?
-  // updated_at: string;?
+
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type RecipientAPIBank = RecipientAPIBase & {

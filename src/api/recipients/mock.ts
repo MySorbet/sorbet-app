@@ -17,6 +17,9 @@ export const mockRecipients: RecipientAPI[] = [
     external_account_id: uuidv4(),
     label: 'USD Bank',
     detail: '1234567890',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1',
   },
   {
     id: uuidv4(),
@@ -24,6 +27,9 @@ export const mockRecipients: RecipientAPI[] = [
     walletAddress: mockWalletAddress,
     label: 'Crypto Recipient',
     detail: mockWalletAddress,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1',
   },
   {
     id: uuidv4(),
@@ -33,6 +39,9 @@ export const mockRecipients: RecipientAPI[] = [
     external_account_id: uuidv4(),
     label: 'USD Bank 2',
     detail: '1234567890',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1',
   },
   {
     id: uuidv4(),
@@ -40,5 +49,8 @@ export const mockRecipients: RecipientAPI[] = [
     walletAddress: mockWalletAddress,
     label: 'Crypto Recipient 2',
     detail: mockWalletAddress,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1',
   },
 ];
