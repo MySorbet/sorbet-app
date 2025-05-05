@@ -23,8 +23,8 @@ import { isISO31662, StateSelect } from './state-select';
 /** Zod schema for a bank address */
 export const addressSchema = z.object({
   address: z.object({
-    address_line_1: z.string().min(5).max(100),
-    address_line_2: z.string().max(100).optional(),
+    street_line_1: z.string().min(5).max(100),
+    street_line_2: z.string().max(100).optional(),
     city: z.string().min(2).max(50),
     state: z
       .string()
@@ -48,8 +48,8 @@ export type AddressFormValues = z.infer<typeof addressSchema>;
 
 export const addressDefaultValues: AddressFormValues = {
   address: {
-    address_line_1: '',
-    address_line_2: '',
+    street_line_1: '',
+    street_line_2: '',
     city: '',
     state: '',
     postal_code: '',
@@ -90,10 +90,10 @@ export const AddressFormFields = () => {
     <>
       <FormField
         control={form.control}
-        name='address.address_line_1'
+        name='address.street_line_1'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Address Line 1</FormLabel>
+            <FormLabel>Street Line 1</FormLabel>
             <FormControl>
               <Input placeholder='123 Main St' {...field} />
             </FormControl>
@@ -103,10 +103,10 @@ export const AddressFormFields = () => {
       />
       <FormField
         control={form.control}
-        name='address.address_line_2'
+        name='address.street_line_2'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Address Line 2</FormLabel>
+            <FormLabel>Street Line 2</FormLabel>
             <FormControl>
               <Input placeholder='Apt 4B' {...field} />
             </FormControl>

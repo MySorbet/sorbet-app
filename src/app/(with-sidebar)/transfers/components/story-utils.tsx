@@ -25,7 +25,7 @@ export const FillOutBankRecipientForm = async ({
   await userEvent.type(canvas.getByLabelText(/Routing Number/i), '987654321');
 
   // Fill address fields
-  await userEvent.type(canvas.getByLabelText(/Address Line 1/i), '123 Main St');
+  await userEvent.type(canvas.getByLabelText(/Street Line 1/i), '123 Main St');
 
   await userEvent.type(canvas.getByLabelText(/City/i), 'San Francisco');
 
