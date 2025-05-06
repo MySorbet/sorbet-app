@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 import { isCryptoFormValues } from '@/app/(with-sidebar)/transfers/components/utils';
@@ -38,7 +40,7 @@ export const RecipientPageContent = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4 md:flex-row'>
+    <div className='flex h-fit flex-col gap-4 md:flex-row'>
       <Card className='flex-1'>
         <CardHeader>
           <CardTitle>Send to</CardTitle>
