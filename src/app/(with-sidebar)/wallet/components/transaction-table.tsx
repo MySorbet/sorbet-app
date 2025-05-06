@@ -1,13 +1,8 @@
 import { ArrowDown, ExternalLink, Plus, Send } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
 
-import useCopy from '@/components/common/copy-button/use-copy';
+import { CopyText } from '@/components/common/copy-text';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
@@ -156,40 +151,9 @@ const TableSkeleton = () => {
   );
 };
 
-// Tooltip state inspired by https://github.com/shadcn-ui/ui/issues/86#issuecomment-2241817826
-// TODO: Revisit "copy" flash when tooltip is closing (likely due to fade out animation)
-// TODO: Revisit tooltip flash when hover steals mouseenter
 /** Local component to display formatted address and allow copying */
 const AddressText = ({ address }: { address: string }) => {
   const formattedAddress = formatWalletAddress(address);
-  const { isCopied, handleClick } = useCopy(address);
-  const [open, setOpen] = useState(false);
 
-  return (
-    <Tooltip open={open || isCopied}>
-      <TooltipTrigger asChild>
-        <button
-          type='button'
-          className='cursor-pointer'
-          onClick={() => {
-            setOpen(!open);
-            handleClick();
-          }}
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          onTouchStart={() => setOpen(!open)}
-          onKeyDown={(e) => {
-            e.preventDefault();
-            if (e.key === 'Enter') {
-              setOpen(!open);
-              handleClick();
-            }
-          }}
-        >
-          {formattedAddress}
-        </button>
-      </TooltipTrigger>
-      <TooltipContent>{isCopied ? 'Copied!' : 'Copy'}</TooltipContent>
-    </Tooltip>
-  );
+  return <CopyText text={formattedAddress} />;
 };

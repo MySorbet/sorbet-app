@@ -1,8 +1,10 @@
 import { DollarSign, Euro, Plus, Wallet } from 'lucide-react';
 
 import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import { CopyText } from '@/components/common/copy-text';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -12,7 +14,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
 
 /** Displays a list of recipients and a button to add a new recipient */
 export const RecipientsCard = ({
@@ -64,15 +65,21 @@ const RecipientsTable = ({ recipients }: { recipients: RecipientAPI[] }) => {
               <Type type={recipient.type} />
             </TableCell>
             <TableCell>
-              {recipient.type === 'crypto'
-                ? formatWalletAddress(recipient.detail)
-                : recipient.detail}
+              <TableDetail recipient={recipient} />
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
   );
+};
+
+const TableDetail = ({ recipient }: { recipient: RecipientAPI }) => {
+  if (recipient.type === 'crypto') {
+    const formattedAddress = formatWalletAddress(recipient.detail);
+    return <CopyText text={formattedAddress} textToCopy={recipient.detail} />;
+  }
+  return <CopyText text={recipient.detail} />;
 };
 
 const Type = ({ type }: { type: RecipientType }) => {
