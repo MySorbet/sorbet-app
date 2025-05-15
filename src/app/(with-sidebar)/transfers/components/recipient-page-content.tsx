@@ -2,15 +2,14 @@
 
 import { useState } from 'react';
 
-import { isCryptoFormValues } from '@/app/(with-sidebar)/transfers/components/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useRecipients } from '../hooks/use-recipients';
 import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
+import { SendToCard } from './send-to-card';
+import { isCryptoFormValues } from './utils';
 
 export const RecipientPageContent = () => {
   const [open, setOpen] = useState(false);
@@ -34,19 +33,14 @@ export const RecipientPageContent = () => {
             type: 'usd' as const,
             values: recipient,
           };
-    // TODO: Figure out this type error
+    // @ts-expect-error TODO: Fix this type error
     await createRecipient(data);
     setOpen(false);
   };
 
   return (
     <div className='flex h-fit flex-col gap-4 md:flex-row'>
-      <Card className='flex-1'>
-        <CardHeader>
-          <CardTitle>Send to</CardTitle>
-        </CardHeader>
-        <CardContent className='size-64'></CardContent>
-      </Card>
+      <SendToCard recipients={recipients} onAdd={() => setOpen(true)} />
       <RecipientsCard
         onAdd={() => setOpen(true)}
         recipients={recipients}
