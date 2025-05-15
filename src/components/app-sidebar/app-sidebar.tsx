@@ -1,10 +1,8 @@
-import { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
-import { LinkInBioLinkButton } from '@/components/app-sidebar/link-in-bio-link-button';
-import { AnimatedIcon } from '@/components/app-sidebar/sidebar-icon';
+import { LinkInBioMenuItem } from '@/components/app-sidebar/link-in-bio-menu-item';
 import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
 import { Badge } from '@/components/ui/badge';
 import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
@@ -29,158 +27,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { WalletIcon } from '@/components/ui/wallet';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
+import { useFlags } from '@/hooks/use-flags';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
-import { featureFlags } from '@/lib/flags';
 import { cn } from '@/lib/utils';
 
 import { NavUser } from './nav-user';
 import { SidebarLinkButton } from './sidebar-link-button';
 
-export type MenuItemProps = {
-  title: string;
-  url: string;
-  icon: LucideIcon | AnimatedIcon;
-  disabled?: boolean;
-};
-
-type MenuItemRender = {
-  render: () => React.ReactNode;
-};
-
-type MenuItem = MenuItemProps | MenuItemRender;
-
-const isRender = (item: MenuItem): item is MenuItemRender => {
-  return 'render' in item;
-};
-
-/** Dynamics wallet menu item which fetches and displays balance */
-const WalletMenuItem = () => {
-  const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
-
-  const item = {
-    title: 'Wallet',
-    url: '/wallet',
-    icon: WalletIcon,
-  };
-  return (
-    <SidebarMenuItem key={item.title}>
-      <SidebarLinkButton item={item} />
-
-      <SidebarMenuBadge>
-        {isLoading ? (
-          <Skeleton className='h-4 w-16' variant='darker' />
-        ) : (
-          usdcBalance && (
-            <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
-          )
-        )}
-      </SidebarMenuBadge>
-    </SidebarMenuItem>
-  );
-};
-
-const DisabledAnalyticsMenuItem = () => {
-  const item = {
-    title: 'Analytics',
-    url: '/wallet',
-    icon: ChartColumnIncreasingIcon,
-    disabled: true,
-  };
-  return (
-    <SidebarMenuItem key={item.title}>
-      <SidebarLinkButton item={item} />
-
-      <SidebarMenuBadge>
-        <Badge variant='outline' className='text-muted-foreground font-normal'>
-          coming soon 🚀
-        </Badge>
-      </SidebarMenuBadge>
-    </SidebarMenuItem>
-  );
-};
-
-// Menu items.
-const items: MenuItem[] = [
-  {
-    title: 'Invoices',
-    url: '/invoices',
-    icon: FileTextIcon,
-  },
-  {
-    render: WalletMenuItem,
-  },
-  {
-    title: 'Transactions',
-    url: '/wallet/all',
-    icon: HandCoinsIcon,
-  },
-  ...(featureFlags.transfers
-    ? [
-        {
-          title: 'Transfers',
-          url: '/transfers',
-          icon: ArrowLeftRightIcon,
-        },
-      ]
-    : []),
-];
-
-const profileItems: MenuItem[] = [
-  {
-    render: LinkInBioLinkButton,
-  },
-  {
-    render: DisabledAnalyticsMenuItem,
-  },
-];
-
-const VerifiedMenuItem = () => {
-  const isVerified = useIsVerified();
-  const item = {
-    title: isVerified ? 'Account verified' : 'Get verified',
-    url: '/verify',
-    icon: ShieldCheckIcon,
-  };
-  return (
-    <SidebarMenuItem key={item.title}>
-      <SidebarLinkButton
-        item={item}
-        iconClassName={cn(isVerified && 'text-green-500')}
-      />
-    </SidebarMenuItem>
-  );
-};
-
-const accountItems: MenuItem[] = [
-  {
-    render: VerifiedMenuItem,
-  },
-  {
-    render: () => {
-      const item = {
-        title: 'Feedback',
-        icon: MessageSquareIcon,
-      };
-      return (
-        <SidebarMenuItem key={item.title}>
-          <FeaturebaseLinkButton item={item} />
-        </SidebarMenuItem>
-      );
-    },
-  },
-  ...(featureFlags.settings
-    ? [
-        {
-          title: 'Settings',
-          url: '/settings',
-          icon: SettingsIcon,
-        },
-      ]
-    : []),
-];
-
-/** A global sidebar */
+/** A global sidebar component for logged in users */
 export const AppSidebar = () => {
+  const { settings, transfers } = useFlags();
   return (
     <Sidebar>
       {/* Header */}
@@ -214,7 +70,38 @@ export const AppSidebar = () => {
         <SidebarGroup>
           <SidebarGroupLabel>Payments</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{renderMenuItems(items)}</SidebarMenu>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarLinkButton
+                  item={{
+                    title: 'Invoices',
+                    url: '/invoices',
+                    icon: FileTextIcon,
+                  }}
+                />
+              </SidebarMenuItem>
+              <WalletMenuItem />
+              <SidebarMenuItem>
+                <SidebarLinkButton
+                  item={{
+                    title: 'Transactions',
+                    url: '/wallet/all',
+                    icon: HandCoinsIcon,
+                  }}
+                />
+              </SidebarMenuItem>
+              {transfers && (
+                <SidebarMenuItem>
+                  <SidebarLinkButton
+                    item={{
+                      title: 'Transfers',
+                      url: '/transfers',
+                      icon: ArrowLeftRightIcon,
+                    }}
+                  />
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
@@ -222,7 +109,10 @@ export const AppSidebar = () => {
         <SidebarGroup>
           <SidebarGroupLabel>Profile</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{renderMenuItems(profileItems)}</SidebarMenu>
+            <SidebarMenu>
+              <LinkInBioMenuItem />
+              <AnalyticsMenuItem />
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
@@ -230,7 +120,28 @@ export const AppSidebar = () => {
         <SidebarGroup className='mt-auto'>
           <SidebarGroupLabel>Account</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{renderMenuItems(accountItems)}</SidebarMenu>
+            <SidebarMenu>
+              <VerifiedMenuItem />
+              <SidebarMenuItem>
+                <FeaturebaseLinkButton
+                  item={{
+                    title: 'Feedback',
+                    icon: MessageSquareIcon,
+                  }}
+                />
+              </SidebarMenuItem>
+              {settings && (
+                <SidebarMenuItem>
+                  <SidebarLinkButton
+                    item={{
+                      title: 'Settings',
+                      url: '/settings',
+                      icon: SettingsIcon,
+                    }}
+                  />
+                </SidebarMenuItem>
+              )}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -243,15 +154,67 @@ export const AppSidebar = () => {
   );
 };
 
-const renderMenuItems = (items: MenuItem[]) => {
-  return items.map((item) => {
-    if (isRender(item)) {
-      return item.render();
-    }
-    return (
-      <SidebarMenuItem key={item.title}>
-        <SidebarLinkButton item={item} />
-      </SidebarMenuItem>
-    );
-  });
+/** Local dynamic wallet menu item which fetches and displays balance */
+const WalletMenuItem = () => {
+  const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
+
+  const item = {
+    title: 'Wallet',
+    url: '/wallet',
+    icon: WalletIcon,
+  };
+  return (
+    <SidebarMenuItem key={item.title}>
+      <SidebarLinkButton item={item} />
+
+      <SidebarMenuBadge>
+        {isLoading ? (
+          <Skeleton className='h-4 w-16' variant='darker' />
+        ) : (
+          usdcBalance && (
+            <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+          )
+        )}
+      </SidebarMenuBadge>
+    </SidebarMenuItem>
+  );
+};
+
+/** Local analytics menu item which renders a badge and disables the item */
+const AnalyticsMenuItem = () => {
+  const item = {
+    title: 'Analytics',
+    url: '/wallet',
+    icon: ChartColumnIncreasingIcon,
+    disabled: true,
+  };
+  return (
+    <SidebarMenuItem key={item.title}>
+      <SidebarLinkButton item={item} />
+
+      <SidebarMenuBadge>
+        <Badge variant='outline' className='text-muted-foreground font-normal'>
+          coming soon 🚀
+        </Badge>
+      </SidebarMenuBadge>
+    </SidebarMenuItem>
+  );
+};
+
+/** Local verified menu item which has a dynamic title and icon depending on verification status */
+const VerifiedMenuItem = () => {
+  const isVerified = useIsVerified();
+  const item = {
+    title: isVerified ? 'Account verified' : 'Get verified',
+    url: '/verify',
+    icon: ShieldCheckIcon,
+  };
+  return (
+    <SidebarMenuItem key={item.title}>
+      <SidebarLinkButton
+        item={item}
+        iconClassName={cn(isVerified && 'text-green-500')}
+      />
+    </SidebarMenuItem>
+  );
 };

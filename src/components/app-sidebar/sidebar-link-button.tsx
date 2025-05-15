@@ -1,5 +1,6 @@
 'use client';
 
+import { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRef } from 'react';
 
@@ -7,8 +8,14 @@ import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
-import type { MenuItemProps } from './app-sidebar';
-import { isAnimatedIcon, SidebarIcon } from './sidebar-icon';
+import { AnimatedIcon, isAnimatedIcon, SidebarIcon } from './sidebar-icon';
+
+export type MenuItemProps = {
+  title: string;
+  url: string;
+  icon: LucideIcon | AnimatedIcon;
+  disabled?: boolean;
+};
 
 /** Sidebar menu button as a link with animated icon */
 export const SidebarLinkButton = ({

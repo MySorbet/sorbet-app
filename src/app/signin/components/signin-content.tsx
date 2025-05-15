@@ -21,7 +21,7 @@ export const SigninContent = () => {
   const handleClick = (button: PressedButton) => {
     setPressedButton(button);
     login();
-    if (featureFlags.sessionReplay) {
+    if (featureFlags().sessionReplay) {
       posthog.startSessionRecording();
     }
   };

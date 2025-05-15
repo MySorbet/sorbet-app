@@ -3,11 +3,11 @@
 import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 
-import { MenuItemProps } from '@/components/app-sidebar/app-sidebar';
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 import { isAnimatedIcon, SidebarIcon } from './sidebar-icon';
+import { MenuItemProps } from './sidebar-link-button';
 
 /**
  * Documentation: https://help.featurebase.app/en/articles/1261560-install-feedback-widget

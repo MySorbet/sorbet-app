@@ -19,7 +19,7 @@ export const withAuthHeader = async (
   config: AxiosRequestConfig = {}
 ): Promise<AxiosRequestConfig> => {
   const accessToken = await getAccessToken();
-  if (featureFlags.skipAuthHeader) {
+  if (featureFlags().skipAuthHeader) {
     return config;
   }
   if (accessToken) {
