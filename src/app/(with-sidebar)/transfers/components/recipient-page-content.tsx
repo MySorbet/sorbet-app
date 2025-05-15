@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
+
+import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useRecipients } from '../hooks/use-recipients';
@@ -15,6 +18,7 @@ export const RecipientPageContent = () => {
   const [open, setOpen] = useState(false);
   const { data: recipients, isLoading: loading } = useRecipients();
   const { mutateAsync: createRecipient } = useCreateRecipient();
+  const { sendUSDC } = useSendUSDC();
 
   const handleSubmit = async (
     recipient:
@@ -38,9 +42,19 @@ export const RecipientPageContent = () => {
     setOpen(false);
   };
 
+  const handleSend = (amount: number, address: string) => {
+    sendUSDC(amount.toString(), address).then(() => {
+      toast(`Sent ${amount} USDC to ${address}`);
+    });
+  };
+
   return (
-    <div className='flex h-fit flex-col gap-4 md:flex-row'>
-      <SendToCard recipients={recipients} onAdd={() => setOpen(true)} />
+    <div className='flex h-fit w-full flex-col items-center justify-center gap-4 md:flex-row md:items-start'>
+      <SendToCard
+        recipients={recipients}
+        onAdd={() => setOpen(true)}
+        onSend={handleSend}
+      />
       <RecipientsCard
         onAdd={() => setOpen(true)}
         recipients={recipients}

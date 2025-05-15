@@ -26,7 +26,7 @@ export const RecipientsCard = ({
   loading?: boolean;
 }) => {
   return (
-    <Card className='overflow-clip'>
+    <Card className='w-full max-w-lg overflow-clip'>
       <CardHeader className='bg-primary-foreground flex flex-row items-center justify-between gap-4 space-y-0 px-4'>
         <CardTitle className='text-base font-semibold'>Recipients</CardTitle>
         <Button variant='outline' size='sm' onClick={onAdd}>

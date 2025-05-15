@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { RecipientAPI } from '@/api/recipients/types';
 import { Button } from '@/components/ui/button';
@@ -20,10 +19,12 @@ export const SendToCard = ({
   className,
   recipients,
   onAdd,
+  onSend,
 }: {
   className?: string;
   recipients?: RecipientAPI[];
   onAdd?: () => void;
+  onSend?: (amount: number, address: string) => void;
 }) => {
   const [selectedRecipient, setSelectedRecipient] =
     useState<RecipientAPI | null>(null);
@@ -41,12 +42,8 @@ export const SendToCard = ({
 
   const disabled = amount === 0 || !selectedRecipient;
 
-  const handleSend = () => {
-    toast.success(`Sending ${amount} USDC to ${selectedRecipient?.label}`);
-  };
-
   return (
-    <Card className={cn('min-w-64 max-w-md space-y-10 p-6', className)}>
+    <Card className={cn('w-full min-w-64 max-w-lg space-y-10 p-6', className)}>
       <div className='space-y-2'>
         <Label>Send to</Label>
         <Select onValueChange={handleSelect} value={selectedRecipient?.id}>
@@ -88,7 +85,11 @@ export const SendToCard = ({
         className='w-full'
         variant='sorbet'
         disabled={disabled}
-        onClick={handleSend}
+        onClick={() => {
+          if (selectedRecipient?.id) {
+            onSend?.(amount, selectedRecipient.id);
+          }
+        }}
       >
         Send
       </Button>
