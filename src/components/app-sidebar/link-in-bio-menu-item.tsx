@@ -7,7 +7,7 @@ import { SquareUserIcon } from '@/components/ui/square-user';
 import { useAuth } from '@/hooks/use-auth';
 
 /** This component is used to display a link to the user's link-in-bio page.*/
-export const LinkInBioLinkButton = () => {
+export const LinkInBioMenuItem = () => {
   const { user } = useAuth();
 
   const item = {

@@ -59,7 +59,7 @@ const PostHogIdentityWrapper = ({ children }: { children: ReactNode }) => {
    * If it is, we set a 1 minute timer to record and then stop the recording after.
    */
   useEffect(() => {
-    if (featureFlags.sessionReplay) {
+    if (featureFlags().sessionReplay) {
       if (isRecording) {
         console.log('session recording in progress...');
         const timer = setTimeout(() => {
