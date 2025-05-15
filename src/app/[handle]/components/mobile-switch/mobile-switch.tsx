@@ -1,5 +1,4 @@
 import { AnimatedTabs } from './animated-tabs';
-import { NewFeatureBadge } from './new-feature-badge';
 
 export const MobileSwitch = ({
   isMobile,
@@ -13,15 +12,11 @@ export const MobileSwitch = ({
     onIsMobileChange(tab === 'mobile');
   };
   return (
-    // TODO: Remove this relative div once the new feature badge is removed
-    <div className='relative'>
-      <AnimatedTabs
-        tabs={tabs}
-        selectedTab={selectedTab}
-        onSelectTab={onSelectTab}
-      />
-      <NewFeatureBadge />
-    </div>
+    <AnimatedTabs
+      tabs={tabs}
+      selectedTab={selectedTab}
+      onSelectTab={onSelectTab}
+    />
   );
 };
 
