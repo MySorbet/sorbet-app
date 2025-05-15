@@ -64,7 +64,7 @@ const RecipientsTable = ({ recipients }: { recipients: RecipientAPI[] }) => {
             <TableCell>
               <Type type={recipient.type} />
             </TableCell>
-            <TableCell>
+            <TableCell className='text-right'>
               <TableDetail recipient={recipient} />
             </TableCell>
           </TableRow>
