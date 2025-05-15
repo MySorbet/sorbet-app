@@ -10,7 +10,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
     msw: {
-      handlers: [...handlers(false)],
+      handlers: handlers(false),
     },
   },
 } satisfies Meta<typeof TransfersPage>;
@@ -25,7 +25,7 @@ export const Default: Story = {};
 export const CreateRecipientFailure: Story = {
   parameters: {
     msw: {
-      handlers: [...handlers(true)],
+      handlers: handlers(true),
     },
   },
 };
