@@ -86,8 +86,8 @@ export const SendToCard = ({
         variant='sorbet'
         disabled={disabled}
         onClick={() => {
-          if (selectedRecipient?.id) {
-            onSend?.(amount, selectedRecipient.id);
+          if (selectedRecipient?.walletAddress) {
+            onSend?.(amount, selectedRecipient.walletAddress);
           }
         }}
       >
