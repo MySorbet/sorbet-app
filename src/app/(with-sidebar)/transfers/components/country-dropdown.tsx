@@ -102,7 +102,7 @@ const CountryDropdownComponent = (
   );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger
         ref={ref}
         className={triggerClasses}
@@ -139,7 +139,10 @@ const CountryDropdownComponent = (
         side='bottom'
         className='min-w-[--radix-popper-anchor-width] p-0'
       >
-        <Command className='max-h-[200px] w-full sm:max-h-[270px]'>
+        <Command
+          className='max-h-[200px] w-full sm:max-h-[270px]'
+          onWheel={(e) => e.stopPropagation()}
+        >
           <CommandList>
             <div className='bg-popover sticky top-0 z-10'>
               <CommandInput placeholder='Search country...' />
