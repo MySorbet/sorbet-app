@@ -14,7 +14,7 @@ export const StateSelect = ({
   value,
   onChange,
 }: {
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
 }) => {
   return (
