@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useRecipients } from '../hooks/use-recipients';
@@ -48,9 +49,13 @@ export const RecipientPageContent = () => {
     });
   };
 
+  const { data: walletBalance } = useWalletBalance();
+  const maxAmount = walletBalance ? Number(walletBalance) : undefined;
+
   return (
     <div className='flex h-fit w-full flex-col items-center justify-center gap-4 md:flex-row md:items-start'>
       <SendToCard
+        maxAmount={maxAmount}
         recipients={recipients}
         onAdd={() => setOpen(true)}
         onSend={handleSend}
