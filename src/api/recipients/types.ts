@@ -30,7 +30,6 @@ type RecipientAPIBank = RecipientAPIBase & {
 
 type RecipientAPICrypto = RecipientAPIBase & {
   type: 'crypto';
-  walletAddress: string;
 };
 
 export type RecipientAPI = RecipientAPIBank | RecipientAPICrypto;
