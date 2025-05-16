@@ -122,7 +122,11 @@ export const NakedBankRecipientForm = ({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Currency</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder='Select a currency' />
