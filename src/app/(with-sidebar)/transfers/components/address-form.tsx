@@ -127,37 +127,34 @@ export const AddressFormFields = () => {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name='address.state'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>State</FormLabel>
-            <FormControl>
-              <StateSelect
-                value={field.value ?? ''}
-                onChange={(value) => {
-                  field.onChange(value);
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name='address.postal_code'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Postal Code</FormLabel>
-            <FormControl>
-              <Input placeholder='94105' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className='flex gap-2'>
+        <FormField
+          control={form.control}
+          name='address.state'
+          render={({ field }) => (
+            <FormItem className='w-[60%]'>
+              <FormLabel>State</FormLabel>
+              <FormControl>
+                <StateSelect {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='address.postal_code'
+          render={({ field }) => (
+            <FormItem className='w-[40%]'>
+              <FormLabel>Postal Code</FormLabel>
+              <FormControl>
+                <Input placeholder='94105' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <FormField
         control={form.control}
         name='address.country'
