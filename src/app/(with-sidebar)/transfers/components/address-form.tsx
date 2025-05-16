@@ -1,7 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useFormContext } from 'react-hook-form';
+import { iso31661 } from 'iso-3166';
+import { useMemo } from 'react';
+import { useForm, useFormContext, useWatch } from 'react-hook-form';
 import isISO31661Alpha3 from 'validator/lib/isISO31661Alpha3';
 import isPostalCode from 'validator/lib/isPostalCode';
 import { z } from 'zod';
@@ -32,6 +34,7 @@ export const addressSchema = z.object({
         message: 'Invalid state code',
       })
       .optional(),
+    // TODO: Verify state corresponds with country
     postal_code: z
       .string()
       .refine((val) => !val || isPostalCode(val, 'US'), {
@@ -86,6 +89,13 @@ export const AddressForm = ({
 export const AddressFormFields = () => {
   const form = useFormContext<AddressFormValues>();
 
+  // Get the alpha2 of the country selected
+  const country = useWatch({ control: form.control, name: 'address.country' });
+  const parent = useMemo(
+    () => iso31661.find((c) => c.alpha3 === country)?.alpha2,
+    [country]
+  );
+
   return (
     <>
       <FormField
@@ -135,7 +145,7 @@ export const AddressFormFields = () => {
             <FormItem className='w-[60%]'>
               <FormLabel>State</FormLabel>
               <FormControl>
-                <StateSelect {...field} />
+                <StateSelect {...field} parent={parent} disabled={!parent} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -166,6 +176,11 @@ export const AddressFormFields = () => {
               defaultValue={field.value}
               onChange={(country) => {
                 field.onChange(country.alpha3);
+                // Reset the state if the country changes
+                form.setValue('address.state', '', {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
               }}
             />
             <FormMessage />

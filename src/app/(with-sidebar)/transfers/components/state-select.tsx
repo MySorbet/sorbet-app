@@ -1,4 +1,5 @@
 import { iso31662 } from 'iso-3166';
+import { useMemo } from 'react';
 
 import {
   Select,
@@ -8,22 +9,33 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const usStates = iso31662.filter((state) => state.parent === 'US');
-
 export const StateSelect = ({
   value,
   onChange,
+  parent = 'US',
+  disabled = false,
 }: {
   value?: string;
   onChange: (value: string) => void;
+  parent?: string;
+  disabled?: boolean;
 }) => {
+  // Display only states that match the parent country
+  const states = useMemo(
+    () => iso31662.filter((state) => state.code.slice(0, 2) === parent),
+    [parent]
+  );
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select
+      value={value}
+      onValueChange={onChange}
+      disabled={states.length === 0 || disabled}
+    >
       <SelectTrigger>
         <SelectValue placeholder='Select a state' />
       </SelectTrigger>
       <SelectContent>
-        {usStates.map((state) => (
+        {states.map((state) => (
           <SelectItem key={state.code} value={state.code}>
             {state.name}
           </SelectItem>
@@ -34,5 +46,5 @@ export const StateSelect = ({
 };
 
 export const isISO31662 = (value: string) => {
-  return usStates.some((state) => state.code === value);
+  return iso31662.some((state) => state.code === value);
 };
