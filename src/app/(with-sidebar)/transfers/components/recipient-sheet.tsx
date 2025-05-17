@@ -1,8 +1,11 @@
+'use client';
+
 import { ArrowLeft } from 'lucide-react';
 import { forwardRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { cn } from '@/lib/utils';
 
 import {
@@ -88,6 +91,9 @@ const BankOrCrypto = ({
   className?: string;
   setStep: (step: 'crypto' | 'bank') => void;
 }) => {
+  // TODO: What we really need to do here is disable USD or EUR recipient creation according to endorsement status.
+  const isVerified = useIsVerified();
+
   return (
     <>
       <VaulSheetHeader>
@@ -103,6 +109,7 @@ const BankOrCrypto = ({
           <RecipientButton
             onClick={() => setStep('bank')}
             aria-label='Bank recipient'
+            disabled={!isVerified}
           >
             <RecipientButtonIcon type='bank' />
             <RecipientButtonContent>

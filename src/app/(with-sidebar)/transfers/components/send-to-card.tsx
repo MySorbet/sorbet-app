@@ -25,6 +25,11 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
+/**
+ * Card rendering a form to send funds to a recipient, be they bank or crypto.
+ *
+ * TODO: Consider reading endorsement status to disable interacting with USD or EUR accounts if endorsements are disabled -- is that even possible?
+ */
 export const SendToCard = ({
   className,
   recipients,

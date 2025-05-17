@@ -14,7 +14,7 @@ export const RecipientButton = forwardRef<
   return (
     <button
       className={cn(
-        'bg-primary-foreground border-neutral-lighter hover:bg-primary-foreground/50 group flex min-w-56 justify-between gap-3 rounded-lg border p-3',
+        'bg-primary-foreground border-neutral-lighter hover:bg-primary-foreground/50 group flex min-w-56 justify-between gap-3 rounded-lg border p-3 disabled:pointer-events-none disabled:opacity-50',
         className
       )}
       onClick={onClick}
