@@ -1,8 +1,8 @@
+import { Authenticated } from '@/app/authenticated';
 import { Header } from '@/components/common/header';
 import Page from '@/components/common/page';
 
-import { Authenticated } from '../../authenticated';
-import { RecipientsCard } from './components/recipients-card';
+import { RecipientPageContent } from './components/recipient-page-content';
 
 export default function TransfersPage() {
   return (
@@ -10,7 +10,7 @@ export default function TransfersPage() {
       <Page.Main>
         <Header title='Transfers' />
         <Page.Content>
-          <RecipientsCard />
+          <RecipientPageContent />
         </Page.Content>
       </Page.Main>
     </Authenticated>
