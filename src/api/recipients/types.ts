@@ -24,8 +24,8 @@ type RecipientAPIBase = {
 
 type RecipientAPIBank = RecipientAPIBase & {
   type: 'usd' | 'eur';
-  liquidation_address_id: string;
-  external_account_id: string;
+  liquidationAddressId: string;
+  externalAccountId: string;
 };
 
 type RecipientAPICrypto = RecipientAPIBase & {
