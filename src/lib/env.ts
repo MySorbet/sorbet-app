@@ -8,7 +8,6 @@ export const env = createEnv({
     NEXT_PUBLIC_GOOGLE_MAP_KEY: z.string(),
     NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY: z.string(),
     NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: z.string(),
-    NEXT_PUBLIC_SEND_BIRD_APP_ID: z.string(),
     NEXT_PUBLIC_PRIVY_APP_ID: z.string(),
     NEXT_PUBLIC_TESTNET: z.preprocess((val) => val === 'true', z.boolean()),
     NEXT_PUBLIC_BASE_CONTRACT_ADDRESS: z.string(),
@@ -26,7 +25,6 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY,
     NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID:
       process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID,
-    NEXT_PUBLIC_SEND_BIRD_APP_ID: process.env.NEXT_PUBLIC_SEND_BIRD_APP_ID,
     NEXT_PUBLIC_PRIVY_APP_ID: process.env.NEXT_PUBLIC_PRIVY_APP_ID,
     NEXT_PUBLIC_TESTNET: process.env.NEXT_PUBLIC_TESTNET,
     NEXT_PUBLIC_BASE_CONTRACT_ADDRESS:

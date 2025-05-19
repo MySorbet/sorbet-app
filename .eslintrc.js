@@ -65,7 +65,5 @@ module.exports = {
   ignorePatterns: [
     'src/components/ui/*', // Don't lint shadcn components (they use different rules than us)
     'src/components/syntax-ui/*', // Same as above
-    'src/components/chat/*', // Chat components are not used currently, but may be used in the future (ignore for now)
-    'src/hooks/chat/*', // Same as above
   ],
 };
