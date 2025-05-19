@@ -3,6 +3,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { forwardRef, useState } from 'react';
 
+import { isCryptoFormValues } from '@/app/(with-sidebar)/transfers/components/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
@@ -45,14 +46,24 @@ export const RecipientSheet = ({
 }: {
   onSubmit?: (
     values:
-      | BankRecipientFormValuesWithRequiredValues
-      | CryptoRecipientFormValues
+      | { type: 'usd'; values: BankRecipientFormValuesWithRequiredValues }
+      | { type: 'crypto'; values: CryptoRecipientFormValues }
   ) => Promise<void>;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }) => {
-  const [step, setStep] = useState<'crypto' | 'bank'>();
-
+  const [step, setStep] = useState<'crypto' | 'bank' | undefined>();
+  const handleSubmit = async (
+    values:
+      | BankRecipientFormValuesWithRequiredValues
+      | CryptoRecipientFormValues
+  ) => {
+    if (isCryptoFormValues(values)) {
+      return await onSubmit?.({ type: 'crypto', values });
+    } else {
+      return await onSubmit?.({ type: 'usd', values });
+    }
+  };
   return (
     <VaulSheet open={open} onOpenChange={setOpen}>
       <VaulSheetContent
@@ -63,12 +74,12 @@ export const RecipientSheet = ({
           step === 'crypto' ? (
             <CryptoRecipientStep
               onBack={() => setStep(undefined)}
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit}
               className='animate-in fade-in-0 slide-in-from-right-1 duration-300'
             />
           ) : (
             <BankRecipientStep
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit}
               onBack={() => setStep(undefined)}
               className='animate-in fade-in-0 slide-in-from-right-1 duration-300'
             />

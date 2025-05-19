@@ -48,6 +48,7 @@ interface CountryDropdownProps {
 
 /**
  * @see https://shadcn-country-dropdown.vercel.app/
+ * Modified to work for Sorbet. Could use virtual list optimization and package consolidation.
  */
 const CountryDropdownComponent = (
   {

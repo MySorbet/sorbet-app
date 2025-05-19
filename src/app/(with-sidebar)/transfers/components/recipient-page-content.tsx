@@ -13,7 +13,6 @@ import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToCard } from './send-to-card';
-import { isCryptoFormValues } from './utils';
 
 export const RecipientPageContent = () => {
   const [open, setOpen] = useState(false);
@@ -23,23 +22,10 @@ export const RecipientPageContent = () => {
 
   const handleSubmit = async (
     recipient:
-      | BankRecipientFormValuesWithRequiredValues
-      | CryptoRecipientFormValues
+      | { type: 'usd'; values: BankRecipientFormValuesWithRequiredValues }
+      | { type: 'crypto'; values: CryptoRecipientFormValues }
   ) => {
-    // TODO: Support EUR here
-    const type = isCryptoFormValues(recipient) ? 'crypto' : 'usd';
-    const data =
-      type === 'crypto'
-        ? {
-            type: 'crypto' as const,
-            values: recipient,
-          }
-        : {
-            type: 'usd' as const,
-            values: recipient,
-          };
-    // @ts-expect-error TODO: Fix this type error
-    await createRecipient(data);
+    await createRecipient(recipient);
     setOpen(false);
   };
 
