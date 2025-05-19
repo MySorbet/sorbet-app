@@ -1,4 +1,5 @@
 import { ChevronRight, Landmark, Wallet } from 'lucide-react';
+import { forwardRef } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -6,29 +7,26 @@ import { cn } from '@/lib/utils';
  * Root component for the recipient button. Compose with other `RecipientButton` components
  * @see storybook for examples of how to compose
  */
-export const RecipientButton = ({
-  onClick,
-  className,
-  children,
-}: {
-  onClick?: () => void;
-  className?: string;
-  children?: React.ReactNode;
-}) => {
+export const RecipientButton = forwardRef<
+  HTMLButtonElement,
+  React.ComponentPropsWithoutRef<'button'>
+>(({ onClick, className, children, ...props }, ref) => {
   return (
     <button
       className={cn(
-        'bg-primary-foreground border-neutral-lighter hover:bg-primary-foreground/50 group flex min-w-56 justify-between gap-3 rounded-lg border p-3',
+        'bg-primary-foreground border-neutral-lighter hover:bg-primary-foreground/50 group flex min-w-56 justify-between gap-3 rounded-lg border p-3 disabled:pointer-events-none disabled:opacity-50',
         className
       )}
       onClick={onClick}
       type='button'
+      ref={ref}
+      {...props}
     >
       {children}
       <ChevronRight className='text-muted-foreground size-6 shrink-0 transition-transform duration-200 ease-in-out group-hover:translate-x-1' />
     </button>
   );
-};
+});
 
 /** Content component for the recipient button. */
 export const RecipientButtonContent = ({
@@ -45,7 +43,7 @@ export const RecipientButtonTitle = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <p className='text-sm font-semibold'>{children}</p>;
+  return <span className='text-sm font-semibold'>{children}</span>;
 };
 
 /** Description of a recipient button. Render inside `RecipientButtonContent`. */
