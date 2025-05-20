@@ -41,3 +41,9 @@ export const isCryptoFormValues = (
 ): values is CryptoRecipientFormValues => {
   return 'walletAddress' in values;
 };
+
+/**
+ * The minimum USDC you can send to a bank account.
+ * @see https://apidocs.bridge.xyz/docs/liquidation-address#minimum-amounts
+ */
+export const BANK_ACCOUNTS_MIN_AMOUNT = 1;

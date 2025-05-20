@@ -12,7 +12,7 @@ export const mockRecipients: RecipientAPI[] = [
   {
     id: uuidv4(),
     type: 'usd',
-    walletAddress: uuidv4(),
+    walletAddress: mockWalletAddress,
     liquidationAddressId: uuidv4(),
     externalAccountId: uuidv4(),
     label: 'USD Bank',
@@ -34,7 +34,7 @@ export const mockRecipients: RecipientAPI[] = [
   {
     id: uuidv4(),
     type: 'usd',
-    walletAddress: uuidv4(),
+    walletAddress: mockWalletAddress,
     liquidationAddressId: uuidv4(),
     externalAccountId: uuidv4(),
     label: 'USD Bank 2',

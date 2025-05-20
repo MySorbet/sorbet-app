@@ -25,10 +25,13 @@ import {
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
+import { BANK_ACCOUNTS_MIN_AMOUNT } from './utils';
+
 /**
  * Card rendering a form to send funds to a recipient, be they bank or crypto.
  *
  * TODO: Consider reading endorsement status to disable interacting with USD or EUR accounts if endorsements are disabled -- is that even possible?
+ * TODO: Explore decimal precision. More banks, we probably want to truncate. For crypto, we need more decimals allowed. Check bridge docs.
  */
 export const SendToCard = ({
   className,
@@ -48,20 +51,41 @@ export const SendToCard = ({
       formSchema.extend({
         amount: z
           .number()
-          .gt(0)
+          .gt(0, { message: '' }) // Disable self explanatory 0 error message
           .max(maxAmount ?? Infinity, {
             message: `You have ${formatCurrency(maxAmount ?? 0)} available`,
-          }),
+          })
+          // Here we require the amount to be greater than the minimum amount for bank recipients
+          .refine(
+            (value) => {
+              const selectedRecipient: RecipientAPI | undefined =
+                recipients?.find((r) => r.id === form.getValues().recipient);
+              const minValueRequired: number =
+                selectedRecipient?.type === 'usd' ||
+                selectedRecipient?.type === 'eur'
+                  ? BANK_ACCOUNTS_MIN_AMOUNT
+                  : 0;
+              return value >= minValueRequired;
+            },
+            {
+              message: `The minimum amount you can send to this recipient is ${formatCurrency(
+                BANK_ACCOUNTS_MIN_AMOUNT
+              )}`,
+            }
+          ),
       })
     ),
     defaultValues: {
       recipient: '',
       amount: 0,
     },
-    mode: 'all',
+    mode: 'onChange',
   });
 
-  const { isValid, isSubmitting, errors } = useFormState(form);
+  const { isValid, isSubmitting, errors } = useFormState({
+    control: form.control,
+  });
+
   const disabled = isSubmitting || !isValid;
 
   const onSubmit = (data: FormSchema) => {
@@ -89,10 +113,18 @@ export const SendToCard = ({
                     value={field.value}
                     onValueChange={(value) => {
                       if (value === 'add-new') {
-                        field.onChange(null);
+                        field.onChange('', {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        form.trigger();
                         onAdd?.();
                       } else {
-                        field.onChange(value);
+                        field.onChange(value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        form.trigger();
                       }
                     }}
                   >
@@ -132,7 +164,10 @@ export const SendToCard = ({
                       {...field}
                       value={String(field.value)}
                       onChange={(e) =>
-                        form.setValue('amount', Number(e.target.value))
+                        form.setValue('amount', Number(e.target.value), {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
                       }
                       type='number'
                       className='no-spin-buttons'
@@ -183,7 +218,7 @@ export const SendToCard = ({
 
 const formSchema = z.object({
   recipient: z.string().min(1, {
-    message: '',
+    message: '', // Disable self explanatory empty recipient error message
   }),
   amount: z.number(),
 });
