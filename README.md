@@ -8,13 +8,16 @@ Using [shadcn/ui](https://ui.shadcn.com/), [TailwindCSS](https://tailwindcss.com
 
 ### 🔥 Quickstart
 
-> [!NOTE]
+> [!NOTE] Corepack
 > We use [`corepack`](https://yarnpkg.com/corepack) to ensure everyone is using the same version of yarn.
-> Before continuing, install it with `brew install corepack && corepack enable`.
+> Before continuing, install it with `brew install corepack` or `npm i -g corepack` and then `corepack enable`.
 
-> [!NOTE]
+> [!NOTE] Gcloud
 > We use [`gcloud cli`](https://cloud.google.com/sdk/docs/install) to store and access environment variables and secrets.
-> Before continuing, install it by following the instructions [here](https://cloud.google.com/sdk/docs/install). You should have authorized access to the sorbet-production project. Considering verifying you access with the engineering team.
+> Before continuing, install and authenticate it by following the instructions [here](https://cloud.google.com/sdk/docs/install). You should have authorized access to the sorbet-production project. Considering verifying you access with the engineering team.
+
+> [!NOTE] Workspace
+> Though `sorbet-app` and `sorbet-api` are separate repos, you can create a monorepo like experience by creating a `sorbet` directory with both repos inside and opening it as a workspace in Cursor. 
 
 1. Clone the repo with `git clone https://github.com/MySorbet/sorbet-app.git`.
 2. Install dependencies with `yarn install`.
