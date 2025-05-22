@@ -33,3 +33,13 @@ export const getACHWireDetails = async (userId: string) => {
   );
   return response.data;
 };
+
+/** Upload a document for a user */
+export const uploadPOA = async (file: File) => {
+  const response = await axios.postForm(
+    `${API_URL}/users/bridge/proof-of-address`,
+    { file },
+    await withAuthHeader()
+  );
+  return response.data;
+};

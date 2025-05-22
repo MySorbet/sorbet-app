@@ -7656,6 +7656,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mime-types@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "@types/mime-types@npm:2.1.4"
+  checksum: 10c0/a10d57881d14a053556b3d09292de467968d965b0a06d06732c748da39b3aa569270b5b9f32529fd0e9ac1e5f3b91abb894f5b1996373254a65cb87903c86622
+  languageName: node
+  linkType: hard
+
 "@types/ms@npm:*":
   version: 0.7.34
   resolution: "@types/ms@npm:0.7.34"
@@ -15653,12 +15660,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mime-db@npm:^1.54.0":
+  version: 1.54.0
+  resolution: "mime-db@npm:1.54.0"
+  checksum: 10c0/8d907917bc2a90fa2df842cdf5dfeaf509adc15fe0531e07bb2f6ab15992416479015828d6a74200041c492e42cce3ebf78e5ce714388a0a538ea9c53eece284
+  languageName: node
+  linkType: hard
+
 "mime-types@npm:^2.1.12, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31":
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
     mime-db: "npm:1.52.0"
   checksum: 10c0/82fb07ec56d8ff1fc999a84f2f217aa46cb6ed1033fefaabd5785b9a974ed225c90dc72fff460259e66b95b73648596dbcc50d51ed69cdf464af2d237d3149b2
+  languageName: node
+  linkType: hard
+
+"mime-types@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mime-types@npm:3.0.1"
+  dependencies:
+    mime-db: "npm:^1.54.0"
+  checksum: 10c0/bd8c20d3694548089cf229016124f8f40e6a60bbb600161ae13e45f793a2d5bb40f96bbc61f275836696179c77c1d6bf4967b2a75e0a8ad40fe31f4ed5be4da5
   languageName: node
   linkType: hard
 
@@ -18954,6 +18977,7 @@ __metadata:
     "@types/dompurify": "npm:^3.0.5"
     "@types/lodash": "npm:^4.14.202"
     "@types/lodash.pickby": "npm:^4.6.9"
+    "@types/mime-types": "npm:^2.1.4"
     "@types/prop-types": "npm:^15"
     "@types/react": "npm:^18.2.25"
     "@types/react-grid-layout": "npm:^1.3.5"
@@ -18997,6 +19021,7 @@ __metadata:
     json-schema-traverse: "npm:^1.0.0"
     lodash.pickby: "npm:^4.6.0"
     lucide-react: "npm:^0.476.0"
+    mime-types: "npm:^3.0.1"
     motion: "npm:^12.4.5"
     msw: "npm:^2.6.0"
     msw-storybook-addon: "npm:^2.0.3"

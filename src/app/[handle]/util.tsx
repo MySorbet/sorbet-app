@@ -253,7 +253,6 @@ export const handleImageInputChange =
     const file = e.target.files?.[0];
     if (checkFileValid(file)) {
       onAdd?.(file);
-      e.target.value = '';
     } else {
       // This should only ever toast with 10mb error (since the input only accepts valid extensions)
       errorToast();
