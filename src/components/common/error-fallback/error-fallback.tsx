@@ -20,6 +20,7 @@ export const ErrorFallback = ({
         className='size-28'
         width={112}
         height={112}
+        priority
       />
       <div className='space-y-2 text-center'>
         <h1 className='text-2xl font-semibold'>Oops!</h1>
