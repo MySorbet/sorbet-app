@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { iso31661 } from 'iso-3166';
 import { useMemo } from 'react';
 import { useForm, useFormContext, useWatch } from 'react-hook-form';
@@ -8,6 +9,7 @@ import isISO31661Alpha3 from 'validator/lib/isISO31661Alpha3';
 import isPostalCode from 'validator/lib/isPostalCode';
 import { z } from 'zod';
 
+import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,6 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import { CountryDropdown } from './country-dropdown';
 import { isISO31662, StateSelect } from './state-select';
@@ -97,15 +100,21 @@ export const AddressFormFields = () => {
   );
 
   return (
-    <>
+    <div>
+      <div className='flex h-5 items-center gap-1'>
+        <Label>Address</Label>
+        <InfoTooltip>Address of the beneficiary of this account</InfoTooltip>
+      </div>
       <FormField
         control={form.control}
         name='address.street_line_1'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Street Line 1</FormLabel>
+            <VisuallyHidden>
+              <FormLabel>Street Line 1</FormLabel>
+            </VisuallyHidden>
             <FormControl>
-              <Input placeholder='123 Main St' {...field} />
+              <Input placeholder='Street Line 1' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -116,9 +125,11 @@ export const AddressFormFields = () => {
         name='address.street_line_2'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Street Line 2</FormLabel>
+            <VisuallyHidden>
+              <FormLabel>Street Line 2</FormLabel>
+            </VisuallyHidden>
             <FormControl>
-              <Input placeholder='Apt 4B' {...field} />
+              <Input placeholder='Street Line 2' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -129,9 +140,11 @@ export const AddressFormFields = () => {
         name='address.city'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>City</FormLabel>
+            <VisuallyHidden>
+              <FormLabel>City</FormLabel>
+            </VisuallyHidden>
             <FormControl>
-              <Input placeholder='San Francisco' {...field} />
+              <Input placeholder='City' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -143,7 +156,9 @@ export const AddressFormFields = () => {
           name='address.state'
           render={({ field }) => (
             <FormItem className='w-[60%]'>
-              <FormLabel>State</FormLabel>
+              <VisuallyHidden>
+                <FormLabel>State</FormLabel>
+              </VisuallyHidden>
               <FormControl>
                 <StateSelect {...field} parent={parent} disabled={!parent} />
               </FormControl>
@@ -156,9 +171,11 @@ export const AddressFormFields = () => {
           name='address.postal_code'
           render={({ field }) => (
             <FormItem className='w-[40%]'>
-              <FormLabel>Postal Code</FormLabel>
+              <VisuallyHidden>
+                <FormLabel>Postal Code</FormLabel>
+              </VisuallyHidden>
               <FormControl>
-                <Input placeholder='94105' {...field} />
+                <Input placeholder='Postal Code' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -170,7 +187,9 @@ export const AddressFormFields = () => {
         name='address.country'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Country</FormLabel>
+            <VisuallyHidden>
+              <FormLabel>Country</FormLabel>
+            </VisuallyHidden>
             <CountryDropdown
               placeholder='Country'
               defaultValue={field.value}
@@ -187,6 +206,6 @@ export const AddressFormFields = () => {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 };
