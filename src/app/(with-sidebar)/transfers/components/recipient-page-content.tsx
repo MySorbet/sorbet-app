@@ -11,11 +11,13 @@ import { useRecipients } from '../hooks/use-recipients';
 import { AddRecipientSheet } from './add-recipient-sheet';
 import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
+import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToCard } from './send-to-card';
 
 export const RecipientPageContent = () => {
-  const [open, setOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [editRecipientId, setEditRecipientId] = useState<string | null>(null);
   const { data: recipients, isLoading: loading } = useRecipients();
   const { mutateAsync: createRecipient } = useCreateRecipient();
   const { sendUSDC } = useSendUSDC();
@@ -26,7 +28,7 @@ export const RecipientPageContent = () => {
       | { type: 'crypto'; values: CryptoRecipientFormValues }
   ) => {
     await createRecipient(recipient);
-    setOpen(false);
+    setAddOpen(false);
   };
 
   const handleSend = (amount: number, address: string) => {
@@ -38,24 +40,36 @@ export const RecipientPageContent = () => {
   const { data: walletBalance } = useWalletBalance();
   const maxAmount = walletBalance ? Number(walletBalance) : undefined;
 
+  const editRecipient = recipients?.find(
+    (recipient) => recipient.id === editRecipientId
+  );
+
   return (
     <div className='flex h-fit w-full flex-col items-center justify-center gap-4 md:flex-row md:items-start'>
       <SendToCard
         maxAmount={maxAmount}
         recipients={recipients}
-        onAdd={() => setOpen(true)}
+        onAdd={() => setAddOpen(true)}
         onSend={handleSend}
       />
       <RecipientsCard
-        onAdd={() => setOpen(true)}
+        onAdd={() => setAddOpen(true)}
         recipients={recipients}
         loading={loading}
+        onClick={setEditRecipientId}
       />
       <AddRecipientSheet
-        open={open}
-        setOpen={setOpen}
+        open={addOpen}
+        setOpen={setAddOpen}
         onSubmit={handleSubmit}
       />
+      {editRecipient && (
+        <RecipientSheet
+          open={!!editRecipientId}
+          setOpen={() => setEditRecipientId(null)}
+          recipient={editRecipient}
+        />
+      )}
     </div>
   );
 };

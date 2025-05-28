@@ -20,10 +20,12 @@ export const RecipientsCard = ({
   onAdd,
   recipients,
   loading,
+  onClick,
 }: {
   onAdd?: () => void;
   recipients?: RecipientAPI[];
   loading?: boolean;
+  onClick?: (recipientId: string) => void;
 }) => {
   return (
     <Card className='w-full max-w-lg overflow-clip'>
@@ -38,7 +40,7 @@ export const RecipientsCard = ({
         {loading ? (
           <RecipientsTableSkeleton length={4} />
         ) : recipients && recipients?.length !== 0 ? (
-          <RecipientsTable recipients={recipients} />
+          <RecipientsTable recipients={recipients} onClick={onClick} />
         ) : (
           <EmptyState />
         )}
@@ -47,7 +49,13 @@ export const RecipientsCard = ({
   );
 };
 
-const RecipientsTable = ({ recipients }: { recipients: RecipientAPI[] }) => {
+const RecipientsTable = ({
+  recipients,
+  onClick,
+}: {
+  recipients: RecipientAPI[];
+  onClick?: (recipientId: string) => void;
+}) => {
   return (
     <Table>
       <TableHeader className='sr-only'>
@@ -59,7 +67,11 @@ const RecipientsTable = ({ recipients }: { recipients: RecipientAPI[] }) => {
       </TableHeader>
       <TableBody>
         {recipients.map((recipient) => (
-          <TableRow key={recipient.id}>
+          <TableRow
+            key={recipient.id}
+            onClick={() => onClick?.(recipient.id)}
+            className='cursor-pointer'
+          >
             <TableCell className='font-medium'>{recipient.label}</TableCell>
             <TableCell>
               <Type type={recipient.type} />
