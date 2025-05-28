@@ -60,10 +60,9 @@ const formSchema = z.object({
       message: 'Name contains invalid characters',
     }),
 
-  // TODO: Required when currency is eur
-  account_owner_type: z.enum(['individual', 'company']),
-  // Individual: first_name and last_name could be split from account_owner_name
-  // Company: business_name could be copied from account_owner_name
+  // Required when currency is eur, but we will just always send a default of individual
+  account_owner_type: z.enum(['individual', 'business']),
+  // TODO Company: business_name could be copied from account_owner_name
 
   // Only for currency usd
   account: usAccountSchema,
@@ -79,6 +78,8 @@ export type BankRecipientFormValues = z.infer<typeof formSchema>;
 export type BankRecipientFormValuesWithRequiredValues =
   BankRecipientFormValues & {
     account_type: 'us' | 'iban';
+    first_name: string;
+    last_name: string;
   };
 
 export const bankFormId = 'bank-form';
@@ -87,9 +88,15 @@ export const bankFormId = 'bank-form';
 const addRequiredValues = (
   values: BankRecipientFormValues
 ): BankRecipientFormValuesWithRequiredValues => {
+  // Simple method for extracting first and last name from a full name
+  const splitName = values.account_owner_name.split(' ');
+  const firstName = splitName[0];
+  const lastName = splitName[splitName.length - 1];
   return {
     ...values,
     account_type: values.currency === 'usd' ? 'us' : 'iban',
+    first_name: firstName,
+    last_name: lastName,
   };
 };
 
@@ -183,8 +190,8 @@ export const NakedBankRecipientForm = ({
                   <TabsTrigger value='individual' className='flex-1'>
                     Individual
                   </TabsTrigger>
-                  <TabsTrigger value='company' className='flex-1'>
-                    Company
+                  <TabsTrigger value='business' className='flex-1' disabled>
+                    Business
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
