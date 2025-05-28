@@ -8,9 +8,9 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useRecipients } from '../hooks/use-recipients';
+import { AddRecipientSheet } from './add-recipient-sheet';
 import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
-import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToCard } from './send-to-card';
 
@@ -51,7 +51,11 @@ export const RecipientPageContent = () => {
         recipients={recipients}
         loading={loading}
       />
-      <RecipientSheet open={open} setOpen={setOpen} onSubmit={handleSubmit} />
+      <AddRecipientSheet
+        open={open}
+        setOpen={setOpen}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };

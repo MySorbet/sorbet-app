@@ -4,12 +4,12 @@ import { fn } from '@storybook/test';
 
 import { Button } from '@/components/ui/button';
 
-import { RecipientSheet } from './recipient-sheet';
+import { AddRecipientSheet } from './add-recipient-sheet';
 import { debugToast } from './story-utils';
 
 const meta = {
-  title: 'Transfers/RecipientSheet',
-  component: RecipientSheet,
+  title: 'Transfers/AddRecipientSheet',
+  component: AddRecipientSheet,
   parameters: {
     layout: 'centered',
   },
@@ -28,11 +28,11 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof RecipientSheet>;
+} satisfies Meta<typeof AddRecipientSheet>;
 
 export default meta;
 
-type Story = StoryObj<typeof RecipientSheet>;
+type Story = StoryObj<typeof AddRecipientSheet>;
 
 export const Default: Story = {
   render: (args) => {
@@ -43,7 +43,7 @@ export const Default: Story = {
         <Button variant='sorbet' size='sm' onClick={() => setOpen(true)}>
           Open
         </Button>
-        <RecipientSheet {...args} open={open} setOpen={setOpen} />
+        <AddRecipientSheet {...args} open={open} setOpen={setOpen} />
       </>
     );
   },

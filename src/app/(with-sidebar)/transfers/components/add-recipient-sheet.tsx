@@ -39,7 +39,7 @@ import {
 } from './vaul-sheet';
 
 /** Render a sheet to walk the user through new recipient creation */
-export const RecipientSheet = ({
+export const AddRecipientSheet = ({
   onSubmit,
   open = false,
   setOpen,
