@@ -23,11 +23,14 @@ export const RecipientSheet = ({
   open = false,
   setOpen,
   recipient,
+  onAnimationEnd,
 }: {
-  recipient: RecipientAPI;
+  recipient?: RecipientAPI;
   open?: boolean;
   setOpen?: (open: boolean) => void;
+  onAnimationEnd?: () => void;
 }) => {
+  if (!recipient) return null;
   const label =
     recipient.type === 'usd'
       ? 'Routing number'
@@ -35,7 +38,11 @@ export const RecipientSheet = ({
       ? 'IBAN'
       : 'Address';
   return (
-    <VaulSheet open={open} onOpenChange={setOpen}>
+    <VaulSheet
+      open={open}
+      onOpenChange={setOpen}
+      onAnimationEnd={onAnimationEnd}
+    >
       <VaulSheetContent className='max-w-sm'>
         <VaulSheetHeader>
           <VaulSheetTitle>{recipient.label}</VaulSheetTitle>

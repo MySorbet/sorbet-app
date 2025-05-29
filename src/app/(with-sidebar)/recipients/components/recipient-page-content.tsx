@@ -1,11 +1,12 @@
 'use client';
 
-import { parseAsBoolean, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { toast } from 'sonner';
 
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
+import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useRecipients } from '../hooks/use-recipients';
 import { AddRecipientSheet } from './add-recipient-sheet';
@@ -14,12 +15,10 @@ import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToDialog } from './send-to-dialog';
+import { useState } from 'react';
 
 export const RecipientPageContent = () => {
-  const [addOpen, setAddOpen] = useQueryState(
-    'add-recipient',
-    parseAsBoolean.withDefault(false)
-  );
+  const [addOpen, setAddOpen] = useAddRecipientOpen();
   const [viewRecipientId, setViewRecipientId] = useQueryState('view-recipient');
   const { data: recipients, isLoading: loading } = useRecipients();
   const { mutateAsync: createRecipient } = useCreateRecipient();
@@ -46,6 +45,7 @@ export const RecipientPageContent = () => {
   const editRecipient = recipients?.find(
     (recipient) => recipient.id === viewRecipientId
   );
+  const [viewRecipientSheetOpen, setViewRecipientSheetOpen] = useState(false);
 
   const [sendTo, setSendTo] = useQueryState('send-to');
   const recipientIdToSendTo =
@@ -66,20 +66,25 @@ export const RecipientPageContent = () => {
         onAdd={() => setAddOpen(true)}
         recipients={recipients}
         loading={loading}
-        onClick={setViewRecipientId}
+        onClick={(recipientId) => {
+          setViewRecipientId(recipientId);
+          setViewRecipientSheetOpen(true);
+        }}
       />
       <AddRecipientSheet
         open={addOpen}
         setOpen={setAddOpen}
         onSubmit={handleSubmit}
       />
-      {editRecipient && (
-        <RecipientSheet
-          open={!!viewRecipientId}
-          setOpen={() => setViewRecipientId(null)}
-          recipient={editRecipient}
-        />
-      )}
+
+      <RecipientSheet
+        open={viewRecipientSheetOpen}
+        setOpen={(open) => {
+          setViewRecipientSheetOpen(open);
+        }}
+        onAnimationEnd={() => setViewRecipientId(null)}
+        recipient={editRecipient}
+      />
     </div>
   );
 };

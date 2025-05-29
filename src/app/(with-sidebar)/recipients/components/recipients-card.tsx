@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
 
-/** Displays a list of recipients and a button to add a new recipient */
+/** Displays a table of recipients with actions */
 export const RecipientsCard = ({
   onAdd,
   recipients,
