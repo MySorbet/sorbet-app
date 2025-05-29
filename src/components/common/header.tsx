@@ -11,10 +11,11 @@ export const Header = forwardRef<
   HTMLDivElement,
   {
     title: string;
+    subtitle?: string;
     children?: React.ReactNode;
     className?: string;
   } & React.HTMLAttributes<HTMLDivElement>
->(({ title, children, className, ...props }, ref) => {
+>(({ title, subtitle, children, className, ...props }, ref) => {
   return (
     <div
       ref={ref}
@@ -25,7 +26,12 @@ export const Header = forwardRef<
       {...props}
     >
       <div className='flex w-full max-w-7xl items-center justify-between gap-4'>
-        <h1 className='text-2xl font-bold'>{title}</h1>
+        <div>
+          <h1 className='text-2xl font-bold'>{title}</h1>
+          {subtitle && (
+            <span className='text-muted-foreground text-sm'>{subtitle}</span>
+          )}
+        </div>
         {children}
       </div>
     </div>

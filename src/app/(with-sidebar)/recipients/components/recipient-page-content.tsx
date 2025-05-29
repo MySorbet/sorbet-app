@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { parseAsBoolean, useQueryState } from 'nuqs';
 import { toast } from 'sonner';
 
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
@@ -13,11 +13,14 @@ import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
-import { SendToCard } from './send-to-card';
+import { SendToDialog } from './send-to-dialog';
 
 export const RecipientPageContent = () => {
-  const [addOpen, setAddOpen] = useState(false);
-  const [editRecipientId, setEditRecipientId] = useState<string | null>(null);
+  const [addOpen, setAddOpen] = useQueryState(
+    'add-recipient',
+    parseAsBoolean.withDefault(false)
+  );
+  const [viewRecipientId, setViewRecipientId] = useQueryState('view-recipient');
   const { data: recipients, isLoading: loading } = useRecipients();
   const { mutateAsync: createRecipient } = useCreateRecipient();
   const { sendUSDC } = useSendUSDC();
@@ -41,14 +44,21 @@ export const RecipientPageContent = () => {
   const maxAmount = walletBalance ? Number(walletBalance) : undefined;
 
   const editRecipient = recipients?.find(
-    (recipient) => recipient.id === editRecipientId
+    (recipient) => recipient.id === viewRecipientId
   );
+
+  const [sendTo, setSendTo] = useQueryState('send-to');
+  const recipientIdToSendTo =
+    sendTo === 'true' ? undefined : sendTo ? sendTo : undefined;
 
   return (
     <div className='flex h-fit w-full flex-col items-center justify-center gap-4 md:flex-row md:items-start'>
-      <SendToCard
+      <SendToDialog
+        open={!!sendTo}
+        setOpen={(open) => setSendTo(open ? 'true' : null)}
         maxAmount={maxAmount}
         recipients={recipients}
+        recipientId={recipientIdToSendTo}
         onAdd={() => setAddOpen(true)}
         onSend={handleSend}
       />
@@ -56,7 +66,7 @@ export const RecipientPageContent = () => {
         onAdd={() => setAddOpen(true)}
         recipients={recipients}
         loading={loading}
-        onClick={setEditRecipientId}
+        onClick={setViewRecipientId}
       />
       <AddRecipientSheet
         open={addOpen}
@@ -65,8 +75,8 @@ export const RecipientPageContent = () => {
       />
       {editRecipient && (
         <RecipientSheet
-          open={!!editRecipientId}
-          setOpen={() => setEditRecipientId(null)}
+          open={!!viewRecipientId}
+          setOpen={() => setViewRecipientId(null)}
           recipient={editRecipient}
         />
       )}

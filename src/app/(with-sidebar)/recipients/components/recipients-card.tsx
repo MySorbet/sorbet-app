@@ -1,9 +1,26 @@
-import { DollarSign, Euro, Plus, Wallet } from 'lucide-react';
+import {
+  DollarSign,
+  EllipsisVertical,
+  Euro,
+  Plus,
+  Send,
+  Trash,
+  Users,
+  Wallet,
+} from 'lucide-react';
+import { useQueryState } from 'nuqs';
 
 import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import { formatDate } from '@/app/invoices/utils';
 import { CopyText } from '@/components/common/copy-text';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -28,23 +45,16 @@ export const RecipientsCard = ({
   onClick?: (recipientId: string) => void;
 }) => {
   return (
-    <Card className='w-full max-w-lg overflow-clip'>
-      <CardHeader className='bg-primary-foreground flex flex-row items-center justify-between gap-4 space-y-0 px-4'>
-        <CardTitle className='text-base font-semibold'>Recipients</CardTitle>
-        <Button variant='outline' size='sm' onClick={onAdd}>
-          <Plus />
-          Add new
-        </Button>
-      </CardHeader>
-      <CardContent className='p-3'>
-        {loading ? (
-          <RecipientsTableSkeleton length={4} />
-        ) : recipients && recipients?.length !== 0 ? (
-          <RecipientsTable recipients={recipients} onClick={onClick} />
-        ) : (
-          <EmptyState />
-        )}
-      </CardContent>
+    <Card className='w-full max-w-7xl overflow-clip'>
+      {recipients && (recipients?.length !== 0 || loading) ? (
+        <RecipientsTable
+          recipients={recipients}
+          onClick={onClick}
+          loading={loading}
+        />
+      ) : (
+        <EmptyState onAdd={onAdd} />
+      )}
     </Card>
   );
 };
@@ -52,35 +62,79 @@ export const RecipientsCard = ({
 const RecipientsTable = ({
   recipients,
   onClick,
+  loading,
 }: {
   recipients: RecipientAPI[];
   onClick?: (recipientId: string) => void;
+  loading?: boolean;
 }) => {
+  const [, setSendTo] = useQueryState('send-to');
+
   return (
     <Table>
-      <TableHeader className='sr-only'>
+      <TableHeader className='bg-muted'>
         <TableRow>
-          <TableHead className='w-[100px]'>Name</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Date created</TableHead>
           <TableHead>Type</TableHead>
-          <TableHead>Detail</TableHead>
+          <TableHead className='text-right'>Account</TableHead>
+          <TableHead className='sr-only'>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {recipients.map((recipient) => (
-          <TableRow
-            key={recipient.id}
-            onClick={() => onClick?.(recipient.id)}
-            className='cursor-pointer'
-          >
-            <TableCell className='font-medium'>{recipient.label}</TableCell>
-            <TableCell>
-              <Type type={recipient.type} />
-            </TableCell>
-            <TableCell className='text-right'>
-              <TableDetail recipient={recipient} />
-            </TableCell>
-          </TableRow>
-        ))}
+        {loading ? (
+          <RecipientsTableRows length={4} />
+        ) : (
+          recipients.map((recipient) => (
+            <TableRow
+              key={recipient.id}
+              onClick={() => onClick?.(recipient.id)}
+              className='cursor-pointer'
+            >
+              <TableCell className='font-medium'>{recipient.label}</TableCell>
+              <TableCell>{formatDate(recipient.createdAt)}</TableCell>
+              <TableCell>
+                <Type type={recipient.type} />
+              </TableCell>
+              <TableCell className='text-right'>
+                <TableDetail recipient={recipient} />
+              </TableCell>
+              <TableCell className='text-right'>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      className='size-6'
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <EllipsisVertical />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side='top'>
+                    <DropdownMenuItem
+                      disabled
+                      className='text-destructive flex flex-row gap-1'
+                    >
+                      <Trash className='size-4' />
+                      Delete
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        setSendTo(recipient.id);
+                        e.stopPropagation();
+                      }}
+                      className='flex flex-row gap-1'
+                    >
+                      <Send className='size-4' />
+                      Send
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   );
@@ -105,32 +159,41 @@ const Type = ({ type }: { type: RecipientType }) => {
   );
 };
 
-const EmptyState = () => {
+const EmptyState = ({ onAdd }: { onAdd?: () => void }) => {
   return (
-    <div className='flex flex-col items-center justify-center gap-4'>
-      <p className='text-muted-foreground text-sm'>No recipients</p>
+    <div className='flex flex-col items-center justify-center gap-4 p-4 py-8'>
+      <Users className='size-10 stroke-[1.5]' />
+      <p className='text-sm'>Add recipients for faster and safer transfers</p>
+      <Button variant='sorbet' onClick={onAdd}>
+        <Plus />
+        Add recipient
+      </Button>
     </div>
   );
 };
 
-const RecipientsTableSkeleton = ({ length }: { length: number }) => {
+const RecipientsTableRows = ({ length }: { length: number }) => {
   return (
-    <Table>
-      <TableBody>
-        {Array.from({ length }).map((_, index) => (
-          <TableRow key={index}>
-            <TableCell>
-              <Skeleton className='h-6 w-24' />
-            </TableCell>
-            <TableCell>
-              <Skeleton className='h-6 w-24' />
-            </TableCell>
-            <TableCell>
-              <Skeleton className='h-6 w-24' />
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <>
+      {Array.from({ length }).map((_, index) => (
+        <TableRow key={index}>
+          <TableCell>
+            <Skeleton className='h-6 w-24' />
+          </TableCell>
+          <TableCell>
+            <Skeleton className='h-6 w-24' />
+          </TableCell>
+          <TableCell>
+            <Skeleton className='h-6 w-24' />
+          </TableCell>
+          <TableCell>
+            <Skeleton className='ml-auto h-6 w-24' />
+          </TableCell>
+          <TableCell>
+            <Skeleton className='ml-auto size-6' />
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
   );
 };
