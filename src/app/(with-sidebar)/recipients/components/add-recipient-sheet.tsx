@@ -3,7 +3,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { forwardRef, useState } from 'react';
 
-import { isCryptoFormValues } from '@/app/(with-sidebar)/transfers/components/utils';
+import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
@@ -39,7 +39,7 @@ import {
 } from './vaul-sheet';
 
 /** Render a sheet to walk the user through new recipient creation */
-export const RecipientSheet = ({
+export const AddRecipientSheet = ({
   onSubmit,
   open = false,
   setOpen,
