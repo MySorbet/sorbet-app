@@ -12906,12 +12906,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^12.4.5":
-  version: 12.4.5
-  resolution: "framer-motion@npm:12.4.5"
+"framer-motion@npm:^12.15.0":
+  version: 12.15.0
+  resolution: "framer-motion@npm:12.15.0"
   dependencies:
-    motion-dom: "npm:^12.4.5"
-    motion-utils: "npm:^12.0.0"
+    motion-dom: "npm:^12.15.0"
+    motion-utils: "npm:^12.12.1"
     tslib: "npm:^2.4.0"
   peerDependencies:
     "@emotion/is-prop-valid": "*"
@@ -12924,7 +12924,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10c0/e4b013d9715c3fe43063e53e0337004f74b51b9e540cb552c5e69a5c5c85555a3b5a0124a899b3469e3cdb16fcf88a64096af8f06f9ccb1d2ff88e6b78ae946a
+  checksum: 10c0/b4e54a06d2ceb8ebccd0c79c4ab080ae5dab5fcaee6af0c6a2070dc922054a2403290914f0179b4a250c309654e3fc1f9f173d98e0bc4a78a1f42576013f586c
   languageName: node
   linkType: hard
 
@@ -15903,19 +15903,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@npm:^12.4.5":
-  version: 12.4.5
-  resolution: "motion-dom@npm:12.4.5"
+"motion-dom@npm:^12.15.0":
+  version: 12.15.0
+  resolution: "motion-dom@npm:12.15.0"
   dependencies:
-    motion-utils: "npm:^12.0.0"
-  checksum: 10c0/2950f3023f09a31d6a86115476d6207f998a64545ea49ff0fddd772d1406b166efca895ab9db9dc87953b3a9154c56aa6df693b52c26ae083b3f665c152f8675
+    motion-utils: "npm:^12.12.1"
+  checksum: 10c0/b6cc4c158f5e37d4da6d33044642fa5dbdb6b331b5a1c4d4d738770c12cb56a700c839af64c81de2a69bea7832693da5705612f6e15f5b04fac55d0339eb84d2
   languageName: node
   linkType: hard
 
-"motion-utils@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "motion-utils@npm:12.0.0"
-  checksum: 10c0/ca6cc7542d00afab011130fcd940e5f5a412b21a4eaeb17c0a497dcb86de311dda90741eeca7de1276cc8c1dff7ac1e6a8df1e8cebb1191a2c43bfe8368dc70b
+"motion-utils@npm:^12.12.1":
+  version: 12.12.1
+  resolution: "motion-utils@npm:12.12.1"
+  checksum: 10c0/880a174769d1be42b46cfb34af81b4a629c068d30d5cf7e07d249fbf2f5121d577482d3ea5bdc1db549c0288733e1e987efecb195fae350995270651559c6697
   languageName: node
   linkType: hard
 
@@ -15933,11 +15933,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion@npm:^12.4.5":
-  version: 12.4.5
-  resolution: "motion@npm:12.4.5"
+"motion@npm:^12.15.0":
+  version: 12.15.0
+  resolution: "motion@npm:12.15.0"
   dependencies:
-    framer-motion: "npm:^12.4.5"
+    framer-motion: "npm:^12.15.0"
     tslib: "npm:^2.4.0"
   peerDependencies:
     "@emotion/is-prop-valid": "*"
@@ -15950,7 +15950,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10c0/03bebf8d6a76b30c5ffe1337298768ee7b9f202e04f4e8ab85f16bb70245a90bd13cc10e65332f7eedbbb091252097e3f0dd3131590ce03a5728351ae82e0fbb
+  checksum: 10c0/1d2c782c5869c407b558e2d634ae27d1623b459e53676524a1108daa5c2b4ac33d55d3157dcd97c7421ed204ee89765d13f9f06b7b10531d90474017dca3adc6
   languageName: node
   linkType: hard
 
@@ -19022,7 +19022,7 @@ __metadata:
     lodash.pickby: "npm:^4.6.0"
     lucide-react: "npm:^0.476.0"
     mime-types: "npm:^3.0.1"
-    motion: "npm:^12.4.5"
+    motion: "npm:^12.15.0"
     msw: "npm:^2.6.0"
     msw-storybook-addon: "npm:^2.0.3"
     next: "npm:^14.1.3"

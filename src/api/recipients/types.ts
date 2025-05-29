@@ -1,5 +1,5 @@
-import { BankRecipientFormValuesWithRequiredValues } from '@/app/(with-sidebar)/transfers/components/bank-recipient-form';
-import { CryptoRecipientFormValues } from '@/app/(with-sidebar)/transfers/components/crypto-recipient-form';
+import { BankRecipientFormValuesWithRequiredValues } from '@/app/(with-sidebar)/recipients/components/bank-recipient-form';
+import { CryptoRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/crypto-recipient-form';
 
 export type RecipientType = 'usd' | 'eur' | 'crypto';
 

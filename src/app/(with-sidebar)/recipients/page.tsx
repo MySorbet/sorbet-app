@@ -4,11 +4,11 @@ import Page from '@/components/common/page';
 
 import { RecipientPageContent } from './components/recipient-page-content';
 
-export default function TransfersPage() {
+export default function RecipientsPage() {
   return (
     <Authenticated>
       <Page.Main>
-        <Header title='Transfers' />
+        <Header title='Recipients' />
         <Page.Content>
           <RecipientPageContent />
         </Page.Content>
