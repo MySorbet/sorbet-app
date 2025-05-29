@@ -1,7 +1,10 @@
 import { RecipientAPI } from '@/api/recipients/types';
 import {
   Credenza,
+  CredenzaBody,
   CredenzaContent,
+  CredenzaHeader,
+  CredenzaTitle,
 } from '@/components/common/credenza/credenza';
 
 import { SendToForm } from './send-to-form';
@@ -30,13 +33,18 @@ export const SendToDialog = ({
   return (
     <Credenza open={open} onOpenChange={setOpen}>
       <CredenzaContent>
-        <SendToForm
-          recipients={recipients}
-          recipientId={recipientId}
-          onSend={onSend}
-          maxAmount={maxAmount}
-          onAdd={onAdd}
-        />
+        <CredenzaHeader>
+          <CredenzaTitle>Send funds</CredenzaTitle>
+        </CredenzaHeader>
+        <CredenzaBody>
+          <SendToForm
+            recipients={recipients}
+            recipientId={recipientId}
+            onSend={onSend}
+            maxAmount={maxAmount}
+            onAdd={onAdd}
+          />
+        </CredenzaBody>
       </CredenzaContent>
     </Credenza>
   );

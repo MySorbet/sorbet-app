@@ -105,7 +105,7 @@ export const SendToForm = ({
           name='recipient'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Send to</FormLabel>
+              <FormLabel>Recipient</FormLabel>
               <FormControl>
                 <Select
                   value={field.value}
