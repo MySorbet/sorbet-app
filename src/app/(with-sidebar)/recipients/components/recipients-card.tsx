@@ -1,3 +1,5 @@
+'use client';
+
 import {
   DollarSign,
   EllipsisVertical,
@@ -9,6 +11,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 
 import { RecipientAPI, RecipientType } from '@/api/recipients/types';
 import { formatDate } from '@/app/invoices/utils';
@@ -69,6 +72,7 @@ const RecipientsTable = ({
   loading?: boolean;
 }) => {
   const [, setSendTo] = useQueryState('send-to');
+  const [actionsOpen, setActionsOpen] = useState(false);
 
   return (
     <Table>
@@ -100,7 +104,7 @@ const RecipientsTable = ({
                 <TableDetail recipient={recipient} />
               </TableCell>
               <TableCell className='text-right'>
-                <DropdownMenu>
+                <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant='ghost'
@@ -112,21 +116,18 @@ const RecipientsTable = ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side='top'>
-                    <DropdownMenuItem
-                      disabled
-                      className='text-destructive flex flex-row gap-1'
-                    >
-                      <Trash className='size-4' />
+                    <DropdownMenuItem disabled className='text-destructive'>
+                      <Trash />
                       Delete
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={(e) => {
-                        setSendTo(recipient.id);
                         e.stopPropagation();
+                        setSendTo(recipient.id);
+                        setActionsOpen(false);
                       }}
-                      className='flex flex-row gap-1'
                     >
-                      <Send className='size-4' />
+                      <Send />
                       Send
                     </DropdownMenuItem>
                   </DropdownMenuContent>
