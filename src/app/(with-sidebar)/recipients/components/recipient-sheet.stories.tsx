@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { mockRecipients } from '@/api/recipients/mock';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,9 @@ const meta = {
   component: RecipientSheet,
   parameters: {
     layout: 'centered',
+  },
+  args: {
+    onDelete: fn(),
   },
 } satisfies Meta<typeof RecipientSheet>;
 
