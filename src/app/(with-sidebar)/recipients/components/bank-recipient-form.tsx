@@ -2,9 +2,15 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forwardRef } from 'react';
-import { useForm, useFormContext, useFormState } from 'react-hook-form';
+import {
+  useForm,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
 import * as z from 'zod';
 
+import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,32 +54,43 @@ const usAccountDefaultValues: USAccount = {
   checking_or_savings: 'checking',
 };
 
-const formSchema = z.object({
-  currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
-  bank_name: z.string().min(1).max(256).optional(),
-  account_owner_name: z
-    .string()
-    .min(3)
-    .max(35)
-    // See https://apidocs.bridge.xyz/reference/post_customers-customerid-external-accounts
-    .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
-      message: 'Name contains invalid characters',
-    }),
+const formSchema = z
+  .object({
+    currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
+    bank_name: z.string().min(1).max(256).optional(),
+    account_owner_name: z
+      .string()
+      .min(3)
+      .max(35)
+      // See https://apidocs.bridge.xyz/reference/post_customers-customerid-external-accounts
+      .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
+        message: 'Name contains invalid characters',
+      }),
 
-  // TODO: Required when currency is eur
-  account_owner_type: z.enum(['individual', 'company']),
-  // Individual: first_name and last_name could be split from account_owner_name
-  // Company: business_name could be copied from account_owner_name
+    // Required when currency is eur, but we will just always send a default of individual
+    account_owner_type: z.enum(['individual', 'business']),
 
-  // Only for currency usd
-  account: usAccountSchema,
+    // Required when account_owner_type is business
+    business_name: z.string().optional(),
 
-  // Only for currency eur
-  // iban: ibanAccountSchema
+    // Only for currency usd
+    account: usAccountSchema,
 
-  // Address
-  ...addressSchema.shape,
-});
+    // Only for currency eur
+    // iban: ibanAccountSchema
+
+    // Address
+    ...addressSchema.shape,
+  })
+  .superRefine(({ account_owner_type, business_name }, ctx) => {
+    if (account_owner_type === 'business' && business_name === '') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Business name is required for business accounts',
+        path: ['business_name'],
+      });
+    }
+  });
 
 export type BankRecipientFormValues = z.infer<typeof formSchema>;
 export type BankRecipientFormValuesWithRequiredValues =
@@ -110,6 +127,9 @@ export const NakedBankRecipientForm = ({
 
   const form = useBankRecipientForm();
 
+  const { account_owner_type, currency } = useWatch({ control: form.control });
+  const showBusinessName = account_owner_type === 'business';
+
   return (
     <form
       onSubmit={form.handleSubmit(handleSubmit)}
@@ -121,7 +141,12 @@ export const NakedBankRecipientForm = ({
         name='currency'
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Currency</FormLabel>
+            <div className='flex h-5 items-center gap-1'>
+              <FormLabel>Currency</FormLabel>
+              <InfoTooltip>
+                Bank must be able to receive {currency?.toUpperCase()}
+              </InfoTooltip>
+            </div>
             <Select
               onValueChange={field.onChange}
               defaultValue={field.value}
@@ -180,15 +205,71 @@ export const NakedBankRecipientForm = ({
             <FormControl>
               <Tabs onValueChange={field.onChange} defaultValue={field.value}>
                 <TabsList className='w-full'>
-                  <TabsTrigger value='individual' className='flex-1'>
+                  <TabsTrigger
+                    value='individual'
+                    className='flex-1'
+                    onClick={() => {
+                      form.setValue('business_name', '', {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }}
+                  >
                     Individual
                   </TabsTrigger>
-                  <TabsTrigger value='company' className='flex-1'>
-                    Company
+                  <TabsTrigger
+                    value='business'
+                    className='flex-1'
+                    onClick={() => {
+                      form.trigger('business_name', { shouldFocus: true });
+                    }}
+                  >
+                    Business
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
             </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {showBusinessName && (
+        <FormField
+          control={form.control}
+          name='business_name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Business Name</FormLabel>
+              <FormControl>
+                <Input placeholder='Business Name' type='' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
+      <FormField
+        control={form.control}
+        name='account.checking_or_savings'
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Account Type</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value || 'checking'}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder='Select account type' />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value='checking'>Checking</SelectItem>
+                <SelectItem value='savings'>Savings</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -222,31 +303,6 @@ export const NakedBankRecipientForm = ({
         )}
       />
 
-      <FormField
-        control={form.control}
-        name='account.checking_or_savings'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Account Type</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value || 'checking'}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder='Select account type' />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value='checking'>Checking</SelectItem>
-                <SelectItem value='savings'>Savings</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
       <AddressFormFields />
     </form>
   );
@@ -264,6 +320,7 @@ export const BankRecipientFormContext = ({
     defaultValues: {
       currency: 'usd',
       account_owner_type: 'individual',
+      business_name: '',
       account: usAccountDefaultValues,
       ...addressDefaultValues,
     },
