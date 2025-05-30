@@ -38,11 +38,13 @@ import { formatWalletAddress } from '@/lib/utils';
 /** Displays a table of recipients with actions */
 export const RecipientsCard = ({
   onAdd,
+  onDelete,
   recipients,
   loading,
   onClick,
 }: {
   onAdd?: () => void;
+  onDelete?: (recipientId: string) => void;
   recipients?: RecipientAPI[];
   loading?: boolean;
   onClick?: (recipientId: string) => void;
@@ -54,6 +56,7 @@ export const RecipientsCard = ({
           recipients={recipients}
           onClick={onClick}
           loading={loading}
+          onDelete={onDelete}
         />
       ) : (
         <EmptyState onAdd={onAdd} />
@@ -66,10 +69,12 @@ const RecipientsTable = ({
   recipients,
   onClick,
   loading,
+  onDelete,
 }: {
   recipients: RecipientAPI[];
   onClick?: (recipientId: string) => void;
   loading?: boolean;
+  onDelete?: (recipientId: string) => void;
 }) => {
   const [, setSendTo] = useQueryState('send-to');
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -116,7 +121,14 @@ const RecipientsTable = ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side='top'>
-                    <DropdownMenuItem disabled className='text-destructive'>
+                    <DropdownMenuItem
+                      className='text-destructive'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete?.(recipient.id);
+                        // TODO: Loading state / disable during delete? Or optimistic?
+                      }}
+                    >
                       <Trash />
                       Delete
                     </DropdownMenuItem>
@@ -162,7 +174,7 @@ const Type = ({ type }: { type: RecipientType }) => {
 
 const EmptyState = ({ onAdd }: { onAdd?: () => void }) => {
   return (
-    <div className='flex flex-col items-center justify-center gap-4 p-4 py-8'>
+    <div className='flex flex-col items-center justify-center gap-6 p-4 py-8'>
       <Users className='size-10 stroke-[1.5]' />
       <p className='text-sm'>Add recipients for faster and safer transfers</p>
       <Button variant='sorbet' onClick={onAdd}>

@@ -24,4 +24,12 @@ export const recipientsApi = {
     );
     return response.data;
   },
+
+  delete: async (recipientId: string) => {
+    const response = await axios.delete(
+      `${API_URL}/recipients/${recipientId}`,
+      await withAuthHeader()
+    );
+    return response.data;
+  },
 };
