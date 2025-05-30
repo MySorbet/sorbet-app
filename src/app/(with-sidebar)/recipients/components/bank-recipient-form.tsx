@@ -221,7 +221,7 @@ export const NakedBankRecipientForm = ({
                     value='business'
                     className='flex-1'
                     onClick={() => {
-                      form.trigger();
+                      form.trigger('business_name', { shouldFocus: true });
                     }}
                   >
                     Business
