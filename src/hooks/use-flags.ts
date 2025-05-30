@@ -16,6 +16,6 @@ export const useFlags = () => {
   return {
     ...featureFlags(),
     settings: isLocal() || isPreviewUser(user?.handle ?? ''),
-    transfers: isLocal() || isPreviewUser(user?.handle ?? ''),
+    recipients: isLocal() || isPreviewUser(user?.handle ?? ''),
   };
 };

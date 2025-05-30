@@ -1,14 +1,16 @@
 import { Authenticated } from '@/app/authenticated';
-import { Header } from '@/components/common/header';
 import Page from '@/components/common/page';
+import { Header } from '@/components/header';
 
 import { RecipientPageContent } from './components/recipient-page-content';
+import { RecipientsHeader } from './components/recipients-header';
 
-export default function TransfersPage() {
+export default function RecipientsPage() {
   return (
     <Authenticated>
       <Page.Main>
-        <Header title='Transfers' />
+        <Header />
+        <RecipientsHeader />
         <Page.Content>
           <RecipientPageContent />
         </Page.Content>

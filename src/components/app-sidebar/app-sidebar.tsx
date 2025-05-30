@@ -3,7 +3,6 @@ import Link from 'next/link';
 
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
 import { LinkInBioMenuItem } from '@/components/app-sidebar/link-in-bio-menu-item';
-import { ArrowLeftRightIcon } from '@/components/ui/arrow-left-right';
 import { Badge } from '@/components/ui/badge';
 import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
@@ -25,6 +24,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
+import { UsersIcon } from '@/components/ui/users';
 import { WalletIcon } from '@/components/ui/wallet';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useFlags } from '@/hooks/use-flags';
@@ -36,7 +36,7 @@ import { SidebarLinkButton } from './sidebar-link-button';
 
 /** A global sidebar component for logged in users */
 export const AppSidebar = () => {
-  const { settings, transfers } = useFlags();
+  const { settings, recipients } = useFlags();
   return (
     <Sidebar>
       {/* Header */}
@@ -90,13 +90,13 @@ export const AppSidebar = () => {
                   }}
                 />
               </SidebarMenuItem>
-              {transfers && (
+              {recipients && (
                 <SidebarMenuItem>
                   <SidebarLinkButton
                     item={{
-                      title: 'Transfers',
-                      url: '/transfers',
-                      icon: ArrowLeftRightIcon,
+                      title: 'Recipients',
+                      url: '/recipients',
+                      icon: UsersIcon,
                     }}
                   />
                 </SidebarMenuItem>
