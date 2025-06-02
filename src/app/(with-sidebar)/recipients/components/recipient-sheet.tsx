@@ -36,6 +36,8 @@ export const RecipientSheet = ({
   isDeleting?: boolean;
 }) => {
   if (!recipient) return null;
+  const isDeleteDisabled = recipient.type != 'crypto';
+
   const label =
     recipient.type === 'usd'
       ? 'Routing number'
@@ -70,7 +72,7 @@ export const RecipientSheet = ({
               onClick={() => {
                 onDelete?.(recipient.id);
               }}
-              disabled={isDeleting}
+              disabled={isDeleting || isDeleteDisabled}
             >
               {isDeleting ? <Spinner /> : <Trash2 />}
               {isDeleting ? 'Deleting...' : 'Delete'}

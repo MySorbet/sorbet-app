@@ -128,6 +128,7 @@ const RecipientsTable = ({
                         onDelete?.(recipient.id);
                         // TODO: Loading state / disable during delete? Or optimistic?
                       }}
+                      disabled={recipient.type !== 'crypto'}
                     >
                       <Trash />
                       Delete
