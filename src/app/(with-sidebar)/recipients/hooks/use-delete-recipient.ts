@@ -3,6 +3,7 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import { recipientsApi } from '@/api/recipients/recipients';
@@ -20,10 +21,23 @@ export const useDeleteRecipient = (
       queryClient.invalidateQueries({ queryKey: ['recipients'] });
     },
     onError: (error) => {
-      toast.error('Failed to delete recipient', {
-        description: error.message,
+      toast.error("We couldn't delete that recipient", {
+        description: extractErrorMessage(error),
       });
     },
     ...options,
   });
+};
+
+/**
+ * Extract a user-friendly error message from either an Axios error or a regular Error
+ * TODO: Consider sharing this with the rest of the app
+ * @param error The error to extract the message from
+ * @returns A string message suitable for displaying to users
+ */
+export const extractErrorMessage = (error: unknown): string => {
+  if (isAxiosError(error)) {
+    return error.response?.data.message ?? error.message;
+  }
+  return error instanceof Error ? error.message : String(error);
 };
