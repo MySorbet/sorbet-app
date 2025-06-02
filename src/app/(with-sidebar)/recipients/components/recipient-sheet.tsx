@@ -3,6 +3,7 @@
 import { Trash2 } from 'lucide-react';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { Spinner } from '@/components/common/spinner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,13 +25,19 @@ export const RecipientSheet = ({
   setOpen,
   recipient,
   onAnimationEnd,
+  onDelete,
+  isDeleting,
 }: {
   recipient?: RecipientAPI;
   open?: boolean;
   setOpen?: (open: boolean) => void;
   onAnimationEnd?: () => void;
+  onDelete?: (recipientId: string) => void;
+  isDeleting?: boolean;
 }) => {
   if (!recipient) return null;
+  const isDeleteDisabled = recipient.type != 'crypto';
+
   const label =
     recipient.type === 'usd'
       ? 'Routing number'
@@ -60,9 +67,15 @@ export const RecipientSheet = ({
             </div>
           </ScrollArea>
           <VaulSheetFooter className='flex flex-row justify-between gap-2'>
-            <Button variant='secondary' disabled>
-              <Trash2 />
-              Delete
+            <Button
+              variant='secondary'
+              onClick={() => {
+                onDelete?.(recipient.id);
+              }}
+              disabled={isDeleting || isDeleteDisabled}
+            >
+              {isDeleting ? <Spinner /> : <Trash2 />}
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </Button>
             <Button variant='sorbet' disabled>
               Edit
