@@ -73,7 +73,7 @@ export const RecipientSheet = ({
               disabled={isDeleting}
             >
               {isDeleting ? <Spinner /> : <Trash2 />}
-              {isDeleting ? 'Deleting...' : 'Delete'})
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </Button>
             <Button variant='sorbet' disabled>
               Edit
