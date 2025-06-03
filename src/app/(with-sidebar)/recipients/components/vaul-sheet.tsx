@@ -1,5 +1,6 @@
 'use client';
 
+import { cva } from 'class-variance-authority';
 import { X } from 'lucide-react';
 import * as React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
@@ -10,11 +11,14 @@ import { cn } from '@/lib/utils';
 /** Render a vaul drawer as a sheet from the right. This is the default shadcn drawer component with styles tweaked for a side drawer. */
 const VaulSheet = ({
   shouldScaleBackground = true,
+  direction = 'right',
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
+}: React.ComponentProps<typeof DrawerPrimitive.Root> & {
+  direction?: 'right' | 'bottom';
+}) => (
   <DrawerPrimitive.Root
-    direction='right'
     shouldScaleBackground={shouldScaleBackground}
+    direction={direction}
     {...props}
   />
 );
@@ -38,35 +42,60 @@ const VaulSheetOverlay = React.forwardRef<
 ));
 VaulSheetOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
+const VaulSheetContentVariants = cva('fixed bg-background z-50', {
+  variants: {
+    side: {
+      right: 'inset-y-0 right-0 h-full w-3/4 max-w-sm border-l',
+      // TODO: Figure out bottom height with scroll and with correct padding on footer
+      bottom:
+        'inset-x-0 bottom-0 mt-24 flex h-auto flex-col rounded-t-[10px] border',
+    },
+    defaultVariants: {
+      side: 'right',
+    },
+  },
+});
+
 const VaulSheetContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> & {
+    direction?: 'right' | 'bottom';
+  }
+>(({ className, children, direction = 'right', ...props }, ref) => (
   <VaulSheetPortal>
     <VaulSheetOverlay />
     <DrawerPrimitive.Content
       ref={ref}
-      className={cn(
-        'bg-background fixed inset-y-0 right-0 z-50 h-full w-3/4 max-w-md border-l',
-        className
-      )}
+      className={cn(VaulSheetContentVariants({ side: direction }), className)}
       {...props}
     >
-      <div className='relative flex size-full flex-col gap-6 p-6'>
+      {/* Handle on if bottom */}
+      {direction === 'bottom' && (
+        <div className='bg-muted mx-auto mt-4 h-2 w-[100px] shrink-0 rounded-full' />
+      )}
+
+      <div
+        className={cn(
+          'relative flex size-full flex-col gap-6 overflow-y-auto p-6',
+          direction === 'bottom' && 'max-h-[80dvh]'
+        )}
+      >
         {children}
-        <DrawerPrimitive.Close asChild>
-          <Button
-            variant='ghost'
-            size='icon'
-            aria-label='Close'
-            className={cn(
-              'group -mr-1 -mt-1 size-6',
-              'ring-offset-background focus-visible:ring-ring absolute right-4 top-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none'
-            )}
-          >
-            <X />
-          </Button>
-        </DrawerPrimitive.Close>
+        {direction === 'right' && (
+          <DrawerPrimitive.Close asChild>
+            <Button
+              variant='ghost'
+              size='icon'
+              aria-label='Close'
+              className={cn(
+                'group -mr-1 -mt-1 size-6',
+                'ring-offset-background focus-visible:ring-ring absolute right-4 top-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none'
+              )}
+            >
+              <X />
+            </Button>
+          </DrawerPrimitive.Close>
+        )}
       </div>
     </DrawerPrimitive.Content>
   </VaulSheetPortal>
@@ -77,10 +106,7 @@ const VaulSheetHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn('grid gap-1.5 text-center sm:text-left', className)}
-    {...props}
-  />
+  <div className={cn('grid gap-1.5 text-left', className)} {...props} />
 );
 VaulSheetHeader.displayName = 'VaulSheetHeader';
 

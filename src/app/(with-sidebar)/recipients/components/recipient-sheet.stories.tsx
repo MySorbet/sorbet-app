@@ -15,6 +15,7 @@ const meta = {
   },
   args: {
     onDelete: fn(),
+    onSend: fn(),
   },
 } satisfies Meta<typeof RecipientSheet>;
 

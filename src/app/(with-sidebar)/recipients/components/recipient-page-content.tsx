@@ -88,6 +88,10 @@ export const RecipientPageContent = () => {
         setOpen={(open) => {
           setViewRecipientSheetOpen(open);
         }}
+        onSend={() => {
+          setViewRecipientId(editRecipient?.id ?? null);
+          setViewRecipientSheetOpen(false);
+        }}
         onAnimationEnd={() => setViewRecipientId(null)}
         recipient={editRecipient}
         onDelete={async (recipientId) => {
