@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { SendToDialog } from './send-to-dialog';
 
 const meta = {
-  title: 'Transfers/SendToCard',
+  title: 'Transfers/SendToDialog',
   component: SendToDialog,
   parameters: {
     layout: 'centered',
@@ -27,6 +27,7 @@ export const Default: Story = {
   args: {
     maxAmount: 1000,
     recipients: mockRecipients,
+    open: true,
   },
   render: (args) => {
     const [{ open }, setArgs] = useArgs();
