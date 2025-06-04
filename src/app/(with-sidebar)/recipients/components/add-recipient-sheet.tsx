@@ -7,6 +7,7 @@ import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/u
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 import {
@@ -64,10 +65,13 @@ export const AddRecipientSheet = ({
       return await onSubmit?.({ type: 'usd', values });
     }
   };
+
+  const isMobile = useIsMobile();
+  const direction = isMobile ? 'bottom' : 'right';
   return (
-    <VaulSheet open={open} onOpenChange={setOpen}>
+    <VaulSheet open={open} onOpenChange={setOpen} direction={direction}>
       <VaulSheetContent
-        className='max-w-sm'
+        direction={direction}
         onAnimationEnd={() => !open && setStep(undefined)}
       >
         {step ? (
@@ -115,7 +119,7 @@ const BankOrCrypto = ({
           Select how you want to transfer funds
         </VaulSheetDescription>
       </VaulSheetHeader>
-      <ScrollArea className='size-full flex-1'>
+      <ScrollArea className='overflow-y-auto'>
         <div className={cn('flex flex-col gap-3', className)}>
           <RecipientButton
             onClick={() => setStep('bank')}
@@ -170,7 +174,7 @@ const BankRecipientStep = ({
         <VaulSheetTitle>New bank recipient</VaulSheetTitle>
       </VaulSheetHeader>
       <BankRecipientFormContext>
-        <ScrollArea className='size-full flex-1'>
+        <ScrollArea className='overflow-y-auto'>
           <div className={className}>
             <NakedBankRecipientForm onSubmit={onSubmit} />
           </div>
@@ -199,7 +203,7 @@ const CryptoRecipientStep = ({
         <VaulSheetTitle>New crypto recipient</VaulSheetTitle>
       </VaulSheetHeader>
       <CryptoRecipientFormContext>
-        <ScrollArea className='size-full flex-1'>
+        <ScrollArea className='overflow-y-auto'>
           <CryptoRecipientForm className={className} onSubmit={onSubmit} />
         </ScrollArea>
         <VaulSheetFooter className='flex flex-row justify-end'>

@@ -4,10 +4,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 
 import { RecipientAPI } from '@/api/recipients/types';
 import { Spinner } from '@/components/common/spinner';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Tooltip,
@@ -16,7 +13,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-import { BankRecipientFormContext } from './bank-recipient-form';
+import { EADetails } from './ea-details';
 import {
   VaulSheet,
   VaulSheetContent,
@@ -49,12 +46,6 @@ export const RecipientSheet = ({
   if (!recipient) return null;
   const isDeleteDisabled = recipient.type != 'crypto';
 
-  const label =
-    recipient.type === 'usd'
-      ? 'Routing number'
-      : recipient.type === 'eur'
-      ? 'IBAN'
-      : 'Address';
   return (
     <VaulSheet
       open={open}
@@ -64,46 +55,59 @@ export const RecipientSheet = ({
     >
       <VaulSheetContent direction={direction}>
         <VaulSheetHeader>
-          <VaulSheetTitle>{recipient.label}</VaulSheetTitle>
-          <Badge variant='secondary' className='w-fit'>
-            {recipient.type}
-          </Badge>
+          <VaulSheetTitle>Details</VaulSheetTitle>
         </VaulSheetHeader>
-        <BankRecipientFormContext>
-          <ScrollArea className='size-full flex-1'>
-            <div className='flex flex-col gap-2'>
-              <Label>{label}</Label>
-              <Input value={recipient.detail} disabled />
-              <Label>Liquidates to</Label>
-              <Input value={recipient.walletAddress} disabled />
-            </div>
-          </ScrollArea>
-          <VaulSheetFooter className='flex flex-row justify-between gap-2'>
-            <Button
-              variant='secondary'
-              onClick={() => {
-                onDelete?.(recipient.id);
-              }}
-              disabled={isDeleting || isDeleteDisabled}
-            >
-              {isDeleting ? <Spinner /> : <Trash2 />}
-            </Button>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button variant='secondary' disabled>
-                  <Pencil />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side='top' sideOffset={8}>
-                Editing recipients is not currently supported. Please delete and
-                add a new recipient.
-              </TooltipContent>
-            </Tooltip>
-            <Button variant='sorbet' onClick={onSend} className='flex-1'>
-              Send funds
-            </Button>
-          </VaulSheetFooter>
-        </BankRecipientFormContext>
+        <ScrollArea className='size-full flex-1'>
+          <EADetails
+            account={
+              recipient.type === 'usd'
+                ? {
+                    name: recipient.label,
+                    type: recipient.type,
+                    accountNumberLast4: recipient.detail.slice(-4),
+                    routingNumber: '',
+                    accountType: 'checking' as const,
+                    bankName: '',
+                  }
+                : recipient.type === 'crypto'
+                ? {
+                    name: recipient.label,
+                    type: recipient.type,
+                    walletAddress: recipient.detail,
+                  }
+                : {
+                    name: recipient.label,
+                    type: recipient.type,
+                    accountNumberLast4: '',
+                  }
+            }
+          />
+        </ScrollArea>
+        <VaulSheetFooter className='flex flex-row justify-between gap-2'>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              onDelete?.(recipient.id);
+            }}
+            disabled={isDeleting || isDeleteDisabled}
+          >
+            {isDeleting ? <Spinner /> : <Trash2 />}
+          </Button>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant='secondary' disabled>
+                <Pencil />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='top' sideOffset={8}>
+              Editing recipients is not currently supported. Please delete and
+              add a new recipient.
+            </TooltipContent>
+          </Tooltip>
+          <Button variant='sorbet' onClick={onSend} className='flex-1'>
+            Send funds
+          </Button>
+        </VaulSheetFooter>
       </VaulSheetContent>
     </VaulSheet>
   );

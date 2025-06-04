@@ -17,16 +17,6 @@ const meta = {
     onDelete: fn(),
     onSend: fn(),
   },
-} satisfies Meta<typeof RecipientSheet>;
-
-export default meta;
-
-type Story = StoryObj<typeof RecipientSheet>;
-
-export const Default: Story = {
-  args: {
-    recipient: mockRecipients[0],
-  },
   render: (args) => {
     const [{ open }, setArgs] = useArgs();
     const setOpen = (open: boolean) => setArgs({ open });
@@ -38,5 +28,21 @@ export const Default: Story = {
         <RecipientSheet {...args} open={open} setOpen={setOpen} />
       </>
     );
+  },
+} satisfies Meta<typeof RecipientSheet>;
+
+export default meta;
+
+type Story = StoryObj<typeof RecipientSheet>;
+
+export const Default: Story = {
+  args: {
+    recipient: mockRecipients[0],
+  },
+};
+
+export const Crypto: Story = {
+  args: {
+    recipient: mockRecipients[1],
   },
 };
