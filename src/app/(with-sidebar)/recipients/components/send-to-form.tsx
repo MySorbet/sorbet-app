@@ -4,6 +4,7 @@ import { useForm, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -28,6 +29,8 @@ import { BANK_ACCOUNTS_MIN_AMOUNT } from './utils';
 /**
  * A form to send funds to a recipient, be they bank or crypto.
  *
+ * Note: This experience is built with the assumption that privy UI confirmation is disabled
+ *
  * TODO: Consider reading endorsement status to disable interacting with USD or EUR accounts if endorsements are disabled -- is that even possible?
  * TODO: Explore decimal precision. More banks, we probably want to truncate. For crypto, we need more decimals allowed. Check bridge docs.
  */
@@ -42,7 +45,7 @@ export const SendToForm = ({
   recipients?: RecipientAPI[];
   recipientId?: string;
   onAdd?: () => void;
-  onSend?: (amount: number, address: string) => void;
+  onSend?: (amount: number, address: string) => Promise<void>;
   maxAmount?: number;
 }) => {
   const form = useForm<FormSchema>({
@@ -87,12 +90,12 @@ export const SendToForm = ({
 
   const disabled = isSubmitting || !isValid;
 
-  const onSubmit = (data: FormSchema) => {
+  const onSubmit = async (data: FormSchema) => {
     const address = recipients?.find(
       (recipient) => recipient.id === data.recipient
     )?.walletAddress;
     if (address) {
-      onSend?.(data.amount, address);
+      await onSend?.(data.amount, address);
     }
   };
 
@@ -206,7 +209,8 @@ export const SendToForm = ({
           disabled={disabled}
           type='submit'
         >
-          Send
+          {isSubmitting && <Spinner />}
+          {isSubmitting ? 'Sending...' : 'Send'}
         </Button>
       </form>
     </Form>

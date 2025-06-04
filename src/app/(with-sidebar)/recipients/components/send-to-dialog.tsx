@@ -25,7 +25,7 @@ export const SendToDialog = ({
   recipients?: RecipientAPI[];
   recipientId?: string;
   onAdd?: () => void;
-  onSend?: (amount: number, address: string) => void;
+  onSend?: (amount: number, address: string) => Promise<void>;
   maxAmount?: number;
   open: boolean;
   setOpen: (open: boolean) => void;

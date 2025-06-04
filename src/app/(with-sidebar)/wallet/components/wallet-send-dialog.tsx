@@ -116,7 +116,7 @@ export const WalletSendDialog = ({
     isPending: sendTransactionLoading,
   } = useMutation({
     mutationFn: async () => {
-      setOpen(false);
+      // You can call setOpen(false) here if you need to make way for privy confirmation UI
       return await sendUSDC(amount, recipientWalletAddress);
     },
     onError: (error: unknown) => {

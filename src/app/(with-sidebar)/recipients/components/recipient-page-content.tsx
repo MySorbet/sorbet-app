@@ -1,11 +1,15 @@
 'use client';
 
+import { useMutation } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { formatCurrency } from '@/lib/currency';
+import { formatWalletAddress } from '@/lib/utils';
 
 import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
 import { useCreateRecipient } from '../hooks/use-create-recipient';
@@ -25,7 +29,56 @@ export const RecipientPageContent = () => {
   const { mutateAsync: createRecipient } = useCreateRecipient();
   const { mutateAsync: deleteRecipient, isPending: isDeleting } =
     useDeleteRecipient();
-  const { sendUSDC } = useSendUSDC();
+  const { sendUSDC: _sendUSDC } = useSendUSDC();
+  const { mutateAsync: sendUSDC } = useMutation({
+    mutationFn: async ({
+      amount,
+      address,
+    }: {
+      amount: number;
+      address: string;
+    }) => {
+      const transferTransactionHash = await _sendUSDC(
+        amount.toString(),
+        address
+      );
+      return { amount, address, transferTransactionHash };
+    },
+    onSuccess: ({
+      amount,
+      address,
+      transferTransactionHash,
+    }: {
+      amount: number;
+      address: string;
+      transferTransactionHash?: `0x${string}`;
+    }) => {
+      toast.success(
+        `Sent ${formatCurrency(amount)} USDC to ${formatWalletAddress(
+          address
+        )}`,
+        {
+          description: () =>
+            transferTransactionHash ? (
+              <a
+                target='_blank'
+                rel='noopener noreferrer'
+                href={baseScanUrl(transferTransactionHash)}
+              >
+                View on BaseScan
+              </a>
+            ) : null,
+        }
+      );
+      setSendTo(null);
+    },
+    onError: (error) => {
+      toast.error('Transaction failed', {
+        description: error.message,
+      });
+      console.error(error);
+    },
+  });
 
   const handleSubmit = async (
     recipient:
@@ -34,12 +87,6 @@ export const RecipientPageContent = () => {
   ) => {
     await createRecipient(recipient);
     setAddOpen(false);
-  };
-
-  const handleSend = (amount: number, address: string) => {
-    sendUSDC(amount.toString(), address).then(() => {
-      toast(`Sent ${amount} USDC to ${address}`);
-    });
   };
 
   const { data: walletBalance } = useWalletBalance();
@@ -63,7 +110,9 @@ export const RecipientPageContent = () => {
         recipients={recipients}
         recipientId={recipientIdToSendTo}
         onAdd={() => setAddOpen(true)}
-        onSend={handleSend}
+        onSend={async (amount, address) => {
+          await sendUSDC({ amount, address });
+        }}
       />
       <RecipientsCard
         onAdd={() => setAddOpen(true)}
