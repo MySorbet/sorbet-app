@@ -77,7 +77,12 @@ const RecipientsTable = ({
   onDelete?: (recipientId: string) => void;
 }) => {
   const [, setSendTo] = useQueryState('send-to');
-  const [actionsOpen, setActionsOpen] = useState(false);
+
+  // Manage open state of dropdowns as a list. TODO: Better this way or each row with state?
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  const handleMenuOpen = (recipientId: string, isOpen: boolean) => {
+    setOpenMenus((prev) => ({ ...prev, [recipientId]: isOpen }));
+  };
 
   return (
     <Table>
@@ -109,7 +114,12 @@ const RecipientsTable = ({
                 <TableDetail recipient={recipient} />
               </TableCell>
               <TableCell className='text-right'>
-                <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
+                <DropdownMenu
+                  open={openMenus[recipient.id]}
+                  onOpenChange={(isOpen) =>
+                    handleMenuOpen(recipient.id, isOpen)
+                  }
+                >
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant='ghost'
@@ -137,7 +147,7 @@ const RecipientsTable = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         setSendTo(recipient.id);
-                        setActionsOpen(false);
+                        handleMenuOpen(recipient.id, false);
                       }}
                     >
                       <Send />
