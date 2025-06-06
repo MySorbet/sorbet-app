@@ -10,6 +10,7 @@ import {
 import { z } from 'zod';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { Processing } from '@/app/(with-sidebar)/recipients/components/send/processing';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -166,6 +167,10 @@ export const SendToForm = ({
   const { recipient, amount } = useWatch({
     control: form.control,
   });
+
+  if (isSubmitting) {
+    return <Processing />;
+  }
 
   return (
     <>
@@ -333,15 +338,24 @@ export const SendToFormSubmitButton = () => {
   );
 };
 
-export const SendToFormBackButton = () => {
-  const { setIsPreview } = useSendToContext();
+/** Back button for the send form.
+ * If pressed in preview mode, exits preview.
+ * If called on first step, calls callback
+ */
+export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
+  const { isPreview, setIsPreview } = useSendToContext();
+
+  const handleClick = () => {
+    isPreview && setIsPreview(false);
+    !isPreview && onClose?.();
+  };
 
   return (
     <Button
       className='w-full transition-opacity duration-200'
       variant='secondary'
       type='button'
-      onClick={() => setIsPreview(false)}
+      onClick={handleClick}
     >
       Back
     </Button>

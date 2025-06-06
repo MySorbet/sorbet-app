@@ -54,7 +54,7 @@ export const SendToDialog = ({
             <SendToForm onSend={onSend} onAdd={onAdd} />
           </CredenzaBody>
           <CredenzaFooter>
-            <SendToFormBackButton />
+            <SendToFormBackButton onClose={() => setOpen(false)} />
             <SendToFormSubmitButton />
           </CredenzaFooter>
         </CredenzaContent>
