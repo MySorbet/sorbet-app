@@ -50,7 +50,7 @@ export const RecipientsCard = ({
   onClick?: (recipientId: string) => void;
 }) => {
   return (
-    <Card className='w-full max-w-7xl overflow-clip'>
+    <Card className='h-fit w-full max-w-7xl overflow-clip'>
       {recipients && (recipients?.length !== 0 || loading) ? (
         <RecipientsTable
           recipients={recipients}

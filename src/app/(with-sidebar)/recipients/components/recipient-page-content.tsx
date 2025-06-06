@@ -20,7 +20,7 @@ import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
-import { SendToDialog } from './send-to-dialog';
+import { SendToDialog } from './send/send-to-dialog';
 
 export const RecipientPageContent = () => {
   const [addOpen, setAddOpen] = useAddRecipientOpen();
@@ -102,18 +102,7 @@ export const RecipientPageContent = () => {
     sendTo === 'true' ? undefined : sendTo ? sendTo : undefined;
 
   return (
-    <div className='flex h-fit w-full flex-col items-center justify-center gap-4 md:flex-row md:items-start'>
-      <SendToDialog
-        open={!!sendTo}
-        setOpen={(open) => setSendTo(open ? 'true' : null)}
-        maxAmount={maxAmount}
-        recipients={recipients}
-        recipientId={recipientIdToSendTo}
-        onAdd={() => setAddOpen(true)}
-        onSend={async (amount, address) => {
-          await sendUSDC({ amount, address });
-        }}
-      />
+    <>
       <RecipientsCard
         onAdd={() => setAddOpen(true)}
         onDelete={(recipientId) => {
@@ -126,12 +115,22 @@ export const RecipientPageContent = () => {
           setViewRecipientSheetOpen(true);
         }}
       />
+      <SendToDialog
+        open={!!sendTo}
+        setOpen={(open) => setSendTo(open ? 'true' : null)}
+        maxAmount={maxAmount}
+        recipients={recipients}
+        selectedRecipientId={recipientIdToSendTo}
+        onAdd={() => setAddOpen(true)}
+        onSend={async (amount, address) => {
+          await sendUSDC({ amount, address });
+        }}
+      />
       <AddRecipientSheet
         open={addOpen}
         setOpen={setAddOpen}
         onSubmit={handleSubmit}
       />
-
       <RecipientSheet
         open={viewRecipientSheetOpen}
         setOpen={(open) => {
@@ -149,6 +148,6 @@ export const RecipientPageContent = () => {
         }}
         isDeleting={isDeleting}
       />
-    </div>
+    </>
   );
 };
