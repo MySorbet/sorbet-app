@@ -338,7 +338,8 @@ export const SendToFormSubmitButton = () => {
   );
 };
 
-/** Back button for the send form.
+/**
+ * Back button for the send form.
  * If pressed in preview mode, exits preview.
  * If called on first step, calls callback
  */
