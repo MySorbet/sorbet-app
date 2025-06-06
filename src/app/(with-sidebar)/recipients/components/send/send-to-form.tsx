@@ -111,17 +111,19 @@ export const SendToFormContext = ({
   });
 
   return (
-    <SendToContext.Provider
-      value={{
-        isPreview,
-        setIsPreview,
-        recipients,
-        selectedRecipientId,
-        maxAmount,
-      }}
-    >
-      <Form {...form}>{children}</Form>
-    </SendToContext.Provider>
+    <Form {...form}>
+      <SendToContext.Provider
+        value={{
+          isPreview,
+          setIsPreview,
+          recipients,
+          selectedRecipientId,
+          maxAmount,
+        }}
+      >
+        {children}
+      </SendToContext.Provider>
+    </Form>
   );
 };
 
@@ -143,13 +145,11 @@ export const SendToForm = ({
   onSend?: (amount: number, address: string) => Promise<void>;
 }) => {
   const form = useFormContext<FormSchema>();
-  const { isPreview, setIsPreview, recipients, maxAmount } = useSendToContext();
+  const { isPreview, recipients, maxAmount } = useSendToContext();
 
-  const { isSubmitting, isValid, errors } = useFormState({
+  const { isSubmitting, errors } = useFormState({
     control: form.control,
   });
-
-  const disabled = isSubmitting || !isValid;
 
   const onSubmit = async (data: FormSchema) => {
     // Prevent form submission when not in preview mode
@@ -173,156 +173,150 @@ export const SendToForm = ({
   }
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          // Prevent the default form submission if not in preview mode
-          if (!isPreview) {
-            e.preventDefault();
-            return;
-          }
-          form.handleSubmit(onSubmit)(e);
-        }}
-        className='space-y-10'
-        id={sendToFormId}
-      >
-        {isPreview ? (
-          <PreviewSend
-            amount={amount}
-            recipient={recipients?.find((r) => r.id === recipient)}
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className='space-y-10'
+      id={sendToFormId}
+    >
+      {isPreview ? (
+        <PreviewSend
+          amount={amount}
+          recipient={recipients?.find((r) => r.id === recipient)}
+        />
+      ) : (
+        <>
+          {/* Recipient select */}
+          <FormField
+            control={form.control}
+            name='recipient'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Recipient</FormLabel>
+                <FormControl>
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+                      if (value === 'add-new') {
+                        field.onChange('', {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        form.trigger();
+                        onAdd?.();
+                      } else {
+                        field.onChange(value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        });
+                        form.trigger();
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select a recipient' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {recipients?.map((recipient) => (
+                        <SelectItem key={recipient.id} value={recipient.id}>
+                          {recipient.label}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value='add-new' className='pl-1'>
+                        <div className='flex items-center gap-2 font-semibold'>
+                          <Plus className='size-5' />
+                          Add new recipient
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        ) : (
-          <>
-            {/* Recipient select */}
+
+          <div className='space-y-3'>
+            {/* Amount input */}
             <FormField
               control={form.control}
-              name='recipient'
+              name='amount'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Recipient</FormLabel>
+                  <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        if (value === 'add-new') {
-                          field.onChange('', {
-                            shouldValidate: true,
-                            shouldDirty: true,
-                          });
-                          form.trigger();
-                          onAdd?.();
-                        } else {
-                          field.onChange(value, {
-                            shouldValidate: true,
-                            shouldDirty: true,
-                          });
-                          form.trigger();
-                        }
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a recipient' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {recipients?.map((recipient) => (
-                          <SelectItem key={recipient.id} value={recipient.id}>
-                            {recipient.label}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value='add-new' className='pl-1'>
-                          <div className='flex items-center gap-2 font-semibold'>
-                            <Plus className='size-5' />
-                            Add new recipient
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      {...field}
+                      value={String(field.value)}
+                      onChange={(e) =>
+                        form.setValue('amount', Number(e.target.value), {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      type='number'
+                      className='no-spin-buttons'
+                    />
                   </FormControl>
+                  {maxAmount && !errors.amount && (
+                    <p className='text-muted-foreground text-sm'>
+                      {formatCurrency(maxAmount)} available
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div className='space-y-3'>
-              {/* Amount input */}
-              <FormField
-                control={form.control}
-                name='amount'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Amount</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={String(field.value)}
-                        onChange={(e) =>
-                          form.setValue('amount', Number(e.target.value), {
-                            shouldValidate: true,
-                            shouldDirty: true,
-                          })
-                        }
-                        type='number'
-                        className='no-spin-buttons'
-                      />
-                    </FormControl>
-                    {maxAmount && !errors.amount && (
-                      <p className='text-muted-foreground text-sm'>
-                        {formatCurrency(maxAmount)} available
-                      </p>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Percentage buttons */}
-              {maxAmount && (
-                <div className='flex w-full gap-2'>
-                  {PERCENTAGES.map((percentage) => (
-                    <PercentageButton
-                      key={percentage}
-                      percentage={percentage}
-                      onClick={() =>
-                        form.setValue(
-                          'amount',
-                          maxAmount * (percentage / 100),
-                          {
-                            shouldValidate: true,
-                            shouldDirty: true,
-                          }
-                        )
-                      }
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        )}
-      </form>
-      {!isPreview && (
-        <Button
-          className='mt-4 w-full transition-opacity duration-200'
-          variant='sorbet'
-          type='button'
-          disabled={disabled}
-          onClick={() => setIsPreview(true)}
-        >
-          Preview
-        </Button>
+            {/* Percentage buttons */}
+            {maxAmount && (
+              <div className='flex w-full gap-2'>
+                {PERCENTAGES.map((percentage) => (
+                  <PercentageButton
+                    key={percentage}
+                    percentage={percentage}
+                    onClick={() =>
+                      form.setValue('amount', maxAmount * (percentage / 100), {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </>
       )}
-    </>
+    </form>
   );
 };
 
 export const SendToFormSubmitButton = () => {
   const form = useFormContext<FormSchema>();
-  const { isPreview } = useSendToContext();
-  const { isSubmitting } = useFormState({
+  const { isPreview, setIsPreview } = useSendToContext();
+  const { isSubmitting, isValid } = useFormState({
     control: form.control,
   });
+  const disabled = !isValid;
+
+  if (isSubmitting) {
+    return null;
+  }
 
   if (!isPreview) {
-    return null;
+    return (
+      <Button
+        className='w-full transition-opacity duration-200'
+        variant='sorbet'
+        type='button'
+        disabled={disabled}
+        onClick={(e) => {
+          e.preventDefault();
+          setIsPreview(true);
+        }}
+      >
+        Preview
+      </Button>
+    );
   }
 
   return (
@@ -345,11 +339,19 @@ export const SendToFormSubmitButton = () => {
  */
 export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
   const { isPreview, setIsPreview } = useSendToContext();
+  const form = useFormContext<FormSchema>();
+  const { isSubmitting } = useFormState({
+    control: form.control,
+  });
 
   const handleClick = () => {
     isPreview && setIsPreview(false);
     !isPreview && onClose?.();
   };
+
+  if (isSubmitting) {
+    return null;
+  }
 
   return (
     <Button
