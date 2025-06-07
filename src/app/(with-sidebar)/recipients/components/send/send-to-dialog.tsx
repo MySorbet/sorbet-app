@@ -13,6 +13,7 @@ import {
   SendToFormBackButton,
   SendToFormContext,
   SendToFormSubmitButton,
+  TransferStatus,
 } from './send-to-form';
 
 /** Render the send-to form in a dialog/drawer */
@@ -24,6 +25,7 @@ export const SendToDialog = ({
   maxAmount,
   open,
   setOpen,
+  transferStatus,
 }: {
   /** Which recipients can be sent to? */
   recipients?: RecipientAPI[];
@@ -36,6 +38,8 @@ export const SendToDialog = ({
   /** The form will allow leq this amount of USDC to sent. */
   maxAmount?: number;
 
+  transferStatus?: TransferStatus;
+
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
@@ -44,6 +48,7 @@ export const SendToDialog = ({
       recipients={recipients}
       selectedRecipientId={selectedRecipientId}
       maxAmount={maxAmount}
+      transferStatus={transferStatus}
     >
       <Credenza open={open} onOpenChange={setOpen}>
         <CredenzaContent>

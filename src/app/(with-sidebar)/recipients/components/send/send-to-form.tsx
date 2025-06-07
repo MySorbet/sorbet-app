@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus } from 'lucide-react';
+import { AlertCircle, Plus } from 'lucide-react';
 import { createContext, useContext, useState } from 'react';
 import {
   useForm,
@@ -11,6 +11,8 @@ import { z } from 'zod';
 
 import { RecipientAPI } from '@/api/recipients/types';
 import { Processing } from '@/app/(with-sidebar)/recipients/components/send/processing';
+import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
+import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,12 +36,17 @@ import { formatCurrency } from '@/lib/currency';
 import { BANK_ACCOUNTS_MIN_AMOUNT } from '../utils';
 import { PreviewSend } from './preview-send';
 
+export type TransferStatus =
+  | { status: 'success'; hash: string }
+  | { status: 'fail'; error: string };
+
 type SendToContextType = {
   isPreview: boolean;
   setIsPreview: (value: boolean) => void;
   recipients?: RecipientAPI[];
   selectedRecipientId?: string;
   maxAmount?: number;
+  transferStatus?: TransferStatus;
 };
 
 const SendToContext = createContext<SendToContextType | undefined>(undefined);
@@ -67,11 +74,13 @@ export const SendToFormContext = ({
   recipients,
   selectedRecipientId,
   maxAmount,
+  transferStatus,
 }: {
   children: React.ReactNode;
   recipients?: RecipientAPI[];
   selectedRecipientId?: string;
   maxAmount?: number;
+  transferStatus?: TransferStatus;
 }) => {
   const [isPreview, setIsPreview] = useState(false);
   const form = useForm<FormSchema>({
@@ -119,6 +128,7 @@ export const SendToFormContext = ({
           recipients,
           selectedRecipientId,
           maxAmount,
+          transferStatus,
         }}
       >
         {children}
@@ -145,31 +155,54 @@ export const SendToForm = ({
   onSend?: (amount: number, address: string) => Promise<void>;
 }) => {
   const form = useFormContext<FormSchema>();
-  const { isPreview, recipients, maxAmount } = useSendToContext();
+  const { isPreview, recipients, maxAmount, transferStatus } =
+    useSendToContext();
 
   const { isSubmitting, errors } = useFormState({
     control: form.control,
   });
 
+  const { recipient, amount } = useWatch({
+    control: form.control,
+  });
+  const recipientObj = recipients?.find((r) => r.id === recipient);
+
   const onSubmit = async (data: FormSchema) => {
-    // Prevent form submission when not in preview mode
-    if (!isPreview) {
-      return;
-    }
-    const address = recipients?.find(
-      (recipient) => recipient.id === data.recipient
-    )?.walletAddress;
+    if (!isPreview) return;
+
+    const address = recipientObj?.walletAddress;
     if (address) {
       await onSend?.(data.amount, address);
     }
   };
 
-  const { recipient, amount } = useWatch({
-    control: form.control,
-  });
-
   if (isSubmitting) {
     return <Processing />;
+  }
+
+  if (transferStatus?.status === 'success') {
+    return (
+      <div className='flex flex-col items-center justify-center gap-6'>
+        <span className='text-muted-foreground text-sm font-medium leading-none'>
+          You sent
+        </span>
+        <span className='text-xl font-semibold'>{formatCurrency(amount)}</span>
+        <span className='text-muted-foreground text-xs leading-none'>
+          {recipientObj?.label}
+        </span>
+      </div>
+    );
+  }
+
+  if (transferStatus?.status === 'fail') {
+    return (
+      <div className='flex flex-col items-center justify-center gap-6'>
+        <AlertCircle />
+        <span className='text-sm font-medium leading-none'>
+          Transaction failed...
+        </span>
+      </div>
+    );
   }
 
   return (
@@ -292,13 +325,13 @@ export const SendToForm = ({
 
 export const SendToFormSubmitButton = () => {
   const form = useFormContext<FormSchema>();
-  const { isPreview, setIsPreview } = useSendToContext();
+  const { isPreview, setIsPreview, transferStatus } = useSendToContext();
   const { isSubmitting, isValid } = useFormState({
     control: form.control,
   });
   const disabled = !isValid;
 
-  if (isSubmitting) {
+  if (isSubmitting || transferStatus) {
     return null;
   }
 
@@ -338,7 +371,7 @@ export const SendToFormSubmitButton = () => {
  * If called on first step, calls callback
  */
 export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
-  const { isPreview, setIsPreview } = useSendToContext();
+  const { isPreview, setIsPreview, transferStatus } = useSendToContext();
   const form = useFormContext<FormSchema>();
   const { isSubmitting } = useFormState({
     control: form.control,
@@ -351,6 +384,35 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
 
   if (isSubmitting) {
     return null;
+  }
+
+  if (transferStatus?.status === 'success') {
+    return (
+      <Button
+        className='w-full transition-opacity duration-200'
+        variant='secondary'
+        type='button'
+        asChild
+      >
+        <Nt href={baseScanUrl(transferStatus.hash)}>View details</Nt>
+      </Button>
+    );
+  }
+
+  if (transferStatus?.status === 'fail') {
+    return (
+      <Button
+        className='w-full transition-opacity duration-200'
+        variant='secondary'
+        type='button'
+        onClick={() => {
+          setIsPreview(true);
+          // TODO: set transfer status undefined (Cant b/c its outside of context)
+        }}
+      >
+        Try again
+      </Button>
+    );
   }
 
   return (

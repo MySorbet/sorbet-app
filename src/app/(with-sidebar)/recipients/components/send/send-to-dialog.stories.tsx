@@ -52,3 +52,14 @@ export const WithRecipient: Story = {
     selectedRecipientId: mockRecipients[0].id,
   },
 };
+
+export const Success: Story = {
+  args: { ...Default.args, transferStatus: { status: 'success', hash: '' } },
+};
+
+export const Fail: Story = {
+  args: {
+    ...Default.args,
+    transferStatus: { status: 'fail', error: 'No internet' },
+  },
+};

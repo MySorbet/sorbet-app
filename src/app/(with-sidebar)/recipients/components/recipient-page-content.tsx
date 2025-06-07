@@ -5,7 +5,7 @@ import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
+import { TransferStatus } from '@/app/(with-sidebar)/recipients/components/send/send-to-form';
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
@@ -53,26 +53,19 @@ export const RecipientPageContent = () => {
       address: string;
       transferTransactionHash?: `0x${string}`;
     }) => {
+      setTransferStatus({
+        status: 'success',
+        hash: transferTransactionHash ?? '',
+      });
       toast.success(
-        `Sent ${formatCurrency(amount)} USDC to ${formatWalletAddress(
-          address
-        )}`,
-        {
-          description: () =>
-            transferTransactionHash ? (
-              <a
-                target='_blank'
-                rel='noopener noreferrer'
-                href={baseScanUrl(transferTransactionHash)}
-              >
-                View on BaseScan
-              </a>
-            ) : null,
-        }
+        `Sent ${formatCurrency(amount)} USDC to ${formatWalletAddress(address)}`
       );
-      setSendTo(null);
     },
     onError: (error) => {
+      setTransferStatus({
+        status: 'fail',
+        error: error.message,
+      });
       toast.error('Transaction failed', {
         description: error.message,
       });
@@ -101,6 +94,10 @@ export const RecipientPageContent = () => {
   const recipientIdToSendTo =
     sendTo === 'true' ? undefined : sendTo ? sendTo : undefined;
 
+  const [transferStatus, setTransferStatus] = useState<
+    TransferStatus | undefined
+  >();
+
   return (
     <>
       <RecipientsCard
@@ -125,6 +122,7 @@ export const RecipientPageContent = () => {
         onSend={async (amount, address) => {
           await sendUSDC({ amount, address });
         }}
+        transferStatus={transferStatus}
       />
       <AddRecipientSheet
         open={addOpen}
