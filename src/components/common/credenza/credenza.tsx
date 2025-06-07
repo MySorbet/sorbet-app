@@ -32,6 +32,7 @@ interface BaseProps {
 interface RootCredenzaProps extends BaseProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  dismissible?: boolean;
 }
 
 interface CredenzaProps extends BaseProps {
@@ -39,8 +40,12 @@ interface CredenzaProps extends BaseProps {
   asChild?: true;
 }
 
-const CredenzaContext = React.createContext<{ isDesktop: boolean }>({
+const CredenzaContext = React.createContext<{
+  isDesktop: boolean;
+  dismissible: boolean;
+}>({
   isDesktop: false,
+  dismissible: false,
 });
 
 const useCredenzaContext = () => {
@@ -62,7 +67,9 @@ const Credenza = ({ children, ...props }: RootCredenzaProps) => {
   const Credenza = isDesktop ? Dialog : Drawer;
 
   return (
-    <CredenzaContext.Provider value={{ isDesktop }}>
+    <CredenzaContext.Provider
+      value={{ isDesktop, dismissible: props.dismissible ?? true }}
+    >
       <Credenza {...props} {...(!isDesktop && { autoFocus: true })}>
         {children}
       </Credenza>
@@ -93,11 +100,19 @@ const CredenzaClose = ({ className, children, ...props }: CredenzaProps) => {
 };
 
 const CredenzaContent = ({ className, children, ...props }: CredenzaProps) => {
-  const { isDesktop } = useCredenzaContext();
+  const { isDesktop, dismissible } = useCredenzaContext();
   const CredenzaContent = isDesktop ? DialogContent : DrawerContent;
 
   return (
-    <CredenzaContent className={className} {...props}>
+    <CredenzaContent
+      className={className}
+      onInteractOutside={(e) => {
+        if (!dismissible) {
+          e.preventDefault();
+        }
+      }}
+      {...props}
+    >
       {children}
     </CredenzaContent>
   );
