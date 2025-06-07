@@ -26,7 +26,7 @@ export const PreviewSend = ({
   const showConversion = false;
 
   return (
-    <>
+    <div className='animate-in fade-in-0 slide-in-from-right-2 space-y-10'>
       {/* Amount, timing, and optional conversion rate */}
       <div className='space-y-2'>
         <p className='text-muted-foreground text-sm font-medium leading-none'>
@@ -63,7 +63,7 @@ export const PreviewSend = ({
           </CopyAddress>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

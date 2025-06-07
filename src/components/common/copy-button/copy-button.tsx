@@ -1,7 +1,7 @@
 'use client';
 
 import { CircleCheck, Copy } from 'lucide-react';
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 import useCopy from '@/components/common/copy-button/use-copy';
 import { Button, ButtonProps } from '@/components/ui/button';
@@ -37,32 +37,31 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
     ref
   ) => {
     const { isCopied, handleClick: handleCopy } = useCopy(stringToCopy);
+    const [hasRendered, setHasRendered] = useState(false);
 
     // Similar to using `cn` for classnames, we need to manually combine out onclick with one that is passed
     // Otherwise, the onclick passed from the parent will override the copy action
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (isCopied || disabled) return; // Early return if already copied or disabled
+      if (!hasRendered) setHasRendered(true);
       handleCopy();
       onClick?.(e);
     };
-
-    const isFirstRender = useRef(true);
-    useEffect(() => {
-      isFirstRender.current = false;
-    }, []);
 
     return (
       <Button
         ref={ref}
         variant='outline'
         onClick={handleClick}
-        disabled={isCopied || disabled}
+        type='button'
+        disabled={disabled}
         className={cn('group', className)}
         {...props}
       >
         {isCopied ? (
           <CircleCheck
             className={cn(
-              'animate-in zoom-in-0 p-0 text-green-600',
+              'animate-in zoom-in-50 fade-in-0 p-0 text-green-600',
               checkIconClassName
             )}
           />
@@ -70,7 +69,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
           <Copy
             className={cn(
               'text-primary p-0 transition-transform group-hover:scale-110',
-              !isFirstRender.current && 'animate-in zoom-in-0',
+              hasRendered && 'animate-in zoom-in-50 fade-in-0',
               copyIconClassName
             )}
           />
