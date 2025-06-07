@@ -197,7 +197,7 @@ export const SendToForm = ({
   if (transferStatus?.status === 'fail') {
     return (
       <div className='flex flex-col items-center justify-center gap-6'>
-        <AlertCircle />
+        <AlertCircle className='text-destructive size-10' />
         <span className='text-sm font-medium leading-none'>
           Transaction failed...
         </span>
