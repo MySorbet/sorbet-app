@@ -250,7 +250,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
 
   if (transferStatus?.status === 'success') {
     return (
-      <div className='flex flex-col items-center justify-center gap-6'>
+      <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
         <span className='text-muted-foreground text-sm font-medium leading-none'>
           You sent
         </span>
@@ -264,7 +264,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
 
   if (transferStatus?.status === 'fail') {
     return (
-      <div className='flex flex-col items-center justify-center gap-6'>
+      <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
         <AlertCircle className='text-destructive size-10' />
         <span className='text-sm font-medium leading-none'>
           Transaction failed...
@@ -355,7 +355,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
                         })
                       }
                       type='number'
-                      className='no-spin-buttons'
+                      className='no-spin-buttons text-md'
                     />
                   </FormControl>
                   {maxAmount && !errors.amount && (
