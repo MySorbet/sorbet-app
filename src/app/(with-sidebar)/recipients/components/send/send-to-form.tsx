@@ -10,6 +10,7 @@ import {
 import { z } from 'zod';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { Percentages } from '@/app/(with-sidebar)/recipients/components/send/percentages';
 import { Processing } from '@/app/(with-sidebar)/recipients/components/send/processing';
 import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
@@ -300,21 +301,16 @@ export const SendToForm = ({
               )}
             />
             {/* Percentage buttons */}
-            {maxAmount && (
-              <div className='flex w-full gap-2'>
-                {PERCENTAGES.map((percentage) => (
-                  <PercentageButton
-                    key={percentage}
-                    percentage={percentage}
-                    onClick={() =>
-                      form.setValue('amount', maxAmount * (percentage / 100), {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      })
-                    }
-                  />
-                ))}
-              </div>
+            {maxAmount !== undefined && (
+              <Percentages
+                disabled={maxAmount === undefined}
+                onClick={(percentage) =>
+                  form.setValue('amount', maxAmount * (percentage / 100), {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
+                }
+              />
             )}
           </div>
         </>
@@ -423,29 +419,6 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
       onClick={handleClick}
     >
       Back
-    </Button>
-  );
-};
-
-/** What percentages should the user be able to select? */
-const PERCENTAGES = [25, 50, 75, 100];
-
-/** Local component to render a button showing a percentage of the max amount and a callback to set that percentage*/
-const PercentageButton = ({
-  percentage,
-  onClick,
-}: {
-  percentage: number;
-  onClick?: (percentage: number) => void;
-}) => {
-  return (
-    <Button
-      variant='secondary'
-      className='min-w-fit flex-1'
-      type='button'
-      onClick={() => onClick?.(percentage)}
-    >
-      {percentage}%
     </Button>
   );
 };
