@@ -1,15 +1,7 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
-import { toast } from 'sonner';
-
-import { TransferStatus } from '@/app/(with-sidebar)/recipients/components/send/send-to-form';
-import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
-import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
-import { formatCurrency } from '@/lib/currency';
-import { formatWalletAddress } from '@/lib/utils';
 
 import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
 import { useCreateRecipient } from '../hooks/use-create-recipient';
@@ -29,49 +21,6 @@ export const RecipientPageContent = () => {
   const { mutateAsync: createRecipient } = useCreateRecipient();
   const { mutateAsync: deleteRecipient, isPending: isDeleting } =
     useDeleteRecipient();
-  const { sendUSDC: _sendUSDC } = useSendUSDC();
-  const { mutateAsync: sendUSDC } = useMutation({
-    mutationFn: async ({
-      amount,
-      address,
-    }: {
-      amount: number;
-      address: string;
-    }) => {
-      const transferTransactionHash = await _sendUSDC(
-        amount.toString(),
-        address
-      );
-      return { amount, address, transferTransactionHash };
-    },
-    onSuccess: ({
-      amount,
-      address,
-      transferTransactionHash,
-    }: {
-      amount: number;
-      address: string;
-      transferTransactionHash?: `0x${string}`;
-    }) => {
-      setTransferStatus({
-        status: 'success',
-        hash: transferTransactionHash ?? '',
-      });
-      toast.success(
-        `Sent ${formatCurrency(amount)} USDC to ${formatWalletAddress(address)}`
-      );
-    },
-    onError: (error) => {
-      setTransferStatus({
-        status: 'fail',
-        error: error.message,
-      });
-      toast.error('Transaction failed', {
-        description: error.message,
-      });
-      console.error(error);
-    },
-  });
 
   const handleSubmit = async (
     recipient:
@@ -82,22 +31,12 @@ export const RecipientPageContent = () => {
     setAddOpen(false);
   };
 
-  const { data: walletBalance } = useWalletBalance();
-  const maxAmount = walletBalance ? Number(walletBalance) : undefined;
-
   const editRecipient = recipients?.find(
     (recipient) => recipient.id === viewRecipientId
   );
   const [viewRecipientSheetOpen, setViewRecipientSheetOpen] = useState(false);
 
-  const [sendTo, setSendTo] = useQueryState('send-to');
-  const recipientIdToSendTo =
-    sendTo === 'true' ? undefined : sendTo ? sendTo : undefined;
-
-  const [transferStatus, setTransferStatus] = useState<
-    TransferStatus | undefined
-  >();
-
+  const [, setSendTo] = useQueryState('send-to');
   return (
     <>
       <RecipientsCard
@@ -112,18 +51,7 @@ export const RecipientPageContent = () => {
           setViewRecipientSheetOpen(true);
         }}
       />
-      <SendToDialog
-        open={!!sendTo}
-        setOpen={(open) => setSendTo(open ? 'true' : null)}
-        maxAmount={maxAmount}
-        recipients={recipients}
-        selectedRecipientId={recipientIdToSendTo}
-        onAdd={() => setAddOpen(true)}
-        onSend={async (amount, address) => {
-          await sendUSDC({ amount, address });
-        }}
-        transferStatus={transferStatus}
-      />
+      <SendToDialog onAdd={() => setAddOpen(true)} />
       <AddRecipientSheet
         open={addOpen}
         setOpen={setAddOpen}

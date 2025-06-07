@@ -1,4 +1,5 @@
-import { RecipientAPI } from '@/api/recipients/types';
+import { useQueryState } from 'nuqs';
+
 import {
   Credenza,
   CredenzaBody,
@@ -7,63 +8,73 @@ import {
   CredenzaHeader,
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
+import { useAfter } from '@/hooks/use-after';
 
 import {
   SendToForm,
   SendToFormBackButton,
   SendToFormContext,
   SendToFormSubmitButton,
-  TransferStatus,
+  useSendToContext,
+  useSendToFormContext,
+  useSendToFormState,
 } from './send-to-form';
+import { useFormState } from 'react-hook-form';
 
 /** Render the send-to form in a dialog/drawer */
-export const SendToDialog = ({
-  recipients,
-  selectedRecipientId,
+export const SendToDialog = ({ onAdd }: { onAdd?: () => void }) => {
+  const [sendTo, setSendTo] = useQueryState('send-to');
+  const open = !!sendTo;
+  const setOpen = (open: boolean) => setSendTo(open ? 'true' : null);
+  const recipientIdToSendTo =
+    sendTo === 'true' ? undefined : sendTo ? sendTo : undefined;
+
+  return (
+    <SendToFormContext selectedRecipientId={recipientIdToSendTo}>
+      <SendToDialogWithReset onAdd={onAdd} open={open} setOpen={setOpen} />
+    </SendToFormContext>
+  );
+};
+
+export const SendToDialogWithReset = ({
   onAdd,
-  onSend,
-  maxAmount,
   open,
   setOpen,
-  transferStatus,
 }: {
-  /** Which recipients can be sent to? */
-  recipients?: RecipientAPI[];
-  /** Specify a recipient id to be preselected */
-  selectedRecipientId?: string;
-  /** Callback for a recipient to be created */
   onAdd?: () => void;
-  /** Callback for a form submission */
-  onSend?: (amount: number, address: string) => Promise<void>;
-  /** The form will allow leq this amount of USDC to sent. */
-  maxAmount?: number;
-
-  transferStatus?: TransferStatus;
-
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
+  const { reset } = useSendToContext();
+  const { isSubmitting } = useSendToFormState();
+
+  const clear = useAfter(() => {
+    reset();
+  }, 300);
+
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+    !open && clear();
+  };
+
   return (
-    <SendToFormContext
-      recipients={recipients}
-      selectedRecipientId={selectedRecipientId}
-      maxAmount={maxAmount}
-      transferStatus={transferStatus}
+    <Credenza
+      open={open}
+      onOpenChange={handleOpenChange}
+      dismissible={!isSubmitting}
     >
-      <Credenza open={open} onOpenChange={setOpen}>
-        <CredenzaContent>
-          <CredenzaHeader className='text-left'>
-            <CredenzaTitle>Send funds</CredenzaTitle>
-          </CredenzaHeader>
-          <CredenzaBody className='pt-4'>
-            <SendToForm onSend={onSend} onAdd={onAdd} />
-          </CredenzaBody>
-          <CredenzaFooter>
-            <SendToFormBackButton onClose={() => setOpen(false)} />
-            <SendToFormSubmitButton />
-          </CredenzaFooter>
-        </CredenzaContent>
-      </Credenza>
-    </SendToFormContext>
+      <CredenzaContent>
+        <CredenzaHeader className='text-left'>
+          <CredenzaTitle>Send funds</CredenzaTitle>
+        </CredenzaHeader>
+        <CredenzaBody className='pt-4'>
+          <SendToForm onAdd={onAdd} />
+        </CredenzaBody>
+        <CredenzaFooter>
+          <SendToFormBackButton onClose={() => setOpen(false)} />
+          <SendToFormSubmitButton />
+        </CredenzaFooter>
+      </CredenzaContent>
+    </Credenza>
   );
 };

@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { AlertCircle, Plus } from 'lucide-react';
 import { createContext, useContext, useState } from 'react';
 import {
@@ -7,12 +8,15 @@ import {
   useFormState,
   useWatch,
 } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { RecipientAPI } from '@/api/recipients/types';
 import { Percentages } from '@/app/(with-sidebar)/recipients/components/send/percentages';
 import { Processing } from '@/app/(with-sidebar)/recipients/components/send/processing';
+import { useRecipients } from '@/app/(with-sidebar)/recipients/hooks/use-recipients';
 import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
+import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
@@ -32,7 +36,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
+import { formatWalletAddress } from '@/lib/utils';
 
 import { BANK_ACCOUNTS_MIN_AMOUNT } from '../utils';
 import { PreviewSend } from './preview-send';
@@ -48,6 +54,9 @@ type SendToContextType = {
   selectedRecipientId?: string;
   maxAmount?: number;
   transferStatus?: TransferStatus;
+  clearTransferStatus: () => void;
+  reset: () => void;
+  sendUSDC: (amount: number, address: string) => Promise<void>;
 };
 
 const SendToContext = createContext<SendToContextType | undefined>(undefined);
@@ -69,21 +78,28 @@ const formSchema = z.object({
   amount: z.number(),
 });
 type FormSchema = z.infer<typeof formSchema>;
-
+export const useSendToFormContext = () => useFormContext<FormSchema>();
+export const useSendToFormState = () =>
+  useFormState<FormSchema>({
+    control: useSendToFormContext().control,
+  });
 export const SendToFormContext = ({
   children,
-  recipients,
   selectedRecipientId,
-  maxAmount,
-  transferStatus,
 }: {
   children: React.ReactNode;
-  recipients?: RecipientAPI[];
   selectedRecipientId?: string;
-  maxAmount?: number;
-  transferStatus?: TransferStatus;
 }) => {
   const [isPreview, setIsPreview] = useState(false);
+  const [transferStatus, setTransferStatus] = useState<
+    TransferStatus | undefined
+  >();
+
+  const { data: walletBalance } = useWalletBalance();
+  const maxAmount = walletBalance ? Number(walletBalance) : undefined;
+
+  const { data: recipients } = useRecipients();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(
       formSchema.extend({
@@ -113,12 +129,66 @@ export const SendToFormContext = ({
           ),
       })
     ),
+    values: {
+      recipient: selectedRecipientId ?? '',
+      amount: 0,
+    },
     defaultValues: {
       recipient: selectedRecipientId ?? '',
       amount: 0,
     },
     mode: 'onChange',
   });
+
+  const { sendUSDC: _sendUSDC } = useSendUSDC();
+  const { mutateAsync: sendUSDC } = useMutation({
+    mutationFn: async ({
+      amount,
+      address,
+    }: {
+      amount: number;
+      address: string;
+    }) => {
+      const transferTransactionHash = await _sendUSDC(
+        amount.toString(),
+        address
+      );
+      return { amount, address, transferTransactionHash };
+    },
+    onSuccess: ({
+      amount,
+      address,
+      transferTransactionHash,
+    }: {
+      amount: number;
+      address: string;
+      transferTransactionHash?: `0x${string}`;
+    }) => {
+      setTransferStatus({
+        status: 'success',
+        hash: transferTransactionHash ?? '',
+      });
+      toast.success(
+        `Sent ${formatCurrency(amount)} USDC to ${formatWalletAddress(address)}`
+      );
+    },
+    onError: (error) => {
+      setTransferStatus({
+        status: 'fail',
+        error: error.message,
+      });
+      toast.error('Transaction failed', {
+        description: error.message,
+      });
+      console.error(error);
+    },
+  });
+
+  const reset = () => {
+    form.reset();
+    setTransferStatus(undefined);
+    setIsPreview(false);
+  };
 
   return (
     <Form {...form}>
@@ -130,6 +200,11 @@ export const SendToFormContext = ({
           selectedRecipientId,
           maxAmount,
           transferStatus,
+          clearTransferStatus: () => setTransferStatus(undefined),
+          reset,
+          sendUSDC: async (amount, address) => {
+            await sendUSDC({ amount, address });
+          },
         }}
       >
         {children}
@@ -148,20 +223,12 @@ const sendToFormId = 'send-to-form';
  * TODO: Consider reading endorsement status to disable interacting with USD or EUR accounts if endorsements are disabled -- is that even possible?
  * TODO: Explore decimal precision. For banks, we probably want to truncate. For crypto, we need more decimals allowed. Check bridge docs.
  */
-export const SendToForm = ({
-  onAdd,
-  onSend,
-}: {
-  onAdd?: () => void;
-  onSend?: (amount: number, address: string) => Promise<void>;
-}) => {
-  const form = useFormContext<FormSchema>();
-  const { isPreview, recipients, maxAmount, transferStatus } =
+export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
+  const form = useSendToFormContext();
+  const { isPreview, recipients, maxAmount, transferStatus, sendUSDC } =
     useSendToContext();
 
-  const { isSubmitting, errors } = useFormState({
-    control: form.control,
-  });
+  const { isSubmitting, errors } = useSendToFormState();
 
   const { recipient, amount } = useWatch({
     control: form.control,
@@ -173,7 +240,7 @@ export const SendToForm = ({
 
     const address = recipientObj?.walletAddress;
     if (address) {
-      await onSend?.(data.amount, address);
+      await sendUSDC(data.amount, address);
     }
   };
 
@@ -320,11 +387,8 @@ export const SendToForm = ({
 };
 
 export const SendToFormSubmitButton = () => {
-  const form = useFormContext<FormSchema>();
   const { isPreview, setIsPreview, transferStatus } = useSendToContext();
-  const { isSubmitting, isValid } = useFormState({
-    control: form.control,
-  });
+  const { isSubmitting, isValid } = useSendToFormState();
   const disabled = !isValid;
 
   if (isSubmitting || transferStatus) {
@@ -367,11 +431,9 @@ export const SendToFormSubmitButton = () => {
  * If called on first step, calls callback
  */
 export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
-  const { isPreview, setIsPreview, transferStatus } = useSendToContext();
-  const form = useFormContext<FormSchema>();
-  const { isSubmitting } = useFormState({
-    control: form.control,
-  });
+  const { isPreview, setIsPreview, transferStatus, clearTransferStatus } =
+    useSendToContext();
+  const { isSubmitting } = useSendToFormState();
 
   const handleClick = () => {
     isPreview && setIsPreview(false);
@@ -403,7 +465,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
         type='button'
         onClick={() => {
           setIsPreview(true);
-          // TODO: set transfer status undefined (Cant b/c its outside of context)
+          clearTransferStatus();
         }}
       >
         Try again
