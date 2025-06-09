@@ -1,4 +1,4 @@
-import { AlertCircle, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
 
 import {
@@ -7,6 +7,7 @@ import {
   useSendToFormContext,
   useSendToFormState,
 } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
+import { TransactionStatusBadge } from '@/app/(with-sidebar)/recipients/components/send/transaction-status-badge';
 import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
@@ -82,9 +83,9 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
   if (transferStatus?.status === 'fail') {
     return (
       <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
-        <AlertCircle className='text-destructive size-10' />
+        <TransactionStatusBadge status='error' />
         <span className='text-sm font-medium leading-none'>
-          Transaction failed...
+          There was a problem with the transfer. Please try again.
         </span>
       </div>
     );
