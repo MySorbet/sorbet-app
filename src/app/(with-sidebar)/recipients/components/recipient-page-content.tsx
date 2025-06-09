@@ -1,12 +1,13 @@
 'use client';
 
-import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
 import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useDeleteRecipient } from '../hooks/use-delete-recipient';
 import { useRecipients } from '../hooks/use-recipients';
+import { useSelectedRecipient } from '../hooks/use-selected-recipient';
+import { useSendTo } from '../hooks/use-send-to';
 import { AddRecipientSheet } from './add-recipient-sheet';
 import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
@@ -14,10 +15,15 @@ import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToDialog } from './send/send-to-dialog';
 
+/** Puts together recipient list render, edit, add, and send to dialog */
 export const RecipientPageContent = () => {
-  const [addOpen, setAddOpen] = useAddRecipientOpen();
-  const [viewRecipientId, setViewRecipientId] = useQueryState('view-recipient');
   const { data: recipients, isLoading: loading } = useRecipients();
+  const [addSheetOpen, setAddSheetOpen] = useAddRecipientOpen();
+  const [viewSheetOpen, setViewSheetOpen] = useState(false);
+  const { selectedRecipient, setSelectedRecipientId } =
+    useSelectedRecipient(recipients);
+  const { set } = useSendTo();
+
   const { mutateAsync: createRecipient } = useCreateRecipient();
   const { mutateAsync: deleteRecipient, isPending: isDeleting } =
     useDeleteRecipient();
@@ -28,49 +34,43 @@ export const RecipientPageContent = () => {
       | { type: 'crypto'; values: CryptoRecipientFormValues }
   ) => {
     await createRecipient(recipient);
-    setAddOpen(false);
+    setAddSheetOpen(false);
   };
 
-  const editRecipient = recipients?.find(
-    (recipient) => recipient.id === viewRecipientId
-  );
-  const [viewRecipientSheetOpen, setViewRecipientSheetOpen] = useState(false);
-
-  const [, setSendTo] = useQueryState('send-to');
   return (
     <>
       <RecipientsCard
-        onAdd={() => setAddOpen(true)}
+        onAdd={() => setAddSheetOpen(true)}
         onDelete={(recipientId) => {
           deleteRecipient(recipientId);
         }}
         recipients={recipients}
         loading={loading}
         onClick={(recipientId) => {
-          setViewRecipientId(recipientId);
-          setViewRecipientSheetOpen(true);
+          setSelectedRecipientId(recipientId);
+          setViewSheetOpen(true);
         }}
       />
-      <SendToDialog onAdd={() => setAddOpen(true)} />
+      <SendToDialog onAdd={() => setAddSheetOpen(true)} />
       <AddRecipientSheet
-        open={addOpen}
-        setOpen={setAddOpen}
+        open={addSheetOpen}
+        setOpen={setAddSheetOpen}
         onSubmit={handleSubmit}
       />
       <RecipientSheet
-        open={viewRecipientSheetOpen}
+        open={viewSheetOpen}
         setOpen={(open) => {
-          setViewRecipientSheetOpen(open);
+          setViewSheetOpen(open);
         }}
         onSend={() => {
-          setSendTo(editRecipient?.id ?? null);
-          setViewRecipientSheetOpen(false);
+          selectedRecipient && set({ recipientId: selectedRecipient.id });
+          setViewSheetOpen(false);
         }}
-        onAnimationEnd={() => setViewRecipientId(null)}
-        recipient={editRecipient}
+        onAnimationEnd={() => setSelectedRecipientId(null)}
+        recipient={selectedRecipient}
         onDelete={async (recipientId) => {
           await deleteRecipient(recipientId);
-          setViewRecipientSheetOpen(false);
+          setViewSheetOpen(false);
         }}
         isDeleting={isDeleting}
       />

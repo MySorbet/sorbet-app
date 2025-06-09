@@ -1,5 +1,6 @@
 'use client';
 
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { Pencil, Trash2 } from 'lucide-react';
 
 import { RecipientAPI } from '@/api/recipients/types';
@@ -17,6 +18,7 @@ import { EADetails } from './ea-details';
 import {
   VaulSheet,
   VaulSheetContent,
+  VaulSheetDescription,
   VaulSheetFooter,
   VaulSheetHeader,
   VaulSheetTitle,
@@ -56,6 +58,11 @@ export const RecipientSheet = ({
       <VaulSheetContent direction={direction}>
         <VaulSheetHeader>
           <VaulSheetTitle>Details</VaulSheetTitle>
+          <VisuallyHidden>
+            <VaulSheetDescription>
+              Details for {recipient.label}
+            </VaulSheetDescription>
+          </VisuallyHidden>
         </VaulSheetHeader>
         <ScrollArea className='size-full flex-1'>
           <EADetails
@@ -94,7 +101,7 @@ export const RecipientSheet = ({
             {isDeleting ? <Spinner /> : <Trash2 />}
           </Button>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button variant='secondary' disabled>
                 <Pencil />
               </Button>

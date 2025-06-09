@@ -1,15 +1,17 @@
-import { useQueryState } from 'nuqs';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 import {
   Credenza,
   CredenzaBody,
   CredenzaContent,
+  CredenzaDescription,
   CredenzaFooter,
   CredenzaHeader,
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
 import { useAfter } from '@/hooks/use-after';
 
+import { useSendTo } from '../../hooks/use-send-to';
 import {
   SendToFormContext,
   useSendToContext,
@@ -23,15 +25,15 @@ import {
 
 /** Render the send-to form in a dialog/drawer */
 export const SendToDialog = ({ onAdd }: { onAdd?: () => void }) => {
-  const [sendTo, setSendTo] = useQueryState('send-to');
-  const open = !!sendTo;
-  const setOpen = (open: boolean) => setSendTo(open ? 'true' : null);
-  const recipientIdToSendTo =
-    sendTo === 'true' ? undefined : sendTo ? sendTo : undefined;
+  const { open: sendToOpen, set, sendToId } = useSendTo();
 
   return (
-    <SendToFormContext selectedRecipientId={recipientIdToSendTo}>
-      <SendToDialogWithReset onAdd={onAdd} open={open} setOpen={setOpen} />
+    <SendToFormContext selectedRecipientId={sendToId}>
+      <SendToDialogWithReset
+        onAdd={onAdd}
+        open={sendToOpen}
+        setOpen={(open) => set({ open })}
+      />
     </SendToFormContext>
   );
 };
@@ -64,6 +66,9 @@ const SendToDialogWithReset = ({
       <CredenzaContent>
         <CredenzaHeader className='text-left'>
           <CredenzaTitle>Send funds</CredenzaTitle>
+          <VisuallyHidden>
+            <CredenzaDescription>Send funds to a recipient</CredenzaDescription>
+          </VisuallyHidden>
         </CredenzaHeader>
         <CredenzaBody className='pt-4'>
           <SendToForm onAdd={onAdd} />
