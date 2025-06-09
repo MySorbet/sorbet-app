@@ -61,26 +61,22 @@ const sendToFormId = 'send-to-form';
  * ```
  */
 export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
-  const {
-    isPreview,
-    recipients,
-    maxAmount,
-    transferResult: transferStatus,
-    sendUSDC,
-  } = useSendToContext();
+  const { isPreview, recipients, maxAmount, transferResult, sendUSDC } =
+    useSendToContext();
 
   const form = useSendToFormContext();
   const { recipient, amount } = useWatch({
     control: form.control,
   });
-  const recipientObj = recipients?.find((r) => r.id === recipient);
+  // TODO: This could be done better with a map
+  const selectedRecipient = recipients?.find((r) => r.id === recipient);
 
   const { isSubmitting, errors } = useSendToFormState();
 
   const onSubmit = async (data: SendToFormSchema) => {
     if (!isPreview) return;
 
-    const address = recipientObj?.walletAddress;
+    const address = selectedRecipient?.walletAddress;
     if (address) {
       await sendUSDC(data.amount, address);
     }
@@ -90,12 +86,12 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     return <Processing />;
   }
 
-  if (transferStatus?.status === 'success') {
-    if (!amount || !recipientObj) return null;
-    return <Success amount={amount} recipient={recipientObj} />;
+  if (transferResult?.status === 'success') {
+    if (!amount || !selectedRecipient) return null;
+    return <Success amount={amount} recipient={selectedRecipient} />;
   }
 
-  if (transferStatus?.status === 'fail') {
+  if (transferResult?.status === 'fail') {
     return (
       <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
         <TransactionStatusBadge status='error' />
@@ -106,7 +102,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     );
   }
 
-  const showPreview = amount && recipientObj && isPreview;
+  const showPreview = amount && selectedRecipient && isPreview;
 
   return (
     <form
@@ -115,7 +111,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
       id={sendToFormId}
     >
       {showPreview ? (
-        <PreviewSend amount={amount} recipient={recipientObj} />
+        <PreviewSend amount={amount} recipient={selectedRecipient} />
       ) : (
         <>
           {/* Recipient select */}
@@ -219,15 +215,11 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
 };
 
 export const SendToFormSubmitButton = () => {
-  const {
-    isPreview,
-    setIsPreview,
-    transferResult: transferStatus,
-  } = useSendToContext();
+  const { isPreview, setIsPreview, transferResult } = useSendToContext();
   const { isSubmitting, isValid } = useSendToFormState();
   const disabled = !isValid;
 
-  if (isSubmitting || transferStatus) {
+  if (isSubmitting || transferResult) {
     return null;
   }
 
@@ -267,12 +259,8 @@ export const SendToFormSubmitButton = () => {
  * If called on first step, calls callback
  */
 export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
-  const {
-    isPreview,
-    setIsPreview,
-    transferResult: transferStatus,
-    clearTransferResult: clearTransferStatus,
-  } = useSendToContext();
+  const { isPreview, setIsPreview, transferResult, clearTransferResult } =
+    useSendToContext();
   const { isSubmitting } = useSendToFormState();
 
   const handleClick = () => {
@@ -284,7 +272,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
     return null;
   }
 
-  if (transferStatus?.status === 'success') {
+  if (transferResult?.status === 'success') {
     return (
       <Button
         className='w-full transition-opacity duration-200'
@@ -292,12 +280,12 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
         type='button'
         asChild
       >
-        <Nt href={baseScanUrl(transferStatus.hash)}>View details</Nt>
+        <Nt href={baseScanUrl(transferResult.hash)}>View details</Nt>
       </Button>
     );
   }
 
-  if (transferStatus?.status === 'fail') {
+  if (transferResult?.status === 'fail') {
     return (
       <Button
         className='w-full transition-opacity duration-200'
@@ -305,7 +293,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
         type='button'
         onClick={() => {
           setIsPreview(true);
-          clearTransferStatus();
+          clearTransferResult();
         }}
       >
         Try again

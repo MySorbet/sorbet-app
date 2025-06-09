@@ -65,7 +65,7 @@ export const SendToFormContext = ({
   selectedRecipientId?: string;
 }) => {
   const [isPreview, setIsPreview] = useState(false);
-  const [transferStatus, setTransferStatus] = useState<
+  const [transferResult, setTransferResult] = useState<
     TransferResult | undefined
   >();
 
@@ -138,7 +138,7 @@ export const SendToFormContext = ({
       address: string;
       transferTransactionHash?: `0x${string}`;
     }) => {
-      setTransferStatus({
+      setTransferResult({
         status: 'success',
         hash: transferTransactionHash ?? '',
       });
@@ -147,7 +147,7 @@ export const SendToFormContext = ({
       );
     },
     onError: (error) => {
-      setTransferStatus({
+      setTransferResult({
         status: 'fail',
         error: error.message,
       });
@@ -160,7 +160,7 @@ export const SendToFormContext = ({
 
   const reset = () => {
     form.reset();
-    setTransferStatus(undefined);
+    setTransferResult(undefined);
     setIsPreview(false);
   };
 
@@ -173,8 +173,8 @@ export const SendToFormContext = ({
           recipients,
           selectedRecipientId,
           maxAmount,
-          transferResult: transferStatus,
-          clearTransferResult: () => setTransferStatus(undefined),
+          transferResult,
+          clearTransferResult: () => setTransferResult(undefined),
           reset,
           sendUSDC: async (amount, address) => {
             await sendUSDC({ amount, address });
