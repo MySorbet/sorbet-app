@@ -81,7 +81,7 @@ export const CopyIconButton = forwardRef<
         {isCopied ? (
           <CircleCheck
             className={cn(
-              'animate-in zoom-in-0 p-0 text-green-500',
+              'animate-in zoom-in-50 fade-in-0 p-0 text-green-500',
               checkIconClassName
             )}
           />
@@ -89,7 +89,7 @@ export const CopyIconButton = forwardRef<
           <Copy
             className={cn(
               'text-muted-foreground p-0',
-              !isFirstRender.current && 'animate-in zoom-in-0',
+              !isFirstRender.current && 'animate-in zoom-in-50 fade-in-0',
               copyIconClassName
             )}
           />
