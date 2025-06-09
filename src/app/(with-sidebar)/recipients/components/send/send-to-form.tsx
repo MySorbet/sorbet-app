@@ -31,6 +31,7 @@ import { formatCurrency } from '@/lib/currency';
 import { Percentages } from './percentages';
 import { PreviewSend } from './preview-send';
 import { Processing } from './processing';
+import { Success } from './success';
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -74,17 +75,8 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
   }
 
   if (transferStatus?.status === 'success') {
-    return (
-      <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
-        <span className='text-muted-foreground text-sm font-medium leading-none'>
-          You sent
-        </span>
-        <span className='text-xl font-semibold'>{formatCurrency(amount)}</span>
-        <span className='text-muted-foreground text-xs leading-none'>
-          {recipientObj?.label}
-        </span>
-      </div>
-    );
+    if (!amount || !recipientObj) return null;
+    return <Success amount={amount} recipient={recipientObj} />;
   }
 
   if (transferStatus?.status === 'fail') {
@@ -98,17 +90,16 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     );
   }
 
+  const showPreview = amount && recipientObj && isPreview;
+
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
       className='space-y-10'
       id={sendToFormId}
     >
-      {isPreview ? (
-        <PreviewSend
-          amount={amount}
-          recipient={recipients?.find((r) => r.id === recipient)}
-        />
+      {showPreview ? (
+        <PreviewSend amount={amount} recipient={recipientObj} />
       ) : (
         <>
           {/* Recipient select */}

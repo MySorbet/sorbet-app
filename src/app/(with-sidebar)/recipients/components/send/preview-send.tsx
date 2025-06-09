@@ -1,6 +1,7 @@
-import { ArrowLeftRight, Clock, Wallet } from 'lucide-react';
+import { ArrowLeftRight, Wallet } from 'lucide-react';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Separator } from '@/components/ui/separator';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
@@ -17,8 +18,8 @@ export const PreviewSend = ({
   amount,
   recipient,
 }: {
-  amount?: number;
-  recipient?: RecipientAPI;
+  amount: number;
+  recipient: RecipientAPI;
 }) => {
   const { smartWalletAddress } = useSmartWalletAddress();
 
@@ -33,9 +34,7 @@ export const PreviewSend = ({
           Amount
         </p>
         <p className='text-xl font-semibold'>{formatCurrency(amount)}</p>
-        <p className='text-muted-foreground flex items-center gap-1 text-sm leading-none'>
-          <Clock className='size-3' /> Arrives in approx. 2 mins
-        </p>
+        <Timing type={recipient.type} />
         {showConversion && (
           <p className='text-muted-foreground flex items-center gap-1 text-sm leading-none'>
             <ArrowLeftRight className='size-3' /> Conversion rate XXXXXXX
