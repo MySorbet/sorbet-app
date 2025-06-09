@@ -44,6 +44,21 @@ const sendToFormId = 'send-to-form';
  *
  * TODO: Consider reading endorsement status to disable interacting with USD or EUR accounts if endorsements are disabled -- is that even possible?
  * TODO: Explore decimal precision. For banks, we probably want to truncate. For crypto, we need more decimals allowed. Check bridge docs.
+ *
+ * Note: Because of some quirks with Radix dialogs and the fact that the send dialog can be opened overtop of other drawers or sheets,
+ * we must take the advice mentioned in [this issue](https://github.com/radix-ui/primitives/issues/1088#issuecomment-2720144489) and lock
+ * package versions to the following:
+ *
+ * ```json
+ * "@radix-ui/react-dropdown-menu": "2.1.4",
+ * "@radix-ui/react-select": "2.1.4",
+ * "@radix-ui/react-popover": "1.1.4",
+ * "@radix-ui/react-dialog": "1.1.4",
+ *
+ * "overrides": {
+ *   "@radix-ui/react-dismissable-layer": "1.1.4"
+ * }
+ * ```
  */
 export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
   const {
