@@ -11,15 +11,15 @@ import {
 import { useAfter } from '@/hooks/use-after';
 
 import {
+  SendToFormContext,
+  useSendToContext,
+  useSendToFormState,
+} from './send-to-context';
+import {
   SendToForm,
   SendToFormBackButton,
-  SendToFormContext,
   SendToFormSubmitButton,
-  useSendToContext,
-  useSendToFormContext,
-  useSendToFormState,
 } from './send-to-form';
-import { useFormState } from 'react-hook-form';
 
 /** Render the send-to form in a dialog/drawer */
 export const SendToDialog = ({ onAdd }: { onAdd?: () => void }) => {
@@ -36,7 +36,7 @@ export const SendToDialog = ({ onAdd }: { onAdd?: () => void }) => {
   );
 };
 
-export const SendToDialogWithReset = ({
+const SendToDialogWithReset = ({
   onAdd,
   open,
   setOpen,
@@ -45,13 +45,11 @@ export const SendToDialogWithReset = ({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) => {
-  const { reset } = useSendToContext();
   const { isSubmitting } = useSendToFormState();
 
-  const clear = useAfter(() => {
-    reset();
-  }, 300);
-
+  // Clear the send to experience after it is closed
+  const { reset } = useSendToContext();
+  const clear = useAfter(reset, 300);
   const handleOpenChange = (open: boolean) => {
     setOpen(open);
     !open && clear();
