@@ -6,7 +6,7 @@ import { sampleInvoices } from '@/api/invoices/sample-invoices';
 
 import InvoiceSheet from './invoice-sheet';
 
-const meta: Meta<typeof InvoiceSheet> = {
+const meta = {
   title: 'Invoices/InvoiceSheet',
   component: InvoiceSheet,
   parameters: {
@@ -18,12 +18,13 @@ const meta: Meta<typeof InvoiceSheet> = {
     onCancel: fn(),
     onEdit: fn(),
     onDownload: fn(),
+    setOpen: fn(), // overridden via render
     onInvoiceStatusChange: fn(),
   },
-};
+} satisfies Meta<typeof InvoiceSheet>;
 
 export default meta;
-type Story = StoryObj<typeof InvoiceSheet>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => {

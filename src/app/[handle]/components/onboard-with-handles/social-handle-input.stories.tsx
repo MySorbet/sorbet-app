@@ -20,7 +20,7 @@ import {
   SocialHandleInputWidgetTypes,
 } from './social-handle-input';
 
-const meta: Meta<typeof SocialHandleInput> = {
+const meta = {
   component: SocialHandleInput,
   title: 'Profile/SocialHandleInput',
   parameters: {
@@ -35,10 +35,10 @@ const meta: Meta<typeof SocialHandleInput> = {
       },
     },
   },
-};
+} satisfies Meta<typeof SocialHandleInput>;
 
 export default meta;
-type Story = StoryObj<typeof SocialHandleInput>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

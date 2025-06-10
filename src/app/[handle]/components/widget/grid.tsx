@@ -2,7 +2,8 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import React, { useEffect, useState } from 'react';
-import { Responsive as RRGL } from 'react-grid-layout';
+import { Responsive } from 'react-grid-layout';
+const RRGL = Responsive as unknown as React.ComponentType<any>;
 
 import { WidgetData } from '@/api/widgets-v2/types';
 import { useContainerQuery } from '@/hooks/use-container-query';

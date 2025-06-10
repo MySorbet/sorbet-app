@@ -5,7 +5,7 @@ import { fn } from '@storybook/test';
 import { ImageControls } from './control-config';
 import { WidgetControls } from './widget-controls';
 
-const meta: Meta<typeof WidgetControls> = {
+const meta = {
   title: 'Profile/WidgetControls',
   component: WidgetControls,
   parameters: {

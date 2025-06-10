@@ -3,16 +3,16 @@ import { Meta, StoryObj } from '@storybook/react';
 import { TableTransaction } from './transaction-table';
 import { TransactionsCard } from './transactions-card';
 
-const meta: Meta<typeof TransactionsCard> = {
+const meta = {
   title: 'Wallet/TransactionsCard',
   component: TransactionsCard,
   parameters: {
     layout: 'centered',
   },
-};
+} satisfies Meta<typeof TransactionsCard>;
 
 export default meta;
-type Story = StoryObj<typeof TransactionsCard>;
+type Story = StoryObj<typeof meta>;
 
 // Sample transaction data
 const sampleTransactions: TableTransaction[] = [

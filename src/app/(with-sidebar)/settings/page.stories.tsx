@@ -4,7 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 
 import SettingsPage from './page';
 
-const meta: Meta<typeof SettingsPage> = {
+const meta = {
   title: 'Settings',
   component: SettingsPage,
   parameters: {
@@ -18,10 +18,10 @@ const meta: Meta<typeof SettingsPage> = {
       </SidebarProvider>
     ),
   ],
-};
+} satisfies Meta<typeof SettingsPage>;
 
 export default meta;
-type Story = StoryObj<typeof SettingsPage>;
+type Story = StoryObj<typeof meta>;
 
 // Empty form
 export const Default: Story = {};

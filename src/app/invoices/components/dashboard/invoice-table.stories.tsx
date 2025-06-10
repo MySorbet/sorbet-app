@@ -5,7 +5,7 @@ import { sampleInvoices } from '@/api/invoices/sample-invoices';
 
 import { InvoiceTable } from './invoice-table';
 
-const meta: Meta<typeof InvoiceTable> = {
+const meta = {
   title: 'Invoices/InvoiceTable',
   component: InvoiceTable,
   parameters: {
@@ -14,10 +14,10 @@ const meta: Meta<typeof InvoiceTable> = {
       default: 'sorbet',
     },
   },
-};
+} satisfies Meta<typeof InvoiceTable>;
 
 export default meta;
-type Story = StoryObj<typeof InvoiceTable>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import SummaryCard from './summary-card';
 
-const meta: Meta<typeof SummaryCard> = {
+const meta = {
   title: 'Invoices/SummaryCard',
   component: SummaryCard,
   tags: ['autodocs'],
@@ -12,10 +12,10 @@ const meta: Meta<typeof SummaryCard> = {
       default: 'sorbet',
     },
   },
-};
+} satisfies Meta<typeof SummaryCard>;
 
 export default meta;
-type Story = StoryObj<typeof SummaryCard>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -57,6 +57,9 @@ export const ZeroInvoices: Story = {
 
 export const Loading: Story = {
   args: {
+    label: 'Loading',
+    value: 0,
+    invoiceCount: 0,
     isLoading: true,
   },
 };

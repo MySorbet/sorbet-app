@@ -1,15 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { SigninContent } from './signin-content';
+import { ControlButton } from './control-button';
 
 const meta = {
-  component: SigninContent,
-  title: 'Signin/SigninContent',
+  title: 'ControlButton',
+  component: ControlButton,
   parameters: {
     layout: 'centered',
-    backgrounds: { disable: true },
   },
-} satisfies Meta<typeof SigninContent>;
+} satisfies Meta<typeof ControlButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

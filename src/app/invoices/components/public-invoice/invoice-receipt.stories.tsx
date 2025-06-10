@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { InvoiceReceipt } from './invoice-receipt';
 
-const meta: Meta<typeof InvoiceReceipt> = {
+const meta = {
   title: 'Invoices/InvoiceReceipt',
   component: InvoiceReceipt,
   parameters: {
@@ -19,10 +19,10 @@ const meta: Meta<typeof InvoiceReceipt> = {
       },
     },
   },
-};
+} satisfies Meta<typeof InvoiceReceipt>;
 
 export default meta;
-type Story = StoryObj<typeof InvoiceReceipt>;
+type Story = StoryObj<typeof meta>;
 
 export const Paid: Story = {
   args: {

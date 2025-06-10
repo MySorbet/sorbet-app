@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { UrlTypes } from '../../util';
 import { SocialIcon } from './social-icon';
 
-const meta: Meta<typeof SocialIcon> = {
+const meta = {
   title: 'Profile/WidgetIcon',
   component: SocialIcon,
   parameters: {
@@ -15,10 +15,10 @@ const meta: Meta<typeof SocialIcon> = {
       options: UrlTypes,
     },
   },
-};
+} satisfies Meta<typeof SocialIcon>;
 
 export default meta;
-type Story = StoryObj<typeof SocialIcon>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -28,6 +28,9 @@ export const Default: Story = {
 
 // New story to display all icons in two columns
 export const AllIcons: Story = {
+  args: {
+    type: 'Substack', // ignored in render
+  },
   render: () => {
     return (
       <div style={{ display: 'flex', gap: '20px' }}>

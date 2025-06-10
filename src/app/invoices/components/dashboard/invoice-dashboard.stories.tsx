@@ -11,7 +11,7 @@ import { useInvoices } from '@/app/invoices/hooks/use-invoices';
 
 import { InvoiceDashboard } from './invoice-dashboard';
 
-const meta: Meta<typeof InvoiceDashboard> = {
+const meta = {
   title: 'Invoices/InvoiceDashboard',
   component: InvoiceDashboard,
   parameters: {
@@ -23,10 +23,10 @@ const meta: Meta<typeof InvoiceDashboard> = {
   args: {
     onCreateNew: fn(),
   },
-};
+} satisfies Meta<typeof InvoiceDashboard>;
 
 export default meta;
-type Story = StoryObj<typeof InvoiceDashboard>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -35,6 +35,9 @@ export const Default: Story = {
 };
 
 export const WithNetworkCall: Story = {
+  args: {
+    invoices: [], // overridden via render
+  },
   parameters: {
     msw: {
       // Mock network calls for fetching invoices, cancelling an invoice, and paying an invoice
