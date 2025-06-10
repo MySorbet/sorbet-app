@@ -14,6 +14,7 @@ import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToDialog } from './send/send-to-dialog';
+import { useAfter } from '@/hooks/use-after';
 
 /** Puts together recipient list render, edit, add, and send to dialog */
 export const RecipientPageContent = () => {
@@ -22,6 +23,12 @@ export const RecipientPageContent = () => {
   const [viewSheetOpen, setViewSheetOpen] = useState(false);
   const { selectedRecipient, setSelectedRecipientId } =
     useSelectedRecipient(recipients);
+
+  const clearSelectedRecipient = useAfter(
+    () => setSelectedRecipientId(null),
+    300
+  );
+
   const { set } = useSendTo();
 
   const { mutateAsync: createRecipient } = useCreateRecipient();
@@ -59,12 +66,12 @@ export const RecipientPageContent = () => {
       />
       <RecipientSheet
         open={viewSheetOpen}
-        setOpen={(open) => {
-          setViewSheetOpen(open);
-        }}
+        setOpen={setViewSheetOpen}
         onSend={() => {
           selectedRecipient && set({ recipientId: selectedRecipient.id });
           setViewSheetOpen(false);
+          // Normally, onAnimationEnd would handle this, but it is not being called when the send dialog is opened overtop of the recipient sheet
+          clearSelectedRecipient();
         }}
         onAnimationEnd={() => setSelectedRecipientId(null)}
         recipient={selectedRecipient}
