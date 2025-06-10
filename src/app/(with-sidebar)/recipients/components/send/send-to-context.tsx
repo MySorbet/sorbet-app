@@ -1,7 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { createContext, useContext, useState } from 'react';
-import { useForm, useFormContext, useFormState } from 'react-hook-form';
+import { createContext, useContext, useMemo, useState } from 'react';
+import {
+  useForm,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -24,6 +29,7 @@ type SendToContextType = {
   setIsPreview: (value: boolean) => void;
   recipients?: RecipientAPI[];
   selectedRecipientId?: string;
+  selectedRecipient?: RecipientAPI;
   maxAmount?: number;
   transferResult?: TransferResult;
   clearTransferResult: () => void;
@@ -114,6 +120,15 @@ export const SendToFormContext = ({
     mode: 'onChange',
   });
 
+  const recipientMap = useMemo(() => {
+    return new Map(recipients?.map((r) => [r.id, r]));
+  }, [recipients]);
+  const id = useWatch({
+    control: form.control,
+    name: 'recipient',
+  });
+  const selectedRecipient = recipientMap.get(id);
+
   const { sendUSDC: _sendUSDC } = useSendUSDC();
   const { mutateAsync: sendUSDC } = useMutation({
     mutationFn: async ({
@@ -172,6 +187,7 @@ export const SendToFormContext = ({
           setIsPreview,
           recipients,
           selectedRecipientId,
+          selectedRecipient,
           maxAmount,
           transferResult,
           clearTransferResult: () => setTransferResult(undefined),

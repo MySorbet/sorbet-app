@@ -61,15 +61,19 @@ const sendToFormId = 'send-to-form';
  * ```
  */
 export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
-  const { isPreview, recipients, maxAmount, transferResult, sendUSDC } =
-    useSendToContext();
+  const {
+    isPreview,
+    recipients,
+    maxAmount,
+    transferResult,
+    sendUSDC,
+    selectedRecipient,
+  } = useSendToContext();
 
   const form = useSendToFormContext();
-  const { recipient, amount } = useWatch({
+  const { amount } = useWatch({
     control: form.control,
   });
-  // TODO: This could be done better with a map
-  const selectedRecipient = recipients?.find((r) => r.id === recipient);
 
   const { isSubmitting, errors } = useSendToFormState();
 
