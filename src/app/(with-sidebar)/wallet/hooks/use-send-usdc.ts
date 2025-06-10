@@ -19,30 +19,31 @@ export const useSendUSDC = () => {
 
   const sendUSDC = async (amount: string, recipientWalletAddress: string) => {
     const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
-    if (client) {
-      await client.switchChain({
-        id: chain.id,
-      });
+    if (!client) return;
 
-      // Transfer transaction
-      const transferData = encodeFunctionData({
-        abi: TOKEN_ABI,
-        functionName: 'transfer',
-        args: [recipientWalletAddress, parseUnits(amount.toString(), 6)],
-      });
+    // Make sure we are on the correct chain
+    await client.switchChain({
+      id: chain.id,
+    });
 
-      const transferTransactionHash = await client.sendTransaction({
-        account: client.account,
-        to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS as `0x${string}`,
-        data: transferData,
-      });
+    // Build USDC transfer transaction
+    const transferData = encodeFunctionData({
+      abi: TOKEN_ABI,
+      functionName: 'transfer',
+      args: [recipientWalletAddress, parseUnits(amount.toString(), 6)],
+    });
 
-      // Refetch the wallet balance and transaction overview to update the UI right away
-      refetchWalletBalance();
-      refetchTransactionOverview();
+    // Send it
+    const txHash = await client.sendTransaction({
+      to: env.NEXT_PUBLIC_BASE_USDC_ADDRESS as `0x${string}`,
+      data: transferData,
+    });
 
-      return transferTransactionHash;
-    }
+    // Refetch the wallet balance and transaction overview to update the UI right away
+    refetchWalletBalance();
+    refetchTransactionOverview();
+
+    return txHash;
   };
 
   return { sendUSDC };

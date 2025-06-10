@@ -8,8 +8,6 @@ const inputVariants = cva(
     variants: {
       variant: {
         default: 'focus:ring-2 focus:ring-ring focus:ring-offset-2 border border-input bg-background',
-        noRing: 'border border-input bg-background',
-        noBorderOrRing: '',
       }
     },
     defaultVariants: {

@@ -10,7 +10,6 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-import { useQueryState } from 'nuqs';
 import { useState } from 'react';
 
 import { RecipientAPI, RecipientType } from '@/api/recipients/types';
@@ -35,6 +34,8 @@ import {
 } from '@/components/ui/table';
 import { formatWalletAddress } from '@/lib/utils';
 
+import { useSendTo } from '../hooks/use-send-to';
+
 /** Displays a table of recipients with actions */
 export const RecipientsCard = ({
   onAdd,
@@ -50,7 +51,7 @@ export const RecipientsCard = ({
   onClick?: (recipientId: string) => void;
 }) => {
   return (
-    <Card className='w-full max-w-7xl overflow-clip'>
+    <Card className='h-fit w-full max-w-7xl overflow-clip'>
       {recipients && (recipients?.length !== 0 || loading) ? (
         <RecipientsTable
           recipients={recipients}
@@ -76,7 +77,7 @@ const RecipientsTable = ({
   loading?: boolean;
   onDelete?: (recipientId: string) => void;
 }) => {
-  const [, setSendTo] = useQueryState('send-to');
+  const { set } = useSendTo();
 
   // Manage open state of dropdowns as a list. TODO: Better this way or each row with state?
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
@@ -146,7 +147,7 @@ const RecipientsTable = ({
                     <DropdownMenuItem
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSendTo(recipient.id);
+                        set({ recipientId: recipient.id });
                         handleMenuOpen(recipient.id, false);
                       }}
                     >
