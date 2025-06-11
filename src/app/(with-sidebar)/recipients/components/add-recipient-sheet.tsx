@@ -1,6 +1,7 @@
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { forwardRef, useState } from 'react';
 
 import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/utils';
@@ -109,6 +110,24 @@ const BankOrCrypto = ({
   // TODO: What we really need to do here is disable USD or EUR recipient creation according to endorsement status.
   const isVerified = useIsVerified();
 
+  // Temporary UX to ship recipients as is
+  const router = useRouter();
+  const handleBankClick = () => {
+    if (isVerified) {
+      setStep('bank');
+    } else {
+      router.push('/verify');
+    }
+  };
+  const bankDetail = isVerified ? (
+    'Arrives in 1-2 business days'
+  ) : (
+    <div className='flex gap-1'>
+      <ShieldCheck className='size-4' />
+      <span>Get verified to add bank recipients</span>
+    </div>
+  );
+
   return (
     <>
       <VaulSheetHeader>
@@ -122,9 +141,8 @@ const BankOrCrypto = ({
       <ScrollArea className='overflow-y-auto'>
         <div className={cn('flex flex-col gap-3', className)}>
           <RecipientButton
-            onClick={() => setStep('bank')}
+            onClick={handleBankClick}
             aria-label='Bank recipient'
-            disabled={!isVerified}
           >
             <RecipientButtonIcon type='bank' />
             <RecipientButtonContent>
@@ -132,9 +150,7 @@ const BankOrCrypto = ({
               <RecipientButtonDescription>
                 Transfer to a business or individual bank
               </RecipientButtonDescription>
-              <RecipientButtonDetail>
-                Arrives in 1-2 business days
-              </RecipientButtonDetail>
+              <RecipientButtonDetail>{bankDetail}</RecipientButtonDetail>
             </RecipientButtonContent>
           </RecipientButton>
           <RecipientButton

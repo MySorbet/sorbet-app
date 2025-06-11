@@ -2,6 +2,7 @@ import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
+import { mockBridgeCustomerHandlerKycComplete } from '@/api/bridge/msw-handlers';
 import { Button } from '@/components/ui/button';
 
 import { AddRecipientSheet } from './add-recipient-sheet';
@@ -46,5 +47,14 @@ export const Default: Story = {
         <AddRecipientSheet {...args} open={open} setOpen={setOpen} />
       </>
     );
+  },
+};
+
+export const Verified: Story = {
+  render: Default.render,
+  parameters: {
+    msw: {
+      handlers: [mockBridgeCustomerHandlerKycComplete],
+    },
   },
 };
