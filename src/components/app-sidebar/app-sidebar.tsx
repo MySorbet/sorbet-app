@@ -99,6 +99,14 @@ export const AppSidebar = () => {
                       icon: UsersIcon,
                     }}
                   />
+                  <SidebarMenuBadge>
+                    <Badge
+                      variant='outline'
+                      className='text-muted-foreground font-normal'
+                    >
+                      new ✨
+                    </Badge>
+                  </SidebarMenuBadge>
                 </SidebarMenuItem>
               )}
             </SidebarMenu>

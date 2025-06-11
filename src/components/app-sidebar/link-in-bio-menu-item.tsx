@@ -1,8 +1,7 @@
 'use client';
 
 import { SidebarLinkButton } from '@/components/app-sidebar/sidebar-link-button';
-import { Badge } from '@/components/ui/badge';
-import { SidebarMenuBadge, SidebarMenuItem } from '@/components/ui/sidebar';
+import { SidebarMenuItem } from '@/components/ui/sidebar';
 import { SquareUserIcon } from '@/components/ui/square-user';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -19,12 +18,6 @@ export const LinkInBioMenuItem = () => {
   return (
     <SidebarMenuItem key={item.title}>
       <SidebarLinkButton item={item} />
-
-      <SidebarMenuBadge>
-        <Badge variant='outline' className='text-muted-foreground font-normal'>
-          beta ✨
-        </Badge>
-      </SidebarMenuBadge>
     </SidebarMenuItem>
   );
 };

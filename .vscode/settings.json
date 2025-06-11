@@ -25,6 +25,9 @@
     "containerClassName"
   ],
 
+  // Get tailwind autocomplete for cva
+  "tailwindCSS.classFunctions": ["cva"],
+
   // Make auto imports use "@"
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "node_modules/typescript/lib"
