@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 import { SendToDialog } from './send-to-dialog';
 
 const meta = {
-  title: 'Transfers/SendToDialog',
+  title: 'Recipients/SendToDialog',
   component: SendToDialog,
   parameters: {
     layout: 'centered',

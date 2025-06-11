@@ -28,7 +28,7 @@ const withResizableContainer = (Story: React.ComponentType) => (
 );
 
 const meta = {
-  title: 'Transfers/RecipientButton',
+  title: 'Recipients/RecipientButton',
   component: RecipientButton,
   parameters: {
     layout: 'centered',

@@ -9,7 +9,7 @@ import { AddRecipientSheet } from './add-recipient-sheet';
 import { debugToast } from './story-utils';
 
 const meta = {
-  title: 'Transfers/AddRecipientSheet',
+  title: 'Recipients/AddRecipientSheet',
   component: AddRecipientSheet,
   parameters: {
     layout: 'centered',

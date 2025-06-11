@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 import {
   BankRecipientFormContext,
-  BankRecipientFormValuesWithRequiredValues,
+  BankRecipientFormValues,
   BankRecipientSubmitButton,
   NakedBankRecipientForm,
 } from './bank-recipient-form';
@@ -48,7 +48,7 @@ export const AddRecipientSheet = ({
 }: {
   onSubmit?: (
     values:
-      | { type: 'usd'; values: BankRecipientFormValuesWithRequiredValues }
+      | { type: 'usd'; values: BankRecipientFormValues }
       | { type: 'crypto'; values: CryptoRecipientFormValues }
   ) => Promise<void>;
   open?: boolean;
@@ -56,9 +56,7 @@ export const AddRecipientSheet = ({
 }) => {
   const [step, setStep] = useState<'crypto' | 'bank' | undefined>();
   const handleSubmit = async (
-    values:
-      | BankRecipientFormValuesWithRequiredValues
-      | CryptoRecipientFormValues
+    values: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
     if (isCryptoFormValues(values)) {
       return await onSubmit?.({ type: 'crypto', values });
@@ -179,9 +177,7 @@ const BankRecipientStep = ({
 }: {
   onBack?: () => void;
   className?: string;
-  onSubmit?: (
-    values: BankRecipientFormValuesWithRequiredValues
-  ) => Promise<void>;
+  onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
   return (
     <>

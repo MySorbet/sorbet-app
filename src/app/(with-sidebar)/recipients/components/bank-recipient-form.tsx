@@ -92,36 +92,67 @@ const formSchema = z
     }
   });
 
-export type BankRecipientFormValues = z.infer<typeof formSchema>;
-export type BankRecipientFormValuesWithRequiredValues =
-  BankRecipientFormValues & {
-    account_type: 'us' | 'iban';
-  };
+export type BankRecipientFormValuesInternal = z.infer<typeof formSchema>;
+export type BankRecipientFormValues = BankRecipientFormValuesInternal & {
+  account_type: 'us' | 'iban';
+};
 
-export const bankFormId = 'bank-form';
+const bankRecipientDefaultValues: BankRecipientFormValuesInternal = {
+  currency: 'usd',
+  account_owner_type: 'individual',
+  business_name: '',
+  account_owner_name: '',
+  account: usAccountDefaultValues,
+  ...addressDefaultValues,
+};
+
+export const BankRecipientFormContext = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const form = useForm<BankRecipientFormValuesInternal>({
+    resolver: zodResolver(formSchema),
+    defaultValues: bankRecipientDefaultValues,
+    mode: 'onBlur',
+  });
+
+  return <Form {...form}>{children}</Form>;
+};
+
+const useBankRecipientForm = () =>
+  useFormContext<BankRecipientFormValuesInternal>();
+
+/** The ID of the bank recipient form. Used to link the form to the submit button */
+const BANK_RECIPIENT_FORM_ID = 'bank-recipient-form';
 
 // Add the remaining values we need to send this to bridge
-const addRequiredValues = (
-  values: BankRecipientFormValues
-): BankRecipientFormValuesWithRequiredValues => {
+// TODO: We are in active conversation with bridge about if we are required to include first_name and last_name
+// If so, we can either extract them from the account_owner_name
+// or we can change the form to include them and build account_owner_name from them
+// For now, we will omit them since EA's seem to work without them
+const inferRemainingValues = (
+  values: BankRecipientFormValuesInternal
+): BankRecipientFormValues => {
   return {
     ...values,
     account_type: values.currency === 'usd' ? 'us' : 'iban',
   };
 };
 
+/**
+ * The bank recipient form without a form context or submit button
+ *
+ * Use within a BankRecipientFormContext
+ */
 export const NakedBankRecipientForm = ({
   onSubmit,
 }: {
-  onSubmit?: (
-    values: BankRecipientFormValuesWithRequiredValues
-  ) => Promise<void>;
+  onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
-  async function handleSubmit(values: BankRecipientFormValues) {
-    // Clean the values by removing empty strings recursively
-    const cleanedValues = removeEmptyStrings(values);
-    // Infer the remaining values bridge needs
-    const transformedValues = addRequiredValues(cleanedValues);
+  async function handleSubmit(values: BankRecipientFormValuesInternal) {
+    const cleanedValues = removeEmptyStrings(values); // Clean the values by removing empty strings recursively
+    const transformedValues = inferRemainingValues(cleanedValues); // Infer the remaining values bridge needs
     await onSubmit?.(transformedValues);
   }
 
@@ -134,7 +165,7 @@ export const NakedBankRecipientForm = ({
     <form
       onSubmit={form.handleSubmit(handleSubmit)}
       className='mx-auto w-full max-w-sm space-y-4 p-1'
-      id={bankFormId}
+      id={BANK_RECIPIENT_FORM_ID}
     >
       <FormField
         control={form.control}
@@ -308,28 +339,11 @@ export const NakedBankRecipientForm = ({
   );
 };
 
-const useBankRecipientForm = () => useFormContext<BankRecipientFormValues>();
-
-export const BankRecipientFormContext = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const form = useForm<BankRecipientFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      currency: 'usd',
-      account_owner_type: 'individual',
-      business_name: '',
-      account: usAccountDefaultValues,
-      ...addressDefaultValues,
-    },
-    mode: 'onBlur',
-  });
-
-  return <Form {...form}>{children}</Form>;
-};
-
+/**
+ * Submit button for the bank recipient form
+ *
+ * Use within a BankRecipientFormContext
+ */
 export const BankRecipientSubmitButton = forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof Button>
@@ -342,18 +356,13 @@ export const BankRecipientSubmitButton = forwardRef<
       ref={ref}
       variant='sorbet'
       type='submit'
-      form={bankFormId}
+      form={BANK_RECIPIENT_FORM_ID}
       disabled={!isValid || isSubmitting}
       className={cn(className, 'w-fit')}
       {...props}
     >
-      {isSubmitting ? (
-        <>
-          <Spinner /> Saving...
-        </>
-      ) : (
-        'Save'
-      )}
+      {isSubmitting && <Spinner />}
+      {isSubmitting ? 'Saving...' : 'Save'}
     </Button>
   );
 });

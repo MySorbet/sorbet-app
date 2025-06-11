@@ -5,7 +5,7 @@ import { AddressForm } from './address-form';
 import { debugToast } from './story-utils';
 
 const meta = {
-  title: 'Transfers/AddressForm',
+  title: 'Recipients/AddressForm',
   component: AddressForm,
   parameters: {
     layout: 'centered',

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { RecipientSheet } from './recipient-sheet';
 
 const meta = {
-  title: 'Transfers/RecipientSheet',
+  title: 'Recipients/RecipientSheet',
   component: RecipientSheet,
   parameters: {
     layout: 'centered',

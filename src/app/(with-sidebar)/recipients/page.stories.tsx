@@ -5,7 +5,7 @@ import { handlers } from '@/api/recipients/msw';
 import RecipientsPage from './page';
 
 const meta = {
-  title: 'Transfers/Transfers Page',
+  title: 'Recipients/Transfers Page',
   component: RecipientsPage,
   parameters: {
     layout: 'fullscreen',

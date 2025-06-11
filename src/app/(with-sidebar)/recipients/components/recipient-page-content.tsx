@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import { useAfter } from '@/hooks/use-after';
+
 import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useDeleteRecipient } from '../hooks/use-delete-recipient';
@@ -9,12 +11,11 @@ import { useRecipients } from '../hooks/use-recipients';
 import { useSelectedRecipient } from '../hooks/use-selected-recipient';
 import { useSendTo } from '../hooks/use-send-to';
 import { AddRecipientSheet } from './add-recipient-sheet';
-import { BankRecipientFormValuesWithRequiredValues } from './bank-recipient-form';
+import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsCard } from './recipients-card';
 import { SendToDialog } from './send/send-to-dialog';
-import { useAfter } from '@/hooks/use-after';
 
 /** Puts together recipient list render, edit, add, and send to dialog */
 export const RecipientPageContent = () => {
@@ -37,7 +38,7 @@ export const RecipientPageContent = () => {
 
   const handleSubmit = async (
     recipient:
-      | { type: 'usd'; values: BankRecipientFormValuesWithRequiredValues }
+      | { type: 'usd'; values: BankRecipientFormValues }
       | { type: 'crypto'; values: CryptoRecipientFormValues }
   ) => {
     await createRecipient(recipient);

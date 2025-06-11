@@ -5,7 +5,7 @@ import { mockRecipients } from '@/api/recipients/mock';
 import { Success } from './success';
 
 const meta = {
-  title: 'Transfers/Success',
+  title: 'Recipients/Success',
   component: Success,
   parameters: {
     layout: 'centered',

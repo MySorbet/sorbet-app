@@ -9,7 +9,7 @@ import { NakedBankRecipientForm } from './bank-recipient-form';
 import { debugToast, FillOutBankRecipientForm } from './story-utils';
 
 const meta = {
-  title: 'Transfers/BankRecipientForm',
+  title: 'Recipients/BankRecipientForm',
   component: NakedBankRecipientForm,
   parameters: {
     layout: 'centered',

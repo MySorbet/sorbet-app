@@ -1,12 +1,12 @@
-import { BankRecipientFormValuesWithRequiredValues } from '@/app/(with-sidebar)/recipients/components/bank-recipient-form';
+import { BankRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/bank-recipient-form';
 import { CryptoRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/crypto-recipient-form';
 
 export type RecipientType = 'usd' | 'eur' | 'crypto';
 
 /** Data sent to the API to create a recipient */
 export type CreateRecipientDto =
-  | { type: 'usd'; values: BankRecipientFormValuesWithRequiredValues }
-  | { type: 'eur'; values: BankRecipientFormValuesWithRequiredValues }
+  | { type: 'usd'; values: BankRecipientFormValues }
+  | { type: 'eur'; values: BankRecipientFormValues }
   | { type: 'crypto'; values: CryptoRecipientFormValues };
 
 /** Recipients received from the API */
