@@ -3,8 +3,6 @@ import { fn } from '@storybook/test';
 
 import { KYCChecklist } from './kyc-checklist';
 
-type Story = StoryObj<typeof KYCChecklist>;
-
 const meta = {
   title: 'Verify/KYCChecklist',
   component: KYCChecklist,
@@ -21,6 +19,7 @@ const meta = {
 } satisfies Meta<typeof KYCChecklist>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

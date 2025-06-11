@@ -5,8 +5,6 @@ import { mapToACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 
 import { ClientPaymentCard } from './client-payment-card';
 
-type Story = StoryObj<typeof ClientPaymentCard>;
-
 const meta = {
   title: 'Invoices/ClientPaymentCard',
   component: ClientPaymentCard,
@@ -23,6 +21,7 @@ const meta = {
 } satisfies Meta<typeof ClientPaymentCard>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 const account = mockBridgeCustomer.virtual_account
   ? mapToACHWireDetails(

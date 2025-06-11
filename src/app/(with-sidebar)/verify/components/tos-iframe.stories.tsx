@@ -5,8 +5,6 @@ import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
 
 import { TosIframe } from './tos-iframe';
 
-type Story = StoryObj<typeof TosIframe>;
-
 const meta = {
   title: 'Verify/TosIframe',
   component: TosIframe,
@@ -20,6 +18,7 @@ const meta = {
 } satisfies Meta<typeof TosIframe>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

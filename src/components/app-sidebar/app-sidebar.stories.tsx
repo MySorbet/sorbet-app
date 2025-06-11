@@ -6,8 +6,6 @@ import { SidebarProvider, useSidebar } from '@/components/ui/sidebar';
 
 import { AppSidebar } from './app-sidebar';
 
-type Story = StoryObj<typeof AppSidebar>;
-
 const meta = {
   title: 'Sidebar/AppSidebar',
   component: AppSidebar,
@@ -27,6 +25,7 @@ const meta = {
 } satisfies Meta<typeof AppSidebar>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

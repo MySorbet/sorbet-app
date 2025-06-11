@@ -50,8 +50,7 @@ const meta = {
 } satisfies Meta<typeof VaulSheet>;
 
 export default meta;
-
-type Story = StoryObj<typeof VaulSheet>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

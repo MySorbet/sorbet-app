@@ -17,7 +17,6 @@ const meta = {
 } satisfies Meta<typeof PreviewControls>;
 
 export default meta;
-
-type Story = StoryObj<typeof PreviewControls>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

@@ -11,7 +11,6 @@ const meta = {
 } satisfies Meta<typeof Splash>;
 
 export default meta;
-
-type Story = StoryObj<typeof Splash>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

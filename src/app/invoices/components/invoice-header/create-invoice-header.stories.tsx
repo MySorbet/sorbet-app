@@ -3,8 +3,6 @@ import { fn } from '@storybook/test';
 
 import { CreateInvoiceHeader } from './create-invoice-header';
 
-type Story = StoryObj<typeof CreateInvoiceHeader>;
-
 const meta = {
   title: 'Invoices/CreateInvoiceHeader',
   component: CreateInvoiceHeader,
@@ -20,6 +18,7 @@ const meta = {
 } satisfies Meta<typeof CreateInvoiceHeader>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

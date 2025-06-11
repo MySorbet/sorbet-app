@@ -6,8 +6,6 @@ import { useInvoice } from '@/app/invoices/hooks/use-invoice';
 
 import { PublishedInvoice } from './published-invoice';
 
-type Story = StoryObj<typeof PublishedInvoice>;
-
 const meta = {
   title: 'Invoices/PublishedInvoice',
   component: PublishedInvoice,
@@ -17,6 +15,7 @@ const meta = {
 } satisfies Meta<typeof PublishedInvoice>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

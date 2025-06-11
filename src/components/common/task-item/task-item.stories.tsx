@@ -4,8 +4,6 @@ import { FileText } from 'lucide-react';
 
 import { TaskItem } from './task-item';
 
-type Story = StoryObj<typeof TaskItem>;
-
 const meta = {
   title: 'Components/common/TaskItem',
   component: TaskItem,
@@ -30,6 +28,7 @@ const meta = {
 } satisfies Meta<typeof TaskItem>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

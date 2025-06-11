@@ -14,7 +14,7 @@ const meta = {
 } satisfies Meta<typeof InvoiceControls>;
 
 export default meta;
-type Story = StoryObj<typeof InvoiceControls>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

@@ -3,8 +3,6 @@ import { fn } from '@storybook/test';
 
 import { BackButton } from './back-button';
 
-type Story = StoryObj<typeof BackButton>;
-
 const meta = {
   title: 'Components/Common/BackButton',
   component: BackButton,
@@ -17,6 +15,7 @@ const meta = {
 } satisfies Meta<typeof BackButton>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Default back button with text

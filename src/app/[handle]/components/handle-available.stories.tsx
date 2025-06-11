@@ -11,8 +11,7 @@ const meta = {
 } satisfies Meta<typeof HandleAvailable>;
 
 export default meta;
-
-type Story = StoryObj<typeof HandleAvailable>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

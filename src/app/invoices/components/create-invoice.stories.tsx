@@ -26,7 +26,7 @@ const meta = {
 } satisfies Meta<typeof CreateInvoice>;
 
 export default meta;
-type Story = StoryObj<typeof CreateInvoice>;
+type Story = StoryObj<typeof meta>;
 
 const samplePrefills: Required<InvoiceForm> = {
   toName: 'John Doe',

@@ -4,7 +4,7 @@ import { fn } from '@storybook/test';
 
 import { InvoiceSheetCancelDrawer } from './invoice-sheet-cancel-drawer';
 
-export default {
+const meta = {
   title: 'Invoices/InvoiceSheetCancelDrawer',
   component: InvoiceSheetCancelDrawer,
   parameters: {},
@@ -14,7 +14,8 @@ export default {
   },
 } satisfies Meta<typeof InvoiceSheetCancelDrawer>;
 
-type Story = StoryObj<typeof InvoiceSheetCancelDrawer>;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => {

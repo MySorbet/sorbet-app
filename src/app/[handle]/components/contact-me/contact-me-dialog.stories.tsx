@@ -6,8 +6,6 @@ import { mockContactMeHandler } from '@/api/user/msw-handlers';
 
 import { ContactMeDialog } from './contact-me-dialog';
 
-type Story = StoryObj<typeof ContactMeDialog>;
-
 const meta = {
   title: 'Profile/ContactMeDialog',
   component: ContactMeDialog,
@@ -25,6 +23,7 @@ const meta = {
 } satisfies Meta<typeof ContactMeDialog>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

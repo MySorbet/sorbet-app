@@ -32,8 +32,7 @@ const meta = {
 } satisfies Meta<typeof RecipientSheet>;
 
 export default meta;
-
-type Story = StoryObj<typeof RecipientSheet>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

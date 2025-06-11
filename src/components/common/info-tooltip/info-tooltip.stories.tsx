@@ -3,8 +3,6 @@ import { fn } from '@storybook/test';
 
 import { InfoTooltip } from './info-tooltip';
 
-type Story = StoryObj<typeof InfoTooltip>;
-
 const meta = {
   title: 'Components/common/InfoTooltip',
   component: InfoTooltip,
@@ -18,6 +16,7 @@ const meta = {
 } satisfies Meta<typeof InfoTooltip>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

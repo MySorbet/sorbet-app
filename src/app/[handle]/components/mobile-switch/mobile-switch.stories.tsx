@@ -13,8 +13,7 @@ const meta = {
 } satisfies Meta<typeof MobileSwitch>;
 
 export default meta;
-
-type Story = StoryObj<typeof MobileSwitch>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

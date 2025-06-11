@@ -11,8 +11,7 @@ const meta = {
 } satisfies Meta<typeof ExitLinks>;
 
 export default meta;
-
-type Story = StoryObj<typeof ExitLinks>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

@@ -3,8 +3,6 @@ import { fn } from '@storybook/test';
 
 import { ForwardButton } from './forward-button';
 
-type Story = StoryObj<typeof ForwardButton>;
-
 const meta = {
   title: 'Components/Common/ForwardButton',
   component: ForwardButton,
@@ -17,6 +15,7 @@ const meta = {
 } satisfies Meta<typeof ForwardButton>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Default forward button with text

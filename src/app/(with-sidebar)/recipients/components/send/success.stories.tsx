@@ -13,8 +13,7 @@ const meta = {
 } satisfies Meta<typeof Success>;
 
 export default meta;
-
-type Story = StoryObj<typeof Success>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {

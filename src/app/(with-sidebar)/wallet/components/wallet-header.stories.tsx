@@ -16,6 +16,6 @@ const meta = {
 } satisfies Meta<typeof WalletHeader>;
 
 export default meta;
-type Story = StoryObj<typeof WalletHeader>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

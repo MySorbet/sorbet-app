@@ -36,8 +36,7 @@ const meta = {
 } satisfies Meta<typeof RecipientButton>;
 
 export default meta;
-
-type Story = StoryObj<typeof RecipientButton>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (

@@ -11,8 +11,6 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 
 import VerifyPage from './page';
 
-type Story = StoryObj<typeof VerifyPage>;
-
 const meta = {
   title: 'Verify/VerifyPage',
   component: VerifyPage,
@@ -29,6 +27,7 @@ const meta = {
 } satisfies Meta<typeof VerifyPage>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Note: You will either need to comment the Authenticated wrapper or solve mocked auth token to render this story
 

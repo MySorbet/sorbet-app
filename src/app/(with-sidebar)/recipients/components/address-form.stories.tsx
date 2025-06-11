@@ -23,7 +23,6 @@ const meta = {
 } satisfies Meta<typeof AddressForm>;
 
 export default meta;
-
-type Story = StoryObj<typeof AddressForm>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

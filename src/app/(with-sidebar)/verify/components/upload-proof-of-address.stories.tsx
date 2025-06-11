@@ -11,7 +11,6 @@ const meta = {
 } satisfies Meta<typeof UploadProofOfAddress>;
 
 export default meta;
-
-type Story = StoryObj<typeof UploadProofOfAddress>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

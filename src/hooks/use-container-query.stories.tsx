@@ -43,8 +43,6 @@ const ContainerQueryDemo = () => {
   );
 };
 
-type Story = StoryObj<typeof ContainerQueryDemo>;
-
 const meta = {
   title: 'Hooks/useContainerQuery',
   component: ContainerQueryDemo,
@@ -54,5 +52,6 @@ const meta = {
 } satisfies Meta<typeof ContainerQueryDemo>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

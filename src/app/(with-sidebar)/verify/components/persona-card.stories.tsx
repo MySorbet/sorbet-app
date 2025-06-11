@@ -4,8 +4,6 @@ import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
 
 import { PersonaCard } from './persona-card';
 
-type Story = StoryObj<typeof PersonaCard>;
-
 const meta = {
   title: 'Verify/PersonaCard',
   component: PersonaCard,
@@ -20,6 +18,7 @@ const meta = {
 export default meta;
 
 export const Default: Story = {};
+type Story = StoryObj<typeof meta>;
 
 // Render error if the inquiry template id is not found in the url
 export const Error: Story = {

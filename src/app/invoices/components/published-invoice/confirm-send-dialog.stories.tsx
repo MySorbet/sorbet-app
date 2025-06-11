@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<typeof ConfirmSendDialog>;
 
 export default meta;
-type Story = StoryObj<typeof ConfirmSendDialog>;
+type Story = StoryObj<typeof meta>;
 
 // Simulate API call with delay
 const fakeSendInvoice = () =>

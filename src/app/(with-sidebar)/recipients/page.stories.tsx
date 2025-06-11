@@ -16,8 +16,7 @@ const meta = {
 } satisfies Meta<typeof RecipientsPage>;
 
 export default meta;
-
-type Story = StoryObj<typeof RecipientsPage>;
+type Story = StoryObj<typeof meta>;
 
 // Currently, you will need to comment the authenticated wrapper to see the page
 export const Default: Story = {};

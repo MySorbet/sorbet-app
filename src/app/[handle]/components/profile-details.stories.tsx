@@ -11,8 +11,6 @@ import { cn } from '@/lib/utils';
 
 import { ProfileDetails } from './profile-details';
 
-type Story = StoryObj<typeof ProfileDetails>;
-
 const sizeDecorator = (
   Story: StoryFn,
   {
@@ -39,6 +37,7 @@ const meta = {
 } satisfies Meta<typeof ProfileDetails>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -69,7 +68,6 @@ export const WithoutNameAndBio: Story = {
 export const Desktop: Story = {
   args: {
     user: mockUser,
-    // @ts-expect-error this is not an arg to the story, but we use it to render the component in a different size
     desktop: true,
   },
 };

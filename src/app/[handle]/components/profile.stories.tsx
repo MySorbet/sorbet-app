@@ -12,7 +12,6 @@ import {
 
 import { Profile } from './profile';
 import { WidgetProvider } from './widget/use-widget-context';
-type Story = StoryObj<typeof Profile>;
 
 const meta = {
   title: 'Profile/Profile',
@@ -43,6 +42,7 @@ const meta = {
 } satisfies Meta<typeof Profile>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   name: 'Default (Logged out)',

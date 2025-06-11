@@ -2,8 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { FAQ } from './faq';
 
-type Story = StoryObj<typeof FAQ>;
-
 const meta = {
   title: 'Verify/FAQ',
   component: FAQ,
@@ -13,5 +11,6 @@ const meta = {
 } satisfies Meta<typeof FAQ>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

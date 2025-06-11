@@ -8,8 +8,6 @@ import {
 
 import ProfilePage from './page';
 
-type Story = StoryObj<typeof ProfilePage>;
-
 const meta = {
   title: 'Profile/Profile Page',
   component: ProfilePage,
@@ -39,5 +37,6 @@ const meta = {
 } satisfies Meta<typeof ProfilePage>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

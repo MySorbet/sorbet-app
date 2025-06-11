@@ -27,6 +27,7 @@ const meta = {
   args: {
     open: true,
     setOpen: fn(),
+    onSave: fn(),
     client: {
       id: '1',
       name: 'Acme Corp',
@@ -43,7 +44,7 @@ const meta = {
 } satisfies Meta<typeof ClientSheet>;
 
 export default meta;
-type Story = StoryObj<typeof ClientSheet>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

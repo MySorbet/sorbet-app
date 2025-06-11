@@ -4,8 +4,6 @@ import { fn } from '@storybook/test';
 import { InvoiceFormDecorator } from './invoice-form-decorator';
 import { PaymentTab } from './payment-tab';
 
-type Story = StoryObj<typeof PaymentTab>;
-
 const meta = {
   title: 'Invoices/PaymentTab',
   component: PaymentTab,
@@ -16,6 +14,7 @@ const meta = {
 } satisfies Meta<typeof PaymentTab>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 import { Moon, Sun } from 'lucide-react';
 
 import { AnimatedTabs } from './animated-tabs';
@@ -13,8 +14,7 @@ const meta = {
 } satisfies Meta<typeof AnimatedTabs>;
 
 export default meta;
-
-type Story = StoryObj<typeof AnimatedTabs>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
@@ -30,6 +30,9 @@ export const Default: Story = {
         tooltip: 'Dark mode',
       },
     ],
+    // Overridden in render
+    selectedTab: 'sun',
+    onSelectTab: fn(),
   },
   render: (args) => {
     const [{ selectedTab }, setArgs] = useArgs();

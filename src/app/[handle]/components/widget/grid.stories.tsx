@@ -38,7 +38,6 @@ const meta = {
 } satisfies Meta<typeof WidgetGrid>;
 
 export default meta;
-
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

@@ -15,11 +15,12 @@ const meta = {
   args: {
     open: true,
     sendUSDC: fn(),
+    setOpen: fn(),
   },
 } satisfies Meta<typeof WalletSendDialog>;
 
 export default meta;
-type Story = StoryObj<typeof WalletSendDialog>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => {

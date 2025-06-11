@@ -30,8 +30,7 @@ const meta = {
 } satisfies Meta<typeof NakedBankRecipientForm>;
 
 export default meta;
-
-type Story = StoryObj<typeof NakedBankRecipientForm>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 

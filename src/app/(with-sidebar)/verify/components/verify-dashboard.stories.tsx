@@ -4,8 +4,6 @@ import { mockBridgeCustomerHandler } from '@/api/bridge/msw-handlers';
 
 import { VerifyDashboard } from './verify-dashboard';
 
-type Story = StoryObj<typeof VerifyDashboard>;
-
 const meta = {
   title: 'Verify/VerifyDashboard',
   component: VerifyDashboard,
@@ -18,5 +16,6 @@ const meta = {
 } satisfies Meta<typeof VerifyDashboard>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};

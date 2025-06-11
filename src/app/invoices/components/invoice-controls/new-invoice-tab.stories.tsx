@@ -13,6 +13,6 @@ const meta = {
 } satisfies Meta<typeof NewInvoiceTab>;
 
 export default meta;
-type Story = StoryObj<typeof NewInvoiceTab>;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
