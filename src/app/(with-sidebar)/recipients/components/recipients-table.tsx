@@ -14,7 +14,7 @@ import { useState } from 'react';
 
 import { RecipientAPI, RecipientType } from '@/api/recipients/types';
 import { formatDate } from '@/app/invoices/utils';
-import { CopyText } from '@/components/common/copy-text';
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -35,9 +35,10 @@ import {
 import { formatWalletAddress } from '@/lib/utils';
 
 import { useSendTo } from '../hooks/use-send-to';
+import { formatAccountNumber } from './utils';
 
 /** Displays a table of recipients with actions */
-export const RecipientsCard = ({
+export const RecipientsTable = ({
   onAdd,
   onDelete,
   recipients,
@@ -53,7 +54,7 @@ export const RecipientsCard = ({
   return (
     <Card className='h-fit w-full max-w-7xl overflow-clip'>
       {recipients && (recipients?.length !== 0 || loading) ? (
-        <RecipientsTable
+        <RecipientsTableInternal
           recipients={recipients}
           onClick={onClick}
           loading={loading}
@@ -66,7 +67,7 @@ export const RecipientsCard = ({
   );
 };
 
-const RecipientsTable = ({
+const RecipientsTableInternal = ({
   recipients,
   onClick,
   loading,
@@ -167,10 +168,19 @@ const RecipientsTable = ({
 
 const TableDetail = ({ recipient }: { recipient: RecipientAPI }) => {
   if (recipient.type === 'crypto') {
-    const formattedAddress = formatWalletAddress(recipient.detail);
-    return <CopyText text={formattedAddress} textToCopy={recipient.detail} />;
+    return (
+      <CopyButton
+        className='h-fit flex-row-reverse p-1 px-0 text-sm font-normal'
+        stringToCopy={recipient.detail}
+        variant='link'
+        copyIconClassName='text-muted-foreground'
+        onClick={(e) => e.stopPropagation()}
+      >
+        {formatWalletAddress(recipient.detail)}
+      </CopyButton>
+    );
   }
-  return <CopyText text={recipient.detail} />;
+  return formatAccountNumber(recipient.detail);
 };
 
 const Type = ({ type }: { type: RecipientType }) => {

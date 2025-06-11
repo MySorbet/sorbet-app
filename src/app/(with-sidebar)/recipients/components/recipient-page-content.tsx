@@ -14,7 +14,7 @@ import { AddRecipientSheet } from './add-recipient-sheet';
 import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
-import { RecipientsCard } from './recipients-card';
+import { RecipientsTable } from './recipients-table';
 import { SendToDialog } from './send/send-to-dialog';
 
 /** Puts together recipient list render, edit, add, and send to dialog */
@@ -47,7 +47,7 @@ export const RecipientPageContent = () => {
 
   return (
     <>
-      <RecipientsCard
+      <RecipientsTable
         onAdd={() => setAddSheetOpen(true)}
         onDelete={(recipientId) => {
           deleteRecipient(recipientId);

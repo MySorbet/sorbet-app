@@ -71,7 +71,7 @@ export const RecipientSheet = ({
                 ? {
                     name: recipient.label,
                     type: recipient.type,
-                    accountNumberLast4: recipient.detail.slice(-4),
+                    accountNumberLast4: recipient.detail,
                     routingNumber: '',
                     accountType: 'checking' as const,
                     bankName: '',
@@ -91,15 +91,25 @@ export const RecipientSheet = ({
           />
         </ScrollArea>
         <VaulSheetFooter className='flex flex-row justify-between gap-2'>
-          <Button
-            variant='secondary'
-            onClick={() => {
-              onDelete?.(recipient.id);
-            }}
-            disabled={isDeleting || isDeleteDisabled}
-          >
-            {isDeleting ? <Spinner /> : <Trash2 />}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='secondary'
+                onClick={() => {
+                  onDelete?.(recipient.id);
+                }}
+                disabled={isDeleting || isDeleteDisabled}
+              >
+                {isDeleting ? <Spinner /> : <Trash2 />}
+              </Button>
+            </TooltipTrigger>
+            {isDeleteDisabled && (
+              <TooltipContent side='top' sideOffset={8}>
+                Deleting bank recipients is not currently supported. Check back
+                soon 🚀
+              </TooltipContent>
+            )}
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='secondary' disabled>
@@ -107,8 +117,7 @@ export const RecipientSheet = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent side='top' sideOffset={8}>
-              Editing recipients is not currently supported. Please delete and
-              add a new recipient.
+              Editing recipients is not currently supported. Check back soon 🚀
             </TooltipContent>
           </Tooltip>
           <Button variant='sorbet' onClick={onSend} className='flex-1'>

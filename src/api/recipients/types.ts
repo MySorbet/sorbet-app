@@ -15,6 +15,10 @@ type RecipientAPIBase = {
   type: RecipientType;
   walletAddress: string;
   label: string;
+  /**
+   * For bank recipients, this is the last 4 digits of the account number
+   * For crypto recipients, this is the wallet address
+   */
   detail: string;
 
   userId: string;

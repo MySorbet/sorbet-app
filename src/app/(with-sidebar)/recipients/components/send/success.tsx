@@ -4,6 +4,7 @@ import { RecipientAPI } from '@/api/recipients/types';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
+import { formatAccountNumber } from '../utils';
 import { Timing } from './timing';
 import { TransactionStatusBadge } from './transaction-status-badge';
 
@@ -17,7 +18,7 @@ export const Success = ({
   const label =
     recipient.type === 'crypto'
       ? formatWalletAddress(recipient.walletAddress)
-      : `${recipient.label} ****${recipient.detail}`;
+      : `${recipient.label} ${formatAccountNumber(recipient.detail)}`;
   const status = recipient.type === 'crypto' ? 'completed' : 'processing';
   return (
     <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>

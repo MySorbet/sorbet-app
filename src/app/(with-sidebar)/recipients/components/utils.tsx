@@ -47,3 +47,6 @@ export const isCryptoFormValues = (
  * @see https://apidocs.bridge.xyz/docs/liquidation-address#minimum-amounts
  */
 export const BANK_ACCOUNTS_MIN_AMOUNT = 1;
+
+/** Given the last 4 digits of an account number, pad the rest with *'s */
+export const formatAccountNumber = (last4: string) => '*****' + last4;

@@ -1,7 +1,10 @@
 import { PropsWithChildren } from 'react';
 import { FC } from 'react';
 
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { formatWalletAddress } from '@/lib/utils';
+
+import { formatAccountNumber } from './utils';
 
 /**
  * Render external account details as a series of rows
@@ -31,7 +34,16 @@ const CryptoAccountDetails = ({ account }: { account: CryptoAccount }) => {
       </EARow>
       <EARow>
         <EARowLabel>Address</EARowLabel>
-        <EARowValue>{formatWalletAddress(account.walletAddress)}</EARowValue>
+        <EARowValue>
+          <CopyButton
+            className='h-fit flex-row-reverse p-1 px-0 text-sm font-normal'
+            stringToCopy={account.walletAddress}
+            variant='link'
+            copyIconClassName='text-muted-foreground'
+          >
+            {formatWalletAddress(account.walletAddress)}
+          </CopyButton>
+        </EARowValue>
       </EARow>
     </div>
   );
@@ -57,7 +69,9 @@ const USDAccountDetails = ({ account }: { account: USDAccount }) => {
       </EARow>
       <EARow>
         <EARowLabel>Account</EARowLabel>
-        <EARowValue>****{account.accountNumberLast4}</EARowValue>
+        <EARowValue>
+          {formatAccountNumber(account.accountNumberLast4)}
+        </EARowValue>
       </EARow>
       <EARow>
         <EARowLabel>Routing</EARowLabel>
