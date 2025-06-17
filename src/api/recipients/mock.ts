@@ -6,7 +6,7 @@ const mockWalletAddress = '0x1234567890123456789012345678901234567890';
 
 /**
  * Mock recipients for testing
- * Note: Keep recipient 0 as a bank recipient and recipient 1 as a crypto recipient
+ * Note: Keep recipient 0 as a USD recipient and recipient 1 as a EUR recipient and recipient 2 as a crypto recipient
  */
 export const mockRecipients: RecipientAPI[] = [
   {
@@ -16,6 +16,18 @@ export const mockRecipients: RecipientAPI[] = [
     liquidationAddressId: uuidv4(),
     externalAccountId: uuidv4(),
     label: 'USD Bank',
+    detail: '1234567890',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    userId: '1',
+  },
+  {
+    id: uuidv4(),
+    type: 'eur',
+    walletAddress: mockWalletAddress,
+    liquidationAddressId: uuidv4(),
+    externalAccountId: uuidv4(),
+    label: 'EUR Bank',
     detail: '1234567890',
     createdAt: new Date(),
     updatedAt: new Date(),
