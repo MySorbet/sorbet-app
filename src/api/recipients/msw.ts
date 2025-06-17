@@ -24,7 +24,11 @@ export const createRecipientHandler = http.post(
     await delay();
     const data = (await request.json()) as CreateRecipientDto;
     const mockRecipient =
-      data.type === 'usd' ? mockRecipients[0] : mockRecipients[1];
+      data.type === 'usd'
+        ? mockRecipients[0]
+        : data.type === 'eur'
+        ? mockRecipients[1]
+        : mockRecipients[2];
     const recipient = {
       ...mockRecipient,
       ...(data.type === 'crypto'
@@ -36,7 +40,10 @@ export const createRecipientHandler = http.post(
         : {
             ...mockRecipient,
             label: data.values.account_owner_name,
-            detail: data.values.account.account_number,
+            detail:
+              data.type === 'usd'
+                ? data.values.account?.account_number ?? ''
+                : data.values.iban?.account_number ?? '',
           }),
     };
     recipients.push(recipient);

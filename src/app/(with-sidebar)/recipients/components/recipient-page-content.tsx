@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { CreateRecipientDto } from '@/api/recipients/types';
 import { useAfter } from '@/hooks/use-after';
 
 import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
@@ -11,8 +12,6 @@ import { useRecipients } from '../hooks/use-recipients';
 import { useSelectedRecipient } from '../hooks/use-selected-recipient';
 import { useSendTo } from '../hooks/use-send-to';
 import { AddRecipientSheet } from './add-recipient-sheet';
-import { BankRecipientFormValues } from './bank-recipient-form';
-import { CryptoRecipientFormValues } from './crypto-recipient-form';
 import { RecipientSheet } from './recipient-sheet';
 import { RecipientsTable } from './recipients-table';
 import { SendToDialog } from './send/send-to-dialog';
@@ -36,11 +35,7 @@ export const RecipientPageContent = () => {
   const { mutateAsync: deleteRecipient, isPending: isDeleting } =
     useDeleteRecipient();
 
-  const handleSubmit = async (
-    recipient:
-      | { type: 'usd'; values: BankRecipientFormValues }
-      | { type: 'crypto'; values: CryptoRecipientFormValues }
-  ) => {
+  const handleSubmit = async (recipient: CreateRecipientDto) => {
     await createRecipient(recipient);
     setAddSheetOpen(false);
   };

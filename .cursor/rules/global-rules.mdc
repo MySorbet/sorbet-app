@@ -1,7 +1,7 @@
 ---
-description: Global Rules. Apply everywhere.
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 
 1. Take a look at README.md to understand this repository's structure, history, guidelines, and more.

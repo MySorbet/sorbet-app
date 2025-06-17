@@ -16,6 +16,7 @@ const meta = {
   },
   args: {
     onSubmit: fn(debugToast),
+    eurAllowed: true,
   },
   decorators: [
     (Story) => (
@@ -33,6 +34,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+export const NoEUR: Story = {
+  args: {
+    eurAllowed: false,
+  },
+};
 
 export const FillForm: Story = {
   play: async ({ canvasElement }) => {

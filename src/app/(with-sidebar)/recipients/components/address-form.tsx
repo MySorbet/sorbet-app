@@ -40,10 +40,11 @@ export const addressSchema = z.object({
     // TODO: Verify state corresponds with country
     postal_code: z
       .string()
-      .refine((val) => !val || isPostalCode(val, 'US'), {
+      .refine((val) => !val || isPostalCode(val, 'any'), {
         message: 'Invalid postal code',
       })
       .optional(),
+    // TODO: Verify postal code matches selected region
     country: z.string().refine((val) => isISO31661Alpha3(val), {
       message: 'Invalid country code',
     }),

@@ -25,6 +25,6 @@ export const Default: Story = {
 export const Crypto: Story = {
   args: {
     amount: 100,
-    recipient: mockRecipients[1],
+    recipient: mockRecipients[2],
   },
 };
