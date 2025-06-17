@@ -13,8 +13,9 @@ export const FillOutBankRecipientForm = async ({
   // Fill bank name
   await userEvent.type(canvas.getByLabelText(/Bank name/i), 'Chase Bank');
 
-  // Fill account owner name
-  await userEvent.type(canvas.getByLabelText(/Account Owner/i), 'John Doe');
+  // Fill account first and last name
+  await userEvent.type(canvas.getByLabelText(/First Name/i), 'John');
+  await userEvent.type(canvas.getByLabelText(/Last Name/i), 'Doe');
 
   // Skip account type
 

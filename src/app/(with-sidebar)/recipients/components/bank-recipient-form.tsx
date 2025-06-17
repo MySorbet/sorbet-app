@@ -15,7 +15,7 @@ import { CountryDropdown } from '@/app/(with-sidebar)/recipients/components/coun
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -75,7 +75,9 @@ const IBANAccountDefaultValues: IBANAccount = {
 const formSchemaBase = z.object({
   currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
   bank_name: z.string().min(1).max(256).optional(),
-  account_owner_name: z
+  // Note that first and last will be combined to form account_owner_name.
+  // This is why we require the most strict validation on both.
+  first_name: z
     .string()
     .min(3)
     .max(35)
@@ -83,6 +85,14 @@ const formSchemaBase = z.object({
     .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
       message: 'Name contains invalid characters',
     }),
+  last_name: z
+    .string()
+    .min(3)
+    .max(35)
+    .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
+      message: 'Name contains invalid characters',
+    }),
+  // TODO: Better validation would be to check the combined length of fist and last is between 3 and 35 characters
 
   // Required when currency is eur, but we will just always send a default of individual
   account_owner_type: z.enum(['individual', 'business']),
@@ -126,13 +136,16 @@ const formSchema = z
 export type BankRecipientFormValuesInternal = z.infer<typeof formSchema>;
 export type BankRecipientFormValues = BankRecipientFormValuesInternal & {
   account_type: 'us' | 'iban';
+  account_owner_name: string;
 };
 
 const bankRecipientDefaultValues: BankRecipientFormValuesInternal = {
   currency: 'usd',
   account_owner_type: 'individual',
+  bank_name: '',
   business_name: '',
-  account_owner_name: '',
+  first_name: '',
+  last_name: '',
   account: usAccountDefaultValues,
   ...addressDefaultValues,
 };
@@ -168,6 +181,7 @@ const inferRemainingValues = (
   return {
     ...values,
     account_type: values.currency === 'usd' ? 'us' : 'iban',
+    account_owner_name: `${values.first_name} ${values.last_name}`,
   };
 };
 
@@ -254,26 +268,41 @@ export const NakedBankRecipientForm = ({
           <FormItem>
             <FormLabel>Bank name</FormLabel>
             <FormControl>
-              <Input placeholder='The name of your bank' type='' {...field} />
+              <Input placeholder='The name of your bank' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <FormField
-        control={form.control}
-        name='account_owner_name'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Account Owner</FormLabel>
-            <FormControl>
-              <Input placeholder='First Last' type='' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className='flex gap-2'>
+        <FormField
+          control={form.control}
+          name='first_name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>First Name</FormLabel>
+              <FormControl>
+                <Input placeholder='First' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='last_name'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder='Last' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}
@@ -321,7 +350,7 @@ export const NakedBankRecipientForm = ({
             <FormItem>
               <FormLabel>Business Name</FormLabel>
               <FormControl>
-                <Input placeholder='Business Name' type='' {...field} />
+                <Input placeholder='Business Name' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -332,10 +361,7 @@ export const NakedBankRecipientForm = ({
       {/* US Account */}
       {showAccount && (
         <Card>
-          <CardHeader>
-            <CardTitle className='text-lg'>Account</CardTitle>
-          </CardHeader>
-          <CardContent className='space-y-3'>
+          <CardContent className='space-y-3 p-6'>
             <FormField
               control={form.control}
               name='account.checking_or_savings'
@@ -393,17 +419,13 @@ export const NakedBankRecipientForm = ({
       {/* IBAN */}
       {showIBAN && (
         <Card>
-          <CardHeader>
-            <CardTitle className='text-lg'>IBAN</CardTitle>
-          </CardHeader>
-          <CardContent className='space-y-3'>
+          <CardContent className='space-y-3 p-6'>
             <FormField
               control={form.control}
               name='iban.account_number'
               render={({ field }) => (
                 <FormItem>
-                  {/* TODO: rename to account number and dedup with account number? */}
-                  <FormLabel>IBAN Number</FormLabel>
+                  <FormLabel>Account Number</FormLabel>
                   <FormControl>
                     <Input placeholder='IBAN number' {...field} />
                   </FormControl>
