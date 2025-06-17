@@ -8,11 +8,14 @@ import {
   useFormState,
   useWatch,
 } from 'react-hook-form';
+import { isISO31661Alpha3 } from 'validator';
 import * as z from 'zod';
 
+import { CountryDropdown } from '@/app/(with-sidebar)/recipients/components/country-dropdown';
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -54,36 +57,64 @@ const usAccountDefaultValues: USAccount = {
   checking_or_savings: 'checking',
 };
 
+const IBANAccountSchema = z.object({
+  account_number: z.string().min(1, 'Account number is required'),
+  bic: z.string().min(1, 'Bank identifier code is required'),
+  country: z.string().refine((val) => isISO31661Alpha3(val), {
+    message: 'Invalid country code',
+  }),
+});
+type IBANAccount = z.infer<typeof IBANAccountSchema>;
+
+const IBANAccountDefaultValues: IBANAccount = {
+  account_number: '',
+  bic: '',
+  country: '',
+};
+
+const formSchemaBase = z.object({
+  currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
+  bank_name: z.string().min(1).max(256).optional(),
+  account_owner_name: z
+    .string()
+    .min(3)
+    .max(35)
+    // See https://apidocs.bridge.xyz/reference/post_customers-customerid-external-accounts
+    .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
+      message: 'Name contains invalid characters',
+    }),
+
+  // Required when currency is eur, but we will just always send a default of individual
+  account_owner_type: z.enum(['individual', 'business']),
+
+  // Required when account_owner_type is business
+  business_name: z.string().optional(),
+
+  // Discriminated union below
+  account: usAccountSchema.optional(),
+  iban: IBANAccountSchema.optional(),
+
+  // Address
+  ...addressSchema.shape,
+});
+
+const formSchemaUSD = z.object({
+  ...formSchemaBase.shape,
+  currency: z.literal('usd'),
+  account: usAccountSchema,
+});
+
+const formSchemaEUR = z.object({
+  ...formSchemaBase.shape,
+  currency: z.literal('eur'),
+  iban: IBANAccountSchema,
+});
+
 const formSchema = z
-  .object({
-    currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
-    bank_name: z.string().min(1).max(256).optional(),
-    account_owner_name: z
-      .string()
-      .min(3)
-      .max(35)
-      // See https://apidocs.bridge.xyz/reference/post_customers-customerid-external-accounts
-      .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
-        message: 'Name contains invalid characters',
-      }),
-
-    // Required when currency is eur, but we will just always send a default of individual
-    account_owner_type: z.enum(['individual', 'business']),
-
-    // Required when account_owner_type is business
-    business_name: z.string().optional(),
-
-    // Only for currency usd
-    account: usAccountSchema,
-
-    // Only for currency eur
-    // iban: ibanAccountSchema
-
-    // Address
-    ...addressSchema.shape,
-  })
+  .discriminatedUnion('currency', [formSchemaUSD, formSchemaEUR])
   .superRefine(({ account_owner_type, business_name }, ctx) => {
     if (account_owner_type === 'business' && business_name === '') {
+      // TODO: Perhaps this could be done with composition instead?
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Business name is required for business accounts',
@@ -103,6 +134,7 @@ const bankRecipientDefaultValues: BankRecipientFormValuesInternal = {
   business_name: '',
   account_owner_name: '',
   account: usAccountDefaultValues,
+  iban: IBANAccountDefaultValues,
   ...addressDefaultValues,
 };
 
@@ -161,6 +193,9 @@ export const NakedBankRecipientForm = ({
   const { account_owner_type, currency } = useWatch({ control: form.control });
   const showBusinessName = account_owner_type === 'business';
 
+  const showIBAN = currency === 'eur';
+  const showAccount = currency === 'usd';
+
   return (
     <form
       onSubmit={form.handleSubmit(handleSubmit)}
@@ -179,9 +214,18 @@ export const NakedBankRecipientForm = ({
               </InfoTooltip>
             </div>
             <Select
-              onValueChange={field.onChange}
+              onValueChange={(value) => {
+                field.onChange(value);
+                // Reset opposite account on change
+                value === 'usd'
+                  ? form.setValue('iban', IBANAccountDefaultValues, {
+                      shouldDirty: true,
+                    })
+                  : form.setValue('account', usAccountDefaultValues, {
+                      shouldDirty: true,
+                    });
+              }}
               defaultValue={field.value}
-              disabled
             >
               <FormControl>
                 <SelectTrigger>
@@ -190,10 +234,9 @@ export const NakedBankRecipientForm = ({
               </FormControl>
               <SelectContent>
                 <SelectItem value='usd'>USD</SelectItem>
-                {/* <SelectItem value='EUR'>EUR</SelectItem> */}
+                <SelectItem value='eur'>EUR</SelectItem>
               </SelectContent>
             </Select>
-
             <FormMessage />
           </FormItem>
         )}
@@ -281,58 +324,126 @@ export const NakedBankRecipientForm = ({
         />
       )}
 
-      <FormField
-        control={form.control}
-        name='account.checking_or_savings'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Account Type</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value || 'checking'}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder='Select account type' />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value='checking'>Checking</SelectItem>
-                <SelectItem value='savings'>Savings</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {/* US Account */}
+      {showAccount && (
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-lg'>Account</CardTitle>
+          </CardHeader>
+          <CardContent className='space-y-3'>
+            <FormField
+              control={form.control}
+              name='account.checking_or_savings'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value || 'checking'}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Select account type' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value='checking'>Checking</SelectItem>
+                      <SelectItem value='savings'>Savings</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='account.account_number'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Account number' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='account.routing_number'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Routing Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder='9-digit routing number' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      )}
 
-      <FormField
-        control={form.control}
-        name='account.account_number'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Account Number</FormLabel>
-            <FormControl>
-              <Input placeholder='Account number' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name='account.routing_number'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Routing Number</FormLabel>
-            <FormControl>
-              <Input placeholder='9-digit routing number' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {/* IBAN */}
+      {showIBAN && (
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-lg'>IBAN</CardTitle>
+          </CardHeader>
+          <CardContent className='space-y-3'>
+            <FormField
+              control={form.control}
+              name='iban.account_number'
+              render={({ field }) => (
+                <FormItem>
+                  {/* TODO: rename to account number and dedup with account number? */}
+                  <FormLabel>IBAN Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder='IBAN number' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='iban.bic'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Identifier Code</FormLabel>
+                  <FormControl>
+                    <Input placeholder='BIC' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='iban.country'
+              render={({ field }) => (
+                <FormItem>
+                  <div className='flex h-5 items-center gap-1'>
+                    <FormLabel>Country</FormLabel>
+                    <InfoTooltip>
+                      Country in which the bank account is located
+                    </InfoTooltip>
+                  </div>
+                  <CountryDropdown
+                    placeholder='Select a country'
+                    defaultValue={field.value}
+                    onChange={(country) => {
+                      field.onChange(country.alpha3);
+                    }}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       <AddressFormFields />
     </form>
