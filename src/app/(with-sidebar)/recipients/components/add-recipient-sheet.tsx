@@ -9,6 +9,7 @@ import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/u
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
+import { useFlags } from '@/hooks/use-flags';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
@@ -174,6 +175,8 @@ const BankRecipientStep = ({
   className?: string;
   onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
+  const { eurRecipients } = useFlags();
+
   return (
     <>
       <VaulSheetHeader>
@@ -183,7 +186,10 @@ const BankRecipientStep = ({
       <BankRecipientFormContext>
         <ScrollArea className='overflow-y-auto'>
           <div className={className}>
-            <NakedBankRecipientForm onSubmit={onSubmit} />
+            <NakedBankRecipientForm
+              onSubmit={onSubmit}
+              eurAllowed={eurRecipients}
+            />
           </div>
         </ScrollArea>
         <VaulSheetFooter className='flex flex-row justify-end'>

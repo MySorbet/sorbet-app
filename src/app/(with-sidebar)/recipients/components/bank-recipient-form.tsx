@@ -192,8 +192,10 @@ const inferRemainingValues = (
  */
 export const NakedBankRecipientForm = ({
   onSubmit,
+  eurAllowed = false,
 }: {
   onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
+  eurAllowed?: boolean;
 }) => {
   async function handleSubmit(values: BankRecipientFormValuesInternal) {
     const cleanedValues = removeEmptyStrings(values); // Clean the values by removing empty strings recursively
@@ -245,6 +247,7 @@ export const NakedBankRecipientForm = ({
                 }
               }}
               defaultValue={field.value}
+              disabled={!eurAllowed}
             >
               <FormControl>
                 <SelectTrigger>
