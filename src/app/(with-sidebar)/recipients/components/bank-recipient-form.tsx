@@ -69,7 +69,7 @@ type IBANAccount = z.infer<typeof IBANAccountSchema>;
 const IBANAccountDefaultValues: IBANAccount = {
   account_number: '',
   bic: '',
-  country: '',
+  country: 'EUE',
 };
 
 const formSchemaBase = z.object({
@@ -134,7 +134,6 @@ const bankRecipientDefaultValues: BankRecipientFormValuesInternal = {
   business_name: '',
   account_owner_name: '',
   account: usAccountDefaultValues,
-  iban: IBANAccountDefaultValues,
   ...addressDefaultValues,
 };
 
@@ -216,14 +215,20 @@ export const NakedBankRecipientForm = ({
             <Select
               onValueChange={(value) => {
                 field.onChange(value);
-                // Reset opposite account on change
-                value === 'usd'
-                  ? form.setValue('iban', IBANAccountDefaultValues, {
-                      shouldDirty: true,
-                    })
-                  : form.setValue('account', usAccountDefaultValues, {
-                      shouldDirty: true,
-                    });
+                // Set default values and reset opposite account on change
+                if (value === 'usd') {
+                  form.setValue('account', usAccountDefaultValues, {
+                    shouldDirty: true,
+                  });
+                  form.setValue('iban', undefined, {
+                    shouldDirty: true,
+                  });
+                } else {
+                  form.setValue('iban', IBANAccountDefaultValues, {
+                    shouldDirty: true,
+                  });
+                  form.setValue('account', undefined, { shouldDirty: true });
+                }
               }}
               defaultValue={field.value}
             >

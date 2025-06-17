@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { forwardRef, useState } from 'react';
 
+import { CreateRecipientDto } from '@/api/recipients/types';
 import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -46,11 +47,7 @@ export const AddRecipientSheet = ({
   open = false,
   setOpen,
 }: {
-  onSubmit?: (
-    values:
-      | { type: 'usd'; values: BankRecipientFormValues }
-      | { type: 'crypto'; values: CryptoRecipientFormValues }
-  ) => Promise<void>;
+  onSubmit?: (values: CreateRecipientDto) => Promise<void>;
   open?: boolean;
   setOpen?: (open: boolean) => void;
 }) => {
@@ -58,11 +55,9 @@ export const AddRecipientSheet = ({
   const handleSubmit = async (
     values: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
-    if (isCryptoFormValues(values)) {
-      return await onSubmit?.({ type: 'crypto', values });
-    } else {
-      return await onSubmit?.({ type: 'usd', values });
-    }
+    return isCryptoFormValues(values)
+      ? await onSubmit?.({ type: 'crypto', values })
+      : await onSubmit?.({ type: values.currency, values });
   };
 
   const isMobile = useIsMobile();
