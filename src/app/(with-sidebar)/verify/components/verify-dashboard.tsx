@@ -4,6 +4,7 @@ import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { YourEndorsements } from '@/app/(with-sidebar)/verify/components/your-endorsements';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
@@ -135,6 +136,7 @@ export const VerifyDashboard = () => {
           onCallToActionClick={handleCallToActionClick}
         />
         <FAQ className='h-fit' />
+        <YourEndorsements />
       </div>
       <KYCChecklist
         onTaskClick={handleTaskClick}

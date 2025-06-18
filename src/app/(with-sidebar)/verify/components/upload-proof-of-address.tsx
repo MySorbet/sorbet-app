@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { FileUp } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { uploadPOA } from '@/api/bridge/bridge';
@@ -47,7 +47,7 @@ export const UploadProofOfAddress = () => {
       }}
       className={cn(buttonVariants({ variant: 'secondary' }), 'w-fit')}
     >
-      {isPending ? <Spinner /> : <FileUp aria-hidden='true' />}
+      {isPending ? <Spinner /> : <Upload aria-hidden='true' />}
       {isPending ? 'Uploading...' : 'Upload proof of address'}
     </InvisibleInput>
   );
