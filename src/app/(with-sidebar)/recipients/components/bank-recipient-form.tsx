@@ -59,7 +59,7 @@ const usAccountDefaultValues: USAccount = {
 
 const IBANAccountSchema = z.object({
   account_number: z.string().min(1, 'Account number is required'),
-  bic: z.string().min(1, 'Bank identifier code is required'),
+  bic: z.string().optional(),
   country: z.string().refine((val) => isISO31661Alpha3(val), {
     message: 'Invalid country code',
   }),
@@ -69,7 +69,7 @@ type IBANAccount = z.infer<typeof IBANAccountSchema>;
 const IBANAccountDefaultValues: IBANAccount = {
   account_number: '',
   bic: '',
-  country: 'EUE',
+  country: '',
 };
 
 const formSchemaBase = z.object({
@@ -428,9 +428,9 @@ export const NakedBankRecipientForm = ({
               name='iban.account_number'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Account Number</FormLabel>
+                  <FormLabel>IBAN</FormLabel>
                   <FormControl>
-                    <Input placeholder='IBAN number' {...field} />
+                    <Input placeholder='IBAN' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
