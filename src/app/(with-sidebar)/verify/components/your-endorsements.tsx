@@ -19,10 +19,10 @@ export const YourEndorsements = () => {
     return null;
   }
 
-  const eurStatus = customer?.customer.endorsements.find(
+  const eurStatus = customer?.customer?.endorsements.find(
     (e) => e.name === 'sepa'
   )?.status;
-  const baseStatus = customer?.customer.endorsements.find(
+  const baseStatus = customer?.customer?.endorsements.find(
     (e) => e.name === 'base'
   )?.status;
 

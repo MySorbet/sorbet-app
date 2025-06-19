@@ -10,7 +10,7 @@ export type BridgeCustomer = {
   virtual_account?: BridgeVirtualAccount;
   rejection_reasons?: RejectionReason[];
 
-  customer: Customer;
+  customer?: Customer;
 };
 
 // 👇 Supporting types
