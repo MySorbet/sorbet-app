@@ -60,7 +60,10 @@ const usAccountDefaultValues: USAccount = {
 };
 
 const IBANAccountSchema = z.object({
-  account_number: z.string().min(1, 'Account number is required'),
+  account_number: z
+    .string()
+    .min(1, 'Account number is required')
+    .transform((s) => s.replace(/\s+/g, '')), // remove whitespace
   bic: z.string().optional(),
   country: z.string().refine((val) => isISO31661Alpha3(val), {
     message: 'Invalid country code',
