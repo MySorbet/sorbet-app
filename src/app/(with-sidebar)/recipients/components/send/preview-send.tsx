@@ -1,4 +1,4 @@
-import { ArrowLeftRight, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 
 import { RecipientAPI } from '@/api/recipients/types';
 import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
@@ -8,10 +8,12 @@ import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
+import { ExchangeRate } from './exchange-rate';
+
 /** Renders a preview of a transaction, showing:
  *  - amount
  *  - timing
- *  - optional conversion rate
+ *  - optional conversion rate (only for EUR recipients)
  *  - from and to
  */
 export const PreviewSend = ({
@@ -22,9 +24,7 @@ export const PreviewSend = ({
   recipient: RecipientAPI;
 }) => {
   const { smartWalletAddress } = useSmartWalletAddress();
-
-  // TODO: show conversion and rate would be based on recipient type
-  const showConversion = false;
+  const showConversion = recipient.type === 'eur';
 
   return (
     <div className='animate-in fade-in-0 slide-in-from-right-2 space-y-10'>
@@ -35,11 +35,7 @@ export const PreviewSend = ({
         </p>
         <p className='text-xl font-semibold'>{formatCurrency(amount)}</p>
         <Timing type={recipient.type} />
-        {showConversion && (
-          <p className='text-muted-foreground flex items-center gap-1 text-sm leading-none'>
-            <ArrowLeftRight className='size-3' /> Conversion rate XXXXXXX
-          </p>
-        )}
+        {showConversion && <ExchangeRate />}
       </div>
 
       {/* From and to */}
