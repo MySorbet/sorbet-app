@@ -27,7 +27,6 @@ export const useFlags = () => {
     ...featureFlags(),
     settings: isLocal() || isPreviewUser(handle),
     recipients: true,
-    eurRecipients: isLocal() || isPreviewUser(handle),
     yourEndorsements: isLocal() || isPreviewUser(handle),
   };
 };

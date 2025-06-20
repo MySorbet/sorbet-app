@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 export type TaskItemProps = {
   /** The title of the task */
-  title: string;
+  title: React.ReactNode;
   /** Whether the task has been completed */
   completed: boolean;
   /** The description of the task */
@@ -15,7 +15,7 @@ export type TaskItemProps = {
   /** The Lucide icon component to display */
   Icon: LucideIcon;
   /** The callback to execute when the task is clicked */
-  onClick: () => void;
+  onClick?: () => void;
   /** Whether the task is loading */
   loading?: boolean;
   /** Whether the task is disabled */

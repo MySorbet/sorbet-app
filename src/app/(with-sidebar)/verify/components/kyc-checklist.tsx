@@ -1,5 +1,6 @@
 import { FileText, LucideIcon, ShieldCheck } from 'lucide-react';
 
+import { UploadProofOfAddressStep } from '@/app/(with-sidebar)/verify/components/upload-proof-of-address-step';
 import {
   TaskItem,
   TaskItemProps,
@@ -78,6 +79,7 @@ export const KYCChecklist = ({
             }
           />
         ))}
+        <UploadProofOfAddressStep />
       </div>
     </VerifyCard>
   );

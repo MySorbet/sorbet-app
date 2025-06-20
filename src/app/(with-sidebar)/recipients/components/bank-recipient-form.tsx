@@ -1,6 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Lock } from 'lucide-react';
+import Link from 'next/link';
 import { forwardRef } from 'react';
 import {
   useForm,
@@ -192,10 +194,10 @@ const inferRemainingValues = (
  */
 export const NakedBankRecipientForm = ({
   onSubmit,
-  eurAllowed = false,
+  eurLocked,
 }: {
   onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
-  eurAllowed?: boolean;
+  eurLocked?: boolean;
 }) => {
   async function handleSubmit(values: BankRecipientFormValuesInternal) {
     const cleanedValues = removeEmptyStrings(values); // Clean the values by removing empty strings recursively
@@ -247,7 +249,6 @@ export const NakedBankRecipientForm = ({
                 }
               }}
               defaultValue={field.value}
-              disabled={!eurAllowed}
             >
               <FormControl>
                 <SelectTrigger>
@@ -256,7 +257,27 @@ export const NakedBankRecipientForm = ({
               </FormControl>
               <SelectContent>
                 <SelectItem value='usd'>USD</SelectItem>
-                <SelectItem value='eur'>EUR</SelectItem>
+                {!eurLocked ? (
+                  <SelectItem value='eur'>EUR</SelectItem>
+                ) : (
+                  // Temp EUR CTA to goto verify
+                  <Link
+                    href='/verify'
+                    className='focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none'
+                  >
+                    {eurLocked && (
+                      <span className='absolute left-2 flex items-center justify-center'>
+                        <Lock className='size-4' />
+                      </span>
+                    )}
+                    EUR
+                    {eurLocked && (
+                      <p className='text-muted-foreground text-xs'>
+                        Visit the verification page to unlock EUR recipients
+                      </p>
+                    )}
+                  </Link>
+                )}
               </SelectContent>
             </Select>
             <FormMessage />

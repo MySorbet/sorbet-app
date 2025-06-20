@@ -9,10 +9,10 @@ import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/u
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
-import { useFlags } from '@/hooks/use-flags';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
+import { useEndorsements } from '../hooks/use-endorsements';
 import {
   BankRecipientFormContext,
   BankRecipientFormValues,
@@ -175,7 +175,7 @@ const BankRecipientStep = ({
   className?: string;
   onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
-  const { eurRecipients } = useFlags();
+  const { isEurApproved } = useEndorsements();
 
   return (
     <>
@@ -188,7 +188,7 @@ const BankRecipientStep = ({
           <div className={className}>
             <NakedBankRecipientForm
               onSubmit={onSubmit}
-              eurAllowed={eurRecipients}
+              eurLocked={!isEurApproved}
             />
           </div>
         </ScrollArea>

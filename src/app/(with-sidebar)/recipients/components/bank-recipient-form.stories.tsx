@@ -16,7 +16,7 @@ const meta = {
   },
   args: {
     onSubmit: fn(debugToast),
-    eurAllowed: true,
+    eurLocked: false,
   },
   decorators: [
     (Story) => (
@@ -34,9 +34,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-export const NoEUR: Story = {
+export const EURLocked: Story = {
   args: {
-    eurAllowed: false,
+    eurLocked: true,
   },
 };
 

@@ -1,7 +1,7 @@
 import { CheckCircleIcon } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription } from '@/components/ui/card';
 import { CardHeader } from '@/components/ui/card';
 import { CardTitle } from '@/components/ui/card';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
@@ -33,6 +33,9 @@ export const YourEndorsements = () => {
     <Card>
       <CardHeader>
         <CardTitle>Your Endorsements</CardTitle>
+        <CardDescription>
+          This card is only shown to preview users
+        </CardDescription>
       </CardHeader>
       <CardContent className='space-y-3'>
         <div className='space-y-1'>
