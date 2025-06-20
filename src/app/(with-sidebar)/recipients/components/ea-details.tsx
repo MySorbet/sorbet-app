@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { FC } from 'react';
 
 import { CopyButton } from '@/components/common/copy-button/copy-button';
-import { formatWalletAddress } from '@/lib/utils';
+import { cn, formatWalletAddress } from '@/lib/utils';
 
 import { formatAccountNumber } from './utils';
 
@@ -16,7 +16,7 @@ export const EADetails = ({ account }: { account: Account }) => {
     case 'usd':
       return <USDAccountDetails account={account} />;
     case 'eur':
-      return <div>EUR not implemented</div>;
+      return <EURAccountDetails account={account} />;
   }
 };
 
@@ -51,8 +51,6 @@ const CryptoAccountDetails = ({ account }: { account: CryptoAccount }) => {
 
 /** Local composition to render USD account details */
 const USDAccountDetails = ({ account }: { account: USDAccount }) => {
-  const accountType =
-    account.accountType.charAt(0).toUpperCase() + account.accountType.slice(1);
   return (
     <div className='flex w-full flex-col gap-2'>
       <EARow>
@@ -65,7 +63,7 @@ const USDAccountDetails = ({ account }: { account: USDAccount }) => {
       </EARow>
       <EARow>
         <EARowLabel>Type</EARowLabel>
-        <EARowValue>{accountType}</EARowValue>
+        <EARowValue className='capitalize'>{account.accountType}</EARowValue>
       </EARow>
       <EARow>
         <EARowLabel>Account</EARowLabel>
@@ -85,6 +83,38 @@ const USDAccountDetails = ({ account }: { account: USDAccount }) => {
   );
 };
 
+/** Local composition to render USD account details */
+const EURAccountDetails = ({ account }: { account: EURAccount }) => {
+  return (
+    <div className='flex w-full flex-col gap-2'>
+      <EARow>
+        <EARowLabel>Name</EARowLabel>
+        <EARowValue>{account.name}</EARowValue>
+      </EARow>
+      <EARow>
+        <EARowLabel>Currency</EARowLabel>
+        <EARowValue>{account.type.toUpperCase()}</EARowValue>
+      </EARow>
+      <EARow>
+        <EARowLabel>IBAN</EARowLabel>
+        <EARowValue>
+          {formatAccountNumber(account.accountNumberLast4)}
+        </EARowValue>
+      </EARow>
+      {account.bic && (
+        <EARow>
+          <EARowLabel>BIC</EARowLabel>
+          <EARowValue>{account.bic}</EARowValue>
+        </EARow>
+      )}
+      <EARow>
+        <EARowLabel>Country</EARowLabel>
+        <EARowValue>{account.country}</EARowValue>
+      </EARow>
+    </div>
+  );
+};
+
 // 👇 Local components composed above to keep render DRY
 
 const EARow: FC<PropsWithChildren> = ({ children }) => {
@@ -99,9 +129,14 @@ const EARowLabel: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-const EARowValue: FC<PropsWithChildren> = ({ children }) => {
+const EARowValue: FC<PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className,
+}) => {
   return (
-    <span className='flex max-w-[70%] items-center gap-1 text-sm'>
+    <span
+      className={cn('flex max-w-[70%] items-center gap-1 text-sm', className)}
+    >
       {children}
     </span>
   );
@@ -127,12 +162,11 @@ type CryptoAccount = BaseAccount & {
   walletAddress: string;
 };
 
-// TODO: Add EUR account
 type EURAccount = BaseAccount & {
   type: 'eur';
   accountNumberLast4: string;
-  // bic?
-  // country?
+  bic?: string;
+  country: string;
 };
 
 type Account = USDAccount | CryptoAccount | EURAccount;

@@ -16,6 +16,7 @@ const meta = {
   args: {
     onDelete: fn(),
     onSend: fn(),
+    open: true,
   },
   render: (args) => {
     const [{ open }, setArgs] = useArgs();
@@ -37,6 +38,12 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     recipient: mockRecipients[0],
+  },
+};
+
+export const EUR: Story = {
+  args: {
+    recipient: mockRecipients[1],
   },
 };
 

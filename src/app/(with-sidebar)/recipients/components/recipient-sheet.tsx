@@ -72,9 +72,9 @@ export const RecipientSheet = ({
                     name: recipient.label,
                     type: recipient.type,
                     accountNumberLast4: recipient.detail,
-                    routingNumber: '',
+                    routingNumber: '', // TODO: fetch
                     accountType: 'checking' as const,
-                    bankName: '',
+                    bankName: '', // TODO: fetch
                   }
                 : recipient.type === 'crypto'
                 ? {
@@ -85,7 +85,9 @@ export const RecipientSheet = ({
                 : {
                     name: recipient.label,
                     type: recipient.type,
-                    accountNumberLast4: '',
+                    accountNumberLast4: recipient.detail,
+                    country: '', // TODO: fetch
+                    bic: '', // TODO: fetch
                   }
             }
           />
