@@ -2,6 +2,7 @@
 
 import { Plus } from 'lucide-react';
 
+import { DocsButton } from '@/components/common/docs-button';
 import { Header } from '@/components/common/header';
 import { Button } from '@/components/ui/button';
 
@@ -18,11 +19,7 @@ export const RecipientsHeader = () => {
       className='@container'
     >
       <div className='flex items-center gap-2'>
-        <Button variant='outline' asChild>
-          <a href='https://docs.mysorbet.xyz/' target='_blank' rel='noreferrer'>
-            Docs
-          </a>
-        </Button>
+        <DocsButton />
         <Button
           variant='sorbet'
           onClick={() => setAddOpen(true)}

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
+import { LandmarkIcon } from '@/components/ui/landmark';
 import { MessageSquareIcon } from '@/components/ui/message-square';
 import { SettingsIcon } from '@/components/ui/settings';
 import { ShieldCheckIcon } from '@/components/ui/shield-check';
@@ -36,7 +37,7 @@ import { SidebarLinkButton } from './sidebar-link-button';
 
 /** A global sidebar component for logged in users */
 export const AppSidebar = () => {
-  const { settings, recipients } = useFlags();
+  const { settings, recipients, accounts } = useFlags();
   return (
     <Sidebar>
       {/* Header */}
@@ -99,13 +100,20 @@ export const AppSidebar = () => {
                       icon: UsersIcon,
                     }}
                   />
+                  <SidebarMenuBadge></SidebarMenuBadge>
+                </SidebarMenuItem>
+              )}
+              {accounts && (
+                <SidebarMenuItem>
+                  <SidebarLinkButton
+                    item={{
+                      title: 'Accounts',
+                      url: '/accounts',
+                      icon: LandmarkIcon,
+                    }}
+                  />
                   <SidebarMenuBadge>
-                    <Badge
-                      variant='outline'
-                      className='text-muted-foreground font-normal'
-                    >
-                      new ✨
-                    </Badge>
+                    <Badge variant='outline'>🛠️</Badge>
                   </SidebarMenuBadge>
                 </SidebarMenuItem>
               )}
@@ -147,6 +155,9 @@ export const AppSidebar = () => {
                       icon: SettingsIcon,
                     }}
                   />
+                  <SidebarMenuBadge>
+                    <Badge variant='outline'>🛠️</Badge>
+                  </SidebarMenuBadge>
                 </SidebarMenuItem>
               )}
             </SidebarMenu>
