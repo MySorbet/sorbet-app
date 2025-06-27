@@ -1,7 +1,7 @@
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 
 export const useEndorsements = () => {
-  const { data: customer } = useBridgeCustomer();
+  const { data: customer, isPending } = useBridgeCustomer();
 
   const eurStatus = customer?.customer?.endorsements.find(
     (e) => e.name === 'sepa'
@@ -16,5 +16,6 @@ export const useEndorsements = () => {
   return {
     isBaseApproved,
     isEurApproved,
+    isPending,
   };
 };

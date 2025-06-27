@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 import { env } from '@/lib/env';
-import { BridgeCustomer, SourceDepositInstructions } from '@/types';
+import {
+  BridgeCustomer,
+  SourceDepositInstructions,
+  SourceDepositInstructionsEUR,
+} from '@/types';
 
 import { withAuthHeader } from '../with-auth-header';
 
@@ -30,6 +34,14 @@ export const getBridgeCustomer = async () => {
 export const getACHWireDetails = async (userId: string) => {
   const response = await axios.get<SourceDepositInstructions>(
     `${API_URL}/users/${userId}/ach`
+  );
+  return response.data;
+};
+
+/** Get the SEPA  details for a user */
+export const getSEPADetails = async (userId: string) => {
+  const response = await axios.get<SourceDepositInstructionsEUR>(
+    `${API_URL}/users/${userId}/sepa`
   );
   return response.data;
 };

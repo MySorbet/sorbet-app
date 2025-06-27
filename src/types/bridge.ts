@@ -8,6 +8,7 @@ export type BridgeCustomer = {
   tos_status: TOSStatus;
 
   virtual_account?: BridgeVirtualAccount;
+  virtual_account_eur?: BridgeVirtualAccountEUR;
   rejection_reasons?: RejectionReason[];
 
   customer?: Customer;
@@ -33,16 +34,26 @@ export type KYCStatus =
 
 export type TOSStatus = 'pending' | 'approved';
 
-export type SourceDepositInstructions = {
+type SourceDepositInstructionsBase = {
   currency: string;
   bank_name: string;
   bank_address: string;
+  payment_rail: string;
+  payment_rails: string[];
+};
+
+export type SourceDepositInstructions = SourceDepositInstructionsBase & {
   bank_routing_number: string;
   bank_account_number: string;
   bank_beneficiary_name: string;
   bank_beneficiary_address: string;
-  payment_rail: string;
-  payment_rails: string[];
+};
+
+export type SourceDepositInstructionsEUR = SourceDepositInstructionsBase & {
+  currency: 'eur';
+  account_holder_name: string;
+  iban: string;
+  bic: string;
 };
 
 export type Destination = {
@@ -51,13 +62,20 @@ export type Destination = {
   address: string;
 };
 
-export type BridgeVirtualAccount = {
+export type BridgeVirtualAccountBase = {
   id: string;
   status: string;
   developer_fee_percent: string;
   customer_id: string;
-  source_deposit_instructions: SourceDepositInstructions;
   destination: Destination;
+};
+
+export type BridgeVirtualAccount = BridgeVirtualAccountBase & {
+  source_deposit_instructions: SourceDepositInstructions;
+};
+
+export type BridgeVirtualAccountEUR = BridgeVirtualAccountBase & {
+  source_deposit_instructions: SourceDepositInstructionsEUR;
 };
 
 /**

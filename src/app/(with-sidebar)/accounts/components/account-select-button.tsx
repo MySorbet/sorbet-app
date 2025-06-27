@@ -12,14 +12,15 @@ export const AccountSelectButton = ({
   id,
   selected,
   onSelect,
+  isLocked,
 }: {
   id: 'usd' | 'eur';
   selected: boolean;
   onSelect: () => void;
+  isLocked: boolean;
 }) => {
   // Use country data page as this expands
   const countryCode = id === 'usd' ? 'us' : 'eu';
-  const isLocked = true;
 
   return (
     <Button
