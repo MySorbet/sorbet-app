@@ -95,3 +95,12 @@ export const contactUser = async (
     throw new Error(`Failed to contact user: ${error}`);
   }
 };
+
+export const claimEurAccount = async () => {
+  const response = await axios.post(
+    `${API_URL}/users/bridge/claim/eur`,
+    {},
+    await withAuthHeader()
+  );
+  return response.data;
+};

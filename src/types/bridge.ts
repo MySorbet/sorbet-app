@@ -8,6 +8,7 @@ export type BridgeCustomer = {
   tos_status: TOSStatus;
 
   virtual_account?: BridgeVirtualAccount;
+  virtual_account_eur?: BridgeVirtualAccount;
   rejection_reasons?: RejectionReason[];
 
   customer?: Customer;
@@ -43,6 +44,11 @@ export type SourceDepositInstructions = {
   bank_beneficiary_address: string;
   payment_rail: string;
   payment_rails: string[];
+
+  // For EUR accounts only
+  account_holder_name?: string;
+  iban?: string;
+  bic?: string;
 };
 
 export type Destination = {
