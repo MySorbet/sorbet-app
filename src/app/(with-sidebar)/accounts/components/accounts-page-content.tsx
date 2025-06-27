@@ -11,8 +11,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useAuth } from '@/hooks/use-auth';
 
+import { useClaimEur } from '../hooks/use-claim-eur';
 import { AccountSelect } from './account-select';
-import { useClaimEur } from './hooks/use-claim-eur';
 
 /**
  * Compose account components into a page with state
@@ -58,7 +58,7 @@ export const AccountsPageContent = () => {
             )
           ) : isEurApproved ? (
             eurAccount ? (
-              <div>{JSON.stringify(eurAccount)}</div>
+              <pre>{JSON.stringify(eurAccount, null, 2)}</pre>
             ) : (
               <div className='flex flex-col items-center justify-center gap-4'>
                 <p className='text-muted-foreground text-sm'>

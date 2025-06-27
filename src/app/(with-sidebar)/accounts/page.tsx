@@ -6,7 +6,7 @@ import { Header } from '@/components/common/header';
 import Page from '@/components/common/page';
 import { Header as AppHeader } from '@/components/header/header';
 
-import { AccountsPageContent } from './accounts-page-content';
+import { AccountsPageContent } from './components/accounts-page-content';
 
 export const metadata: Metadata = {
   title: 'Accounts',
