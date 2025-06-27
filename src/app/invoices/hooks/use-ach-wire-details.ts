@@ -1,9 +1,11 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { getACHWireDetails } from '@/api/bridge';
-import { SourceDepositInstructions } from '@/types';
+import {
+  SourceDepositInstructions,
+  SourceDepositInstructionsEUR,
+} from '@/types';
 
-// TODO: Have to make this grab the ACH info for any user, not the logged in user
 export const useACHWireDetails = (
   userId: string,
   options?: Partial<UseQueryOptions<SourceDepositInstructions>>
@@ -35,6 +37,28 @@ export type ACHWireDetails = {
     address: string;
   };
 };
+
+export type SEPADetails = {
+  iban: string;
+  bic: string;
+  accountHolderName: string;
+  bank: {
+    name: string;
+    address: string;
+  };
+};
+
+export const mapToEURWireDetails = (
+  instructions: SourceDepositInstructionsEUR
+): SEPADetails => ({
+  iban: instructions.iban,
+  bic: instructions.bic,
+  accountHolderName: instructions.account_holder_name,
+  bank: {
+    name: instructions.bank_name,
+    address: instructions.bank_address,
+  },
+});
 
 export const mapToACHWireDetails = (
   instructions: SourceDepositInstructions
