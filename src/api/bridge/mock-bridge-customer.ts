@@ -93,6 +93,6 @@ export const mockBridgeCustomer: BridgeCustomer = {
     ],
     rejection_reasons: [],
     persona_inquiry_type: 'gov_id_db_selfie',
-    has_accepted_terms_of_service: true,
+    has_accepted_terms_of_service: false,
   },
 };
