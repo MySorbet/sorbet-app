@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
+import { VerificationTabsFromCustomer } from '@/app/(with-sidebar)/accounts/components/verification/verification-tabs-from-customer';
 import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
-import { UploadProofOfAddress } from '@/app/(with-sidebar)/verify/components/upload-proof-of-address';
 import {
   mapToEURWireDetails,
   useACHWireDetails,
@@ -50,43 +50,54 @@ export const AccountsPageContent = () => {
         onSelect={setSelectedAccount}
         enabledAccounts={enabledAccounts}
       />
-      <Card className='h-fit w-full'>
-        <CardContent className='flex flex-col items-center justify-center p-6'>
-          {selectedAccount === 'usd' ? (
-            isBaseApproved ? (
-              account ? (
-                <VAAccountDetails.USD account={account} />
-              ) : (
-                // TODO: Backend action to generate USD account
-                <Button variant='sorbet' disabled>
-                  Claim USD account
-                </Button>
-              )
-            ) : (
-              <Button variant='sorbet'>Start verification</Button>
-            )
-          ) : isEurApproved ? (
-            eurAccount ? (
-              <VAAccountDetails.EUR account={eurAccount} />
-            ) : (
-              <div className='flex flex-col items-center justify-center gap-4'>
-                <p className='text-muted-foreground text-sm'>
-                  You are approved to accept EUR payments.
-                </p>
-                <Button
-                  variant='sorbet'
-                  onClick={() => claimEur()}
-                  disabled={isClaimingEur}
-                >
-                  {isClaimingEur ? 'Claiming...' : 'Claim EUR Account'}
-                </Button>
-              </div>
-            )
+
+      {selectedAccount === 'usd' ? (
+        isBaseApproved ? (
+          account ? (
+            <AccountDetailsCard>
+              <VAAccountDetails.USD account={account} />
+            </AccountDetailsCard>
           ) : (
-            <UploadProofOfAddress />
-          )}
-        </CardContent>
-      </Card>
+            // TODO: Backend action to generate USD account
+            <Button variant='sorbet' disabled>
+              Claim USD account
+            </Button>
+          )
+        ) : (
+          <VerificationTabsFromCustomer />
+        )
+      ) : isEurApproved ? (
+        eurAccount ? (
+          <AccountDetailsCard>
+            <VAAccountDetails.EUR account={eurAccount} />
+          </AccountDetailsCard>
+        ) : (
+          <div className='flex flex-col items-center justify-center gap-4'>
+            <p className='text-muted-foreground text-sm'>
+              You are approved to accept EUR payments.
+            </p>
+            <Button
+              variant='sorbet'
+              onClick={() => claimEur()}
+              disabled={isClaimingEur}
+            >
+              {isClaimingEur ? 'Claiming...' : 'Claim EUR Account'}
+            </Button>
+          </div>
+        )
+      ) : (
+        <VerificationTabsFromCustomer />
+      )}
     </div>
+  );
+};
+
+const AccountDetailsCard = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Card className='h-fit w-full'>
+      <CardContent className='flex flex-col items-center justify-center p-6'>
+        {children}
+      </CardContent>
+    </Card>
   );
 };

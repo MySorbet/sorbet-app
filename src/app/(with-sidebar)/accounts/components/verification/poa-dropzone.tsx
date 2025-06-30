@@ -31,7 +31,7 @@ export const ACCEPTED_FILE_TYPES = {
 };
 
 /** Dropzone for uploading a proof of address */
-export const PoaDropzone = () => {
+export const PoaDropzone = ({ className }: { className?: string }) => {
   const handleDrop = async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (checkFileValid(file)) {
@@ -41,6 +41,7 @@ export const PoaDropzone = () => {
     }
   };
 
+  // TODO: Render an uploading state in the dropzone
   const { mutate: upload, isPending } = useMutation({
     mutationFn: (file: File) => uploadPOA(file),
     onSuccess: () => {
@@ -68,6 +69,7 @@ export const PoaDropzone = () => {
         });
       }}
       accept={ACCEPTED_FILE_TYPES}
+      className={className}
     >
       <DropzoneEmptyState>
         <PoaDropzoneEmptyState />

@@ -29,6 +29,14 @@ export const mockBridgeCustomerHandlerTosComplete = http.get(
     return HttpResponse.json<BridgeCustomer>({
       ...mockBridgeCustomer,
       tos_status: 'approved',
+      customer:
+        mockBridgeCustomer.customer !== undefined
+          ? {
+              ...mockBridgeCustomer.customer,
+              status: 'incomplete',
+              has_accepted_terms_of_service: true,
+            }
+          : undefined,
     });
   }
 );
@@ -41,6 +49,26 @@ export const mockBridgeCustomerHandlerKycComplete = http.get(
       ...mockBridgeCustomer,
       tos_status: 'approved',
       kyc_status: 'approved',
+      customer:
+        mockBridgeCustomer.customer !== undefined
+          ? {
+              ...mockBridgeCustomer.customer,
+              has_accepted_terms_of_service: true,
+              status: 'active',
+              endorsements: [
+                {
+                  name: 'base',
+                  status: 'approved',
+                  requirements: {
+                    complete: [],
+                    pending: [],
+                    missing: null,
+                    issues: [],
+                  },
+                },
+              ],
+            }
+          : undefined,
     });
   }
 );
