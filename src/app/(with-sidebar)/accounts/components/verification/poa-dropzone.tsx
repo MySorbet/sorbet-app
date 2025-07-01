@@ -108,13 +108,27 @@ export const PoaDropzoneEmptyState = () => {
           <div className='px-3'>
             <strong>Your document should</strong>
             <ul className='list-outside list-disc'>
-              <li>confirm your current residential address</li>
-              <li>be addressed to you</li>
-              <li>be issued in the last 90 days</li>
-              <li>not be a PO box or virtual addresses</li>
+              <li>Confirm your current residential address</li>
+              <li>Be addressed to you</li>
+              <li>Be issued in the last 90 days</li>
+              <li>Not be a PO box or virtual addresses</li>
+              {maxSize !== undefined && (
+                <li>Be less than {renderBytes(maxSize)}</li>
+              )}
+              {accept && (
+                <li>
+                  {' '}
+                  Be one of{' '}
+                  <span className='font-mono text-xs'>
+                    {new Intl.ListFormat('en', { type: 'disjunction' }).format(
+                      Object.values(accept).flat()
+                    )}
+                  </span>
+                </li>
+              )}
             </ul>
             <br />
-            <strong>Examples include</strong>
+            <strong>Examples</strong>
             <ul className='list-outside list-disc'>
               <li>Bank statement</li>
               <li>Utility bill</li>
@@ -122,21 +136,6 @@ export const PoaDropzoneEmptyState = () => {
               <li>Government issued ID (issued in the last 90 days)</li>
               <li>Lease agreement (current but may be older than 90 days)</li>
             </ul>
-            <br />
-            <strong>Accepted file types</strong>
-            <br />
-            Your file must be less than {renderBytes(maxSize ?? 0)}
-            {accept && (
-              <>
-                {' '}
-                and one of{' '}
-                <span className='font-mono'>
-                  {new Intl.ListFormat('en', { type: 'disjunction' }).format(
-                    Object.values(accept).flat()
-                  )}
-                </span>
-              </>
-            )}
           </div>
         </TooltipContent>
       </Tooltip>
