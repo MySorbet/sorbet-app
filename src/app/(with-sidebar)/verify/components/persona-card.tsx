@@ -60,7 +60,7 @@ export const PersonaCard = ({
       ) : (
         <>
           <Skeleton
-            className={cn('size-full', ready ? 'hidden' : 'block w-[300px]')} // 300px seems to be what the persona iframe wants to take up, so match it for loading
+            className={cn('size-full', ready ? 'hidden' : 'block w-full')}
           />
           <div
             className={cn(

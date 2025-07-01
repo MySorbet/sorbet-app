@@ -6,15 +6,22 @@ import {
   mockBridgeCustomerHandlerTosComplete,
 } from '@/api/bridge/msw-handlers';
 
-import { VerificationTabsFromCustomer } from './verification-tabs-from-customer';
+import { AutomaticVerificationTabs } from './automatic-verification-tabs';
 
 const meta = {
-  title: 'VerificationTabsFromCustomer',
-  component: VerificationTabsFromCustomer,
+  title: 'Accounts/AutomaticVerificationTabs',
+  component: AutomaticVerificationTabs,
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof VerificationTabsFromCustomer>;
+  decorators: [
+    (Story) => (
+      <div className='size-[700px]'>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof AutomaticVerificationTabs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -33,7 +40,7 @@ export const TOSComplete: Story = {
     },
   },
 };
-export const KYCComplete: Story = {
+export const NeedsPOA: Story = {
   parameters: {
     msw: {
       handlers: [mockBridgeCustomerHandlerKycComplete],
