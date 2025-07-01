@@ -75,9 +75,7 @@ export const PoaDropzoneEmptyState = ({ loading }: { loading?: boolean }) => {
   const { maxSize, accept } = useDropzoneContext();
   return (
     <div
-      className={cn(
-        'flex max-w-prose flex-col items-center justify-center gap-2'
-      )}
+      className={cn('flex max-w-sm flex-col items-center justify-center gap-2')}
     >
       <div className='bg-muted text-muted-foreground flex size-8 items-center justify-center rounded-md'>
         {loading ? <Spinner /> : <UploadIcon size={16} />}
@@ -87,8 +85,8 @@ export const PoaDropzoneEmptyState = ({ loading }: { loading?: boolean }) => {
       </p>
       <p className='text-muted-foreground w-full truncate text-wrap text-sm font-normal'>
         To verify your address, <strong>drag and drop or click</strong> to
-        upload a recent document issued within the last 90 days that shows your
-        name and current address
+        upload a document issued in the last 90 days that shows your name and
+        current address
       </p>
 
       <TooltipOrDrawer>
