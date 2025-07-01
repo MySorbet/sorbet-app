@@ -10,7 +10,7 @@ import { VerificationTab, VerificationTabs } from './verification-tabs';
  *
  * The selected tab is then passed to the `VerificationTabs` component.
  */
-export const VerificationTabsFromCustomer = () => {
+export const AutomaticVerificationTabs = () => {
   const { data: customer, isPending } = useBridgeCustomer();
 
   const [selectedTab, setSelectedTab] = useState<VerificationTab>('terms');

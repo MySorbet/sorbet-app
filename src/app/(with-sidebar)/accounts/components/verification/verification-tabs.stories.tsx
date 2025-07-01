@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { VerificationTabs } from './verification-tabs';
 
 const meta = {
-  title: 'VerificationTabs',
+  title: 'Accounts/VerificationTabs',
   component: VerificationTabs,
   decorators: [
     (Story) => (

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { VerificationTabsFromCustomer } from '@/app/(with-sidebar)/accounts/components/verification/verification-tabs-from-customer';
+import { AutomaticVerificationTabs } from '@/app/(with-sidebar)/accounts/components/verification/automatic-verification-tabs';
 import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
 import {
   mapToEURWireDetails,
@@ -64,7 +64,7 @@ export const AccountsPageContent = () => {
             </Button>
           )
         ) : (
-          <VerificationTabsFromCustomer />
+          <AutomaticVerificationTabs />
         )
       ) : isEurApproved ? (
         eurAccount ? (
@@ -86,7 +86,7 @@ export const AccountsPageContent = () => {
           </div>
         )
       ) : (
-        <VerificationTabsFromCustomer />
+        <AutomaticVerificationTabs />
       )}
     </div>
   );
