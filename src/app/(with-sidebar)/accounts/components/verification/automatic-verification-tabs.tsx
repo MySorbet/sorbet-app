@@ -9,6 +9,10 @@ import { VerificationTab, VerificationTabs } from './verification-tabs';
  * Fetch the bridge customer and calculate the selected tab based on the customer's status.
  *
  * The selected tab is then passed to the `VerificationTabs` component.
+ *
+ * TODO: Add a pending state after KYC completion but before webhook update
+ * TODO: Add a verification failed state
+ * TODO: Under a verification "under review" state
  */
 export const AutomaticVerificationTabs = () => {
   const { data: customer, isPending } = useBridgeCustomer();
