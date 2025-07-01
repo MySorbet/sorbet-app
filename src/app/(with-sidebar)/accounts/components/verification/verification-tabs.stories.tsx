@@ -5,6 +5,13 @@ import { VerificationTabs } from './verification-tabs';
 const meta = {
   title: 'VerificationTabs',
   component: VerificationTabs,
+  decorators: [
+    (Story) => (
+      <div className='size-[700px]'>
+        <Story />
+      </div>
+    ),
+  ],
   parameters: {
     layout: 'centered',
   },

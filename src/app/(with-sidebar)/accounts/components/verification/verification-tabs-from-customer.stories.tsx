@@ -14,6 +14,13 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
+  decorators: [
+    (Story) => (
+      <div className='size-[700px]'>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof VerificationTabsFromCustomer>;
 
 export default meta;
@@ -33,7 +40,7 @@ export const TOSComplete: Story = {
     },
   },
 };
-export const KYCComplete: Story = {
+export const NeedsPOA: Story = {
   parameters: {
     msw: {
       handlers: [mockBridgeCustomerHandlerKycComplete],
