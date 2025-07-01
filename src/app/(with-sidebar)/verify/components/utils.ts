@@ -8,6 +8,19 @@ import mime from 'mime-types';
 export const ACCEPTED_FILE_TYPES = ['pdf', 'jpeg', 'jpg', 'png', 'heic', 'tif'];
 
 /**
+ * Accepted file types for a proof of address document by mime type
+ * Should match backend validation and the above types
+ * @see https://apidocs.bridge.xyz/reference/put_customers-customerid
+ */
+export const ACCEPTED_FILE_TYPES_BY_MIME = {
+  'application/pdf': ['.pdf'],
+  'image/jpeg': ['.jpeg', '.jpg'],
+  'image/png': ['.png'],
+  'image/heic': ['.heic'],
+  'image/tiff': ['.tif'],
+};
+
+/**
  * Maximum file size for a proof of address document
  * Should match backend validation
  * @see https://apidocs.bridge.xyz/reference/put_customers-customerid
