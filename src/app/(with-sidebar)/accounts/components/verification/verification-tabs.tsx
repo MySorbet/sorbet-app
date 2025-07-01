@@ -1,4 +1,12 @@
-import { ChevronRight, FileCheck, FileText, ShieldCheck } from 'lucide-react';
+import {
+  ChevronRight,
+  FileCheck,
+  FileText,
+  MapPin,
+  MapPinCheckInside,
+  Shield,
+  ShieldCheck,
+} from 'lucide-react';
 
 import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
 import { PoaDropzone } from '@/app/(with-sidebar)/accounts/components/verification/poa-dropzone';
@@ -22,8 +30,7 @@ export const VerificationTabs = ({
 }) => {
   return (
     <Tabs
-      defaultValue={selectedTab}
-      value={selectedTab}
+      value={loading ? undefined : selectedTab}
       className='flex size-full flex-col'
     >
       <TabsList
@@ -31,19 +38,31 @@ export const VerificationTabs = ({
         tabIndex={-1}
       >
         <TabsTrigger value='terms' className='flex-1 gap-2'>
-          <ShieldCheck className='size-4' />
+          {selectedTab === 'terms' ? (
+            <Shield className='size-4' />
+          ) : (
+            <ShieldCheck className='size-4' />
+          )}
           1. Terms
         </TabsTrigger>
         <ChevronRight className='size-4' />
         <TabsTrigger value='details' className='flex-1 gap-2'>
-          <FileText className='size-4' />
+          {selectedTab === 'details' || selectedTab === 'terms' ? (
+            <FileText className='size-4' />
+          ) : (
+            <FileCheck className='size-4' />
+          )}
           2. Details
         </TabsTrigger>
         {selectedTab === 'proof' && (
           <>
             <ChevronRight className='size-4' />
             <TabsTrigger value='proof' className='flex-1 gap-2'>
-              <FileCheck className='size-4' />
+              {selectedTab === 'proof' ? (
+                <MapPin className='size-4' />
+              ) : (
+                <MapPinCheckInside className='size-4' />
+              )}
               3. Proof
             </TabsTrigger>
           </>
@@ -62,7 +81,7 @@ export const VerificationTabs = ({
           <TabsContent value='details' className='size-full flex-1'>
             <PersonaCard
               url={mockBridgeCustomer.kyc_link}
-              className='h-full max-w-full'
+              className='h-full max-w-full overflow-clip p-0'
             />
           </TabsContent>
           <TabsContent value='proof' className='size-full flex-1'>
