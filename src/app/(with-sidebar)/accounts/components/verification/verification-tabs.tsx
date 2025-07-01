@@ -1,7 +1,10 @@
 import {
   ChevronRight,
+  CircleCheck,
+  CircleX,
   FileCheck,
   FileText,
+  Hourglass,
   MapPin,
   MapPinCheckInside,
   Shield,
@@ -14,8 +17,20 @@ import { PersonaCard } from '@/app/(with-sidebar)/verify/components/persona-card
 import { TosIframe } from '@/app/(with-sidebar)/verify/components/tos-iframe';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
-export type VerificationTab = 'terms' | 'details' | 'proof';
+export const VERIFICATION_END_STATES = [
+  'complete',
+  'rejected',
+  'under_review',
+] as const;
+export type VerificationEndState = (typeof VERIFICATION_END_STATES)[number];
+
+export type VerificationTab =
+  | 'terms'
+  | 'details'
+  | 'proof'
+  | VerificationEndState;
 /**
  * Displays verification steps as tabs with the corresponding content below.
  *
@@ -25,8 +40,10 @@ export const VerificationTabs = ({
   selectedTab,
   loading,
 }: {
+  /** Which tab is selected */
   selectedTab: VerificationTab;
-  loading: boolean;
+  /** `selectedTab` will be ignored while loading. A Skeleton will be shown instead. */
+  loading?: boolean;
 }) => {
   return (
     <Tabs
@@ -72,7 +89,7 @@ export const VerificationTabs = ({
         <Skeleton className='mt-2 size-full' />
       ) : (
         <>
-          <TabsContent value='terms' className=' flex-1'>
+          <TabsContent value='terms' className='flex-1'>
             <TosIframe
               url={mockBridgeCustomer.tos_link}
               className='size-full max-w-full'
@@ -87,8 +104,59 @@ export const VerificationTabs = ({
           <TabsContent value='proof' className='size-full flex-1'>
             <PoaDropzone className='size-full' />
           </TabsContent>
+
+          {/* End states */}
+          <TabsContent value='complete' className='size-full flex-1'>
+            <EndTab
+              title='Verification complete'
+              description='Your verification is complete'
+            >
+              <CircleCheck className='size-8 text-green-500' />
+            </EndTab>
+          </TabsContent>
+          <TabsContent value='rejected' className='size-full flex-1'>
+            <EndTab
+              title='Verification rejected'
+              description='Your verification has been rejected'
+            >
+              <CircleX className='size-8 text-red-500' />
+            </EndTab>
+          </TabsContent>
+          <TabsContent value='under_review' className='size-full flex-1'>
+            <EndTab
+              title='Verification under review'
+              description='Your verification is under review'
+            >
+              <Hourglass className='size-8 text-yellow-500' />
+            </EndTab>
+          </TabsContent>
         </>
       )}
     </Tabs>
+  );
+};
+
+const EndTab = ({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title: string;
+  description: string;
+  children?: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div
+      className={cn(
+        'flex size-full flex-col items-center justify-center gap-2',
+        className
+      )}
+    >
+      {children}
+      <h1 className='text-2xl font-bold'>{title}</h1>
+      <p className='text-muted-foreground text-sm'>{description}</p>
+    </div>
   );
 };
