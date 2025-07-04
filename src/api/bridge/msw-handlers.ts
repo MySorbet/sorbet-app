@@ -66,6 +66,58 @@ export const mockBridgeCustomerHandlerKycComplete = http.get(
                     issues: [],
                   },
                 },
+                {
+                  name: 'sepa',
+                  status: 'incomplete',
+                  requirements: {
+                    complete: [],
+                    pending: [],
+                    missing: null,
+                    issues: [],
+                  },
+                },
+              ],
+            }
+          : undefined,
+    });
+  }
+);
+
+export const mockBridgeCustomerHandlerKycCompleteWithSepa = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
+  async () => {
+    await delay(1000);
+    return HttpResponse.json<BridgeCustomer>({
+      ...mockBridgeCustomer,
+      tos_status: 'approved',
+      kyc_status: 'approved',
+      customer:
+        mockBridgeCustomer.customer !== undefined
+          ? {
+              ...mockBridgeCustomer.customer,
+              has_accepted_terms_of_service: true,
+              status: 'active',
+              endorsements: [
+                {
+                  name: 'base',
+                  status: 'approved',
+                  requirements: {
+                    complete: [],
+                    pending: [],
+                    missing: null,
+                    issues: [],
+                  },
+                },
+                {
+                  name: 'sepa',
+                  status: 'approved',
+                  requirements: {
+                    complete: [],
+                    pending: [],
+                    missing: null,
+                    issues: [],
+                  },
+                },
               ],
             }
           : undefined,

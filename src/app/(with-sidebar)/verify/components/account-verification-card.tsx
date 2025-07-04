@@ -3,10 +3,10 @@ import { AlertTriangle, CircleCheck, Hourglass } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
+import { useClaimVirtualAccount } from '@/app/(with-sidebar)/accounts/hooks/use-claim-virtual-account';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useVerify } from '@/hooks/profile/use-verify';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { cn, sleep } from '@/lib/utils';
 
@@ -46,24 +46,25 @@ export const AccountVerificationCard = ({
 
   const queryClient = useQueryClient();
 
-  const { mutate: createBridgeCustomer, isPending: isCreating } = useVerify({
-    onSuccess: () => {
-      console.log('Successfully created bridge customer');
-      queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
-      onStepComplete?.('begin');
-    },
-    onError: (error) => {
-      const message = `Error creating bridge customer: ${error.message}`;
-      console.error(message);
-      toast.error(message);
-    },
-  });
+  const { mutate: claimVirtualAccount, isPending: isClaiming } =
+    useClaimVirtualAccount('usd', {
+      onSuccess: () => {
+        console.log('Successfully created bridge customer');
+        queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
+        onStepComplete?.('begin');
+      },
+      onError: (error) => {
+        const message = `Error creating bridge customer: ${error.message}`;
+        console.error(message);
+        toast.error(message);
+      },
+    });
 
   // This is only callable when there is no bridge customer
   // Success callback will complete this step
   // Error will toast and remain on this step
   const handleGetVerified = () => {
-    createBridgeCustomer();
+    claimVirtualAccount();
   };
 
   // When bridge frame fires complete event, invalidate the bridge customer query and advance to the next step
@@ -124,10 +125,10 @@ export const AccountVerificationCard = ({
           <Button
             variant='sorbet'
             onClick={handleGetVerified}
-            disabled={isCreating}
+            disabled={isClaiming}
             className='@xs:max-w-fit w-full'
           >
-            {isCreating && <Spinner />}
+            {isClaiming && <Spinner />}
             Get verified
           </Button>
         )}

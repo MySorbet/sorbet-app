@@ -12,6 +12,9 @@ export type BridgeCustomer = {
   rejection_reasons?: RejectionReason[];
 
   customer?: Customer;
+
+  hasClaimedVirtualAccount: boolean;
+  hasClaimedVirtualAccountEur: boolean;
 };
 
 // 👇 Supporting types

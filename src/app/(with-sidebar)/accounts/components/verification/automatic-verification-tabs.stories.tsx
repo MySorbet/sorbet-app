@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import {
   mockBridgeCustomerHandler,
   mockBridgeCustomerHandlerKycComplete,
+  mockBridgeCustomerHandlerKycCompleteWithSepa,
   mockBridgeCustomerHandlerTosComplete,
 } from '@/api/bridge/msw-handlers';
 
@@ -33,6 +34,7 @@ export const Default: Story = {
     },
   },
 };
+
 export const TOSComplete: Story = {
   parameters: {
     msw: {
@@ -40,10 +42,19 @@ export const TOSComplete: Story = {
     },
   },
 };
+
 export const NeedsPOA: Story = {
   parameters: {
     msw: {
       handlers: [mockBridgeCustomerHandlerKycComplete],
+    },
+  },
+};
+
+export const CompleteWithSepa: Story = {
+  parameters: {
+    msw: {
+      handlers: [mockBridgeCustomerHandlerKycCompleteWithSepa],
     },
   },
 };

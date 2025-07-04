@@ -65,3 +65,12 @@ export const getExchangeRate = async () => {
   }>(`${API_URL}/recipients/exchange-rate`, await withAuthHeader());
   return response.data;
 };
+
+export const claimVirtualAccount = async (type: 'usd' | 'eur') => {
+  const response = await axios.post(
+    `${API_URL}/users/bridge/claim/${type}`,
+    {},
+    await withAuthHeader()
+  );
+  return response.data;
+};
