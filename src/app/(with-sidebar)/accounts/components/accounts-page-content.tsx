@@ -8,12 +8,15 @@ import {
   mapToEURWireDetails,
   useACHWireDetails,
 } from '@/app/invoices/hooks/use-ach-wire-details';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useAuth } from '@/hooks/use-auth';
+import { useIsMobile } from '@/hooks/use-mobile';
 
-import { useClaimEur } from '../hooks/use-claim-eur';
+import { useClaimVirtualAccount } from '../hooks/use-claim-virtual-account';
 import { AccountSelect } from './account-select';
 import { VAAccountDetails } from './va-details';
 
@@ -22,7 +25,7 @@ import { VAAccountDetails } from './va-details';
  */
 export const AccountsPageContent = () => {
   const { user } = useAuth();
-  const { isBaseApproved, isEurApproved, isPending } = useEndorsements();
+  const { isBaseApproved, isPending } = useEndorsements();
   const { data: customer } = useBridgeCustomer();
   const { data: account } = useACHWireDetails(user?.id ?? '', {
     enabled: !isPending && !!user?.id && isBaseApproved,
@@ -34,13 +37,13 @@ export const AccountsPageContent = () => {
     customer?.virtual_account_eur && 'eur',
   ].filter(Boolean) as ('usd' | 'eur')[];
 
-  const { mutate: claimEur, isPending: isClaimingEur } = useClaimEur();
-
   const eurAccount = customer?.virtual_account_eur
     ? mapToEURWireDetails(
         customer.virtual_account_eur.source_deposit_instructions
       )
     : undefined;
+
+  const isMobile = useIsMobile();
 
   return (
     <div className='flex size-full max-w-7xl flex-col gap-6 lg:flex-row'>
@@ -52,41 +55,39 @@ export const AccountsPageContent = () => {
       />
 
       {selectedAccount === 'usd' ? (
-        isBaseApproved ? (
+        customer?.hasClaimedVirtualAccount ? (
           account ? (
             <AccountDetailsCard>
               <VAAccountDetails.USD account={account} />
             </AccountDetailsCard>
+          ) : isMobile ? (
+            <Drawer dismissible={false} open={true}>
+              <DrawerContent className='h-[95%]'>
+                <AutomaticVerificationTabs className='pt-2' />
+              </DrawerContent>
+            </Drawer>
           ) : (
-            // TODO: Backend action to generate USD account
-            <Button variant='sorbet' disabled>
-              Claim USD account
-            </Button>
+            <AutomaticVerificationTabs />
           )
         ) : (
-          <AutomaticVerificationTabs />
+          <ClaimAccountButton type='usd' />
         )
-      ) : isEurApproved ? (
+      ) : customer?.hasClaimedVirtualAccountEur ? (
         eurAccount ? (
           <AccountDetailsCard>
             <VAAccountDetails.EUR account={eurAccount} />
           </AccountDetailsCard>
+        ) : isMobile ? (
+          <Drawer open={true} dismissible={false}>
+            <DrawerContent className='h-[95%]'>
+              <AutomaticVerificationTabs className='pt-2' />
+            </DrawerContent>
+          </Drawer>
         ) : (
-          <div className='flex flex-col items-center justify-center gap-4'>
-            <p className='text-muted-foreground text-sm'>
-              You are approved to accept EUR payments.
-            </p>
-            <Button
-              variant='sorbet'
-              onClick={() => claimEur()}
-              disabled={isClaimingEur}
-            >
-              {isClaimingEur ? 'Claiming...' : 'Claim EUR Account'}
-            </Button>
-          </div>
+          <AutomaticVerificationTabs />
         )
       ) : (
-        <AutomaticVerificationTabs />
+        <ClaimAccountButton type='eur' />
       )}
     </div>
   );
@@ -98,6 +99,31 @@ const AccountDetailsCard = ({ children }: { children: React.ReactNode }) => {
       <CardContent className='flex flex-col items-center justify-center p-6'>
         {children}
       </CardContent>
+    </Card>
+  );
+};
+
+const ClaimAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
+  const { mutate: claimVirtualAccount, isPending: isClaiming } =
+    useClaimVirtualAccount(type);
+
+  return (
+    <Card className='flex size-full flex-col items-center justify-center gap-4 p-6'>
+      <p className='text-muted-foreground text-sm'>
+        {type === 'usd'
+          ? 'Claim your USD account to start accepting payments.'
+          : 'Claim your EUR account to start accepting payments.'}
+      </p>
+      <Button
+        variant='sorbet'
+        onClick={() => claimVirtualAccount()}
+        disabled={isClaiming}
+      >
+        {isClaiming && <Spinner />}
+        {isClaiming
+          ? 'Claiming...'
+          : `Claim ${type.toLocaleUpperCase()} Account`}
+      </Button>
     </Card>
   );
 };
