@@ -150,7 +150,7 @@ const ClaimAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
       ) : (
         <Euro className='text-muted-foreground size-10' />
       )}
-      <p className='text-muted-foreground text-sm'>
+      <p className='text-muted-foreground text-center text-sm'>
         {type === 'usd'
           ? 'Claim your USD account to start accepting payments.'
           : 'Claim your EUR account to start accepting payments.'}
