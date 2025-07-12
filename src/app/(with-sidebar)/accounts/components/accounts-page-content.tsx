@@ -12,7 +12,12 @@ import {
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Drawer, DrawerClose, DrawerContent } from '@/components/ui/drawer';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+} from '@/components/ui/drawer';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -70,8 +75,8 @@ export const AccountsPageContent = () => {
             </AccountDetailsCard>
           ) : isMobile ? (
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-              <DrawerContent className='h-[95%]'>
-                <AutomaticVerificationTabs className='pt-2' />
+              <DrawerContent className='h-[97%]'>
+                <AutomaticVerificationTabs className='pt-4' />
               </DrawerContent>
             </Drawer>
           ) : (
@@ -87,8 +92,8 @@ export const AccountsPageContent = () => {
           </AccountDetailsCard>
         ) : isMobile ? (
           <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerContent className='h-[95%]'>
-              <AutomaticVerificationTabs className='pt-2' />
+            <DrawerContent className='h-[97%]'>
+              <AutomaticVerificationTabs className='pt-4' />
             </DrawerContent>
           </Drawer>
         ) : (
@@ -118,13 +123,15 @@ const AccountDetailsCard = ({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent className='flex flex-col gap-4 p-6'>
-          {children}
-          <DrawerClose>
-            <Button variant='secondary' className='w-full'>
-              Close
-            </Button>
-          </DrawerClose>
+        <DrawerContent>
+          <div className='flex flex-col gap-4 p-4'>{children}</div>
+          <DrawerFooter>
+            <DrawerClose>
+              <Button variant='secondary' className='w-full'>
+                Close
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     );
