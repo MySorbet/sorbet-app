@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
+
 import { VerificationTabs } from './verification-tabs';
 
 const meta = {
@@ -24,12 +26,14 @@ export const Default: Story = {
   args: {
     selectedTab: 'terms',
     loading: false,
+    tosUrl: mockBridgeCustomer.tos_link,
+    kycUrl: mockBridgeCustomer.kyc_link,
   },
 };
 
 export const Loading: Story = {
   args: {
-    selectedTab: 'terms',
+    ...Default.args,
     loading: true,
   },
 };

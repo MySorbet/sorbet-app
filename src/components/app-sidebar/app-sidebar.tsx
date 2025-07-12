@@ -112,9 +112,6 @@ export const AppSidebar = () => {
                       icon: LandmarkIcon,
                     }}
                   />
-                  <SidebarMenuBadge>
-                    <Badge variant='outline'>🛠️</Badge>
-                  </SidebarMenuBadge>
                 </SidebarMenuItem>
               )}
             </SidebarMenu>

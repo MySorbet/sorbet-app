@@ -9,6 +9,8 @@ const TOS_URL =
   'https://dashboard.bridge.xyz/accept-terms-of-service?customer_id=fdaf8561-32a1-4334-bc05-941f2cff7721';
 
 export const mockBridgeCustomer: BridgeCustomer = {
+  hasClaimedVirtualAccount: true,
+  hasClaimedVirtualAccountEur: false,
   virtual_account: {
     id: 'mock-virtual-account-id',
     status: 'active',
