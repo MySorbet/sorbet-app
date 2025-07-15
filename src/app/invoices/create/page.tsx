@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
+import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
 import { Authenticated } from '@/app/authenticated';
 import Page from '@/components/common/page';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
@@ -17,6 +18,7 @@ export default function CreateInvoicePage() {
   const router = useRouter();
   const { user } = useAuth();
   const isVerified = useIsVerified();
+  const { isEurApproved } = useEndorsements();
 
   const invoiceNumber = useInvoiceNumber();
 
@@ -41,6 +43,7 @@ export default function CreateInvoicePage() {
           isCreating={isPending}
           onGetVerified={onGetVerified}
           walletAddress={smartWalletAddress ?? undefined}
+          isEurEndorsed={isEurApproved}
           prefills={{
             fromName: user?.firstName,
             fromEmail: user?.email,

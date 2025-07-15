@@ -165,4 +165,5 @@ export const InvoiceDocument = forwardRef<
 const paymentMethodDisplay: Record<AcceptedPaymentMethod, string> = {
   usdc: 'USDC',
   usd: 'ACH / Wire',
+  eur: 'SEPA',
 };

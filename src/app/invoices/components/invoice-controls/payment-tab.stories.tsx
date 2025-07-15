@@ -10,7 +10,10 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  decorators: [InvoiceFormDecorator],
+  decorators: [
+    InvoiceFormDecorator,
+    (Story) => <div className='w-[400px]'>{Story()}</div>,
+  ],
 } satisfies Meta<typeof PaymentTab>;
 
 export default meta;
@@ -27,5 +30,11 @@ export const Unverified: Story = {
 export const WithWalletAddress: Story = {
   args: {
     walletAddress: '0x0000000000000000000000000000000000000000',
+  },
+};
+
+export const WithEurEndorsed: Story = {
+  args: {
+    isEurEndorsed: true,
   },
 };

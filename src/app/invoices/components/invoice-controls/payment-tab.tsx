@@ -31,11 +31,14 @@ import { type AcceptedPaymentMethod } from '../../schema';
 export const PaymentTab = ({
   onGetVerified,
   walletAddress,
+  isEurEndorsed,
 }: {
   /** Callback indicating the user wants to get verified. Only included if the user is not verified. */
   onGetVerified?: () => void;
   /** The wallet address to display for the USDC payment method. Passing `undefined` will show a skeleton. */
   walletAddress?: string;
+  /** Whether the user is endorsed for EUR payments. Only included if the user is not endorsed. */
+  isEurEndorsed?: boolean;
 }) => {
   // If a callback is not provided, the user is verified
   const isVerified = !onGetVerified;
@@ -93,6 +96,29 @@ export const PaymentTab = ({
               onClick={onGetVerified}
             >
               Get verified in minutes
+            </Button>
+          )}
+        </PaymentMethod>
+        <PaymentMethod
+          title='Accept EUR payments'
+          tooltip='Your free EUR account to receive SEPA payments'
+          timing={isEurEndorsed ? 'Arrives in 1-2 days' : undefined}
+          locked={!isEurEndorsed}
+          disabled={false}
+          method='eur'
+        >
+          <PaymentMethodDescription>
+            Your client can pay via SEPA transfer to your EUR virtual account
+          </PaymentMethodDescription>
+          {!isEurEndorsed && (
+            <Button
+              variant='outline'
+              className='w-full'
+              onClick={onGetVerified}
+            >
+              {isVerified
+                ? 'Finish your SEPA verification'
+                : 'Get verified in minutes'}
             </Button>
           )}
         </PaymentMethod>

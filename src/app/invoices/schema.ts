@@ -56,7 +56,7 @@ const yourInfoSchema = z.object({
 });
 
 /** The payment methods that a client can accept */
-export const ACCEPTED_PAYMENT_METHODS = ['usdc', 'usd'] as const;
+export const ACCEPTED_PAYMENT_METHODS = ['usdc', 'usd', 'eur'] as const;
 export type AcceptedPaymentMethod = (typeof ACCEPTED_PAYMENT_METHODS)[number];
 
 const paymentMethodsSchema = z.object({

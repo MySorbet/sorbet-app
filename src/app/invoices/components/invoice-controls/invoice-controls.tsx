@@ -8,9 +8,11 @@ import { YourInfoTab } from './your-info-tab';
 export const InvoiceControls = ({
   onGetVerified,
   walletAddress,
+  isEurEndorsed,
 }: {
   onGetVerified?: () => void;
   walletAddress?: string;
+  isEurEndorsed?: boolean;
 }) => {
   return (
     <div>
@@ -45,6 +47,7 @@ export const InvoiceControls = ({
           <PaymentTab
             onGetVerified={onGetVerified}
             walletAddress={walletAddress}
+            isEurEndorsed={isEurEndorsed}
           />
         </TabsContent>
       </Tabs>
