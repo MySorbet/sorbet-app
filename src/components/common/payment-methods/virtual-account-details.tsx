@@ -6,7 +6,7 @@ import {
   ACHWireDetails,
   SEPADetails,
 } from '@/app/invoices/hooks/use-ach-wire-details';
-import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
+import { CopyButton } from '@/components/common/copy-button/copy-button';
 import {
   Accordion,
   AccordionContent,
@@ -24,15 +24,17 @@ const VADetailsUSD = ({ account }: { account: ACHWireDetails }) => {
       <VARow>
         <VARowLabel>Account number</VARowLabel>
         <VARowValue>
-          {account.accountNumber}
-          <CopyIconButton stringToCopy={account.accountNumber} />
+          <Copy stringToCopy={account.accountNumber}>
+            {account.accountNumber}
+          </Copy>
         </VARowValue>
       </VARow>
       <VARow>
         <VARowLabel>Routing number</VARowLabel>
         <VARowValue>
-          {account.routingNumber}
-          <CopyIconButton stringToCopy={account.routingNumber} />
+          <Copy stringToCopy={account.routingNumber}>
+            {account.routingNumber}
+          </Copy>
         </VARowValue>
       </VARow>
       <VARow>
@@ -42,8 +44,9 @@ const VADetailsUSD = ({ account }: { account: ACHWireDetails }) => {
       <VARow>
         <VARowLabel>Recipient</VARowLabel>
         <VARowValue>
-          {account.beneficiary.name}
-          <CopyIconButton stringToCopy={account.beneficiary.name} />
+          <Copy stringToCopy={account.beneficiary.name}>
+            {account.beneficiary.name}
+          </Copy>
         </VARowValue>
       </VARow>
       <Accordion type='single' collapsible>
@@ -81,22 +84,21 @@ const VADetailsEUR = ({ account }: { account: SEPADetails }) => {
       <VARow>
         <VARowLabel>IBAN</VARowLabel>
         <VARowValue>
-          {account.iban}
-          <CopyIconButton stringToCopy={account.iban} />
+          <Copy stringToCopy={account.iban}>{account.iban}</Copy>
         </VARowValue>
       </VARow>
       <VARow>
         <VARowLabel>BIC</VARowLabel>
         <VARowValue>
-          {account.bic}
-          <CopyIconButton stringToCopy={account.bic} />
+          <Copy stringToCopy={account.bic}>{account.bic}</Copy>
         </VARowValue>
       </VARow>
       <VARow>
         <VARowLabel>Account Holder</VARowLabel>
         <VARowValue>
-          {account.accountHolderName}
-          <CopyIconButton stringToCopy={account.accountHolderName} />
+          <Copy stringToCopy={account.accountHolderName}>
+            {account.accountHolderName}
+          </Copy>
         </VARowValue>
       </VARow>
       <Accordion type='single' collapsible>
@@ -142,5 +144,25 @@ const VARowValue: FC<PropsWithChildren> = ({ children }) => {
     <span className='flex max-w-[70%] items-center gap-1 text-right text-sm'>
       {children}
     </span>
+  );
+};
+
+/** Common CopyButton customized for copyable info */
+const Copy = ({
+  children,
+  stringToCopy,
+}: {
+  stringToCopy: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <CopyButton
+      stringToCopy={stringToCopy}
+      className='h-fit flex-row-reverse p-0 text-sm font-normal'
+      variant='link'
+      copyIconClassName='text-muted-foreground'
+    >
+      {children}
+    </CopyButton>
   );
 };
