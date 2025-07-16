@@ -21,7 +21,7 @@ export const PaymentMethod = ({
   Icon: React.ElementType;
 }) => {
   return (
-    <div className={cn('group flex w-full gap-4')}>
+    <div className={cn('flex w-full gap-4')}>
       <CornerDownRight className='text-muted-foreground ml-2 size-6 shrink-0' />
       <div className='flex w-full flex-col gap-2 pb-3 pr-3 pt-1'>
         <div className='flex w-full items-center gap-1'>
