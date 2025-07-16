@@ -24,7 +24,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 import { useClaimVirtualAccount } from '../hooks/use-claim-virtual-account';
 import { AccountSelect } from './account-select';
-import { VAAccountDetails } from './va-details';
+import { ExternalAccountDetails } from './external-account-details';
 
 /**
  * Compose account components into a page with state
@@ -71,7 +71,7 @@ export const AccountsPageContent = () => {
         customer?.hasClaimedVirtualAccount ? (
           account ? (
             <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-              <VAAccountDetails.USD account={account} />
+              <ExternalAccountDetails.USD account={account} />
             </AccountDetailsCard>
           ) : isMobile ? (
             <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -88,7 +88,7 @@ export const AccountsPageContent = () => {
       ) : customer?.hasClaimedVirtualAccountEur ? (
         eurAccount ? (
           <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-            <VAAccountDetails.EUR account={eurAccount} />
+            <ExternalAccountDetails.EUR account={eurAccount} />
           </AccountDetailsCard>
         ) : isMobile ? (
           <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
