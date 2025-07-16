@@ -91,7 +91,7 @@ const PaymentMethodUSD = () => {
     >
       {isVerified ? (
         account && !isLoading ? (
-          <VirtualAccountDetails account={account} />
+          <VirtualAccountDetails.USD account={account} />
         ) : (
           <Skeleton className='h-32 w-full' />
         )

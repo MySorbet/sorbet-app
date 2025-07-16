@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
-import { mapToACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
+import {
+  mapToACHWireDetails,
+  mapToEURWireDetails,
+} from '@/app/invoices/hooks/use-ach-wire-details';
 
 import { ClientPaymentCard } from './client-payment-card';
 
@@ -29,11 +32,24 @@ const account = mockBridgeCustomer.virtual_account
     )
   : undefined;
 
+const eurAccount = mockBridgeCustomer.virtual_account_eur
+  ? mapToEURWireDetails(
+      mockBridgeCustomer.virtual_account_eur.source_deposit_instructions
+    )
+  : undefined;
+
 export const Default: Story = {
   args: {
     address: '0x1234567890123456789012345678901234567890',
     account: account,
     dueDate: new Date('2024-04-15'),
+  },
+};
+
+export const WithSepa: Story = {
+  args: {
+    ...Default.args,
+    eurAccount,
   },
 };
 

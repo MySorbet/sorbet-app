@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign } from 'lucide-react';
+import { BadgeDollarSign, Euro } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { BaseAlert } from '@/components/common/base-alert';
@@ -18,53 +18,49 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatWalletAddress } from '@/lib/utils';
 import USDCBaseIcon from '~/svg/base-usdc.svg';
 
-import { ACHWireDetails } from '../../hooks/use-ach-wire-details';
+import { ACHWireDetails, SEPADetails } from '../../hooks/use-ach-wire-details';
 import { useBaseQRCode } from '../../hooks/use-base-qr-code';
-import { AcceptedPaymentMethod } from '../../schema';
 import { formatDate } from '../../utils';
 
 /**
  *  Renders payment details for the client to pay the invoice
- *  If `dueDate` is omitted, the payment card will be a loading state
  *
  *  Pass a wallet address to render the USDC payment method
  *  Pass a bank account to render the USD payment method
+ *  Pass a eur bank account to render the SEPA payment method
  */
 export const ClientPaymentCard = ({
   address,
   account,
+  eurAccount,
   dueDate,
   isLoading,
 }: {
   address?: string;
   account?: ACHWireDetails;
+  eurAccount?: SEPADetails;
   dueDate?: Date;
   isLoading?: boolean;
 }) => {
-  const [selectedTab, setSelectedTab] = useState<
-    AcceptedPaymentMethod | undefined
-  >('usdc');
+  const [selectedTab, setSelectedTab] = useState<TabType>('usdc');
   const handleTabChange = (value: string) => {
-    setSelectedTab(value as AcceptedPaymentMethod);
+    setSelectedTab(value as TabType);
   };
 
   const title = dueDate
     ? `Payment due by ${formatDate(dueDate)}`
     : 'Payment due';
-  const description =
-    selectedTab === 'usdc'
-      ? 'Send USDC on Base network'
-      : 'Transfer via ACH/Wire';
+  const description = buildDescription(selectedTab, !!account, !!eurAccount);
 
   const hideUSDCTab = Boolean(!isLoading && !address && account);
-  const hideUSDTab = Boolean(!isLoading && address && !account);
+  const hideFiatTab = Boolean(!isLoading && address && !account);
 
   // If one of the payment methods is hidden,
   // set the selected tab to the other payment method
   useEffect(() => {
-    hideUSDCTab && setSelectedTab('usd');
-    hideUSDTab && setSelectedTab('usdc');
-  }, [hideUSDCTab, hideUSDTab]);
+    hideUSDCTab && setSelectedTab('fiat');
+    hideFiatTab && setSelectedTab('usdc');
+  }, [hideUSDCTab, hideFiatTab]);
 
   return (
     <Card className='max-w-lg'>
@@ -77,20 +73,20 @@ export const ClientPaymentCard = ({
         <TabsList className='w-full justify-around rounded-b-none'>
           {!hideUSDCTab && (
             <TabsTrigger
-              className='w-1/2'
+              className='flex-1'
               value='usdc'
-              disabled={isLoading || hideUSDTab}
+              disabled={isLoading || hideFiatTab}
             >
               Pay USDC
             </TabsTrigger>
           )}
-          {!hideUSDTab && (
+          {!hideFiatTab && (
             <TabsTrigger
-              className='w-1/2'
-              value='usd'
+              className='flex-1'
+              value='fiat'
               disabled={isLoading || hideUSDCTab}
             >
-              Pay via ACH/Wire
+              Pay Fiat
             </TabsTrigger>
           )}
         </TabsList>
@@ -126,10 +122,13 @@ export const ClientPaymentCard = ({
             {!isLoading && address && <PaymentMethodUSDC address={address} />}
           </TabsContent>
           <TabsContent
-            value='usd'
+            value='fiat'
             className='animate-in fade-in-0 slide-in-from-top-1'
           >
             {!isLoading && account && <PaymentMethodUSD account={account} />}
+            {!isLoading && eurAccount && (
+              <PaymentMethodEUR account={eurAccount} />
+            )}
           </TabsContent>
         </CardContent>
       </Tabs>
@@ -137,6 +136,7 @@ export const ClientPaymentCard = ({
   );
 };
 
+/** Mimic the shape of payment method to minimize layout shift */
 const PaymentMethodSkeleton = () => {
   return (
     <PaymentMethod title={<Skeleton className='h-5 w-40' />} Icon={Skeleton}>
@@ -187,7 +187,42 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
       timing='Arrives in 1-2 days'
       tooltip='Send USD to this bank account to pay this invoice'
     >
-      <VirtualAccountDetails account={account} />
+      <VirtualAccountDetails.USD account={account} />
     </PaymentMethod>
   );
+};
+
+/** Local component specializing the PaymentMethod component for USD */
+const PaymentMethodEUR = ({ account }: { account: SEPADetails }) => {
+  return (
+    <PaymentMethod
+      title='EUR Bank'
+      Icon={Euro}
+      timing='Arrives in 1-2 days'
+      tooltip='Send EUR to this bank account to pay this invoice'
+    >
+      <VirtualAccountDetails.EUR account={account} />
+    </PaymentMethod>
+  );
+};
+
+/** What tabs may be selected */
+type TabType = 'usdc' | 'fiat';
+
+/** Build a description for the payment card based on the selected and available payment methods */
+const buildDescription = (
+  tab: TabType,
+  hasUsdAccount: boolean,
+  hasEurAccount: boolean
+) => {
+  if (tab === 'usdc') return 'Send USDC on Base network';
+  let description = 'Transfer via ';
+  if (hasUsdAccount && hasEurAccount) {
+    description += 'ACH/Wire or SEPA';
+  } else if (hasUsdAccount) {
+    description += 'ACH/Wire';
+  } else if (hasEurAccount) {
+    description += 'SEPA';
+  }
+  return description;
 };
