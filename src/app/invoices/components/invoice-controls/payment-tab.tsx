@@ -3,6 +3,7 @@
 import { kebabCase } from 'lodash';
 import { LockKeyhole } from 'lucide-react';
 
+import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { PaymentMethodDescription } from '@/components/common/payment-methods/payment-method-description';
@@ -55,7 +56,7 @@ export const PaymentTab = ({
       <CardContent className='space-y-6 p-3'>
         <PaymentMethod
           title='Accept USDC payments'
-          timing='Arrives instantly'
+          timing={PAYMENT_TIMING_DESCRIPTIONS.crypto}
           tooltip='Your crypto wallet to receive instant USDC payments on the Base network'
           disabled={false}
           method='usdc'
@@ -81,7 +82,7 @@ export const PaymentTab = ({
         <PaymentMethod
           title='Accept USD payments'
           tooltip='Your free USD account to receive ACH/Wire payments'
-          timing={isBaseEndorsed ? 'Arrives in 1-2 days' : undefined}
+          timing={isBaseEndorsed ? PAYMENT_TIMING_DESCRIPTIONS.bank : undefined}
           locked={!isBaseEndorsed}
           disabled={false}
           method='usd'
@@ -103,7 +104,7 @@ export const PaymentTab = ({
         <PaymentMethod
           title='Accept EUR payments'
           tooltip='Your free EUR account to receive SEPA payments'
-          timing={isEurEndorsed ? 'Arrives in 1-2 days' : undefined}
+          timing={isEurEndorsed ? PAYMENT_TIMING_DESCRIPTIONS.bank : undefined}
           locked={!isEurEndorsed}
           disabled={false}
           method='eur'

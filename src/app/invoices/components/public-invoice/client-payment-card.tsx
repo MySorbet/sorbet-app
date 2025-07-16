@@ -20,7 +20,7 @@ import USDCBaseIcon from '~/svg/base-usdc.svg';
 
 import { ACHWireDetails, SEPADetails } from '../../hooks/use-ach-wire-details';
 import { useBaseQRCode } from '../../hooks/use-base-qr-code';
-import { formatDate } from '../../utils';
+import { formatDate, PAYMENT_TIMING_DESCRIPTIONS } from '../../utils';
 
 /**
  *  Renders payment details for the client to pay the invoice
@@ -154,7 +154,7 @@ const PaymentMethodUSDC = ({ address }: { address: string }) => {
     <PaymentMethod
       title='USDC wallet'
       Icon={USDCBaseIcon}
-      timing='Arrives instantly'
+      timing={PAYMENT_TIMING_DESCRIPTIONS.crypto}
     >
       <div className='flex items-center justify-between'>
         <span className='text-muted-foreground text-sm'>Wallet</span>
@@ -184,7 +184,7 @@ const PaymentMethodUSD = ({ account }: { account: ACHWireDetails }) => {
     <PaymentMethod
       title='USD Bank'
       Icon={BadgeDollarSign}
-      timing='Arrives in 1-2 days'
+      timing={PAYMENT_TIMING_DESCRIPTIONS.bank}
       tooltip='Send USD to this bank account to pay this invoice'
     >
       <VirtualAccountDetails.USD account={account} />
@@ -198,7 +198,7 @@ const PaymentMethodEUR = ({ account }: { account: SEPADetails }) => {
     <PaymentMethod
       title='EUR Bank'
       Icon={Euro}
-      timing='Arrives in 1-2 days'
+      timing={PAYMENT_TIMING_DESCRIPTIONS.bank}
       tooltip='Send EUR to this bank account to pay this invoice'
     >
       <VirtualAccountDetails.EUR account={account} />

@@ -6,6 +6,7 @@ import { forwardRef, useState } from 'react';
 
 import { CreateRecipientDto } from '@/api/recipients/types';
 import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/utils';
+import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
@@ -114,7 +115,7 @@ const BankOrCrypto = ({
     }
   };
   const bankDetail = isVerified ? (
-    'Arrives in 1-2 business days'
+    PAYMENT_TIMING_DESCRIPTIONS.bank
   ) : (
     <div className='flex gap-1'>
       <ShieldCheck className='size-4' />
@@ -157,7 +158,9 @@ const BankOrCrypto = ({
               <RecipientButtonDescription>
                 Transfer to crypto wallet or exchange
               </RecipientButtonDescription>
-              <RecipientButtonDetail>Arrives instantly</RecipientButtonDetail>
+              <RecipientButtonDetail>
+                {PAYMENT_TIMING_DESCRIPTIONS.crypto}
+              </RecipientButtonDetail>
             </RecipientButtonContent>
           </RecipientButton>
         </div>

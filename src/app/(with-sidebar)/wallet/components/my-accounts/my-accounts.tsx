@@ -4,6 +4,7 @@ import { BadgeDollarSign } from 'lucide-react';
 import Link from 'next/link';
 
 import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
+import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { PaymentMethod } from '@/components/common/payment-methods/payment-method';
 import { PaymentMethodDescription } from '@/components/common/payment-methods/payment-method-description';
@@ -48,7 +49,7 @@ const PaymentMethodUSDC = ({ walletAddress }: { walletAddress?: string }) => {
     <PaymentMethod
       title='USDC Wallet'
       Icon={USDCBaseIcon}
-      timing='Arrives instantly'
+      timing={PAYMENT_TIMING_DESCRIPTIONS.crypto}
       tooltip='Your crypto wallet to receive instant USDC payments on the Base network'
     >
       <div className='flex items-center justify-between'>
@@ -86,7 +87,7 @@ const PaymentMethodUSD = () => {
     <PaymentMethod
       title='USD Virtual account'
       Icon={BadgeDollarSign}
-      timing={isVerified ? 'Arrives in 1-2 days' : undefined}
+      timing={isVerified ? PAYMENT_TIMING_DESCRIPTIONS.bank : undefined}
       tooltip='Your free USD account to receive ACH/Wire payments'
     >
       {isVerified ? (

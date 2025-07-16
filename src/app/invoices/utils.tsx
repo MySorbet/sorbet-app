@@ -11,6 +11,14 @@ export const InvoiceStatuses = [
 export type InvoiceStatus = (typeof InvoiceStatuses)[number];
 
 /**
+ * Descriptions of how long it takes for each payment method to arrive.
+ */
+export const PAYMENT_TIMING_DESCRIPTIONS = {
+  bank: 'Arrives in 0-1 business days',
+  crypto: 'Arrives instantly',
+} as const;
+
+/**
  * Calculates the total monetary value of a list of invoice items.
  * TODO: Consider doing this server side (or doing it here and then checking the value with the server)
  */
