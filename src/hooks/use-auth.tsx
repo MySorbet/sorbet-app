@@ -8,6 +8,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -52,10 +53,18 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
   const [user, setUser] = useLocalStorage<User | null>('user', null);
   const [loading, setLoading] = useState(false);
 
-  const { logout: logoutPrivy } = usePrivy();
+  const { logout: logoutPrivy, ready, authenticated } = usePrivy();
   const router = useRouter();
 
   const [desiredHandle] = useQueryState('handle');
+
+  // If privy ever determines the user is not authenticated, reset the user in state
+  // This fixes a bug where an infinite redirect loop between the splash and signin pages occurs
+  useEffect(() => {
+    if (ready && !authenticated) {
+      setUser(null);
+    }
+  }, [ready, authenticated, setUser]);
 
   /**
    * Local helper to find a user by privy id in the sorbet db,

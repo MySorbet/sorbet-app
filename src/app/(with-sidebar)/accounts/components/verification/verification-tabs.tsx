@@ -184,7 +184,7 @@ const EndTab = ({
   return (
     <Card
       className={cn(
-        'flex size-full flex-col items-center justify-center gap-2 p-6',
+        'flex size-full flex-col items-center justify-center gap-2 p-6 text-center',
         className
       )}
     >
