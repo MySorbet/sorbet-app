@@ -29,19 +29,20 @@ import { type AcceptedPaymentMethod } from '../../schema';
  * - Manipulates form data via `useInvoiceForm`
  */
 export const PaymentTab = ({
+  isBaseEndorsed,
+  isEurEndorsed,
   onGetVerified,
   walletAddress,
-  isEurEndorsed,
 }: {
-  /** Callback indicating the user wants to get verified. Only included if the user is not verified. */
-  onGetVerified?: () => void;
-  /** The wallet address to display for the USDC payment method. Passing `undefined` will show a skeleton. */
-  walletAddress?: string;
+  /** Whether the user is endorsed for USD payments. Only included if the user is not endorsed. */
+  isBaseEndorsed?: boolean;
   /** Whether the user is endorsed for EUR payments. Only included if the user is not endorsed. */
   isEurEndorsed?: boolean;
+  /** Callback indicating the user wants to get verified */
+  onGetVerified?: (currency: 'usd' | 'eur') => void;
+  /** The wallet address to display for the USDC payment method. Passing `undefined` will show a skeleton. */
+  walletAddress?: string;
 }) => {
-  // If a callback is not provided, the user is verified
-  const isVerified = !onGetVerified;
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
 
   return (
@@ -80,8 +81,8 @@ export const PaymentTab = ({
         <PaymentMethod
           title='Accept USD payments'
           tooltip='Your free USD account to receive ACH/Wire payments'
-          timing={isVerified ? 'Arrives in 1-2 days' : undefined}
-          locked={!isVerified}
+          timing={isBaseEndorsed ? 'Arrives in 1-2 days' : undefined}
+          locked={!isBaseEndorsed}
           disabled={false}
           method='usd'
         >
@@ -89,11 +90,11 @@ export const PaymentTab = ({
             Your client can pay via ACH/Wire transfer to your USD virtual
             account
           </PaymentMethodDescription>
-          {!isVerified && (
+          {!isBaseEndorsed && (
             <Button
               variant='outline'
               className='w-full'
-              onClick={onGetVerified}
+              onClick={() => onGetVerified?.('usd')}
             >
               Get verified in minutes
             </Button>
@@ -114,9 +115,9 @@ export const PaymentTab = ({
             <Button
               variant='outline'
               className='w-full'
-              onClick={onGetVerified}
+              onClick={() => onGetVerified?.('eur')}
             >
-              {isVerified
+              {isEurEndorsed
                 ? 'Finish your SEPA verification'
                 : 'Get verified in minutes'}
             </Button>

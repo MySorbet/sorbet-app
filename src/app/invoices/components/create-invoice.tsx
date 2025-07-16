@@ -21,17 +21,19 @@ export const CreateInvoice = ({
   onClose,
   onCreate,
   isCreating,
+  isBaseEndorsed,
+  isEurEndorsed,
   onGetVerified,
   walletAddress,
-  isEurEndorsed,
 }: {
   prefills?: Partial<InvoiceForm>;
   onClose?: () => void;
   onCreate?: (invoice: InvoiceForm) => void;
   isCreating?: boolean;
-  onGetVerified?: () => void;
-  walletAddress?: string;
+  isBaseEndorsed?: boolean;
   isEurEndorsed?: boolean;
+  onGetVerified?: (currency: 'usd' | 'eur') => void;
+  walletAddress?: string;
 }) => {
   // RHF will let undefined values overwrite the default values, so we filter them out
   const filteredPrefills = omitBy(prefills, (value) => value === undefined);
@@ -91,9 +93,10 @@ export const CreateInvoice = ({
             </InvoiceDocumentShell>
           </Card>
           <InvoiceControls
+            isBaseEndorsed={isBaseEndorsed}
+            isEurEndorsed={isEurEndorsed}
             onGetVerified={onGetVerified}
             walletAddress={walletAddress}
-            isEurEndorsed={isEurEndorsed}
           />
         </form>
       </div>

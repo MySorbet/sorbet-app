@@ -11,11 +11,16 @@ export const useEndorsements = () => {
   )?.status;
 
   const isBaseApproved = baseStatus === 'approved';
+  const hasUsdAccount = customer?.virtual_account !== null;
+
   const isEurApproved = eurStatus === 'approved';
+  const hasEurAccount = customer?.virtual_account_eur !== null;
 
   return {
     isBaseApproved,
     isEurApproved,
     isPending,
+    hasUsdAccount,
+    hasEurAccount,
   };
 };
