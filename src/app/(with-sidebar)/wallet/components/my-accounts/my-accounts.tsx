@@ -1,9 +1,11 @@
 'use client';
 
-import { BadgeDollarSign } from 'lucide-react';
+import { BadgeDollarSign, BadgeEuro } from 'lucide-react';
 import Link from 'next/link';
 
+import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
 import { useACHWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
+import { useSEPADetails } from '@/app/invoices/hooks/use-sepa-details';
 import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { PaymentMethod } from '@/components/common/payment-methods/payment-method';
@@ -34,6 +36,7 @@ export const MyAccounts = () => {
       <CardContent className='space-y-6 p-3'>
         <PaymentMethodUSDC walletAddress={smartWalletAddress ?? undefined} />
         <PaymentMethodUSD />
+        <PaymentMethodEUR />
       </CardContent>
     </Card>
   );
@@ -70,7 +73,7 @@ const PaymentMethodUSDC = ({ walletAddress }: { walletAddress?: string }) => {
 
 /**
  * Local component specializing the PaymentMethod component for USD
- * - Pretty much identical to the payment method rendered in `ClientPaymentCard` (share?)
+ * - Pretty much identical to the payment method composed in `ClientPaymentCard` (share?)
  */
 const PaymentMethodUSD = () => {
   // TODO: All this fetching is a little redundant. Think about this
@@ -100,6 +103,48 @@ const PaymentMethodUSD = () => {
         <>
           <PaymentMethodDescription>
             KYC verification required to accept ACH/Wire payments
+          </PaymentMethodDescription>
+          <Button variant='outline' className='w-full' asChild>
+            <Link href='/verify'>Get verified in minutes</Link>
+          </Button>
+        </>
+      )}
+    </PaymentMethod>
+  );
+};
+
+/**
+ * Local component specializing the PaymentMethod component for EUR
+ * - Pretty much identical to the payment method composed in `ClientPaymentCard` (share?)
+ */
+const PaymentMethodEUR = () => {
+  // TODO: All this fetching is a little redundant. Think about this
+  // Also note that I am experimenting with pushing data fetching to the bottom of the component tree here
+  const { user } = useAuth();
+  const { isEurApproved, isPending } = useEndorsements();
+  const { data: account, isLoading } = useSEPADetails(user?.id ?? '', {
+    enabled: isEurApproved,
+  });
+
+  const loading = isPending || isLoading;
+
+  return (
+    <PaymentMethod
+      title='EUR Virtual account'
+      Icon={BadgeEuro}
+      timing={isEurApproved ? PAYMENT_TIMING_DESCRIPTIONS.bank : undefined}
+      tooltip='Your free EUR account to receive SEPA payments'
+    >
+      {isEurApproved ? (
+        account && !loading ? (
+          <VirtualAccountDetails.EUR account={account} />
+        ) : (
+          <Skeleton className='h-32 w-full' />
+        )
+      ) : (
+        <>
+          <PaymentMethodDescription>
+            KYC verification required to accept SEPA payments
           </PaymentMethodDescription>
           <Button variant='outline' className='w-full' asChild>
             <Link href='/verify'>Get verified in minutes</Link>

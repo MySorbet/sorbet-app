@@ -41,9 +41,9 @@ export const WalletDashboard = () => {
   return (
     <div className='@container size-full max-w-7xl'>
       {/* Grid container for responsive layout */}
-      <div className='@xl:grid-cols-[1fr_25rem] grid grid-cols-1 gap-6'>
+      <div className='@4xl:grid-cols-[1fr_28rem] grid grid-cols-1 gap-6'>
         {/* Balance Card - First on mobile, left column on desktop */}
-        <div className='@xl:col-start-1 @xl:row-start-1'>
+        <div className='@4xl:col-start-1 @4xl:row-start-1'>
           <BalanceCard
             balance={Number(usdcBalance ?? 0)}
             history={cumulativeBalanceHistory}
@@ -54,13 +54,13 @@ export const WalletDashboard = () => {
         </div>
 
         {/* My Accounts - Second on mobile, right column on desktop */}
-        <div className='@xl:col-start-2 @xl:row-span-2 @xl:row-start-1'>
+        <div className='@4xl:col-start-2 @4xl:row-span-2 @4xl:row-start-1'>
           <MyAccounts />
         </div>
 
         {/* Summary Cards and Transactions - Third on mobile, bottom of left column on desktop */}
-        <div className='@xl:col-start-1 @xl:row-start-2 space-y-6'>
-          <div className='@xl:flex-row flex flex-col justify-between gap-4'>
+        <div className='@4xl:col-start-1 @4xl:row-start-2 space-y-6'>
+          <div className='@4xl:flex-row flex flex-col justify-between gap-4'>
             <WalletSummaryCard
               label='Money In'
               value={totalMoneyIn}
