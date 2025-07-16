@@ -6,10 +6,14 @@ import { YourInfoTab } from './your-info-tab';
 
 /** Renders 3 tabs of controls for creating an invoice */
 export const InvoiceControls = ({
+  isBaseEndorsed,
+  isEurEndorsed,
   onGetVerified,
   walletAddress,
 }: {
-  onGetVerified?: () => void;
+  isBaseEndorsed?: boolean;
+  isEurEndorsed?: boolean;
+  onGetVerified?: (currency: 'usd' | 'eur') => void;
   walletAddress?: string;
 }) => {
   return (
@@ -43,6 +47,8 @@ export const InvoiceControls = ({
           className='animate-in fade-in-0 slide-in-from-right-5'
         >
           <PaymentTab
+            isBaseEndorsed={isBaseEndorsed}
+            isEurEndorsed={isEurEndorsed}
             onGetVerified={onGetVerified}
             walletAddress={walletAddress}
           />

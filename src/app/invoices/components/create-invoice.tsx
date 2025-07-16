@@ -21,6 +21,8 @@ export const CreateInvoice = ({
   onClose,
   onCreate,
   isCreating,
+  isBaseEndorsed,
+  isEurEndorsed,
   onGetVerified,
   walletAddress,
 }: {
@@ -28,7 +30,9 @@ export const CreateInvoice = ({
   onClose?: () => void;
   onCreate?: (invoice: InvoiceForm) => void;
   isCreating?: boolean;
-  onGetVerified?: () => void;
+  isBaseEndorsed?: boolean;
+  isEurEndorsed?: boolean;
+  onGetVerified?: (currency: 'usd' | 'eur') => void;
   walletAddress?: string;
 }) => {
   // RHF will let undefined values overwrite the default values, so we filter them out
@@ -89,6 +93,8 @@ export const CreateInvoice = ({
             </InvoiceDocumentShell>
           </Card>
           <InvoiceControls
+            isBaseEndorsed={isBaseEndorsed}
+            isEurEndorsed={isEurEndorsed}
             onGetVerified={onGetVerified}
             walletAddress={walletAddress}
           />

@@ -1,10 +1,5 @@
 import { CircleCheck, Copy } from 'lucide-react';
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 
 import { Button, ButtonProps } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -50,10 +45,13 @@ export const CopyIconButton = forwardRef<
     const { isCopied, handleClick: handleCopy } = useCopy(
       stringToCopy ?? onCopy
     );
+    const [hasRendered, setHasRendered] = useState(false);
 
     // Similar to using `cn` for classnames, we need to manually combine out onclick with one that is passed
     // Otherwise, the onclick passed from the parent will override the copy action
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (isCopied || disabled) return; // Early return if already copied or disabled
+      if (!hasRendered) setHasRendered(true);
       handleCopy();
       onClick?.(e);
     };
@@ -61,11 +59,6 @@ export const CopyIconButton = forwardRef<
     useImperativeHandle(ref, () => ({
       copy: handleCopy,
     }));
-
-    const isFirstRender = useRef(true);
-    useEffect(() => {
-      isFirstRender.current = false;
-    }, []);
 
     return (
       <Button
@@ -89,7 +82,7 @@ export const CopyIconButton = forwardRef<
           <Copy
             className={cn(
               'text-muted-foreground p-0',
-              !isFirstRender.current && 'animate-in zoom-in-50 fade-in-0',
+              hasRendered && 'animate-in zoom-in-50 fade-in-0',
               copyIconClassName
             )}
           />

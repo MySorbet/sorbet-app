@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
+
 import {
   RecipientButton,
   RecipientButtonContent,
@@ -71,7 +73,7 @@ export const Bank: Story = {
           Transfer to a business or individual bank
         </RecipientButtonDescription>
         <RecipientButtonDetail>
-          Arrives in 1-2 business days
+          {PAYMENT_TIMING_DESCRIPTIONS.bank}
         </RecipientButtonDetail>
       </RecipientButtonContent>
     </RecipientButton>
@@ -87,7 +89,9 @@ export const Wallet: Story = {
         <RecipientButtonDescription>
           Transfer to crypto wallet or exchange
         </RecipientButtonDescription>
-        <RecipientButtonDetail>Arrives instantly</RecipientButtonDetail>
+        <RecipientButtonDetail>
+          {PAYMENT_TIMING_DESCRIPTIONS.crypto}
+        </RecipientButtonDetail>
       </RecipientButtonContent>
     </RecipientButton>
   ),

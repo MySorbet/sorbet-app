@@ -92,7 +92,7 @@ const EURAccountDetails = ({ account }: { account: SEPADetails }) => {
   );
 };
 
-export const VAAccountDetails = {
+export const ExternalAccountDetails = {
   USD: USDAccountDetails,
   EUR: EURAccountDetails,
 };

@@ -2,9 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 
+import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
 import { Authenticated } from '@/app/authenticated';
+import { usePaymentMethods } from '@/app/invoices/hooks/use-payment-methods';
 import Page from '@/components/common/page';
-import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
@@ -16,13 +17,15 @@ import { InvoiceForm } from '../schema';
 export default function CreateInvoicePage() {
   const router = useRouter();
   const { user } = useAuth();
-  const isVerified = useIsVerified();
+  const { isEurApproved, hasEurAccount, isBaseApproved, hasUsdAccount } =
+    useEndorsements();
 
   const invoiceNumber = useInvoiceNumber();
 
   const { smartWalletAddress } = useSmartWalletAddress();
 
-  const onGetVerified = isVerified ? undefined : () => router.push('/verify');
+  // TODO: Is there a better option for this action? QP?
+  const onGetVerified = (_: 'usd' | 'eur') => router.push('/verify');
 
   const handleClose = () => router.push('/invoices');
 
@@ -32,6 +35,8 @@ export default function CreateInvoicePage() {
     router.push(`/invoices/${newInvoice.id}`);
   };
 
+  const paymentMethods = usePaymentMethods();
+
   return (
     <Authenticated>
       <Page.Main>
@@ -39,13 +44,15 @@ export default function CreateInvoicePage() {
           onClose={handleClose}
           onCreate={handleCreate}
           isCreating={isPending}
+          isBaseEndorsed={isBaseApproved && hasUsdAccount}
+          isEurEndorsed={isEurApproved && hasEurAccount}
           onGetVerified={onGetVerified}
           walletAddress={smartWalletAddress ?? undefined}
           prefills={{
             fromName: user?.firstName,
             fromEmail: user?.email,
             invoiceNumber,
-            paymentMethods: isVerified ? ['usdc', 'usd'] : undefined,
+            paymentMethods,
           }}
         />
       </Page.Main>

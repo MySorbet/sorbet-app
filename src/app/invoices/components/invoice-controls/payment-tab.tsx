@@ -3,6 +3,7 @@
 import { kebabCase } from 'lodash';
 import { LockKeyhole } from 'lucide-react';
 
+import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { CopyIconButton } from '@/components/common/copy-button/copy-icon-button';
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { PaymentMethodDescription } from '@/components/common/payment-methods/payment-method-description';
@@ -29,16 +30,20 @@ import { type AcceptedPaymentMethod } from '../../schema';
  * - Manipulates form data via `useInvoiceForm`
  */
 export const PaymentTab = ({
+  isBaseEndorsed,
+  isEurEndorsed,
   onGetVerified,
   walletAddress,
 }: {
-  /** Callback indicating the user wants to get verified. Only included if the user is not verified. */
-  onGetVerified?: () => void;
+  /** Whether the user is endorsed for USD payments. Only included if the user is not endorsed. */
+  isBaseEndorsed?: boolean;
+  /** Whether the user is endorsed for EUR payments. Only included if the user is not endorsed. */
+  isEurEndorsed?: boolean;
+  /** Callback indicating the user wants to get verified */
+  onGetVerified?: (currency: 'usd' | 'eur') => void;
   /** The wallet address to display for the USDC payment method. Passing `undefined` will show a skeleton. */
   walletAddress?: string;
 }) => {
-  // If a callback is not provided, the user is verified
-  const isVerified = !onGetVerified;
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
 
   return (
@@ -51,7 +56,7 @@ export const PaymentTab = ({
       <CardContent className='space-y-6 p-3'>
         <PaymentMethod
           title='Accept USDC payments'
-          timing='Arrives instantly'
+          timing={PAYMENT_TIMING_DESCRIPTIONS.crypto}
           tooltip='Your crypto wallet to receive instant USDC payments on the Base network'
           disabled={false}
           method='usdc'
@@ -77,8 +82,8 @@ export const PaymentTab = ({
         <PaymentMethod
           title='Accept USD payments'
           tooltip='Your free USD account to receive ACH/Wire payments'
-          timing={isVerified ? 'Arrives in 1-2 days' : undefined}
-          locked={!isVerified}
+          timing={isBaseEndorsed ? PAYMENT_TIMING_DESCRIPTIONS.bank : undefined}
+          locked={!isBaseEndorsed}
           disabled={false}
           method='usd'
         >
@@ -86,13 +91,36 @@ export const PaymentTab = ({
             Your client can pay via ACH/Wire transfer to your USD virtual
             account
           </PaymentMethodDescription>
-          {!isVerified && (
+          {!isBaseEndorsed && (
             <Button
               variant='outline'
               className='w-full'
-              onClick={onGetVerified}
+              onClick={() => onGetVerified?.('usd')}
             >
               Get verified in minutes
+            </Button>
+          )}
+        </PaymentMethod>
+        <PaymentMethod
+          title='Accept EUR payments'
+          tooltip='Your free EUR account to receive SEPA payments'
+          timing={isEurEndorsed ? PAYMENT_TIMING_DESCRIPTIONS.bank : undefined}
+          locked={!isEurEndorsed}
+          disabled={false}
+          method='eur'
+        >
+          <PaymentMethodDescription>
+            Your client can pay via SEPA transfer to your EUR virtual account
+          </PaymentMethodDescription>
+          {!isEurEndorsed && (
+            <Button
+              variant='outline'
+              className='w-full'
+              onClick={() => onGetVerified?.('eur')}
+            >
+              {isEurEndorsed
+                ? 'Finish your SEPA verification'
+                : 'Get verified in minutes'}
             </Button>
           )}
         </PaymentMethod>
