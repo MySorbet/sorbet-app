@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import { useSEPADetails } from '@/app/invoices/hooks/use-sepa-details';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -38,6 +39,13 @@ export const PublicInvoice = ({
     useACHWireDetails(invoice?.userId ?? '', {
       enabled: invoice?.paymentMethods?.includes('usdc'),
     });
+
+  const { data: sepaDetails, isLoading: isLoadingSEPADetails } = useSEPADetails(
+    invoice?.userId ?? '',
+    {
+      enabled: invoice?.paymentMethods?.includes('eur'),
+    }
+  );
 
   // Render the receipt jerryrigged for an error in the case of an error
   if (isError) {
@@ -85,9 +93,13 @@ export const PublicInvoice = ({
           <ClientPaymentCard
             address={walletAddress}
             account={achWireDetails}
+            eurAccount={sepaDetails}
             dueDate={invoice?.dueDate}
             isLoading={
-              isLoading || isLoadingWalletAddress || isLoadingACHWireDetails
+              isLoading ||
+              isLoadingWalletAddress ||
+              isLoadingACHWireDetails ||
+              isLoadingSEPADetails
             }
           />
           <FollowButton />
