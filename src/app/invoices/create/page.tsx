@@ -39,7 +39,7 @@ export default function CreateInvoicePage() {
 
   return (
     <Authenticated>
-      <Page.Main>
+      <Page.Main className='h-full'>
         <CreateInvoice
           onClose={handleClose}
           onCreate={handleCreate}

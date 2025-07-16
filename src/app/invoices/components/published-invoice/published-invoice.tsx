@@ -3,7 +3,6 @@ import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { toast } from 'sonner';
 
-import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { sleep } from '@/lib/utils';
 
@@ -11,6 +10,7 @@ import { Invoice } from '../../schema';
 import { InvoiceDocument } from '../invoice-document';
 import { InvoiceDocumentShell } from '../invoice-document-shell';
 import { PublishedInvoiceHeader } from '../invoice-header/published-invoice-header';
+import { InvoiceWindow } from '../invoice-window';
 import { SentAlert } from './sent-alert';
 
 /** Render a full page displaying a published invoice */
@@ -45,23 +45,25 @@ export const PublishedInvoice = ({
         }}
         disableSend={hasSent}
       />
-      <Card className='m-6 flex flex-1 flex-col items-center justify-center gap-6 p-6'>
-        {hasSent && invoice && (
-          <SentAlert
-            recipientEmail={invoice?.toEmail ?? ''}
-            className='animate-in fade-in slide-in-from-bottom-1 w-[21cm]'
-          />
-        )}
-        {isLoading ? (
-          <Skeleton className='size-[21cm]' />
-        ) : (
-          invoice && (
-            <InvoiceDocumentShell>
-              <InvoiceDocument invoice={invoice} ref={contentRef} />
-            </InvoiceDocumentShell>
-          )
-        )}
-      </Card>
+      <div className='flex min-h-0 flex-1 gap-6 p-6'>
+        <InvoiceWindow>
+          {hasSent && invoice && (
+            <SentAlert
+              recipientEmail={invoice?.toEmail ?? ''}
+              className='animate-in fade-in slide-in-from-bottom-1 mx-auto mb-6 w-[21cm]'
+            />
+          )}
+          {isLoading ? (
+            <Skeleton className='size-[21cm]' />
+          ) : (
+            invoice && (
+              <InvoiceDocumentShell>
+                <InvoiceDocument invoice={invoice} ref={contentRef} />
+              </InvoiceDocumentShell>
+            )
+          )}
+        </InvoiceWindow>
+      </div>
     </div>
   );
 };

@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { omitBy } from 'lodash';
 import { useForm } from 'react-hook-form';
 
-import { Card } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 
 import {
@@ -14,6 +13,7 @@ import { InvoiceControls } from './invoice-controls/invoice-controls';
 import { InvoiceDocument } from './invoice-document';
 import { InvoiceDocumentShell } from './invoice-document-shell';
 import { CreateInvoiceHeader } from './invoice-header/create-invoice-header';
+import { InvoiceWindow } from './invoice-window';
 
 /** Render a WYSIWYG invoice editor with controls for editing the invoice. */
 export const CreateInvoice = ({
@@ -86,12 +86,12 @@ export const CreateInvoice = ({
           disabled={!isValid}
           isCreating={isCreating}
         />
-        <form onSubmit={onSubmit} className='flex w-full flex-1 gap-6 p-6'>
-          <Card className='flex flex-1 items-center justify-center p-6'>
+        <form onSubmit={onSubmit} className='flex min-h-0 flex-1 gap-6 p-6'>
+          <InvoiceWindow>
             <InvoiceDocumentShell>
               <InvoiceDocument invoice={form.watch()} />
             </InvoiceDocumentShell>
-          </Card>
+          </InvoiceWindow>
           <InvoiceControls
             isBaseEndorsed={isBaseEndorsed}
             isEurEndorsed={isEurEndorsed}

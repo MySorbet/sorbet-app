@@ -17,7 +17,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
 
   // Let the public invoice page handle rendering the error
   return (
-    <div className='flex w-full flex-col items-center justify-center'>
+    <div className='flex size-full flex-col items-center justify-center'>
       {isError || !isFreelancer ? (
         <PublicInvoice invoice={data} isLoading={isLoading} isError={isError} />
       ) : (

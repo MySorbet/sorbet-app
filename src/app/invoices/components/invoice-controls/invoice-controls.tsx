@@ -1,3 +1,4 @@
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { NewInvoiceTab } from './new-invoice-tab';
@@ -17,34 +18,34 @@ export const InvoiceControls = ({
   walletAddress?: string;
 }) => {
   return (
-    <div>
-      <Tabs defaultValue='invoice' className='w-96'>
-        <TabsList className='mb-10 w-full justify-between'>
-          <TabsTrigger value='invoice' className='w-1/3'>
-            New invoice
-          </TabsTrigger>
-          <TabsTrigger value='your-info' className='w-1/3'>
-            Your info
-          </TabsTrigger>
-          <TabsTrigger value='payment' className='w-1/3'>
-            Payment
-          </TabsTrigger>
-        </TabsList>
+    <Tabs defaultValue='invoice' className='flex h-full w-[27rem] flex-col'>
+      <TabsList className='w-full justify-between'>
+        <TabsTrigger value='invoice' className='w-1/3'>
+          New invoice
+        </TabsTrigger>
+        <TabsTrigger value='your-info' className='w-1/3'>
+          Your info
+        </TabsTrigger>
+        <TabsTrigger value='payment' className='w-1/3'>
+          Payment
+        </TabsTrigger>
+      </TabsList>
+      <ScrollArea className='flex-1'>
         <TabsContent
           value='invoice'
-          className='animate-in fade-in-0 slide-in-from-right-5'
+          className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
           <NewInvoiceTab />
         </TabsContent>
         <TabsContent
           value='your-info'
-          className='animate-in fade-in-0 slide-in-from-right-5'
+          className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
           <YourInfoTab />
         </TabsContent>
         <TabsContent
           value='payment'
-          className='animate-in fade-in-0 slide-in-from-right-5'
+          className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
           <PaymentTab
             isBaseEndorsed={isBaseEndorsed}
@@ -53,7 +54,7 @@ export const InvoiceControls = ({
             walletAddress={walletAddress}
           />
         </TabsContent>
-      </Tabs>
-    </div>
+      </ScrollArea>
+    </Tabs>
   );
 };

@@ -3,7 +3,6 @@ import { useReactToPrint } from 'react-to-print';
 
 import { useSEPADetails } from '@/app/invoices/hooks/use-sepa-details';
 import { buttonVariants } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useWalletAddressByUserId } from '@/hooks/use-wallet-address-by-user-id';
 import { cn } from '@/lib/utils';
@@ -13,6 +12,7 @@ import { Invoice } from '../../schema';
 import { InvoiceDocument } from '../invoice-document';
 import { InvoiceDocumentShell } from '../invoice-document-shell';
 import { PublicInvoiceHeader } from '../invoice-header/public-invoice-header';
+import { InvoiceWindow } from '../invoice-window';
 import { ClientPaymentCard } from './client-payment-card';
 import { InvoiceReceipt } from './invoice-receipt';
 
@@ -77,8 +77,8 @@ export const PublicInvoice = ({
         from={invoice?.fromName}
         onDownload={reactToPrintFn}
       />
-      <div className='flex flex-1 gap-6 p-6'>
-        <Card className='flex flex-1 flex-col items-center justify-center gap-6 p-6'>
+      <div className='flex min-h-0 flex-1 gap-6 p-6'>
+        <InvoiceWindow>
           {isLoading ? (
             <Skeleton className='size-[21cm]' />
           ) : (
@@ -88,7 +88,7 @@ export const PublicInvoice = ({
               </InvoiceDocumentShell>
             )
           )}
-        </Card>
+        </InvoiceWindow>
         <div className='flex w-96 flex-col justify-between gap-2'>
           <ClientPaymentCard
             address={walletAddress}
