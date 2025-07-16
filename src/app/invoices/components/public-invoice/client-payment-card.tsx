@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeDollarSign, Euro } from 'lucide-react';
+import { BadgeDollarSign, BadgeEuro } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { BaseAlert } from '@/components/common/base-alert';
@@ -197,7 +197,7 @@ const PaymentMethodEUR = ({ account }: { account: SEPADetails }) => {
   return (
     <PaymentMethod
       title='EUR Bank'
-      Icon={Euro}
+      Icon={BadgeEuro}
       timing={PAYMENT_TIMING_DESCRIPTIONS.bank}
       tooltip='Send EUR to this bank account to pay this invoice'
     >
