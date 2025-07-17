@@ -102,10 +102,9 @@ const BankOrCrypto = ({
   className?: string;
   setStep: (step: 'crypto' | 'bank') => void;
 }) => {
-  // TODO: What we really need to do here is disable USD or EUR recipient creation according to endorsement status.
+  // Below, we set up a redirect to the verify page for unverified users
+  // Eventually, we want to do an "inline verification" within the drawer or sheet
   const isVerified = useIsVerified();
-
-  // Temporary UX to ship recipients as is
   const router = useRouter();
   const handleBankClick = () => {
     if (isVerified) {
@@ -133,7 +132,7 @@ const BankOrCrypto = ({
           Select how you want to transfer funds
         </VaulSheetDescription>
       </VaulSheetHeader>
-      <ScrollArea className='overflow-y-auto'>
+      <ScrollAreaHack>
         <div className={cn('flex flex-col gap-3', className)}>
           <RecipientButton
             onClick={handleBankClick}
@@ -164,7 +163,7 @@ const BankOrCrypto = ({
             </RecipientButtonContent>
           </RecipientButton>
         </div>
-      </ScrollArea>
+      </ScrollAreaHack>
     </>
   );
 };
@@ -187,14 +186,14 @@ const BankRecipientStep = ({
         <VaulSheetTitle>New bank recipient</VaulSheetTitle>
       </VaulSheetHeader>
       <BankRecipientFormContext>
-        <ScrollArea className='overflow-y-auto'>
+        <ScrollAreaHack>
           <div className={className}>
             <NakedBankRecipientForm
               onSubmit={onSubmit}
               eurLocked={!isEurApproved}
             />
           </div>
-        </ScrollArea>
+        </ScrollAreaHack>
         <VaulSheetFooter className='flex flex-row justify-end'>
           <BankRecipientSubmitButton />
         </VaulSheetFooter>
@@ -219,9 +218,9 @@ const CryptoRecipientStep = ({
         <VaulSheetTitle>New crypto recipient</VaulSheetTitle>
       </VaulSheetHeader>
       <CryptoRecipientFormContext>
-        <ScrollArea className='overflow-y-auto'>
+        <ScrollAreaHack>
           <CryptoRecipientForm className={className} onSubmit={onSubmit} />
-        </ScrollArea>
+        </ScrollAreaHack>
         <VaulSheetFooter className='flex flex-row justify-end'>
           <CryptoRecipientSubmitButton />
         </VaulSheetFooter>
@@ -247,3 +246,17 @@ const BackButton = forwardRef<
     </Button>
   );
 });
+
+/**
+ * This conditional style on a scroll area fixes a bug where
+ * - on desktop, the classname would cause a double scrollbar
+ * - on mobile, omitting the classname causes the content to be hidden since the parent eventually has h-auto
+ */
+const ScrollAreaHack = ({ children }: { children: React.ReactNode }) => {
+  const isMobile = useIsMobile();
+  return (
+    <ScrollArea className={cn(isMobile && 'overflow-y-auto')}>
+      {children}
+    </ScrollArea>
+  );
+};
