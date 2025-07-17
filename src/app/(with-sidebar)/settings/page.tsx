@@ -1,5 +1,6 @@
 'use client';
 
+import { Header as CommonHeader } from '@/components/common/header';
 import Page from '@/components/common/page';
 import { Header } from '@/components/header';
 
@@ -11,6 +12,7 @@ const SettingsPage = () => {
     <Authenticated>
       <Page.Main>
         <Header />
+        <CommonHeader title='Settings'></CommonHeader>
         <Page.Content>
           <SettingsDashboard />
         </Page.Content>
