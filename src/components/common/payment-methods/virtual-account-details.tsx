@@ -84,20 +84,24 @@ const VADetailsEUR = ({ account }: { account: SEPADetails }) => {
       <VARow>
         <VARowLabel>IBAN</VARowLabel>
         <VARowValue>
-          <Copy stringToCopy={account.iban}>{account.iban}</Copy>
+          <Copy stringToCopy={account.iban}>
+            <span className='truncate'>{account.iban}</span>
+          </Copy>
         </VARowValue>
       </VARow>
       <VARow>
         <VARowLabel>BIC</VARowLabel>
         <VARowValue>
-          <Copy stringToCopy={account.bic}>{account.bic}</Copy>
+          <Copy stringToCopy={account.bic}>
+            <span className='truncate'>{account.bic}</span>
+          </Copy>
         </VARowValue>
       </VARow>
       <VARow>
         <VARowLabel>Account Holder</VARowLabel>
         <VARowValue>
           <Copy stringToCopy={account.accountHolderName}>
-            {account.accountHolderName}
+            <span className='truncate'>{account.accountHolderName}</span>
           </Copy>
         </VARowValue>
       </VARow>
@@ -158,7 +162,7 @@ const Copy = ({
   return (
     <CopyButton
       stringToCopy={stringToCopy}
-      className='h-fit flex-row-reverse p-0 text-sm font-normal'
+      className='h-fit w-full flex-row-reverse p-0 text-sm font-normal'
       variant='link'
       copyIconClassName='text-muted-foreground'
     >
