@@ -1,9 +1,13 @@
 import axios from 'axios';
 
-import { CreateRecipientDto, RecipientAPI } from '@/api/recipients/types';
 import { env } from '@/lib/env';
 
 import { withAuthHeader } from '../with-auth-header';
+import {
+  CreateRecipientDto,
+  RecipientAPI,
+  RecipientAPIBankDetailed,
+} from './types';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
@@ -27,6 +31,14 @@ export const recipientsApi = {
 
   delete: async (recipientId: string) => {
     const response = await axios.delete(
+      `${API_URL}/recipients/${recipientId}`,
+      await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  getRecipientDetails: async (recipientId: string) => {
+    const response = await axios.get<RecipientAPIBankDetailed>(
       `${API_URL}/recipients/${recipientId}`,
       await withAuthHeader()
     );

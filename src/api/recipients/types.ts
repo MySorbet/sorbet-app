@@ -37,3 +37,94 @@ type RecipientAPICrypto = RecipientAPIBase & {
 };
 
 export type RecipientAPI = RecipientAPIBank | RecipientAPICrypto;
+
+/** When fetching the details For a specific recipient, we get back a liquidation address and an external account. */
+export type RecipientAPIBankDetailed = RecipientAPIBank & {
+  liquidationAddress: LiquidationAddress;
+  externalAccount: ExternalAccount;
+};
+
+/** A liquidation address record received from bridge. Type could be not completely correct. */
+type LiquidationAddress = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  chain:
+    | 'arbitrum'
+    | 'avalanche_c_chain'
+    | 'base'
+    | 'ethereum'
+    | 'optimism'
+    | 'polygon'
+    | 'solana'
+    | 'stellar'
+    | 'tron';
+  address: string;
+  currency: 'usdb' | 'usdc' | 'usdt' | 'dai' | 'pyusd' | 'eurc' | 'eur';
+  external_account_id: string;
+  customer_id: string;
+  destination_payment_rail:
+    | 'ach'
+    | 'wire'
+    | 'ach_push'
+    | 'ach_same_day'
+    | 'arbitrum'
+    | 'avalanche_c_chain'
+    | 'base'
+    | 'ethereum'
+    | 'fiat_deposit_return'
+    | 'optimism'
+    | 'polygon'
+    | 'sepa'
+    | 'solana'
+    | 'spei'
+    | 'stellar'
+    | 'swift'
+    | 'tron';
+  destination_currency:
+    | 'dai'
+    | 'eur'
+    | 'eurc'
+    | 'mxn'
+    | 'pyusd'
+    | 'usd'
+    | 'usdb'
+    | 'usdc'
+    | 'usdt';
+  return_address: string;
+  state: 'active' | 'deactivated';
+
+  [key: string]: unknown; // Incase there is anything else
+};
+
+/** An external account record received from bridge. Type could be not completely correct. */
+type ExternalAccount = {
+  id: string;
+  customer_id: string;
+  created_at: string;
+  updated_at: string;
+  bank_name: string;
+  account_name: string | null; // seems not to be used
+  account_owner_name: string;
+  active: boolean;
+  currency: 'usd' | 'eur' | 'mxn';
+  account_owner_type: string;
+  account_type: 'us' | 'iban' | 'clabe' | 'unknown';
+  first_name: string;
+  last_name: string;
+  business_name: string | null;
+  account?: {
+    last_4: string;
+    routing_number: string;
+    checking_or_savings: 'checking' | 'savings';
+  };
+  iban?: {
+    last_4: string;
+    bic: string;
+    country: string;
+  };
+  beneficiary_address_valid: boolean;
+  last4: string; // deprecated
+
+  [key: string]: unknown; // Incase there is anything else
+};
