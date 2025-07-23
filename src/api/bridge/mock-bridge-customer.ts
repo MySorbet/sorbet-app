@@ -126,7 +126,5 @@ export const mockBridgeCustomer: BridgeCustomer = {
   customer_id: '220d5e70-48f9-4971-b547-c19b93d2ba1c',
   kyc_link: PERSONA_URL,
   tos_link: TOS_URL,
-  kyc_status: 'not_started',
-  tos_status: 'pending',
   customer,
 };

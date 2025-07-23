@@ -4,12 +4,9 @@ export type BridgeCustomer = {
   customer_id: string;
   kyc_link: string;
   tos_link: string;
-  kyc_status: KYCStatus;
-  tos_status: TOSStatus;
 
   virtual_account?: BridgeVirtualAccount;
   virtual_account_eur?: BridgeVirtualAccountEUR;
-  rejection_reasons?: RejectionReason[];
 
   customer?: Customer;
 
@@ -81,6 +78,17 @@ export type BridgeVirtualAccountEUR = BridgeVirtualAccountBase & {
   source_deposit_instructions: SourceDepositInstructionsEUR;
 };
 
+export type CustomerStatus =
+  | 'active'
+  | 'awaiting_questionnaire'
+  | 'awaiting_ubo'
+  | 'incomplete'
+  | 'not_started'
+  | 'offboarded'
+  | 'paused'
+  | 'rejected'
+  | 'under_review';
+
 /**
  * Represents a customer account from Bridge API
  * Generated with Cursor reading: https://apidocs.bridge.xyz/reference/get_customers-customerid
@@ -98,16 +106,7 @@ export type Customer = {
   /** Customer's email address */
   email: string;
   /** Status of the customer's account */
-  status:
-    | 'active'
-    | 'awaiting_questionnaire'
-    | 'awaiting_ubo'
-    | 'incomplete'
-    | 'not_started'
-    | 'offboarded'
-    | 'paused'
-    | 'rejected'
-    | 'under_review';
+  status: CustomerStatus;
   /** Customer capabilities object */
   type: 'individual';
   /** Not present in docs but present in responses */

@@ -7,28 +7,28 @@ import { useEffect, useState } from 'react';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
-import { KYCStatus } from '@/types';
+import { CustomerStatus } from '@/types';
 
 import { AccountVerificationCard } from './account-verification-card';
 import { FAQ } from './faq';
 import { KYCChecklist, VerifyStep } from './kyc-checklist';
 
-const kycCompletedStates: KYCStatus[] = [
+const kycCompletedStates: CustomerStatus[] = [
   // Complete but waiting for approval
-  'manual_review',
   'under_review',
   'awaiting_ubo', // never happens for individuals
+  'awaiting_questionnaire', // never happens for individuals
 
   // Actually completed
-  'approved',
+  'active',
 
   // We consider rejected to be a complete state, then allow the user to retry
   'rejected',
+  'paused', // TODO: Should we handle this differently?
+  'offboarded', // TODO: Should we handle this differently?
 
   // 👇 These are the only states that will render the checklist incomplete
-  // 'pending',
   // 'not_started',
-
   // 'incomplete',
 ];
 
@@ -59,7 +59,7 @@ export const VerifyDashboard = () => {
     }
   };
 
-  const { data: customer, isLoading } = useBridgeCustomer({
+  const { data: bridgeCustomer, isLoading } = useBridgeCustomer({
     // TODO: Optimization? We could only refetch in the indeterminate state
     refetchInterval: 10000, // 10s
     retry: (_, error) => {
@@ -67,6 +67,8 @@ export const VerifyDashboard = () => {
       return !(isAxiosError(error) && error.status === 404);
     },
   });
+
+  const customer = bridgeCustomer?.customer;
 
   // Drive step from bridge customer status
   useEffect(() => {
@@ -81,13 +83,13 @@ export const VerifyDashboard = () => {
     }
 
     // Goto terms if the customer has not approved the terms
-    if (customer.tos_status === 'pending') {
+    if (!customer.has_accepted_terms_of_service) {
       setStep('terms');
       return;
     }
 
     // Goto complete if the customer has approved the kyc
-    if (!kycCompletedStates.includes(customer.kyc_status)) {
+    if (customer.status !== 'active') {
       setStep('details');
       return;
     }
@@ -98,9 +100,7 @@ export const VerifyDashboard = () => {
   }, [customer, isLoading, setIsIndeterminate]);
 
   const isUnderReview =
-    customer?.kyc_status === 'under_review' ||
-    customer?.kyc_status === 'manual_review' ||
-    customer?.kyc_status === 'awaiting_ubo';
+    customer?.status === 'under_review' || customer?.status === 'awaiting_ubo';
 
   const router = useRouter();
   const unlessMobile = useUnlessMobile();
@@ -124,10 +124,10 @@ export const VerifyDashboard = () => {
           step={step}
           onStepComplete={handleStepComplete}
           isLoading={isLoading}
-          tosLink={customer?.tos_link}
-          kycLink={customer?.kyc_link}
+          tosLink={bridgeCustomer?.tos_link}
+          kycLink={bridgeCustomer?.kyc_link}
           isIndeterminate={isIndeterminate}
-          isRejected={customer?.kyc_status === 'rejected'}
+          isRejected={customer?.status === 'rejected'}
           isUnderReview={isUnderReview}
           rejectionReasons={customer?.rejection_reasons?.map(
             (reason) => reason.reason
@@ -142,10 +142,8 @@ export const VerifyDashboard = () => {
         className='@2xl:col-span-1 col-span-2 h-fit w-full'
         indeterminate={isIndeterminate}
         completedTasks={{
-          terms: customer?.tos_status === 'approved',
-          details:
-            customer !== undefined &&
-            kycCompletedStates.includes(customer.kyc_status),
+          terms: customer?.has_accepted_terms_of_service ?? false,
+          details: !!customer && kycCompletedStates.includes(customer.status),
         }}
       />
     </div>

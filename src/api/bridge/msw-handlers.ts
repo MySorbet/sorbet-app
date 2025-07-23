@@ -28,7 +28,6 @@ export const mockBridgeCustomerHandlerTosComplete = http.get(
     await delay(1000);
     return HttpResponse.json<BridgeCustomer>({
       ...mockBridgeCustomer,
-      tos_status: 'approved',
       customer:
         mockBridgeCustomer.customer !== undefined
           ? {
@@ -47,8 +46,6 @@ export const mockBridgeCustomerHandlerKycComplete = http.get(
     await delay(1000);
     return HttpResponse.json<BridgeCustomer>({
       ...mockBridgeCustomer,
-      tos_status: 'approved',
-      kyc_status: 'approved',
       customer:
         mockBridgeCustomer.customer !== undefined
           ? {
@@ -89,8 +86,6 @@ export const mockBridgeCustomerHandlerKycCompleteWithSepa = http.get(
     await delay(1000);
     return HttpResponse.json<BridgeCustomer>({
       ...mockBridgeCustomer,
-      tos_status: 'approved',
-      kyc_status: 'approved',
       customer:
         mockBridgeCustomer.customer !== undefined
           ? {
