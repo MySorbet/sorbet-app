@@ -83,7 +83,12 @@ export const AccountsPageContent = () => {
             <AutomaticVerificationTabs />
           )
         ) : (
-          <ClaimAccountButton type='usd' />
+          <ClaimAccountButton
+            type='usd'
+            onClaim={() => {
+              setIsDrawerOpen(true);
+            }}
+          />
         )
       ) : customer?.hasClaimedVirtualAccountEur ? (
         eurAccount ? (
@@ -100,7 +105,12 @@ export const AccountsPageContent = () => {
           <AutomaticVerificationTabs />
         )
       ) : (
-        <ClaimAccountButton type='eur' />
+        <ClaimAccountButton
+          type='eur'
+          onClaim={() => {
+            setIsDrawerOpen(true);
+          }}
+        />
       )}
     </div>
   );
@@ -146,9 +156,17 @@ const AccountDetailsCard = ({
   );
 };
 
-const ClaimAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
+const ClaimAccountButton = ({
+  type,
+  onClaim,
+}: {
+  type: 'usd' | 'eur';
+  onClaim?: () => void;
+}) => {
   const { mutate: claimVirtualAccount, isPending: isClaiming } =
-    useClaimVirtualAccount(type);
+    useClaimVirtualAccount(type, {
+      onSuccess: () => onClaim?.(),
+    });
 
   return (
     <Card className='flex size-full flex-col items-center justify-center gap-4 p-6'>
