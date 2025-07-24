@@ -1,12 +1,12 @@
 import { Wallet } from 'lucide-react';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { TransactionStatusBadge } from '@/components/common/transaction-status-badge';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
 import { formatAccountNumber } from '../utils';
 import { Timing } from './timing';
-import { TransactionStatusBadge } from './transaction-status-badge';
 
 export const Success = ({
   amount,

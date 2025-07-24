@@ -2,7 +2,9 @@ import { cva } from 'class-variance-authority';
 
 import { Badge } from '@/components/ui/badge';
 
-const variants: Record<'processing' | 'completed' | 'error', string> = {
+export type SimpleTransactionStatus = 'processing' | 'completed' | 'error';
+
+const variants: Record<SimpleTransactionStatus, string> = {
   processing:
     'border-sorbet-orange text-sorbet-orange hover:bg-sorbet-orange/10',
   completed: 'border-emerald-500 text-emerald-500 hover:bg-emerald-200/10',
@@ -23,12 +25,12 @@ const transactionStatusBadgeVariants = cva(
 export const TransactionStatusBadge = ({
   status,
 }: {
-  status: 'processing' | 'completed' | 'error';
+  status: SimpleTransactionStatus;
 }) => {
   return (
     <Badge
       className={transactionStatusBadgeVariants({
-        variant: status as 'processing' | 'completed' | 'error',
+        variant: status,
       })}
     >
       <span className='text-xs font-medium leading-none'>{status}</span>
