@@ -53,14 +53,8 @@ export const getTransactions = async (
     limit: limit.toString(),
     order,
   });
-
-  if (from_date) {
-    queryParams.append('from_date', from_date);
-  }
-
-  if (to_date) {
-    queryParams.append('to_date', to_date);
-  }
+  from_date && queryParams.append('from_date', from_date);
+  to_date && queryParams.append('to_date', to_date);
 
   try {
     const res = await axios.get<TransactionsResponse>(
