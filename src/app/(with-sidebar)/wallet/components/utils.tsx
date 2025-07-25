@@ -1,7 +1,34 @@
+import { SimpleTransactionStatus } from '@/components/common/transaction-status-badge';
 import { env } from '@/lib/env';
+import { DrainState } from '@/types/bridge';
 import { Transaction } from '@/types/transactions';
 
 import { TableTransaction } from '../components/transaction-table';
+
+/**
+ * Map a drain state to a simple transaction status
+ * TODO: Could/should we do this on the backend instead?
+ */
+export const simplifyTxStatus = (
+  status: DrainState
+): SimpleTransactionStatus => {
+  const map: Record<DrainState, SimpleTransactionStatus> = {
+    // Processing
+    awaiting_funds: 'processing',
+    in_review: 'processing',
+    payment_submitted: 'processing',
+    funds_received: 'processing',
+    // Completed
+    payment_processed: 'completed',
+    // Error
+    canceled: 'error',
+    error: 'error',
+    undeliverable: 'error',
+    returned: 'error',
+    refunded: 'error',
+  };
+  return map[status] ?? 'error';
+};
 
 /**
  * This function only exists to take the date portion of a locale formatted date (i.e. "2/27/2025, 12:00:00 AM")
@@ -31,6 +58,7 @@ export const mapTransactionOverview = (
     date: transaction.timestamp,
     amount: transaction.value,
     hash: transaction.hash,
+    status: transaction.status,
   }));
 };
 

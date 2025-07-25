@@ -10,11 +10,8 @@ import { withAuthHeader } from '../with-auth-header';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
-export const getOverview = async (address: string, last_days?: number) => {
-  const queryParams = new URLSearchParams({
-    account: address,
-  });
-
+export const getOverview = async (last_days?: number) => {
+  const queryParams = new URLSearchParams();
   if (last_days !== undefined) {
     queryParams.append('last_days', last_days.toString());
   }
@@ -40,7 +37,6 @@ export const getOverview = async (address: string, last_days?: number) => {
  * Get a user's transactions
  */
 export const getTransactions = async (
-  address: string,
   cursor = '',
   limit = 20,
   order = 'DESC',
@@ -48,19 +44,12 @@ export const getTransactions = async (
   to_date?: string
 ) => {
   const queryParams = new URLSearchParams({
-    account: address,
     cursor: cursor.toString(),
     limit: limit.toString(),
     order,
   });
-
-  if (from_date) {
-    queryParams.append('from_date', from_date);
-  }
-
-  if (to_date) {
-    queryParams.append('to_date', to_date);
-  }
+  from_date && queryParams.append('from_date', from_date);
+  to_date && queryParams.append('to_date', to_date);
 
   try {
     const res = await axios.get<TransactionsResponse>(

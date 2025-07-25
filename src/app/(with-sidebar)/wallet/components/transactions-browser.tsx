@@ -50,7 +50,6 @@ export const TransactionsBrowser: React.FC = () => {
       const cursor = getCurrentCursor(currentPage);
       setIsLoading(true);
       const res = await getTransactions(
-        smartWalletAddress,
         cursor,
         10,
         'DESC',

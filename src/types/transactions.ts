@@ -1,9 +1,12 @@
+import { DrainState } from '@/types/bridge';
+
 export interface Transaction {
   sender: string;
   receiver: string;
   value: string;
   timestamp: string;
   hash: string;
+  status?: DrainState;
 }
 
 export interface TransactionOverview {

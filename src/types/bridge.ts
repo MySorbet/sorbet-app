@@ -161,3 +161,16 @@ export type Customer = {
     };
   }>;
 };
+
+/** The state of a drain associated with a tx. Should match backend type. */
+export type DrainState =
+  | 'awaiting_funds'
+  | 'in_review'
+  | 'payment_submitted'
+  | 'funds_received'
+  | 'payment_processed'
+  | 'canceled'
+  | 'error'
+  | 'undeliverable'
+  | 'returned'
+  | 'refunded';

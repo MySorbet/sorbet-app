@@ -7,10 +7,10 @@ import {
   useSendToFormContext,
   useSendToFormState,
 } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
-import { TransactionStatusBadge } from '@/app/(with-sidebar)/recipients/components/send/transaction-status-badge';
 import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
+import { TransactionStatusBadge } from '@/components/common/transaction-status-badge';
 import { Button } from '@/components/ui/button';
 import {
   FormControl,
