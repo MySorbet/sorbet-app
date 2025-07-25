@@ -2,11 +2,13 @@ import { ArrowDown, ExternalLink, Plus, Send } from 'lucide-react';
 import React from 'react';
 
 import { CopyText } from '@/components/common/copy-text';
+import { TransactionStatusBadge } from '@/components/common/transaction-status-badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
+import { DrainState } from '@/types/bridge';
 
-import { formatTransactionDate } from './utils';
+import { formatTransactionDate, simplifyTxStatus } from './utils';
 
 export interface TableTransaction {
   account: string;
@@ -14,6 +16,7 @@ export interface TableTransaction {
   amount: string;
   hash: string;
   type: 'Sent' | 'Received' | 'Self-transfer';
+  status?: DrainState;
 }
 
 /**
@@ -45,6 +48,12 @@ export const TransactionTable = ({
               className='w-1/5 py-3 text-left text-xs font-medium text-gray-500'
             >
               Date
+            </th>
+            <th
+              scope='col'
+              className='w-1/5 py-3 text-left text-xs font-medium text-gray-500'
+            >
+              Status
             </th>
             <th
               scope='col'
@@ -86,6 +95,13 @@ export const TransactionTable = ({
                   <div className='text-sm'>
                     {formatTransactionDate(transaction.date)}
                   </div>
+                </td>
+                <td className='w-1/5 whitespace-nowrap py-4'>
+                  {transaction.status && (
+                    <TransactionStatusBadge
+                      status={simplifyTxStatus(transaction.status)}
+                    />
+                  )}
                 </td>
                 <td
                   className='w-1/5 cursor-pointer whitespace-nowrap py-4'
