@@ -47,7 +47,7 @@ export const KYCChecklist = ({
   return (
     <VerifyCard className={cn('min-w-72 space-y-6', className)}>
       <div className='space-y-3'>
-        <h2 className='text-2xl font-semibold'>KYC verification</h2>
+        <h2 className='text-2xl font-semibold'>Verification steps</h2>
         <div className='flex items-center justify-between gap-4'>
           <Progress
             value={progress}
@@ -104,12 +104,12 @@ const VerifyStepItem = (props: VerifyTaskItemProps) => {
 const steps: Omit<VerifyTaskItemProps, 'completed' | 'onClick'>[] = [
   {
     title: 'Accept terms of service',
-    description: "Accept Bridge's Terms of Service & Privacy Policy.",
+    description: "Accept Bridge's Terms of Service & Privacy Policy",
     type: 'terms',
   },
   {
-    title: 'Add personal details',
-    description: 'Provide your information to be verified by Persona.',
+    title: 'Add details',
+    description: 'Provide your information to be verified by Persona',
     type: 'details',
   },
 ];
