@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, CircleCheck, Hourglass } from 'lucide-react';
+import { AlertTriangle, CircleCheck, Hourglass, User } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -7,6 +7,7 @@ import { useClaimVirtualAccount } from '@/app/(with-sidebar)/accounts/hooks/use-
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { cn, sleep } from '@/lib/utils';
 
@@ -28,6 +29,7 @@ export const AccountVerificationCard = ({
   isIndeterminate,
   rejectionReasons,
   isUnderReview,
+  isAwaitingUBO,
   isRejected,
 }: {
   className?: string;
@@ -40,11 +42,13 @@ export const AccountVerificationCard = ({
   isIndeterminate?: boolean;
   rejectionReasons?: string[];
   isUnderReview?: boolean;
+  isAwaitingUBO?: boolean;
   isRejected?: boolean;
 }) => {
   const isComplete = step === 'complete' && !isRejected && !isUnderReview;
 
   const queryClient = useQueryClient();
+  const { data: customer } = useBridgeCustomer();
 
   const { mutate: claimVirtualAccount, isPending: isClaiming } =
     useClaimVirtualAccount('usd', {
@@ -59,6 +63,9 @@ export const AccountVerificationCard = ({
         toast.error(message);
       },
     });
+
+  // We consider this loading while the api call is pending, or it has returned and we are waiting for the bridge customer.created event (which happens slightly after kyc links are created)
+  const isClaimingAccount = isClaiming || (customer && !customer.customer);
 
   // This is only callable when there is no bridge customer
   // Success callback will complete this step
@@ -116,19 +123,22 @@ export const AccountVerificationCard = ({
         {isComplete && <CompleteContent />}
         {isRejected && <RejectedContent rejectionReason={rejectionReasons} />}
         {isUnderReview && <UnderReviewContent />}
-        {!isIndeterminate && !isComplete && !isRejected && !isUnderReview && (
-          <DefaultContent />
-        )}
+        {isAwaitingUBO && <AwaitingUBOContent />}
+        {!isIndeterminate &&
+          !isComplete &&
+          !isRejected &&
+          !isUnderReview &&
+          !isAwaitingUBO && <DefaultContent />}
 
         {/* Step specific content */}
         {step === 'begin' && (
           <Button
             variant='sorbet'
             onClick={handleGetVerified}
-            disabled={isClaiming}
+            disabled={isClaimingAccount}
             className='@xs:max-w-fit w-full'
           >
-            {isClaiming && <Spinner />}
+            {isClaimingAccount && <Spinner />}
             Get verified
           </Button>
         )}
@@ -252,6 +262,19 @@ const UnderReviewContent = () => {
       description="Your account is currently under review and will be finalized within 24 hours. We'll notify you via email when it's ready."
       icon={() => (
         <Hourglass className='mr-1.5 inline-block size-6 text-orange-500' />
+      )}
+    />
+  );
+};
+
+/** Local component specializing the card content for the awaiting UBO state */
+const AwaitingUBOContent = () => {
+  return (
+    <CardContent
+      title='Waiting on UBOs'
+      description='The UBOs (ultimate beneficial owners) of your business received an email to verify their identity. Please check your email for the link.'
+      icon={() => (
+        <User className='mr-1.5 inline-block size-6 text-orange-500' />
       )}
     />
   );

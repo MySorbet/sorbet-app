@@ -5,14 +5,18 @@ import { useRouter } from 'next/navigation';
 import posthog from 'posthog-js';
 import { useEffect, useState } from 'react';
 
+import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks';
+import { useAuth, useUpdateUser } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
 
 type PressedButton = 'login' | 'signup';
 
-/** Two buttons which launch the Privy login/signup dialog. */
+/**
+ * Two buttons which launch the Privy login/signup dialog.
+ * Will also allow the user to select individual or business if they have not yet
+ */
 export const SigninContent = () => {
   const { login, loading } = useAuth();
 
@@ -28,14 +32,39 @@ export const SigninContent = () => {
   const loginLoading = loading && pressedButton === 'login';
   const signupLoading = loading && pressedButton === 'signup';
 
+  const [showIndividualOrBusiness, setShowIndividualOrBusiness] =
+    useState(false);
+
   // Logged in users who visit signin page will be redirected to the home page
   const router = useRouter();
   const { user } = useAuth();
   useEffect(() => {
     if (user) {
-      router.push('/');
+      if (!user.customerType) {
+        setShowIndividualOrBusiness(true);
+      } else {
+        router.push('/');
+      }
     }
   }, [user, router]);
+
+  const { mutate: updateUser } = useUpdateUser();
+
+  if (showIndividualOrBusiness) {
+    return (
+      <IndividualOrBusiness
+        onSelect={(type) => {
+          if (!user) return; // Can't do anything without a user
+
+          // If user is signing up as a business, update their customer type
+          updateUser({
+            id: user.id,
+            customerType: type,
+          });
+        }}
+      />
+    );
+  }
 
   return (
     <div className='container flex max-w-96 flex-col items-center justify-center gap-14'>

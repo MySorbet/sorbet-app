@@ -13,6 +13,8 @@ export interface User {
   bio?: string;
   profileImage?: string;
   city?: string;
+
+  customerType?: 'individual' | 'business';
 }
 
 /**

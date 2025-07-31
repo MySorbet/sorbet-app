@@ -16,8 +16,6 @@ import { KYCChecklist, VerifyStep } from './kyc-checklist';
 const kycCompletedStates: CustomerStatus[] = [
   // Complete but waiting for approval
   'under_review',
-  'awaiting_ubo', // never happens for individuals
-  'awaiting_questionnaire', // never happens for individuals
 
   // Actually completed
   'active',
@@ -30,6 +28,8 @@ const kycCompletedStates: CustomerStatus[] = [
   // 👇 These are the only states that will render the checklist incomplete
   // 'not_started',
   // 'incomplete',
+  // 'awaiting_questionnaire', // never happens for individuals. Not sure what this state means but seems like it should be interpreted as incomplete
+  // 'awaiting_ubo', // never happens for individuals (waiting on UBOs to complete links in email)
 ];
 
 export type AllSteps = 'begin' | VerifyStep | 'complete';
@@ -98,10 +98,6 @@ export const VerifyDashboard = () => {
     setStep('complete');
     setIsIndeterminate(false);
   }, [customer, isLoading, setIsIndeterminate]);
-
-  const isUnderReview =
-    customer?.status === 'under_review' || customer?.status === 'awaiting_ubo';
-
   const router = useRouter();
   const unlessMobile = useUnlessMobile();
   const handleCallToActionClick = (type: 'retry' | 'create-invoice') => {
@@ -128,7 +124,8 @@ export const VerifyDashboard = () => {
           kycLink={bridgeCustomer?.kyc_link}
           isIndeterminate={isIndeterminate}
           isRejected={customer?.status === 'rejected'}
-          isUnderReview={isUnderReview}
+          isUnderReview={customer?.status === 'under_review'}
+          isAwaitingUBO={customer?.status === 'awaiting_ubo'}
           rejectionReasons={customer?.rejection_reasons?.map(
             (reason) => reason.reason
           )}
