@@ -137,7 +137,7 @@ const DashboardTaskItem = (props: DashboardTaskItemProps) => {
 const tasks: Omit<DashboardTaskItemProps, 'completed' | 'onClick'>[] = [
   {
     title: 'Get verified',
-    description: 'Complete KYC verification to accept ACH/Wire payments',
+    description: 'Add your details to accept ACH/Wire payments',
     type: 'verified',
   },
   {

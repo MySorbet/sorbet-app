@@ -40,8 +40,8 @@ export const PersonaCard = ({
   const [ready, setReady] = useState(false);
 
   // Cant load Persona if any of the required params are missing
-  const isError =
-    !params.inquiryTemplateId || !params.developerId || !params.iqtToken;
+  const isError = !params.inquiryTemplateId || !params.developerId;
+  // Note: We used to also require `params.iqtToken` but this is not present for KYB, so we remove the hard requirement
 
   // Reset loading if there is an error
   useEffect(() => {

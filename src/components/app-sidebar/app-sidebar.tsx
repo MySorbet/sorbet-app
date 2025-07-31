@@ -28,6 +28,7 @@ import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { UsersIcon } from '@/components/ui/users';
 import { WalletIcon } from '@/components/ui/wallet';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
+import { useAuth } from '@/hooks/use-auth';
 import { useFlags } from '@/hooks/use-flags';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { cn } from '@/lib/utils';
@@ -220,8 +221,14 @@ const AnalyticsMenuItem = () => {
 /** Local verified menu item which has a dynamic title and icon depending on verification status */
 const VerifiedMenuItem = () => {
   const isVerified = useIsVerified();
+  const { user } = useAuth();
+  const isBusiness = user?.customerType === 'business';
   const item = {
-    title: isVerified ? 'Account verified' : 'Get verified',
+    title: isVerified
+      ? 'Account verified'
+      : isBusiness
+      ? 'Verify your business'
+      : 'Get verified',
     url: '/verify',
     icon: ShieldCheckIcon,
   };

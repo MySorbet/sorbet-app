@@ -117,8 +117,11 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
         console.log(`New sorbet user: ${newSorbetUser}`);
         setLoading(false);
 
-        // We have signed up a privy user and created a minimal (id, privyId, handle) sorbet user. Redirect to dashboard
-        router.replace(`/dashboard`);
+        // We have signed up a privy user and created a minimal (id, privyId, handle) sorbet user.
+        // Redirect to dashboard if they have already selected a customer type (this should not happen)
+        if (newSorbetUser.customerType) {
+          router.replace(`/dashboard`);
+        }
         return;
       }
 
@@ -148,7 +151,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
       // However, We only want to do this if they are logging in currently.
       // Not if this is an implicit login from privy
       // TODO: Revisit this
-      if (!wasAlreadyAuthenticated) {
+      if (!wasAlreadyAuthenticated && sorbetUser.customerType) {
         router.replace(`/dashboard`);
       } else {
         console.log(
