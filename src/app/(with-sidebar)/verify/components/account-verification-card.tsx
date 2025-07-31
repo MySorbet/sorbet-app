@@ -121,8 +121,10 @@ export const AccountVerificationCard = ({
       <div className='flex flex-col gap-3'>
         {isIndeterminate && <IndeterminateContent />}
         {isComplete && <CompleteContent />}
-        {isRejected && <RejectedContent rejectionReason={rejectionReasons} />}
-        {isUnderReview && <UnderReviewContent />}
+        {isRejected && <RejectedContent rejectionReasons={rejectionReasons} />}
+        {isUnderReview && (
+          <UnderReviewContent rejectionReasons={rejectionReasons} />
+        )}
         {isAwaitingUBO && <AwaitingUBOContent />}
         {!isIndeterminate &&
           !isComplete &&
@@ -151,13 +153,16 @@ export const AccountVerificationCard = ({
           />
         )}
 
-        {kycLink && !isIndeterminate && step === 'details' && (
-          <PersonaCard
-            url={kycLink}
-            onComplete={handleDetailsComplete}
-            className='self-center'
-          />
-        )}
+        {kycLink &&
+          !isIndeterminate &&
+          !isAwaitingUBO &&
+          step === 'details' && (
+            <PersonaCard
+              url={kycLink}
+              onComplete={handleDetailsComplete}
+              className='self-center'
+            />
+          )}
 
         {isComplete && (
           <Button
@@ -254,12 +259,39 @@ const DefaultContent = () => {
   );
 };
 
-/** Local component specializing the card content for the under review state */
-const UnderReviewContent = () => {
+/**
+ * Local component specializing the card content for the under review state.
+ * Since KYB can have an account in the under review state with rejection reasons, we allow the rendering of rejection reasons.
+ * If no rejection reasons are given, we assure the user that their account will be reviewed within 24 hours.
+ */
+const UnderReviewContent = ({
+  rejectionReasons,
+}: {
+  rejectionReasons?: string[];
+}) => {
+  const reasons = rejectionReasons ? (
+    rejectionReasons?.length === 1 ? (
+      rejectionReasons[0]
+    ) : (
+      <ol className='list-inside list-decimal'>
+        {rejectionReasons.map((reason, index) => (
+          <li key={index}>{reason}</li>
+        ))}
+      </ol>
+    )
+  ) : undefined;
   return (
     <CardContent
       title='Account under review'
-      description="Your account is currently under review and will be finalized within 24 hours. We'll notify you via email when it's ready."
+      description={
+        <span>
+          Your account is currently under review. We ran into some issues with
+          your details:{' '}
+          {reasons
+            ? reasons
+            : "It should be finalized within 24 hours. We'll notify you via email when it's ready. If you have any questions, please contact support at support@sorbet.com."}
+        </span>
+      }
       icon={() => (
         <Hourglass className='mr-1.5 inline-block size-6 text-orange-500' />
       )}
@@ -281,16 +313,16 @@ const AwaitingUBOContent = () => {
 };
 
 const RejectedContent = ({
-  rejectionReason,
+  rejectionReasons,
 }: {
-  rejectionReason?: string[];
+  rejectionReasons?: string[];
 }) => {
-  const desc = rejectionReason ? (
-    rejectionReason?.length === 1 ? (
-      rejectionReason[0]
+  const desc = rejectionReasons ? (
+    rejectionReasons?.length === 1 ? (
+      rejectionReasons[0]
     ) : (
       <ol className='list-inside list-decimal'>
-        {rejectionReason.map((reason, index) => (
+        {rejectionReasons.map((reason, index) => (
           <li key={index}>{reason}</li>
         ))}
       </ol>
