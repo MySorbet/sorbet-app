@@ -13,11 +13,11 @@ import Providers from './providers';
 export const metadata: Metadata = {
   metadataBase: new URL('https://mysorbet.io'),
   title: {
-    default: 'Sorbet | The All-in One Payment Experience for Freelancers',
+    default: 'Sorbet | Same-Day Payments in USDC, USD & EUR',
     template: 'Sorbet | %s',
   },
   description:
-    'Unlock your global creative potential with Sorbet. A secure and trustworthy tool here to support you throughout your freelancing journey.',
+    'Global payments made simple: free sign-up, near-zero fees, and complete flexibility for freelancers and small businesses with global clients.',
   keywords: [
     'social network',
     'BASE blockchain',

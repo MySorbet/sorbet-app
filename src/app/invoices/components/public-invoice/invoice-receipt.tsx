@@ -36,7 +36,7 @@ export const InvoiceReceipt = ({ status, className }: InvoiceReceiptProps) => {
           className='h-9 w-9'
           priority
         />
-        <span className='text-sorbet font-semibold'>SORBET</span>
+        <span className='text-foreground font-semibold'>SORBET</span>
       </div>
 
       {/* Status */}
@@ -56,10 +56,10 @@ export const InvoiceReceipt = ({ status, className }: InvoiceReceiptProps) => {
       {/* Sorbet info */}
       <div className='flex flex-col items-center gap-1 text-center'>
         <span className='text-sm font-semibold'>
-          Sorbet is a link-in-bio powering global payments
+          Borderless payment for freelancers and businesses
         </span>
         <span className='text-muted-foreground text-sm'>
-          Collaborate with clients globally and get paid in USDC
+          Same-Day Payments in USDC, USD & EUR
         </span>
         <Button asChild variant='outline' className='mt-7 w-fit'>
           <a

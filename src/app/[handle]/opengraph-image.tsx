@@ -66,7 +66,7 @@ export default async function Image({
           <img src={logoSrc} alt='Sorbet Logo' />
           <span
             style={{
-              color: '#6230EC',
+              color: 'black',
               fontSize: 18,
               fontWeight: 600,
               letterSpacing: 1,

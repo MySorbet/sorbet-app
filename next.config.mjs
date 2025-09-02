@@ -42,6 +42,8 @@ const nextConfig = {
         test: /\.svg$/i,
         issuer: { not: /\.(css|scss|sass)$/ },
         resourceQuery: { not: /url/ }, // exclude if *.svg?url
+        // Exclude Next.js metadata files (icon.svg, apple-icon.svg, etc.)
+        exclude: /\/(icon|apple-icon|opengraph-image)\.svg$/,
         loader: '@svgr/webpack',
         options: {
           dimensions: false,

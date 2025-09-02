@@ -72,17 +72,13 @@ export const SigninContent = () => {
       <div className='flex flex-col items-center justify-center gap-6'>
         <SorbetLogo />
         <h1 className='text-center text-2xl font-semibold'>
-          Global payment experience for freelancers
+          Borderless payment for freelancers and businesses
         </h1>
       </div>
 
       {/* Buttons */}
       <div className='flex w-full flex-col gap-3'>
-        <Button
-          onClick={() => handleClick('signup')}
-          disabled={loading}
-          variant='sorbet'
-        >
+        <Button onClick={() => handleClick('signup')} disabled={loading}>
           {signupLoading && <Spinner />} Get started with Sorbet
         </Button>
         <Button
@@ -109,7 +105,7 @@ const SorbetLogo = () => {
         alt='Sorbet'
         priority
       />
-      <span className='text-sorbet text-sm font-semibold tracking-wide'>
+      <span className='text-primary text-sm font-semibold tracking-wide'>
         SORBET
       </span>
     </div>
