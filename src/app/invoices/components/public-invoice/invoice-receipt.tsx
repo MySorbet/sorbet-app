@@ -36,7 +36,7 @@ export const InvoiceReceipt = ({ status, className }: InvoiceReceiptProps) => {
           className='h-9 w-9'
           priority
         />
-        <span className='text-sorbet font-semibold'>SORBET</span>
+        <span className='text-foreground font-semibold'>SORBET</span>
       </div>
 
       {/* Status */}
