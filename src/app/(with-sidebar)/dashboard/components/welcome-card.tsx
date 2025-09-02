@@ -24,8 +24,9 @@ export const WelcomeCard = ({
             {title}
           </h2>
           <p className='text-sm'>
-            Introducing the global payment experience for freelancers. Complete
-            onboarding tasks to get started on your Sorbet journey.
+            Introducing the global payment experience for freelancers and
+            businesses. Complete onboarding tasks to get started on your Sorbet
+            journey.
           </p>
         </div>
 

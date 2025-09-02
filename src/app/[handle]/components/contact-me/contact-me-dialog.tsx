@@ -114,7 +114,7 @@ export const ContactMeDialog = ({
             <CredenzaHeader>
               <CredenzaTitle>Let's connect</CredenzaTitle>
               <CredenzaDescription>
-                Send a message to the freelancer
+                Send a message to the freelancer or business
               </CredenzaDescription>
             </CredenzaHeader>
 
@@ -206,8 +206,8 @@ const SentSuccess = ({ onClose }: { onClose?: () => void }) => {
       />
       <CredenzaTitle>Message sent</CredenzaTitle>
       <CredenzaDescription className='text-sm'>
-        You're message has been sent to the freelancer. They can reply directly
-        to the email provided.
+        You're message has been sent. They can reply directly to the email
+        provided.
       </CredenzaDescription>
       <Button variant='sorbet' onClick={onClose} className='w-full'>
         Close
