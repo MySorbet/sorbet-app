@@ -78,11 +78,7 @@ export const SigninContent = () => {
 
       {/* Buttons */}
       <div className='flex w-full flex-col gap-3'>
-        <Button
-          onClick={() => handleClick('signup')}
-          disabled={loading}
-          variant='sorbet'
-        >
+        <Button onClick={() => handleClick('signup')} disabled={loading}>
           {signupLoading && <Spinner />} Get started with Sorbet
         </Button>
         <Button
@@ -109,7 +105,7 @@ const SorbetLogo = () => {
         alt='Sorbet'
         priority
       />
-      <span className='text-sorbet text-sm font-semibold tracking-wide'>
+      <span className='text-primary text-sm font-semibold tracking-wide'>
         SORBET
       </span>
     </div>
