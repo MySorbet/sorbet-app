@@ -72,7 +72,7 @@ export const SigninContent = () => {
       <div className='flex flex-col items-center justify-center gap-6'>
         <SorbetLogo />
         <h1 className='text-center text-2xl font-semibold'>
-          Global payment experience for freelancers
+          Borderless payment for freelancers and businesses
         </h1>
       </div>
 
