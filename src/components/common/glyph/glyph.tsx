@@ -16,7 +16,7 @@ export const glyphs: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   diamond: diamond,
 };
 
-type GlyphType = keyof typeof glyphs;
+export type GlyphType = keyof typeof glyphs;
 
 export const Glyph = ({
   type,
