@@ -61,11 +61,11 @@ const HeroGraphic = ({ className }: { className?: string }) => {
       </ScrollArea>
       <Glyph
         type='petal'
-        className='absolute left-16 top-16 size-11 translate-x-1/2 translate-y-1/2 -rotate-[15deg] text-white'
+        className='absolute left-16 top-16 size-11 translate-x-1/2 translate-y-1/2 -rotate-[15deg] text-gray-400'
       />
       <Glyph
         type='arrow'
-        className='absolute right-24 top-16 size-28 -translate-y-1/2 translate-x-1/2 rotate-[15deg] text-white'
+        className='absolute right-24 top-16 size-28 -translate-y-1/2 translate-x-1/2 rotate-[15deg] text-gray-400'
       />
       <WireframeGlobe className='scale-140 absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2' />
     </div>
