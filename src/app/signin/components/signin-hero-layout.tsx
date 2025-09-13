@@ -25,7 +25,7 @@ const HeroGraphic = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        'relative flex h-full max-w-2xl flex-1 flex-col items-center justify-center overflow-clip rounded-xl bg-black p-6',
+        'relative flex h-full max-w-2xl flex-1 flex-col items-center justify-center overflow-clip rounded-xl bg-black p-6 py-12',
         className
       )}
     >
@@ -80,7 +80,7 @@ const FeatureBullet = ({
       </div>
       <div className='flex flex-col gap-2'>
         <h3 className='text-xl font-bold leading-none text-white'>{title}</h3>
-        <p className='text-muted-foreground text-base font-normal text-[#b3b3b3]'>
+        <p className='text-muted-foreground text-base font-normal text-gray-400'>
           {subtitle}
         </p>
       </div>
