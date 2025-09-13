@@ -48,7 +48,7 @@ export const SigninContent = () => {
     }
   }, [user, router]);
 
-  const { mutate: updateUser } = useUpdateUser();
+  const { mutate: updateUser } = useUpdateUser({ toastOnSuccess: false });
 
   if (showIndividualOrBusiness) {
     return (
