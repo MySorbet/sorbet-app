@@ -14,7 +14,7 @@ export const IndividualOrBusiness = ({
   onSelect?: (type: 'individual' | 'business') => void;
 }) => {
   return (
-    <div className='flex size-full items-center justify-center'>
+    <div className='container flex w-fit items-center justify-center'>
       <div className='flex max-w-96 flex-col items-center justify-center gap-3'>
         <span className='text-base font-semibold'>
           What describes you best?

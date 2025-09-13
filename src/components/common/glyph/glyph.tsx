@@ -10,7 +10,9 @@ import wink from './svg/wink.svg';
 export const glyphs: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
   asterisk: asterisk,
   wink: wink,
+  /** This glyph is hollow */
   petal: petal,
+  /** This glyph is hollow */
   arrow: arrow,
   square: square,
   diamond: diamond,
