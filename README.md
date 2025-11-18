@@ -35,3 +35,5 @@ Environment variables are stored the GSM entry [sorbet-app-env-local](https://co
 ### ⏳ Posterity
 
 Originally, this project was based on the GitHub project [ts-nextjs-tailwind-starter](https://github.com/theodorusclarence/ts-nextjs-tailwind-starter/).
+
+#test
