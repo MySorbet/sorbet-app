@@ -2,9 +2,37 @@ import { forwardRef } from 'react';
 
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 
 import { AcceptedPaymentMethod, Invoice, InvoiceForm } from '../schema';
 import { calculateSubtotalTaxAndTotal, formatDate } from '../utils';
+
+/**
+ * Get the platform fee percentage from Bridge customer data
+ * Checks both USD and EUR virtual accounts, prioritizing USD if both exist
+ */
+const usePlatformFeePercent = (paymentMethods?: AcceptedPaymentMethod[]) => {
+  const { data: bridgeCustomer } = useBridgeCustomer();
+  
+  if (!paymentMethods || !bridgeCustomer) {
+    return undefined;
+  }
+  
+  const hasUsd = paymentMethods.includes('usd');
+  const hasEur = paymentMethods.includes('eur');
+  
+  // If USD is selected, use USD virtual account fee
+  if (hasUsd && bridgeCustomer.virtual_account?.developer_fee_percent) {
+    return parseFloat(bridgeCustomer.virtual_account.developer_fee_percent);
+  }
+  
+  // If EUR is selected, use EUR virtual account fee
+  if (hasEur && bridgeCustomer.virtual_account_eur?.developer_fee_percent) {
+    return parseFloat(bridgeCustomer.virtual_account_eur.developer_fee_percent);
+  }
+  
+  return undefined;
+};
 
 /**
  * Render a PDF-like document displaying the invoice details.
@@ -21,7 +49,13 @@ export const InvoiceDocument = forwardRef<
   HTMLDivElement,
   { invoice: InvoiceForm | Invoice; className?: string }
 >(({ invoice, className }, ref) => {
-  const { taxAmount, total } = calculateSubtotalTaxAndTotal(invoice);
+  const platformFeePercent = usePlatformFeePercent(invoice.paymentMethods);
+  const { taxAmount, developerFee, total, developerFeePercent: calculatedFeePercent } = 
+    calculateSubtotalTaxAndTotal(invoice, platformFeePercent);
+  
+  // Use the calculated fee percent for display
+  const displayFeePercent = calculatedFeePercent ?? 1;
+  
   // Total amount is dependent on which type of invoice we get
   // If this is full invoice from the server, the amount has been calculated already
   // If this is form data, we'll need to calculate it ourselves
@@ -30,6 +64,9 @@ export const InvoiceDocument = forwardRef<
   // Backwards compatibility
   const projectName =
     'projectName' in invoice ? invoice.projectName : undefined;
+  const includesBankFee = invoice.paymentMethods?.some((method) =>
+    ['usd', 'eur'].includes(method)
+  );
 
   return (
     <div
@@ -64,6 +101,19 @@ export const InvoiceDocument = forwardRef<
             <td className='pt-2'>
               <p className='pt-1 text-xs'>{invoice.fromName}</p>
               <p className='pt-1 text-xs'>{invoice.fromEmail}</p>
+              {invoice.taxId && (
+                <p className='pt-1 text-xs'>Tax ID: {invoice.taxId}</p>
+              )}
+              {invoice.address && (
+                <div className='pt-1 text-xs'>
+                  <p>{invoice.address.street}</p>
+                  <p>
+                    {invoice.address.city}, {invoice.address.state}{' '}
+                    {invoice.address.zip}
+                  </p>
+                  <p>{invoice.address.country}</p>
+                </div>
+              )}
             </td>
             <td className='pt-2'>
               <p className='pt-1 text-xs'>{invoice.toName}</p>
@@ -103,6 +153,17 @@ export const InvoiceDocument = forwardRef<
               <td className='py-3 text-right text-xs'>Sales Tax</td>
               <td className='py-3 text-right text-xs'>
                 {formatCurrency(taxAmount)}
+              </td>
+            </tr>
+          )}
+          {developerFee > 0 && (
+            <tr>
+              <td className='py-3 text-xs'>{/** Empty cell */}</td>
+              <td className='py-3 text-right text-xs'>
+                Platform Fee ({displayFeePercent}%)
+              </td>
+              <td className='py-3 text-right text-xs'>
+                {formatCurrency(developerFee)}
               </td>
             </tr>
           )}
@@ -157,6 +218,13 @@ export const InvoiceDocument = forwardRef<
           </tr>
         </tbody>
       </table>
+
+      {includesBankFee && displayFeePercent > 0 && (
+        <div className='mt-8 rounded-lg bg-muted p-4 text-xs text-muted-foreground'>
+          For EUR and USD payments, Sorbet applies a {displayFeePercent}% platform fee to cover
+          banking and compliance costs.
+        </div>
+      )}
     </div>
   );
 });

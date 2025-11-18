@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/tooltip';
 import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { type AcceptedPaymentMethod } from '../../schema';
@@ -45,6 +46,15 @@ export const PaymentTab = ({
   walletAddress?: string;
 }) => {
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
+  const { data: bridgeCustomer } = useBridgeCustomer();
+  
+  // Get actual platform fee percentages
+  const usdFeePercent = bridgeCustomer?.virtual_account?.developer_fee_percent 
+    ? parseFloat(bridgeCustomer.virtual_account.developer_fee_percent) 
+    : 1; // Default to 1% if not available
+  const eurFeePercent = bridgeCustomer?.virtual_account_eur?.developer_fee_percent 
+    ? parseFloat(bridgeCustomer.virtual_account_eur.developer_fee_percent) 
+    : 1; // Default to 1% if not available
 
   return (
     <Card className='h-fit'>
@@ -91,6 +101,12 @@ export const PaymentTab = ({
             Your client can pay via ACH/Wire transfer to your USD virtual
             account
           </PaymentMethodDescription>
+          {usdFeePercent > 0 && (
+            <p className='text-muted-foreground mt-2 text-xs'>
+              For USD payments, Sorbet applies a {usdFeePercent}% platform fee to cover
+              banking and compliance costs.
+            </p>
+          )}
           {!isBaseEndorsed && (
             <Button
               variant='outline'
@@ -112,6 +128,12 @@ export const PaymentTab = ({
           <PaymentMethodDescription>
             Your client can pay via SEPA transfer to your EUR virtual account
           </PaymentMethodDescription>
+          {eurFeePercent > 0 && (
+            <p className='text-muted-foreground mt-2 text-xs'>
+              For EUR payments, Sorbet applies a {eurFeePercent}% platform fee to cover
+              banking and compliance costs.
+            </p>
+          )}
           {!isEurEndorsed && (
             <Button
               variant='outline'

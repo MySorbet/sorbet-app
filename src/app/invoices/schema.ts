@@ -47,12 +47,23 @@ export const emptyInvoiceItem: InvoiceItem = {
   amount: 0,
 };
 
+/** Schema for an address */
+export const addressSchema = z.object({
+  street: z.string(),
+  city: z.string(),
+  state: z.string(),
+  country: z.string(),
+  zip: z.string(),
+});
+
 /** Schema for the "Your info" section of an invoice form */
 const yourInfoSchema = z.object({
   fromName: invoiceFormStringValidator('Name'),
   fromEmail: invoiceFormStringValidator('Email').email({
     message: 'Must be a valid email address',
   }),
+  taxId: z.string().optional(),
+  address: addressSchema.optional(),
 });
 
 /** The payment methods that a client can accept */
@@ -102,14 +113,7 @@ export const invoiceFormSchema = z
 
 export type InvoiceForm = z.infer<typeof invoiceFormSchema>;
 
-/** Schema for an address */
-export const addressSchema = z.object({
-  street: z.string(),
-  city: z.string(),
-  state: z.string(),
-  country: z.string(),
-  zip: z.string(),
-});
+export type Address = z.infer<typeof addressSchema>;
 
 export const emptyAddress: Address = {
   street: '',
@@ -128,10 +132,12 @@ export const clientSchema = z.object({
 });
 
 export type Client = z.infer<typeof clientSchema>;
-export type Address = z.infer<typeof addressSchema>;
 
 /** Default values for an invoice form if no prefills are provided */
-export const defaultInvoiceValues: Required<InvoiceForm> = {
+export const defaultInvoiceValues: Required<
+  Omit<InvoiceForm, 'taxId' | 'address'>
+> &
+  Pick<InvoiceForm, 'taxId' | 'address'> = {
   issueDate: new Date(),
   dueDate: addDays(new Date(), 7),
   memo: '',
@@ -143,6 +149,8 @@ export const defaultInvoiceValues: Required<InvoiceForm> = {
   toName: '',
   toEmail: '',
   paymentMethods: ['usdc'],
+  taxId: undefined,
+  address: undefined,
 };
 
 // ! Remember to update the knock JSON validation schema if you change this. Otherwise notifications will fail.
