@@ -52,10 +52,13 @@ export const deleteProfileImageAsync = async (userId: string) => {
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to delete profile image: ${error.response.data.message}`
-    );
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const message =
+        error.response?.data?.message ?? error.message ?? 'Unknown error';
+      throw new Error(`Failed to delete profile image: ${message}`);
+    }
+    throw new Error(`Failed to delete profile image: ${String(error)}`);
   }
 };
 

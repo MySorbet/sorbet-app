@@ -1,52 +1,59 @@
+import { Plus, Send } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-import { DashboardCard } from './dashboard-card';
-
-/** Main card for the dashboard with a welcome message and call to action buttons */
+/** Main header for the dashboard with welcome message and action buttons */
 export const WelcomeCard = ({
   name,
-  onCreateInvoice,
-  onClickMyProfile,
+  onDeposit,
+  onSendFunds,
   className,
 }: {
   name?: string;
-  onCreateInvoice?: () => void;
-  onClickMyProfile?: () => void;
+  onDeposit?: () => void;
+  onSendFunds?: () => void;
   className?: string;
 }) => {
   const title = name ? `Welcome, ${name}` : 'Welcome to Sorbet';
   return (
-    <DashboardCard className={cn('@container w-full', className)}>
-      <div className='flex flex-col gap-3'>
-        <div className='flex flex-col gap-2'>
-          <h2 className=' text-wrap break-words text-2xl font-semibold'>
-            {title}
-          </h2>
-          <p className='text-sm'>
-            Introducing the global payment experience for freelancers and
-            businesses. Complete onboarding tasks to get started on your Sorbet
-            journey.
-          </p>
-        </div>
-
-        <div className='flex flex-row flex-wrap gap-3'>
-          <Button
-            variant='sorbet'
-            onClick={onCreateInvoice}
-            className='@xs:max-w-36 w-full'
-          >
-            Create Invoice
-          </Button>
-          <Button
-            variant='secondary'
-            onClick={onClickMyProfile}
-            className='@xs:max-w-36 w-full'
-          >
-            My Sorbet Profile
-          </Button>
-        </div>
+    <div 
+      className={cn(
+        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 py-4',
+        'sm:flex-row sm:items-center sm:gap-6 sm:px-6',
+        'md:min-h-[72px]',
+        className
+      )}
+    >
+      <div className='min-w-0 flex-1 space-y-0.5'>
+        <h2 className='text-xl font-semibold sm:text-2xl'>
+          {title}
+        </h2>
+        <p className='text-muted-foreground text-xs sm:text-sm'>
+          Manage your account and monitor activity
+        </p>
       </div>
-    </DashboardCard>
+
+      <div className='flex w-full shrink-0 gap-2 sm:w-auto sm:gap-3'>
+        <Button
+          variant='outline'
+          onClick={onDeposit}
+          className='flex-1 gap-2 sm:flex-none'
+          size='sm'
+        >
+          <Plus className='size-4' />
+          <span className='sm:inline'>Deposit</span>
+        </Button>
+        <Button
+          variant='sorbet'
+          onClick={onSendFunds}
+          className='flex-1 gap-2 sm:flex-none'
+          size='sm'
+        >
+          <Send className='size-4' />
+          <span className='sm:inline'>Send Funds</span>
+        </Button>
+      </div>
+    </div>
   );
 };

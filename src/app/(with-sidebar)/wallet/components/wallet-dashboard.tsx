@@ -19,9 +19,9 @@ export const WalletDashboard = () => {
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
   const { smartWalletAddress: walletAddress } = useSmartWalletAddress();
 
-  const [duration, setDuration] = useState<Duration>('30');
+  const [duration, setDuration] = useState<Duration>('all');
   const { data: transactions, isLoading: isTransactionsLoading } =
-    useTransactionOverview(parseInt(duration));
+    useTransactionOverview(duration === 'all' ? undefined : parseInt(duration));
 
   const tableTransactions =
     walletAddress && transactions

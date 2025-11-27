@@ -1,175 +1,165 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
-import { useHasShared } from '@/hooks/profile/use-has-shared';
 import { useAuth } from '@/hooks/use-auth';
-import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+
+import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
+import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
+import { Duration } from '../../wallet/components/balance-card/select-duration';
+import { useSendUSDC } from '../../wallet/hooks/use-send-usdc';
+import { useTopUp } from '../../wallet/hooks/use-top-up';
+import { WalletSendDialog } from '../../wallet/components/wallet-send-dialog';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import {
   type TaskType,
   ChecklistCard,
-  checkTasksComplete,
-  type TaskStatuses,
+  TaskStatuses,
 } from './checklist-card';
-import { type StatsCardType, StatsCard } from './stats-card';
-import { TransactionCard } from './transaction-card';
 import { WelcomeCard } from './welcome-card';
+import { SmallStatCard } from './small-stat-card';
+import { BalanceSectionCard } from './balance-section-card';
 
 /**
- * Route builders (centralized so we don't sprinkle stringly URLs)
+ * Composes dashboard cards into a fluid layout
+ * Also manages state, click actions, and routing actions
+ * TODO: What if this component stayed server side and just managed layout. And the former responsibilities were hoisted?
  */
-const routes = {
-  wallet: () => '/wallet' as const,
-  sales: () => '/invoices' as const,
-  views: (handle: string) => `/${handle}` as const,
-  verify: () => '/verify' as const,
-  createInvoice: () => '/invoices/create' as const,
-  profile: (handle: string) => `/${handle}` as const,
-  share: (handle: string) => {
-    const qs = new URLSearchParams({ shareDialogOpen: 'true' });
-    return `/${handle}?${qs.toString()}` as const;
-  },
-};
-
 export const Dashboard = () => {
   const router = useRouter();
-  const { data, isLoading: isDashboardLoading } = useDashboardData();
   const { user } = useAuth();
-  const [hasShared] = useHasShared();
-  const [isTasksClosed, setIsTasksClosed] = useScopedLocalStorage('is-tasks-closed', false);
+  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
+  const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
+  const { smartWalletAddress } = useSmartWalletAddress();
 
-  // Completed tasks are stored in the DB, except 'share' which is client-side
-  const completedTasks: TaskStatuses | undefined = useMemo(
-    () => (data ? { ...data.tasks, share: hasShared } : undefined),
-    [data, hasShared]
+  const [duration, setDuration] = useState<Duration>('all');
+  const { data: transactions, isLoading: isTransactionsLoading } = useTransactionOverview(
+    duration === 'all' ? undefined : parseInt(duration)
   );
 
-  const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
+  const totalMoneyIn = Number(transactions?.total_money_in ?? 0);
+  const totalMoneyOut = Number(transactions?.total_money_out ?? 0);
 
-  // Local state for profile editing (could be replaced with a route/modal interception)
+  const cumulativeBalanceHistory = calculateBalanceHistory(
+    Number(usdcBalance ?? 0),
+    transactions?.money_in ?? [],
+    transactions?.money_out ?? []
+  );
+
+  // Completed tasks are stored in the DB
+  const completedTasks: TaskStatuses | undefined = dashboardData?.tasks;
+
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
+  const [isSendDialogOpen, setIsSendDialogOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
+  const { topUp } = useTopUp();
+  const { sendUSDC } = useSendUSDC();
 
-  // Keep 'tasks' card open if any task becomes incomplete
-  const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);
-  useEffect(() => {
-    if (completedTasks && !isTasksComplete) setIsTasksClosed(false);
-  }, [completedTasks, isTasksComplete, setIsTasksClosed]);
+  // Action handlers
+  const handleDeposit = () => topUp();
+  const handleCreateInvoice = () => {
+    unlessMobile(() => router.push('/invoices/create'));
+  };
+  const handleAddRecipient = () => router.push('/recipients?add-recipient=true');
 
-  /**
-   * Actions
-   */
   const handleTaskClick = (type: TaskType) => {
-    // Guard: don't navigate to user routes without a handle
-    const handle = user?.handle;
-
     switch (type) {
-      // Tasks
       case 'verified':
-        router.push(routes.verify());
+        router.push('/verify');
         break;
       case 'invoice':
-        unlessMobile(() => router.push(routes.createInvoice()));
-        break;
-      case 'profile':
-        // TIP: move this to route-based modal later (e.g. /[handle]/(modals)/edit)
-        setIsProfileEditOpen(true);
-        break;
-      case 'widget':
-        if (handle) router.push(routes.profile(handle));
-        break;
-      case 'share':
-        if (handle) router.push(routes.share(handle));
+        handleCreateInvoice();
         break;
       case 'payment':
-        router.push(routes.wallet());
+        router.push('/wallet');
         break;
     }
   };
 
-  const handleCreateInvoice = () => {
-    unlessMobile(() => router.push(routes.createInvoice()));
-  };
-
-  const handleClickMyProfile = () => {
-    const handle = user?.handle;
-    if (handle) router.push(routes.profile(handle));
-  };
-
-  if (!user) return null;
-
   return (
     <>
-      {/* Conditionally rendered profile edit modal (consider moving to an intercepted route) */}
-      <EditProfileSheet
-        open={isProfileEditOpen}
-        setOpen={setIsProfileEditOpen}
-        user={user}
+      {/* Conditionally rendered profile edit modal */}
+      {user && (
+        <EditProfileSheet
+          open={isProfileEditOpen}
+          setOpen={setIsProfileEditOpen}
+          user={user}
+        />
+      )}
+
+      {/* Send funds dialog */}
+      <WalletSendDialog
+        open={isSendDialogOpen}
+        setOpen={setIsSendDialogOpen}
+        sendUSDC={sendUSDC}
       />
 
-      {/* Fluid dashboard layout */}
-      <div className='@container @lg:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-1 gap-4'>
+      {/* Dashboard layout */}
+      <div className='@container size-full w-full max-w-[1184px] space-y-4 px-4 sm:space-y-6 sm:px-0'>
+        {/* Welcome Header */}
         <WelcomeCard
-          name={user.firstName}
-          className='@lg:col-span-2'
-          onClickMyProfile={handleClickMyProfile}
-          onCreateInvoice={handleCreateInvoice}
+          name={user?.firstName}
+          onDeposit={handleDeposit}
+          onSendFunds={() => setIsSendDialogOpen(true)}
         />
 
-        <div className='flex flex-col gap-4'>
-          {!isTasksClosed && (
-            <ChecklistCard
-              className='min-w-64'
-              onTaskClick={handleTaskClick}
-              completedTasks={completedTasks}
-              loading={isDashboardLoading}
-              onClose={() => setIsTasksClosed(true)}
-            />
-          )}
-          {isTasksComplete && <TransactionCard />}
+        {/* Three Small Cards Row */}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'>
+          <SmallStatCard
+            title='Sorbet wallet'
+            value={Number(usdcBalance ?? 0)}
+            description='Total'
+            buttonLabel='Deposit'
+            isLoading={isBalanceLoading}
+            onClick={handleDeposit}
+            formatValue={true}
+            infoButtonUrl='https://docs.mysorbet.xyz/sorbet/how-it-works#id-1.-your-sorbet-wallet'
+            walletAddress={smartWalletAddress ?? undefined}
+          />
+          <SmallStatCard
+            title='Invoice sales'
+            value={dashboardData?.invoiceSales}
+            description='Total income'
+            buttonLabel='+ Create'
+            isLoading={isDashboardLoading}
+            onClick={handleCreateInvoice}
+            formatValue={true}
+          />
+          <SmallStatCard
+            title='Recipients'
+            value={dashboardData?.recipientsCount}
+            description='Total'
+            buttonLabel='+ Add'
+            isLoading={isDashboardLoading}
+            onClick={handleAddRecipient}
+            formatValue={false}
+          />
         </div>
 
-        <div className='flex h-full min-w-[240px] flex-col justify-start gap-4'>
-          {/* Wrap StatsCard with Link for native navigation + prefetch */}
-          <Link href={routes.wallet()} className='contents'>
-            <StatsCard
-              title='Wallet balance'
-              type='wallet'
-              value={isBalanceLoading ? undefined : Number(usdcBalance)}
-              description='Total'
-              // onClick not needed; Link handles navigation
-            />
-          </Link>
+        {/* Balance Section with Chart and Money In/Out */}
+        <BalanceSectionCard
+          history={cumulativeBalanceHistory}
+          moneyIn={totalMoneyIn}
+          moneyOut={totalMoneyOut}
+          balance={Number(usdcBalance ?? 0)}
+          duration={duration}
+          onDurationChange={setDuration}
+          isLoading={isBalanceLoading || isTransactionsLoading}
+        />
 
-          <Link href={routes.sales()} className='contents' prefetch>
-            <StatsCard
-              title='Invoice Sales'
-              type='sales'
-              value={data?.invoiceSales}
-              description='Total income'
-            />
-          </Link>
-
-          <Link
-            href={routes.views(user.handle)}
-            className='contents'
-          >
-            <StatsCard
-              title='Profile Views'
-              type='views'
-              value={data?.profileViews}
-              description='Unique visitors'
-            />
-          </Link>
-        </div>
+        {/* Onboarding Checklist */}
+        <ChecklistCard
+          completedTasks={completedTasks}
+          loading={isDashboardLoading}
+          onTaskClick={handleTaskClick}
+        />
       </div>
     </>
   );

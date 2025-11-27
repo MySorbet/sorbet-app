@@ -33,6 +33,7 @@ import { Percentages } from './percentages';
 import { PreviewSend } from './preview-send';
 import { Processing } from './processing';
 import { Success } from './success';
+import { ExchangeRate } from './exchange-rate';
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -173,31 +174,40 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
             <FormField
               control={form.control}
               name='amount'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={String(field.value)}
-                      onChange={(e) =>
-                        form.setValue('amount', Number(e.target.value), {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
-                      type='number'
-                      className='no-spin-buttons text-md'
+              render={({ field }) => {
+                const showConversion = selectedRecipient?.type === 'eur';
+
+                return (
+                  <FormItem>
+                    <FormLabel>Amount</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={String(field.value)}
+                        onChange={(e) =>
+                          form.setValue('amount', Number(e.target.value), {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
+                        }
+                        type='number'
+                        className='no-spin-buttons text-md'
+                      />
+                    </FormControl>
+                    {maxAmount && !errors.amount && (
+                      <p className='text-muted-foreground text-sm'>
+                        {formatCurrency(maxAmount)} available
+                      </p>
+                    )}
+                    <ExchangeRate
+                      amount={field.value || 0}
+                      variant='form'
+                      showConversion={showConversion}
                     />
-                  </FormControl>
-                  {maxAmount && !errors.amount && (
-                    <p className='text-muted-foreground text-sm'>
-                      {formatCurrency(maxAmount)} available
-                    </p>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
             {/* Percentage buttons */}
             {maxAmount !== undefined && (

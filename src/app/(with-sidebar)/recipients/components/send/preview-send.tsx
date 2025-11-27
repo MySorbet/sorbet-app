@@ -35,7 +35,7 @@ export const PreviewSend = ({
         </p>
         <p className='text-xl font-semibold'>{formatCurrency(amount)}</p>
         <Timing type={recipient.type} />
-        {showConversion && <ExchangeRate />}
+        {showConversion && <ExchangeRate amount={amount} />}
       </div>
 
       {/* From and to */}

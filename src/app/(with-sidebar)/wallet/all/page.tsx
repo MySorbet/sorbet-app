@@ -1,12 +1,11 @@
-import React from 'react';
+import { redirect } from 'next/navigation';
 
-import { Authenticated } from '../../../authenticated';
-import { TransactionsBrowser } from '../components/transactions-browser';
+const WALLET_ENABLED = false;
 
 export default function WalletAllPage() {
-  return (
-    <Authenticated>
-      <TransactionsBrowser />
-    </Authenticated>
-  );
+  if (!WALLET_ENABLED) {
+    redirect('/dashboard');
+  }
+
+  return null;
 }

@@ -8,13 +8,12 @@ export type DashboardData = {
   tasks: {
     verified: boolean;
     invoice: boolean;
-    profile: boolean;
-    widget: boolean;
     payment: boolean;
   };
 
   invoiceSales: number;
   profileViews: number;
+  recipientsCount: number;
 };
 
 /**

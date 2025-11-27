@@ -8,7 +8,6 @@ const meta = {
   component: ChecklistCard,
   args: {
     onTaskClick: fn(),
-    onClose: fn(),
   },
   parameters: {
     layout: 'centered',
@@ -30,9 +29,6 @@ export const Default: Story = {
     completedTasks: {
       verified: true,
       invoice: true,
-      profile: false,
-      widget: false,
-      share: false,
       payment: false,
     },
   },
@@ -44,9 +40,6 @@ export const AllTasksDone: Story = {
     completedTasks: {
       verified: true,
       invoice: true,
-      profile: true,
-      widget: true,
-      share: true,
       payment: true,
     },
   },
