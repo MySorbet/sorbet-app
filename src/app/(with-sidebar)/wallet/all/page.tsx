@@ -1,11 +1,18 @@
-import { redirect } from 'next/navigation';
+import { Authenticated } from '@/app/authenticated';
+import Page from '@/components/common/page';
+import { Header } from '@/components/header';
 
-const WALLET_ENABLED = false;
+import { TransactionsBrowser } from '../components/transactions-browser';
 
 export default function WalletAllPage() {
-  if (!WALLET_ENABLED) {
-    redirect('/dashboard');
-  }
-
-  return null;
+  return (
+    <Authenticated>
+      <Page.Main>
+        <Header />
+        <Page.Content>
+          <TransactionsBrowser />
+        </Page.Content>
+      </Page.Main>
+    </Authenticated>
+  );
 }

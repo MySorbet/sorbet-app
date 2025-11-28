@@ -26,7 +26,7 @@ export type TaskStatuses = Record<TaskType, boolean>;
 
 /** Helper to check if tasks are complete outside of the component */
 export const checkTasksComplete = (completedTasks: TaskStatuses): boolean => {
-  return Object.values(completedTasks).every(Boolean);
+  return TaskTypes.every((task) => completedTasks?.[task]);
 };
 
 /** A Dashboard card rendering a collapsible checklist of onboarding tasks to complete */
@@ -43,9 +43,10 @@ export const ChecklistCard = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const numTasksComplete = Object.values(completedTasks ?? {}).filter(
-    Boolean
-  ).length;
+  const numTasksComplete = TaskTypes.reduce(
+    (count, task) => count + (completedTasks?.[task] ? 1 : 0),
+    0
+  );
   const progress = (numTasksComplete / totalTasks) * 100;
 
   return (
