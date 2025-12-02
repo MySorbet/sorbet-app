@@ -13,7 +13,8 @@ export const useDeleteAccount = () => {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  return useMutation({
+  // Delete account directly (user confirms by typing "DELETE")
+  const deleteAccount = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error('No user ID');
 
@@ -38,5 +39,10 @@ export const useDeleteAccount = () => {
       console.error('Delete account error:', error);
     },
   });
+
+  return {
+    deleteAccount: deleteAccount.mutate,
+    isDeleting: deleteAccount.isPending,
+  };
 };
 

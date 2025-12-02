@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 
 import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
 import { Spinner } from '@/components/common/spinner';
+import { EmailCheckModal } from '@/components/email-check-modal';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
 import { featureFlags } from '@/lib/flags';
@@ -22,13 +23,20 @@ export const SigninContent = () => {
 
   // Track which button was pressed so we can show a loading spinner accordingly.
   const [pressedButton, setPressedButton] = useState<PressedButton>();
+  const [showEmailCheck, setShowEmailCheck] = useState(false);
+  
   const handleClick = (button: PressedButton) => {
     setPressedButton(button);
+    setShowEmailCheck(true);
+  };
+
+  const handleEmailVerified = (email: string) => {
     login();
     if (featureFlags().sessionReplay) {
       posthog.startSessionRecording();
     }
   };
+
   const loginLoading = loading && pressedButton === 'login';
   const signupLoading = loading && pressedButton === 'signup';
 
@@ -67,29 +75,37 @@ export const SigninContent = () => {
   }
 
   return (
-    <div className='container flex max-w-96 flex-col items-center justify-center gap-14'>
-      {/* Logo and title */}
-      <div className='flex flex-col items-center justify-center gap-6'>
-        <SorbetLogo />
-        <h1 className='text-center text-2xl font-semibold'>
-          Borderless payment for freelancers and businesses
-        </h1>
+    <>
+      <div className='container flex max-w-96 flex-col items-center justify-center gap-14'>
+        {/* Logo and title */}
+        <div className='flex flex-col items-center justify-center gap-6'>
+          <SorbetLogo />
+          <h1 className='text-center text-2xl font-semibold'>
+            Borderless payment for freelancers and businesses
+          </h1>
+        </div>
+
+        {/* Buttons */}
+        <div className='flex w-full flex-col gap-3'>
+          <Button onClick={() => handleClick('signup')} disabled={loading}>
+            {signupLoading && <Spinner />} Get started with Sorbet
+          </Button>
+          <Button
+            onClick={() => handleClick('login')}
+            disabled={loading}
+            variant='secondary'
+          >
+            {loginLoading && <Spinner />} Sign in
+          </Button>
+        </div>
       </div>
 
-      {/* Buttons */}
-      <div className='flex w-full flex-col gap-3'>
-        <Button onClick={() => handleClick('signup')} disabled={loading}>
-          {signupLoading && <Spinner />} Get started with Sorbet
-        </Button>
-        <Button
-          onClick={() => handleClick('login')}
-          disabled={loading}
-          variant='secondary'
-        >
-          {loginLoading && <Spinner />} Sign in
-        </Button>
-      </div>
-    </div>
+      <EmailCheckModal
+        open={showEmailCheck}
+        onOpenChange={setShowEmailCheck}
+        onEmailVerified={handleEmailVerified}
+      />
+    </>
   );
 };
 

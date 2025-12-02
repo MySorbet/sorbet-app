@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 import {
   AlertDialog,
@@ -18,13 +21,22 @@ import { Button } from '@/components/ui/button';
 import { useDeleteAccount } from '../../hooks/use-delete-account';
 import { SettingsSection } from '../settings-section';
 
+const CONFIRMATION_TEXT = 'DELETE';
+
 export const DeleteAccountSection = () => {
-  const { mutate: deleteAccount, isPending } = useDeleteAccount();
+  const { deleteAccount, isDeleting } = useDeleteAccount();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmationInput, setConfirmationInput] = useState('');
 
   const handleDelete = () => {
+    if (confirmationInput !== CONFIRMATION_TEXT) {
+      toast.error(`Please type "${CONFIRMATION_TEXT}" to confirm`);
+      return;
+    }
+    // Delete account directly after confirmation
     deleteAccount();
     setShowConfirm(false);
+    setConfirmationInput('');
   };
 
   return (
@@ -36,8 +48,8 @@ export const DeleteAccountSection = () => {
         variant="destructive"
         size="sm"
         onClick={() => setShowConfirm(true)}
-        disabled={isPending}
-        className="h-9 px-2 text-xs leading-none"
+        disabled={isDeleting}
+        className="h-9 px-3 text-xs leading-none w-fit self-start"
         aria-label="Delete account"
       >
         Delete account
@@ -66,33 +78,50 @@ export const DeleteAccountSection = () => {
                 <ul className="list-inside list-disc space-y-1 text-muted-foreground">
                   <li>Delete your Sorbet account and all settings</li>
                   <li>Delete your embedded wallet (funds are only accessible with private key)</li>
+                  <li>Delete all your invoices, recipients, and invoicing details</li>
+                  <li>Delete your Bridge customer account and KYC data</li>
                   <li>Remove all your data from our systems</li>
                   <li>Free up your handle and email for reuse</li>
                 </ul>
-                <p className="pt-2 text-xs text-muted-foreground">
-                  Note: Your invoices will be kept for compliance and tax purposes, but will be anonymized.
-                </p>
               </div>
 
               <p className="text-sm font-semibold text-destructive">
                 This is permanent and cannot be undone. You can create a new account with the same email after deletion.
               </p>
+
+              <div className="space-y-2 pt-2">
+                <Label htmlFor="delete-confirmation" className="text-sm font-medium">
+                  Type <span className="font-mono font-bold">{CONFIRMATION_TEXT}</span> to confirm:
+                </Label>
+                <Input
+                  id="delete-confirmation"
+                  value={confirmationInput}
+                  onChange={(e) => setConfirmationInput(e.target.value)}
+                  placeholder={CONFIRMATION_TEXT}
+                  disabled={isDeleting}
+                  className="font-mono"
+                />
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             {/* match dialog buttons to compact size */}
             <AlertDialogCancel
-              disabled={isPending}
+              disabled={isDeleting}
+              onClick={() => {
+                setShowConfirm(false);
+                setConfirmationInput('');
+              }}
               className="h-7 px-3 text-xs leading-none"
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              disabled={isPending}
+              disabled={isDeleting || confirmationInput !== CONFIRMATION_TEXT}
               className="h-7 px-3 text-xs leading-none bg-destructive hover:bg-destructive/90"
             >
-              {isPending ? 'Deleting...' : 'Yes, delete my account'}
+              {isDeleting ? 'Deleting...' : 'Yes, delete my account'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
