@@ -10,6 +10,7 @@ import { Spinner } from '@/components/common/spinner';
 import { EmailCheckModal } from '@/components/email-check-modal';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
+import { getAccessConfig } from '@/api/auth';
 import { featureFlags } from '@/lib/flags';
 
 type PressedButton = 'login' | 'signup';
@@ -24,17 +25,46 @@ export const SigninContent = () => {
   // Track which button was pressed so we can show a loading spinner accordingly.
   const [pressedButton, setPressedButton] = useState<PressedButton>();
   const [showEmailCheck, setShowEmailCheck] = useState(false);
+  const [restrictAccessToExistingUsers, setRestrictAccessToExistingUsers] =
+    useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    getAccessConfig()
+      .then((config) => {
+        if (!mounted) return;
+        setRestrictAccessToExistingUsers(
+          Boolean(config.restrictAccessToExistingUsers)
+        );
+      })
+      .catch((error) => {
+        // If this fails, default to showing the modal to stay safe
+        console.error('Failed to fetch access config', error);
+        setRestrictAccessToExistingUsers(true);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
   
   const handleClick = (button: PressedButton) => {
     setPressedButton(button);
-    setShowEmailCheck(true);
+    if (restrictAccessToExistingUsers) {
+      setShowEmailCheck(true);
+      return;
+    }
+    startLogin();
   };
 
-  const handleEmailVerified = (email: string) => {
+  const startLogin = () => {
     login();
     if (featureFlags().sessionReplay) {
       posthog.startSessionRecording();
     }
+  };
+
+  const handleEmailVerified = () => {
+    startLogin();
   };
 
   const loginLoading = loading && pressedButton === 'login';

@@ -62,3 +62,11 @@ export const checkAccess = async (email: string) => {
   );
   return res.data;
 };
+
+/** Fetch access config (whether signup is restricted to existing users) */
+export const getAccessConfig = async () => {
+  const res = await axios.get<{
+    restrictAccessToExistingUsers: boolean;
+  }>(`${env.NEXT_PUBLIC_SORBET_API_URL}/auth/access-config`);
+  return res.data;
+};
