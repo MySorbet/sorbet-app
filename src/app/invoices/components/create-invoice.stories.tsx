@@ -28,8 +28,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const samplePrefills: Required<Omit<InvoiceForm, 'taxId' | 'address'>> &
-  Pick<InvoiceForm, 'taxId' | 'address'> = {
+const samplePrefills: Required<Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'>> &
+  Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'> = {
   toName: 'John Doe',
   toEmail: 'john.doe@example.com',
   fromName: 'Jane Smith',
@@ -49,6 +49,8 @@ const samplePrefills: Required<Omit<InvoiceForm, 'taxId' | 'address'>> &
   paymentMethods: ['usdc'],
   taxId: undefined,
   address: undefined,
+  toBusinessName: undefined,
+  toAddress: undefined,
 };
 
 export const Default: Story = {

@@ -82,6 +82,8 @@ export const invoiceFormSchema = z
     toEmail: invoiceFormStringValidator('Email').email({
       message: 'Must be a valid email address',
     }),
+    toBusinessName: z.string().optional(),
+    toAddress: addressSchema.optional(),
     items: z.array(InvoiceItemSchema),
     invoiceNumber: invoiceFormStringValidator('Invoice number').refine(
       async (invoiceNumber) => {
@@ -135,9 +137,9 @@ export type Client = z.infer<typeof clientSchema>;
 
 /** Default values for an invoice form if no prefills are provided */
 export const defaultInvoiceValues: Required<
-  Omit<InvoiceForm, 'taxId' | 'address'>
+  Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'>
 > &
-  Pick<InvoiceForm, 'taxId' | 'address'> = {
+  Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'> = {
   issueDate: new Date(),
   dueDate: addDays(new Date(), 7),
   memo: '',
@@ -148,6 +150,8 @@ export const defaultInvoiceValues: Required<
   fromEmail: '',
   toName: '',
   toEmail: '',
+  toBusinessName: undefined,
+  toAddress: undefined,
   paymentMethods: ['usdc'],
   taxId: undefined,
   address: undefined,

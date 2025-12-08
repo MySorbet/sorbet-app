@@ -118,6 +118,19 @@ export const InvoiceDocument = forwardRef<
             <td className='pt-2'>
               <p className='pt-1 text-xs'>{invoice.toName}</p>
               <p className='pt-1 text-xs'>{invoice.toEmail}</p>
+              {invoice.toBusinessName && (
+                <p className='pt-1 text-xs'>{invoice.toBusinessName}</p>
+              )}
+              {invoice.toAddress && (
+                <div className='pt-1 text-xs'>
+                  <p>{invoice.toAddress.street}</p>
+                  <p>
+                    {invoice.toAddress.city}, {invoice.toAddress.state}{' '}
+                    {invoice.toAddress.zip}
+                  </p>
+                  <p>{invoice.toAddress.country}</p>
+                </div>
+              )}
             </td>
           </tr>
         </tbody>

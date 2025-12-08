@@ -31,11 +31,13 @@ export const EmailCheckModal = ({
 }: EmailCheckModalProps) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [waitlistMessage, setWaitlistMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setWaitlistMessage('');
     setLoading(true);
 
     try {
@@ -47,9 +49,10 @@ export const EmailCheckModal = ({
         onOpenChange(false);
         setEmail('');
       } else {
-        setError(
+        // Show waitlist message (friendly message) - backend always adds to waitlist
+        setWaitlistMessage(
           result.message ||
-            'Sorry, our platform is currently limited to existing users. Please check back later.'
+            "Thanks for your interest! We've added you to our waitlist and will notify you once we're up again."
         );
       }
     } catch (err) {
@@ -64,6 +67,7 @@ export const EmailCheckModal = ({
     if (!newOpen) {
       setEmail('');
       setError('');
+      setWaitlistMessage('');
     }
     onOpenChange(newOpen);
   };
@@ -98,16 +102,25 @@ export const EmailCheckModal = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={loading}
+              disabled={loading || !!waitlistMessage}
               autoFocus
             />
+            {waitlistMessage && (
+              <p className='text-sm text-green-600 dark:text-green-400'>
+                {waitlistMessage}
+              </p>
+            )}
             {error && (
               <p className='text-sm text-destructive'>{error}</p>
             )}
           </div>
           <DialogFooter className='mt-6'>
-            <Button type='submit' disabled={loading || !email} className='w-full'>
-              {loading ? 'Checking...' : 'Continue'}
+            <Button 
+              type='submit' 
+              disabled={loading || !email || !!waitlistMessage} 
+              className='w-full'
+            >
+              {loading ? 'Checking...' : waitlistMessage ? 'Added to Waitlist' : 'Continue'}
             </Button>
           </DialogFooter>
         </form>
