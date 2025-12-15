@@ -28,10 +28,15 @@ import { ExternalAccountDetails } from './external-account-details';
 
 /**
  * Compose account components into a page with state
+ *
+ * Flow:
+ * - If VA exists → Show account details
+ * - If no VA && endorsed → Show Retry button (webhook failed to create VA)
+ * - If no VA && not endorsed → Show verification tabs (user needs to complete KYC)
  */
 export const AccountsPageContent = () => {
   const { user } = useAuth();
-  const { isBaseApproved, isPending } = useEndorsements();
+  const { isBaseApproved, isEurApproved, isPending } = useEndorsements();
   const { data: customer } = useBridgeCustomer();
   const { data: account } = useACHWireDetails(user?.id ?? '', {
     enabled: !isPending && !!user?.id && isBaseApproved,
@@ -56,6 +61,10 @@ export const AccountsPageContent = () => {
       )
     : undefined;
 
+  // Check if user needs retry (endorsed but VA missing - webhook may have failed)
+  const needsUsdRetry = !customer?.virtual_account && isBaseApproved;
+  const needsEurRetry = !customer?.virtual_account_eur && isEurApproved;
+
   const isMobile = useIsMobile();
 
   return (
@@ -68,33 +77,12 @@ export const AccountsPageContent = () => {
       />
 
       {selectedAccount === 'usd' ? (
-        customer?.hasClaimedVirtualAccount ? (
-          account ? (
-            <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-              <ExternalAccountDetails.USD account={account} />
-            </AccountDetailsCard>
-          ) : isMobile ? (
-            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-              <DrawerContent className='h-[97%]'>
-                <AutomaticVerificationTabs className='pt-4' />
-              </DrawerContent>
-            </Drawer>
-          ) : (
-            <AutomaticVerificationTabs />
-          )
-        ) : (
-          <ClaimAccountButton
-            type='usd'
-            onClaim={() => {
-              setIsDrawerOpen(true);
-            }}
-          />
-        )
-      ) : customer?.hasClaimedVirtualAccountEur ? (
-        eurAccount ? (
+        account ? (
           <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-            <ExternalAccountDetails.EUR account={eurAccount} />
+            <ExternalAccountDetails.USD account={account} />
           </AccountDetailsCard>
+        ) : needsUsdRetry ? (
+          <RetryAccountButton type='usd' />
         ) : isMobile ? (
           <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerContent className='h-[97%]'>
@@ -104,13 +92,20 @@ export const AccountsPageContent = () => {
         ) : (
           <AutomaticVerificationTabs />
         )
+      ) : eurAccount ? (
+        <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
+          <ExternalAccountDetails.EUR account={eurAccount} />
+        </AccountDetailsCard>
+      ) : needsEurRetry ? (
+        <RetryAccountButton type='eur' />
+      ) : isMobile ? (
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+          <DrawerContent className='h-[97%]'>
+            <AutomaticVerificationTabs className='pt-4' />
+          </DrawerContent>
+        </Drawer>
       ) : (
-        <ClaimAccountButton
-          type='eur'
-          onClaim={() => {
-            setIsDrawerOpen(true);
-          }}
-        />
+        <AutomaticVerificationTabs />
       )}
     </div>
   );
@@ -156,17 +151,13 @@ const AccountDetailsCard = ({
   );
 };
 
-const ClaimAccountButton = ({
-  type,
-  onClaim,
-}: {
-  type: 'usd' | 'eur';
-  onClaim?: () => void;
-}) => {
-  const { mutate: claimVirtualAccount, isPending: isClaiming } =
-    useClaimVirtualAccount(type, {
-      onSuccess: () => onClaim?.(),
-    });
+/**
+ * Retry button for users who are endorsed but don't have a VA
+ * (This happens when webhook failed to create VA)
+ */
+const RetryAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
+  const { mutate: claimVirtualAccount, isPending: isRetrying } =
+    useClaimVirtualAccount(type);
 
   return (
     <Card className='flex size-full flex-col items-center justify-center gap-4 p-6'>
@@ -177,18 +168,18 @@ const ClaimAccountButton = ({
       )}
       <p className='text-muted-foreground text-center text-sm'>
         {type === 'usd'
-          ? 'Claim your USD account to start accepting payments.'
-          : 'Claim your EUR account to start accepting payments.'}
+          ? 'Your USD account verification is complete, but the account needs to be set up. Click retry to create your account.'
+          : 'Your EUR account verification is complete, but the account needs to be set up. Click retry to create your account.'}
       </p>
       <Button
         variant='sorbet'
         onClick={() => claimVirtualAccount()}
-        disabled={isClaiming}
+        disabled={isRetrying}
       >
-        {isClaiming && <Spinner />}
-        {isClaiming
-          ? 'Claiming...'
-          : `Claim ${type.toLocaleUpperCase()} Account`}
+        {isRetrying && <Spinner />}
+        {isRetrying
+          ? 'Retrying...'
+          : `Retry ${type.toUpperCase()} Account`}
       </Button>
     </Card>
   );
