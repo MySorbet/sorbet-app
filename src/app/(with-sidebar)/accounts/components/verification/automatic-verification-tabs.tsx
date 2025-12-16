@@ -28,9 +28,13 @@ export const AutomaticVerificationTabs = ({
     false
   );
 
+  // Track if user is manually retrying (to prevent useEffect from overriding tab)
+  const [isRetrying, setIsRetrying] = useState(false);
+
   const [selectedTab, setSelectedTab] = useState<VerificationTab>('terms');
   useEffect(() => {
-    if (customer) {
+    // Don't recalculate tab if user is manually retrying
+    if (customer && !isRetrying) {
       // Calculate the selected tab based on the customer's status and the indeterminacy
       const selectedTab = calculateSelectedTab(customer, isIndeterminate);
       setSelectedTab(selectedTab);
@@ -40,7 +44,7 @@ export const AutomaticVerificationTabs = ({
         setIsIndeterminate(false);
       }
     }
-  }, [customer, isIndeterminate, setIsIndeterminate]);
+  }, [customer, isIndeterminate, setIsIndeterminate, isRetrying]);
 
   return (
     <VerificationTabs
@@ -51,10 +55,12 @@ export const AutomaticVerificationTabs = ({
       kycUrl={customer?.kyc_link ?? ''}
       onComplete={() => {
         setIsIndeterminate(true);
+        setIsRetrying(false); // Reset retry flag when user completes KYC
       }}
       onRetry={() => {
         setSelectedTab('details');
         setIsIndeterminate(false);
+        setIsRetrying(true); // Set retry flag to prevent useEffect override
       }}
     />
   );

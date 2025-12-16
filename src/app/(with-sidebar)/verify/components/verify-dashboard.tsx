@@ -138,9 +138,14 @@ export const VerifyDashboard = () => {
         loading={isLoading}
         className='@2xl:col-span-1 col-span-2 h-fit w-full'
         indeterminate={isIndeterminate}
+        isRejected={customer?.status === 'rejected'}
+        rejectionReasons={customer?.rejection_reasons}
         completedTasks={{
           terms: customer?.has_accepted_terms_of_service ?? false,
-          details: !!customer && kycCompletedStates.includes(customer.status),
+          details:
+            !!customer &&
+            kycCompletedStates.includes(customer.status) &&
+            customer.status !== 'rejected',
         }}
       />
     </div>
