@@ -37,10 +37,14 @@ export type AllSteps = 'begin' | VerifyStep | 'complete';
 export const VerifyDashboard = () => {
   const [step, setStep] = useState<AllSteps>('begin');
 
+  // Track if user is manually retrying (to prevent useEffect from overriding step)
+  const [isRetrying, setIsRetrying] = useState(false);
+
   const handleTaskClick = (newStep: VerifyStep) => {
     // This conditional allows the user to retry adding details if they need to
     if (newStep === 'details') {
       setIsIndeterminate(false);
+      setIsRetrying(true); // Prevent effect from overriding
     }
     setStep(newStep);
   };
@@ -55,6 +59,7 @@ export const VerifyDashboard = () => {
     // Ignore all reported step transitions except for details to complete
     if (step === 'details') {
       setIsIndeterminate(true);
+      setIsRetrying(false); // Reset retry mode when KYC is completed
       // Use effect below will drive the step to complete since the bridge customer is refetched
     }
   };
@@ -76,6 +81,11 @@ export const VerifyDashboard = () => {
       return;
     }
 
+    // Don't override step if user is actively retrying KYC
+    if (isRetrying) {
+      return;
+    }
+
     // Goto step 0 if there is no bridge customer
     if (!customer) {
       setStep('begin');
@@ -88,25 +98,23 @@ export const VerifyDashboard = () => {
       return;
     }
 
-    // Goto complete if the customer has approved the kyc
-    if (customer.status !== 'active') {
+    // Goto details if the customer has not completed kyc (not in a completed state)
+    if (!kycCompletedStates.includes(customer.status)) {
       setStep('details');
       return;
     }
 
-    // Getting here implies that TOS is complete and kyc is approved, rejected, or under review
+    // Getting here implies that TOS is complete and kyc is in a completed state (active, rejected, under_review, etc.)
     setStep('complete');
     setIsIndeterminate(false);
-  }, [customer, isLoading, setIsIndeterminate]);
+  }, [customer, isLoading, setIsIndeterminate, isRetrying]);
   const router = useRouter();
   const unlessMobile = useUnlessMobile();
   const handleCallToActionClick = (type: 'retry' | 'create-invoice') => {
     if (type === 'retry') {
+      setIsIndeterminate(false);
+      setIsRetrying(true); // Prevent effect from overriding step during retry
       setStep('details');
-      // TODO: This leads to a strange state where the UI is in the "details" step
-      // But the bridge customer is rejected. So a mis match of UI is displayed.
-      // Whats worse, is that the customer -> step effect is not triggered (as refetch gives a 304),
-      // but if data is changed on the bridge customer, the effect sets the step to complete, causing the user to lose KYC progress.
     } else if (type === 'create-invoice') {
       unlessMobile(() => router.push('/invoices/create'));
     }
