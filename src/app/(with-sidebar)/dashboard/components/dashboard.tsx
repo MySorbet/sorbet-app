@@ -12,9 +12,7 @@ import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
 import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
 import { Duration } from '../../wallet/components/balance-card/select-duration';
-import { useSendUSDC } from '../../wallet/hooks/use-send-usdc';
 import { useTopUp } from '../../wallet/hooks/use-top-up';
-import { WalletSendDialog } from '../../wallet/components/wallet-send-dialog';
 
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import {
@@ -56,17 +54,16 @@ export const Dashboard = () => {
   const completedTasks: TaskStatuses | undefined = dashboardData?.tasks;
 
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
-  const [isSendDialogOpen, setIsSendDialogOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
   const { topUp } = useTopUp();
-  const { sendUSDC } = useSendUSDC();
 
   // Action handlers
   const handleDeposit = () => topUp();
   const handleCreateInvoice = () => {
     unlessMobile(() => router.push('/invoices/create'));
   };
+  const handleSendFunds = () => router.push('/recipients?send-to=true');
   const handleAddRecipient = () => router.push('/recipients?add-recipient=true');
 
   const handleTaskClick = (type: TaskType) => {
@@ -94,20 +91,13 @@ export const Dashboard = () => {
         />
       )}
 
-      {/* Send funds dialog */}
-      <WalletSendDialog
-        open={isSendDialogOpen}
-        setOpen={setIsSendDialogOpen}
-        sendUSDC={sendUSDC}
-      />
-
       {/* Dashboard layout */}
       <div className='@container size-full w-full max-w-[1184px] space-y-4 px-4 sm:space-y-6 sm:px-0'>
         {/* Welcome Header */}
         <WelcomeCard
           name={user?.firstName}
           onDeposit={handleDeposit}
-          onSendFunds={() => setIsSendDialogOpen(true)}
+          onSendFunds={handleSendFunds}
         />
 
         {/* Three Small Cards Row */}
