@@ -127,7 +127,7 @@ const InvoiceItem = ({
             id='amount'
             type='number'
             placeholder='amount'
-            value={item.amount}
+            value={item.amount === 0 ? '' : item.amount}
             onChange={(e) => {
               const value = e.target.value;
               // TODO: There must be a better way to coerce the number from the input

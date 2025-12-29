@@ -33,11 +33,13 @@ export const PublicInvoice = ({
   });
 
   const { data: walletAddress, isLoading: isLoadingWalletAddress } =
-    useWalletAddressByUserId(invoice?.userId ?? '');
+    useWalletAddressByUserId(invoice?.userId ?? '', {
+      enabled: invoice?.paymentMethods?.includes('usdc'),
+    });
 
   const { data: achWireDetails, isLoading: isLoadingACHWireDetails } =
     useACHWireDetails(invoice?.userId ?? '', {
-      enabled: invoice?.paymentMethods?.includes('usdc'),
+      enabled: invoice?.paymentMethods?.includes('usd'),
     });
 
   const { data: sepaDetails, isLoading: isLoadingSEPADetails } = useSEPADetails(
@@ -95,6 +97,7 @@ export const PublicInvoice = ({
             account={achWireDetails}
             eurAccount={sepaDetails}
             dueDate={invoice?.dueDate}
+            paymentMethods={invoice?.paymentMethods}
             isLoading={
               isLoading ||
               isLoadingWalletAddress ||
