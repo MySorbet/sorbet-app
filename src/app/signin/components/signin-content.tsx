@@ -2,80 +2,30 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import posthog from 'posthog-js';
 import { useEffect, useState } from 'react';
 
 import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
 import { Spinner } from '@/components/common/spinner';
-import { EmailCheckModal } from '@/components/email-check-modal';
+import { AuthModal, AuthModalMode } from '@/components/auth';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
-import { getAccessConfig } from '@/api/auth';
-import { featureFlags } from '@/lib/flags';
-
-type PressedButton = 'login' | 'signup';
 
 /**
- * Two buttons which launch the Privy login/signup dialog.
+ * Two buttons which launch the custom auth modal.
  * Will also allow the user to select individual or business if they have not yet
  */
 export const SigninContent = () => {
-  const { login, loading } = useAuth();
+  const { user, loading } = useAuth();
 
-  // Track which button was pressed so we can show a loading spinner accordingly.
-  const [pressedButton, setPressedButton] = useState<PressedButton>();
-  const [showEmailCheck, setShowEmailCheck] = useState(false);
-  const [restrictAccessToExistingUsers, setRestrictAccessToExistingUsers] =
-    useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-    getAccessConfig()
-      .then((config) => {
-        if (!mounted) return;
-        setRestrictAccessToExistingUsers(
-          Boolean(config.restrictAccessToExistingUsers)
-        );
-      })
-      .catch((error) => {
-        // If this fails, default to showing the modal to stay safe
-        console.error('Failed to fetch access config', error);
-        setRestrictAccessToExistingUsers(true);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-  
-  const handleClick = (button: PressedButton) => {
-    setPressedButton(button);
-    if (restrictAccessToExistingUsers) {
-      setShowEmailCheck(true);
-      return;
-    }
-    startLogin();
-  };
-
-  const startLogin = () => {
-    login();
-    if (featureFlags().sessionReplay) {
-      posthog.startSessionRecording();
-    }
-  };
-
-  const handleEmailVerified = () => {
-    startLogin();
-  };
-
-  const loginLoading = loading && pressedButton === 'login';
-  const signupLoading = loading && pressedButton === 'signup';
+  // Track which button was pressed to determine modal mode
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<AuthModalMode>('signup');
 
   const [showIndividualOrBusiness, setShowIndividualOrBusiness] =
     useState(false);
 
   // Logged in users who visit signin page will be redirected to the home page
   const router = useRouter();
-  const { user } = useAuth();
   useEffect(() => {
     if (user) {
       if (!user.customerType) {
@@ -87,6 +37,11 @@ export const SigninContent = () => {
   }, [user, router]);
 
   const { mutate: updateUser } = useUpdateUser({ toastOnSuccess: false });
+
+  const handleClick = (mode: AuthModalMode) => {
+    setAuthModalMode(mode);
+    setAuthModalOpen(true);
+  };
 
   if (showIndividualOrBusiness) {
     return (
@@ -118,22 +73,22 @@ export const SigninContent = () => {
         {/* Buttons */}
         <div className='flex w-full flex-col gap-3'>
           <Button onClick={() => handleClick('signup')} disabled={loading}>
-            {signupLoading && <Spinner />} Get started with Sorbet
+            {loading && authModalMode === 'signup' && <Spinner />} Get started with Sorbet
           </Button>
           <Button
-            onClick={() => handleClick('login')}
+            onClick={() => handleClick('signin')}
             disabled={loading}
             variant='secondary'
           >
-            {loginLoading && <Spinner />} Sign in
+            {loading && authModalMode === 'signin' && <Spinner />} Sign in
           </Button>
         </div>
       </div>
 
-      <EmailCheckModal
-        open={showEmailCheck}
-        onOpenChange={setShowEmailCheck}
-        onEmailVerified={handleEmailVerified}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        mode={authModalMode}
       />
     </>
   );
@@ -144,14 +99,14 @@ const SorbetLogo = () => {
   return (
     <div className='flex items-center justify-center gap-2'>
       <Image
-        src='/svg/logo.svg'
+        src='/svg/social/black-sorbet-logo.svg'
         width={40}
         height={40}
         className='size-10'
         alt='Sorbet'
         priority
       />
-      <span className='text-primary text-sm font-semibold tracking-wide'>
+      <span className="text-primary font-jura font-bold text-[24.3px] leading-[1.4] tracking-[0]">
         SORBET
       </span>
     </div>
