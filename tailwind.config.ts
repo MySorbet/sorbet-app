@@ -43,6 +43,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        jura: ['var(--font-jura)'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
