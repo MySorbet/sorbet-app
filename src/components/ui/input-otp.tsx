@@ -61,8 +61,8 @@ InputOTPSlot.displayName = "InputOTPSlot"
 const InputOTPSeparator = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div">
->(({ ...props }, ref) => (
-  <div ref={ref} role="separator" className="text-muted-foreground" {...props}>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} role="separator" className={cn("text-muted-foreground", className)} {...props}>
     <Minus className="h-4 w-4" />
   </div>
 ))
