@@ -10,6 +10,7 @@ import { Spinner } from '@/components/common/spinner';
 import { AuthModal, AuthModalMode } from '@/components/auth';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
+import { updateInvoicingDetails } from '@/api/invoicing';
 
 type OnboardingStep = 'type-selection' | 'hear-about-us';
 
@@ -17,7 +18,8 @@ interface PendingUserData {
   customerType: 'individual' | 'business';
   fullName?: string;
   companyName?: string;
-  country: string;
+  countryName: string;
+  countryCode: string;
   phoneNumber?: string;
   companyWebsite?: string;
 }
@@ -63,7 +65,7 @@ export const SigninContent = () => {
     setOnboardingStep('hear-about-us');
   };
 
-  const handleHearAboutUsSubmit = (selection: string | null) => {
+  const handleHearAboutUsSubmit = async (selection: string | null) => {
     if (!user || !pendingUserData) return;
 
     // Combine all data and update user
@@ -72,16 +74,27 @@ export const SigninContent = () => {
     const firstName = nameParts[0] || undefined;
     const lastName = nameParts.slice(1).join(' ') || undefined;
 
+    // Update user with country name
     updateUser({
       id: user.id,
       customerType: pendingUserData.customerType,
       firstName: firstName,
       lastName: lastName,
-      country: pendingUserData.country,
+      country: pendingUserData.countryName, // Store full country name
       phoneNumber: pendingUserData.phoneNumber,
       companyWebsite: pendingUserData.companyWebsite,
       heardAboutUs: selection || undefined,
     });
+
+    // Also pre-populate invoicing details with alpha2 country code
+    try {
+      await updateInvoicingDetails(user.id, {
+        country: pendingUserData.countryCode, // Store alpha2 code
+      });
+    } catch (error) {
+      // Silent fail - invoicing details are optional
+      console.error('Failed to update invoicing details:', error);
+    }
   };
 
   const handleClick = (mode: AuthModalMode) => {
