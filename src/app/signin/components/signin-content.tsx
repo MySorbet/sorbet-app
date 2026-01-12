@@ -5,14 +5,27 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
+import { HearAboutUs } from '@/app/signin/components/business/heard-about-us';
 import { Spinner } from '@/components/common/spinner';
 import { AuthModal, AuthModalMode } from '@/components/auth';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
 
+type OnboardingStep = 'type-selection' | 'hear-about-us';
+
+interface PendingUserData {
+  customerType: 'individual' | 'business';
+  fullName?: string;
+  companyName?: string;
+  country: string;
+  phoneNumber?: string;
+  companyWebsite?: string;
+}
+
 /**
  * Two buttons which launch the custom auth modal.
- * Will also allow the user to select individual or business if they have not yet
+ * Will also allow the user to select individual or business if they have not yet,
+ * followed by a "where did you hear about us" survey
  */
 export const SigninContent = () => {
   const { user, loading } = useAuth();
@@ -21,40 +34,76 @@ export const SigninContent = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<AuthModalMode>('signup');
 
-  const [showIndividualOrBusiness, setShowIndividualOrBusiness] =
-    useState(false);
+  // Multi-step onboarding state
+  const [onboardingStep, setOnboardingStep] = useState<OnboardingStep | null>(
+    null
+  );
+  const [pendingUserData, setPendingUserData] =
+    useState<PendingUserData | null>(null);
 
   // Logged in users who visit signin page will be redirected to the home page
   const router = useRouter();
   useEffect(() => {
     if (user) {
       if (!user.customerType) {
-        setShowIndividualOrBusiness(true);
+        setOnboardingStep('type-selection');
       } else {
         router.push('/');
       }
     }
   }, [user, router]);
 
-  const { mutate: updateUser } = useUpdateUser({ toastOnSuccess: false });
+  const { mutate: updateUser, isPending: isUpdating } = useUpdateUser({
+    toastOnSuccess: false,
+  });
+
+  const handleTypeFormSubmit = (data: PendingUserData) => {
+    // Store the form data and move to next step
+    setPendingUserData(data);
+    setOnboardingStep('hear-about-us');
+  };
+
+  const handleHearAboutUsSubmit = (selection: string | null) => {
+    if (!user || !pendingUserData) return;
+
+    // Combine all data and update user
+    // Map fullName to firstName/lastName if provided
+    const nameParts = pendingUserData.fullName?.split(' ') || [];
+    const firstName = nameParts[0] || undefined;
+    const lastName = nameParts.slice(1).join(' ') || undefined;
+
+    updateUser({
+      id: user.id,
+      customerType: pendingUserData.customerType,
+      firstName: firstName,
+      lastName: lastName,
+      country: pendingUserData.country,
+      phoneNumber: pendingUserData.phoneNumber,
+      companyWebsite: pendingUserData.companyWebsite,
+      heardAboutUs: selection || undefined,
+    });
+  };
 
   const handleClick = (mode: AuthModalMode) => {
     setAuthModalMode(mode);
     setAuthModalOpen(true);
   };
 
-  if (showIndividualOrBusiness) {
+  // Show "Where did you hear about us?" step
+  if (onboardingStep === 'hear-about-us') {
+    return (
+      <div className='container flex max-w-lg flex-col items-center justify-center'>
+        <HearAboutUs onSubmit={handleHearAboutUsSubmit} isLoading={isUpdating} />
+      </div>
+    );
+  }
+
+  // Show Individual/Business selection with inline form
+  if (onboardingStep === 'type-selection') {
     return (
       <IndividualOrBusiness
-        onSelect={(type) => {
-          if (!user) return; // Can't do anything without a user
-
-          // If user is signing up as a business, update their customer type
-          updateUser({
-            id: user.id,
-            customerType: type,
-          });
-        }}
+        onSubmit={handleTypeFormSubmit}
+        isLoading={isUpdating}
       />
     );
   }
