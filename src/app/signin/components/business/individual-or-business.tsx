@@ -12,7 +12,8 @@ interface OnboardingFormData {
   customerType: 'individual' | 'business';
   fullName?: string;
   companyName?: string;
-  country: string;
+  countryName: string;
+  countryCode: string;
   phoneNumber?: string;
   companyWebsite?: string;
 }
@@ -36,26 +37,30 @@ export const IndividualOrBusiness = ({
 
   const handleIndividualSubmit = (data: {
     fullName: string;
-    country: string;
+    countryName: string;
+    countryCode: string;
     phoneNumber?: string;
   }) => {
     onSubmit?.({
       customerType: 'individual',
       fullName: data.fullName,
-      country: data.country,
+      countryName: data.countryName,
+      countryCode: data.countryCode,
       phoneNumber: data.phoneNumber,
     });
   };
 
   const handleBusinessSubmit = (data: {
     companyName: string;
-    country: string;
+    countryName: string;
+    countryCode: string;
     companyWebsite: string;
   }) => {
     onSubmit?.({
       customerType: 'business',
       companyName: data.companyName,
-      country: data.country,
+      countryName: data.countryName,
+      countryCode: data.countryCode,
       companyWebsite: data.companyWebsite,
     });
   };

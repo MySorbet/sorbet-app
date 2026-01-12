@@ -16,7 +16,8 @@ import { getCountryRestriction } from './country-restrictions';
 interface OnboardingFormIndividualProps {
     onSubmit: (data: {
         fullName: string;
-        country: string;
+        countryName: string;
+        countryCode: string;
         phoneNumber?: string;
     }) => void;
     isLoading?: boolean;
@@ -47,7 +48,8 @@ export const OnboardingFormIndividual = ({
 
         onSubmit({
             fullName: fullName.trim(),
-            country: country.alpha3,
+            countryName: country.name,
+            countryCode: country.alpha2,
             phoneNumber: phoneNumber.trim() || undefined,
         });
     };

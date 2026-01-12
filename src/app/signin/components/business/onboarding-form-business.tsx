@@ -16,7 +16,8 @@ import { getCountryRestriction } from './country-restrictions';
 interface OnboardingFormBusinessProps {
     onSubmit: (data: {
         companyName: string;
-        country: string;
+        countryName: string;
+        countryCode: string;
         companyWebsite: string;
     }) => void;
     isLoading?: boolean;
@@ -50,7 +51,8 @@ export const OnboardingFormBusiness = ({
 
         onSubmit({
             companyName: companyName.trim(),
-            country: country.alpha3,
+            countryName: country.name,
+            countryCode: country.alpha2,
             companyWebsite: companyWebsite.trim(),
         });
     };
