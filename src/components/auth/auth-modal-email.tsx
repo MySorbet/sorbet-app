@@ -125,11 +125,21 @@ export const AuthModalEmail = ({
             {/* Terms footer */}
             <p className="text-xs text-muted-foreground text-center mt-6">
                 By clicking continue, you agree to our{' '}
-                <Link href="https://docs.mysorbet.xyz/sorbet/readme/list-of-supported-countries" className="underline hover:text-foreground">
+                <Link
+                    href="https://docs.mysorbet.xyz/sorbet/readme/list-of-supported-countries"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground"
+                >
                     Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="https://docs.mysorbet.xyz/sorbet/legal/privacy-policy" className="underline hover:text-foreground">
+                <Link
+                    href="https://docs.mysorbet.xyz/sorbet/legal/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground"
+                >
                     Privacy Policy
                 </Link>
                 .
