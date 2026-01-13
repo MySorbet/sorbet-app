@@ -41,6 +41,7 @@ interface CountryDropdownProps {
   options?: Country[];
   onChange?: (country: Country) => void;
   defaultValue?: string;
+  value?: string;
   disabled?: boolean;
   placeholder?: string;
   slim?: boolean;
@@ -58,6 +59,7 @@ const CountryDropdownComponent = (
     ),
     onChange,
     defaultValue,
+    value,
     disabled = false,
     placeholder = 'Select a country',
     slim = false,
@@ -71,21 +73,23 @@ const CountryDropdownComponent = (
   );
 
   useEffect(() => {
-    if (defaultValue) {
+    // Controlled mode: use value prop
+    const controlledValue = value ?? defaultValue;
+    if (controlledValue) {
       const initialCountry = options.find(
-        (country) => country.alpha3 === defaultValue
+        (country) => country.alpha3 === controlledValue
       );
       if (initialCountry) {
         setSelectedCountry(initialCountry);
       } else {
-        // Reset selected country if defaultValue is not found
+        // Reset selected country if value is not found
         setSelectedCountry(undefined);
       }
     } else {
-      // Reset selected country if defaultValue is undefined or null
+      // Reset selected country if value is undefined or null
       setSelectedCountry(undefined);
     }
-  }, [defaultValue, options]);
+  }, [value, defaultValue, options]);
 
   const handleSelect = useCallback(
     (country: Country) => {

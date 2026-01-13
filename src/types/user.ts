@@ -13,6 +13,10 @@ export interface User {
   bio?: string;
   profileImage?: string;
   city?: string;
+  phoneNumber?: string;
+  country?: string;
+  companyWebsite?: string;
+  heardAboutUs?: string;
 
   customerType?: 'individual' | 'business';
 }

@@ -10,7 +10,7 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    onSelect: fn(),
+    onSubmit: fn(),
   },
 } satisfies Meta<typeof IndividualOrBusiness>;
 
