@@ -19,7 +19,7 @@ export const WelcomeCard = ({
   return (
     <div 
       className={cn(
-        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 py-4',
+        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 pt-[1px] pb-4',
         'sm:flex-row sm:items-center sm:gap-6 sm:px-6',
         'md:min-h-[72px]',
         className
