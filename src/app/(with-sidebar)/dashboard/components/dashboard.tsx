@@ -13,8 +13,8 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
 import { Duration } from '../../wallet/components/balance-card/select-duration';
 import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
-import { useTopUp } from '../../wallet/hooks/use-top-up';
 import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
+import { DepositDialog } from './deposit-dialog';
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import { AnnouncementBanner } from './announcement-banner';
 import { BalanceSectionCard } from './balance-section-card';
@@ -67,12 +67,12 @@ export const Dashboard = () => {
   const isRestricted = isRestrictedCountry(user?.country);
 
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
-  const { topUp } = useTopUp();
 
   // Action handlers
-  const handleDeposit = () => topUp();
+  const handleDeposit = () => setIsDepositOpen(true);
   const handleCreateInvoice = () => {
     unlessMobile(() => router.push('/invoices/create'));
   };
@@ -95,6 +95,14 @@ export const Dashboard = () => {
 
   return (
     <>
+      {/* Deposit dialog */}
+      <DepositDialog
+        open={isDepositOpen}
+        onOpenChange={setIsDepositOpen}
+        walletAddress={smartWalletAddress ?? undefined}
+        bridgeCustomer={bridgeCustomer}
+      />
+
       {/* Conditionally rendered profile edit modal */}
       {user && (
         <EditProfileSheet
