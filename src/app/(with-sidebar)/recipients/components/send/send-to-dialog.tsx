@@ -73,7 +73,7 @@ const SendToDialogWithReset = ({
         <CredenzaBody className='pt-4'>
           <SendToForm onAdd={onAdd} />
         </CredenzaBody>
-        <CredenzaFooter className='flex flex-col gap-3 sm:flex-row'>
+        <CredenzaFooter className='flex flex-col gap-3 sm:flex-row-reverse'>
           <SendToFormSubmitButton />
           <SendToFormBackButton onClose={() => setOpen(false)} />
         </CredenzaFooter>
