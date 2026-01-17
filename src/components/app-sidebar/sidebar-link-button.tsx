@@ -2,13 +2,19 @@
 
 import { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
-import { AnimatedIcon, isAnimatedIcon, SidebarIcon } from './sidebar-icon';
+import {
+  AnimatedIcon,
+  AnimatedIconHandle,
+  isAnimatedIcon,
+  SidebarIcon,
+} from './sidebar-icon';
 
 export type MenuItemProps = {
   title: string;
@@ -25,33 +31,44 @@ export const SidebarLinkButton = ({
   item: MenuItemProps;
   iconClassName?: string;
 }) => {
-  // TODO: fix this typing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const iconRef = useRef<any>(null);
+  const iconRef = useRef<AnimatedIconHandle | null>(null);
+  const pathname = usePathname();
 
   const handleMouseEnter = () => {
     if (iconRef.current && isAnimatedIcon(iconRef.current)) {
-      iconRef.current?.startAnimation?.();
+      iconRef.current.startAnimation();
     }
   };
 
   const handleMouseLeave = () => {
     if (iconRef.current && isAnimatedIcon(iconRef.current)) {
-      iconRef.current?.stopAnimation?.();
+      iconRef.current.stopAnimation();
     }
   };
 
   const isMobile = useIsMobile();
   const { toggleSidebar } = useSidebar();
 
+  // Check if current path matches the item URL
+  const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
+
   return (
-    <SidebarMenuButton asChild>
+    <SidebarMenuButton asChild isActive={isActive}>
       <Link
         href={item.disabled ? '#' : item.url}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={() => isMobile && toggleSidebar()}
+        onClick={(event) => {
+          if (item.disabled) {
+            event.preventDefault();
+            return;
+          }
+          if (isMobile) {
+            toggleSidebar();
+          }
+        }}
         className={cn(item.disabled && 'pointer-events-none opacity-50')}
+        prefetch
       >
         <SidebarIcon
           iconRef={iconRef}

@@ -5,11 +5,17 @@ import { updateUser } from '@/api/user';
 import { useAuth } from '@/hooks/use-auth';
 import { User } from '@/types';
 
-export const useUpdateUser = (
-  options: {
-    toastOnSuccess?: boolean;
-  } = { toastOnSuccess: true }
-) => {
+type UseUpdateUserOptions = {
+  toastOnSuccess?: boolean;
+  toastOnError?: boolean;
+  onError?: (error: unknown) => void;
+};
+
+export const useUpdateUser = ({
+  toastOnSuccess = true,
+  toastOnError = true,
+  onError,
+}: UseUpdateUserOptions = {}) => {
   const { dangerouslySetUser } = useAuth();
 
   return useMutation({
@@ -17,13 +23,22 @@ export const useUpdateUser = (
       await updateUser(userToUpdate, userToUpdate.id),
     onSuccess: async (response) => {
       dangerouslySetUser(response.data);
-      if (options.toastOnSuccess) {
+      if (toastOnSuccess) {
         toast.success('Profile updated', {
           description: 'Your changes were saved successfully.',
         });
       }
     },
     onError: (error: unknown) => {
+      if (onError) {
+        onError(error);
+        return;
+      }
+
+      if (!toastOnError) {
+        return;
+      }
+
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       toast.error('User profile failed to update.', {

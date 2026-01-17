@@ -1,4 +1,4 @@
-import { FileText, LucideIcon, ShieldCheck } from 'lucide-react';
+import { AlertCircle, FileText, LucideIcon, ShieldCheck } from 'lucide-react';
 
 import { UploadProofOfAddressStep } from '@/app/(with-sidebar)/verify/components/upload-proof-of-address-step';
 import {
@@ -7,7 +7,14 @@ import {
 } from '@/components/common/task-item/task-item';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { RejectionReason } from '@/types/bridge';
 
 import { VerifyCard } from './verify-card';
 
@@ -25,6 +32,22 @@ export const checkStepsComplete = (completedSteps: TaskStatuses): boolean => {
   return Object.values(completedSteps).every(Boolean);
 };
 
+/** Helper function to get the most recent rejection reason */
+function getLatestRejectionReason(
+  rejectionReasons?: RejectionReason[]
+): string | null {
+  if (!rejectionReasons || rejectionReasons.length === 0) return null;
+
+  // Sort by created_at (most recent first)
+  const sorted = [...rejectionReasons].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  // Return the reason from the most recent rejection
+  return sorted[0].reason;
+}
+
 /** A verification card rendering a checklist of KYC steps to complete */
 export const KYCChecklist = ({
   onTaskClick,
@@ -32,12 +55,16 @@ export const KYCChecklist = ({
   className,
   loading,
   indeterminate,
+  isRejected,
+  rejectionReasons,
 }: {
   onTaskClick?: (task: TaskType) => void;
   completedTasks?: TaskStatuses;
   className?: string;
   loading?: boolean;
   indeterminate?: boolean;
+  isRejected?: boolean;
+  rejectionReasons?: RejectionReason[];
 }) => {
   const numTasksComplete = Object.values(completedTasks ?? {}).filter(
     Boolean
@@ -70,12 +97,22 @@ export const KYCChecklist = ({
           <VerifyStepItem
             key={index}
             {...step}
-            completed={completedTasks?.[step.type] ?? false}
+            completed={
+              step.type === 'details' && isRejected
+                ? false // Don't mark as completed when rejected
+                : completedTasks?.[step.type] ?? false
+            }
             onClick={() => onTaskClick?.(step.type)}
             loading={loading}
             disabled={
               completedTasks?.[step.type] || // disable if already completed
               (step.type === 'details' && !completedTasks?.['terms']) // disable details if terms not completed
+            }
+            isRejected={isRejected && step.type === 'details'}
+            rejectionReason={
+              isRejected && step.type === 'details'
+                ? getLatestRejectionReason(rejectionReasons)
+                : null
             }
           />
         ))}
@@ -93,11 +130,47 @@ const StepIconMap: Record<TaskType, LucideIcon> = {
 
 type VerifyTaskItemProps = Omit<TaskItemProps, 'Icon'> & {
   type: TaskType;
+  isRejected?: boolean;
+  rejectionReason?: string | null;
 };
 
 const VerifyStepItem = (props: VerifyTaskItemProps) => {
-  const icon = StepIconMap[props.type];
-  return <TaskItem {...props} Icon={icon} />;
+  const { isRejected, rejectionReason, type, ...taskItemProps } = props;
+  
+  // Use AlertCircle icon for 'details' step when rejected, otherwise use normal icon
+  const icon = isRejected && type === 'details' ? AlertCircle : StepIconMap[type];
+  
+  const taskItem = (
+    <div
+      className={cn(
+        isRejected &&
+          type === 'details' &&
+          '[&_svg]:text-red-500 [&_svg]:dark:text-red-400'
+      )}
+    >
+      <TaskItem
+        {...taskItemProps}
+        Icon={icon}
+        completed={isRejected ? false : taskItemProps.completed}
+      />
+    </div>
+  );
+
+  // Wrap in tooltip if rejected
+  if (isRejected) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>{taskItem}</TooltipTrigger>
+          <TooltipContent>
+            <p>Identity verification failed. Please try again</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  return taskItem;
 };
 
 /** The list of steps to complete for KYC verification */

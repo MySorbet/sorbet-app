@@ -17,24 +17,31 @@ export const useTopUp = () => {
   const { fundWallet } = useFundWallet();
 
   const topUp = async () => {
+    if (!smartWalletAddress) {
+      toast.error('Wallet not ready', {
+        description: 'Please try again in a moment once your wallet is connected.',
+      });
+      return;
+    }
+
     const chain = env.NEXT_PUBLIC_TESTNET ? baseSepolia : base;
     try {
       const defaultFundAmount = '1.00';
-      if (smartWalletAddress) {
-        await fundWallet(smartWalletAddress, {
-          chain,
-          amount: defaultFundAmount,
-          asset: 'USDC',
-        });
-      }
+      await fundWallet(smartWalletAddress, {
+        chain,
+        amount: defaultFundAmount,
+        asset: 'USDC',
+      });
 
       // Note that awaiting the fundWallet call is not effective.
       // Funds can take slightly longer to show up so this refetch is really just in case they show up fast
       refetch();
     } catch (e) {
-      toast.error('Something went wrong', {
-        description: 'There was an issue funding your wallet. Please try again',
-      });
+      const description =
+        e instanceof Error && e.message
+          ? e.message
+          : 'There was an issue funding your wallet. Please try again';
+      toast.error('Something went wrong', { description });
     }
   };
 

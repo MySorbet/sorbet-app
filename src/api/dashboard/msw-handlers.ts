@@ -17,12 +17,11 @@ export const mockDashboardHandler = http.get(
       tasks: {
         verified: true,
         invoice: true,
-        profile: true,
-        widget: false,
         payment: false,
       },
       invoiceSales: 1000.01,
       profileViews: 25,
+      recipientsCount: 3,
     });
   }
 );
@@ -38,12 +37,11 @@ export const mockDashboardHandlerAllTasksComplete = http.get(
       tasks: {
         verified: true,
         invoice: true,
-        profile: true,
-        widget: true,
         payment: true,
       },
       invoiceSales: 1000.01,
       profileViews: 25,
+      recipientsCount: 3,
     });
   }
 );

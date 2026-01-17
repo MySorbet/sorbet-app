@@ -1,12 +1,18 @@
-import React from 'react';
+import { Authenticated } from '@/app/authenticated';
+import Page from '@/components/common/page';
+import { Header } from '@/components/header';
 
-import { Authenticated } from '../../../authenticated';
 import { TransactionsBrowser } from '../components/transactions-browser';
 
 export default function WalletAllPage() {
   return (
     <Authenticated>
-      <TransactionsBrowser />
+      <Page.Main>
+        <Header />
+        <Page.Content>
+          <TransactionsBrowser />
+        </Page.Content>
+      </Page.Main>
     </Authenticated>
   );
 }

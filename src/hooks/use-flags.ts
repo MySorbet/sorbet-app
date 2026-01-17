@@ -9,6 +9,8 @@ const PREVIEW_USERS = [
   'maher',
   'ramioc',
   'chrisa',
+  'saad',
+  'saadahmed',
   ...DEVELOPERS,
 ];
 const isDeveloper = (handle: string) => DEVELOPERS.includes(handle);
@@ -25,7 +27,7 @@ export const useFlags = () => {
   const handle = user?.handle ?? '';
   return {
     ...featureFlags(),
-    settings: isLocal() || isPreviewUser(handle),
+    settings: true,
     recipients: true,
     accounts: true,
   };

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { FeaturebaseLinkButton } from '@/components/app-sidebar/featurebase-link-button';
 import { LinkInBioMenuItem } from '@/components/app-sidebar/link-in-bio-menu-item';
 import { Badge } from '@/components/ui/badge';
-import { ChartColumnIncreasingIcon } from '@/components/ui/chart-column-increasing';
 import { FileTextIcon } from '@/components/ui/file-text';
 import { HandCoinsIcon } from '@/components/ui/hand-coins';
 import { LandmarkIcon } from '@/components/ui/landmark';
@@ -26,7 +25,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { UsersIcon } from '@/components/ui/users';
-import { WalletIcon } from '@/components/ui/wallet';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
 import { useFlags } from '@/hooks/use-flags';
@@ -58,13 +56,7 @@ export const AppSidebar = () => {
         {/* Dashboard */}
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarLinkButton
-              item={{
-                title: 'Dashboard',
-                url: '/dashboard',
-                icon: SquareGanttChartIcon,
-              }}
-            />
+            <DashboardMenuItem />
           </SidebarGroupContent>
         </SidebarGroup>
 
@@ -82,7 +74,6 @@ export const AppSidebar = () => {
                   }}
                 />
               </SidebarMenuItem>
-              <WalletMenuItem />
               <SidebarMenuItem>
                 <SidebarLinkButton
                   item={{
@@ -125,7 +116,6 @@ export const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <LinkInBioMenuItem />
-              <AnalyticsMenuItem />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -171,50 +161,31 @@ export const AppSidebar = () => {
   );
 };
 
-/** Local dynamic wallet menu item which fetches and displays balance */
-const WalletMenuItem = () => {
+/** Local dashboard menu item which displays the wallet balance */
+const DashboardMenuItem = () => {
   const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
 
   const item = {
-    title: 'Wallet',
-    url: '/wallet',
-    icon: WalletIcon,
+    title: 'Dashboard',
+    url: '/dashboard',
+    icon: SquareGanttChartIcon,
   };
+
   return (
-    <SidebarMenuItem key={item.title}>
-      <SidebarLinkButton item={item} />
-
-      <SidebarMenuBadge>
-        {isLoading ? (
-          <Skeleton className='h-4 w-16' variant='darker' />
-        ) : (
-          usdcBalance && (
-            <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
-          )
-        )}
-      </SidebarMenuBadge>
-    </SidebarMenuItem>
-  );
-};
-
-/** Local analytics menu item which renders a badge and disables the item */
-const AnalyticsMenuItem = () => {
-  const item = {
-    title: 'Analytics',
-    url: '/wallet',
-    icon: ChartColumnIncreasingIcon,
-    disabled: true,
-  };
-  return (
-    <SidebarMenuItem key={item.title}>
-      <SidebarLinkButton item={item} />
-
-      <SidebarMenuBadge>
-        <Badge variant='outline' className='text-muted-foreground font-normal'>
-          coming soon 🚀
-        </Badge>
-      </SidebarMenuBadge>
-    </SidebarMenuItem>
+    <SidebarMenu>
+      <SidebarMenuItem key={item.title}>
+        <SidebarLinkButton item={item} />
+        <SidebarMenuBadge>
+          {isLoading ? (
+            <Skeleton className='h-4 w-16' variant='darker' />
+          ) : (
+            usdcBalance && (
+              <span className='animate-in fade-in-0 font-mono font-medium text-xs'>${usdcBalance} USDC</span>
+            )
+          )}
+        </SidebarMenuBadge>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 };
 

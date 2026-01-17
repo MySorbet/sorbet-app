@@ -20,6 +20,7 @@ import USDCBaseIcon from '~/svg/base-usdc.svg';
 
 import { ACHWireDetails, SEPADetails } from '../../hooks/use-ach-wire-details';
 import { useBaseQRCode } from '../../hooks/use-base-qr-code';
+import { AcceptedPaymentMethod } from '../../schema';
 import { formatDate, PAYMENT_TIMING_DESCRIPTIONS } from '../../utils';
 
 /**
@@ -28,6 +29,7 @@ import { formatDate, PAYMENT_TIMING_DESCRIPTIONS } from '../../utils';
  *  Pass a wallet address to render the USDC payment method
  *  Pass a bank account to render the USD payment method
  *  Pass a eur bank account to render the SEPA payment method
+ *  Pass paymentMethods to control which payment methods are visible based on invoice settings
  */
 export const ClientPaymentCard = ({
   address,
@@ -35,25 +37,34 @@ export const ClientPaymentCard = ({
   eurAccount,
   dueDate,
   isLoading,
+  paymentMethods,
 }: {
   address?: string;
   account?: ACHWireDetails;
   eurAccount?: SEPADetails;
   dueDate?: Date;
   isLoading?: boolean;
+  paymentMethods?: AcceptedPaymentMethod[];
 }) => {
   const [selectedTab, setSelectedTab] = useState<TabType>('usdc');
   const handleTabChange = (value: string) => {
     setSelectedTab(value as TabType);
   };
 
+  // Determine which payment methods are enabled based on invoice settings
+  const hasUsdc = paymentMethods?.includes('usdc') ?? true;
+  const hasUsd = paymentMethods?.includes('usd') ?? false;
+  const hasEur = paymentMethods?.includes('eur') ?? false;
+  const hasFiat = hasUsd || hasEur;
+
   const title = dueDate
     ? `Payment due by ${formatDate(dueDate)}`
     : 'Payment due';
-  const description = buildDescription(selectedTab, !!account, !!eurAccount);
+  const description = buildDescription(selectedTab, hasUsd, hasEur);
 
-  const hideUSDCTab = Boolean(!isLoading && !address && account);
-  const hideFiatTab = Boolean(!isLoading && address && !account);
+  // Hide tabs based on payment methods selected for this invoice
+  const hideUSDCTab = !isLoading && !hasUsdc;
+  const hideFiatTab = !isLoading && !hasFiat;
 
   // If one of the payment methods is hidden,
   // set the selected tab to the other payment method
@@ -119,14 +130,18 @@ export const ClientPaymentCard = ({
             value='usdc'
             className='animate-in fade-in-0 slide-in-from-top-1'
           >
-            {!isLoading && address && <PaymentMethodUSDC address={address} />}
+            {!isLoading && hasUsdc && address && (
+              <PaymentMethodUSDC address={address} />
+            )}
           </TabsContent>
           <TabsContent
             value='fiat'
             className='animate-in fade-in-0 slide-in-from-top-1'
           >
-            {!isLoading && account && <PaymentMethodUSD account={account} />}
-            {!isLoading && eurAccount && (
+            {!isLoading && hasUsd && account && (
+              <PaymentMethodUSD account={account} />
+            )}
+            {!isLoading && hasEur && eurAccount && (
               <PaymentMethodEUR account={eurAccount} />
             )}
           </TabsContent>

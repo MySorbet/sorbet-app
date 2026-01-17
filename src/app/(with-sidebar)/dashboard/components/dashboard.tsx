@@ -1,24 +1,31 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
+import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
-import { useHasShared } from '@/hooks/profile/use-has-shared';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useAuth } from '@/hooks/use-auth';
-import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
+import { Duration } from '../../wallet/components/balance-card/select-duration';
+import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
+import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
+import { DepositDialog } from './deposit-dialog';
 import { useDashboardData } from '../hooks/use-dashboard-data';
+import { AnnouncementBanner } from './announcement-banner';
+import { BalanceSectionCard } from './balance-section-card';
 import {
   type TaskType,
   ChecklistCard,
-  checkTasksComplete,
   TaskStatuses,
 } from './checklist-card';
-import { type StatsCardType, StatsCard } from './stats-card';
-import { TransactionCard } from './transaction-card';
+import { RestrictedCountryBanner } from './restricted-country-banner';
+import { SetupCard } from './setup-card';
+import { SmallStatCard } from './small-stat-card';
 import { WelcomeCard } from './welcome-card';
 
 /**
@@ -28,55 +35,57 @@ import { WelcomeCard } from './welcome-card';
  */
 export const Dashboard = () => {
   const router = useRouter();
-  const { data, isLoading: isDashboardLoading } = useDashboardData();
   const { user } = useAuth();
-  const [hasShared] = useHasShared();
-  const [isTasksClosed, setIsTasksClosed] = useScopedLocalStorage(
-    'is-tasks-closed',
-    false
-  );
-
-  // Completed tasks are stored in the DB, save for sharing which is stored in local storage
-  const completedTasks: TaskStatuses | undefined = useMemo(
-    () => (data ? { ...data.tasks, share: hasShared } : undefined),
-    [data, hasShared]
-  );
-
+  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
+  const { smartWalletAddress } = useSmartWalletAddress();
+  const { data: bridgeCustomer, isLoading: isBridgeLoading } = useBridgeCustomer();
+
+  const [duration, setDuration] = useState<Duration>('all');
+  const { data: transactions, isLoading: isTransactionsLoading } = useTransactionOverview(
+    duration === 'all' ? undefined : parseInt(duration)
+  );
+
+  const totalMoneyIn = Number(transactions?.total_money_in ?? 0);
+  const totalMoneyOut = Number(transactions?.total_money_out ?? 0);
+
+  const cumulativeBalanceHistory = calculateBalanceHistory(
+    Number(usdcBalance ?? 0),
+    transactions?.money_in ?? [],
+    transactions?.money_out ?? []
+  );
+
+  // Completed tasks are stored in the DB
+  const completedTasks: TaskStatuses | undefined = dashboardData?.tasks;
+
+  const kycStatus = bridgeCustomer?.customer?.status;
+  const isKycVerified = kycStatus === 'active';
+  const isKycRejected = kycStatus === 'rejected';
+  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  const hasCreatedInvoice = completedTasks?.invoice ?? false;
+
+  const isRestricted = isRestrictedCountry(user?.country);
 
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
 
-  // TODO: Consider that <Link> components could be used here instead of router.push
-  const handleCardClicked = (type: StatsCardType | TaskType) => {
-    switch (type) {
-      // Stats cards
-      case 'wallet':
-        router.push('/wallet');
-        break;
-      case 'sales':
-        router.push('/invoices');
-        break;
-      case 'views':
-        router.push(`/${user?.handle}`);
-        break;
+  // Action handlers
+  const handleDeposit = () => setIsDepositOpen(true);
+  const handleCreateInvoice = () => {
+    unlessMobile(() => router.push('/invoices/create'));
+  };
+  const handleSendFunds = () => router.push('/recipients?send-to=true');
+  const handleAddRecipient = () => router.push('/recipients?add-recipient=true');
 
-      // Tasks
+  const handleTaskClick = (type: TaskType) => {
+    switch (type) {
       case 'verified':
         router.push('/verify');
         break;
       case 'invoice':
-        unlessMobile(() => router.push('/invoices/create'));
-        break;
-      case 'profile':
-        setIsProfileEditOpen(true);
-        break;
-      case 'widget':
-        router.push(`/${user?.handle}`);
-        break;
-      case 'share':
-        router.push(`/${user?.handle}?shareDialogOpen=true`);
+        handleCreateInvoice();
         break;
       case 'payment':
         router.push('/wallet');
@@ -84,25 +93,16 @@ export const Dashboard = () => {
     }
   };
 
-  const handleCreateInvoice = () => {
-    unlessMobile(() => router.push('/invoices/create'));
-  };
-
-  const handleClickMyProfile = () => {
-    router.push(`/${user?.handle}`);
-  };
-
-  const isTasksComplete = completedTasks && checkTasksComplete(completedTasks);
-
-  // Effect that resets the users closing of the tasks card if a task becomes incomplete
-  useEffect(() => {
-    if (completedTasks && !isTasksComplete) {
-      setIsTasksClosed(false);
-    }
-  }, [completedTasks, isTasksComplete, setIsTasksClosed]);
-
   return (
     <>
+      {/* Deposit dialog */}
+      <DepositDialog
+        open={isDepositOpen}
+        onOpenChange={setIsDepositOpen}
+        walletAddress={smartWalletAddress ?? undefined}
+        bridgeCustomer={bridgeCustomer}
+      />
+
       {/* Conditionally rendered profile edit modal */}
       {user && (
         <EditProfileSheet
@@ -112,51 +112,87 @@ export const Dashboard = () => {
         />
       )}
 
-      {/* Fluid dashboard layout */}
-      <div className='@container @lg:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-1 gap-4'>
+      {/* Dashboard layout */}
+      <div className='@container size-full w-full max-w-7xl space-y-4 px-[1px] sm:space-y-6 sm:px-0'>
+        {/* Welcome Header */}
         <WelcomeCard
           name={user?.firstName}
-          className='@lg:col-span-2'
-          onClickMyProfile={handleClickMyProfile}
-          onCreateInvoice={handleCreateInvoice}
+          onDeposit={handleDeposit}
+          onSendFunds={handleSendFunds}
         />
 
-        <div className='flex flex-col gap-4'>
-          {!isTasksClosed && (
-            <ChecklistCard
-              className='min-w-64'
-              onTaskClick={handleCardClicked}
-              completedTasks={completedTasks}
-              loading={isDashboardLoading}
-              onClose={() => setIsTasksClosed(true)}
-            />
-          )}
-          {isTasksComplete && <TransactionCard />}
+        {/* Conditional Banners based on user country and verification status */}
+        {isRestricted ? (
+          <RestrictedCountryBanner />
+        ) : (
+          <>
+            {/* Announcement Banner: Only show if KYC is not started or rejected */}
+            {(isKycNotStarted || isKycRejected) && (
+              <AnnouncementBanner onComplete={() => router.push('/verify')} />
+            )}
+
+            {/* Setup Card: Show if not fully verified or if verified but no invoice created yet */}
+            {!(isKycVerified && hasCreatedInvoice) && (
+              <SetupCard
+                completedTasks={completedTasks}
+                onVerifyClick={() => router.push('/verify')}
+                kycStatus={kycStatus}
+                loading={isBridgeLoading || isDashboardLoading}
+              />
+            )}
+          </>
+        )}
+
+        {/* Three Small Cards Row */}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'>
+          <SmallStatCard
+            title='Sorbet wallet'
+            value={Number(usdcBalance ?? 0)}
+            description='Total'
+            buttonLabel='Deposit'
+            isLoading={isBalanceLoading}
+            onClick={handleDeposit}
+            formatValue={true}
+            infoButtonUrl='https://docs.mysorbet.xyz/sorbet/how-it-works#id-1.-your-sorbet-wallet'
+            walletAddress={smartWalletAddress ?? undefined}
+          />
+          <SmallStatCard
+            title='Invoice sales'
+            value={dashboardData?.invoiceSales}
+            description='Total income'
+            buttonLabel='+ Create'
+            isLoading={isDashboardLoading}
+            onClick={handleCreateInvoice}
+            formatValue={true}
+          />
+          <SmallStatCard
+            title='Recipients'
+            value={dashboardData?.recipientsCount}
+            description='Total'
+            buttonLabel='+ Add'
+            isLoading={isDashboardLoading}
+            onClick={handleAddRecipient}
+            formatValue={false}
+          />
         </div>
 
-        <div className='flex h-full min-w-[240px] flex-col justify-start gap-4'>
-          <StatsCard
-            title='Wallet balance'
-            type='wallet'
-            value={isBalanceLoading ? undefined : Number(usdcBalance)}
-            description='Total'
-            onClick={() => handleCardClicked('wallet')}
-          />
-          <StatsCard
-            title='Invoice Sales'
-            type='sales'
-            value={data?.invoiceSales}
-            description='Total income'
-            onClick={() => handleCardClicked('sales')}
-          />
-          <StatsCard
-            title='Profile Views'
-            type='views'
-            value={data?.profileViews}
-            description='Unique visitors'
-            onClick={() => handleCardClicked('views')}
-          />
-        </div>
+        {/* Balance Section with Chart and Money In/Out */}
+        <BalanceSectionCard
+          history={cumulativeBalanceHistory}
+          moneyIn={totalMoneyIn}
+          moneyOut={totalMoneyOut}
+          balance={Number(usdcBalance ?? 0)}
+          duration={duration}
+          onDurationChange={setDuration}
+          isLoading={isBalanceLoading || isTransactionsLoading}
+        />
+
+        {/* Onboarding Checklist */}
+        <ChecklistCard
+          completedTasks={completedTasks}
+          loading={isDashboardLoading}
+          onTaskClick={handleTaskClick}
+        />
       </div>
     </>
   );

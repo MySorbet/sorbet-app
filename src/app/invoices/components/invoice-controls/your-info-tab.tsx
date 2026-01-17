@@ -1,4 +1,5 @@
 import { CircleAlert } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import {
   FormControl,
@@ -14,6 +15,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useAuth } from '@/hooks';
+import { getInvoicingDetails, type InvoicingDetails } from '@/api/invoicing';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 
@@ -23,6 +26,74 @@ import { useInvoiceForm } from '../../hooks/use-invoice-form';
  */
 export const YourInfoTab = () => {
   const form = useInvoiceForm();
+  const { user } = useAuth();
+  const [invoicingDetails, setInvoicingDetails] = useState<InvoicingDetails | null>(null);
+  const [useBusiness, setUseBusiness] = useState(false);
+  const [useTaxId, setUseTaxId] = useState(false);
+  const [useAddress, setUseAddress] = useState(false);
+
+  // Fetch invoicing details
+  useEffect(() => {
+    if (user?.id) {
+      getInvoicingDetails(user.id)
+        .then(setInvoicingDetails)
+        .catch(() => {
+          // Silently fail if invoicing details don't exist
+        });
+    }
+  }, [user?.id]);
+
+  // Handle business toggle change
+  const handleBusinessToggle = (checked: boolean) => {
+    setUseBusiness(checked);
+    if (checked && invoicingDetails?.businessName) {
+      form.setValue('fromName', invoicingDetails.businessName);
+    }
+  };
+
+  // Handle tax ID toggle change
+  const handleTaxIdToggle = (checked: boolean) => {
+    setUseTaxId(checked);
+    if (checked && invoicingDetails?.taxId) {
+      form.setValue('taxId', invoicingDetails.taxId);
+    } else {
+      form.setValue('taxId', undefined);
+    }
+  };
+
+  // Handle address toggle change
+  const handleAddressToggle = (checked: boolean) => {
+    setUseAddress(checked);
+    if (checked && invoicingDetails) {
+      const hasAddress =
+        invoicingDetails.street &&
+        invoicingDetails.city &&
+        invoicingDetails.state &&
+        invoicingDetails.country &&
+        invoicingDetails.postalCode;
+
+      if (hasAddress) {
+        form.setValue('address', {
+          street: invoicingDetails.street!,
+          city: invoicingDetails.city!,
+          state: invoicingDetails.state!,
+          country: invoicingDetails.country!,
+          zip: invoicingDetails.postalCode!,
+        });
+      }
+    } else {
+      form.setValue('address', undefined);
+    }
+  };
+
+  const hasBusinessName = !!invoicingDetails?.businessName;
+  const hasTaxId = !!invoicingDetails?.taxId;
+  const hasAddress =
+    !!invoicingDetails?.street &&
+    !!invoicingDetails?.city &&
+    !!invoicingDetails?.state &&
+    !!invoicingDetails?.country &&
+    !!invoicingDetails?.postalCode;
 
   return (
     <div className='flex flex-col gap-6'>
@@ -54,7 +125,12 @@ export const YourInfoTab = () => {
       />
       <div className='flex items-center justify-between gap-2'>
         <FormLabel htmlFor='business-switch'>Business</FormLabel>
-        <Switch id='business-switch' checked={false} disabled />
+        <Switch
+          id='business-switch'
+          checked={useBusiness}
+          disabled={!hasBusinessName}
+          onCheckedChange={handleBusinessToggle}
+        />
       </div>
       <div className='flex items-center justify-between gap-2'>
         <FormLabel htmlFor='tax-id-switch' className='flex items-center gap-1'>
@@ -64,16 +140,25 @@ export const YourInfoTab = () => {
               <CircleAlert className='text-muted-foreground size-4 shrink-0 cursor-pointer' />
             </TooltipTrigger>
             <TooltipContent>
-              {/* // TODO: Replace with a more detailed explanation of the tax ID field */}
-              Tax ID is not yet available. Check back soon.
+              Use your saved Tax ID from account settings
             </TooltipContent>
           </Tooltip>
         </FormLabel>
-        <Switch id='tax-id-switch' checked={false} disabled />
+        <Switch
+          id='tax-id-switch'
+          checked={useTaxId}
+          disabled={!hasTaxId}
+          onCheckedChange={handleTaxIdToggle}
+        />
       </div>
       <div className='flex items-center justify-between gap-2'>
         <FormLabel htmlFor='address-switch'>Address</FormLabel>
-        <Switch id='address-switch' checked={false} disabled />
+        <Switch
+          id='address-switch'
+          checked={useAddress}
+          disabled={!hasAddress}
+          onCheckedChange={handleAddressToggle}
+        />
       </div>
     </div>
   );

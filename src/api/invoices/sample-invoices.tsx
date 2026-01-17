@@ -23,6 +23,14 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Quantum Dynamics Ltd.',
     toEmail: 'finance@quantumdynamics.com',
+    toBusinessName: 'Quantum Dynamics Corporation',
+    toAddress: {
+      street: '123 Science Park Drive',
+      city: 'San Francisco',
+      state: 'CA',
+      country: 'USA',
+      zip: '94107',
+    },
     items: [
       {
         name: 'Data Analysis Report',
@@ -50,6 +58,14 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Mega Industries',
     toEmail: 'invoices@megaindustries.com',
+    toBusinessName: 'Mega Industries Inc.',
+    toAddress: {
+      street: '456 Innovation Boulevard',
+      city: 'New York',
+      state: 'NY',
+      country: 'USA',
+      zip: '10001',
+    },
     projectName: 'AI Research Project',
     items: [
       {

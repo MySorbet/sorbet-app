@@ -27,18 +27,31 @@ export const calculateTotalAmount = (items: InvoiceItem[]) => {
 };
 
 /**
- * Calculates the subtotal, tax amount, and total amount for an invoice.
+ * Calculates the subtotal, tax amount, platform fee, and total amount for an invoice.
  *
- * @param invoice - The invoice to calculate the subtotal, tax amount, and total amount for. Only the `items` and `tax` properties are required.
- * @returns An object containing the subtotal, tax amount, and total amount.
+ * @param invoice - The invoice to calculate the subtotal, tax amount, and total amount for. Only the `items`, `tax`, and `paymentMethods` properties are required.
+ * @param platformFeePercent - Optional platform fee percentage (0-100). If not provided, defaults to 1% for USD/EUR payments.
+ * @returns An object containing the subtotal, tax amount, platform fee, and total amount.
  */
 export const calculateSubtotalTaxAndTotal = (
-  invoice: Pick<InvoiceForm, 'items' | 'tax'>
+  invoice: Pick<InvoiceForm, 'items' | 'tax' | 'paymentMethods'>,
+  platformFeePercent?: number
 ) => {
   const subtotal = calculateTotalAmount(invoice.items ?? []);
   const taxAmount = invoice.tax ? subtotal * (invoice.tax / 100) : 0;
-  const total = subtotal + taxAmount;
-  return { subtotal, taxAmount, total };
+  const subtotalWithTax = subtotal + taxAmount;
+  
+  // Calculate platform fee if USD or EUR payment methods are selected
+  const includesBankFee = invoice.paymentMethods?.some((method) =>
+    ['usd', 'eur'].includes(method)
+  );
+  
+  // Use provided platform fee percent, or default to 1% if not provided
+  const feePercent = platformFeePercent ?? (includesBankFee ? 1 : 0);
+  const platformFee = includesBankFee ? subtotalWithTax * (feePercent / 100) : 0;
+  
+  const total = subtotalWithTax + platformFee;
+  return { subtotal, taxAmount, developerFee: platformFee, total, developerFeePercent: feePercent };
 };
 
 /**

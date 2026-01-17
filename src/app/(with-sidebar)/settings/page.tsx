@@ -13,7 +13,7 @@ const SettingsPage = () => {
       <Page.Main>
         <Header />
         <CommonHeader title='Settings'></CommonHeader>
-        <Page.Content>
+        <Page.Content className='justify-start px-6 py-6 pr-0'>
           <SettingsDashboard />
         </Page.Content>
       </Page.Main>

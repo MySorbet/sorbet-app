@@ -1,7 +1,7 @@
 import '@/styles/globals.css';
 
 import { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Jura } from 'next/font/google';
 import { Suspense } from 'react';
 
 import PostHogPageView from '@/app/posthog-page-view';
@@ -33,6 +33,12 @@ const inter = Inter({
   display: 'swap',
 });
 
+const jura = Jura({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jura',
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -40,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     // classnames prevent horizontal layout shift when radix models open
-    <html className={cn('h-full w-screen overflow-x-hidden', inter.className)}>
+    <html className={cn('h-full w-screen overflow-x-hidden', inter.className, jura.variable)}>
       <body className='bg-background size-full'>
         <Suspense>
           <PostHogPageView />

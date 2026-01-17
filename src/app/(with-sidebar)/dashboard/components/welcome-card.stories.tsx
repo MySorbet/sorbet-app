@@ -12,8 +12,9 @@ const meta = {
     },
   },
   args: {
-    onCreateInvoice: fn(),
-    onClickMyProfile: fn(),
+    name: 'Rami',
+    onDeposit: fn(),
+    onSendFunds: fn(),
   },
 } satisfies Meta<typeof WelcomeCard>;
 
@@ -21,6 +22,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  args: {
+    name: 'Rami',
+  },
+};
+
+export const NoName: Story = {
   args: {},
 };
 

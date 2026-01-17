@@ -53,3 +53,20 @@ export const getMe = async () => {
   );
   return res.data;
 };
+
+/** Check if a user has access to the platform (used to restrict signups to existing users) */
+export const checkAccess = async (email: string) => {
+  const res = await axios.post<{ allowed: boolean; message?: string }>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/auth/check-access`,
+    { email }
+  );
+  return res.data;
+};
+
+/** Fetch access config (whether signup is restricted to existing users) */
+export const getAccessConfig = async () => {
+  const res = await axios.get<{
+    restrictAccessToExistingUsers: boolean;
+  }>(`${env.NEXT_PUBLIC_SORBET_API_URL}/auth/access-config`);
+  return res.data;
+};

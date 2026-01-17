@@ -52,6 +52,9 @@ interface EditProfileSheetProps {
   user: UserPublic;
 }
 
+const HANDLE_CONFLICT_MESSAGE =
+  'Your handle must be unique. This handle is already in use.';
+
 // TODO: Match design
 // TODO: Worth abstracting scrollable sheet?
 // TODO: Component for profile image (and tab accessible)
@@ -129,7 +132,33 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
   } = useDeleteProfileImage();
 
   const { isPending: updateProfilePending, mutateAsync: updateProfileAsync } =
-    useUpdateUser();
+    useUpdateUser({
+      toastOnError: false,
+      onError: (error: unknown) => {
+        const status = (error as { status?: number })?.status;
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'Failed to update profile.';
+        const normalizedMessage = errorMessage.toLowerCase();
+
+        if (
+          status === 409 ||
+          normalizedMessage.includes('handle already in use') ||
+          normalizedMessage.includes('handle must be unique')
+        ) {
+          form.setError('handle', {
+            type: 'server',
+            message: HANDLE_CONFLICT_MESSAGE,
+          });
+          return;
+        }
+
+        toast.error('Failed to update profile', {
+          description: errorMessage,
+        });
+      },
+    });
 
   const onSubmit = async (formData: FormData) => {
     // Cant update a user that doesn't exist
@@ -175,7 +204,12 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
       ...newUserData,
     };
 
-    await updateProfileAsync(userToUpdate);
+    try {
+      await updateProfileAsync(userToUpdate);
+    } catch (error) {
+      console.error('Failed to update profile', error);
+      return;
+    }
 
     // * Here, we replace the url with the user's updated username if it is changed
     // Here we invalidate the query key 'freelancer' which is what the 'user' prop is.

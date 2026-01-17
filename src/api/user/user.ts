@@ -52,10 +52,13 @@ export const deleteProfileImageAsync = async (userId: string) => {
       await withAuthHeader()
     );
     return res.data;
-  } catch (error: any) {
-    throw new Error(
-      `Failed to delete profile image: ${error.response.data.message}`
-    );
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const message =
+        error.response?.data?.message ?? error.message ?? 'Unknown error';
+      throw new Error(`Failed to delete profile image: ${message}`);
+    }
+    throw new Error(`Failed to delete profile image: ${String(error)}`);
   }
 };
 
@@ -71,8 +74,20 @@ export const updateUser = async (
       await withAuthHeader()
     );
     return response;
-  } catch (error: any) {
-    throw new Error(`Failed to update user: ${error.response.data.message}`);
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const serverMessage =
+        error.response?.data?.message ?? 'Failed to update user';
+      const apiError = new Error(serverMessage) as Error & {
+        status?: number;
+        data?: unknown;
+      };
+      apiError.status = error.response?.status;
+      apiError.data = error.response?.data;
+      throw apiError;
+    }
+
+    throw new Error('Failed to update user');
   }
 };
 

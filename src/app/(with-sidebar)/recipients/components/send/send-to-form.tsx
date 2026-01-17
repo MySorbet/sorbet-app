@@ -33,6 +33,7 @@ import { Percentages } from './percentages';
 import { PreviewSend } from './preview-send';
 import { Processing } from './processing';
 import { Success } from './success';
+import { ExchangeRate } from './exchange-rate';
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -173,31 +174,40 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
             <FormField
               control={form.control}
               name='amount'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={String(field.value)}
-                      onChange={(e) =>
-                        form.setValue('amount', Number(e.target.value), {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
-                      }
-                      type='number'
-                      className='no-spin-buttons text-md'
+              render={({ field }) => {
+                const showConversion = selectedRecipient?.type === 'eur';
+
+                return (
+                  <FormItem>
+                    <FormLabel>Amount</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={String(field.value)}
+                        onChange={(e) =>
+                          form.setValue('amount', Number(e.target.value), {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
+                        }
+                        type='number'
+                        className='no-spin-buttons text-md'
+                      />
+                    </FormControl>
+                    {maxAmount !== undefined && !errors.amount && (
+                      <p className='text-sm text-[#71717A]'>
+                        {formatCurrency(maxAmount ?? 0)} USDC Available
+                      </p>
+                    )}
+                    <ExchangeRate
+                      amount={field.value || 0}
+                      variant='form'
+                      showConversion={showConversion}
                     />
-                  </FormControl>
-                  {maxAmount && !errors.amount && (
-                    <p className='text-muted-foreground text-sm'>
-                      {formatCurrency(maxAmount)} available
-                    </p>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
             {/* Percentage buttons */}
             {maxAmount !== undefined && (
@@ -230,7 +240,7 @@ export const SendToFormSubmitButton = () => {
   if (!isPreview) {
     return (
       <Button
-        className='w-full transition-opacity duration-200'
+        className='w-full transition-opacity duration-200 sm:flex-1'
         variant='sorbet'
         type='button'
         disabled={disabled}
@@ -246,7 +256,7 @@ export const SendToFormSubmitButton = () => {
 
   return (
     <Button
-      className='w-full transition-opacity duration-200'
+      className='w-full transition-opacity duration-200 sm:flex-1'
       variant='sorbet'
       form={sendToFormId}
       type='submit'
@@ -279,7 +289,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
   if (transferResult?.status === 'success') {
     return (
       <Button
-        className='w-full transition-opacity duration-200'
+        className='w-full transition-opacity duration-200 sm:w-auto sm:shrink-0'
         variant='secondary'
         type='button'
         asChild
@@ -292,7 +302,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
   if (transferResult?.status === 'fail') {
     return (
       <Button
-        className='w-full transition-opacity duration-200'
+        className='w-full transition-opacity duration-200 sm:w-auto sm:shrink-0'
         variant='secondary'
         type='button'
         onClick={() => {
@@ -307,12 +317,12 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <Button
-      className='w-full transition-opacity duration-200'
+      className='w-full transition-opacity duration-200 sm:w-auto sm:shrink-0'
       variant='secondary'
       type='button'
       onClick={handleClick}
     >
-      Back
+      Cancel
     </Button>
   );
 };

@@ -1,31 +1,13 @@
-'use client';
-import { useState } from 'react';
+import { redirect } from 'next/navigation';
 
-import Page from '@/components/common/page';
-import { Header } from '@/components/header';
+import WalletPageClient from './page.client';
 
-import { Authenticated } from '../../authenticated';
-import { WalletDashboard } from './components/wallet-dashboard';
-import { WalletHeader } from './components/wallet-header';
-import { WalletSendDialog } from './components/wallet-send-dialog';
-import { useSendUSDC } from './hooks/use-send-usdc';
-import { useTopUp } from './hooks/use-top-up';
+const WALLET_ENABLED = false; // Flip to true to re-enable the Wallet page in the future
 
 export default function Wallet() {
-  const { topUp } = useTopUp();
-  const { sendUSDC } = useSendUSDC();
-  const [open, setOpen] = useState(false);
+  if (!WALLET_ENABLED) {
+    redirect('/dashboard');
+  }
 
-  return (
-    <Authenticated>
-      <Page.Main>
-        <Header />
-        <WalletHeader onDeposit={topUp} onSend={() => setOpen(true)} />
-        <Page.Content>
-          <WalletDashboard />
-        </Page.Content>
-      </Page.Main>
-      <WalletSendDialog open={open} setOpen={setOpen} sendUSDC={sendUSDC} />
-    </Authenticated>
-  );
+  return <WalletPageClient />;
 }
