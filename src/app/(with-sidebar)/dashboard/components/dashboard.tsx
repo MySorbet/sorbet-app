@@ -113,7 +113,7 @@ export const Dashboard = () => {
       )}
 
       {/* Dashboard layout */}
-      <div className='@container size-full w-full max-w-7xl space-y-4 px-4 sm:space-y-6 sm:px-0'>
+      <div className='@container size-full w-full max-w-7xl space-y-4 px-[1px] sm:space-y-6 sm:px-0'>
         {/* Welcome Header */}
         <WelcomeCard
           name={user?.firstName}

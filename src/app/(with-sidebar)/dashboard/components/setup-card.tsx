@@ -140,11 +140,11 @@ export const SetupCard = ({
                     <Skeleton className='h-6 w-48' />
                     <Skeleton className='h-4 w-10' />
                 </div>
-                <div className='flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between'>
+                <div className='flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between'>
                     {[1, 2, 3].map((i) => (
-                        <div key={i} className='flex flex-1 items-start gap-4 sm:flex-col sm:items-center'>
+                        <div key={i} className='flex flex-1 items-start gap-4 lg:flex-col lg:items-center'>
                             <Skeleton className='h-6 w-6 rounded-full' />
-                            <div className='flex flex-col gap-2 sm:items-center'>
+                            <div className='flex flex-col gap-2 lg:items-center'>
                                 <Skeleton className='h-4 w-32' />
                                 <Skeleton className='h-3 w-40' />
                             </div>
@@ -162,16 +162,28 @@ export const SetupCard = ({
         <DashboardCard className={cn('space-y-8 p-6', className)}>
             {/* Header */}
             <div className='flex items-baseline space-x-2'>
-                <h3 className='text-lg font-bold text-gray-900'>Let&apos;s Get You Set Up</h3>
+                <h3 className='text-xl font-semibold leading-none text-gray-900'>Let&apos;s Get You Set Up</h3>
                 <span className='text-sm font-medium text-gray-500'>
                     {Math.min(currentStep + 1, steps.length)}/{steps.length}
                 </span>
             </div>
 
             {/* Stepper Container */}
-            <div className='relative flex flex-col gap-8 sm:block sm:gap-0'>
-                {/* Progress Lines - Desktop Only */}
-                <div className='hidden sm:block'>
+            <div className='relative flex flex-col gap-8 lg:block lg:gap-0'>
+                {/* Progress Lines - Mobile/Tablet Only (Vertical) */}
+                <div className='absolute left-3 top-6 bottom-6 w-[2px] -translate-x-1/2 lg:hidden'>
+                    {/* Background Line (Gray) */}
+                    <div className='absolute inset-0 bg-gray-200' />
+
+                    {/* Active Progress Line (Purple) */}
+                    <div
+                        className='absolute left-0 top-0 w-full transition-all duration-300 bg-sorbet'
+                        style={{ height: `${Math.min(progressPercentage, 100)}%` }}
+                    />
+                </div>
+
+                {/* Progress Lines - Desktop Only (Horizontal) */}
+                <div className='hidden lg:block'>
                     <div className='absolute left-[16.66%] right-[16.66%] top-3 h-[2px] -translate-y-1/2'>
                         {/* Background Line (Gray) */}
                         <div className='absolute inset-0 bg-gray-200' />
@@ -185,7 +197,7 @@ export const SetupCard = ({
                 </div>
 
                 {/* Steps Container - Grid on desktop to space evenly */}
-                <div className='flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-0'>
+                <div className='flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-0'>
                     {steps.map((step, index) => {
                         const isCompleted = step.completed;
                         const isActive = step.active;
@@ -195,7 +207,7 @@ export const SetupCard = ({
                             <div
                                 key={step.id}
                                 className={cn(
-                                    'group flex items-start gap-4 sm:flex-1 sm:flex-col sm:items-center sm:gap-0 sm:text-center',
+                                    'group flex items-start gap-4 lg:flex-1 lg:flex-col lg:items-center lg:gap-0 lg:text-center',
                                     step.clickable ? 'cursor-pointer' : 'cursor-default'
                                 )}
                                 onClick={() => handleStepClick(step)}
@@ -232,16 +244,16 @@ export const SetupCard = ({
                                 </div>
 
                                 {/* Text Labels */}
-                                <div className='flex flex-col sm:mt-3 sm:items-center'>
+                                <div className='flex flex-col lg:mt-3 lg:items-center'>
                                     <div className='flex items-center gap-2'>
-                                        <span className='text-sm font-semibold text-gray-900 sm:whitespace-nowrap'>
+                                        <span className='text-sm font-semibold text-gray-900 lg:whitespace-nowrap'>
                                             {step.title}
                                         </span>
                                         {/* Badge - Desktop */}
                                         {step.badge && (
                                             <span
                                                 className={cn(
-                                                    'hidden rounded px-1.5 py-0.5 text-[10px] font-medium text-white sm:inline-block',
+                                                    'hidden rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:inline-block',
                                                     step.badgeColor || 'bg-[#5864FF]'
                                                 )}
                                             >
@@ -250,11 +262,11 @@ export const SetupCard = ({
                                         )}
                                     </div>
 
-                                    {/* Badge - Mobile */}
+                                    {/* Badge - Mobile/Tablet */}
                                     {step.badge && (
                                         <span
                                             className={cn(
-                                                'mt-1 inline-block w-fit rounded px-1.5 py-0.5 text-[10px] font-medium text-white sm:hidden',
+                                                'mt-1 inline-block w-fit rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:hidden',
                                                 step.badgeColor || 'bg-[#5864FF]'
                                             )}
                                         >
@@ -262,7 +274,7 @@ export const SetupCard = ({
                                         </span>
                                     )}
 
-                                    <span className='mt-0.5 text-xs text-gray-500 sm:mt-1 sm:whitespace-nowrap'>
+                                    <span className='mt-0.5 text-xs text-gray-500 lg:mt-1 lg:whitespace-nowrap'>
                                         {step.description}
                                     </span>
                                 </div>

@@ -47,8 +47,8 @@ export const SmallStatCard = ({
 
   return (
     <Card className='flex min-h-[138px] flex-col justify-between p-4 sm:p-6'>
-      <div className='flex min-h-[52px] items-start justify-between gap-2'>
-        <div className='flex flex-col'>
+      <div className='flex min-h-[52px] flex-wrap items-start justify-between gap-2'>
+        <div className='flex flex-col min-w-0'>
           <h3 className='truncate text-sm font-medium'>{title}</h3>
           {walletAddress && (
             <div className='flex items-center gap-2 mt-0.5'>
@@ -66,7 +66,7 @@ export const SmallStatCard = ({
             </div>
           )}
         </div>
-        <div className='flex items-center gap-2 shrink-0'>
+        <div className='flex items-center gap-2'>
           {infoButtonUrl && (
             <Button
               variant='outline'
