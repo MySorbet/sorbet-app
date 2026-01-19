@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, CircleCheck, Hourglass, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -29,6 +29,7 @@ export const AccountVerificationCard = ({
   isIndeterminate,
   rejectionReasons,
   isUnderReview,
+  isIncomplete,
   isAwaitingUBO,
   isRejected,
 }: {
@@ -42,6 +43,7 @@ export const AccountVerificationCard = ({
   isIndeterminate?: boolean;
   rejectionReasons?: string[];
   isUnderReview?: boolean;
+  isIncomplete?: boolean;
   isAwaitingUBO?: boolean;
   isRejected?: boolean;
 }) => {
@@ -119,21 +121,20 @@ export const AccountVerificationCard = ({
   return (
     <VerifyCard className={cn('@container w-full', className)}>
       <div className='flex flex-col gap-3'>
-        {isIndeterminate && <IndeterminateContent />}
+        {(isIndeterminate || isUnderReview) && <IndeterminateContent />}
         {isComplete && <CompleteContent />}
         {isRejected && <RejectedContent rejectionReasons={rejectionReasons} />}
-        {isUnderReview && (
-          <UnderReviewContent rejectionReasons={rejectionReasons} />
-        )}
+        {isIncomplete && <IncompleteContent />}
         {isAwaitingUBO && <AwaitingUBOContent />}
         {!isIndeterminate &&
           !isComplete &&
           !isRejected &&
           !isUnderReview &&
+          !isIncomplete &&
           !isAwaitingUBO && <DefaultContent />}
 
         {/* Step specific content */}
-        {step === 'begin' && (
+        {step === 'begin' && !isIndeterminate && !isUnderReview && (
           <Button
             variant='sorbet'
             onClick={handleGetVerified}
@@ -141,7 +142,7 @@ export const AccountVerificationCard = ({
             className='@xs:max-w-fit w-full'
           >
             {isClaimingAccount && <Spinner />}
-            Get verified
+            Click to start
           </Button>
         )}
 
@@ -170,7 +171,17 @@ export const AccountVerificationCard = ({
             onClick={() => onCallToActionClick?.('create-invoice')}
             className='@xs:max-w-fit w-full'
           >
-            Create an invoice
+            Create your first invoice
+          </Button>
+        )}
+
+        {isIncomplete && (
+          <Button
+            variant='sorbet'
+            onClick={() => onCallToActionClick?.('retry')}
+            className='@xs:max-w-fit w-full'
+          >
+            Finish verification
           </Button>
         )}
 
@@ -180,7 +191,7 @@ export const AccountVerificationCard = ({
             onClick={() => onCallToActionClick?.('retry')}
             className='@xs:max-w-fit w-full'
           >
-            Try again
+            Start again
           </Button>
         )}
       </div>
@@ -216,7 +227,13 @@ const IndeterminateContent = () => {
       title='Verification pending'
       description="KYC verification is currently pending. Please check back shortly, or
         we'll notify you via email!"
-      icon={() => <Spinner className='mr-1.5 size-6' />}
+      icon={() => (
+        <img
+          src='/svg/orange-loader-icon.svg'
+          alt='Pending'
+          className='mr-1.5 inline-block size-6 animate-spin'
+        />
+      )}
     />
   );
 };
@@ -240,9 +257,10 @@ const CompleteContent = () => {
         </span>
       }
       icon={() => (
-        <CircleCheck
-          className='mr-1.5 inline-block size-6 text-green-500'
-          strokeWidth={2}
+        <img
+          src='/svg/green-tick-icon.svg'
+          alt='Verified'
+          className='mr-1.5 inline-block size-6'
         />
       )}
     />
@@ -253,8 +271,8 @@ const CompleteContent = () => {
 const DefaultContent = () => {
   return (
     <CardContent
-      title='Account verification'
-      description='Verify your account to accept payments via ACH or Wire.'
+      title='Persona’s account verification'
+      description='Verify your account by adding your personal details to accept payments via ACH/Wire or Credit Card.'
     />
   );
 };
@@ -293,7 +311,28 @@ const UnderReviewContent = ({
         </span>
       }
       icon={() => (
-        <Hourglass className='mr-1.5 inline-block size-6 text-orange-500' />
+        <img
+          src='/svg/orange-loader-icon.svg'
+          alt='Under Review'
+          className='mr-1.5 inline-block size-6 animate-spin'
+        />
+      )}
+    />
+  );
+};
+
+/** Local component specializing the card content for the incomplete state */
+const IncompleteContent = () => {
+  return (
+    <CardContent
+      title='Verification Incomplete'
+      description='We just need a few more details to finish verifying your account.'
+      icon={() => (
+        <img
+          src='/svg/red-warning-icon.svg'
+          alt='Incomplete'
+          className='mr-1.5 inline-block size-6'
+        />
       )}
     />
   );
@@ -328,13 +367,17 @@ const RejectedContent = ({
       </ol>
     )
   ) : (
-    'There was a problem with your KYC verification'
+    'Verify your account by adding your authorised personal details to accept payments via ACH/Wire or Credit Card.'
   );
   return (
     <CardContent
       title='Verification failed'
       icon={() => (
-        <AlertTriangle className='mr-1.5 inline-block size-6 text-red-500' />
+        <img
+          src='/svg/red-cross-icon.svg'
+          alt='Failed'
+          className='mr-1.5 inline-block size-6'
+        />
       )}
       description={desc}
     />
