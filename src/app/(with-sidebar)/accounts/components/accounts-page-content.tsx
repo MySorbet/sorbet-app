@@ -1,10 +1,14 @@
 'use client';
 
 import { DollarSign, Euro } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { AutomaticVerificationTabs } from '@/app/(with-sidebar)/accounts/components/verification/automatic-verification-tabs';
+import { AnnouncementBanner } from '@/app/(with-sidebar)/dashboard/components/announcement-banner';
+import { RestrictedCountryBanner } from '@/app/(with-sidebar)/dashboard/components/restricted-country-banner';
 import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
+import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
 import {
   mapToEURWireDetails,
   useACHWireDetails,
@@ -25,6 +29,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useClaimVirtualAccount } from '../hooks/use-claim-virtual-account';
 import { AccountSelect } from './account-select';
 import { ExternalAccountDetails } from './external-account-details';
+import { RestrictedAccountsDisplay } from './restricted-accounts-display';
 
 /**
  * Compose account components into a page with state
@@ -35,6 +40,7 @@ import { ExternalAccountDetails } from './external-account-details';
  * - If no VA && not endorsed → Show verification tabs (user needs to complete KYC)
  */
 export const AccountsPageContent = () => {
+  const router = useRouter();
   const { user } = useAuth();
   const { isBaseApproved, isEurApproved, isPending } = useEndorsements();
   const { data: customer } = useBridgeCustomer();
@@ -42,6 +48,12 @@ export const AccountsPageContent = () => {
     enabled: !isPending && !!user?.id && isBaseApproved,
   });
   const [selectedAccount, setSelectedAccount] = useState<'usd' | 'eur'>('usd');
+
+  // KYC and country restriction checks (same as dashboard)
+  const kycStatus = customer?.customer?.status;
+  const isKycRejected = kycStatus === 'rejected';
+  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  const isRestricted = isRestrictedCountry(user?.country);
 
   // Open state of both the verification drawer or the account details drawer (only for mobile)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -57,8 +69,8 @@ export const AccountsPageContent = () => {
 
   const eurAccount = customer?.virtual_account_eur
     ? mapToEURWireDetails(
-        customer.virtual_account_eur.source_deposit_instructions
-      )
+      customer.virtual_account_eur.source_deposit_instructions
+    )
     : undefined;
 
   // Check if user needs retry (endorsed but VA missing - webhook may have failed)
@@ -67,22 +79,53 @@ export const AccountsPageContent = () => {
 
   const isMobile = useIsMobile();
 
-  return (
-    <div className='flex size-full max-w-7xl flex-col gap-6 lg:flex-row'>
-      <AccountSelect
-        className='w-full lg:max-w-sm'
-        selected={selectedAccount}
-        onSelect={handleSelectAccount}
-        enabledAccounts={enabledAccounts}
-      />
+  // For restricted country users, show all accounts with "Coming Soon" badges
+  if (isRestricted) {
+    return (
+      <div className='flex size-full max-w-7xl flex-col gap-6'>
+        <RestrictedCountryBanner className='mt-4' />
+        <RestrictedAccountsDisplay />
+      </div>
+    );
+  }
 
-      {selectedAccount === 'usd' ? (
-        account ? (
+  return (
+    <div className='flex size-full max-w-7xl flex-col gap-6'>
+      {/* Conditional Banners based on verification status */}
+      {(isKycNotStarted || isKycRejected) && (
+        <AnnouncementBanner className='mt-4' onComplete={() => router.push('/verify')} />
+      )}
+
+      <div className='flex size-full flex-col gap-6 lg:flex-row'>
+        <AccountSelect
+          className='w-full lg:max-w-sm'
+          selected={selectedAccount}
+          onSelect={handleSelectAccount}
+          enabledAccounts={enabledAccounts}
+        />
+
+        {selectedAccount === 'usd' ? (
+          account ? (
+            <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
+              <ExternalAccountDetails.USD account={account} />
+            </AccountDetailsCard>
+          ) : needsUsdRetry ? (
+            <RetryAccountButton type='usd' />
+          ) : isMobile ? (
+            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+              <DrawerContent className='h-[97%]'>
+                <AutomaticVerificationTabs className='pt-4' />
+              </DrawerContent>
+            </Drawer>
+          ) : (
+            <AutomaticVerificationTabs />
+          )
+        ) : eurAccount ? (
           <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-            <ExternalAccountDetails.USD account={account} />
+            <ExternalAccountDetails.EUR account={eurAccount} />
           </AccountDetailsCard>
-        ) : needsUsdRetry ? (
-          <RetryAccountButton type='usd' />
+        ) : needsEurRetry ? (
+          <RetryAccountButton type='eur' />
         ) : isMobile ? (
           <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerContent className='h-[97%]'>
@@ -91,22 +134,8 @@ export const AccountsPageContent = () => {
           </Drawer>
         ) : (
           <AutomaticVerificationTabs />
-        )
-      ) : eurAccount ? (
-        <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-          <ExternalAccountDetails.EUR account={eurAccount} />
-        </AccountDetailsCard>
-      ) : needsEurRetry ? (
-        <RetryAccountButton type='eur' />
-      ) : isMobile ? (
-        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-          <DrawerContent className='h-[97%]'>
-            <AutomaticVerificationTabs className='pt-4' />
-          </DrawerContent>
-        </Drawer>
-      ) : (
-        <AutomaticVerificationTabs />
-      )}
+        )}
+      </div>
     </div>
   );
 };
