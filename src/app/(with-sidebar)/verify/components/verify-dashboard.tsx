@@ -9,9 +9,11 @@ import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { CustomerStatus } from '@/types';
 
+import { SetupCard } from '../../dashboard/components/setup-card';
+import { useDashboardData } from '../../dashboard/hooks/use-dashboard-data';
 import { AccountVerificationCard } from './account-verification-card';
 import { FAQ } from './faq';
-import { KYCChecklist, VerifyStep } from './kyc-checklist';
+import { VerifyStep } from './kyc-checklist';
 
 const kycCompletedStates: CustomerStatus[] = [
   // Complete but waiting for approval
@@ -39,15 +41,6 @@ export const VerifyDashboard = () => {
 
   // Track if user is manually retrying (to prevent useEffect from overriding step)
   const [isRetrying, setIsRetrying] = useState(false);
-
-  const handleTaskClick = (newStep: VerifyStep) => {
-    // This conditional allows the user to retry adding details if they need to
-    if (newStep === 'details') {
-      setIsIndeterminate(false);
-      setIsRetrying(true); // Prevent effect from overriding
-    }
-    setStep(newStep);
-  };
 
   // We need this to handle the transition from details to complete
   const [isIndeterminate, setIsIndeterminate] = useScopedLocalStorage(
@@ -108,8 +101,20 @@ export const VerifyDashboard = () => {
     setStep('complete');
     setIsIndeterminate(false);
   }, [customer, isLoading, setIsIndeterminate, isRetrying]);
+
   const router = useRouter();
   const unlessMobile = useUnlessMobile();
+
+  // Dashboard data for SetupCard
+  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
+  const completedTasks = dashboardData?.tasks;
+
+  // Derive display conditions for SetupCard
+  const kycStatus = customer?.status;
+  const isKycVerified = kycStatus === 'active';
+  const hasCreatedInvoice = completedTasks?.invoice ?? false;
+  const showSetupCard = !(isKycVerified && hasCreatedInvoice);
+
   const handleCallToActionClick = (type: 'retry' | 'create-invoice') => {
     if (type === 'retry') {
       setIsIndeterminate(false);
@@ -121,41 +126,37 @@ export const VerifyDashboard = () => {
   };
 
   return (
-    <div className='@container @2xl:grid-cols-[minmax(0,1fr),300px] grid h-fit w-full max-w-5xl grid-cols-2 gap-4'>
-      <div className='@2xl:col-span-1 col-span-2 flex flex-col gap-4'>
-        <AccountVerificationCard
-          className='h-fit'
-          step={step}
-          onStepComplete={handleStepComplete}
-          isLoading={isLoading}
-          tosLink={bridgeCustomer?.tos_link}
-          kycLink={bridgeCustomer?.kyc_link}
-          isIndeterminate={isIndeterminate}
-          isRejected={customer?.status === 'rejected'}
-          isUnderReview={customer?.status === 'under_review'}
-          isAwaitingUBO={customer?.status === 'awaiting_ubo'}
-          rejectionReasons={customer?.rejection_reasons?.map(
-            (reason) => reason.reason
-          )}
-          onCallToActionClick={handleCallToActionClick}
+    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+      {/* SetupCard - Stepper at top */}
+      {showSetupCard && (
+        <SetupCard
+          completedTasks={completedTasks}
+          kycStatus={kycStatus}
+          loading={isLoading || isDashboardLoading}
         />
-        <FAQ className='h-fit' />
-      </div>
-      <KYCChecklist
-        onTaskClick={handleTaskClick}
-        loading={isLoading}
-        className='@2xl:col-span-1 col-span-2 h-fit w-full'
-        indeterminate={isIndeterminate}
+      )}
+
+      {/* AccountVerificationCard */}
+      <AccountVerificationCard
+        className='h-fit'
+        step={step}
+        onStepComplete={handleStepComplete}
+        isLoading={isLoading}
+        tosLink={bridgeCustomer?.tos_link}
+        kycLink={bridgeCustomer?.kyc_link}
+        isIndeterminate={isIndeterminate}
         isRejected={customer?.status === 'rejected'}
-        rejectionReasons={customer?.rejection_reasons}
-        completedTasks={{
-          terms: customer?.has_accepted_terms_of_service ?? false,
-          details:
-            !!customer &&
-            kycCompletedStates.includes(customer.status) &&
-            customer.status !== 'rejected',
-        }}
+        isUnderReview={customer?.status === 'under_review'}
+        isIncomplete={customer?.status === 'incomplete'}
+        isAwaitingUBO={customer?.status === 'awaiting_ubo'}
+        rejectionReasons={customer?.rejection_reasons?.map(
+          (reason) => reason.reason
+        )}
+        onCallToActionClick={handleCallToActionClick}
       />
+
+      {/* FAQ */}
+      <FAQ className='h-fit' />
     </div>
   );
 };

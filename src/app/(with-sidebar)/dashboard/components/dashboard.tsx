@@ -14,15 +14,14 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { Duration } from '../../wallet/components/balance-card/select-duration';
 import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
 import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
-import { DepositDialog } from './deposit-dialog';
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import { AnnouncementBanner } from './announcement-banner';
 import { BalanceSectionCard } from './balance-section-card';
 import {
   type TaskType,
-  ChecklistCard,
   TaskStatuses,
 } from './checklist-card';
+import { DepositDialog } from './deposit-dialog';
 import { RestrictedCountryBanner } from './restricted-country-banner';
 import { SetupCard } from './setup-card';
 import { SmallStatCard } from './small-stat-card';
@@ -187,12 +186,6 @@ export const Dashboard = () => {
           isLoading={isBalanceLoading || isTransactionsLoading}
         />
 
-        {/* Onboarding Checklist */}
-        <ChecklistCard
-          completedTasks={completedTasks}
-          loading={isDashboardLoading}
-          onTaskClick={handleTaskClick}
-        />
       </div>
     </>
   );

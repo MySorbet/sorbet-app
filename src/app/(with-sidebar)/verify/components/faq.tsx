@@ -17,7 +17,7 @@ export const FAQ = ({ className }: { className?: string }) => {
   const { user } = useAuth();
   const isBusiness = user?.customerType === 'business';
   return (
-    <VerifyCard className={cn('w-full min-w-72 max-w-2xl', className)}>
+    <VerifyCard className={cn('w-full', className)}>
       <div className='flex flex-col gap-3'>
         <h2 className='text-2xl font-semibold'>FAQ</h2>
         <Accordion type='multiple' className='w-full'>
