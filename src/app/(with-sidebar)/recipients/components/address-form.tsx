@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 import { CountryDropdown } from './country-dropdown';
 import { isISO31662, StateSelect } from './state-select';
@@ -101,62 +102,67 @@ export const AddressFormFields = () => {
   );
 
   return (
-    <div>
+    <div className='space-y-3'>
+      {/* Beneficiary Address Section Header */}
       <div className='flex h-5 items-center gap-1'>
-        <Label>Address</Label>
+        <Label>Beneficiary Address</Label>
         <InfoTooltip>Address of the beneficiary of this account</InfoTooltip>
       </div>
+
+      {/* Complete Street Address */}
       <FormField
         control={form.control}
         name='address.street_line_1'
         render={({ field }) => (
           <FormItem>
             <VisuallyHidden>
-              <FormLabel>Street Line 1</FormLabel>
+              <FormLabel>Complete Street Address</FormLabel>
             </VisuallyHidden>
             <FormControl>
-              <Input placeholder='Street Line 1' {...field} />
+              <Textarea
+                placeholder='Complete Street Address'
+                className='min-h-[80px] resize-none'
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
+
+      {/* Country */}
       <FormField
         control={form.control}
-        name='address.street_line_2'
+        name='address.country'
         render={({ field }) => (
           <FormItem>
             <VisuallyHidden>
-              <FormLabel>Street Line 2</FormLabel>
+              <FormLabel>Country</FormLabel>
             </VisuallyHidden>
-            <FormControl>
-              <Input placeholder='Street Line 2' {...field} />
-            </FormControl>
+            <CountryDropdown
+              placeholder='Select Country'
+              defaultValue={field.value}
+              onChange={(country) => {
+                field.onChange(country.alpha3);
+                // Reset the state if the country changes
+                form.setValue('address.state', '', {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }}
+            />
             <FormMessage />
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name='address.city'
-        render={({ field }) => (
-          <FormItem>
-            <VisuallyHidden>
-              <FormLabel>City</FormLabel>
-            </VisuallyHidden>
-            <FormControl>
-              <Input placeholder='City' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+
+      {/* State + City */}
       <div className='flex gap-2'>
         <FormField
           control={form.control}
           name='address.state'
           render={({ field }) => (
-            <FormItem className='w-[60%]'>
+            <FormItem className='w-1/2'>
               <VisuallyHidden>
                 <FormLabel>State</FormLabel>
               </VisuallyHidden>
@@ -169,40 +175,33 @@ export const AddressFormFields = () => {
         />
         <FormField
           control={form.control}
-          name='address.postal_code'
+          name='address.city'
           render={({ field }) => (
-            <FormItem className='w-[40%]'>
+            <FormItem className='w-1/2'>
               <VisuallyHidden>
-                <FormLabel>Postal Code</FormLabel>
+                <FormLabel>City</FormLabel>
               </VisuallyHidden>
               <FormControl>
-                <Input placeholder='Postal Code' {...field} />
+                <Input placeholder='City' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
       </div>
+
+      {/* Postal Code */}
       <FormField
         control={form.control}
-        name='address.country'
+        name='address.postal_code'
         render={({ field }) => (
           <FormItem>
             <VisuallyHidden>
-              <FormLabel>Country</FormLabel>
+              <FormLabel>Postal Code</FormLabel>
             </VisuallyHidden>
-            <CountryDropdown
-              placeholder='Country'
-              defaultValue={field.value}
-              onChange={(country) => {
-                field.onChange(country.alpha3);
-                // Reset the state if the country changes
-                form.setValue('address.state', '', {
-                  shouldDirty: true,
-                  shouldValidate: true,
-                });
-              }}
-            />
+            <FormControl>
+              <Input placeholder='Postal Code' {...field} />
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}
