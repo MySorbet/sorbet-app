@@ -19,7 +19,7 @@ export const Success = ({
     recipient.type === 'crypto'
       ? formatWalletAddress(recipient.walletAddress)
       : `${recipient.label} ${formatAccountNumber(recipient.detail)}`;
-  const status = recipient.type === 'crypto' ? 'completed' : 'processing';
+  const status = recipient.type === 'crypto' ? 'Completed' : 'Processing';
   return (
     <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
       <div className='space-y-2 text-center'>
