@@ -372,22 +372,6 @@ export const NakedBankRecipientForm = ({
         )}
       />
 
-      {showBusinessName && (
-        <FormField
-          control={form.control}
-          name='business_name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Business Name</FormLabel>
-              <FormControl>
-                <Input placeholder='Business Name' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )}
-
       {/* US Account */}
       {showAccount && (
         <Card>
@@ -452,6 +436,21 @@ export const NakedBankRecipientForm = ({
       {showIBAN && (
         <Card>
           <CardContent className='space-y-3 p-6'>
+            {showBusinessName && (
+              <FormField
+                control={form.control}
+                name='business_name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Business Name' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name='iban.account_number'
