@@ -9,16 +9,19 @@ import { cn } from '@/lib/utils';
  */
 export const RecipientButton = forwardRef<
   HTMLButtonElement,
-  React.ComponentPropsWithoutRef<'button'>
->(({ onClick, className, children, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<'button'> & { isSelected?: boolean }
+>(({ onClick, className, children, isSelected, ...props }, ref) => {
   return (
     <button
       className={cn(
-        'bg-primary-foreground border-neutral-lighter hover:bg-primary-foreground/50 group flex min-w-56 justify-between gap-3 rounded-lg border p-3 disabled:pointer-events-none disabled:opacity-50',
+        'bg-primary-foreground border-neutral-lighter hover:bg-primary-foreground/50 group flex min-w-56 justify-between gap-3 rounded-lg border p-3 transition-colors disabled:pointer-events-none disabled:opacity-50',
+        'hover:border-[#781EF6] focus-visible:border-[#781EF6] focus-visible:outline-none',
+        'data-[selected=true]:border-[#781EF6]',
         className
       )}
       onClick={onClick}
       type='button'
+      data-selected={isSelected ? 'true' : undefined}
       ref={ref}
       {...props}
     >
@@ -58,7 +61,14 @@ export const RecipientButtonDescription = ({
 /** Icon of a recipient button. Render outside `RecipientButton`. */
 export const RecipientButtonIcon = ({ type }: { type: 'bank' | 'wallet' }) => {
   return (
-    <div className='bg-neutral-lighter flex size-10 shrink-0 items-center justify-center rounded-full p-2'>
+    <div
+      className={cn(
+        'bg-neutral-lighter flex size-10 shrink-0 items-center justify-center rounded-full border border-neutral-lighter p-2 text-[#344054] transition-colors',
+        'group-hover:border-[#781EF6] group-hover:bg-[#781EF6] group-hover:text-white',
+        'group-focus-visible:border-[#781EF6] group-focus-visible:bg-[#781EF6] group-focus-visible:text-white',
+        'group-data-[selected=true]:border-[#781EF6] group-data-[selected=true]:bg-[#781EF6] group-data-[selected=true]:text-white'
+      )}
+    >
       {type === 'bank' ? (
         <Landmark className='size-5' />
       ) : (

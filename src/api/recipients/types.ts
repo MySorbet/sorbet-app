@@ -128,3 +128,23 @@ type ExternalAccount = {
 
   [key: string]: unknown; // Incase there is anything else
 };
+
+/** Transfer history for a recipient */
+export type RecipientTransferStatus =
+  | 'completed'
+  | 'processing'
+  | 'in_review'
+  | 'failed'
+  | 'refunded';
+
+export type RecipientTransferType = 'offramp' | 'onramp' | 'crypto_transfer';
+
+export type RecipientTransfer = {
+  id: string;
+  date: string;
+  amount: string;
+  currency: string;
+  status: RecipientTransferStatus;
+  txHash?: string;
+  type: RecipientTransferType;
+};

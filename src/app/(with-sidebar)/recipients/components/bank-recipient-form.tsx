@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Lock } from 'lucide-react';
+import { Check, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { forwardRef } from 'react';
 import {
@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -295,22 +296,24 @@ export const NakedBankRecipientForm = ({
           <FormItem>
             <FormLabel>Bank name</FormLabel>
             <FormControl>
-              <Input placeholder='The name of your bank' {...field} />
+              <Input placeholder='The official name of your bank' {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <div className='flex gap-2'>
+      {/* Recipient's Info Section */}
+      <div className='space-y-3 border-y border-[#E4E4E7] py-4'>
+        <Label>Recipient&apos;s Info</Label>
         <FormField
           control={form.control}
           name='first_name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>First Name</FormLabel>
+              <FormLabel>First name</FormLabel>
               <FormControl>
-                <Input placeholder='First' {...field} />
+                <Input placeholder="Recipient's first name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -321,9 +324,9 @@ export const NakedBankRecipientForm = ({
           name='last_name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Last Name</FormLabel>
+              <FormLabel>Last name</FormLabel>
               <FormControl>
-                <Input placeholder='Last' {...field} />
+                <Input placeholder="Recipient's last name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -369,22 +372,6 @@ export const NakedBankRecipientForm = ({
         )}
       />
 
-      {showBusinessName && (
-        <FormField
-          control={form.control}
-          name='business_name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Business Name</FormLabel>
-              <FormControl>
-                <Input placeholder='Business Name' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )}
-
       {/* US Account */}
       {showAccount && (
         <Card>
@@ -395,20 +382,22 @@ export const NakedBankRecipientForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Account Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value || 'checking'}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select account type' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value='checking'>Checking</SelectItem>
-                      <SelectItem value='savings'>Savings</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <div className='flex gap-2'>
+                      <AccountTypeButton
+                        selected={field.value === 'checking'}
+                        onClick={() => field.onChange('checking')}
+                      >
+                        Checking
+                      </AccountTypeButton>
+                      <AccountTypeButton
+                        selected={field.value === 'savings'}
+                        onClick={() => field.onChange('savings')}
+                      >
+                        Savings
+                      </AccountTypeButton>
+                    </div>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -418,7 +407,7 @@ export const NakedBankRecipientForm = ({
               name='account.account_number'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Account Number</FormLabel>
+                  <FormLabel>Account number</FormLabel>
                   <FormControl>
                     <Input placeholder='Account number' {...field} />
                   </FormControl>
@@ -431,9 +420,9 @@ export const NakedBankRecipientForm = ({
               name='account.routing_number'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Routing Number</FormLabel>
+                  <FormLabel>Routing number</FormLabel>
                   <FormControl>
-                    <Input placeholder='9-digit routing number' {...field} />
+                    <Input placeholder='Routing number' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -447,6 +436,21 @@ export const NakedBankRecipientForm = ({
       {showIBAN && (
         <Card>
           <CardContent className='space-y-3 p-6'>
+            {showBusinessName && (
+              <FormField
+                control={form.control}
+                name='business_name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Business Name' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name='iban.account_number'
@@ -523,7 +527,7 @@ export const BankRecipientSubmitButton = forwardRef<
       type='submit'
       form={BANK_RECIPIENT_FORM_ID}
       disabled={!isValid || isSubmitting}
-      className={cn(className, 'w-fit')}
+      className={cn('w-fit', className)}
       {...props}
     >
       {isSubmitting && <Spinner />}
@@ -531,3 +535,36 @@ export const BankRecipientSubmitButton = forwardRef<
     </Button>
   );
 });
+BankRecipientSubmitButton.displayName = 'BankRecipientSubmitButton';
+
+/** Card button for selecting account type (Checking/Savings) */
+const AccountTypeButton = ({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) => {
+  return (
+    <button
+      type='button'
+      onClick={onClick}
+      className={cn(
+        'flex flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all',
+        'focus:outline-none',
+        selected
+          ? 'border-sorbet bg-sorbet/5 text-foreground'
+          : 'border-neutral-lighter bg-white text-foreground hover:bg-neutral-lightest focus:ring-2 focus:ring-sorbet focus:ring-offset-2'
+      )}
+    >
+      {selected && (
+        <div className='flex size-5 items-center justify-center rounded-full bg-sorbet'>
+          <Check className='size-3 text-white' />
+        </div>
+      )}
+      {children}
+    </button>
+  );
+};

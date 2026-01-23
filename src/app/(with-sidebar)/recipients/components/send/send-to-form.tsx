@@ -99,7 +99,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
   if (transferResult?.status === 'fail') {
     return (
       <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
-        <TransactionStatusBadge status='error' />
+        <TransactionStatusBadge status='Rejected' />
         <span className='text-sm font-medium leading-none'>
           There was a problem with the transfer. Please try again.
         </span>
