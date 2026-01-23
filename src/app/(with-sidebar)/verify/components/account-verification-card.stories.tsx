@@ -29,7 +29,8 @@ export const Loading: Story = {
   },
 };
 
-export const Indeterminate: Story = {
+/** Verification pending - temporary local state after user submits KYC */
+export const VerificationPending: Story = {
   args: {
     step: 'begin',
     isIndeterminate: true,
@@ -52,9 +53,24 @@ export const Rejected: Story = {
   },
 };
 
+/** Under review from Bridge API - shows same UI as VerificationPending */
 export const UnderReview: Story = {
   args: {
     step: 'complete',
     isUnderReview: true,
+  },
+};
+
+export const Incomplete: Story = {
+  args: {
+    step: 'details',
+    isIncomplete: true,
+  },
+};
+
+export const AwaitingUBO: Story = {
+  args: {
+    step: 'complete',
+    isAwaitingUBO: true,
   },
 };

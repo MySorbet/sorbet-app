@@ -19,39 +19,65 @@ export const WelcomeCard = ({
   return (
     <div 
       className={cn(
-        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 py-4',
+        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 pt-[1px] pb-4',
         'sm:flex-row sm:items-center sm:gap-6 sm:px-6',
         'md:min-h-[72px]',
         className
       )}
     >
-      <div className='min-w-0 flex-1 space-y-0.5'>
-        <h2 className='text-xl font-semibold sm:text-2xl'>
+      {/* Mobile: Title + Buttons in one row */}
+      <div className='flex w-full items-center justify-between sm:hidden'>
+        <h2 className='text-xl font-semibold'>
           {title}
         </h2>
-        <p className='text-muted-foreground text-xs sm:text-sm'>
+        <div className='flex shrink-0 gap-2'>
+          <Button
+            variant='outline'
+            onClick={onDeposit}
+            size='icon'
+            className='size-9'
+          >
+            <Plus className='size-4' />
+          </Button>
+          <Button
+            variant='sorbet'
+            onClick={onSendFunds}
+            size='icon'
+            className='size-9'
+          >
+            <Send className='size-4' />
+          </Button>
+        </div>
+      </div>
+
+      {/* Desktop: Original layout */}
+      <div className='hidden min-w-0 flex-1 space-y-0.5 sm:block'>
+        <h2 className='text-2xl font-semibold'>
+          {title}
+        </h2>
+        <p className='text-muted-foreground text-sm'>
           Manage your account and monitor activity
         </p>
       </div>
 
-      <div className='flex w-full shrink-0 gap-2 sm:w-auto sm:gap-3'>
+      <div className='hidden shrink-0 gap-3 sm:flex'>
         <Button
           variant='outline'
           onClick={onDeposit}
-          className='flex-1 gap-2 sm:flex-none'
+          className='gap-2'
           size='sm'
         >
           <Plus className='size-4' />
-          <span className='sm:inline'>Deposit</span>
+          <span>Deposit</span>
         </Button>
         <Button
           variant='sorbet'
           onClick={onSendFunds}
-          className='flex-1 gap-2 sm:flex-none'
+          className='gap-2'
           size='sm'
         >
           <Send className='size-4' />
-          <span className='sm:inline'>Send Funds</span>
+          <span>Send Funds</span>
         </Button>
       </div>
     </div>

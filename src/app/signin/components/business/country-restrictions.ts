@@ -3,8 +3,10 @@
  * Based on Bridge/banking partner restrictions for USD and EUR Virtual Accounts
  */
 
+import { iso31661 } from 'iso-3166';
+
 // Countries restricted from BOTH USD AND EUR
-const NO_USD_NO_EUR_COUNTRIES = [
+export const NO_USD_NO_EUR_COUNTRIES = [
     // Africa
     'DZA', // Algeria
     'COD', // Congo (Democratic Republic)
@@ -117,3 +119,22 @@ export function getCountryRestriction(alpha3: string): CountryRestrictionInfo {
         message: null,
     };
 }
+
+/**
+ * Check if a country (by full name) is restricted from USD and EUR accounts.
+ * for dashboard to show restricted banner based on user's country field.
+
+ */
+export function isRestrictedCountry(countryName?: string): boolean {
+    if (!countryName) return false;
+
+    // Find the country by name and get its alpha3 code
+    const country = iso31661.find(
+        (c) => c.name.toLowerCase() === countryName.toLowerCase()
+    );
+
+    if (!country) return false;
+
+    return NO_USD_NO_EUR_COUNTRIES.includes(country.alpha3);
+}
+

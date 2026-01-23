@@ -2,6 +2,7 @@
 
 import { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useRef } from 'react';
 
 import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar';
@@ -31,6 +32,7 @@ export const SidebarLinkButton = ({
   iconClassName?: string;
 }) => {
   const iconRef = useRef<AnimatedIconHandle | null>(null);
+  const pathname = usePathname();
 
   const handleMouseEnter = () => {
     if (iconRef.current && isAnimatedIcon(iconRef.current)) {
@@ -47,8 +49,11 @@ export const SidebarLinkButton = ({
   const isMobile = useIsMobile();
   const { toggleSidebar } = useSidebar();
 
+  // Check if current path matches the item URL
+  const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
+
   return (
-    <SidebarMenuButton asChild>
+    <SidebarMenuButton asChild isActive={isActive}>
       <Link
         href={item.disabled ? '#' : item.url}
         onMouseEnter={handleMouseEnter}

@@ -142,3 +142,64 @@ export const mockVerifyHandler = http.post(
     return HttpResponse.json<BridgeCustomer>(mockBridgeCustomer);
   }
 );
+
+export const mockBridgeCustomerHandlerRejected = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
+  async () => {
+    await delay(1000);
+    return HttpResponse.json<BridgeCustomer>({
+      ...mockBridgeCustomer,
+      customer:
+        mockBridgeCustomer.customer !== undefined
+          ? {
+              ...mockBridgeCustomer.customer,
+              has_accepted_terms_of_service: true,
+              status: 'rejected',
+              rejection_reasons: [
+                {
+                  developer_reason: 'Cannot validate ID -- please upload a clear photo of the full ID.',
+                  reason: 'Cannot validate ID -- please upload a clear photo of the full ID.',
+                  created_at: new Date().toISOString(),
+                },
+              ],
+            }
+          : undefined,
+    });
+  }
+);
+
+export const mockBridgeCustomerHandlerUnderReview = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
+  async () => {
+    await delay(1000);
+    return HttpResponse.json<BridgeCustomer>({
+      ...mockBridgeCustomer,
+      customer:
+        mockBridgeCustomer.customer !== undefined
+          ? {
+              ...mockBridgeCustomer.customer,
+              has_accepted_terms_of_service: true,
+              status: 'under_review',
+            }
+          : undefined,
+    });
+  }
+);
+
+export const mockBridgeCustomerHandlerIncomplete = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/bridge/customer`,
+  async () => {
+    await delay(1000);
+    return HttpResponse.json<BridgeCustomer>({
+      ...mockBridgeCustomer,
+      customer:
+        mockBridgeCustomer.customer !== undefined
+          ? {
+              ...mockBridgeCustomer.customer,
+              has_accepted_terms_of_service: true,
+              status: 'incomplete',
+            }
+          : undefined,
+    });
+  }
+);

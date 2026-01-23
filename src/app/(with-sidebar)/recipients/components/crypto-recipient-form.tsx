@@ -123,7 +123,7 @@ export const CryptoRecipientSubmitButton = forwardRef<
       type='submit'
       form={cryptoFormId}
       disabled={!isValid || isSubmitting}
-      className={cn(className, 'w-fit')}
+      className={cn('w-fit', className)}
       {...props}
     >
       {isSubmitting ? (
@@ -136,3 +136,4 @@ export const CryptoRecipientSubmitButton = forwardRef<
     </Button>
   );
 });
+CryptoRecipientSubmitButton.displayName = 'CryptoRecipientSubmitButton';

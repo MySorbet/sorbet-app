@@ -180,7 +180,7 @@ const DashboardMenuItem = () => {
             <Skeleton className='h-4 w-16' variant='darker' />
           ) : (
             usdcBalance && (
-              <span className='animate-in fade-in-0'>${usdcBalance} USDC</span>
+              <span className='animate-in fade-in-0 font-mono font-medium text-xs'>${usdcBalance} USDC</span>
             )
           )}
         </SidebarMenuBadge>

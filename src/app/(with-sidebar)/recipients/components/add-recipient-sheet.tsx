@@ -194,8 +194,8 @@ const BankRecipientStep = ({
             />
           </div>
         </ScrollAreaHack>
-        <VaulSheetFooter className='flex flex-row justify-end'>
-          <BankRecipientSubmitButton />
+        <VaulSheetFooter>
+          <BankRecipientSubmitButton className='w-full' />
         </VaulSheetFooter>
       </BankRecipientFormContext>
     </>
@@ -221,8 +221,8 @@ const CryptoRecipientStep = ({
         <ScrollAreaHack>
           <CryptoRecipientForm className={className} onSubmit={onSubmit} />
         </ScrollAreaHack>
-        <VaulSheetFooter className='flex flex-row justify-end'>
-          <CryptoRecipientSubmitButton />
+        <VaulSheetFooter>
+          <CryptoRecipientSubmitButton className='w-full' />
         </VaulSheetFooter>
       </CryptoRecipientFormContext>
     </>
@@ -246,6 +246,7 @@ const BackButton = forwardRef<
     </Button>
   );
 });
+BackButton.displayName = 'BackButton';
 
 /**
  * This conditional style on a scroll area fixes a bug where

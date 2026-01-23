@@ -50,3 +50,12 @@ export const BANK_ACCOUNTS_MIN_AMOUNT = 1;
 
 /** Given the last 4 digits of an account number, pad the rest with *'s */
 export const formatAccountNumber = (last4: string) => '*****' + last4;
+
+/** Format a transfer date for display in the transfers table */
+export const formatTransferDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};

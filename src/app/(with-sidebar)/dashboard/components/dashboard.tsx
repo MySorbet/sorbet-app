@@ -4,25 +4,28 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
+import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useAuth } from '@/hooks/use-auth';
-import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 
-import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
-import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
 import { Duration } from '../../wallet/components/balance-card/select-duration';
-import { useTopUp } from '../../wallet/hooks/use-top-up';
-
+import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
+import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overview';
 import { useDashboardData } from '../hooks/use-dashboard-data';
+import { AnnouncementBanner } from './announcement-banner';
+import { BalanceSectionCard } from './balance-section-card';
 import {
   type TaskType,
-  ChecklistCard,
   TaskStatuses,
 } from './checklist-card';
-import { WelcomeCard } from './welcome-card';
+import { DepositDialog } from './deposit-dialog';
+import { RestrictedCountryBanner } from './restricted-country-banner';
+import { SetupCard } from './setup-card';
 import { SmallStatCard } from './small-stat-card';
-import { BalanceSectionCard } from './balance-section-card';
+import { WelcomeCard } from './welcome-card';
 
 /**
  * Composes dashboard cards into a fluid layout
@@ -35,6 +38,7 @@ export const Dashboard = () => {
   const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
   const { smartWalletAddress } = useSmartWalletAddress();
+  const { data: bridgeCustomer, isLoading: isBridgeLoading } = useBridgeCustomer();
 
   const [duration, setDuration] = useState<Duration>('all');
   const { data: transactions, isLoading: isTransactionsLoading } = useTransactionOverview(
@@ -53,13 +57,21 @@ export const Dashboard = () => {
   // Completed tasks are stored in the DB
   const completedTasks: TaskStatuses | undefined = dashboardData?.tasks;
 
+  const kycStatus = bridgeCustomer?.customer?.status;
+  const isKycVerified = kycStatus === 'active';
+  const isKycRejected = kycStatus === 'rejected';
+  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  const hasCreatedInvoice = completedTasks?.invoice ?? false;
+
+  const isRestricted = isRestrictedCountry(user?.country);
+
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
-  const { topUp } = useTopUp();
 
   // Action handlers
-  const handleDeposit = () => topUp();
+  const handleDeposit = () => setIsDepositOpen(true);
   const handleCreateInvoice = () => {
     unlessMobile(() => router.push('/invoices/create'));
   };
@@ -82,6 +94,14 @@ export const Dashboard = () => {
 
   return (
     <>
+      {/* Deposit dialog */}
+      <DepositDialog
+        open={isDepositOpen}
+        onOpenChange={setIsDepositOpen}
+        walletAddress={smartWalletAddress ?? undefined}
+        bridgeCustomer={bridgeCustomer}
+      />
+
       {/* Conditionally rendered profile edit modal */}
       {user && (
         <EditProfileSheet
@@ -92,13 +112,35 @@ export const Dashboard = () => {
       )}
 
       {/* Dashboard layout */}
-      <div className='@container size-full w-full max-w-[1184px] space-y-4 px-4 sm:space-y-6 sm:px-0'>
+      <div className='@container size-full w-full max-w-7xl space-y-4 px-[1px] sm:space-y-6 sm:px-0'>
         {/* Welcome Header */}
         <WelcomeCard
           name={user?.firstName}
           onDeposit={handleDeposit}
           onSendFunds={handleSendFunds}
         />
+
+        {/* Conditional Banners based on user country and verification status */}
+        {isRestricted ? (
+          <RestrictedCountryBanner />
+        ) : (
+          <>
+            {/* Announcement Banner: Only show if KYC is not started or rejected */}
+            {(isKycNotStarted || isKycRejected) && (
+              <AnnouncementBanner onComplete={() => router.push('/verify')} />
+            )}
+
+            {/* Setup Card: Show if not fully verified or if verified but no invoice created yet */}
+            {!(isKycVerified && hasCreatedInvoice) && (
+              <SetupCard
+                completedTasks={completedTasks}
+                onVerifyClick={() => router.push('/verify')}
+                kycStatus={kycStatus}
+                loading={isBridgeLoading || isDashboardLoading}
+              />
+            )}
+          </>
+        )}
 
         {/* Three Small Cards Row */}
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'>
@@ -144,12 +186,6 @@ export const Dashboard = () => {
           isLoading={isBalanceLoading || isTransactionsLoading}
         />
 
-        {/* Onboarding Checklist */}
-        <ChecklistCard
-          completedTasks={completedTasks}
-          loading={isDashboardLoading}
-          onTaskClick={handleTaskClick}
-        />
       </div>
     </>
   );

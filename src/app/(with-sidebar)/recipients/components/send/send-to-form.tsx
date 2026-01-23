@@ -99,7 +99,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
   if (transferResult?.status === 'fail') {
     return (
       <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
-        <TransactionStatusBadge status='error' />
+        <TransactionStatusBadge status='Rejected' />
         <span className='text-sm font-medium leading-none'>
           There was a problem with the transfer. Please try again.
         </span>
@@ -194,9 +194,9 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
                         className='no-spin-buttons text-md'
                       />
                     </FormControl>
-                    {maxAmount && !errors.amount && (
-                      <p className='text-muted-foreground text-sm'>
-                        {formatCurrency(maxAmount)} available
+                    {maxAmount !== undefined && !errors.amount && (
+                      <p className='text-sm text-[#71717A]'>
+                        {formatCurrency(maxAmount ?? 0)} USDC Available
                       </p>
                     )}
                     <ExchangeRate
@@ -240,7 +240,7 @@ export const SendToFormSubmitButton = () => {
   if (!isPreview) {
     return (
       <Button
-        className='w-full transition-opacity duration-200'
+        className='w-full transition-opacity duration-200 sm:flex-1'
         variant='sorbet'
         type='button'
         disabled={disabled}
@@ -256,7 +256,7 @@ export const SendToFormSubmitButton = () => {
 
   return (
     <Button
-      className='w-full transition-opacity duration-200'
+      className='w-full transition-opacity duration-200 sm:flex-1'
       variant='sorbet'
       form={sendToFormId}
       type='submit'
@@ -289,7 +289,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
   if (transferResult?.status === 'success') {
     return (
       <Button
-        className='w-full transition-opacity duration-200'
+        className='w-full transition-opacity duration-200 sm:w-auto sm:shrink-0'
         variant='secondary'
         type='button'
         asChild
@@ -302,7 +302,7 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
   if (transferResult?.status === 'fail') {
     return (
       <Button
-        className='w-full transition-opacity duration-200'
+        className='w-full transition-opacity duration-200 sm:w-auto sm:shrink-0'
         variant='secondary'
         type='button'
         onClick={() => {
@@ -317,12 +317,12 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <Button
-      className='w-full transition-opacity duration-200'
+      className='w-full transition-opacity duration-200 sm:w-auto sm:shrink-0'
       variant='secondary'
       type='button'
       onClick={handleClick}
     >
-      Back
+      Cancel
     </Button>
   );
 };
