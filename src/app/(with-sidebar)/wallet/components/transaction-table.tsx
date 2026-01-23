@@ -90,17 +90,14 @@ export const TransactionTable = ({
                   </div>
                 </td>
                 <td className='whitespace-nowrap py-4'>
-                  <div className='flex items-center'>
-                    <TransactionTypeIcon type={transaction.type} />
-                    <div className='ml-2'>
-                      <AddressText address={transaction.account} />
-                      <div className='text-muted-foreground text-xs'>
-                        {transaction.type === 'Deposit'
-                          ? 'Added'
-                          : transaction.type === 'Money Out'
-                            ? 'Sent'
-                            : 'Received'}
-                      </div>
+                  <div>
+                    <AddressText address={transaction.account} />
+                    <div className='text-muted-foreground text-xs'>
+                      {transaction.type === 'Deposit'
+                        ? 'Added'
+                        : transaction.type === 'Money Out'
+                          ? 'Sent'
+                          : 'Received'}
                     </div>
                   </div>
                 </td>
@@ -195,9 +192,12 @@ const TableSkeleton = () => {
   );
 };
 
-/** Local component to display formatted address and allow copying */
+/** Local component to display formatted address/name and allow copying */
 const AddressText = ({ address }: { address: string }) => {
-  const formattedAddress = formatWalletAddress(address);
+  // Check if it's a wallet address (starts with 0x) or a name
+  const isWalletAddress = address?.startsWith('0x');
+  const displayText = isWalletAddress ? formatWalletAddress(address) : address;
 
-  return <CopyText text={formattedAddress} />;
+  // For addresses, allow copying the full address. For names, copy as-is
+  return <CopyText text={displayText} textToCopy={address} />;
 };
