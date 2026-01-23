@@ -1,7 +1,11 @@
 import { SimpleTransactionStatus } from '@/components/common/transaction-status-badge';
 import { env } from '@/lib/env';
 import { DrainState } from '@/types/bridge';
-import { Transaction } from '@/types/transactions';
+import {
+  Transaction,
+  UnifiedTransaction,
+  UnifiedTransactionStatus,
+} from '@/types/transactions';
 
 import { TableTransaction } from '../components/transaction-table';
 
@@ -33,11 +37,22 @@ export const simplifyTxStatus = (
 };
 
 /**
- * This function only exists to take the date portion of a locale formatted date (i.e. "2/27/2025, 12:00:00 AM")
- * Once the server is returning ISO strings, this will not be needed
+ * Format a transaction date for display in "DD Mon, YYYY" format
+ * e.g., "12 Jan, 2026"
  */
 export const formatTransactionDate = (date: string): string => {
-  return date.split(',')[0];
+  try {
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) {
+      return date.split(',')[0]; // Fallback to old behavior
+    }
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = dateObj.toLocaleString('en-US', { month: 'short' });
+    const year = dateObj.getFullYear();
+    return `${day} ${month}, ${year}`;
+  } catch {
+    return date.split(',')[0]; // Fallback
+  }
 };
 
 /**
@@ -87,6 +102,84 @@ export const mapTransactionOverview = (
     hash: transaction.hash,
     status: transaction.status,
   }));
+};
+
+/**
+ * Map unified transaction type to TableTransaction type
+ */
+const mapUnifiedTypeToTableType = (
+  tx: UnifiedTransaction,
+  walletAddress: string
+): TableTransaction['type'] => {
+  if (tx.type === 'onramp') {
+    return 'Deposit';
+  }
+  if (tx.type === 'offramp') {
+    return 'Money Out';
+  }
+  // crypto_transfer - determine direction
+  const isOutgoing =
+    tx.source.identifier.toLowerCase() === walletAddress.toLowerCase();
+  return isOutgoing ? 'Money Out' : 'Money In';
+};
+
+/**
+ * Map unified transaction status to DrainState for compatibility with existing UI
+ */
+const mapUnifiedStatusToDrainState = (
+  status: UnifiedTransactionStatus
+): DrainState => {
+  switch (status) {
+    case 'completed':
+      return 'payment_processed';
+    case 'processing':
+    case 'pending':
+      return 'payment_submitted';
+    case 'in_review':
+      return 'in_review';
+    case 'failed':
+      return 'error';
+    case 'refunded':
+      return 'refunded';
+    default:
+      return 'payment_submitted';
+  }
+};
+
+/**
+ * Map unified transactions to TableTransaction format for display
+ */
+export const mapUnifiedTransactions = (
+  transactions: UnifiedTransaction[],
+  walletAddress: string
+): TableTransaction[] => {
+  return transactions.map((tx) => {
+    const type = mapUnifiedTypeToTableType(tx, walletAddress);
+
+    // Determine the "other party" to display in To/From column
+    // Prefer label (name) over identifier (address/id)
+    let account: string;
+
+    if (type === 'Deposit') {
+      // Onramp: Show who sent the money (source - bank sender)
+      account = tx.source.label || tx.source.identifier;
+    } else if (type === 'Money Out') {
+      // Offramp or outgoing crypto: Show recipient
+      account = tx.destination.label || tx.destination.identifier;
+    } else {
+      // Money In (incoming crypto): Show sender wallet
+      account = tx.source.label || tx.source.identifier;
+    }
+
+    return {
+      type,
+      account,
+      date: tx.date,
+      amount: tx.amount,
+      hash: tx.txHash ?? tx.id,
+      status: mapUnifiedStatusToDrainState(tx.status),
+    };
+  });
 };
 
 /**

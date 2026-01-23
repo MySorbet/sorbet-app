@@ -3,10 +3,10 @@
 import { format } from 'date-fns';
 import { Plus, Send } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 
-import { getTransactions } from '@/api/transactions';
+import { getUnifiedTransactions } from '@/api/transactions';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
@@ -19,7 +19,7 @@ import {
   TransactionTypeFilter,
 } from './filtered-transaction-table';
 import { TableTransaction } from './transaction-table';
-import { mapTransactionOverview, simplifyTxStatus } from './utils';
+import { mapUnifiedTransactions, simplifyTxStatus } from './utils';
 
 const PAGE_SIZE = 10;
 
@@ -47,7 +47,7 @@ export const TransactionsBrowser: React.FC = () => {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [cursorsMap, setCursorsMap] = useState<{ [key: number]: string }>({});
+  const cursorsMapRef = useRef<{ [key: number]: string }>({});
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
   const [hasPrevPage, setHasPrevPage] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -55,53 +55,76 @@ export const TransactionsBrowser: React.FC = () => {
   // Deposit dialog state
   const [isDepositOpen, setIsDepositOpen] = useState(false);
 
+  // Track if we've already fetched for this page to prevent duplicate calls
+  const lastFetchedPageRef = useRef<number | null>(null);
+
   const fetchTransactions = useCallback(
     async (after_date?: string, before_date?: string) => {
-      if (!smartWalletAddress) return;
-
-      // to appease linting errors and avoid un-necessary re-renders
-      const getCurrentCursor = (page: number): string => {
-        return cursorsMap[page] || '';
-      };
-
-      const cursor = getCurrentCursor(currentPage);
-      setIsLoading(true);
-      const res = await getTransactions(
-        cursor,
-        PAGE_SIZE,
-        'DESC',
-        after_date,
-        before_date
-      );
-      if (res.status === 200 && res.data) {
-        const formattedTransactions = mapTransactionOverview(
-          res.data.transactions,
-          smartWalletAddress
-        );
-        const cursor_data = res.data.cursor;
-        if (cursor_data) {
-          setCursorsMap((prev) => ({
-            ...prev,
-            [currentPage + 1]: cursor_data,
-          }));
-          setHasNextPage(true);
-        } else {
-          setHasNextPage(false);
-        }
-        setTransactionsData(formattedTransactions);
-        setFilteredTransactions(formattedTransactions);
-        setHasPrevPage(currentPage > 1);
-
-        // Update total count estimate based on pagination
-        // Since API doesn't provide total, estimate based on current page and whether there's more
-        const estimatedTotal = cursor_data
-          ? currentPage * PAGE_SIZE + PAGE_SIZE
-          : (currentPage - 1) * PAGE_SIZE + formattedTransactions.length;
-        setTotalCount(Math.max(totalCount, estimatedTotal));
+      if (!smartWalletAddress) {
+        setIsLoading(false);
+        return;
       }
-      setIsLoading(false);
+
+      // Prevent duplicate fetches for the same page
+      if (lastFetchedPageRef.current === currentPage && !after_date && !before_date) {
+        return;
+      }
+      lastFetchedPageRef.current = currentPage;
+
+      const cursor = cursorsMapRef.current[currentPage] || '';
+      setIsLoading(true);
+
+      try {
+        const res = await getUnifiedTransactions({
+          fromDate: after_date,
+          toDate: before_date,
+          limit: PAGE_SIZE,
+          cursor: cursor || undefined,
+        });
+
+        if ((res.status === 200 || res.status === 304) && res.data) {
+          const formattedTransactions = mapUnifiedTransactions(
+            res.data.transactions || [],
+            smartWalletAddress
+          );
+          const cursor_data = res.data.cursor;
+          if (cursor_data) {
+            // Use ref to avoid re-render loop
+            cursorsMapRef.current = {
+              ...cursorsMapRef.current,
+              [currentPage + 1]: cursor_data,
+            };
+            setHasNextPage(true);
+          } else {
+            setHasNextPage(false);
+          }
+          setTransactionsData(formattedTransactions);
+          setFilteredTransactions(formattedTransactions);
+          setHasPrevPage(currentPage > 1);
+
+          // Use summary count if available, otherwise estimate
+          const count =
+            res.data.summary?.count ??
+            (cursor_data
+              ? currentPage * PAGE_SIZE + PAGE_SIZE
+              : (currentPage - 1) * PAGE_SIZE + formattedTransactions.length);
+          // Use functional update to avoid infinite re-render loop
+          setTotalCount((prev) => Math.max(prev, count));
+        } else {
+          // Handle case where response exists but data is missing
+          console.warn('Unexpected response format:', res);
+          setTransactionsData([]);
+          setFilteredTransactions([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+        setTransactionsData([]);
+        setFilteredTransactions([]);
+      } finally {
+        setIsLoading(false);
+      }
     },
-    [smartWalletAddress, currentPage, cursorsMap, totalCount]
+    [smartWalletAddress, currentPage]
   );
 
   useEffect(() => {
@@ -114,6 +137,8 @@ export const TransactionsBrowser: React.FC = () => {
     if (dateRange?.from && dateRange?.to) {
       const after_date = format(dateRange.from, 'yyyy-MM-dd');
       const before_date = format(dateRange.to, 'yyyy-MM-dd');
+      // Reset the fetch tracker for date range changes
+      lastFetchedPageRef.current = null;
       fetchTransactions(after_date, before_date);
     }
   }, [dateRange, fetchTransactions]);
