@@ -3,7 +3,7 @@ import { Meta } from '@storybook/react';
 import { CreditCardForm } from './credit-card';
 
 const meta = {
-  title: 'Wallet/Credit Card',
+  title: 'Wallet',
   component: CreditCardForm,
 } satisfies Meta<typeof CreditCardForm>;
 
