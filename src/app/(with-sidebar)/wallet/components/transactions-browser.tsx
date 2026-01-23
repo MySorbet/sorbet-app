@@ -83,9 +83,13 @@ export const TransactionsBrowser: React.FC = () => {
         });
 
         if ((res.status === 200 || res.status === 304) && res.data) {
+          const userName = user?.firstName
+            ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ''}`
+            : undefined;
           const formattedTransactions = mapUnifiedTransactions(
             res.data.transactions || [],
-            smartWalletAddress
+            smartWalletAddress,
+            userName
           );
           const cursor_data = res.data.cursor;
           if (cursor_data) {
