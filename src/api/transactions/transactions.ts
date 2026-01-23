@@ -4,6 +4,8 @@ import { env } from '@/lib/env';
 import {
   TransactionOverview,
   TransactionsResponse,
+  UnifiedTransactionsResponse,
+  UnifiedTransactionType,
 } from '@/types/transactions';
 
 import { withAuthHeader } from '../with-auth-header';
@@ -34,7 +36,8 @@ export const getOverview = async (last_days?: number) => {
 };
 
 /**
- * Get a user's transactions
+ * Get a user's transactions (legacy endpoint)
+ * @deprecated Use getUnifiedTransactions instead
  */
 export const getTransactions = async (
   cursor = '',
@@ -64,6 +67,42 @@ export const getTransactions = async (
       );
     } else {
       throw new Error(`Failed to get transactions: ${error}`);
+    }
+  }
+};
+
+/**
+ * Get unified transactions from all sources (Moralis, Bridge VA, Bridge LA)
+ * This is the new API that combines onramp, offramp, and crypto transfers
+ */
+export const getUnifiedTransactions = async (options?: {
+  type?: UnifiedTransactionType;
+  fromDate?: string;
+  toDate?: string;
+  limit?: number;
+  cursor?: string;
+}) => {
+  const queryParams = new URLSearchParams();
+
+  if (options?.type) queryParams.append('type', options.type);
+  if (options?.fromDate) queryParams.append('from_date', options.fromDate);
+  if (options?.toDate) queryParams.append('to_date', options.toDate);
+  if (options?.limit) queryParams.append('limit', options.limit.toString());
+  if (options?.cursor) queryParams.append('cursor', options.cursor);
+
+  try {
+    const res = await axios.get<UnifiedTransactionsResponse>(
+      `${API_URL}/transactions/unified?${queryParams.toString()}`,
+      await withAuthHeader()
+    );
+    return res;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to get unified transactions: ${error.response?.data.message}`
+      );
+    } else {
+      throw new Error(`Failed to get unified transactions: ${error}`);
     }
   }
 };

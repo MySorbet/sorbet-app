@@ -20,19 +20,20 @@ export const Header = forwardRef<
     <div
       ref={ref}
       className={cn(
-        'border-border flex h-fit w-full items-center justify-center border-b px-6 py-4',
+        'flex w-full items-center justify-center border-b px-6 pt-[1px] pb-4',
+        'md:min-h-[72px]',
         className
       )}
       {...props}
     >
       <div className='flex w-full max-w-7xl items-center justify-between gap-4'>
-        <div>
-          <h1 className='text-2xl font-bold'>{title}</h1>
+        <div className='min-w-0 flex-1 space-y-0.5'>
+          <h1 className='text-2xl font-semibold'>{title}</h1>
           {subtitle && (
-            <span className='text-muted-foreground text-sm'>{subtitle}</span>
+            <p className='text-muted-foreground text-sm'>{subtitle}</p>
           )}
         </div>
-        {children}
+        {children && <div className='shrink-0'>{children}</div>}
       </div>
     </div>
   );

@@ -272,7 +272,7 @@ const DefaultContent = () => {
   return (
     <CardContent
       title='Persona’s account verification'
-      description='Verify your account by adding your personal details to accept payments via ACH/Wire or Credit Card.'
+      description='Verify your account by adding your personal details to accept payments via ACH/Wire.'
     />
   );
 };
@@ -367,7 +367,7 @@ const RejectedContent = ({
       </ol>
     )
   ) : (
-    'Verify your account by adding your authorised personal details to accept payments via ACH/Wire or Credit Card.'
+    'Verify your account by adding your authorised personal details to accept payments via ACH/Wire.'
   );
   return (
     <CardContent
