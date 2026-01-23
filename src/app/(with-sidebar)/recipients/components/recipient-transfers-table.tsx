@@ -17,6 +17,8 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
 
+import { openTransactionInExplorer } from '@/app/(with-sidebar)/wallet/components/utils';
+
 import { formatTransferDate } from './utils';
 
 interface RecipientTransfersTableProps {
@@ -97,7 +99,7 @@ const TransferRow = ({
 }) => {
   const handleViewTransaction = () => {
     if (transfer.txHash) {
-      window.open(`https://basescan.org/tx/${transfer.txHash}`, '_blank');
+      openTransactionInExplorer(transfer.txHash);
     }
   };
 

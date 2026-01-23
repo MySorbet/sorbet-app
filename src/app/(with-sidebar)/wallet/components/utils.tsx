@@ -151,7 +151,8 @@ const mapUnifiedStatusToDrainState = (
  */
 export const mapUnifiedTransactions = (
   transactions: UnifiedTransaction[],
-  walletAddress: string
+  walletAddress: string,
+  userName?: string
 ): TableTransaction[] => {
   return transactions.map((tx) => {
     const type = mapUnifiedTypeToTableType(tx, walletAddress);
@@ -164,8 +165,8 @@ export const mapUnifiedTransactions = (
       // Onramp: Show who sent the money (source - bank sender)
       account = tx.source.label || tx.source.identifier;
     } else if (type === 'Money Out') {
-      // Offramp or outgoing crypto: Show recipient
-      account = tx.destination.label || tx.destination.identifier;
+      // Offramp or outgoing crypto: Show user's name (sender)
+      account = userName || tx.source.label || 'You';
     } else {
       // Money In (incoming crypto): Show sender wallet
       account = tx.source.label || tx.source.identifier;
