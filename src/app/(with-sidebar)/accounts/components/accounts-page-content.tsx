@@ -23,6 +23,7 @@ import {
   DrawerFooter,
 } from '@/components/ui/drawer';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
+import { useDueVirtualAccounts } from '@/hooks/profile/use-due-virtual-accounts';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -44,6 +45,10 @@ export const AccountsPageContent = () => {
   const { user } = useAuth();
   const { isBaseApproved, isEurApproved, isPending } = useEndorsements();
   const { data: customer } = useBridgeCustomer();
+  const { data: dueVirtualAccounts, isLoading: isDueLoading } =
+    useDueVirtualAccounts({
+      enabled: !!user?.id,
+    });
   const { data: account } = useACHWireDetails(user?.id ?? '', {
     enabled: !isPending && !!user?.id && isBaseApproved,
   });
@@ -136,6 +141,11 @@ export const AccountsPageContent = () => {
           <AutomaticVerificationTabs />
         )}
       </div>
+
+      <DueVirtualAccountsSection
+        accounts={dueVirtualAccounts ?? []}
+        isLoading={isDueLoading}
+      />
     </div>
   );
 };
@@ -210,6 +220,53 @@ const RetryAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
           ? 'Retrying...'
           : `Retry ${type.toUpperCase()} Account`}
       </Button>
+    </Card>
+  );
+};
+
+const DueVirtualAccountsSection = ({
+  accounts,
+  isLoading,
+}: {
+  accounts: Array<{ id: string; schema: string; account: Record<string, unknown> }>;
+  isLoading: boolean;
+}) => {
+  if (isLoading) {
+    return (
+      <Card className='flex size-full flex-col gap-4 p-6'>
+        <p className='text-muted-foreground text-sm'>Loading Due accounts...</p>
+      </Card>
+    );
+  }
+
+  if (accounts.length === 0) {
+    return (
+      <Card className='flex size-full flex-col gap-4 p-6'>
+        <p className='text-muted-foreground text-sm'>
+          No Due virtual accounts found yet.
+        </p>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className='flex size-full flex-col gap-4 p-6'>
+      <div>
+        <h3 className='text-lg font-semibold'>Due virtual accounts</h3>
+        <p className='text-muted-foreground text-sm'>
+          Use these details for fiat on-ramping.
+        </p>
+      </div>
+      <div className='grid gap-4 md:grid-cols-2'>
+        {accounts.map((account) => (
+          <Card key={account.id} className='p-4'>
+            <p className='text-sm font-semibold uppercase'>{account.schema}</p>
+            <pre className='mt-2 max-h-64 overflow-auto rounded-md bg-muted p-3 text-xs'>
+              {JSON.stringify(account.account, null, 2)}
+            </pre>
+          </Card>
+        ))}
+      </div>
     </Card>
   );
 };

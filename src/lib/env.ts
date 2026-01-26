@@ -5,6 +5,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'test']),
     NEXT_PUBLIC_SORBET_API_URL: z.string().url(),
+    NEXT_PUBLIC_DUE_BASE_URL: z.string().url(),
     NEXT_PUBLIC_GOOGLE_MAP_KEY: z.string(),
     NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY: z.string(),
     NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID: z.string(),
@@ -20,6 +21,7 @@ export const env = createEnv({
   experimental__runtimeEnv: {
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     NEXT_PUBLIC_SORBET_API_URL: process.env.NEXT_PUBLIC_SORBET_API_URL,
+    NEXT_PUBLIC_DUE_BASE_URL: process.env.NEXT_PUBLIC_DUE_BASE_URL,
     NEXT_PUBLIC_GOOGLE_MAP_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY,
     NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY:
       process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY,
