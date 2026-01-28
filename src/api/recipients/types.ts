@@ -1,13 +1,112 @@
 import { BankRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/bank-recipient-form';
 import { CryptoRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/crypto-recipient-form';
 
-export type RecipientType = 'usd' | 'eur' | 'crypto';
+// New Due Network payment method types
+export type DuePaymentMethod =
+  | 'usd_ach'
+  | 'usd_wire'
+  | 'usd_swift'
+  | 'eur_sepa'
+  | 'eur_swift'
+  | 'aed_local';
+
+// Legacy Bridge types (for backward compatibility)
+export type LegacyRecipientType = 'usd' | 'eur';
+
+// All recipient types
+export type RecipientType = DuePaymentMethod | LegacyRecipientType | 'crypto';
+
+// Due schema mapping
+export type DueSchema = 'bank_us' | 'bank_sepa' | 'bank_swift' | 'bank_mena';
+
+// Payment method option for UI selection
+export interface PaymentMethodOption {
+  id: DuePaymentMethod;
+  label: string;
+  currency: string;
+  rail: string;
+  schema: DueSchema;
+  // Country code for CircleFlag (ISO 3166-1 alpha-2)
+  flagCountryCode: string;
+}
+
+export const PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
+  {
+    id: 'usd_ach',
+    label: 'USD (ACH)',
+    currency: 'USD',
+    rail: 'ach',
+    flagCountryCode: 'us',
+    schema: 'bank_us',
+  },
+  {
+    id: 'usd_wire',
+    label: 'USD (WIRE)',
+    currency: 'USD',
+    rail: 'wire',
+    flagCountryCode: 'us',
+    schema: 'bank_us',
+  },
+  {
+    id: 'usd_swift',
+    label: 'USD (SWIFT)',
+    currency: 'USD',
+    rail: 'swift',
+    flagCountryCode: 'us',
+    schema: 'bank_swift',
+  },
+  {
+    id: 'eur_sepa',
+    label: 'EUR (SEPA)',
+    currency: 'EUR',
+    rail: 'sepa',
+    flagCountryCode: 'eu',
+    schema: 'bank_sepa',
+  },
+  {
+    id: 'eur_swift',
+    label: 'EUR (SWIFT)',
+    currency: 'EUR',
+    rail: 'swift',
+    flagCountryCode: 'eu',
+    schema: 'bank_swift',
+  },
+  {
+    id: 'aed_local',
+    label: 'AED (Local Transfer)',
+    currency: 'AED',
+    rail: 'local',
+    flagCountryCode: 'ae',
+    schema: 'bank_mena',
+  },
+];
 
 /** Data sent to the API to create a recipient */
 export type CreateRecipientDto =
+  | { type: DuePaymentMethod; values: BankRecipientFormValues }
+  | { type: 'crypto'; values: CryptoRecipientFormValues }
+  // Legacy types for backward compatibility
   | { type: 'usd'; values: BankRecipientFormValues }
-  | { type: 'eur'; values: BankRecipientFormValues }
-  | { type: 'crypto'; values: CryptoRecipientFormValues };
+  | { type: 'eur'; values: BankRecipientFormValues };
+
+/** Data sent to the API to migrate a Bridge recipient to Due Network */
+export interface MigrateRecipientDto {
+  paymentMethod: 'usd_ach' | 'eur_sepa' | 'aed_local';
+  accountNumber?: string; // Required for USD
+  routingNumber?: string; // Required for USD if Bridge data unavailable
+  iban?: string; // Required for EUR/AED
+  beneficiaryAddress?: {
+    street_line_1: string;
+    street_line_2?: string;
+    city?: string;
+    state?: string;
+    postal_code?: string;
+    country?: string;
+  };
+  minimalAddress?: {
+    street_line_1: string;
+  };
+}
 
 /** Recipients received from the API */
 type RecipientAPIBase = {
@@ -27,9 +126,14 @@ type RecipientAPIBase = {
 };
 
 type RecipientAPIBank = RecipientAPIBase & {
-  type: 'usd' | 'eur';
-  liquidationAddressId: string;
-  externalAccountId: string;
+  type: DuePaymentMethod | 'usd' | 'eur';
+  // Bridge-specific (legacy)
+  liquidationAddressId?: string;
+  externalAccountId?: string;
+  // Due-specific (new)
+  dueRecipientId?: string;
+  dueSchema?: DueSchema;
+  provider?: 'bridge' | 'due';
 };
 
 type RecipientAPICrypto = RecipientAPIBase & {
@@ -38,10 +142,50 @@ type RecipientAPICrypto = RecipientAPIBase & {
 
 export type RecipientAPI = RecipientAPIBank | RecipientAPICrypto;
 
-/** When fetching the details For a specific recipient, we get back a liquidation address and an external account. */
+/** Due recipient details returned from Due Network API */
+export type DueRecipientDetails = {
+  id: string;
+  name: string;
+  email?: string;
+  country?: string;
+  details: {
+    schema: DueSchema;
+    accountType?: 'individual' | 'business';
+    firstName?: string;
+    lastName?: string;
+    companyName?: string;
+    // US bank fields
+    accountNumber?: string;
+    routingNumber?: string;
+    // SWIFT fields
+    swiftCode?: string;
+    swiftAccountNumber?: string;
+    currency?: string;
+    // IBAN fields (SEPA, MENA)
+    IBAN?: string;
+    // Address
+    beneficiaryAddress?: {
+      street_line_1?: string;
+      street_line_2?: string;
+      city?: string;
+      state?: string;
+      postal_code?: string;
+      country?: string;
+    };
+    [key: string]: unknown;
+  };
+  isExternal: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/** When fetching the details for a specific recipient, we get back provider-specific details */
 export type RecipientAPIBankDetailed = RecipientAPIBank & {
-  liquidationAddress: LiquidationAddress;
-  externalAccount: ExternalAccount;
+  // Bridge-specific (legacy)
+  liquidationAddress?: LiquidationAddress;
+  externalAccount?: ExternalAccount;
+  // Due Network-specific (new)
+  dueRecipient?: DueRecipientDetails;
 };
 
 /** A liquidation address record received from bridge. Type could be not completely correct. */
