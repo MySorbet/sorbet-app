@@ -5,6 +5,7 @@ import { env } from '@/lib/env';
 import { withAuthHeader } from '../with-auth-header';
 import {
   CreateRecipientDto,
+  MigrateRecipientDto,
   RecipientAPI,
   RecipientAPIBankDetailed,
   RecipientTransfer,
@@ -49,6 +50,18 @@ export const recipientsApi = {
   getRecipientTransfers: async (recipientId: string) => {
     const response = await axios.get<RecipientTransfer[]>(
       `${API_URL}/recipients/${recipientId}/transfers`,
+      await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  /**
+   * Migrate a Bridge recipient to Due Network
+   */
+  migrate: async (recipientId: string, data: MigrateRecipientDto) => {
+    const response = await axios.post<RecipientAPI>(
+      `${API_URL}/recipients/${recipientId}/migrate`,
+      data,
       await withAuthHeader()
     );
     return response.data;
