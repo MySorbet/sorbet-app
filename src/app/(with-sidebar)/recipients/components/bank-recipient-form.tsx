@@ -1,9 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Check, Lock } from 'lucide-react';
-import Link from 'next/link';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import {
   useForm,
   useFormContext,
@@ -13,7 +11,15 @@ import {
 import { isISO31661Alpha3 } from 'validator';
 import * as z from 'zod';
 
+import {
+  DuePaymentMethod,
+  PAYMENT_METHOD_OPTIONS,
+  PaymentMethodOption,
+} from '@/api/recipients/types';
+import { iso31661 } from 'iso-3166';
+
 import { CountryDropdown } from '@/app/(with-sidebar)/recipients/components/country-dropdown';
+import { StateSelect } from '@/app/(with-sidebar)/recipients/components/state-select';
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
@@ -28,143 +34,327 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
-import {
-  addressDefaultValues,
-  AddressFormFields,
-  addressSchema,
-} from './address-form';
+import { PaymentMethodSelector } from './payment-method-selector';
 import { removeEmptyStrings } from './utils';
 
-const usAccountSchema = z.object({
-  account_number: z.string().min(1, 'Account number is required'),
-  routing_number: z
-    .string()
-    .length(9, 'Routing number must be exactly 9 characters'),
-  checking_or_savings: z.string().optional().default('checking'),
-});
-type USAccount = z.infer<typeof usAccountSchema>;
+// ============================================
+// Schemas for different account types
+// ============================================
 
-const usAccountDefaultValues: USAccount = {
-  account_number: '',
-  routing_number: '',
-  checking_or_savings: 'checking',
-};
-
-const IBANAccountSchema = z.object({
-  account_number: z
-    .string()
-    .min(1, 'Account number is required')
-    .transform((s) => s.replace(/\s+/g, '')), // remove whitespace
-  bic: z.string().optional(),
-  country: z.string().refine((val) => isISO31661Alpha3(val), {
-    message: 'Invalid country code',
-  }),
-});
-type IBANAccount = z.infer<typeof IBANAccountSchema>;
-
-const IBANAccountDefaultValues: IBANAccount = {
-  account_number: '',
-  bic: '',
-  country: '',
-};
-
-const formSchemaBase = z.object({
-  currency: z.enum(['usd', 'eur']), // Corresponds to to account_type us and iban (added on submit)
-  bank_name: z.string().min(1).max(256).optional(),
-  // Note that first and last will be combined to form account_owner_name.
-  // This is why we require the most strict validation on both.
-  first_name: z
-    .string()
-    .min(3)
-    .max(35)
-    // See https://apidocs.bridge.xyz/reference/post_customers-customerid-external-accounts
-    .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
-      message: 'Name contains invalid characters',
-    }),
-  last_name: z
-    .string()
-    .min(3)
-    .max(35)
-    .regex(/^(?!\s*$)[\x20-\x7E]*$/, {
-      message: 'Name contains invalid characters',
-    }),
-  // TODO: Better validation would be to check the combined length of fist and last is between 3 and 35 characters
-
-  // Required when currency is eur, but we will just always send a default of individual
-  account_owner_type: z.enum(['individual', 'business']),
-
-  // Required when account_owner_type is business
-  business_name: z.string().optional(),
-
-  // Discriminated union below
-  account: usAccountSchema.optional(),
-  iban: IBANAccountSchema.optional(),
-
-  // Address
-  ...addressSchema.shape,
+// US Bank Account (ACH/Wire) - allows empty strings, actual validation in superRefine
+const usBankSchema = z.object({
+  accountNumber: z.string(),
+  routingNumber: z.string(),
 });
 
-const formSchemaUSD = z.object({
-  ...formSchemaBase.shape,
-  currency: z.literal('usd'),
-  account: usAccountSchema,
+// SWIFT Account - allows empty strings, actual validation in superRefine
+const swiftSchema = z.object({
+  swiftCode: z.string(),
+  swiftAccountNumber: z.string(),
 });
 
-const formSchemaEUR = z.object({
-  ...formSchemaBase.shape,
-  currency: z.literal('eur'),
-  iban: IBANAccountSchema,
+// IBAN Account (SEPA/MENA) - allows empty strings, actual validation in superRefine
+const ibanSchema = z.object({
+  IBAN: z.string().transform((s) => s.replace(/\s+/g, '').toUpperCase()),
 });
+
+// Full beneficiary address - allows empty strings, actual validation in superRefine
+const fullAddressSchema = z.object({
+  street_line_1: z.string(),
+  street_line_2: z.string().optional(),
+  city: z.string(),
+  state: z.string().optional(),
+  postal_code: z.string(),
+  country: z.string(),
+});
+
+// Minimal address (AED only needs street) - allows empty strings, actual validation in superRefine
+const minimalAddressSchema = z.object({
+  street_line_1: z.string(),
+});
+
+// ============================================
+// Main form schema
+// ============================================
 
 const formSchema = z
-  .discriminatedUnion('currency', [formSchemaUSD, formSchemaEUR])
-  .superRefine(({ account_owner_type, business_name }, ctx) => {
-    if (account_owner_type === 'business' && business_name === '') {
-      // TODO: Perhaps this could be done with composition instead?
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Business name is required for business accounts',
-        path: ['business_name'],
-      });
+  .object({
+    // Payment method selection
+    paymentMethod: z.enum([
+      'usd_ach',
+      'usd_wire',
+      'usd_swift',
+      'eur_sepa',
+      'eur_swift',
+      'aed_local',
+    ] as const),
+
+    // Account type (individual/business)
+    accountType: z.enum(['individual', 'business']),
+
+    // Name fields
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    companyName: z.string().optional(),
+
+    // US Bank fields (ACH/Wire)
+    usBank: usBankSchema.optional(),
+
+    // SWIFT fields
+    swift: swiftSchema.optional(),
+
+    // IBAN field (SEPA/MENA)
+    iban: ibanSchema.optional(),
+
+    // Address fields
+    beneficiaryAddress: fullAddressSchema.optional(),
+    minimalAddress: minimalAddressSchema.optional(),
+  })
+  .superRefine((data, ctx) => {
+    // Validate name based on account type
+    if (data.accountType === 'individual') {
+      if (!data.firstName || data.firstName.length < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'First name is required',
+          path: ['firstName'],
+        });
+      }
+      if (!data.lastName || data.lastName.length < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Last name is required',
+          path: ['lastName'],
+        });
+      }
+    } else {
+      if (!data.companyName || data.companyName.length < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Company name is required',
+          path: ['companyName'],
+        });
+      }
+    }
+
+    // Validate fields based on payment method
+    const method = data.paymentMethod;
+
+    // US Bank required for ACH/Wire
+    if (['usd_ach', 'usd_wire'].includes(method)) {
+      const accountNumber = data.usBank?.accountNumber?.trim();
+      const routingNumber = data.usBank?.routingNumber?.trim();
+      
+      if (!accountNumber) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Account number is required',
+          path: ['usBank', 'accountNumber'],
+        });
+      }
+      if (!routingNumber) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Routing number is required',
+          path: ['usBank', 'routingNumber'],
+        });
+      } else if (routingNumber.length !== 9 || !/^\d+$/.test(routingNumber)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Routing number must be exactly 9 digits',
+          path: ['usBank', 'routingNumber'],
+        });
+      }
+      
+      const streetAddress = data.beneficiaryAddress?.street_line_1?.trim();
+      if (!streetAddress || streetAddress.length < 5) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Street address is required',
+          path: ['beneficiaryAddress', 'street_line_1'],
+        });
+      }
+      if (!data.beneficiaryAddress?.city?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'City is required',
+          path: ['beneficiaryAddress', 'city'],
+        });
+      }
+      if (!data.beneficiaryAddress?.postal_code?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Postal code is required',
+          path: ['beneficiaryAddress', 'postal_code'],
+        });
+      }
+    }
+
+    // SWIFT required for USD/EUR SWIFT
+    if (['usd_swift', 'eur_swift'].includes(method)) {
+      const swiftCode = data.swift?.swiftCode?.trim();
+      const swiftAccountNumber = data.swift?.swiftAccountNumber?.trim();
+      
+      if (!swiftCode) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'SWIFT code is required',
+          path: ['swift', 'swiftCode'],
+        });
+      } else if (swiftCode.length < 8 || swiftCode.length > 11 || !/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/i.test(swiftCode)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Invalid SWIFT/BIC code',
+          path: ['swift', 'swiftCode'],
+        });
+      }
+      if (!swiftAccountNumber) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Account number is required',
+          path: ['swift', 'swiftAccountNumber'],
+        });
+      }
+      
+      const streetAddress = data.beneficiaryAddress?.street_line_1?.trim();
+      if (!streetAddress || streetAddress.length < 5) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Street address is required',
+          path: ['beneficiaryAddress', 'street_line_1'],
+        });
+      }
+      if (!data.beneficiaryAddress?.city?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'City is required',
+          path: ['beneficiaryAddress', 'city'],
+        });
+      }
+      if (!data.beneficiaryAddress?.postal_code?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Postal code is required',
+          path: ['beneficiaryAddress', 'postal_code'],
+        });
+      }
+    }
+
+    // IBAN required for SEPA
+    if (method === 'eur_sepa') {
+      const ibanValue = data.iban?.IBAN?.trim();
+      if (!ibanValue) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'IBAN is required',
+          path: ['iban', 'IBAN'],
+        });
+      } else if (ibanValue.length < 15 || ibanValue.length > 34) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'IBAN must be 15-34 characters',
+          path: ['iban', 'IBAN'],
+        });
+      }
+      // SEPA doesn't require address
+    }
+
+    // IBAN + minimal address required for AED
+    if (method === 'aed_local') {
+      const ibanValue = data.iban?.IBAN?.trim();
+      if (!ibanValue) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'IBAN is required',
+          path: ['iban', 'IBAN'],
+        });
+      } else if (ibanValue.length < 15 || ibanValue.length > 34) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'IBAN must be 15-34 characters',
+          path: ['iban', 'IBAN'],
+        });
+      }
+      const minimalAddressValue = data.minimalAddress?.street_line_1?.trim();
+      if (!minimalAddressValue || minimalAddressValue.length < 5) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Street address is required (min 5 characters)',
+          path: ['minimalAddress', 'street_line_1'],
+        });
+      }
     }
   });
 
 export type BankRecipientFormValuesInternal = z.infer<typeof formSchema>;
-export type BankRecipientFormValues = BankRecipientFormValuesInternal & {
-  account_type: 'us' | 'iban';
-  account_owner_name: string;
-};
 
-const bankRecipientDefaultValues: BankRecipientFormValuesInternal = {
-  currency: 'usd',
-  account_owner_type: 'individual',
-  bank_name: '',
-  business_name: '',
-  first_name: '',
-  last_name: '',
-  account: usAccountDefaultValues,
-  ...addressDefaultValues,
+// Output type for submission to API
+export type BankRecipientFormValues = BankRecipientFormValuesInternal;
+
+const defaultValues: BankRecipientFormValuesInternal = {
+  paymentMethod: 'usd_ach',
+  accountType: 'individual',
+  firstName: '',
+  lastName: '',
+  companyName: '',
+  usBank: {
+    accountNumber: '',
+    routingNumber: '',
+  },
+  swift: {
+    swiftCode: '',
+    swiftAccountNumber: '',
+  },
+  iban: {
+    IBAN: '',
+  },
+  beneficiaryAddress: {
+    street_line_1: '',
+    street_line_2: '',
+    city: '',
+    state: '',
+    postal_code: '',
+    country: 'USA',
+  },
+  minimalAddress: {
+    street_line_1: '',
+  },
 };
 
 export const BankRecipientFormContext = ({
   children,
+  initialValues,
 }: {
   children: React.ReactNode;
+  initialValues?: Partial<BankRecipientFormValuesInternal>;
 }) => {
   const form = useForm<BankRecipientFormValuesInternal>({
     resolver: zodResolver(formSchema),
-    defaultValues: bankRecipientDefaultValues,
-    mode: 'onBlur',
+    defaultValues: {
+      ...defaultValues,
+      ...initialValues,
+      // Merge nested objects properly
+      usBank: initialValues?.usBank
+        ? { ...defaultValues.usBank, ...initialValues.usBank }
+        : defaultValues.usBank,
+      swift: initialValues?.swift
+        ? { ...defaultValues.swift, ...initialValues.swift }
+        : defaultValues.swift,
+      iban: initialValues?.iban
+        ? { ...defaultValues.iban, ...initialValues.iban }
+        : defaultValues.iban,
+      beneficiaryAddress: initialValues?.beneficiaryAddress
+        ? { ...defaultValues.beneficiaryAddress, ...initialValues.beneficiaryAddress }
+        : defaultValues.beneficiaryAddress,
+      minimalAddress: initialValues?.minimalAddress
+        ? { ...defaultValues.minimalAddress, ...initialValues.minimalAddress }
+        : defaultValues.minimalAddress,
+    },
+    mode: 'onChange',
+    reValidateMode: 'onChange',
   });
 
   return <Form {...form}>{children}</Form>;
@@ -173,49 +363,66 @@ export const BankRecipientFormContext = ({
 const useBankRecipientForm = () =>
   useFormContext<BankRecipientFormValuesInternal>();
 
-/** The ID of the bank recipient form. Used to link the form to the submit button */
 const BANK_RECIPIENT_FORM_ID = 'bank-recipient-form';
-
-// Add the remaining values we need to send this to bridge
-// TODO: We are in active conversation with bridge about if we are required to include first_name and last_name
-// If so, we can either extract them from the account_owner_name
-// or we can change the form to include them and build account_owner_name from them
-// For now, we will omit them since EA's seem to work without them
-const inferRemainingValues = (
-  values: BankRecipientFormValuesInternal
-): BankRecipientFormValues => {
-  return {
-    ...values,
-    account_type: values.currency === 'usd' ? 'us' : 'iban',
-    account_owner_name: `${values.first_name} ${values.last_name}`,
-  };
-};
 
 /**
  * The bank recipient form without a form context or submit button
- *
- * Use within a BankRecipientFormContext
  */
 export const NakedBankRecipientForm = ({
   onSubmit,
-  eurLocked,
 }: {
   onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
-  eurLocked?: boolean;
+  eurLocked?: boolean; // Kept for backward compatibility, but no longer used
 }) => {
-  async function handleSubmit(values: BankRecipientFormValuesInternal) {
-    const cleanedValues = removeEmptyStrings(values); // Clean the values by removing empty strings recursively
-    const transformedValues = inferRemainingValues(cleanedValues); // Infer the remaining values bridge needs
-    await onSubmit?.(transformedValues);
-  }
-
   const form = useBankRecipientForm();
 
-  const { account_owner_type, currency } = useWatch({ control: form.control });
-  const showBusinessName = account_owner_type === 'business';
+  const watchedValues = useWatch({ control: form.control });
+  const paymentMethod = watchedValues.paymentMethod ?? 'usd_ach';
+  const accountType = watchedValues.accountType ?? 'individual';
 
-  const showIBAN = currency === 'eur';
-  const showAccount = currency === 'usd';
+  // Determine which fields to show based on payment method
+  const showUSBank = ['usd_ach', 'usd_wire'].includes(paymentMethod);
+  const showSwift = ['usd_swift', 'eur_swift'].includes(paymentMethod);
+  const showIBAN = ['eur_sepa', 'eur_swift', 'aed_local'].includes(paymentMethod);
+  const showFullAddress = [
+    'usd_ach',
+    'usd_wire',
+    'usd_swift',
+    'eur_swift',
+  ].includes(paymentMethod);
+  const showMinimalAddress = paymentMethod === 'aed_local';
+  const showBusinessName = accountType === 'business';
+
+  // Get selected payment method info
+  const selectedMethod = useMemo(
+    () => PAYMENT_METHOD_OPTIONS.find((m) => m.id === paymentMethod),
+    [paymentMethod]
+  );
+
+  // Get the alpha2 code of the selected country for StateSelect
+  const country = watchedValues.beneficiaryAddress?.country ?? 'USA';
+  const countryAlpha2 = useMemo(
+    () => iso31661.find((c) => c.alpha3 === country)?.alpha2,
+    [country]
+  );
+
+  async function handleSubmit(values: BankRecipientFormValuesInternal) {
+    const cleanedValues = removeEmptyStrings(values);
+    await onSubmit?.(cleanedValues);
+  }
+
+  const handlePaymentMethodChange = (method: PaymentMethodOption) => {
+    form.setValue('paymentMethod', method.id, { shouldValidate: true });
+
+    // Reset country based on payment method
+    if (['usd_ach', 'usd_wire', 'usd_swift'].includes(method.id)) {
+      form.setValue('beneficiaryAddress.country', 'USA');
+    } else if (['eur_sepa', 'eur_swift'].includes(method.id)) {
+      form.setValue('beneficiaryAddress.country', 'DEU'); // Default to Germany for EUR
+    } else if (method.id === 'aed_local') {
+      form.setValue('beneficiaryAddress.country', 'ARE');
+    }
+  };
 
   return (
     <form
@@ -223,145 +430,45 @@ export const NakedBankRecipientForm = ({
       className='mx-auto w-full max-w-sm space-y-4 p-1'
       id={BANK_RECIPIENT_FORM_ID}
     >
+      {/* Payment Method Selection */}
       <FormField
         control={form.control}
-        name='currency'
-        render={({ field }) => (
+        name='paymentMethod'
+        render={() => (
           <FormItem>
             <div className='flex h-5 items-center gap-1'>
-              <FormLabel>Currency</FormLabel>
+              <FormLabel>Payment Method</FormLabel>
               <InfoTooltip>
-                Bank must be able to receive {currency?.toUpperCase()}
+                Select how you want to send funds to this recipient
               </InfoTooltip>
             </div>
-            <Select
-              onValueChange={(value) => {
-                field.onChange(value);
-                // Set default values and reset opposite account on change
-                if (value === 'usd') {
-                  form.setValue('account', usAccountDefaultValues, {
-                    shouldDirty: true,
-                  });
-                  form.setValue('iban', undefined, {
-                    shouldDirty: true,
-                  });
-                } else {
-                  form.setValue('iban', IBANAccountDefaultValues, {
-                    shouldDirty: true,
-                  });
-                  form.setValue('account', undefined, { shouldDirty: true });
-                }
-              }}
-              defaultValue={field.value}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder='Select a currency' />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value='usd'>USD</SelectItem>
-                {!eurLocked ? (
-                  <SelectItem value='eur'>EUR</SelectItem>
-                ) : (
-                  // Temp EUR CTA to goto verify
-                  <Link
-                    href='/verify'
-                    className='focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground relative flex w-full cursor-default select-none flex-col items-start rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none'
-                  >
-                    {eurLocked && (
-                      <span className='absolute left-2 flex items-center justify-center'>
-                        <Lock className='size-4' />
-                      </span>
-                    )}
-                    EUR
-                    {eurLocked && (
-                      <p className='text-muted-foreground text-xs'>
-                        Visit the verification page to unlock EUR recipients
-                      </p>
-                    )}
-                  </Link>
-                )}
-              </SelectContent>
-            </Select>
+            <PaymentMethodSelector
+              value={paymentMethod}
+              onChange={handlePaymentMethodChange}
+            />
             <FormMessage />
           </FormItem>
         )}
       />
 
+      {/* Account Type Selection */}
       <FormField
         control={form.control}
-        name='bank_name'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Bank name</FormLabel>
-            <FormControl>
-              <Input placeholder='The official name of your bank' {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      {/* Recipient's Info Section */}
-      <div className='space-y-3 border-y border-[#E4E4E7] py-4'>
-        <Label>Recipient&apos;s Info</Label>
-        <FormField
-          control={form.control}
-          name='first_name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>First name</FormLabel>
-              <FormControl>
-                <Input placeholder="Recipient's first name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='last_name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last name</FormLabel>
-              <FormControl>
-                <Input placeholder="Recipient's last name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <FormField
-        control={form.control}
-        name='account_owner_type'
+        name='accountType'
         render={({ field }) => (
           <FormItem className='space-y-3'>
-            <FormLabel>Type</FormLabel>
+            <FormLabel>Account Type</FormLabel>
             <FormControl>
-              <Tabs onValueChange={field.onChange} defaultValue={field.value}>
+              <Tabs
+                onValueChange={field.onChange}
+                value={field.value}
+                className='w-full'
+              >
                 <TabsList className='w-full'>
-                  <TabsTrigger
-                    value='individual'
-                    className='flex-1'
-                    onClick={() => {
-                      form.setValue('business_name', '', {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      });
-                    }}
-                  >
+                  <TabsTrigger value='individual' className='flex-1'>
                     Individual
                   </TabsTrigger>
-                  <TabsTrigger
-                    value='business'
-                    className='flex-1'
-                    onClick={() => {
-                      form.trigger('business_name', { shouldFocus: true });
-                    }}
-                  >
+                  <TabsTrigger value='business' className='flex-1'>
                     Business
                   </TabsTrigger>
                 </TabsList>
@@ -372,31 +479,19 @@ export const NakedBankRecipientForm = ({
         )}
       />
 
-      {/* US Account */}
-      {showAccount && (
-        <Card>
-          <CardContent className='space-y-3 p-6'>
+      {/* Name Fields */}
+      <div className='space-y-3 border-y border-[#E4E4E7] py-4'>
+        <Label>Recipient&apos;s Info</Label>
+        {accountType === 'individual' ? (
+          <div className='grid grid-cols-2 gap-3'>
             <FormField
               control={form.control}
-              name='account.checking_or_savings'
+              name='firstName'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Account Type</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <div className='flex gap-2'>
-                      <AccountTypeButton
-                        selected={field.value === 'checking'}
-                        onClick={() => field.onChange('checking')}
-                      >
-                        Checking
-                      </AccountTypeButton>
-                      <AccountTypeButton
-                        selected={field.value === 'savings'}
-                        onClick={() => field.onChange('savings')}
-                      >
-                        Savings
-                      </AccountTypeButton>
-                    </div>
+                    <Input placeholder='John' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -404,10 +499,101 @@ export const NakedBankRecipientForm = ({
             />
             <FormField
               control={form.control}
-              name='account.account_number'
+              name='lastName'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Account number</FormLabel>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Doe' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        ) : (
+          <FormField
+            control={form.control}
+            name='companyName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Name</FormLabel>
+                <FormControl>
+                  <Input placeholder='Acme Inc.' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+      </div>
+
+      {/* US Bank Fields (ACH/Wire) */}
+      {showUSBank && (
+        <Card>
+          <CardContent className='space-y-3 p-4'>
+            <Label className='text-sm font-medium'>Bank Details</Label>
+            <FormField
+              control={form.control}
+              name='usBank.accountNumber'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder='123456789' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='usBank.routingNumber'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Routing Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder='021000021' maxLength={9} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* SWIFT Fields */}
+      {showSwift && (
+        <Card>
+          <CardContent className='space-y-3 p-4'>
+            <Label className='text-sm font-medium'>SWIFT Details</Label>
+            <FormField
+              control={form.control}
+              name='swift.swiftCode'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>SWIFT/BIC Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='DEUTDEFF'
+                      maxLength={11}
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='swift.swiftAccountNumber'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Number</FormLabel>
                   <FormControl>
                     <Input placeholder='Account number' {...field} />
                   </FormControl>
@@ -415,14 +601,35 @@ export const NakedBankRecipientForm = ({
                 </FormItem>
               )}
             />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* IBAN Field */}
+      {showIBAN && (
+        <Card>
+          <CardContent className='space-y-3 p-4'>
+            <Label className='text-sm font-medium'>
+              {paymentMethod === 'eur_sepa' ? 'SEPA Details' : 'Bank Details'}
+            </Label>
             <FormField
               control={form.control}
-              name='account.routing_number'
+              name='iban.IBAN'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Routing number</FormLabel>
+                  <FormLabel>IBAN</FormLabel>
                   <FormControl>
-                    <Input placeholder='Routing number' {...field} />
+                    <Input
+                      placeholder={
+                        paymentMethod === 'aed_local'
+                          ? 'AE12 3456 7890 1234 5678 901'
+                          : 'DE89 3704 0044 0532 0130 00'
+                      }
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -432,33 +639,24 @@ export const NakedBankRecipientForm = ({
         </Card>
       )}
 
-      {/* IBAN */}
-      {showIBAN && (
+      {/* Full Address Fields */}
+      {showFullAddress && (
         <Card>
-          <CardContent className='space-y-3 p-6'>
-            {showBusinessName && (
-              <FormField
-                control={form.control}
-                name='business_name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Business Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Business Name' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+          <CardContent className='space-y-3 p-4'>
+            <div className='flex h-5 items-center gap-1'>
+              <Label className='text-sm font-medium'>Beneficiary Address</Label>
+              <InfoTooltip>
+                Address of the account holder
+              </InfoTooltip>
+            </div>
             <FormField
               control={form.control}
-              name='iban.account_number'
+              name='beneficiaryAddress.street_line_1'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>IBAN</FormLabel>
+                  <FormLabel>Complete Street Address</FormLabel>
                   <FormControl>
-                    <Input placeholder='IBAN' {...field} />
+                    <Input placeholder='123 Main Street' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -466,52 +664,108 @@ export const NakedBankRecipientForm = ({
             />
             <FormField
               control={form.control}
-              name='iban.bic'
+              name='beneficiaryAddress.country'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bank Identifier Code</FormLabel>
-                  <FormControl>
-                    <Input placeholder='BIC' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='iban.country'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='flex h-5 items-center gap-1'>
-                    <FormLabel>Country</FormLabel>
-                    <InfoTooltip>
-                      Country in which the bank account is located
-                    </InfoTooltip>
-                  </div>
+                  <FormLabel>Country</FormLabel>
                   <CountryDropdown
-                    placeholder='Select a country'
+                    placeholder='Select country'
                     defaultValue={field.value}
                     onChange={(country) => {
                       field.onChange(country.alpha3);
+                      // Reset the state when country changes
+                      form.setValue('beneficiaryAddress.state', '', {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
                     }}
                   />
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className='grid grid-cols-2 gap-3'>
+              <FormField
+                control={form.control}
+                name='beneficiaryAddress.state'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State/Province</FormLabel>
+                    <FormControl>
+                      <StateSelect
+                        value={field.value}
+                        onChange={field.onChange}
+                        parent={countryAlpha2}
+                        disabled={!countryAlpha2}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='beneficiaryAddress.city'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input placeholder='New York' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name='beneficiaryAddress.postal_code'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Postal Code</FormLabel>
+                  <FormControl>
+                    <Input placeholder='10001' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
       )}
 
-      <AddressFormFields />
+      {/* Minimal Address (AED only) */}
+      {showMinimalAddress && (
+        <Card>
+          <CardContent className='space-y-3 p-4'>
+            <div className='flex h-5 items-center gap-1'>
+              <Label className='text-sm font-medium'>Beneficiary Address</Label>
+              <InfoTooltip>
+                Street address of the account holder
+              </InfoTooltip>
+            </div>
+            <FormField
+              control={form.control}
+              name='minimalAddress.street_line_1'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Street Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder='123 Sheikh Zayed Road' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      )}
     </form>
   );
 };
 
 /**
  * Submit button for the bank recipient form
- *
- * Use within a BankRecipientFormContext
  */
 export const BankRecipientSubmitButton = forwardRef<
   HTMLButtonElement,
@@ -536,35 +790,3 @@ export const BankRecipientSubmitButton = forwardRef<
   );
 });
 BankRecipientSubmitButton.displayName = 'BankRecipientSubmitButton';
-
-/** Card button for selecting account type (Checking/Savings) */
-const AccountTypeButton = ({
-  selected,
-  onClick,
-  children,
-}: {
-  selected: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) => {
-  return (
-    <button
-      type='button'
-      onClick={onClick}
-      className={cn(
-        'flex flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all',
-        'focus:outline-none',
-        selected
-          ? 'border-sorbet bg-sorbet/5 text-foreground'
-          : 'border-neutral-lighter bg-white text-foreground hover:bg-neutral-lightest focus:ring-2 focus:ring-sorbet focus:ring-offset-2'
-      )}
-    >
-      {selected && (
-        <div className='flex size-5 items-center justify-center rounded-full bg-sorbet'>
-          <Check className='size-3 text-white' />
-        </div>
-      )}
-      {children}
-    </button>
-  );
-};
