@@ -9,11 +9,10 @@ import { isCryptoFormValues } from '@/app/(with-sidebar)/recipients/components/u
 import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useIsVerified } from '@/hooks/profile/use-is-verified';
+import { useDueVerified } from '@/hooks/profile/use-due-verified';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
-import { useEndorsements } from '../hooks/use-endorsements';
 import {
   BankRecipientFormContext,
   BankRecipientFormValues,
@@ -57,9 +56,11 @@ export const AddRecipientSheet = ({
   const handleSubmit = async (
     values: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
-    return isCryptoFormValues(values)
-      ? await onSubmit?.({ type: 'crypto', values })
-      : await onSubmit?.({ type: values.currency, values });
+    if (isCryptoFormValues(values)) {
+      return await onSubmit?.({ type: 'crypto', values });
+    }
+    // Bank recipient - use the paymentMethod from form values
+    return await onSubmit?.({ type: values.paymentMethod, values });
   };
 
   const isMobile = useIsMobile();
@@ -104,7 +105,7 @@ const BankOrCrypto = ({
 }) => {
   // Below, we set up a redirect to the verify page for unverified users
   // Eventually, we want to do an "inline verification" within the drawer or sheet
-  const isVerified = useIsVerified();
+  const { isVerified } = useDueVerified();
   const router = useRouter();
   const handleBankClick = () => {
     if (isVerified) {
@@ -177,8 +178,6 @@ const BankRecipientStep = ({
   className?: string;
   onSubmit?: (values: BankRecipientFormValues) => Promise<void>;
 }) => {
-  const { isEurApproved } = useEndorsements();
-
   return (
     <>
       <VaulSheetHeader>
@@ -188,10 +187,7 @@ const BankRecipientStep = ({
       <BankRecipientFormContext>
         <ScrollAreaHack>
           <div className={className}>
-            <NakedBankRecipientForm
-              onSubmit={onSubmit}
-              eurLocked={!isEurApproved}
-            />
+            <NakedBankRecipientForm onSubmit={onSubmit} />
           </div>
         </ScrollAreaHack>
         <VaulSheetFooter>
