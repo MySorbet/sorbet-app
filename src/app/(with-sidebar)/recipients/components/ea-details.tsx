@@ -1,15 +1,27 @@
 import { PropsWithChildren } from 'react';
 import { FC } from 'react';
 
+import { DuePaymentMethod, PAYMENT_METHOD_OPTIONS } from '@/api/recipients/types';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { cn, formatWalletAddress } from '@/lib/utils';
 
 import { formatAccountNumber } from './utils';
 
+/** Check if type is a Due payment method */
+const isDuePaymentMethod = (type: string): type is DuePaymentMethod => {
+  return PAYMENT_METHOD_OPTIONS.some((option) => option.id === type);
+};
+
 /**
  * Render external account details as a series of rows
  */
 export const EADetails = ({ account }: { account: Account }) => {
+  // Handle Due payment methods
+  if (isDuePaymentMethod(account.type)) {
+    return <DueAccountDetails account={account as DueAccount} />;
+  }
+
+  // Handle legacy types
   switch (account.type) {
     case 'crypto':
       return <CryptoAccountDetails account={account} />;
@@ -17,6 +29,8 @@ export const EADetails = ({ account }: { account: Account }) => {
       return <USDAccountDetails account={account} />;
     case 'eur':
       return <EURAccountDetails account={account} />;
+    default:
+      return <GenericAccountDetails account={account} />;
   }
 };
 
@@ -83,7 +97,7 @@ const USDAccountDetails = ({ account }: { account: USDAccount }) => {
   );
 };
 
-/** Local composition to render USD account details */
+/** Local composition to render EUR account details */
 const EURAccountDetails = ({ account }: { account: EURAccount }) => {
   return (
     <div className='flex w-full flex-col gap-2'>
@@ -110,6 +124,74 @@ const EURAccountDetails = ({ account }: { account: EURAccount }) => {
       <EARow>
         <EARowLabel>Country</EARowLabel>
         <EARowValue>{account.country}</EARowValue>
+      </EARow>
+    </div>
+  );
+};
+
+/** Local composition to render Due Network account details */
+const DueAccountDetails = ({ account }: { account: DueAccount }) => {
+  const method = PAYMENT_METHOD_OPTIONS.find((m) => m.id === account.type);
+  const label = method?.label ?? account.type.toUpperCase();
+  const currency = method?.currency ?? '';
+
+  return (
+    <div className='flex w-full flex-col gap-2'>
+      <EARow>
+        <EARowLabel>Name</EARowLabel>
+        <EARowValue>{account.name}</EARowValue>
+      </EARow>
+      <EARow>
+        <EARowLabel>Payment Method</EARowLabel>
+        <EARowValue>{label}</EARowValue>
+      </EARow>
+      <EARow>
+        <EARowLabel>Currency</EARowLabel>
+        <EARowValue>{currency}</EARowValue>
+      </EARow>
+      {account.accountNumberLast4 && (
+        <EARow>
+          <EARowLabel>Account</EARowLabel>
+          <EARowValue>
+            {formatAccountNumber(account.accountNumberLast4)}
+          </EARowValue>
+        </EARow>
+      )}
+      {account.iban && (
+        <EARow>
+          <EARowLabel>IBAN</EARowLabel>
+          <EARowValue>
+            {formatAccountNumber(account.iban.slice(-4))}
+          </EARowValue>
+        </EARow>
+      )}
+      {account.swiftCode && (
+        <EARow>
+          <EARowLabel>SWIFT/BIC</EARowLabel>
+          <EARowValue>{account.swiftCode}</EARowValue>
+        </EARow>
+      )}
+      {account.routingNumber && (
+        <EARow>
+          <EARowLabel>Routing</EARowLabel>
+          <EARowValue>{account.routingNumber}</EARowValue>
+        </EARow>
+      )}
+    </div>
+  );
+};
+
+/** Generic fallback for unknown account types */
+const GenericAccountDetails = ({ account }: { account: BaseAccount }) => {
+  return (
+    <div className='flex w-full flex-col gap-2'>
+      <EARow>
+        <EARowLabel>Name</EARowLabel>
+        <EARowValue>{account.name}</EARowValue>
+      </EARow>
+      <EARow>
+        <EARowLabel>Type</EARowLabel>
+        <EARowValue>{account.type.toUpperCase()}</EARowValue>
       </EARow>
     </div>
   );
@@ -146,7 +228,7 @@ const EARowValue: FC<PropsWithChildren<{ className?: string }>> = ({
 
 type BaseAccount = {
   name: string;
-  type: 'usd' | 'eur' | 'crypto';
+  type: string;
 };
 
 type USDAccount = BaseAccount & {
@@ -169,4 +251,12 @@ type EURAccount = BaseAccount & {
   country: string;
 };
 
-type Account = USDAccount | CryptoAccount | EURAccount;
+type DueAccount = BaseAccount & {
+  type: DuePaymentMethod;
+  accountNumberLast4?: string;
+  iban?: string;
+  swiftCode?: string;
+  routingNumber?: string;
+};
+
+type Account = USDAccount | CryptoAccount | EURAccount | DueAccount;

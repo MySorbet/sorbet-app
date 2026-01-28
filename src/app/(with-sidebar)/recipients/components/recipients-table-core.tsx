@@ -11,8 +11,14 @@ import {
   Wallet,
 } from 'lucide-react';
 import { useState } from 'react';
+import { CircleFlag } from 'react-circle-flags';
 
-import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import {
+  DuePaymentMethod,
+  PAYMENT_METHOD_OPTIONS,
+  RecipientAPI,
+  RecipientType,
+} from '@/api/recipients/types';
 import { formatDate } from '@/app/invoices/utils';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
@@ -153,7 +159,10 @@ export const RecipientsTableCore: React.FC<RecipientsTableCoreProps> = ({
                           e.stopPropagation();
                           onDelete?.(recipient.id);
                         }}
-                        disabled={recipient.type !== 'crypto'}
+                        disabled={
+                          recipient.type !== 'crypto' &&
+                          !isDuePaymentMethod(recipient.type)
+                        }
                       >
                         <Trash className='size-4' />
                         Delete
@@ -170,8 +179,32 @@ export const RecipientsTableCore: React.FC<RecipientsTableCoreProps> = ({
   );
 };
 
+/** Check if type is a Due payment method */
+const isDuePaymentMethod = (type: RecipientType): type is DuePaymentMethod => {
+  return PAYMENT_METHOD_OPTIONS.some((option) => option.id === type);
+};
+
+/** Flag component for Due payment methods */
+const PaymentMethodFlag = ({ countryCode }: { countryCode: string }) => {
+  return <CircleFlag countryCode={countryCode} className='size-5' />;
+};
+
 /** Displays the recipient type with icon */
 const RecipientTypeCell = ({ type }: { type: RecipientType }) => {
+  // Check if it's a Due payment method
+  if (isDuePaymentMethod(type)) {
+    const method = PAYMENT_METHOD_OPTIONS.find((option) => option.id === type);
+    if (method) {
+      return (
+        <div className='flex items-center gap-2'>
+          <PaymentMethodFlag countryCode={method.flagCountryCode} />
+          <span className='text-sm'>{method.label}</span>
+        </div>
+      );
+    }
+  }
+
+  // Legacy types
   const Icon = type === 'usd' ? DollarSign : type === 'eur' ? Euro : Wallet;
   const label = type === 'usd' ? 'USD' : type === 'eur' ? 'EUR' : 'Crypto';
 

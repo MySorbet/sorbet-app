@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 
-import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import { RecipientAPI } from '@/api/recipients/types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,8 @@ import {
 
 import { RecipientsTableCore } from '@/app/(with-sidebar)/recipients/components/recipients-table-core';
 
-export type RecipientTypeFilter = RecipientType | 'all';
+// Simplified currency-based filters instead of individual payment methods
+export type RecipientTypeFilter = 'all' | 'usd' | 'eur' | 'aed' | 'crypto';
 
 interface FilteredRecipientsTableProps {
   recipients: RecipientAPI[];
@@ -90,9 +91,10 @@ export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = (
             </SelectTrigger>
             <SelectContent>
               <SelectItem value='all'>All Types</SelectItem>
-              <SelectItem value='crypto'>Crypto</SelectItem>
               <SelectItem value='usd'>USD</SelectItem>
               <SelectItem value='eur'>EUR</SelectItem>
+              <SelectItem value='aed'>AED</SelectItem>
+              <SelectItem value='crypto'>Crypto</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -3,7 +3,7 @@
 import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
-import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import { RecipientAPI } from '@/api/recipients/types';
 import { DocsButton } from '@/components/common/docs-button';
 import { Button } from '@/components/ui/button';
 import { useAfter } from '@/hooks/use-after';
@@ -71,11 +71,18 @@ export const RecipientsBrowser: React.FC = () => {
       );
     }
 
-    // Type filter
+    // Type filter - group by currency
     if (typeFilter !== 'all') {
-      filtered = filtered.filter(
-        (recipient) => recipient.type === typeFilter
-      );
+      filtered = filtered.filter((recipient) => {
+        // Match by currency prefix (usd matches usd, usd_ach, usd_wire, usd_swift)
+        // eur matches eur, eur_sepa, eur_swift
+        // aed matches aed_local
+        // crypto matches crypto exactly
+        if (typeFilter === 'crypto') {
+          return recipient.type === 'crypto';
+        }
+        return recipient.type.startsWith(typeFilter);
+      });
     }
 
     setFilteredRecipients(filtered);
