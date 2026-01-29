@@ -11,7 +11,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { useState } from 'react';
-import { CircleFlag } from 'react-circle-flags';
+import Image from 'next/image';
 
 import {
   DuePaymentMethod,
@@ -184,34 +184,55 @@ const isDuePaymentMethod = (type: RecipientType): type is DuePaymentMethod => {
   return PAYMENT_METHOD_OPTIONS.some((option) => option.id === type);
 };
 
-/** Flag component for Due payment methods */
-const PaymentMethodFlag = ({ countryCode }: { countryCode: string }) => {
-  return <CircleFlag countryCode={countryCode} className='size-5' />;
+/** Get currency icon for recipient type */
+const getCurrencyIcon = (type: RecipientType) => {
+  // USD types (legacy and Due Network)
+  if (type === 'usd' || type.startsWith('usd_')) {
+    return <DollarSign className='size-5' strokeWidth={1.5} />;
+  }
+  
+  // EUR types (legacy and Due Network)
+  if (type === 'eur' || type.startsWith('eur_')) {
+    return <Euro className='size-5' strokeWidth={1.5} />;
+  }
+  
+  // AED type
+  if (type === 'aed_local') {
+    return (
+      <Image
+        src='/svg/UAE_Dirham_Symbol.svg'
+        alt='AED'
+        width={20}
+        height={20}
+        className='size-5'
+      />
+    );
+  }
+  
+  // Crypto
+  return <Wallet className='size-5' strokeWidth={1.5} />;
 };
 
-/** Displays the recipient type with icon */
-const RecipientTypeCell = ({ type }: { type: RecipientType }) => {
-  // Check if it's a Due payment method
+/** Get label for recipient type */
+const getRecipientLabel = (type: RecipientType): string => {
   if (isDuePaymentMethod(type)) {
     const method = PAYMENT_METHOD_OPTIONS.find((option) => option.id === type);
-    if (method) {
-      return (
-        <div className='flex items-center gap-2'>
-          <PaymentMethodFlag countryCode={method.flagCountryCode} />
-          <span className='text-sm'>{method.label}</span>
-        </div>
-      );
-    }
+    return method?.label ?? type;
   }
+  
+  if (type === 'usd') return 'USD';
+  if (type === 'eur') return 'EUR';
+  if (type === 'crypto') return 'Crypto';
+  
+  return type;
+};
 
-  // Legacy types
-  const Icon = type === 'usd' ? DollarSign : type === 'eur' ? Euro : Wallet;
-  const label = type === 'usd' ? 'USD' : type === 'eur' ? 'EUR' : 'Crypto';
-
+/** Displays the recipient type with currency symbol */
+const RecipientTypeCell = ({ type }: { type: RecipientType }) => {
   return (
     <div className='flex items-center gap-2'>
-      <Icon className='size-5' strokeWidth={1.5} />
-      <span className='text-sm'>{label}</span>
+      {getCurrencyIcon(type)}
+      <span className='text-sm'>{getRecipientLabel(type)}</span>
     </div>
   );
 };

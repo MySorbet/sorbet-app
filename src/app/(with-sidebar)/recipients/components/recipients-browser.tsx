@@ -12,6 +12,7 @@ import { useAddRecipientOpen } from '../hooks/use-add-recipient-open';
 import { useCreateRecipient } from '../hooks/use-create-recipient';
 import { useDeleteRecipient } from '../hooks/use-delete-recipient';
 import { useRecipients } from '../hooks/use-recipients';
+import { useRecipientDetails } from '../hooks/use-recipient-details';
 import { useSelectedRecipient } from '../hooks/use-selected-recipient';
 import { useSendTo } from '../hooks/use-send-to';
 import { AddRecipientSheet } from './add-recipient-sheet';
@@ -19,10 +20,18 @@ import {
   FilteredRecipientsTable,
   RecipientTypeFilter,
 } from './filtered-recipients-table';
+import { MigrateRecipientSheet } from './migrate-recipient-sheet';
 import { RecipientSheet } from './recipient-sheet';
 import { SendToDialog } from './send/send-to-dialog';
 
 const PAGE_SIZE = 10;
+
+/** Check if recipient is a Bridge recipient that needs migration */
+const needsMigration = (recipient: RecipientAPI): boolean => {
+  // Legacy Bridge recipients have type 'usd' or 'eur'
+  // Due Network recipients have types like 'usd_ach', 'eur_sepa', etc.
+  return recipient.type === 'usd' || recipient.type === 'eur';
+};
 
 /** Main container for the recipients page with header, filters, and table */
 export const RecipientsBrowser: React.FC = () => {
@@ -42,6 +51,16 @@ export const RecipientsBrowser: React.FC = () => {
   const { mutateAsync: createRecipient } = useCreateRecipient();
   const { mutateAsync: deleteRecipient, isPending: isDeleting } =
     useDeleteRecipient();
+
+  // Migration sheet state
+  const [migrationRecipientId, setMigrationRecipientId] = useState<string | null>(null);
+  const migrationRecipient = recipients?.find((r) => r.id === migrationRecipientId) ?? null;
+  const { data: migrationRecipientDetails } = useRecipientDetails(
+    migrationRecipientId ?? '',
+    {
+      enabled: !!migrationRecipientId && migrationRecipient?.type !== 'crypto',
+    }
+  );
 
   // Filter states
   const [searchValue, setSearchValue] = useState<string>('');
@@ -129,7 +148,31 @@ export const RecipientsBrowser: React.FC = () => {
   };
 
   const handleSend = (recipientId: string) => {
-    set({ recipientId });
+    // Find the recipient
+    const recipient = recipients?.find((r) => r.id === recipientId);
+    
+    if (!recipient) {
+      // Fallback: proceed with send flow if recipient not found
+      set({ recipientId });
+      return;
+    }
+
+    // Check if migration is needed
+    if (needsMigration(recipient)) {
+      // Open migration sheet instead of send flow
+      setMigrationRecipientId(recipientId);
+    } else {
+      // Proceed with send flow
+      set({ recipientId });
+    }
+  };
+
+  const handleMigrationSuccess = () => {
+    // After successful migration, proceed with send flow
+    if (migrationRecipientId) {
+      set({ recipientId: migrationRecipientId });
+    }
+    setMigrationRecipientId(null);
   };
 
   return (
@@ -218,6 +261,18 @@ export const RecipientsBrowser: React.FC = () => {
           setViewSheetOpen(false);
         }}
         isDeleting={isDeleting}
+      />
+      {/* Migration Sheet */}
+      <MigrateRecipientSheet
+        open={!!migrationRecipientId}
+        setOpen={(open) => {
+          if (!open) {
+            setMigrationRecipientId(null);
+          }
+        }}
+        recipient={migrationRecipient}
+        recipientDetails={migrationRecipientDetails ?? null}
+        onSuccess={handleMigrationSuccess}
       />
     </div>
   );
