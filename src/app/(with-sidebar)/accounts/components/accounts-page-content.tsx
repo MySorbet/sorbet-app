@@ -1,18 +1,13 @@
 'use client';
 
-import { DollarSign, Euro } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { AutomaticVerificationTabs } from '@/app/(with-sidebar)/accounts/components/verification/automatic-verification-tabs';
 import { AnnouncementBanner } from '@/app/(with-sidebar)/dashboard/components/announcement-banner';
 import { RestrictedCountryBanner } from '@/app/(with-sidebar)/dashboard/components/restricted-country-banner';
-import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
 import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
-import {
-  mapToEURWireDetails,
-  useACHWireDetails,
-} from '@/app/invoices/hooks/use-ach-wire-details';
+import { DocsButton } from '@/components/common/docs-button';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,136 +17,248 @@ import {
   DrawerContent,
   DrawerFooter,
 } from '@/components/ui/drawer';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
+import { useDueCustomer } from '@/hooks/profile/use-due-customer';
 import { useDueVirtualAccounts } from '@/hooks/profile/use-due-virtual-accounts';
+import { useClaimDueVirtualAccount } from '@/hooks/profile/use-claim-due-virtual-account';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-mobile';
+import type {
+  DueAccount,
+  DueVirtualAccount,
+  DueVirtualAccountUSDetails,
+  DueVirtualAccountEURDetails,
+  DueVirtualAccountAEDDetails,
+  DueVirtualAccountData,
+} from '@/types/due';
 
-import { useClaimVirtualAccount } from '../hooks/use-claim-virtual-account';
-import { AccountSelect } from './account-select';
-import { ExternalAccountDetails } from './external-account-details';
+import {
+  AccountSelect,
+} from './account-select';
+import { type AccountId, type AccountState } from './account-select-button';
+import { DueAccountDetails } from './due-account-details';
 import { RestrictedAccountsDisplay } from './restricted-accounts-display';
 
 /**
  * Compose account components into a page with state
  *
- * Flow:
- * - If VA exists → Show account details
- * - If no VA && endorsed → Show Retry button (webhook failed to create VA)
- * - If no VA && not endorsed → Show verification tabs (user needs to complete KYC)
+ * Flow (Due-based):
+ * - Check Due KYC status (not Bridge)
+ * - If KYC not passed → Show verification banner and locked accounts
+ * - If KYC passed:
+ *   - USD: Auto-created after KYC, but show Claim if missing
+ *   - EUR/AED: Show Claim button until user claims
+ *   - GBP/SAR: Coming Soon (hardcoded)
  */
 export const AccountsPageContent = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const { isBaseApproved, isEurApproved, isPending } = useEndorsements();
-  const { data: customer } = useBridgeCustomer();
-  const { data: dueVirtualAccounts, isLoading: isDueLoading } =
+  const isMobile = useIsMobile();
+
+  // Due customer for KYC status
+  const { data: dueCustomer, isLoading: isDueCustomerLoading } = useDueCustomer({
+    enabled: !!user?.id,
+  });
+
+  // Due virtual accounts
+  const { data: dueVirtualAccounts, isLoading: isDueAccountsLoading } =
     useDueVirtualAccounts({
       enabled: !!user?.id,
     });
-  const { data: account } = useACHWireDetails(user?.id ?? '', {
-    enabled: !isPending && !!user?.id && isBaseApproved,
-  });
-  const [selectedAccount, setSelectedAccount] = useState<'usd' | 'eur'>('usd');
 
-  // KYC and country restriction checks (same as dashboard)
-  const kycStatus = customer?.customer?.status;
-  const isKycRejected = kycStatus === 'rejected';
-  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  // Claim mutation
+  const {
+    mutate: claimAccount,
+    isPending: isClaiming,
+    variables: claimingCurrency,
+  } = useClaimDueVirtualAccount();
+
+  // Selected account state
+  const [selectedAccount, setSelectedAccount] = useState<AccountId>('usd');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Country restriction check
   const isRestricted = isRestrictedCountry(user?.country);
 
-  // Open state of both the verification drawer or the account details drawer (only for mobile)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const handleSelectAccount = (id: 'usd' | 'eur') => {
-    setSelectedAccount(id);
-    setIsDrawerOpen(true); // A click (even if already selected) should open the drawer
+  // Due KYC status
+  const dueAccount = dueCustomer?.account as DueAccount | undefined;
+  const isDueVerified = dueAccount?.kyc?.status === 'passed';
+  const isKycPending = dueAccount?.kyc?.status === 'pending';
+  const isKycNotStarted = !dueAccount?.kyc?.status || dueAccount?.kyc?.status === 'not_started';
+
+  // Find virtual accounts by schema
+  const usdAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_us');
+  const eurAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_sepa');
+  const aedAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_mena');
+
+  // Determine account states
+  const getAccountState = (
+    account: DueVirtualAccount | undefined,
+    isClaimable: boolean
+  ): AccountState => {
+    if (account) return 'available';
+    if (isDueVerified && isClaimable) return 'claimable';
+    return 'locked';
   };
 
-  const enabledAccounts = [
-    customer?.virtual_account && 'usd',
-    customer?.virtual_account_eur && 'eur',
-  ].filter(Boolean) as ('usd' | 'eur')[];
+  const accountStates: { id: AccountId; state: AccountState }[] = [
+    { id: 'usd', state: getAccountState(usdAccount, true) },
+    { id: 'eur', state: getAccountState(eurAccount, true) },
+    { id: 'aed', state: getAccountState(aedAccount, true) },
+    { id: 'gbp', state: 'coming-soon' },
+    { id: 'sar', state: 'coming-soon' },
+  ];
 
-  const eurAccount = customer?.virtual_account_eur
-    ? mapToEURWireDetails(
-      customer.virtual_account_eur.source_deposit_instructions
-    )
-    : undefined;
+  // Handle account selection
+  const handleSelectAccount = (id: AccountId) => {
+    setSelectedAccount(id);
+    setIsDrawerOpen(true);
+  };
 
-  // Check if user needs retry (endorsed but VA missing - webhook may have failed)
-  const needsUsdRetry = !customer?.virtual_account && isBaseApproved;
-  const needsEurRetry = !customer?.virtual_account_eur && isEurApproved;
+  // Handle claim
+  const handleClaim = (id: AccountId) => {
+    const currencyMap = { usd: 'usd', eur: 'eur', aed: 'aed' } as const;
+    const currency = currencyMap[id as keyof typeof currencyMap];
+    if (currency) {
+      claimAccount(currency);
+    }
+  };
 
-  const isMobile = useIsMobile();
-
-  // For restricted country users, show all accounts with "Coming Soon" badges
-  if (isRestricted) {
+  // Loading state
+  if (isDueCustomerLoading || isDueAccountsLoading) {
     return (
-      <div className='flex size-full max-w-7xl flex-col gap-6'>
-        <RestrictedCountryBanner className='mt-4' />
-        <RestrictedAccountsDisplay />
+      <div className='flex size-full items-center justify-center'>
+        <Spinner className='size-8' />
       </div>
     );
   }
 
+  // For restricted country users, show all accounts with "Coming Soon" badges
+  if (isRestricted) {
+    return (
+      <div className='@container size-full w-full max-w-7xl space-y-4 px-[1px] sm:space-y-6 sm:px-0'>
+        {/* Header Section */}
+        <div className='flex w-full flex-col items-start justify-between gap-4 border-b px-4 pb-4 pt-[1px] sm:flex-row sm:items-center sm:gap-6 sm:px-6 md:min-h-[72px]'>
+          <div className='flex w-full items-center justify-between sm:hidden'>
+            <h2 className='text-xl font-semibold'>Accounts</h2>
+            <DocsButton />
+          </div>
+          <div className='hidden min-w-0 flex-1 sm:block'>
+            <h2 className='text-2xl font-semibold'>Accounts</h2>
+            <p className='text-muted-foreground text-sm'>
+              Receive USD and EUR payments from your customers
+            </p>
+          </div>
+          <div className='hidden shrink-0 gap-3 sm:flex'>
+            <DocsButton />
+          </div>
+        </div>
+        <RestrictedCountryBanner />
+        <div className='px-4 sm:px-6'>
+          <RestrictedAccountsDisplay />
+        </div>
+      </div>
+    );
+  }
+
+  // Get account details for the selected account
+  const getSelectedAccountDetails = () => {
+    const accountState = accountStates.find((a) => a.id === selectedAccount);
+
+    // Coming Soon accounts
+    if (selectedAccount === 'gbp' || selectedAccount === 'sar') {
+      return <ComingSoonCard currency={selectedAccount.toUpperCase()} />;
+    }
+
+    // Locked state (not verified)
+    if (accountState?.state === 'locked') {
+      return (
+        <UnverifiedCard
+          onVerify={() => router.push('/verify')}
+          isPending={isKycPending}
+        />
+      );
+    }
+
+    // Claimable state (verified but no account yet)
+    if (accountState?.state === 'claimable') {
+      return (
+        <ClaimableCard
+          currency={selectedAccount.toUpperCase()}
+          onClaim={() => handleClaim(selectedAccount)}
+          isClaiming={isClaiming && claimingCurrency === selectedAccount}
+        />
+      );
+    }
+
+    // Available state - show account details
+    // Components handle null gracefully, so we just pass the details (may be undefined)
+    if (selectedAccount === 'usd' && usdAccount) {
+      const details = usdAccount.account?.details as DueVirtualAccountUSDetails | undefined;
+      return <DueAccountDetails.USD details={details} />;
+    }
+    if (selectedAccount === 'eur' && eurAccount) {
+      const details = eurAccount.account?.details as DueVirtualAccountEURDetails | undefined;
+      return <DueAccountDetails.EUR details={details} />;
+    }
+    if (selectedAccount === 'aed' && aedAccount) {
+      const details = aedAccount.account?.details as DueVirtualAccountAEDDetails | undefined;
+      return <DueAccountDetails.AED details={details} />;
+    }
+
+    return null;
+  };
+
   return (
-    <div className='flex size-full max-w-7xl flex-col gap-6'>
-      {/* Conditional Banners based on verification status */}
-      {(isKycNotStarted || isKycRejected) && (
-        <AnnouncementBanner className='mt-4' onComplete={() => router.push('/verify')} />
+    <div className='@container size-full w-full max-w-7xl space-y-4 px-[1px] sm:space-y-6 sm:px-0'>
+      {/* Header Section */}
+      <div className='flex w-full flex-col items-start justify-between gap-4 border-b px-4 pb-4 pt-[1px] sm:flex-row sm:items-center sm:gap-6 sm:px-6 md:min-h-[72px]'>
+        {/* Mobile: Title + Button in one row */}
+        <div className='flex w-full items-center justify-between sm:hidden'>
+          <h2 className='text-xl font-semibold'>Accounts</h2>
+          <DocsButton />
+        </div>
+
+        {/* Desktop: Original layout */}
+        <div className='hidden min-w-0 flex-1 sm:block'>
+          <h2 className='text-2xl font-semibold'>Accounts</h2>
+          <p className='text-muted-foreground text-sm'>
+            Receive USD and EUR payments from your customers
+          </p>
+        </div>
+
+        <div className='hidden shrink-0 gap-3 sm:flex'>
+          <DocsButton />
+        </div>
+      </div>
+
+      {/* Verification banner if not verified */}
+      {(isKycNotStarted || !isDueVerified) && (
+        <AnnouncementBanner
+          onComplete={() => router.push('/verify')}
+        />
       )}
 
-      <div className='flex size-full flex-col gap-6 lg:flex-row'>
+      <div className='flex size-full flex-col gap-6 px-4 sm:px-6 lg:flex-row'>
         <AccountSelect
           className='w-full lg:max-w-sm'
           selected={selectedAccount}
           onSelect={handleSelectAccount}
-          enabledAccounts={enabledAccounts}
+          accounts={accountStates}
+          onClaim={handleClaim}
+          claimingAccount={isClaiming ? (claimingCurrency as AccountId) : null}
         />
 
-        {selectedAccount === 'usd' ? (
-          account ? (
-            <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-              <ExternalAccountDetails.USD account={account} />
-            </AccountDetailsCard>
-          ) : needsUsdRetry ? (
-            <RetryAccountButton type='usd' />
-          ) : isMobile ? (
-            <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-              <DrawerContent className='h-[97%]'>
-                <AutomaticVerificationTabs className='pt-4' />
-              </DrawerContent>
-            </Drawer>
-          ) : (
-            <AutomaticVerificationTabs />
-          )
-        ) : eurAccount ? (
-          <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-            <ExternalAccountDetails.EUR account={eurAccount} />
-          </AccountDetailsCard>
-        ) : needsEurRetry ? (
-          <RetryAccountButton type='eur' />
-        ) : isMobile ? (
-          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-            <DrawerContent className='h-[97%]'>
-              <AutomaticVerificationTabs className='pt-4' />
-            </DrawerContent>
-          </Drawer>
-        ) : (
-          <AutomaticVerificationTabs />
-        )}
+        {/* Account details card */}
+        <AccountDetailsCard open={isDrawerOpen} setOpen={setIsDrawerOpen}>
+          {getSelectedAccountDetails()}
+        </AccountDetailsCard>
       </div>
-
-      <DueVirtualAccountsSection
-        accounts={dueVirtualAccounts ?? []}
-        isLoading={isDueLoading}
-      />
     </div>
   );
 };
 
 /**
- * Local component to encapsulate the account details card style and the fact that it is a drawer on mobile
+ * Card wrapper that becomes a drawer on mobile
  */
 const AccountDetailsCard = ({
   children,
@@ -191,82 +298,64 @@ const AccountDetailsCard = ({
 };
 
 /**
- * Retry button for users who are endorsed but don't have a VA
- * (This happens when webhook failed to create VA)
+ * Card shown when user hasn't verified yet
  */
-const RetryAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
-  const { mutate: claimVirtualAccount, isPending: isRetrying } =
-    useClaimVirtualAccount(type);
-
+const UnverifiedCard = ({
+  onVerify,
+  isPending,
+}: {
+  onVerify: () => void;
+  isPending?: boolean;
+}) => {
   return (
-    <Card className='flex size-full flex-col items-center justify-center gap-4 p-6'>
-      {type === 'usd' ? (
-        <DollarSign className='text-muted-foreground size-10' />
-      ) : (
-        <Euro className='text-muted-foreground size-10' />
-      )}
+    <div className='flex w-full flex-col items-center justify-center gap-4 py-12'>
+      <Lock className='text-muted-foreground size-10' />
       <p className='text-muted-foreground text-center text-sm'>
-        {type === 'usd'
-          ? 'Your USD account verification is complete, but the account needs to be set up. Click retry to create your account.'
-          : 'Your EUR account verification is complete, but the account needs to be set up. Click retry to create your account.'}
+        Complete verification to start accepting
+        <br />
+        USD and/or EUR payments
       </p>
-      <Button
-        variant='sorbet'
-        onClick={() => claimVirtualAccount()}
-        disabled={isRetrying}
-      >
-        {isRetrying && <Spinner />}
-        {isRetrying
-          ? 'Retrying...'
-          : `Retry ${type.toUpperCase()} Account`}
+      <Button variant='sorbet' onClick={onVerify}>
+        {isPending ? 'Continue Verification' : 'Complete Verification'}
       </Button>
-    </Card>
+    </div>
   );
 };
 
-const DueVirtualAccountsSection = ({
-  accounts,
-  isLoading,
+/**
+ * Card shown when account can be claimed
+ */
+const ClaimableCard = ({
+  currency,
+  onClaim,
+  isClaiming,
 }: {
-  accounts: Array<{ id: string; schema: string; account: Record<string, unknown> }>;
-  isLoading: boolean;
+  currency: string;
+  onClaim: () => void;
+  isClaiming?: boolean;
 }) => {
-  if (isLoading) {
-    return (
-      <Card className='flex size-full flex-col gap-4 p-6'>
-        <p className='text-muted-foreground text-sm'>Loading Due accounts...</p>
-      </Card>
-    );
-  }
-
-  if (accounts.length === 0) {
-    return (
-      <Card className='flex size-full flex-col gap-4 p-6'>
-        <p className='text-muted-foreground text-sm'>
-          No Due virtual accounts found yet.
-        </p>
-      </Card>
-    );
-  }
-
   return (
-    <Card className='flex size-full flex-col gap-4 p-6'>
-      <div>
-        <h3 className='text-lg font-semibold'>Due virtual accounts</h3>
-        <p className='text-muted-foreground text-sm'>
-          Use these details for fiat on-ramping.
-        </p>
-      </div>
-      <div className='grid gap-4 md:grid-cols-2'>
-        {accounts.map((account) => (
-          <Card key={account.id} className='p-4'>
-            <p className='text-sm font-semibold uppercase'>{account.schema}</p>
-            <pre className='mt-2 max-h-64 overflow-auto rounded-md bg-muted p-3 text-xs'>
-              {JSON.stringify(account.account, null, 2)}
-            </pre>
-          </Card>
-        ))}
-      </div>
-    </Card>
+    <div className='flex w-full flex-col items-center justify-center gap-4 py-12'>
+      <p className='text-muted-foreground text-center text-sm'>
+        Click below to create your {currency} account
+      </p>
+      <Button variant='sorbet' onClick={onClaim} disabled={isClaiming}>
+        {isClaiming && <Spinner className='mr-2 size-4' />}
+        {isClaiming ? 'Creating...' : `Claim ${currency} Account`}
+      </Button>
+    </div>
+  );
+};
+
+/**
+ * Card shown for Coming Soon accounts
+ */
+const ComingSoonCard = ({ currency }: { currency: string }) => {
+  return (
+    <div className='flex w-full flex-col items-center justify-center gap-4 py-12'>
+      <p className='text-muted-foreground text-center text-sm'>
+        {currency} accounts are coming soon
+      </p>
+    </div>
   );
 };
