@@ -1,58 +1,91 @@
 'use client';
 
-import Image from 'next/image';
-
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-import { AccountSelectButton } from './account-select-button';
+import {
+  AccountSelectButton,
+  type AccountId,
+  type AccountState,
+} from './account-select-button';
+
+interface AccountInfo {
+  id: AccountId;
+  state: AccountState;
+}
+
+interface AccountSelectProps {
+  className?: string;
+  selected: AccountId;
+  onSelect: (id: AccountId) => void;
+  accounts: AccountInfo[];
+  onClaim?: (id: AccountId) => void;
+  claimingAccount?: AccountId | null;
+}
 
 /**
  * Render all options for selecting a virtual account.
- * Currently just USD and EUR, with AED coming soon.
+ * Supports USD, EUR, AED, GBP, SAR with various states.
  */
 export const AccountSelect = ({
   className,
   selected,
   onSelect,
-  enabledAccounts,
-}: {
-  className?: string;
-  selected: 'usd' | 'eur';
-  onSelect: (id: 'usd' | 'eur') => void;
-  enabledAccounts: ('usd' | 'eur')[];
-}) => {
+  accounts,
+  onClaim,
+  claimingAccount,
+}: AccountSelectProps) => {
+  // Helper to get account state
+  const getAccountInfo = (id: AccountId): AccountInfo => {
+    return accounts.find((a) => a.id === id) ?? { id, state: 'locked' };
+  };
+
   return (
     <div className={cn('flex flex-col gap-2', className)}>
+      {/* USD Account */}
       <AccountSelectButton
         id='usd'
         selected={selected === 'usd'}
         onSelect={() => onSelect('usd')}
-        isLocked={!enabledAccounts.includes('usd')}
+        state={getAccountInfo('usd').state}
+        onClaim={() => onClaim?.('usd')}
+        isClaiming={claimingAccount === 'usd'}
       />
+
+      {/* EUR Account */}
       <AccountSelectButton
         id='eur'
         selected={selected === 'eur'}
         onSelect={() => onSelect('eur')}
-        isLocked={!enabledAccounts.includes('eur')}
+        state={getAccountInfo('eur').state}
+        onClaim={() => onClaim?.('eur')}
+        isClaiming={claimingAccount === 'eur'}
       />
-      {/* AED Coming Soon Card */}
-      <div className='flex h-fit items-center gap-1.5 rounded-md border p-6 text-sm'>
-        <Image
-          src='/svg/AED-icon.svg'
-          alt='AED flag'
-          width={40}
-          height={40}
-          className='size-10'
-        />
-        <div className='flex-1 text-left font-semibold'>
-          <span className='uppercase'>AED</span>
-          <span> account</span>
-        </div>
-        <Badge className='bg-[#E4E4E7] text-foreground hover:bg-[#E4E4E7]'>
-          Coming Soon
-        </Badge>
-      </div>
+
+      {/* AED Account */}
+      <AccountSelectButton
+        id='aed'
+        selected={selected === 'aed'}
+        onSelect={() => onSelect('aed')}
+        state={getAccountInfo('aed').state}
+        onClaim={() => onClaim?.('aed')}
+        isClaiming={claimingAccount === 'aed'}
+      />
+
+      {/* GBP Account - Always Coming Soon */}
+      <AccountSelectButton
+        id='gbp'
+        selected={false}
+        onSelect={() => { }}
+        state='coming-soon'
+      />
+
+      {/* SAR Account - Always Coming Soon */}
+      <AccountSelectButton
+        id='sar'
+        selected={false}
+        onSelect={() => { }}
+        state='coming-soon'
+      />
     </div>
   );
 };
