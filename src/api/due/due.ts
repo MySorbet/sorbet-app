@@ -31,3 +31,19 @@ export const getDueVirtualAccounts = async () => {
   );
   return response.data;
 };
+
+export type ClaimableCurrency = 'usd' | 'eur' | 'aed';
+
+/**
+ * Claim a Due virtual account on-demand.
+ * @param currency - The currency to claim ('usd' | 'eur' | 'aed')
+ */
+export const claimDueVirtualAccount = async (currency: ClaimableCurrency) => {
+  const response = await axios.post<DueVirtualAccount>(
+    `${API_URL}/users/due/claim/${currency}`,
+    {},
+    await withAuthHeader()
+  );
+  return response.data;
+};
+
