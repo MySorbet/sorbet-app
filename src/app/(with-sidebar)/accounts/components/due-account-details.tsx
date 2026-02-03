@@ -1,18 +1,17 @@
 'use client';
 
-import { AlertCircle, Copy } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { PropsWithChildren, useState } from 'react';
 import { FC } from 'react';
 import { CircleFlag } from 'react-circle-flags';
 
 import { CopyButton } from '@/components/common/copy-button/copy-button';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import type {
-    DueVirtualAccountUSDetails,
-    DueVirtualAccountEURDetails,
     DueVirtualAccountAEDDetails,
+    DueVirtualAccountEURDetails,
+    DueVirtualAccountUSDetails,
 } from '@/types/due';
 
 // Fee & Settlement terms based on Due pricing
@@ -21,46 +20,42 @@ const FEE_DATA = {
     usd: {
         ach: {
             settlementTime: '1-3 business days',
-            variableFee: '0%',
-            fixedFee: 'USD 0.50',
-            minimumTransaction: 'USD 50',
+            variableFee: '1%',
+            fixedFee: 'USD 1.00',
+            minimumTransaction: 'USD 1.00',
         },
         wire: {
             settlementTime: 'Same business day',
-            variableFee: '0%',
+            variableFee: '1%',
             fixedFee: 'USD 25.00',
-            minimumTransaction: 'USD 50',
+            minimumTransaction: 'USD 25.00',
         },
         swift: {
-            settlementTime: '1-5 business day',
-            variableFee: '0.25%',
-            fixedFee: 'USD 40.00',
+            settlementTime: '1-3 business day',
+            variableFee: '1%',
+            fixedFee: 'USD 30.00',
             minimumTransaction: 'USD 50',
-            intermediaryBank: 'Wells Fargo Bank, N.A.',
-            intermediarySwift: 'WFBIUS6S',
         },
     },
     eur: {
         sepa: {
             settlementTime: 'Same day / Next business day',
-            variableFee: '0%',
-            fixedFee: 'EUR 30.00',
-            minimumTransaction: 'EUR 100',
+            variableFee: '1%',
+            fixedFee: 'EUR 1.00',
+            minimumTransaction: 'EUR 1.00',
         },
         swift: {
             settlementTime: 'Same day / Next business day',
-            variableFee: '0%',
-            fixedFee: 'EUR 30.00',
-            minimumTransaction: 'EUR 100',
-            intermediaryBank: 'Wells Fargo Bank, N.A.',
-            intermediarySwift: 'WFBIUS6S',
+            variableFee: '1%',
+            fixedFee: 'EUR 20.00',
+            minimumTransaction: 'EUR 25',
         },
     },
     aed: {
         settlementTime: '1-2 business days',
-        variableFee: '0%',
-        fixedFee: 'AED 2.00',
-        minimumTransaction: 'AED 100',
+        variableFee: '1%',
+        fixedFee: 'AED 0.00',
+        minimumTransaction: 'AED 1.00',
     },
 };
 
@@ -203,21 +198,6 @@ const USDAccountDetails = ({
                         )}
                     </EARowValue>
                 </EARow>
-                {/* Intermediary Bank info for SWIFT */}
-                {transferType === 'swift' && (
-                    <>
-                        <EARow>
-                            <EARowLabel>Intermediary Bank</EARowLabel>
-                            <EARowValue>{FEE_DATA.usd.swift.intermediaryBank}</EARowValue>
-                        </EARow>
-                        <EARow>
-                            <EARowLabel>Intermediary SWIFT</EARowLabel>
-                            <EARowValue>
-                                <CopyText text={FEE_DATA.usd.swift.intermediarySwift} />
-                            </EARowValue>
-                        </EARow>
-                    </>
-                )}
             </div>
 
             {/* Fee & Settlement Terms */}
@@ -327,21 +307,6 @@ const EURAccountDetails = ({
                     </EARow>
                 )}
 
-                {/* Intermediary Bank info for SWIFT */}
-                {transferType === 'swift' && (
-                    <>
-                        <EARow>
-                            <EARowLabel>Intermediary Bank</EARowLabel>
-                            <EARowValue>{FEE_DATA.eur.swift.intermediaryBank}</EARowValue>
-                        </EARow>
-                        <EARow>
-                            <EARowLabel>Intermediary SWIFT</EARowLabel>
-                            <EARowValue>
-                                <CopyText text={FEE_DATA.eur.swift.intermediarySwift} />
-                            </EARowValue>
-                        </EARow>
-                    </>
-                )}
             </div>
 
             {/* Fee & Settlement Terms */}
