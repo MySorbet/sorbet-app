@@ -1,19 +1,17 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { User } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import { useClaimVirtualAccount } from '@/app/(with-sidebar)/accounts/hooks/use-claim-virtual-account';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
+import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
+import { useDueCustomer } from '@/hooks/profile/use-due-customer';
 import { useScopedLocalStorage } from '@/hooks/use-scoped-local-storage';
 import { cn, sleep } from '@/lib/utils';
 
 import { useConfettiCannons } from '../hooks/use-confetti-cannons';
-import { PersonaCard } from './persona-card';
-import { TosIframe } from './tos-iframe';
 import { VerifyCard } from './verify-card';
 import { AllSteps } from './verify-dashboard';
 
@@ -29,8 +27,6 @@ export const AccountVerificationCard = ({
   isIndeterminate,
   rejectionReasons,
   isUnderReview,
-  isIncomplete,
-  isAwaitingUBO,
   isRejected,
 }: {
   className?: string;
@@ -43,48 +39,44 @@ export const AccountVerificationCard = ({
   isIndeterminate?: boolean;
   rejectionReasons?: string[];
   isUnderReview?: boolean;
-  isIncomplete?: boolean;
-  isAwaitingUBO?: boolean;
   isRejected?: boolean;
 }) => {
   const isComplete = step === 'complete' && !isRejected && !isUnderReview;
 
   const queryClient = useQueryClient();
-  const { data: customer } = useBridgeCustomer();
+  const { data: dueCustomer } = useDueCustomer();
 
-  const { mutate: claimVirtualAccount, isPending: isClaiming } =
-    useClaimVirtualAccount('usd', {
+  const { mutate: createDueCustomer, isPending: isCreating } =
+    useCreateDueCustomer({
       onSuccess: () => {
-        console.log('Successfully created bridge customer');
-        queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
+        queryClient.invalidateQueries({ queryKey: ['dueCustomer'] });
         onStepComplete?.('begin');
       },
       onError: (error) => {
-        const message = `Error creating bridge customer: ${error.message}`;
+        const message = `Error creating account: ${error instanceof Error ? error.message : 'Unknown error'}`;
         console.error(message);
         toast.error(message);
       },
     });
 
-  // We consider this loading while the api call is pending, or it has returned and we are waiting for the bridge customer.created event (which happens slightly after kyc links are created)
-  const isClaimingAccount = isClaiming || (customer && !customer.customer);
+  // We consider this loading while the api call is pending, or it has returned and we are waiting for the account to be created
+  const isCreatingAccount = isCreating || (dueCustomer && !dueCustomer.account);
 
-  // This is only callable when there is no bridge customer
+  // This is only callable when there is no Due customer
   // Success callback will complete this step
   // Error will toast and remain on this step
   const handleGetVerified = () => {
-    claimVirtualAccount();
+    createDueCustomer();
   };
 
-  // When bridge frame fires complete event, invalidate the bridge customer query and advance to the next step
+  // When terms are accepted in new tab, poll for updates
   const handleTermsComplete = async () => {
-    await sleep(1000); // Wait 1 second to avoid flashing a confirmation message and give bridge time to update the customer
-    queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
+    await sleep(1000); // Wait 1 second to give time to update
+    queryClient.invalidateQueries({ queryKey: ['dueCustomer'] });
     onStepComplete?.('terms');
   };
 
-  // There will be a small wait time for a KYC status transition (to either review, approved, or rejected)
-  // Just notify the parent (which will handle going indeterminate)
+  // When KYC is completed in new tab, notify parent
   const handleDetailsComplete = () => {
     console.log('Details complete');
     onStepComplete?.('details');
@@ -124,46 +116,53 @@ export const AccountVerificationCard = ({
         {(isIndeterminate || isUnderReview) && <IndeterminateContent />}
         {isComplete && <CompleteContent />}
         {isRejected && <RejectedContent rejectionReasons={rejectionReasons} />}
-        {isIncomplete && <IncompleteContent />}
-        {isAwaitingUBO && <AwaitingUBOContent />}
         {!isIndeterminate &&
           !isComplete &&
           !isRejected &&
-          !isUnderReview &&
-          !isIncomplete &&
-          !isAwaitingUBO && <DefaultContent />}
+          !isUnderReview && <DefaultContent />}
 
         {/* Step specific content */}
         {step === 'begin' && !isIndeterminate && !isUnderReview && (
           <Button
             variant='sorbet'
             onClick={handleGetVerified}
-            disabled={isClaimingAccount}
+            disabled={isCreatingAccount}
             className='@xs:max-w-fit w-full'
           >
-            {isClaimingAccount && <Spinner />}
-            Click to start
+            {isCreatingAccount && <Spinner />}
+            Start verification
           </Button>
         )}
 
         {tosLink && step === 'terms' && (
-          <TosIframe
-            url={tosLink}
-            onComplete={handleTermsComplete}
-            className='self-center'
-          />
+          <Button
+            variant='sorbet'
+            onClick={() => {
+              window.open(tosLink, '_blank', 'noopener,noreferrer');
+              // Poll for updates after user opens the link
+              setTimeout(() => handleTermsComplete(), 5000);
+            }}
+            className='@xs:max-w-fit w-full'
+          >
+            <ExternalLink className='mr-2 size-4' />
+            Accept Terms of Service
+          </Button>
         )}
 
-        {kycLink &&
-          !isIndeterminate &&
-          !isAwaitingUBO &&
-          step === 'details' && (
-            <PersonaCard
-              url={kycLink}
-              onComplete={handleDetailsComplete}
-              className='self-center'
-            />
-          )}
+        {kycLink && !isIndeterminate && step === 'details' && (
+          <Button
+            variant='sorbet'
+            onClick={() => {
+              window.open(kycLink, '_blank', 'noopener,noreferrer');
+              // Poll for updates after user opens the link
+              setTimeout(() => handleDetailsComplete(), 5000);
+            }}
+            className='@xs:max-w-fit w-full'
+          >
+            <ExternalLink className='mr-2 size-4' />
+            Complete KYC Verification
+          </Button>
+        )}
 
         {isComplete && (
           <Button
@@ -172,16 +171,6 @@ export const AccountVerificationCard = ({
             className='@xs:max-w-fit w-full'
           >
             Create your first invoice
-          </Button>
-        )}
-
-        {isIncomplete && (
-          <Button
-            variant='sorbet'
-            onClick={() => onCallToActionClick?.('retry')}
-            className='@xs:max-w-fit w-full'
-          >
-            Finish verification
           </Button>
         )}
 
@@ -272,81 +261,7 @@ const DefaultContent = () => {
   return (
     <CardContent
       title='Persona’s account verification'
-      description='Verify your account by adding your personal details to accept payments via ACH/Wire.'
-    />
-  );
-};
-
-/**
- * Local component specializing the card content for the under review state.
- * Since KYB can have an account in the under review state with rejection reasons, we allow the rendering of rejection reasons.
- * If no rejection reasons are given, we assure the user that their account will be reviewed within 24 hours.
- */
-const UnderReviewContent = ({
-  rejectionReasons,
-}: {
-  rejectionReasons?: string[];
-}) => {
-  const reasons = rejectionReasons ? (
-    rejectionReasons?.length === 1 ? (
-      rejectionReasons[0]
-    ) : (
-      <ol className='list-inside list-decimal'>
-        {rejectionReasons.map((reason, index) => (
-          <li key={index}>{reason}</li>
-        ))}
-      </ol>
-    )
-  ) : undefined;
-  return (
-    <CardContent
-      title='Account under review'
-      description={
-        <span>
-          Your account is currently under review. We ran into some issues with
-          your details:{' '}
-          {reasons
-            ? reasons
-            : "It should be finalized within 24 hours. We'll notify you via email when it's ready. If you have any questions, please contact support at support@sorbet.com."}
-        </span>
-      }
-      icon={() => (
-        <img
-          src='/svg/orange-loader-icon.svg'
-          alt='Under Review'
-          className='mr-1.5 inline-block size-6 animate-spin'
-        />
-      )}
-    />
-  );
-};
-
-/** Local component specializing the card content for the incomplete state */
-const IncompleteContent = () => {
-  return (
-    <CardContent
-      title='Verification Incomplete'
-      description='We just need a few more details to finish verifying your account.'
-      icon={() => (
-        <img
-          src='/svg/red-warning-icon.svg'
-          alt='Incomplete'
-          className='mr-1.5 inline-block size-6'
-        />
-      )}
-    />
-  );
-};
-
-/** Local component specializing the card content for the awaiting UBO state */
-const AwaitingUBOContent = () => {
-  return (
-    <CardContent
-      title='Waiting on UBOs'
-      description='The UBOs (ultimate beneficial owners) of your business received an email to verify their identity. Please check your email for the link.'
-      icon={() => (
-        <User className='mr-1.5 inline-block size-6 text-orange-500' />
-      )}
+      description='Verify your account by adding your personal details to accept payments via ACH/Wire or Credit Card.'
     />
   );
 };
@@ -356,8 +271,8 @@ const RejectedContent = ({
 }: {
   rejectionReasons?: string[];
 }) => {
-  const desc = rejectionReasons ? (
-    rejectionReasons?.length === 1 ? (
+  const desc = rejectionReasons && rejectionReasons.length > 0 ? (
+    rejectionReasons.length === 1 ? (
       rejectionReasons[0]
     ) : (
       <ol className='list-inside list-decimal'>
@@ -367,7 +282,7 @@ const RejectedContent = ({
       </ol>
     )
   ) : (
-    'Verify your account by adding your authorised personal details to accept payments via ACH/Wire.'
+    'Your verification was not approved. Please try again or contact support at support@sorbet.com if you need assistance.'
   );
   return (
     <CardContent
