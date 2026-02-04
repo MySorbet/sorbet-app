@@ -1,14 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import {
-  mockBridgeCustomerHandler,
   mockBridgeCustomerHandler404,
-  mockBridgeCustomerHandlerIncomplete,
   mockBridgeCustomerHandlerKycComplete,
-  mockBridgeCustomerHandlerRejected,
-  mockBridgeCustomerHandlerUnderReview,
 } from '@/api/bridge/msw-handlers';
 import { mockDashboardHandler } from '@/api/dashboard/msw-handlers';
+import {
+  mockDueCustomerHandler,
+  mockDueCustomerHandler404,
+  mockDueCustomerHandlerRejected,
+  mockDueCustomerHandlerTosAccepted,
+  mockDueCustomerHandlerUnderReview,
+  mockDueCustomerHandlerVerified,
+} from '@/api/due/msw-handlers';
 
 import { VerifyDashboard } from './verify-dashboard';
 
@@ -18,7 +22,11 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
     msw: {
-      handlers: [mockBridgeCustomerHandler, mockDashboardHandler],
+      handlers: [
+        mockBridgeCustomerHandler404,
+        mockDueCustomerHandler,
+        mockDashboardHandler,
+      ],
     },
   },
 } satisfies Meta<typeof VerifyDashboard>;
@@ -26,23 +34,71 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Default state - user has not started verification */
+/** Default state - user has not started Due verification */
 export const Default: Story = {};
 
-/** User has not created bridge customer yet (404) */
+/** User has not created Due customer yet (404) - shows "Start verification" */
 export const NotStarted: Story = {
   parameters: {
     msw: {
-      handlers: [mockBridgeCustomerHandler404, mockDashboardHandler],
+      handlers: [
+        mockBridgeCustomerHandler404,
+        mockDueCustomerHandler404,
+        mockDashboardHandler,
+      ],
     },
   },
 };
 
-/** User has completed KYC and is verified */
-export const Verified: Story = {
+/** MIGRATION SCENARIO: User is Bridge verified but hasn't started Due verification
+ * This shows the migration banner at the top with the vertical setup card */
+export const MigrationNeeded: Story = {
   parameters: {
     msw: {
-      handlers: [mockBridgeCustomerHandlerKycComplete, mockDashboardHandler],
+      handlers: [
+        mockBridgeCustomerHandlerKycComplete,
+        mockDueCustomerHandler404,
+        mockDashboardHandler,
+      ],
+    },
+  },
+};
+
+/** User has accepted TOS, pending KYC */
+export const TosAcceptedKycPending: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        mockBridgeCustomerHandler404,
+        mockDueCustomerHandlerTosAccepted,
+        mockDashboardHandler,
+      ],
+    },
+  },
+};
+
+/** User's verification is under review */
+export const UnderReview: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        mockBridgeCustomerHandler404,
+        mockDueCustomerHandlerUnderReview,
+        mockDashboardHandler,
+      ],
+    },
+  },
+};
+
+/** User has completed KYC and is verified - no invoice yet (shows completion card) */
+export const VerifiedNoInvoice: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        mockBridgeCustomerHandler404,
+        mockDueCustomerHandlerVerified,
+        mockDashboardHandler,
+      ],
     },
   },
 };
@@ -51,25 +107,11 @@ export const Verified: Story = {
 export const Rejected: Story = {
   parameters: {
     msw: {
-      handlers: [mockBridgeCustomerHandlerRejected, mockDashboardHandler],
-    },
-  },
-};
-
-/** User's verification is pending (under_review status from Bridge API) */
-export const VerificationPending: Story = {
-  parameters: {
-    msw: {
-      handlers: [mockBridgeCustomerHandlerUnderReview, mockDashboardHandler],
-    },
-  },
-};
-
-/** User's verification is incomplete */
-export const Incomplete: Story = {
-  parameters: {
-    msw: {
-      handlers: [mockBridgeCustomerHandlerIncomplete, mockDashboardHandler],
+      handlers: [
+        mockBridgeCustomerHandler404,
+        mockDueCustomerHandlerRejected,
+        mockDashboardHandler,
+      ],
     },
   },
 };
