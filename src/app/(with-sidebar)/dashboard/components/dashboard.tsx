@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
 import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
+import { useDueCustomer } from '@/hooks/profile/use-due-customer';
+import { useNeedsMigration } from '@/hooks/profile/use-needs-migration';
 import { useAuth } from '@/hooks/use-auth';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
@@ -22,6 +23,7 @@ import {
   TaskStatuses,
 } from './checklist-card';
 import { DepositDialog } from './deposit-dialog';
+import { MigrationBanner } from './migration-banner';
 import { RestrictedCountryBanner } from './restricted-country-banner';
 import { SetupCard } from './setup-card';
 import { SmallStatCard } from './small-stat-card';
@@ -38,7 +40,7 @@ export const Dashboard = () => {
   const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
   const { smartWalletAddress } = useSmartWalletAddress();
-  const { data: bridgeCustomer, isLoading: isBridgeLoading } = useBridgeCustomer();
+  const { data: dueCustomer, isLoading: isDueLoading } = useDueCustomer();
 
   const [duration, setDuration] = useState<Duration>('all');
   const { data: transactions, isLoading: isTransactionsLoading } = useTransactionOverview(
@@ -57,13 +59,14 @@ export const Dashboard = () => {
   // Completed tasks are stored in the DB
   const completedTasks: TaskStatuses | undefined = dashboardData?.tasks;
 
-  const kycStatus = bridgeCustomer?.customer?.status;
-  const isKycVerified = kycStatus === 'active';
-  const isKycRejected = kycStatus === 'rejected';
-  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  const kycStatus = dueCustomer?.account?.kyc?.status;
+  const isKycVerified = kycStatus === 'approved' || kycStatus === 'passed';
+  const isKycRejected = kycStatus === 'failed' || kycStatus === 'rejected';
+  const isKycNotStarted = !kycStatus;
   const hasCreatedInvoice = completedTasks?.invoice ?? false;
 
   const isRestricted = isRestrictedCountry(user?.country);
+  const needsMigration = useNeedsMigration();
 
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [isDepositOpen, setIsDepositOpen] = useState(false);
@@ -78,7 +81,7 @@ export const Dashboard = () => {
   const handleSendFunds = () => router.push('/recipients?send-to=true');
   const handleAddRecipient = () => router.push('/recipients?add-recipient=true');
 
-  const handleTaskClick = (type: TaskType) => {
+  const _handleTaskClick = (type: TaskType) => {
     switch (type) {
       case 'verified':
         router.push('/verify');
@@ -99,7 +102,7 @@ export const Dashboard = () => {
         open={isDepositOpen}
         onOpenChange={setIsDepositOpen}
         walletAddress={smartWalletAddress ?? undefined}
-        bridgeCustomer={bridgeCustomer}
+        bridgeCustomer={undefined}
       />
 
       {/* Conditionally rendered profile edit modal */}
@@ -125,6 +128,11 @@ export const Dashboard = () => {
           <RestrictedCountryBanner />
         ) : (
           <>
+            {/* Migration Banner: Show for Bridge users who need to migrate to Due */}
+            {needsMigration && (
+              <MigrationBanner onComplete={() => router.push('/verify')} />
+            )}
+
             {/* Announcement Banner: Only show if KYC is not started or rejected */}
             {(isKycNotStarted || isKycRejected) && (
               <AnnouncementBanner onComplete={() => router.push('/verify')} />
@@ -136,7 +144,7 @@ export const Dashboard = () => {
                 completedTasks={completedTasks}
                 onVerifyClick={() => router.push('/verify')}
                 kycStatus={kycStatus}
-                loading={isBridgeLoading || isDashboardLoading}
+                loading={isDueLoading || isDashboardLoading}
               />
             )}
           </>

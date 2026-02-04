@@ -1,3 +1,4 @@
+import { ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Spinner } from '@/components/common/spinner';
@@ -7,7 +8,6 @@ import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
 import { cn } from '@/lib/utils';
 
 import { VerifyCard } from '../../components/verify-card';
-import { DueIframe } from './due-iframe';
 
 type DueVerifyStep = 'begin' | 'terms' | 'details' | 'complete';
 
@@ -77,11 +77,25 @@ export const DueAccountVerificationCard = ({
         )}
 
         {tosLink && step === 'terms' && (
-          <DueIframe url={tosLink} className='self-center' />
+          <Button
+            variant='sorbet'
+            onClick={() => window.open(tosLink, '_blank', 'noopener,noreferrer')}
+            className='@xs:max-w-fit w-full'
+          >
+            <ExternalLink className='mr-2 size-4' />
+            Accept Terms of Service
+          </Button>
         )}
 
         {kycLink && step === 'details' && (
-          <DueIframe url={kycLink} className='self-center' />
+          <Button
+            variant='sorbet'
+            onClick={() => window.open(kycLink, '_blank', 'noopener,noreferrer')}
+            className='@xs:max-w-fit w-full'
+          >
+            <ExternalLink className='mr-2 size-4' />
+            Complete KYC Verification
+          </Button>
         )}
       </div>
     </VerifyCard>

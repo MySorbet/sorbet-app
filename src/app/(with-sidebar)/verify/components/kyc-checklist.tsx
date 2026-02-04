@@ -177,12 +177,12 @@ const VerifyStepItem = (props: VerifyTaskItemProps) => {
 const steps: Omit<VerifyTaskItemProps, 'completed' | 'onClick'>[] = [
   {
     title: 'Accept terms of service',
-    description: "Accept Bridge's Terms of Service & Privacy Policy",
+    description: 'Accept Terms of Service & Privacy Policy',
     type: 'terms',
   },
   {
     title: 'Add details',
-    description: 'Provide your information to be verified by Persona',
+    description: 'Provide your information for identity verification',
     type: 'details',
   },
 ];

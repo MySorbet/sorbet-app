@@ -1,14 +1,17 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { CustomerStatus } from '@/types/bridge';
+import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
+import { cn } from '@/lib/utils';
 
-import { DashboardCard } from './dashboard-card';
 import { TaskStatuses } from './checklist-card';
+import { DashboardCard } from './dashboard-card';
 
 type SetupStep = {
     id: string;
@@ -34,14 +37,32 @@ export const SetupCard = ({
     onVerifyClick,
     kycStatus,
     loading,
+    layout = 'horizontal',
+    tosLink: _tosLink,
+    kycLink,
+    showInlineVerification = false,
 }: {
     className?: string;
     completedTasks?: TaskStatuses;
     onVerifyClick?: () => void;
-    kycStatus?: CustomerStatus;
+    kycStatus?: string;
     loading?: boolean;
+    layout?: 'horizontal' | 'vertical';
+    _tosLink?: string;
+    kycLink?: string;
+    showInlineVerification?: boolean;
 }) => {
     const router = useRouter();
+    const queryClient = useQueryClient();
+
+    const { mutate: createDueCustomer } = useCreateDueCustomer({
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['dueCustomer'] });
+        },
+        onError: (error) => {
+            toast.error(error instanceof Error ? error.message : 'Failed to start verification');
+        },
+    });
 
     const handleVerifyClick = () => {
         if (onVerifyClick) {
@@ -51,33 +72,50 @@ export const SetupCard = ({
         }
     };
 
+    const handleStartVerification = () => {
+        if (!kycStatus) {
+            // No account yet, create one
+            createDueCustomer();
+        } else if (kycLink) {
+            // Account exists, open KYC link
+            window.open(kycLink, '_blank', 'noopener,noreferrer');
+        } else {
+            handleVerifyClick();
+        }
+    };
+
     // Logic for step 2 badge and behavior
-    let step2Badge = 'Verify now';
+    let step2Badge = 'Start verification';
     let step2BadgeColor = 'bg-[#5864FF]'; // Default blue
     let step2IndicatorColor = 'border-sorbet';
     let step2Clickable = true;
     let step2Completed = false;
     let step2Verifying = false;
 
-    if (kycStatus === 'under_review') {
+    // Map Due statuses to UI states
+    if (kycStatus === 'under_review' || kycStatus === 'in_review') {
+        // Actually being reviewed
         step2Badge = 'Verifying';
         step2BadgeColor = 'bg-[#FF9933]';
         step2IndicatorColor = 'border-[#FF9933]';
         step2Clickable = true;
         step2Verifying = true;
-    } else if (kycStatus === 'active') {
-        step2Badge = 'Verified';
+    } else if (kycStatus === 'approved' || kycStatus === 'passed') {
+        // Approved
+        step2Badge = 'Account Verified';
         step2BadgeColor = 'bg-gradient-to-r from-[#64AD5C] to-[#86E47C]';
         step2IndicatorColor = 'border-sorbet';
         step2Clickable = true;
         step2Completed = true;
-    } else if (kycStatus === 'incomplete') {
-        step2Badge = 'Incomplete Verification';
+    } else if (kycStatus === 'failed' || kycStatus === 'rejected') {
+        // Failed - allow retry
+        step2Badge = 'Verify now';
         step2BadgeColor = 'bg-[#FF383C]';
         step2IndicatorColor = 'border-sorbet';
         step2Clickable = true;
-    } else if (kycStatus === 'rejected') {
-        step2Badge = 'Verify now';
+    } else if (kycStatus === 'pending') {
+        // Account created but KYC not started yet
+        step2Badge = 'Start verification';
         step2BadgeColor = 'bg-[#5864FF]';
         step2IndicatorColor = 'border-sorbet';
         step2Clickable = true;
@@ -95,7 +133,7 @@ export const SetupCard = ({
         {
             id: 'verify',
             title: 'Unlock virtual accounts',
-            description: 'Get verified via Persona',
+            description: 'Get verified & accept banking payments',
             completed: step2Completed,
             verifying: step2Verifying,
             active: !step2Completed && !step2Verifying,
@@ -127,7 +165,12 @@ export const SetupCard = ({
         if (!step.clickable) return;
 
         if (step.id === 'verify') {
-            handleVerifyClick();
+            // If inline verification is enabled and we have a KYC link, open it directly
+            if (showInlineVerification && kycLink) {
+                handleStartVerification();
+            } else {
+                handleVerifyClick();
+            }
         } else if (step.id === 'invoice') {
             router.push('/invoices/create');
         }
@@ -169,9 +212,15 @@ export const SetupCard = ({
             </div>
 
             {/* Stepper Container */}
-            <div className='relative flex flex-col gap-8 lg:block lg:gap-0'>
-                {/* Progress Lines - Mobile/Tablet Only (Vertical) */}
-                <div className='absolute left-3 top-6 bottom-6 w-[2px] -translate-x-1/2 lg:hidden'>
+            <div className={cn(
+                'relative flex flex-col gap-8',
+                layout === 'horizontal' ? 'lg:block lg:gap-0' : ''
+            )}>
+                {/* Progress Lines - Vertical */}
+                <div className={cn(
+                    'absolute left-3 top-6 bottom-6 w-[2px] -translate-x-1/2',
+                    layout === 'horizontal' ? 'lg:hidden' : ''
+                )}>
                     {/* Background Line (Gray) */}
                     <div className='absolute inset-0 bg-gray-200' />
 
@@ -183,6 +232,7 @@ export const SetupCard = ({
                 </div>
 
                 {/* Progress Lines - Desktop Only (Horizontal) */}
+                {layout === 'horizontal' && (
                 <div className='hidden lg:block'>
                     <div className='absolute left-[16.66%] right-[16.66%] top-3 h-[2px] -translate-y-1/2'>
                         {/* Background Line (Gray) */}
@@ -195,10 +245,14 @@ export const SetupCard = ({
                         />
                     </div>
                 </div>
+                )}
 
                 {/* Steps Container - Grid on desktop to space evenly */}
-                <div className='flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-0'>
-                    {steps.map((step, index) => {
+                <div className={cn(
+                    'flex flex-col gap-6',
+                    layout === 'horizontal' ? 'lg:flex-row lg:items-start lg:gap-0' : ''
+                )}>
+                    {steps.map((step) => {
                         const isCompleted = step.completed;
                         const isActive = step.active;
                         const isVerifying = step.verifying;
@@ -207,7 +261,8 @@ export const SetupCard = ({
                             <div
                                 key={step.id}
                                 className={cn(
-                                    'group flex items-start gap-4 lg:flex-1 lg:flex-col lg:items-center lg:gap-0 lg:text-center',
+                                    'group flex items-start gap-4',
+                                    layout === 'horizontal' ? 'lg:flex-1 lg:flex-col lg:items-center lg:gap-0 lg:text-center' : '',
                                     step.clickable ? 'cursor-pointer' : 'cursor-default'
                                 )}
                                 onClick={() => handleStepClick(step)}
@@ -244,13 +299,19 @@ export const SetupCard = ({
                                 </div>
 
                                 {/* Text Labels */}
-                                <div className='flex flex-col lg:mt-3 lg:items-center'>
+                                <div className={cn(
+                                    'flex flex-col',
+                                    layout === 'horizontal' ? 'lg:mt-3 lg:items-center' : ''
+                                )}>
                                     <div className='flex items-center gap-2'>
-                                        <span className='text-sm font-semibold text-gray-900 lg:whitespace-nowrap'>
+                                        <span className={cn(
+                                            'text-sm font-semibold text-gray-900',
+                                            layout === 'horizontal' ? 'lg:whitespace-nowrap' : ''
+                                        )}>
                                             {step.title}
                                         </span>
-                                        {/* Badge - Desktop */}
-                                        {step.badge && (
+                                        {/* Badge - Only show in horizontal layout on desktop */}
+                                        {step.badge && layout === 'horizontal' && (
                                             <span
                                                 className={cn(
                                                     'hidden rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:inline-block',
@@ -260,10 +321,21 @@ export const SetupCard = ({
                                                 {step.badge}
                                             </span>
                                         )}
+                                        {/* Badge - Show in vertical layout or mobile */}
+                                        {step.badge && layout === 'vertical' && (
+                                            <span
+                                                className={cn(
+                                                    'inline-block rounded px-1.5 py-0.5 text-[10px] font-medium text-white',
+                                                    step.badgeColor || 'bg-[#5864FF]'
+                                                )}
+                                            >
+                                                {step.badge}
+                                            </span>
+                                        )}
                                     </div>
 
-                                    {/* Badge - Mobile/Tablet */}
-                                    {step.badge && (
+                                    {/* Badge - Mobile/Tablet (only in horizontal mode) */}
+                                    {step.badge && layout === 'horizontal' && (
                                         <span
                                             className={cn(
                                                 'mt-1 inline-block w-fit rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:hidden',
@@ -274,7 +346,10 @@ export const SetupCard = ({
                                         </span>
                                     )}
 
-                                    <span className='mt-0.5 text-xs text-gray-500 lg:mt-1 lg:whitespace-nowrap'>
+                                    <span className={cn(
+                                        'mt-0.5 text-xs text-gray-500',
+                                        layout === 'horizontal' ? 'lg:mt-1 lg:whitespace-nowrap' : ''
+                                    )}>
                                         {step.description}
                                     </span>
                                 </div>
@@ -283,6 +358,32 @@ export const SetupCard = ({
                     })}
                 </div>
             </div>
+
+            {/* Completion Card - Only show in vertical layout when verified AND invoice not created */}
+            {layout === 'vertical' && step2Completed && !completedTasks?.invoice && (
+                <div className='rounded-lg border border-gray-200 bg-white p-6'>
+                    <div className='flex items-start gap-3'>
+                        <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100'>
+                            <Check className='h-4 w-4 text-green-600' />
+                        </div>
+                        <div className='flex-1 space-y-3'>
+                            <div>
+                                <h3 className='text-lg font-semibold text-gray-900'>Account verified</h3>
+                                <p className='mt-1 text-sm text-gray-600'>
+                                    Congrats! You can now accept bank payments. Try sending an invoice to test it out.
+                                </p>
+                            </div>
+                            <Button
+                                variant='sorbet'
+                                onClick={() => router.push('/invoices/create')}
+                                className='w-fit'
+                            >
+                                Create your first invoice
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </DashboardCard>
     );
 };
