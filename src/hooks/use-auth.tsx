@@ -99,7 +99,7 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
    * Note: No redirect will happen if the user is already authenticated
    */
   const { login } = useLogin({
-    onComplete: async (user, isNewUser, wasAlreadyAuthenticated) => {
+    onComplete: async ({ user, isNewUser, wasAlreadyAuthenticated }) => {
       console.log('wasAlreadyAuthenticated: ', wasAlreadyAuthenticated);
 
       // This is a signup so create a user in the sorbet db, put it in state and redirect to signup

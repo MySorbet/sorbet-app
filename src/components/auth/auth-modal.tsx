@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLoginWithEmail, useCreateWallet, usePrivy } from '@privy-io/react-auth';
+import { useCreateWallet, useLoginWithEmail, usePrivy } from '@privy-io/react-auth';
+import { useCreateWallet as useCreateExtendedChainWallet } from '@privy-io/react-auth/extended-chains';
 import { useQueryState } from 'nuqs';
 import posthog from 'posthog-js';
 import { toast } from 'sonner';
@@ -36,7 +37,8 @@ export const AuthModal = ({ open, onOpenChange, mode }: AuthModalProps) => {
 
     // Privy hooks
     const { authenticated } = usePrivy();
-    const { createWallet } = useCreateWallet();
+    const { createWallet: createEvmWallet } = useCreateWallet();
+    const { createWallet: createExtendedChainWallet } = useCreateExtendedChainWallet();
 
     // Track pending auth completion data
     const [pendingAuth, setPendingAuth] = useState<{
@@ -70,9 +72,19 @@ export const AuthModal = ({ open, onOpenChange, mode }: AuthModalProps) => {
             try {
                 // Now that Privy's React state is ready, create the embedded wallet
                 try {
-                    await createWallet();
+                    await createEvmWallet();
                 } catch {
                     // Wallet might already exist, continue without failing
+                }
+
+                // Also provision a Stellar embedded wallet (Tier 2 / extended chains).
+                // This will add a Stellar wallet to the Privy user record's linked accounts.
+                try {
+                    console.log("Creating Stellar User");
+                    await createExtendedChainWallet({ chainType: 'stellar' });
+                    console.log("Done creating Stellar User");
+                } catch {
+                    // Stellar wallet might already exist or be temporarily unavailable; continue without failing login
                 }
 
                 if (isNewUser) {
@@ -122,11 +134,19 @@ export const AuthModal = ({ open, onOpenChange, mode }: AuthModalProps) => {
         };
 
         processAuth();
-    }, [authenticated, pendingAuth, createWallet, dangerouslySetUser, desiredHandle, state]);
+    }, [
+        authenticated,
+        pendingAuth,
+        createEvmWallet,
+        createExtendedChainWallet,
+        dangerouslySetUser,
+        desiredHandle,
+        state,
+    ]);
 
     // Use Privy's headless email login
     const { sendCode, loginWithCode } = useLoginWithEmail({
-        onComplete: (user, isNewUser) => {
+        onComplete: ({ user, isNewUser }) => {
             // Don't process immediately - store the data and wait for Privy's React state to update
             setPendingAuth({ user, isNewUser });
         },

@@ -1,3 +1,5 @@
+'use client';
+
 import { useQuery } from '@tanstack/react-query';
 import { ethers } from 'ethers';
 import { Horizon } from '@stellar/stellar-sdk';
@@ -14,20 +16,17 @@ let horizonServerUrl: string | null = null;
 
 const getProvider = () => {
   if (!providerInstance) {
-    providerInstance = new ethers.providers.JsonRpcProvider(
-      env.NEXT_PUBLIC_BASE_RPC_URL
-    );
+    providerInstance = new ethers.providers.JsonRpcProvider(env.NEXT_PUBLIC_BASE_RPC_URL);
   }
   return providerInstance;
 };
 
 const getUsdcContract = () => {
   if (!usdcContractInstance) {
-    const provider = getProvider();
     usdcContractInstance = new ethers.Contract(
       env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
       TOKEN_ABI,
-      provider
+      getProvider()
     );
   }
   return usdcContractInstance;
@@ -41,34 +40,28 @@ const getHorizonServer = (horizonUrl: string) => {
   return horizonServerInstance;
 };
 
-/**
- * Use RQ and ethers to fetch the user's USDC balance (for smart wallet)
- */
-export const useWalletBalance = () => {
-  const { currentChain, baseAddress, stellarAddress, isLoading } = useWalletAddress();
+export const useWalletBalances = () => {
+  const { baseAddress, stellarAddress, isLoading } = useWalletAddress();
 
   const horizonUrl = env.NEXT_PUBLIC_TESTNET
     ? env.NEXT_PUBLIC_STELLAR_HORIZON_URL_TESTNET
     : env.NEXT_PUBLIC_STELLAR_HORIZON_URL_PUBLIC;
 
-  const enabled =
-    !isLoading &&
-    ((currentChain === 'base' && !!baseAddress) ||
-      (currentChain === 'stellar' && !!stellarAddress));
+  const base = useQuery({
+    enabled: !isLoading && !!baseAddress,
+    queryKey: ['usdcBalance', 'base', baseAddress],
+    queryFn: async (): Promise<string> => {
+      if (!baseAddress) return '0';
+      const usdc = getUsdcContract();
+      const [raw, decimals] = await Promise.all([usdc.balanceOf(baseAddress), usdc.decimals()]);
+      return ethers.utils.formatUnits(raw, decimals);
+    },
+  });
 
-  return useQuery({
-    enabled,
-    queryKey: ['usdcBalance', currentChain, currentChain === 'base' ? baseAddress : stellarAddress],
-    queryFn: async () => {
-      if (currentChain === 'base') {
-        if (!baseAddress) return '0';
-        const usdcContract = getUsdcContract();
-        const usdcBalanceRaw = await usdcContract.balanceOf(baseAddress);
-        const usdcDecimals = await usdcContract.decimals();
-        return ethers.utils.formatUnits(usdcBalanceRaw, usdcDecimals);
-      }
-
-      // Stellar: balance is already returned as a decimal string by Horizon.
+  const stellar = useQuery({
+    enabled: !isLoading && !!stellarAddress,
+    queryKey: ['usdcBalance', 'stellar', stellarAddress],
+    queryFn: async (): Promise<string> => {
       if (!stellarAddress) return '0';
       try {
         const server = getHorizonServer(horizonUrl);
@@ -83,9 +76,17 @@ export const useWalletBalance = () => {
         });
         return String((bal as any)?.balance ?? '0');
       } catch {
-        // Account not found / not funded / no trustline yet.
         return '0';
       }
     },
   });
+
+  return {
+    baseUsdc: base.data,
+    stellarUsdc: stellar.data,
+    isLoading: isLoading || base.isLoading || stellar.isLoading,
+    refetchBase: base.refetch,
+    refetchStellar: stellar.refetch,
+  };
 };
+

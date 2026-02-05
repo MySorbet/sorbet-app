@@ -2,7 +2,8 @@
 
 import { Info } from 'lucide-react';
 
-import { useBaseQRCode } from '@/app/invoices/hooks/use-base-qr-code';
+import type { SorbetChain } from '@/api/user/chain';
+import { useQRCode } from '@/hooks/profile/use-qr-code';
 import { BackButton } from '@/components/common/back-button';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { formatWalletAddress } from '@/lib/utils';
 
 interface USDCWalletDetailsProps {
+    chain: SorbetChain;
     walletAddress: string;
     onBack: () => void;
     onClose: () => void;
@@ -19,11 +21,17 @@ interface USDCWalletDetailsProps {
  * USDC Wallet details screen with QR code and wallet address
  */
 export const USDCWalletDetails = ({
+    chain,
     walletAddress,
     onBack,
     onClose,
 }: USDCWalletDetailsProps) => {
-    const { qrCodeRef, isLoadingQRCode } = useBaseQRCode(walletAddress);
+    const qrImage = chain === 'stellar' ? '/svg/stellar_logo.svg' : '/svg/base.svg';
+    const chainLabel = chain === 'stellar' ? 'Stellar' : 'Base';
+
+    const { qrCodeRef, isLoadingQRCode } = useQRCode(walletAddress, {
+        image: qrImage,
+    });
 
     return (
         <div className='flex flex-col gap-4 p-6'>
@@ -58,8 +66,8 @@ export const USDCWalletDetails = ({
             <div className='flex items-start gap-2 rounded-lg border border-[#E4E4E7] bg-[#F9FAFB] p-3'>
                 <Info className='mt-0.5 size-4 shrink-0 text-[#3B82F6]' />
                 <p className='text-sm text-[#344054]'>
-                    This address can only receive USDC on the Base Network. Funds may be
-                    lost if USDC is sent on another network.
+                    This address can only receive USDC on the {chainLabel} Network.
+                    Funds may be lost if USDC is sent on another network.
                 </p>
             </div>
 

@@ -153,7 +153,10 @@ export const RecipientsTableCore: React.FC<RecipientsTableCoreProps> = ({
                           e.stopPropagation();
                           onDelete?.(recipient.id);
                         }}
-                        disabled={recipient.type !== 'crypto'}
+                        disabled={
+                          recipient.type !== 'crypto_base' &&
+                          recipient.type !== 'crypto_stellar'
+                        }
                       >
                         <Trash className='size-4' />
                         Delete
@@ -185,7 +188,7 @@ const RecipientTypeCell = ({ type }: { type: RecipientType }) => {
 
 /** Displays account detail - wallet address or masked account number */
 const AccountDetail = ({ recipient }: { recipient: RecipientAPI }) => {
-  if (recipient.type === 'crypto') {
+  if (recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar') {
     return (
       <CopyButton
         className='h-fit flex-row-reverse p-1 px-0 text-sm font-normal'

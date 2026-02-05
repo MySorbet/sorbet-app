@@ -90,7 +90,8 @@ export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = (
             </SelectTrigger>
             <SelectContent>
               <SelectItem value='all'>All Types</SelectItem>
-              <SelectItem value='crypto'>Crypto</SelectItem>
+              <SelectItem value='crypto_base'>Crypto (Base)</SelectItem>
+              <SelectItem value='crypto_stellar'>Crypto (Stellar)</SelectItem>
               <SelectItem value='usd'>USD</SelectItem>
               <SelectItem value='eur'>EUR</SelectItem>
             </SelectContent>

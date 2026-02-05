@@ -18,6 +18,7 @@ const meta = {
     args: {
         open: true,
         onOpenChange: fn(),
+        chain: 'base',
         walletAddress: mockWalletAddress,
         bridgeCustomer: mockBridgeCustomer,
     },
@@ -101,6 +102,30 @@ export const OnlyEUR: Story = {
             ...mockBridgeCustomer,
             virtual_account: undefined,
         },
+    },
+    render: (args) => {
+        const [{ open }, updateArgs] = useArgs();
+        const handleOpenChange = (open: boolean) => {
+            updateArgs({ open });
+        };
+
+        return (
+            <>
+                <Button onClick={() => handleOpenChange(true)}>Open Deposit</Button>
+                <DepositDialog {...args} open={open} onOpenChange={handleOpenChange} />
+            </>
+        );
+    },
+};
+
+/**
+ * Stellar chain: USDC wallet details should show Stellar messaging + QR
+ */
+export const Stellar: Story = {
+    args: {
+        chain: 'stellar',
+        walletAddress: 'GB3JDWCQMPM3SSE6X6CEGJ3V3UT2JTX7KZ2R5Y3G3QZQJ2T4K6Q3W3GQ',
+        bridgeCustomer: undefined,
     },
     render: (args) => {
         const [{ open }, updateArgs] = useArgs();

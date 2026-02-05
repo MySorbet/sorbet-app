@@ -140,7 +140,10 @@ const RecipientsTableInternal = ({
                         onDelete?.(recipient.id);
                         // TODO: Loading state / disable during delete? Or optimistic?
                       }}
-                      disabled={recipient.type !== 'crypto'}
+                    disabled={
+                      recipient.type !== 'crypto_base' &&
+                      recipient.type !== 'crypto_stellar'
+                    }
                     >
                       <Trash />
                       Delete
@@ -167,7 +170,7 @@ const RecipientsTableInternal = ({
 };
 
 const TableDetail = ({ recipient }: { recipient: RecipientAPI }) => {
-  if (recipient.type === 'crypto') {
+  if (recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar') {
     return (
       <CopyButton
         className='h-fit flex-row-reverse p-1 px-0 text-sm font-normal'

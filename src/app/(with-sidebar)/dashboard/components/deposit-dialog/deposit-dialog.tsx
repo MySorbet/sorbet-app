@@ -10,6 +10,7 @@ import {
     CredenzaDescription,
     CredenzaTitle,
 } from '@/components/common/credenza/credenza';
+import type { SorbetChain } from '@/api/user/chain';
 import type {
     BridgeCustomer,
     SourceDepositInstructions,
@@ -26,8 +27,10 @@ export type DepositOption = 'select' | 'usdc' | 'usd' | 'eur';
 interface DepositDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    /** Smart wallet address for USDC deposits */
+    /** Wallet address for USDC deposits (based on selected chain) */
     walletAddress?: string;
+    /** Selected chain (Base or Stellar) */
+    chain?: SorbetChain;
     /** Bridge customer data containing virtual accounts */
     bridgeCustomer?: BridgeCustomer;
 }
@@ -45,6 +48,7 @@ export const DepositDialog = ({
     open,
     onOpenChange,
     walletAddress,
+    chain = 'base',
     bridgeCustomer,
 }: DepositDialogProps) => {
     const [selectedOption, setSelectedOption] = useState<DepositOption>('select');
@@ -94,6 +98,7 @@ export const DepositDialog = ({
                     {selectedOption === 'usdc' && (
                         <FadeIn key='usdc'>
                             <USDCWalletDetails
+                                chain={chain}
                                 walletAddress={walletAddress ?? ''}
                                 onBack={handleBack}
                                 onClose={handleClose}

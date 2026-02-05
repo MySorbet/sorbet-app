@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ export const SmallStatCard = ({
   formatValue = true,
   infoButtonUrl,
   walletAddress,
+  actions,
 }: {
   /** Card title */
   title: string;
@@ -40,6 +42,8 @@ export const SmallStatCard = ({
   infoButtonUrl?: string;
   /** Optional wallet address to display with copy functionality */
   walletAddress?: string;
+  /** Optional custom actions area (replaces Info + button) */
+  actions?: ReactNode;
 }) => {
   const displayValue = typeof value === 'number' && formatValue
     ? formatCurrency(value)
@@ -67,24 +71,26 @@ export const SmallStatCard = ({
           )}
         </div>
         <div className='flex items-center gap-2'>
-          {infoButtonUrl && (
-            <Button
-              variant='outline'
-              size='sm'
-              asChild
-            >
-              <Link href={infoButtonUrl} target='_blank' rel='noopener noreferrer'>
-                Info
-              </Link>
-            </Button>
+          {actions ? (
+            actions
+          ) : (
+            <>
+              {infoButtonUrl && (
+                <Button variant='outline' size='sm' asChild>
+                  <Link
+                    href={infoButtonUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    Info
+                  </Link>
+                </Button>
+              )}
+              <Button variant='outline' size='sm' onClick={onClick}>
+                {buttonLabel}
+              </Button>
+            </>
           )}
-          <Button 
-            variant='outline' 
-            size='sm' 
-            onClick={onClick}
-          >
-            {buttonLabel}
-          </Button>
         </div>
       </div>
 

@@ -2,14 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { usePrivy } from '@privy-io/react-auth';
 
 import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
 import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
+import { FullscreenLoader } from '@/components/common/fullscreen-loader';
 import { useUnlessMobile } from '@/components/common/open-on-desktop-drawer/unless-mobile';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useAuth } from '@/hooks/use-auth';
+import { useMyChain, useSetMyChain } from '@/hooks/use-my-chain';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { getStellarAddressFromPrivyUser } from '@/lib/stellar/privy';
 
 import { Duration } from '../../wallet/components/balance-card/select-duration';
 import { calculateBalanceHistory } from '../../wallet/components/balance-card/util';
@@ -22,9 +27,12 @@ import {
   TaskStatuses,
 } from './checklist-card';
 import { DepositDialog } from './deposit-dialog';
+import { NetworkDropdown } from './network-dropdown';
 import { RestrictedCountryBanner } from './restricted-country-banner';
 import { SetupCard } from './setup-card';
 import { SmallStatCard } from './small-stat-card';
+import { StellarActivationDialog } from './stellar-activation-dialog';
+import { StellarTrustlineDialog } from './stellar-trustline-dialog';
 import { WelcomeCard } from './welcome-card';
 
 /**
@@ -35,10 +43,13 @@ import { WelcomeCard } from './welcome-card';
 export const Dashboard = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { user: privyUser } = usePrivy();
   const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
   const { smartWalletAddress } = useSmartWalletAddress();
   const { data: bridgeCustomer, isLoading: isBridgeLoading } = useBridgeCustomer();
+  const { data: myChainData } = useMyChain();
+  const { mutateAsync: setChain, isPending: isSettingChain } = useSetMyChain();
 
   const [duration, setDuration] = useState<Duration>('all');
   const { data: transactions, isLoading: isTransactionsLoading } = useTransactionOverview(
@@ -67,8 +78,59 @@ export const Dashboard = () => {
 
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [isStellarActivationOpen, setIsStellarActivationOpen] = useState(false);
+  const [isStellarTrustlineOpen, setIsStellarTrustlineOpen] = useState(false);
 
   const unlessMobile = useUnlessMobile();
+
+  const currentChain = myChainData?.chain ?? 'base';
+  const stellarAddress = getStellarAddressFromPrivyUser(privyUser ?? null);
+
+  const currentWalletAddress = currentChain == 'base'? smartWalletAddress: stellarAddress;
+
+  const handleChainChange = async (nextChain: 'base' | 'stellar') => {
+    if (nextChain === currentChain) return;
+
+    try {
+      await setChain(nextChain);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      if (message.includes('User does not have a Stellar wallet in Privy')) {
+        toast.error('Stellar wallet is not active', {
+          description: 'Please log out and log back in, then try again.',
+        });
+        return;
+      }
+
+      if (nextChain === 'stellar' && message.includes('Stellar account does not exist on-chain')) {
+        if (!stellarAddress) {
+          toast.error('Unable to find Stellar address', {
+            description: 'Please log out and log back in, then try again.',
+          });
+          return;
+        }
+        setIsStellarActivationOpen(true);
+        return;
+      }
+
+      if (
+        nextChain === 'stellar' &&
+        message.includes('Stellar account does not have a USDC trustline')
+      ) {
+        if (!stellarAddress) {
+          toast.error('Unable to find Stellar address', {
+            description: 'Please log out and log back in, then try again.',
+          });
+          return;
+        }
+        setIsStellarTrustlineOpen(true);
+        return;
+      }
+
+      toast.error('Unable to switch network', { description: message });
+    }
+  };
 
   // Action handlers
   const handleDeposit = () => setIsDepositOpen(true);
@@ -94,11 +156,31 @@ export const Dashboard = () => {
 
   return (
     <>
+      {isSettingChain && <FullscreenLoader label='Switching network…' />}
+
+      {stellarAddress && (
+        <>
+          <StellarActivationDialog
+            open={isStellarActivationOpen}
+            onOpenChange={setIsStellarActivationOpen}
+            stellarAddress={stellarAddress}
+            onRetrySwitch={() => handleChainChange('stellar')}
+          />
+          <StellarTrustlineDialog
+            open={isStellarTrustlineOpen}
+            onOpenChange={setIsStellarTrustlineOpen}
+            stellarAddress={stellarAddress}
+            onTrustlineEstablished={() => handleChainChange('stellar')}
+          />
+        </>
+      )}
+
       {/* Deposit dialog */}
       <DepositDialog
         open={isDepositOpen}
         onOpenChange={setIsDepositOpen}
-        walletAddress={smartWalletAddress ?? undefined}
+        chain={currentChain}
+        walletAddress={currentWalletAddress ?? undefined}
         bridgeCustomer={bridgeCustomer}
       />
 
@@ -153,7 +235,14 @@ export const Dashboard = () => {
             onClick={handleDeposit}
             formatValue={true}
             infoButtonUrl='https://docs.mysorbet.xyz/sorbet/how-it-works#id-1.-your-sorbet-wallet'
-            walletAddress={smartWalletAddress ?? undefined}
+            walletAddress={currentWalletAddress ?? undefined}
+            actions={
+              <NetworkDropdown
+                value={currentChain}
+                disabled={isSettingChain}
+                onChange={(v) => handleChainChange(v)}
+              />
+            }
           />
           <SmallStatCard
             title='Invoice sales'
