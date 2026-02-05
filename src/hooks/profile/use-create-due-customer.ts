@@ -1,18 +1,26 @@
-import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { verifyDueUser } from '@/api/due/due';
+import type { DueCustomer } from '@/types/due';
 
-export const useCreateDueCustomer = (options?: UseMutationOptions) => {
+interface UseCreateDueCustomerOptions {
+  onSuccess?: (data: DueCustomer) => void;
+  onError?: (error: Error) => void;
+}
+
+export const useCreateDueCustomer = (options?: UseCreateDueCustomerOptions) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: verifyDueUser,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['dueCustomer'] });
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'An error occurred');
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      toast.error(errorMessage);
+      options?.onError?.(error instanceof Error ? error : new Error(errorMessage));
     },
-    ...options,
   });
 };

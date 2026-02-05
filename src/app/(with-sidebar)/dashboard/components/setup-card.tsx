@@ -1,6 +1,5 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -8,10 +7,21 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
+import { env } from '@/lib/env';
 import { cn } from '@/lib/utils';
 
 import { TaskStatuses } from './checklist-card';
 import { DashboardCard } from './dashboard-card';
+
+/** Build full Due URL from a relative path */
+const buildDueUrl = (path?: string) => {
+    if (!path) return undefined;
+    try {
+        return new URL(path, env.NEXT_PUBLIC_DUE_BASE_URL).toString();
+    } catch {
+        return path;
+    }
+};
 
 type SetupStep = {
     id: string;
@@ -36,9 +46,10 @@ export const SetupCard = ({
     completedTasks,
     onVerifyClick,
     kycStatus,
+    tosStatus,
     loading,
     layout = 'horizontal',
-    tosLink: _tosLink,
+    tosLink,
     kycLink,
     showInlineVerification = false,
 }: {
@@ -46,21 +57,37 @@ export const SetupCard = ({
     completedTasks?: TaskStatuses;
     onVerifyClick?: () => void;
     kycStatus?: string;
+    tosStatus?: string;
     loading?: boolean;
     layout?: 'horizontal' | 'vertical';
-    _tosLink?: string;
+    tosLink?: string;
     kycLink?: string;
     showInlineVerification?: boolean;
 }) => {
     const router = useRouter();
-    const queryClient = useQueryClient();
 
-    const { mutate: createDueCustomer } = useCreateDueCustomer({
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['dueCustomer'] });
+    const { mutate: createDueCustomer, isPending: isCreatingDueCustomer } = useCreateDueCustomer({
+        onSuccess: (dueCustomer) => {
+            // After creating the Due customer, immediately open the appropriate link
+            const account = dueCustomer.account;
+            const tosStatus = account.tos?.status;
+            
+            // If TOS is not yet accepted, open TOS link first
+            if (tosStatus !== 'accepted') {
+                const newTosLink = buildDueUrl(account.tos?.link);
+                if (newTosLink) {
+                    window.open(newTosLink, '_blank', 'noopener,noreferrer');
+                }
+            } else {
+                // TOS already accepted, open KYC link
+                const newKycLink = buildDueUrl(account.kyc?.link);
+                if (newKycLink) {
+                    window.open(newKycLink, '_blank', 'noopener,noreferrer');
+                }
+            }
         },
         onError: (error) => {
-            toast.error(error instanceof Error ? error.message : 'Failed to start verification');
+            toast.error(error.message || 'Failed to start verification');
         },
     });
 
@@ -74,10 +101,13 @@ export const SetupCard = ({
 
     const handleStartVerification = () => {
         if (!kycStatus) {
-            // No account yet, create one
+            // No account yet, create one (the onSuccess callback will open the link)
             createDueCustomer();
+        } else if (tosStatus !== 'accepted' && tosLink) {
+            // Account exists but TOS not accepted yet, open TOS link
+            window.open(tosLink, '_blank', 'noopener,noreferrer');
         } else if (kycLink) {
-            // Account exists, open KYC link
+            // TOS accepted, open KYC link
             window.open(kycLink, '_blank', 'noopener,noreferrer');
         } else {
             handleVerifyClick();
@@ -92,8 +122,12 @@ export const SetupCard = ({
     let step2Completed = false;
     let step2Verifying = false;
 
-    // Map Due statuses to UI states
-    if (kycStatus === 'under_review' || kycStatus === 'in_review') {
+    // Show loading state while creating Due customer
+    if (isCreatingDueCustomer) {
+        step2Badge = 'Creating account...';
+        step2BadgeColor = 'bg-[#5864FF]';
+        step2Clickable = false;
+    } else if (kycStatus === 'under_review' || kycStatus === 'in_review') {
         // Actually being reviewed
         step2Badge = 'Verifying';
         step2BadgeColor = 'bg-[#FF9933]';
@@ -165,8 +199,9 @@ export const SetupCard = ({
         if (!step.clickable) return;
 
         if (step.id === 'verify') {
-            // If inline verification is enabled and we have a KYC link, open it directly
-            if (showInlineVerification && kycLink) {
+            // If inline verification is enabled, handle verification directly
+            // This includes creating a Due account if none exists yet
+            if (showInlineVerification) {
                 handleStartVerification();
             } else {
                 handleVerifyClick();

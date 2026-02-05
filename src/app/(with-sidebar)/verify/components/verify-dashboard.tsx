@@ -36,6 +36,7 @@ export const VerifyDashboard = () => {
 
   const account = dueCustomer?.account;
   const kycStatus = account?.kyc?.status;
+  const tosStatus = account?.tos?.status;
 
   // Dashboard data for SetupCard
   const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
@@ -74,7 +75,7 @@ export const VerifyDashboard = () => {
 
         <div className='hidden shrink-0 gap-3 sm:flex'>
           <Button variant='outline' asChild>
-            <Nt href='https://docs.mysorbet.xyz/supported-countries'>
+            <Nt href='https://docs.mysorbet.xyz/sorbet/readme/list-of-supported-countries'>
               <Globe className='mr-2 size-4' />
               Supported Countries
             </Nt>
@@ -91,6 +92,7 @@ export const VerifyDashboard = () => {
         <SetupCard
           completedTasks={completedTasks}
           kycStatus={kycStatus}
+          tosStatus={tosStatus}
           loading={isLoading || isDashboardLoading}
           layout='vertical'
           tosLink={tosLink}
