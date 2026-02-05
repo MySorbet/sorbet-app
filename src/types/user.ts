@@ -15,6 +15,7 @@ export interface User {
   city?: string;
   phoneNumber?: string;
   country?: string;
+  category?: string;
   companyWebsite?: string;
   heardAboutUs?: string;
 

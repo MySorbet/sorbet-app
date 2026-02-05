@@ -4,13 +4,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
+import { updateInvoicingDetails } from '@/api/invoicing';
 import { HearAboutUs } from '@/app/signin/components/business/heard-about-us';
-import { Spinner } from '@/components/common/spinner';
+import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
 import { AuthModal, AuthModalMode } from '@/components/auth';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
-import { updateInvoicingDetails } from '@/api/invoicing';
 
 type OnboardingStep = 'type-selection' | 'hear-about-us';
 
@@ -20,6 +20,7 @@ interface PendingUserData {
   companyName?: string;
   countryName: string;
   countryCode: string;
+  category: string;
   phoneNumber?: string;
   companyWebsite?: string;
 }
@@ -74,13 +75,14 @@ export const SigninContent = () => {
     const firstName = nameParts[0] || undefined;
     const lastName = nameParts.slice(1).join(' ') || undefined;
 
-    // Update user with country name
+    // Update user with country name and category
     updateUser({
       id: user.id,
       customerType: pendingUserData.customerType,
       firstName: firstName,
       lastName: lastName,
       country: pendingUserData.countryName, // Store full country name
+      category: pendingUserData.category,
       phoneNumber: pendingUserData.phoneNumber,
       companyWebsite: pendingUserData.companyWebsite,
       heardAboutUs: selection || undefined,

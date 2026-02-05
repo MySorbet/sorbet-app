@@ -17,6 +17,8 @@ export const mockUser: User = {
   profileImage: '',
   tags: ['tag1', 'tag2', 'tag3'],
   city: 'New York',
+  category: 'employed',
+  customerType: 'individual',
 };
 
 export const mockUserWithProfileImage = {

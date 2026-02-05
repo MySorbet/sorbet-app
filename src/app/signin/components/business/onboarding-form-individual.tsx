@@ -4,13 +4,14 @@ import { Info } from 'lucide-react';
 import { useState } from 'react';
 
 import {
-    CountryDropdown,
     Country,
+    CountryDropdown,
 } from '@/app/(with-sidebar)/recipients/components/country-dropdown';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { CategoryDropdown } from './category-dropdown';
 import { getCountryRestriction } from './country-restrictions';
 
 interface OnboardingFormIndividualProps {
@@ -18,6 +19,7 @@ interface OnboardingFormIndividualProps {
         fullName: string;
         countryName: string;
         countryCode: string;
+        category: string;
         phoneNumber?: string;
     }) => void;
     isLoading?: boolean;
@@ -33,9 +35,11 @@ export const OnboardingFormIndividual = ({
 }: OnboardingFormIndividualProps) => {
     const [fullName, setFullName] = useState('');
     const [country, setCountry] = useState<Country | null>(null);
+    const [category, setCategory] = useState<string | null>(null);
     const [phoneNumber, setPhoneNumber] = useState('');
 
-    const isValid = fullName.trim() !== '' && country !== null;
+    const isValid =
+        fullName.trim() !== '' && country !== null && category !== null;
 
     // Get country restriction info
     const restrictionInfo = country
@@ -44,12 +48,13 @@ export const OnboardingFormIndividual = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!isValid || !country) return;
+        if (!isValid || !country || !category) return;
 
         onSubmit({
             fullName: fullName.trim(),
             countryName: country.name,
             countryCode: country.alpha2,
+            category,
             phoneNumber: phoneNumber.trim() || undefined,
         });
     };
@@ -85,6 +90,18 @@ export const OnboardingFormIndividual = ({
                         <p>{restrictionInfo.message}</p>
                     </div>
                 )}
+            </div>
+
+            {/* Employment Status */}
+            <div className='flex flex-col gap-2'>
+                <Label htmlFor='category'>Employment status</Label>
+                <CategoryDropdown
+                    categoryType='individual'
+                    onChange={(cat) => setCategory(cat.code)}
+                    value={category || undefined}
+                    disabled={isLoading}
+                    placeholder='Select your employment status'
+                />
             </div>
 
             {/* Phone Number (Optional) */}

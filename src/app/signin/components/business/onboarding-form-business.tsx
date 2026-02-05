@@ -4,13 +4,14 @@ import { Info } from 'lucide-react';
 import { useState } from 'react';
 
 import {
-    CountryDropdown,
     Country,
+    CountryDropdown,
 } from '@/app/(with-sidebar)/recipients/components/country-dropdown';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { CategoryDropdown } from './category-dropdown';
 import { getCountryRestriction } from './country-restrictions';
 
 interface OnboardingFormBusinessProps {
@@ -18,6 +19,7 @@ interface OnboardingFormBusinessProps {
         companyName: string;
         countryName: string;
         countryCode: string;
+        category: string;
         companyWebsite: string;
     }) => void;
     isLoading?: boolean;
@@ -33,6 +35,7 @@ export const OnboardingFormBusiness = ({
 }: OnboardingFormBusinessProps) => {
     const [companyName, setCompanyName] = useState('');
     const [country, setCountry] = useState<Country | null>(null);
+    const [category, setCategory] = useState<string | null>(null);
     const [companyWebsite, setCompanyWebsite] = useState('');
 
     // Get country restriction info
@@ -43,16 +46,18 @@ export const OnboardingFormBusiness = ({
     const isValid =
         companyName.trim() !== '' &&
         country !== null &&
+        category !== null &&
         companyWebsite.trim() !== '';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!isValid || !country) return;
+        if (!isValid || !country || !category) return;
 
         onSubmit({
             companyName: companyName.trim(),
             countryName: country.name,
             countryCode: country.alpha2,
+            category,
             companyWebsite: companyWebsite.trim(),
         });
     };
@@ -88,6 +93,18 @@ export const OnboardingFormBusiness = ({
                         <p>{restrictionInfo.message}</p>
                     </div>
                 )}
+            </div>
+
+            {/* Business Category */}
+            <div className='flex flex-col gap-2'>
+                <Label htmlFor='category'>Business category</Label>
+                <CategoryDropdown
+                    categoryType='business'
+                    onChange={(cat) => setCategory(cat.code)}
+                    value={category || undefined}
+                    disabled={isLoading}
+                    placeholder='Select your business category'
+                />
             </div>
 
             {/* Company Website */}

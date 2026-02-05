@@ -14,6 +14,7 @@ interface OnboardingFormData {
   companyName?: string;
   countryName: string;
   countryCode: string;
+  category: string;
   phoneNumber?: string;
   companyWebsite?: string;
 }
@@ -39,6 +40,7 @@ export const IndividualOrBusiness = ({
     fullName: string;
     countryName: string;
     countryCode: string;
+    category: string;
     phoneNumber?: string;
   }) => {
     onSubmit?.({
@@ -46,6 +48,7 @@ export const IndividualOrBusiness = ({
       fullName: data.fullName,
       countryName: data.countryName,
       countryCode: data.countryCode,
+      category: data.category,
       phoneNumber: data.phoneNumber,
     });
   };
@@ -54,6 +57,7 @@ export const IndividualOrBusiness = ({
     companyName: string;
     countryName: string;
     countryCode: string;
+    category: string;
     companyWebsite: string;
   }) => {
     onSubmit?.({
@@ -61,6 +65,7 @@ export const IndividualOrBusiness = ({
       companyName: data.companyName,
       countryName: data.countryName,
       countryCode: data.countryCode,
+      category: data.category,
       companyWebsite: data.companyWebsite,
     });
   };
