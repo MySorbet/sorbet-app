@@ -1,85 +1,47 @@
 /**
  * Country restriction utilities for onboarding
- * Based on Bridge/banking partner restrictions for USD and EUR Virtual Accounts
+ * Based on Due compliance restrictions for Virtual Accounts
  */
 
 import { iso31661 } from 'iso-3166';
 
-// Countries restricted from BOTH USD AND EUR
-export const NO_USD_NO_EUR_COUNTRIES = [
+/**
+ * Countries restricted from Virtual Accounts due to Due compliance requirements
+ * Note: UKR includes disputed/occupied territories (Crimea, Donetsk, Luhansk, and other parts of Eastern Ukraine)
+ */
+export const RESTRICTED_COUNTRIES = [
     // Africa
-    'DZA', // Algeria
-    'COD', // Congo (Democratic Republic)
+    'CAF', // Central African Republic
+    'COD', // DR Congo
+    'ERI', // Eritrea
+    'GNB', // Guinea-Bissau
     'LBY', // Libya
-    'MAR', // Morocco
-    'MOZ', // Mozambique
+    'MLI', // Mali
     'SOM', // Somalia
     'SSD', // South Sudan
     'SDN', // Sudan
+    'ZWE', // Zimbabwe
     // Asia
-    'AFG', // Afghanistan
-    'BGD', // Bangladesh
     'CHN', // China
-    'PSE', // Palestinian Territory (Gaza Strip, West Bank)
     'IRN', // Iran
     'IRQ', // Iraq
     'LBN', // Lebanon
-    'MMR', // Myanmar
-    'NPL', // Nepal
     'PRK', // North Korea
-    'PAK', // Pakistan
-    'QAT', // Qatar
     'SYR', // Syria
     'YEM', // Yemen
     // Europe
     'BLR', // Belarus
-    'MKD', // North Macedonia
     'RUS', // Russian Federation
-    'UKR', // Ukraine (Crimea, Sevastopol, Donetsk, Kherson, Luhansk, Zaporizhzhia)
+    'UKR', // Ukraine (disputed territories: Donbas, Donetsk, Luhansk, Crimea, Eastern Ukraine)
     // Americas
     'CUB', // Cuba
-    'HTI', // Haiti
-    'NIC', // Nicaragua
     'VEN', // Venezuela
 ];
 
-// Countries restricted from EUR ONLY (USD available)
-const NO_EUR_ONLY_COUNTRIES = [
-    // Africa
-    'CAF', // Central African Republic
-    'EGY', // Egypt
-    'TUN', // Tunisia
-    // Asia
-    'KWT', // Kuwait
-    'VNM', // Vietnam
-    // Europe
-    'FIN', // Finland
-    'HUN', // Hungary
-    'LVA', // Latvia
-    'LTU', // Lithuania
-    'NLD', // Netherlands
-    'SVN', // Slovenia
-];
+// Kept for backwards compatibility - references the same list
+export const NO_USD_NO_EUR_COUNTRIES = RESTRICTED_COUNTRIES;
 
-// Countries restricted from USD ONLY (EUR available)
-const NO_USD_ONLY_COUNTRIES = [
-    // Africa
-    'BDI', // Burundi
-    'GNB', // Guinea-Bissau
-    'KEN', // Kenya
-    'NER', // Niger
-    'ZWE', // Zimbabwe
-    // Asia
-    'BTN', // Bhutan
-    // Europe
-    'XKX', // Kosovo
-];
-
-export type CountryRestrictionType =
-    | 'no-usd-no-eur'
-    | 'no-eur-only'
-    | 'no-usd-only'
-    | 'no-restriction';
+export type CountryRestrictionType = 'restricted' | 'no-restriction';
 
 export interface CountryRestrictionInfo {
     type: CountryRestrictionType;
@@ -90,27 +52,11 @@ export interface CountryRestrictionInfo {
  * Get the restriction info for a country based on its alpha3 code
  */
 export function getCountryRestriction(alpha3: string): CountryRestrictionInfo {
-    if (NO_USD_NO_EUR_COUNTRIES.includes(alpha3)) {
+    if (RESTRICTED_COUNTRIES.includes(alpha3)) {
         return {
-            type: 'no-usd-no-eur',
+            type: 'restricted',
             message:
-                "We can't offer USD or EUR Virtual Accounts in your region. You can still use Sorbet for USDC payments.",
-        };
-    }
-
-    if (NO_EUR_ONLY_COUNTRIES.includes(alpha3)) {
-        return {
-            type: 'no-eur-only',
-            message:
-                "We can't offer EUR payments at the moment, but we still can provide USD Virtual Accounts and USDC payments as well.",
-        };
-    }
-
-    if (NO_USD_ONLY_COUNTRIES.includes(alpha3)) {
-        return {
-            type: 'no-usd-only',
-            message:
-                "We can't offer USD payments at the moment, but we still can provide EUR Virtual Accounts and USDC payments as well.",
+                "We can't offer Virtual Accounts in your region. You can still use Sorbet for USDC payments.",
         };
     }
 
@@ -121,9 +67,8 @@ export function getCountryRestriction(alpha3: string): CountryRestrictionInfo {
 }
 
 /**
- * Check if a country (by full name) is restricted from USD and EUR accounts.
- * for dashboard to show restricted banner based on user's country field.
-
+ * Check if a country (by full name) is restricted from Virtual Accounts.
+ * Used in dashboard to show restricted banner based on user's country field.
  */
 export function isRestrictedCountry(countryName?: string): boolean {
     if (!countryName) return false;
@@ -135,6 +80,6 @@ export function isRestrictedCountry(countryName?: string): boolean {
 
     if (!country) return false;
 
-    return NO_USD_NO_EUR_COUNTRIES.includes(country.alpha3);
+    return RESTRICTED_COUNTRIES.includes(country.alpha3);
 }
 
