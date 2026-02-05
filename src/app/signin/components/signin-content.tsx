@@ -4,13 +4,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
+import { updateInvoicingDetails } from '@/api/invoicing';
 import { HearAboutUs } from '@/app/signin/components/business/heard-about-us';
-import { Spinner } from '@/components/common/spinner';
+import { IndividualOrBusiness } from '@/app/signin/components/business/individual-or-business';
 import { AuthModal, AuthModalMode } from '@/components/auth';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { useAuth, useUpdateUser } from '@/hooks';
-import { updateInvoicingDetails } from '@/api/invoicing';
 
 type OnboardingStep = 'type-selection' | 'hear-about-us';
 
@@ -106,7 +106,10 @@ export const SigninContent = () => {
   if (onboardingStep === 'hear-about-us') {
     return (
       <div className='container flex max-w-lg flex-col items-center justify-center'>
-        <HearAboutUs onSubmit={handleHearAboutUsSubmit} isLoading={isUpdating} />
+        <HearAboutUs
+          onSubmit={handleHearAboutUsSubmit}
+          isLoading={isUpdating}
+        />
       </div>
     );
   }
@@ -135,7 +138,8 @@ export const SigninContent = () => {
         {/* Buttons */}
         <div className='flex w-full flex-col gap-3'>
           <Button onClick={() => handleClick('signup')} disabled={loading}>
-            {loading && authModalMode === 'signup' && <Spinner />} Get started with Sorbet
+            {loading && authModalMode === 'signup' && <Spinner />} Get started
+            with Sorbet
           </Button>
           <Button
             onClick={() => handleClick('signin')}
@@ -168,7 +172,7 @@ const SorbetLogo = () => {
         alt='Sorbet'
         priority
       />
-      <span className="text-primary font-jura font-bold text-[24.3px] leading-[1.4] tracking-[0]">
+      <span className='text-primary font-jura text-[24.3px] font-bold leading-[1.4] tracking-[0]'>
         SORBET
       </span>
     </div>

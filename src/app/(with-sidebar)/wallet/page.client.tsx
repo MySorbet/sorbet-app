@@ -29,7 +29,9 @@ export default function WalletPageClient() {
         open={open}
         setOpen={setOpen}
         sendUSDC={async (amount, recipientWalletAddress) =>
-          (await sendUSDC(amount, recipientWalletAddress, 'base')) as `0x${string}` | undefined
+          (await sendUSDC(amount, recipientWalletAddress, 'base')) as
+            | `0x${string}`
+            | undefined
         }
       />
     </Authenticated>

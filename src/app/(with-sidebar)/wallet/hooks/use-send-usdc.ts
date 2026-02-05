@@ -1,14 +1,20 @@
-import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import { useSignRawHash } from '@privy-io/react-auth/extended-chains';
-import { Asset, Horizon, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
+import {
+  Asset,
+  Horizon,
+  Networks,
+  Operation,
+  TransactionBuilder,
+} from '@stellar/stellar-sdk';
 import Big from 'big.js';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { base, baseSepolia } from 'viem/chains';
 
 import { useTransactionOverview } from '@/app/(with-sidebar)/wallet/hooks/use-transaction-overview';
 import { TOKEN_ABI } from '@/constant/abis';
-import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
+import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { env } from '@/lib/env';
 
 const bytesToHex = (bytes: ArrayLike<number>) =>
@@ -26,7 +32,8 @@ const hexToBytes = (hex: string) => {
 const bytesToBase64 = (bytes: Uint8Array) => {
   // Avoid Buffer usage in the browser.
   let binary = '';
-  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  for (let i = 0; i < bytes.length; i++)
+    binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 };
 
@@ -45,8 +52,13 @@ export const useSendUSDC = () => {
   const horizonUrl = env.NEXT_PUBLIC_TESTNET
     ? env.NEXT_PUBLIC_STELLAR_HORIZON_URL_TESTNET
     : env.NEXT_PUBLIC_STELLAR_HORIZON_URL_PUBLIC;
-  const networkPassphrase = env.NEXT_PUBLIC_TESTNET ? Networks.TESTNET : Networks.PUBLIC;
-  const usdcAsset = new Asset(env.NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE, env.NEXT_PUBLIC_STELLAR_USDC_ISSUER);
+  const networkPassphrase = env.NEXT_PUBLIC_TESTNET
+    ? Networks.TESTNET
+    : Networks.PUBLIC;
+  const usdcAsset = new Asset(
+    env.NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE,
+    env.NEXT_PUBLIC_STELLAR_USDC_ISSUER
+  );
 
   const sendUSDC = async (
     amount: string,
@@ -54,7 +66,10 @@ export const useSendUSDC = () => {
     chainType: 'base' | 'stellar' = 'base'
   ) => {
     if (chainType === 'stellar') {
-      if (!stellarAddress) throw new Error('Unable to find Stellar address. Please log out and log back in.');
+      if (!stellarAddress)
+        throw new Error(
+          'Unable to find Stellar address. Please log out and log back in.'
+        );
 
       const server = new Horizon.Server(horizonUrl);
       const account = await server.loadAccount(stellarAddress);

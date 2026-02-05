@@ -1,9 +1,18 @@
 'use client';
 
-import { ArrowUpDown, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import {
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+} from 'lucide-react';
 import { useState } from 'react';
 
-import { RecipientTransfer, RecipientTransferStatus } from '@/api/recipients/types';
+import {
+  RecipientTransfer,
+  RecipientTransferStatus,
+} from '@/api/recipients/types';
+import { openTransactionInExplorer } from '@/app/(with-sidebar)/wallet/components/utils';
 import {
   SimpleTransactionStatus,
   TransactionStatusBadge,
@@ -16,8 +25,6 @@ import {
 } from '@/components/ui/collapsible';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
-
-import { openTransactionInExplorer } from '@/app/(with-sidebar)/wallet/components/utils';
 
 import { formatTransferDate } from './utils';
 
@@ -60,7 +67,7 @@ export const RecipientTransfersTable = ({
   return (
     <div className='w-full overflow-hidden rounded-lg border'>
       {/* Header */}
-      <div className='flex items-center justify-between border-b bg-muted/30 px-4 py-3'>
+      <div className='bg-muted/30 flex items-center justify-between border-b px-4 py-3'>
         <Button
           variant='ghost'
           size='sm'
@@ -70,7 +77,9 @@ export const RecipientTransfersTable = ({
           Date
           <ArrowUpDown className='size-3' />
         </Button>
-        <span className='text-muted-foreground text-xs font-medium'>Amount</span>
+        <span className='text-muted-foreground text-xs font-medium'>
+          Amount
+        </span>
       </div>
 
       {/* Rows */}
@@ -106,7 +115,7 @@ const TransferRow = ({
   return (
     <Collapsible open={isOpen} onOpenChange={onToggle}>
       <CollapsibleTrigger asChild>
-        <button className='flex w-full items-center justify-between px-4 py-4 text-left hover:bg-muted/50'>
+        <button className='hover:bg-muted/50 flex w-full items-center justify-between px-4 py-4 text-left'>
           <div className='flex items-center gap-2'>
             {isOpen ? (
               <ChevronUp className='text-muted-foreground size-4' />
@@ -140,7 +149,9 @@ const TransferRow = ({
 };
 
 /** Maps our status to the badge status */
-const mapStatus = (status: RecipientTransferStatus): SimpleTransactionStatus => {
+const mapStatus = (
+  status: RecipientTransferStatus
+): SimpleTransactionStatus => {
   switch (status) {
     case 'completed':
       return 'Completed';

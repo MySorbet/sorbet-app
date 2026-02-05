@@ -1,9 +1,9 @@
 'use client';
 
+import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { usePrivy } from '@privy-io/react-auth';
 
 import { EditProfileSheet } from '@/app/[handle]/components/edit-profile-sheet/edit-profile-sheet';
 import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
@@ -22,10 +22,7 @@ import { useTransactionOverview } from '../../wallet/hooks/use-transaction-overv
 import { useDashboardData } from '../hooks/use-dashboard-data';
 import { AnnouncementBanner } from './announcement-banner';
 import { BalanceSectionCard } from './balance-section-card';
-import {
-  type TaskType,
-  TaskStatuses,
-} from './checklist-card';
+import { TaskStatuses } from './checklist-card';
 import { DepositDialog } from './deposit-dialog';
 import { NetworkDropdown } from './network-dropdown';
 import { RestrictedCountryBanner } from './restricted-country-banner';
@@ -44,17 +41,18 @@ export const Dashboard = () => {
   const router = useRouter();
   const { user } = useAuth();
   const { user: privyUser } = usePrivy();
-  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
+  const { data: dashboardData, isLoading: isDashboardLoading } =
+    useDashboardData();
   const { data: usdcBalance, isPending: isBalanceLoading } = useWalletBalance();
   const { smartWalletAddress } = useSmartWalletAddress();
-  const { data: bridgeCustomer, isLoading: isBridgeLoading } = useBridgeCustomer();
+  const { data: bridgeCustomer, isLoading: isBridgeLoading } =
+    useBridgeCustomer();
   const { data: myChainData } = useMyChain();
   const { mutateAsync: setChain, isPending: isSettingChain } = useSetMyChain();
 
   const [duration, setDuration] = useState<Duration>('all');
-  const { data: transactions, isLoading: isTransactionsLoading } = useTransactionOverview(
-    duration === 'all' ? undefined : parseInt(duration)
-  );
+  const { data: transactions, isLoading: isTransactionsLoading } =
+    useTransactionOverview(duration === 'all' ? undefined : parseInt(duration));
 
   const totalMoneyIn = Number(transactions?.total_money_in ?? 0);
   const totalMoneyOut = Number(transactions?.total_money_out ?? 0);
@@ -71,7 +69,8 @@ export const Dashboard = () => {
   const kycStatus = bridgeCustomer?.customer?.status;
   const isKycVerified = kycStatus === 'active';
   const isKycRejected = kycStatus === 'rejected';
-  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  const isKycNotStarted =
+    !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
   const hasCreatedInvoice = completedTasks?.invoice ?? false;
 
   const isRestricted = isRestrictedCountry(user?.country);
@@ -86,7 +85,8 @@ export const Dashboard = () => {
   const currentChain = myChainData?.chain ?? 'base';
   const stellarAddress = getStellarAddressFromPrivyUser(privyUser ?? null);
 
-  const currentWalletAddress = currentChain == 'base'? smartWalletAddress: stellarAddress;
+  const currentWalletAddress =
+    currentChain == 'base' ? smartWalletAddress : stellarAddress;
 
   const handleChainChange = async (nextChain: 'base' | 'stellar') => {
     if (nextChain === currentChain) return;
@@ -103,7 +103,10 @@ export const Dashboard = () => {
         return;
       }
 
-      if (nextChain === 'stellar' && message.includes('Stellar account does not exist on-chain')) {
+      if (
+        nextChain === 'stellar' &&
+        message.includes('Stellar account does not exist on-chain')
+      ) {
         if (!stellarAddress) {
           toast.error('Unable to find Stellar address', {
             description: 'Please log out and log back in, then try again.',
@@ -138,21 +141,8 @@ export const Dashboard = () => {
     unlessMobile(() => router.push('/invoices/create'));
   };
   const handleSendFunds = () => router.push('/recipients?send-to=true');
-  const handleAddRecipient = () => router.push('/recipients?add-recipient=true');
-
-  const handleTaskClick = (type: TaskType) => {
-    switch (type) {
-      case 'verified':
-        router.push('/verify');
-        break;
-      case 'invoice':
-        handleCreateInvoice();
-        break;
-      case 'payment':
-        router.push('/wallet');
-        break;
-    }
-  };
+  const handleAddRecipient = () =>
+    router.push('/recipients?add-recipient=true');
 
   return (
     <>
@@ -274,7 +264,6 @@ export const Dashboard = () => {
           onDurationChange={setDuration}
           isLoading={isBalanceLoading || isTransactionsLoading}
         />
-
       </div>
     </>
   );

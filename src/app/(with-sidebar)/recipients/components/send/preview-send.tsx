@@ -6,8 +6,8 @@ import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Separator } from '@/components/ui/separator';
 import { useMyChain } from '@/hooks/use-my-chain';
-import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
@@ -35,11 +35,13 @@ export const PreviewSend = ({
     recipient.type === 'crypto_stellar'
       ? 'stellar'
       : recipient.type === 'crypto_base'
-        ? 'base'
-        : currentChain;
+      ? 'base'
+      : currentChain;
 
   const fromAddress =
-    paymentChain === 'stellar' ? stellarAddress ?? '' : smartWalletAddress ?? '';
+    paymentChain === 'stellar'
+      ? stellarAddress ?? ''
+      : smartWalletAddress ?? '';
 
   return (
     <div className='animate-in fade-in-0 slide-in-from-right-2 space-y-10'>
@@ -71,7 +73,8 @@ export const PreviewSend = ({
                 width={14}
                 height={14}
               />
-              My Sorbet Wallet ({paymentChain === 'stellar' ? 'Stellar' : 'Base'})
+              My Sorbet Wallet (
+              {paymentChain === 'stellar' ? 'Stellar' : 'Base'})
             </span>
           </CopyAddress>
         </div>

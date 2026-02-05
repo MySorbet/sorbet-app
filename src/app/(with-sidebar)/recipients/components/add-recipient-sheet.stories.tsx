@@ -86,7 +86,7 @@ export const BankRecipientForm: Story = {
     const setOpen = (open: boolean) => setArgs({ open });
     return (
       <>
-        <div className='mb-4 rounded-md bg-muted p-3 text-sm'>
+        <div className='bg-muted mb-4 rounded-md p-3 text-sm'>
           <p className='font-medium'>To view Save/Cancel buttons:</p>
           <ol className='mt-2 list-decimal space-y-1 pl-5'>
             <li>Click &quot;Open&quot; button below</li>
@@ -131,7 +131,7 @@ export const CryptoRecipientForm: Story = {
     const setOpen = (open: boolean) => setArgs({ open });
     return (
       <>
-        <div className='mb-4 rounded-md bg-muted p-3 text-sm'>
+        <div className='bg-muted mb-4 rounded-md p-3 text-sm'>
           <p className='font-medium'>To view Save/Cancel buttons:</p>
           <ol className='mt-2 list-decimal space-y-1 pl-5'>
             <li>Click &quot;Open&quot; button below</li>

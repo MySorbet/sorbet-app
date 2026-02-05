@@ -82,7 +82,11 @@ function checkRateLimit(
 
   // Increment count
   entry.count++;
-  return { allowed: true, remaining: limit - entry.count, resetTime: entry.resetTime };
+  return {
+    allowed: true,
+    remaining: limit - entry.count,
+    resetTime: entry.resetTime,
+  };
 }
 
 /**
@@ -129,12 +133,18 @@ export function middleware(request: NextRequest) {
 
   // Determine which rate limit to apply
   const isSignin = pathname === '/signin' || pathname.startsWith('/signin');
-  const { limit, windowMs } = isSignin ? RATE_LIMITS.signin : RATE_LIMITS.default;
+  const { limit, windowMs } = isSignin
+    ? RATE_LIMITS.signin
+    : RATE_LIMITS.default;
 
   // Create a unique key combining IP and route type
   const rateLimitKey = `${clientIp}:${isSignin ? 'signin' : 'page'}`;
 
-  const { allowed, remaining, resetTime } = checkRateLimit(rateLimitKey, limit, windowMs);
+  const { allowed, remaining, resetTime } = checkRateLimit(
+    rateLimitKey,
+    limit,
+    windowMs
+  );
 
   if (!allowed) {
     // Return 429 Too Many Requests
@@ -161,7 +171,10 @@ export function middleware(request: NextRequest) {
   const response = NextResponse.next();
   response.headers.set('X-RateLimit-Limit', String(limit));
   response.headers.set('X-RateLimit-Remaining', String(remaining));
-  response.headers.set('X-RateLimit-Reset', String(Math.ceil(resetTime / 1000)));
+  response.headers.set(
+    'X-RateLimit-Reset',
+    String(Math.ceil(resetTime / 1000))
+  );
 
   return response;
 }

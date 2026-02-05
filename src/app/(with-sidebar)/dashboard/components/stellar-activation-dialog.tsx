@@ -37,7 +37,8 @@ export const StellarActivationDialog = ({
               Activate your Stellar wallet
             </CredenzaTitle>
             <CredenzaDescription className='text-sm text-[#667085]'>
-              Your Stellar account exists in Privy but is not active on-chain yet.
+              Your Stellar account exists in Privy but is not active on-chain
+              yet.
             </CredenzaDescription>
           </div>
 
@@ -54,14 +55,19 @@ export const StellarActivationDialog = ({
           </div>
 
           <div className='flex items-center justify-center rounded-xl border border-[#E4E4E7] bg-[#FAFAFA] p-6'>
-            {isLoadingQRCode ? <Skeleton className='size-48' /> : <div ref={qrCodeRef} />}
+            {isLoadingQRCode ? (
+              <Skeleton className='size-48' />
+            ) : (
+              <div ref={qrCodeRef} />
+            )}
           </div>
 
           <div className='flex items-start gap-2 rounded-lg border border-[#E4E4E7] bg-[#F9FAFB] p-3'>
             <Info className='mt-0.5 size-4 shrink-0 text-[#3B82F6]' />
             <p className='text-sm text-[#344054]'>
-              Send at least <span className='font-semibold'>2.5 XLM</span> to this
-              address to activate your Stellar account. Then come back and try again.
+              Send at least <span className='font-semibold'>2.5 XLM</span> to
+              this address to activate your Stellar account. Then come back and
+              try again.
             </p>
           </div>
 
@@ -76,4 +82,3 @@ export const StellarActivationDialog = ({
     </Credenza>
   );
 };
-

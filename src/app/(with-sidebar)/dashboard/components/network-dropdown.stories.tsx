@@ -1,7 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from '@storybook/preview-api';
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
-import { NetworkDropdown, type NetworkValue } from './network-dropdown';
+import { type NetworkValue, NetworkDropdown } from './network-dropdown';
 
 const meta = {
   title: 'Dashboard/NetworkDropdown',
@@ -12,7 +13,7 @@ const meta = {
   args: {
     value: 'base' as NetworkValue,
     disabled: false,
-    onChange: () => {},
+    onChange: fn(),
   },
 } satisfies Meta<typeof NetworkDropdown>;
 
@@ -34,6 +35,5 @@ export const Default: Story = {
 };
 
 export const Disabled: Story = {
-  args: { disabled: true, onChange: () => {} },
+  args: { disabled: true, onChange: fn() },
 };
-

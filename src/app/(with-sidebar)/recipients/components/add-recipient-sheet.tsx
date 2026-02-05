@@ -10,8 +10,8 @@ import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
-import { useMyChain } from '@/hooks/use-my-chain';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useMyChain } from '@/hooks/use-my-chain';
 import { cn } from '@/lib/utils';
 
 import { useEndorsements } from '../hooks/use-endorsements';
@@ -65,9 +65,17 @@ export const AddRecipientSheet = ({
       if (values.chain === 'base') {
         return await onSubmit?.({ chain: 'base', type: 'crypto_base', values });
       }
-      return await onSubmit?.({ chain: 'stellar', type: 'crypto_stellar', values });
+      return await onSubmit?.({
+        chain: 'stellar',
+        type: 'crypto_stellar',
+        values,
+      });
     }
-    return await onSubmit?.({ chain: currentChain, type: values.currency, values });
+    return await onSubmit?.({
+      chain: currentChain,
+      type: values.currency,
+      values,
+    });
   };
 
   const isMobile = useIsMobile();

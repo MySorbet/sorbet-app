@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   ChevronDown,
   CircleDollarSign,
@@ -6,6 +5,7 @@ import {
   LucideIcon,
   ShieldCheck,
 } from 'lucide-react';
+import { useState } from 'react';
 
 import {
   TaskItem,

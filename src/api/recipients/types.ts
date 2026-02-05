@@ -10,7 +10,11 @@ export type CreateRecipientDto =
   | { chain: SorbetChain; type: 'usd'; values: BankRecipientFormValues }
   | { chain: SorbetChain; type: 'eur'; values: BankRecipientFormValues }
   | { chain: 'base'; type: 'crypto_base'; values: CryptoRecipientFormValues }
-  | { chain: 'stellar'; type: 'crypto_stellar'; values: CryptoRecipientFormValues };
+  | {
+      chain: 'stellar';
+      type: 'crypto_stellar';
+      values: CryptoRecipientFormValues;
+    };
 
 /** Recipients received from the API */
 type RecipientAPIBase = {

@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -31,14 +31,20 @@ const networkMeta: Record<
 const formatRowBalance = (v?: string) => {
   const n = Number(v ?? 0);
   if (!Number.isFinite(n)) return '0';
-  return n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  return n.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
 };
 
 const formatTotalBalance = (base?: string, stellar?: string) => {
   const b = Number(base ?? 0);
   const s = Number(stellar ?? 0);
   const total = (Number.isFinite(b) ? b : 0) + (Number.isFinite(s) ? s : 0);
-  return total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 };
 
 export const NetworkDropdown = ({
@@ -54,7 +60,10 @@ export const NetworkDropdown = ({
   const [open, setOpen] = useState(false);
   const { baseUsdc, stellarUsdc } = useWalletBalances();
 
-  const total = useMemo(() => formatTotalBalance(baseUsdc, stellarUsdc), [baseUsdc, stellarUsdc]);
+  const total = useMemo(
+    () => formatTotalBalance(baseUsdc, stellarUsdc),
+    [baseUsdc, stellarUsdc]
+  );
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -68,14 +77,14 @@ export const NetworkDropdown = ({
           <Image src={meta.logoSrc} alt={meta.logoAlt} width={16} height={16} />
           <span>{meta.label}</span>
           {open ? (
-            <ChevronUp className='ml-1 size-4 text-muted-foreground' />
+            <ChevronUp className='text-muted-foreground ml-1 size-4' />
           ) : (
-            <ChevronDown className='ml-1 size-4 text-muted-foreground' />
+            <ChevronDown className='text-muted-foreground ml-1 size-4' />
           )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='min-w-[260px] p-0'>
-        <div className='grid grid-cols-2 gap-2 px-3 py-2 text-xs font-medium text-muted-foreground'>
+        <div className='text-muted-foreground grid grid-cols-2 gap-2 px-3 py-2 text-xs font-medium'>
           <span>Accounts</span>
           <span className='text-right'>Balance in USDC</span>
         </div>
@@ -107,11 +116,12 @@ export const NetworkDropdown = ({
           })}
         </DropdownMenuRadioGroup>
         <div className='grid grid-cols-2 gap-2 border-t px-3 py-2 text-sm'>
-          <span className='font-medium text-muted-foreground'>Total Balance</span>
+          <span className='text-muted-foreground font-medium'>
+            Total Balance
+          </span>
           <span className='text-right font-medium tabular-nums'>{total}</span>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
-

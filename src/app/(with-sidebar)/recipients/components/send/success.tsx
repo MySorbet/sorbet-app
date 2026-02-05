@@ -32,7 +32,9 @@ export const Success = ({
         <p className='text-xl font-semibold'>{formatCurrency(amount)}</p>
         <p className='text-muted-foreground flex items-center gap-1 text-xs leading-none'>
           {(recipient.type === 'crypto_base' ||
-            recipient.type === 'crypto_stellar') && <Wallet className='size-3' />}{' '}
+            recipient.type === 'crypto_stellar') && (
+            <Wallet className='size-3' />
+          )}{' '}
           {label}
         </p>
       </div>

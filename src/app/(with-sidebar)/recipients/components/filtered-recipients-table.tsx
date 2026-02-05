@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 
 import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import { RecipientsTableCore } from '@/app/(with-sidebar)/recipients/components/recipients-table-core';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,8 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { RecipientsTableCore } from '@/app/(with-sidebar)/recipients/components/recipients-table-core';
 
 export type RecipientTypeFilter = RecipientType | 'all';
 
@@ -40,7 +39,9 @@ interface FilteredRecipientsTableProps {
 }
 
 /** Renders a recipients table in a card with filters and pagination controls */
-export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = ({
+export const FilteredRecipientsTable: React.FC<
+  FilteredRecipientsTableProps
+> = ({
   recipients,
   isLoading = false,
   searchValue = '',
@@ -123,7 +124,9 @@ export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = (
         </Button>
 
         <span className='text-muted-foreground text-sm'>
-          {totalCount > 0 ? `${startItem}-${endItem} of ${totalCount}` : '0 of 0'}
+          {totalCount > 0
+            ? `${startItem}-${endItem} of ${totalCount}`
+            : '0 of 0'}
         </span>
 
         <Button

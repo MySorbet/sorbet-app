@@ -8,11 +8,11 @@ import { AutomaticVerificationTabs } from '@/app/(with-sidebar)/accounts/compone
 import { AnnouncementBanner } from '@/app/(with-sidebar)/dashboard/components/announcement-banner';
 import { RestrictedCountryBanner } from '@/app/(with-sidebar)/dashboard/components/restricted-country-banner';
 import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
-import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
 import {
   mapToEURWireDetails,
   useACHWireDetails,
 } from '@/app/invoices/hooks/use-ach-wire-details';
+import { isRestrictedCountry } from '@/app/signin/components/business/country-restrictions';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -52,7 +52,8 @@ export const AccountsPageContent = () => {
   // KYC and country restriction checks (same as dashboard)
   const kycStatus = customer?.customer?.status;
   const isKycRejected = kycStatus === 'rejected';
-  const isKycNotStarted = !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
+  const isKycNotStarted =
+    !kycStatus || ['not_started', 'incomplete'].includes(kycStatus);
   const isRestricted = isRestrictedCountry(user?.country);
 
   // Open state of both the verification drawer or the account details drawer (only for mobile)
@@ -69,8 +70,8 @@ export const AccountsPageContent = () => {
 
   const eurAccount = customer?.virtual_account_eur
     ? mapToEURWireDetails(
-      customer.virtual_account_eur.source_deposit_instructions
-    )
+        customer.virtual_account_eur.source_deposit_instructions
+      )
     : undefined;
 
   // Check if user needs retry (endorsed but VA missing - webhook may have failed)
@@ -93,7 +94,10 @@ export const AccountsPageContent = () => {
     <div className='flex size-full max-w-7xl flex-col gap-6'>
       {/* Conditional Banners based on verification status */}
       {(isKycNotStarted || isKycRejected) && (
-        <AnnouncementBanner className='mt-4' onComplete={() => router.push('/verify')} />
+        <AnnouncementBanner
+          className='mt-4'
+          onComplete={() => router.push('/verify')}
+        />
       )}
 
       <div className='flex size-full flex-col gap-6 lg:flex-row'>
@@ -206,9 +210,7 @@ const RetryAccountButton = ({ type }: { type: 'usd' | 'eur' }) => {
         disabled={isRetrying}
       >
         {isRetrying && <Spinner />}
-        {isRetrying
-          ? 'Retrying...'
-          : `Retry ${type.toUpperCase()} Account`}
+        {isRetrying ? 'Retrying...' : `Retry ${type.toUpperCase()} Account`}
       </Button>
     </Card>
   );

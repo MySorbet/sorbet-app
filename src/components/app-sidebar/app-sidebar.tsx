@@ -167,7 +167,9 @@ const DashboardMenuItem = () => {
 
   const base = Number(baseUsdc ?? 0);
   const stellar = Number(stellarUsdc ?? 0);
-  const total = (Number.isFinite(base) ? base : 0) + (Number.isFinite(stellar) ? stellar : 0);
+  const total =
+    (Number.isFinite(base) ? base : 0) +
+    (Number.isFinite(stellar) ? stellar : 0);
   const totalFormatted = total.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
@@ -187,7 +189,7 @@ const DashboardMenuItem = () => {
           {isLoading ? (
             <Skeleton className='h-4 w-16' variant='darker' />
           ) : (
-            <span className='animate-in fade-in-0 font-mono font-medium text-xs'>
+            <span className='animate-in fade-in-0 font-mono text-xs font-medium'>
               ${totalFormatted} USDC
             </span>
           )}

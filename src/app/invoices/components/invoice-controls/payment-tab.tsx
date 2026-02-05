@@ -18,9 +18,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { type AcceptedPaymentMethod } from '../../schema';
@@ -47,13 +47,14 @@ export const PaymentTab = ({
 }) => {
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
   const { data: bridgeCustomer } = useBridgeCustomer();
-  
+
   // Get actual platform fee percentages
-  const usdFeePercent = bridgeCustomer?.virtual_account?.developer_fee_percent 
-    ? parseFloat(bridgeCustomer.virtual_account.developer_fee_percent) 
+  const usdFeePercent = bridgeCustomer?.virtual_account?.developer_fee_percent
+    ? parseFloat(bridgeCustomer.virtual_account.developer_fee_percent)
     : 1; // Default to 1% if not available
-  const eurFeePercent = bridgeCustomer?.virtual_account_eur?.developer_fee_percent 
-    ? parseFloat(bridgeCustomer.virtual_account_eur.developer_fee_percent) 
+  const eurFeePercent = bridgeCustomer?.virtual_account_eur
+    ?.developer_fee_percent
+    ? parseFloat(bridgeCustomer.virtual_account_eur.developer_fee_percent)
     : 1; // Default to 1% if not available
 
   return (
@@ -103,8 +104,8 @@ export const PaymentTab = ({
           </PaymentMethodDescription>
           {usdFeePercent > 0 && (
             <p className='text-muted-foreground mt-2 text-xs'>
-              For USD payments, Sorbet applies a {usdFeePercent}% platform fee to cover
-              banking and compliance costs.
+              For USD payments, Sorbet applies a {usdFeePercent}% platform fee
+              to cover banking and compliance costs.
             </p>
           )}
           {!isBaseEndorsed && (
@@ -130,8 +131,8 @@ export const PaymentTab = ({
           </PaymentMethodDescription>
           {eurFeePercent > 0 && (
             <p className='text-muted-foreground mt-2 text-xs'>
-              For EUR payments, Sorbet applies a {eurFeePercent}% platform fee to cover
-              banking and compliance costs.
+              For EUR payments, Sorbet applies a {eurFeePercent}% platform fee
+              to cover banking and compliance costs.
             </p>
           )}
           {!isEurEndorsed && (

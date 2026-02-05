@@ -1,6 +1,6 @@
 import { Plus } from 'lucide-react';
-import { useWatch } from 'react-hook-form';
 import Image from 'next/image';
+import { useWatch } from 'react-hook-form';
 
 import {
   SendToFormSchema,
@@ -8,7 +8,10 @@ import {
   useSendToFormContext,
   useSendToFormState,
 } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
-import { baseScanUrl, stellarScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
+import {
+  baseScanUrl,
+  stellarScanUrl,
+} from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
 import { TransactionStatusBadge } from '@/components/common/transaction-status-badge';
@@ -30,11 +33,11 @@ import {
 } from '@/components/ui/select';
 import { formatCurrency } from '@/lib/currency';
 
+import { ExchangeRate } from './exchange-rate';
 import { Percentages } from './percentages';
 import { PreviewSend } from './preview-send';
 import { Processing } from './processing';
 import { Success } from './success';
-import { ExchangeRate } from './exchange-rate';
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -203,7 +206,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
                       </p>
                     )}
                     {selectedRecipient && (
-                      <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+                      <div className='text-muted-foreground flex items-center gap-2 text-xs'>
                         <Image
                           src={
                             paymentChain === 'stellar'
@@ -216,12 +219,15 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
                         />
                         <span>
                           Paying from your{' '}
-                          {paymentChain === 'stellar' ? 'Stellar' : 'Base'} wallet
+                          {paymentChain === 'stellar' ? 'Stellar' : 'Base'}{' '}
+                          wallet
                         </span>
                       </div>
                     )}
                     {sendDisabledReason && (
-                      <p className='text-xs text-destructive'>{sendDisabledReason}</p>
+                      <p className='text-destructive text-xs'>
+                        {sendDisabledReason}
+                      </p>
                     )}
                     <ExchangeRate
                       amount={field.value || 0}

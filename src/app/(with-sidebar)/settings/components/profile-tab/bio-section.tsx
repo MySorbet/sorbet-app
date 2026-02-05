@@ -11,13 +11,12 @@ import {
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { ProfileFormData } from '../../schemas';
 import { SETTINGS_CONFIG } from '../../constants';
+import type { ProfileFormData } from '../../schemas';
 import { SettingsSection } from '../settings-section';
 
 export const BioSection = () => {
   const form = useFormContext<ProfileFormData>();
-  const bioValue = form.watch('bio') || '';
 
   return (
     <SettingsSection
@@ -49,5 +48,3 @@ export const BioSection = () => {
     </SettingsSection>
   );
 };
-
-

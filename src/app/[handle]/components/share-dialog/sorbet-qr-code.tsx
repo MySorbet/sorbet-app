@@ -1,8 +1,8 @@
+import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { motion } from 'framer-motion';
 
 import { useSorbetQRCode } from '../../hooks/use-sorbet-qr-code';
 

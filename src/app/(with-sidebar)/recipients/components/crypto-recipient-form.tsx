@@ -1,16 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import Image from 'next/image';
 import { forwardRef, useEffect, useState } from 'react';
 import { useForm, useFormContext, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { BaseAlert } from '@/components/common/base-alert';
 import { Spinner } from '@/components/common/spinner';
-import BaseInProduct from '~/svg/base-in-product.svg';
-import StellarLogo from '~/svg/stellar_logo.svg';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -30,6 +28,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { useMyChain } from '@/hooks/use-my-chain';
 import { cn } from '@/lib/utils';
+import BaseInProduct from '~/svg/base-in-product.svg';
+import StellarLogo from '~/svg/stellar_logo.svg';
 
 const isEvmAddress = (s: string) => /^0x[a-fA-F0-9]{40}$/.test(s.trim());
 const isStellarAddress = (s: string) => /^G[A-Z2-7]{55}$/.test(s.trim());
@@ -84,7 +84,10 @@ export const CryptoRecipientFormContext = ({
   useEffect(() => {
     const next = myChainData?.chain;
     if (!next) return;
-    const dirty = (form.formState.dirtyFields as any)?.chain;
+    const dirtyFields = form.formState.dirtyFields as Partial<
+      Record<keyof CryptoRecipientFormValues, boolean>
+    >;
+    const dirty = dirtyFields.chain;
     if (!dirty) form.setValue('chain', next, { shouldValidate: true });
   }, [myChainData?.chain, form]);
 
@@ -140,7 +143,10 @@ export const CryptoRecipientForm = ({
           <FormItem>
             <FormLabel>Network</FormLabel>
             <FormControl>
-              <DropdownMenu open={isNetworkOpen} onOpenChange={setIsNetworkOpen}>
+              <DropdownMenu
+                open={isNetworkOpen}
+                onOpenChange={setIsNetworkOpen}
+              >
                 <DropdownMenuTrigger asChild>
                   <Button
                     type='button'
@@ -158,16 +164,21 @@ export const CryptoRecipientForm = ({
                       <span>{networkMeta.label}</span>
                     </div>
                     {isNetworkOpen ? (
-                      <ChevronUp className='size-4 text-muted-foreground' />
+                      <ChevronUp className='text-muted-foreground size-4' />
                     ) : (
-                      <ChevronDown className='size-4 text-muted-foreground' />
+                      <ChevronDown className='text-muted-foreground size-4' />
                     )}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align='start' className='w-[--radix-dropdown-menu-trigger-width]'>
+                <DropdownMenuContent
+                  align='start'
+                  className='w-[--radix-dropdown-menu-trigger-width]'
+                >
                   <DropdownMenuRadioGroup
                     value={field.value}
-                    onValueChange={(v) => field.onChange(v as 'base' | 'stellar')}
+                    onValueChange={(v) =>
+                      field.onChange(v as 'base' | 'stellar')
+                    }
                   >
                     <DropdownMenuRadioItem value='base'>
                       <div className='flex items-center gap-2'>

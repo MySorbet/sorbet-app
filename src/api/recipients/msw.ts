@@ -2,7 +2,7 @@ import { delay, http } from 'msw';
 import { HttpResponse } from 'msw';
 
 import { mockRecipients } from '@/api/recipients/mock';
-import { CreateRecipientDto, type RecipientAPI } from '@/api/recipients/types';
+import { type RecipientAPI, CreateRecipientDto } from '@/api/recipients/types';
 import { env } from '@/lib/env';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
@@ -25,7 +25,8 @@ export const createRecipientHandler = http.post(
     const data = (await request.json()) as CreateRecipientDto;
 
     if (data.type === 'usd' || data.type === 'eur') {
-      const mockRecipient = data.type === 'usd' ? mockRecipients[0] : mockRecipients[1];
+      const mockRecipient =
+        data.type === 'usd' ? mockRecipients[0] : mockRecipients[1];
       const recipient: RecipientAPI = {
         ...mockRecipient,
         type: data.type,

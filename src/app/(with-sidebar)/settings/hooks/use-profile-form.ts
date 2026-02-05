@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { useAuth, useUpdateUser } from '@/hooks';
 
-import { profileSchema, type ProfileFormData } from '../schemas';
+import { type ProfileFormData, profileSchema } from '../schemas';
 
 const HANDLE_CONFLICT_MESSAGE =
   'Your handle must be unique. This handle is already in use.';
@@ -25,8 +25,8 @@ export const useProfileForm = () => {
     mode: 'onTouched',
   });
 
-  const { isPending: isUpdating, mutateAsync: updateUserAsync } =
-    useUpdateUser({
+  const { isPending: isUpdating, mutateAsync: updateUserAsync } = useUpdateUser(
+    {
       toastOnError: false,
       onError: (error: unknown) => {
         const status = (error as { status?: number })?.status;
@@ -50,7 +50,8 @@ export const useProfileForm = () => {
           description: errorMessage,
         });
       },
-    });
+    }
+  );
 
   const { isDirty, isValid } = form.formState;
 

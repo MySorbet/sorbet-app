@@ -33,22 +33,23 @@ export const ExchangeRate = ({
   }
 
   if (isPending) {
-    return <Skeleton className={isForm ? 'h-8 w-full mt-2' : 'h-4 w-16'} />;
+    return <Skeleton className={isForm ? 'mt-2 h-8 w-full' : 'h-4 w-16'} />;
   }
 
   const rateNumber = Number(rate || 0);
   const convertedAmount = amount && amount > 0 ? amount * rateNumber : 0;
-  const formattedEUR = convertedAmount > 0
-    ? new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'EUR',
-      }).format(convertedAmount)
-    : null;
+  const formattedEUR =
+    convertedAmount > 0
+      ? new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'EUR',
+        }).format(convertedAmount)
+      : null;
 
   // Form variant styling
   if (isForm) {
     return (
-      <div className='text-muted-foreground text-sm space-y-0.5'>
+      <div className='text-muted-foreground space-y-0.5 text-sm'>
         <p className='flex items-center gap-1.5'>
           <ArrowLeftRight className='size-3.5' />
           <span>Conversion rate {rate}</span>
@@ -69,7 +70,7 @@ export const ExchangeRate = ({
         <ArrowLeftRight className='size-3' /> Conversion rate {rate}
       </p>
       {formattedEUR && (
-        <p className='text-muted-foreground text-xs leading-none ml-5'>
+        <p className='text-muted-foreground ml-5 text-xs leading-none'>
           {formatCurrency(amount)} ≈ {formattedEUR}
         </p>
       )}

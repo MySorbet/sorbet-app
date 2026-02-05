@@ -106,7 +106,8 @@ export const VerifyDashboard = () => {
   const unlessMobile = useUnlessMobile();
 
   // Dashboard data for SetupCard
-  const { data: dashboardData, isLoading: isDashboardLoading } = useDashboardData();
+  const { data: dashboardData, isLoading: isDashboardLoading } =
+    useDashboardData();
   const completedTasks = dashboardData?.tasks;
 
   // Derive display conditions for SetupCard
@@ -126,7 +127,7 @@ export const VerifyDashboard = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4 w-full max-w-5xl'>
+    <div className='flex w-full max-w-5xl flex-col gap-4'>
       {/* SetupCard - Stepper at top */}
       {showSetupCard && (
         <SetupCard

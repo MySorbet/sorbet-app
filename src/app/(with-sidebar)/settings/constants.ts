@@ -230,5 +230,3 @@ export const SETTINGS_CONFIG = {
 } as const;
 
 export type SettingsConfig = typeof SETTINGS_CONFIG;
-
-

@@ -103,19 +103,19 @@ export const RecipientSheet = ({
                       bankName: details?.externalAccount.bank_name ?? '',
                     }
                   : recipient.type === 'crypto_base' ||
-                      recipient.type === 'crypto_stellar'
-                    ? {
-                        name: recipient.label,
-                        type: 'crypto',
-                        walletAddress: recipient.detail,
-                      }
-                    : {
-                        name: recipient.label,
-                        type: recipient.type,
-                        accountNumberLast4: recipient.detail,
-                        country: details?.externalAccount.iban?.country ?? '',
-                        bic: details?.externalAccount.iban?.bic ?? '',
-                      }
+                    recipient.type === 'crypto_stellar'
+                  ? {
+                      name: recipient.label,
+                      type: 'crypto',
+                      walletAddress: recipient.detail,
+                    }
+                  : {
+                      name: recipient.label,
+                      type: recipient.type,
+                      accountNumberLast4: recipient.detail,
+                      country: details?.externalAccount.iban?.country ?? '',
+                      bic: details?.externalAccount.iban?.bic ?? '',
+                    }
               }
             />
             {/* Transfers table - desktop only */}

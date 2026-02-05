@@ -19,7 +19,8 @@ export const useTopUp = () => {
   const topUp = async () => {
     if (!smartWalletAddress) {
       toast.error('Wallet not ready', {
-        description: 'Please try again in a moment once your wallet is connected.',
+        description:
+          'Please try again in a moment once your wallet is connected.',
       });
       return;
     }

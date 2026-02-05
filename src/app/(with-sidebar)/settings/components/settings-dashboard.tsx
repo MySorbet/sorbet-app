@@ -21,9 +21,10 @@ export const SettingsDashboard = () => {
   const hasUnsavedChanges = profileForm.isDirty || accountForm.isDirty;
 
   // Get user initials for avatar fallback
-  const initials = user?.firstName && user?.lastName
-    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
-    : user?.handle?.[0]?.toUpperCase() || '?';
+  const initials =
+    user?.firstName && user?.lastName
+      ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+      : user?.handle?.[0]?.toUpperCase() || '?';
 
   return (
     <div className='w-full' style={{ maxWidth: '1100px' }}>

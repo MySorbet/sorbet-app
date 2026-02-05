@@ -49,7 +49,7 @@ export const AccountSelect = ({
           <span className='uppercase'>AED</span>
           <span> account</span>
         </div>
-        <Badge className='bg-[#E4E4E7] text-foreground hover:bg-[#E4E4E7]'>
+        <Badge className='text-foreground bg-[#E4E4E7] hover:bg-[#E4E4E7]'>
           Coming Soon
         </Badge>
       </div>

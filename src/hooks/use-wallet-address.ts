@@ -27,7 +27,8 @@ export type WalletAddressInfo = {
 export const useWalletAddress = (): WalletAddressInfo => {
   const { user: privyUser, ready } = usePrivy();
   const { data: myChainData, isLoading: isChainLoading } = useMyChain();
-  const { smartWalletAddress: baseAddress, isLoading: isBaseLoading } = useSmartWalletAddress();
+  const { smartWalletAddress: baseAddress, isLoading: isBaseLoading } =
+    useSmartWalletAddress();
 
   const currentChain: SorbetChain = myChainData?.chain ?? 'base';
 
@@ -36,7 +37,8 @@ export const useWalletAddress = (): WalletAddressInfo => {
     [privyUser]
   );
 
-  const currentAddress = currentChain === 'stellar' ? stellarAddress : baseAddress;
+  const currentAddress =
+    currentChain === 'stellar' ? stellarAddress : baseAddress;
 
   return {
     currentChain,
@@ -46,4 +48,3 @@ export const useWalletAddress = (): WalletAddressInfo => {
     isLoading: !ready || isChainLoading || isBaseLoading,
   };
 };
-

@@ -140,10 +140,10 @@ const RecipientsTableInternal = ({
                         onDelete?.(recipient.id);
                         // TODO: Loading state / disable during delete? Or optimistic?
                       }}
-                    disabled={
-                      recipient.type !== 'crypto_base' &&
-                      recipient.type !== 'crypto_stellar'
-                    }
+                      disabled={
+                        recipient.type !== 'crypto_base' &&
+                        recipient.type !== 'crypto_stellar'
+                      }
                     >
                       <Trash />
                       Delete

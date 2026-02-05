@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import type { ProfileFormData } from '../../schemas';
 import { SETTINGS_CONFIG } from '../../constants';
+import type { ProfileFormData } from '../../schemas';
 import { SettingsSection } from '../settings-section';
 
 export const SkillsSection = () => {
@@ -88,7 +88,7 @@ export const SkillsSection = () => {
                       <Badge
                         key={suggestion}
                         variant='outline'
-                        className='cursor-pointer hover:bg-accent'
+                        className='hover:bg-accent cursor-pointer'
                         onClick={() => handleAddSkill(suggestion)}
                       >
                         {suggestion}
@@ -106,7 +106,7 @@ export const SkillsSection = () => {
                         <button
                           type='button'
                           onClick={() => handleRemoveSkill(skill)}
-                          className='ml-1 hover:text-destructive'
+                          className='hover:text-destructive ml-1'
                           aria-label={`Remove ${skill}`}
                         >
                           <X className='size-3' />
@@ -127,5 +127,3 @@ export const SkillsSection = () => {
     </SettingsSection>
   );
 };
-
-

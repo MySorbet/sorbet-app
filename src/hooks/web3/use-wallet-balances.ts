@@ -1,12 +1,18 @@
 'use client';
 
+import { Horizon } from '@stellar/stellar-sdk';
 import { useQuery } from '@tanstack/react-query';
 import { ethers } from 'ethers';
-import { Horizon } from '@stellar/stellar-sdk';
 
 import { TOKEN_ABI } from '@/constant/abis';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { env } from '@/lib/env';
+
+type StellarBalanceLine = {
+  asset_code?: string;
+  asset_issuer?: string;
+  balance?: string;
+};
 
 // Singleton instances
 let providerInstance: ethers.providers.JsonRpcProvider | null = null;
@@ -16,7 +22,9 @@ let horizonServerUrl: string | null = null;
 
 const getProvider = () => {
   if (!providerInstance) {
-    providerInstance = new ethers.providers.JsonRpcProvider(env.NEXT_PUBLIC_BASE_RPC_URL);
+    providerInstance = new ethers.providers.JsonRpcProvider(
+      env.NEXT_PUBLIC_BASE_RPC_URL
+    );
   }
   return providerInstance;
 };
@@ -53,7 +61,10 @@ export const useWalletBalances = () => {
     queryFn: async (): Promise<string> => {
       if (!baseAddress) return '0';
       const usdc = getUsdcContract();
-      const [raw, decimals] = await Promise.all([usdc.balanceOf(baseAddress), usdc.decimals()]);
+      const [raw, decimals] = await Promise.all([
+        usdc.balanceOf(baseAddress),
+        usdc.decimals(),
+      ]);
       return ethers.utils.formatUnits(raw, decimals);
     },
   });
@@ -66,15 +77,16 @@ export const useWalletBalances = () => {
       try {
         const server = getHorizonServer(horizonUrl);
         const account = await server.loadAccount(stellarAddress);
-        const bal = account.balances.find((b: any) => {
-          const code = String((b as any).asset_code ?? '');
-          const issuer = String((b as any).asset_issuer ?? '');
+        const balances = account.balances as unknown as StellarBalanceLine[];
+        const bal = balances.find((b) => {
+          const code = String(b.asset_code ?? '');
+          const issuer = String(b.asset_issuer ?? '');
           return (
             code === env.NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE &&
             issuer === env.NEXT_PUBLIC_STELLAR_USDC_ISSUER
           );
         });
-        return String((bal as any)?.balance ?? '0');
+        return String(bal?.balance ?? '0');
       } catch {
         return '0';
       }
@@ -89,4 +101,3 @@ export const useWalletBalances = () => {
     refetchStellar: stellar.refetch,
   };
 };
-

@@ -12,8 +12,10 @@ const meta = {
   args: {
     isAuthenticatedOverride: true,
     exportBaseOverride: fn(),
-    baseSmartWalletAddressOverride: '0x742d35Cc6634C0532925a3b844Bc9e7595f2F6353',
-    stellarAddressOverride: 'GB3JDWCQMPM3SSE6X6CEGJ3V3UT2JTX7KZ2R5Y3G3QZQJ2T4K6Q3W3GQ',
+    baseSmartWalletAddressOverride:
+      '0x742d35Cc6634C0532925a3b844Bc9e7595f2F6353',
+    stellarAddressOverride:
+      'GB3JDWCQMPM3SSE6X6CEGJ3V3UT2JTX7KZ2R5Y3G3QZQJ2T4K6Q3W3GQ',
   },
 } satisfies Meta<typeof WalletSection>;
 
@@ -33,4 +35,3 @@ export const Unauthenticated: Story = {
     isAuthenticatedOverride: false,
   },
 };
-

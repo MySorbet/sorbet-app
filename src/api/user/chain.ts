@@ -16,7 +16,9 @@ export const getMyChain = async (): Promise<{ chain: SorbetChain }> => {
   return res.data;
 };
 
-export const setMyChain = async (chain: SorbetChain): Promise<{ chain: SorbetChain }> => {
+export const setMyChain = async (
+  chain: SorbetChain
+): Promise<{ chain: SorbetChain }> => {
   try {
     const res = await axios.patch<{ chain: SorbetChain }>(
       `${API_URL}/users/me/chain`,
@@ -26,11 +28,13 @@ export const setMyChain = async (chain: SorbetChain): Promise<{ chain: SorbetCha
     return res.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
+      type ErrorShape = { message?: unknown };
       const message =
-        (error.response?.data as any)?.message ?? error.message ?? 'Unknown error';
+        (error.response?.data as ErrorShape | undefined)?.message ??
+        error.message ??
+        'Unknown error';
       throw new Error(String(message));
     }
     throw error;
   }
 };
-

@@ -50,7 +50,8 @@ export const SidebarLinkButton = ({
   const { toggleSidebar } = useSidebar();
 
   // Check if current path matches the item URL
-  const isActive = pathname === item.url || pathname?.startsWith(`${item.url}/`);
+  const isActive =
+    pathname === item.url || pathname?.startsWith(`${item.url}/`);
 
   return (
     <SidebarMenuButton asChild isActive={isActive}>

@@ -32,7 +32,6 @@ Environment variables are stored the GSM entry [sorbet-app-env-local](https://co
 - Run `yarn env` to pull the latest version from GSM into your local `.env` file.
 - Run `yarn env:push` to update GSM with the contents of your `.env` file. 🛑 Do not use this command unless you know what you are doing.
 
-### ⏳ Posterity 
+### ⏳ Posterity
 
 Originally, this project was based on the GitHub project [ts-nextjs-tailwind-starter](https://github.com/theodorusclarence/ts-nextjs-tailwind-starter/).
- 

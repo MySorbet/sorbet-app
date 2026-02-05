@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getMyChain, setMyChain, type SorbetChain } from '@/api/user/chain';
+import { type SorbetChain, getMyChain, setMyChain } from '@/api/user/chain';
 
 export const myChainQueryKey = ['me', 'chain'] as const;
 
@@ -21,4 +21,3 @@ export const useSetMyChain = () => {
     },
   });
 };
-

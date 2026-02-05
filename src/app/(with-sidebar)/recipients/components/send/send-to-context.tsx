@@ -14,8 +14,8 @@ import { RecipientAPI } from '@/api/recipients/types';
 import { useRecipients } from '@/app/(with-sidebar)/recipients/hooks/use-recipients';
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { Form } from '@/components/ui/form';
-import { useWalletBalances } from '@/hooks/web3/use-wallet-balances';
 import { useMyChain } from '@/hooks/use-my-chain';
+import { useWalletBalances } from '@/hooks/web3/use-wallet-balances';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
@@ -93,8 +93,8 @@ export const SendToFormContext = ({
       selectedRecipient?.type === 'crypto_stellar'
         ? 'stellar'
         : selectedRecipient?.type === 'crypto_base'
-          ? 'base'
-          : currentChain;
+        ? 'base'
+        : currentChain;
 
     const maxAmount =
       paymentChain === 'stellar'
@@ -102,10 +102,14 @@ export const SendToFormContext = ({
           ? Number(stellarUsdc)
           : undefined
         : baseUsdc
-          ? Number(baseUsdc)
-          : undefined;
+        ? Number(baseUsdc)
+        : undefined;
 
-    if (typeof maxAmount === 'number' && !Number.isNaN(maxAmount) && (values.amount > maxAmount || maxAmount === 0)) {
+    if (
+      typeof maxAmount === 'number' &&
+      !Number.isNaN(maxAmount) &&
+      (values.amount > maxAmount || maxAmount === 0)
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['amount'],
@@ -167,8 +171,8 @@ export const SendToFormContext = ({
     selectedRecipient?.type === 'crypto_stellar'
       ? 'stellar'
       : selectedRecipient?.type === 'crypto_base'
-        ? 'base'
-        : currentChain;
+      ? 'base'
+      : currentChain;
 
   const maxAmount =
     paymentChain === 'stellar'
@@ -176,8 +180,8 @@ export const SendToFormContext = ({
         ? Number(stellarUsdc)
         : undefined
       : baseUsdc
-        ? Number(baseUsdc)
-        : undefined;
+      ? Number(baseUsdc)
+      : undefined;
 
   const sendDisabledReason =
     selectedRecipient &&

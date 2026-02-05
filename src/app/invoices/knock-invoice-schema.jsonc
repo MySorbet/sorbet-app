@@ -30,42 +30,25 @@
           "type": "string"
         },
         "memo": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "paymentMethods": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": [
-              "usdc",
-              "usd",
-              "eur"
-            ]
+            "enum": ["usdc", "usd", "eur"]
           },
           "minItems": 1
         },
         "projectName": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "status": {
-          "enum": [
-            "Open",
-            "Paid",
-            "Cancelled"
-          ],
+          "enum": ["Open", "Paid", "Cancelled"],
           "type": "string"
         },
         "tax": {
-          "type": [
-            "number",
-            "null"
-          ]
+          "type": ["number", "null"]
         },
         "toEmail": {
           "format": "email",
@@ -75,16 +58,10 @@
           "type": "string"
         },
         "toBusinessName": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "toAddress": {
-          "type": [
-            "object",
-            "null"
-          ],
+          "type": ["object", "null"],
           "properties": {
             "street": {
               "type": "string"
@@ -132,8 +109,6 @@
       "type": "boolean"
     }
   },
-  "required": [
-    "invoice"
-  ],
+  "required": ["invoice"],
   "type": "object"
 }

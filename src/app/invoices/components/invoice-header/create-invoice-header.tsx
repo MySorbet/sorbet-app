@@ -5,7 +5,7 @@ import { InvoiceHeader } from './invoice-header';
 
 /** Header for the create invoice page */
 export const CreateInvoiceHeader = ({
-  onSaveDraft,
+  onSaveDraft: _onSaveDraft,
   onCreateInvoice,
   onClose,
   className,

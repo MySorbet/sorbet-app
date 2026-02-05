@@ -199,7 +199,9 @@ export const stellarScanUrl = (hash?: string) => {
 /** Open a transaction hash in the appropriate explorer (basescan) */
 export const openTransactionInExplorer = (hash: string) => {
   try {
-    const url = hash.startsWith('0x') ? baseScanUrl(hash) : stellarScanUrl(hash);
+    const url = hash.startsWith('0x')
+      ? baseScanUrl(hash)
+      : stellarScanUrl(hash);
     const encodedUrl = url ? encodeURI(url) : undefined;
     const newWindow = window.open(encodedUrl, '_blank', 'noopener,noreferrer');
 

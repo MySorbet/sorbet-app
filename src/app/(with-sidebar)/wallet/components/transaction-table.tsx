@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ExternalLink, Plus, Send } from 'lucide-react';
+import { ArrowDown, ArrowUp, ExternalLink } from 'lucide-react';
 import React from 'react';
 
 import { CopyText } from '@/components/common/copy-text';
@@ -96,8 +96,8 @@ export const TransactionTable = ({
                       {transaction.type === 'Deposit'
                         ? 'Added'
                         : transaction.type === 'Money Out'
-                          ? 'Sent'
-                          : 'Received'}
+                        ? 'Sent'
+                        : 'Received'}
                     </div>
                   </div>
                 </td>
@@ -130,17 +130,6 @@ export const TransactionTable = ({
           )}
         </tbody>
       </table>
-    </div>
-  );
-};
-
-/** Local component to display a transaction type icon in the To/From column */
-const TransactionTypeIcon = ({ type }: { type: TableTransaction['type'] }) => {
-  return (
-    <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-[#E4E4E7]'>
-      {type === 'Money In' && <ArrowDown className='size-5 text-white' />}
-      {type === 'Money Out' && <Send className='size-5 text-white' />}
-      {type === 'Deposit' && <Plus className='size-5 text-white' />}
     </div>
   );
 };

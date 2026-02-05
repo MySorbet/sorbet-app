@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { Button } from '@/components/ui/button';
 
@@ -14,8 +15,8 @@ const meta = {
   args: {
     open: true,
     stellarAddress: 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF',
-    onOpenChange: () => {},
-    onTrustlineEstablished: () => {},
+    onOpenChange: fn(),
+    onTrustlineEstablished: fn(),
     establishTrustlineOverride: async () => {
       // Simulate async work.
       await new Promise((r) => setTimeout(r, 800));
@@ -42,4 +43,3 @@ export const Default: Story = {
     );
   },
 };
-

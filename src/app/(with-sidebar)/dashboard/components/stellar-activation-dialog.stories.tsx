@@ -1,5 +1,6 @@
 import { useArgs } from '@storybook/preview-api';
 import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
 
 import { Button } from '@/components/ui/button';
 
@@ -15,8 +16,8 @@ const meta = {
     open: true,
     // Valid-looking Stellar public key format (G...).
     stellarAddress: 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF',
-    onOpenChange: () => {},
-    onRetrySwitch: async () => {},
+    onOpenChange: fn(),
+    onRetrySwitch: fn(),
   },
 } satisfies Meta<typeof StellarActivationDialog>;
 
@@ -39,4 +40,3 @@ export const Default: Story = {
     );
   },
 };
-

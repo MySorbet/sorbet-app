@@ -1,7 +1,6 @@
 import './styles.css';
 
 import React, { useState } from 'react';
-import type { Focused } from 'react-credit-cards-2';
 
 import { Button } from '@/components/ui/button';
 
@@ -18,7 +17,6 @@ interface CardData {
 
 export const CreditCardForm = () => {
   const [isCardAdded, setIsCardAdded] = useState(false);
-  const [, setFocus] = useState<Focused | undefined>(undefined);
   const [cardData, setCardData] = useState<CardData>({
     cardName: '',
     cardNumber: '',

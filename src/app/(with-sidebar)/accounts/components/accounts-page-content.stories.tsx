@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { http, HttpResponse } from 'msw';
 import { fn } from '@storybook/test';
+import { http, HttpResponse } from 'msw';
 
 import {
   mockACHWireDetailsHandler,

@@ -1,22 +1,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { useAuth } from '@/hooks';
 import { getInvoicingDetails, updateInvoicingDetails } from '@/api/invoicing';
+import { useAuth } from '@/hooks';
 
-import { accountSchema, type AccountFormData } from '../schemas';
+import { type AccountFormData, accountSchema } from '../schemas';
 
 export const useAccountForm = () => {
   const { user } = useAuth();
+  const userId = user?.id;
 
   // Fetch existing invoicing details
   const { data: invoicingData } = useQuery({
-    queryKey: ['invoicing', user?.id],
-    queryFn: () => getInvoicingDetails(user!.id),
-    enabled: !!user?.id,
+    queryKey: ['invoicing', userId],
+    queryFn: async () => {
+      if (!userId) throw new Error('Missing user id');
+      return getInvoicingDetails(userId);
+    },
+    enabled: Boolean(userId),
   });
 
   const form = useForm<AccountFormData>({
@@ -49,11 +53,13 @@ export const useAccountForm = () => {
   }, [invoicingData, form]);
 
   const updateMutation = useMutation({
-    mutationFn: (data: AccountFormData) =>
-      updateInvoicingDetails(user!.id, {
+    mutationFn: async (data: AccountFormData) => {
+      if (!userId) throw new Error('Missing user id');
+      return updateInvoicingDetails(userId, {
         ...data,
         city: data.addressCity,
-      }),
+      });
+    },
     onSuccess: (data) => {
       form.reset({
         businessName: data.businessName ?? '',
@@ -94,5 +100,3 @@ export const useAccountForm = () => {
     isUpdating: updateMutation.isPending,
   };
 };
-
-
