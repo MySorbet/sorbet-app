@@ -20,17 +20,15 @@ export const SorbetQRCode = ({
 
   return (
     <div className='flex w-full flex-col items-center justify-center gap-2 rounded-md border p-3'>
-      {isLoadingQRCode ? (
-        <Skeleton className='size-48' />
-      ) : (
-        // Use a motion div to animate the QR code in (since the loading skeleton above never renders (since the hook is faulty))
+      <div className='relative size-48'>
         <motion.div
           ref={qrCodeRef}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: isLoadingQRCode ? 0 : 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         />
-      )}
+        {isLoadingQRCode && <Skeleton className='absolute inset-0 size-48' />}
+      </div>
       <Button
         variant='secondary'
         onClick={() => downloadQRCode(`${handle}-sorbet-qr-code`)}

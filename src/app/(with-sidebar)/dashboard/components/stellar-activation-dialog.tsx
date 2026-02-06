@@ -55,11 +55,15 @@ export const StellarActivationDialog = ({
           </div>
 
           <div className='flex items-center justify-center rounded-xl border border-[#E4E4E7] bg-[#FAFAFA] p-6'>
-            {isLoadingQRCode ? (
-              <Skeleton className='size-48' />
-            ) : (
-              <div ref={qrCodeRef} />
-            )}
+            <div className='relative size-48'>
+              <div
+                ref={qrCodeRef}
+                className={isLoadingQRCode ? 'opacity-0' : 'opacity-100'}
+              />
+              {isLoadingQRCode && (
+                <Skeleton className='absolute inset-0 size-48' />
+              )}
+            </div>
           </div>
 
           <div className='flex items-start gap-2 rounded-lg border border-[#E4E4E7] bg-[#F9FAFB] p-3'>

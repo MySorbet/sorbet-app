@@ -56,11 +56,15 @@ export const USDCWalletDetails = ({
 
       {/* QR Code container */}
       <div className='flex items-center justify-center rounded-xl border border-[#E4E4E7] bg-[#FAFAFA] p-6'>
-        {isLoadingQRCode ? (
-          <Skeleton className='size-48' />
-        ) : (
-          <div ref={qrCodeRef} />
-        )}
+        <div className='relative size-48'>
+          <div
+            ref={qrCodeRef}
+            className={isLoadingQRCode ? 'opacity-0' : 'opacity-100'}
+          />
+          {isLoadingQRCode && (
+            <Skeleton className='absolute inset-0 size-48' />
+          )}
+        </div>
       </div>
 
       {/* Info alert */}
