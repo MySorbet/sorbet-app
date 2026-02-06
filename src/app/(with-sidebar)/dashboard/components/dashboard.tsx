@@ -154,7 +154,7 @@ export const Dashboard = () => {
             open={isStellarActivationOpen}
             onOpenChange={setIsStellarActivationOpen}
             stellarAddress={stellarAddress}
-            onRetrySwitch={() => handleChainChange('stellar')}
+            onRetrySwitch={() => {setIsStellarActivationOpen(false); return handleChainChange('stellar')}}
           />
           <StellarTrustlineDialog
             open={isStellarTrustlineOpen}
