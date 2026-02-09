@@ -335,42 +335,66 @@ export const SetupCard = ({
 
                                 {/* Text Labels */}
                                 <div className={cn(
-                                    'flex flex-col',
+                                    'flex flex-1 flex-col',
                                     layout === 'horizontal' ? 'lg:mt-3 lg:items-center' : ''
                                 )}>
-                                    <div className='flex items-center gap-2'>
-                                        <span className={cn(
-                                            'text-sm font-semibold text-gray-900',
-                                            layout === 'horizontal' ? 'lg:whitespace-nowrap' : ''
-                                        )}>
-                                            {step.title}
-                                        </span>
-                                        {/* Badge - Only show in horizontal layout on desktop */}
-                                        {step.badge && layout === 'horizontal' && (
-                                            <span
+                                    <div className='flex items-center justify-between gap-3'>
+                                        <div className='flex items-center gap-2'>
+                                            <span className={cn(
+                                                'text-sm font-semibold text-gray-900',
+                                                layout === 'horizontal' ? 'lg:whitespace-nowrap' : ''
+                                            )}>
+                                                {step.title}
+                                            </span>
+                                            {/* Badge - Only show in horizontal layout on desktop when NOT using inline verification */}
+                                            {step.badge && layout === 'horizontal' && !showInlineVerification && (
+                                                <span
+                                                    className={cn(
+                                                        'hidden rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:inline-block',
+                                                        step.badgeColor || 'bg-[#5864FF]'
+                                                    )}
+                                                >
+                                                    {step.badge}
+                                                </span>
+                                            )}
+                                            {/* Badge - Show in vertical layout or mobile when NOT using inline verification */}
+                                            {step.badge && layout === 'vertical' && !showInlineVerification && (
+                                                <span
+                                                    className={cn(
+                                                        'inline-block rounded px-1.5 py-0.5 text-[10px] font-medium text-white',
+                                                        step.badgeColor || 'bg-[#5864FF]'
+                                                    )}
+                                                >
+                                                    {step.badge}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Button - Show when using inline verification (verify page only) - aligned to the right */}
+                                        {step.badge && showInlineVerification && step.id === 'verify' && (
+                                            <Button
+                                                variant='ghost'
+                                                size='sm'
                                                 className={cn(
-                                                    'hidden rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:inline-block',
-                                                    step.badgeColor || 'bg-[#5864FF]'
+                                                    'h-9 shrink-0 rounded-full px-5 text-sm font-medium',
+                                                    isCompleted && 'bg-[#DFFFD4] text-[#085100] hover:!bg-[#DFFFD4] hover:!text-[#085100]',
+                                                    isVerifying && 'bg-[#FFE7CF] text-[#FF5405] hover:!bg-[#FFE7CF] hover:!text-[#FF5405]',
+                                                    (kycStatus === 'failed' || kycStatus === 'rejected') && 'bg-[#FFE5E6] text-[#E20C0F] hover:!bg-[#FFE5E6] hover:!text-[#E20C0F]',
+                                                    !isCompleted && !isVerifying && kycStatus !== 'failed' && kycStatus !== 'rejected' && 'bg-[#D9EFFF] text-[#00508A] hover:!bg-[#C5E7FF] hover:!text-[#00508A]'
                                                 )}
+                                                disabled={isCreatingDueCustomer || !step.clickable}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleStepClick(step);
+                                                }}
                                             >
                                                 {step.badge}
-                                            </span>
-                                        )}
-                                        {/* Badge - Show in vertical layout or mobile */}
-                                        {step.badge && layout === 'vertical' && (
-                                            <span
-                                                className={cn(
-                                                    'inline-block rounded px-1.5 py-0.5 text-[10px] font-medium text-white',
-                                                    step.badgeColor || 'bg-[#5864FF]'
-                                                )}
-                                            >
-                                                {step.badge}
-                                            </span>
+                                            </Button>
                                         )}
                                     </div>
 
-                                    {/* Badge - Mobile/Tablet (only in horizontal mode) */}
-                                    {step.badge && layout === 'horizontal' && (
+                                    {/* Badge - Mobile/Tablet (only in horizontal mode) when NOT using inline verification */}
+                                    {step.badge && layout === 'horizontal' && !showInlineVerification && (
                                         <span
                                             className={cn(
                                                 'mt-1 inline-block w-fit rounded px-1.5 py-0.5 text-[10px] font-medium text-white lg:hidden',
