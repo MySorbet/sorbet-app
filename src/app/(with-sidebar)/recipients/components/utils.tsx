@@ -1,5 +1,7 @@
 import { cloneDeep, isObject } from 'lodash';
 
+import { RecipientAPI } from '@/api/recipients/types';
+
 import { BankRecipientFormValues } from './bank-recipient-form';
 import { CryptoRecipientFormValues } from './crypto-recipient-form';
 
@@ -58,4 +60,13 @@ export const formatTransferDate = (date: string) => {
     month: 'short',
     year: 'numeric',
   });
+};
+
+/**
+ * Check if recipient is a legacy Bridge recipient that needs migration to Due Network.
+ * Legacy Bridge recipients have type 'usd' or 'eur'.
+ * Due Network recipients have types like 'usd_ach', 'eur_sepa', etc.
+ */
+export const needsMigration = (recipient: RecipientAPI): boolean => {
+  return recipient.type === 'usd' || recipient.type === 'eur';
 };

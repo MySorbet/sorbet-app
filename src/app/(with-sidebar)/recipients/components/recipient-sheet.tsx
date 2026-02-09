@@ -25,6 +25,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { EADetails } from './ea-details';
 import { MigrateRecipientSheet } from './migrate-recipient-sheet';
 import { RecipientTransfersTable } from './recipient-transfers-table';
+import { needsMigration } from './utils';
 import {
   VaulSheet,
   VaulSheetContent,
@@ -37,13 +38,6 @@ import {
 /** Check if type is a Due payment method */
 const isDuePaymentMethod = (type: string): type is DuePaymentMethod => {
   return PAYMENT_METHOD_OPTIONS.some((option) => option.id === type);
-};
-
-/** Check if recipient is a Bridge recipient that needs migration */
-const needsMigration = (recipient: RecipientAPI): boolean => {
-  // Legacy Bridge recipients have type 'usd' or 'eur'
-  // Due Network recipients have types like 'usd_ach', 'eur_sepa', etc.
-  return recipient.type === 'usd' || recipient.type === 'eur';
 };
 
 /** Build account data for EADetails based on recipient type */

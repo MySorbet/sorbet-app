@@ -23,15 +23,9 @@ import {
 import { MigrateRecipientSheet } from './migrate-recipient-sheet';
 import { RecipientSheet } from './recipient-sheet';
 import { SendToDialog } from './send/send-to-dialog';
+import { needsMigration } from './utils';
 
 const PAGE_SIZE = 10;
-
-/** Check if recipient is a Bridge recipient that needs migration */
-const needsMigration = (recipient: RecipientAPI): boolean => {
-  // Legacy Bridge recipients have type 'usd' or 'eur'
-  // Due Network recipients have types like 'usd_ach', 'eur_sepa', etc.
-  return recipient.type === 'usd' || recipient.type === 'eur';
-};
 
 /** Main container for the recipients page with header, filters, and table */
 export const RecipientsBrowser: React.FC = () => {

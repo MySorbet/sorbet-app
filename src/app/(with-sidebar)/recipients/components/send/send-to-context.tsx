@@ -18,7 +18,7 @@ import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
-import { BANK_ACCOUNTS_MIN_AMOUNT } from '../utils';
+import { BANK_ACCOUNTS_MIN_AMOUNT, needsMigration } from '../utils';
 
 export type TransferResult =
   | { status: 'success'; hash: string }
@@ -78,7 +78,13 @@ export const SendToFormContext = ({
   const { data: walletBalance } = useWalletBalance();
   const maxAmount = walletBalance ? Number(walletBalance) : undefined;
 
-  const { data: recipients } = useRecipients();
+  const { data: allRecipients } = useRecipients();
+
+  // Filter out recipients that need migration to Due Network
+  // These recipients must go through the migration flow before they can receive funds
+  const recipients = useMemo(() => {
+    return allRecipients?.filter((recipient) => !needsMigration(recipient));
+  }, [allRecipients]);
 
   const form = useForm<SendToFormSchema>({
     resolver: zodResolver(
