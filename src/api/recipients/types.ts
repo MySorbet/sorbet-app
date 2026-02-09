@@ -1,13 +1,20 @@
 import { BankRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/bank-recipient-form';
 import { CryptoRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/crypto-recipient-form';
 
-export type RecipientType = 'usd' | 'eur' | 'crypto';
+export type SorbetChain = 'base' | 'stellar';
+
+export type RecipientType = 'usd' | 'eur' | 'crypto_base' | 'crypto_stellar';
 
 /** Data sent to the API to create a recipient */
 export type CreateRecipientDto =
-  | { type: 'usd'; values: BankRecipientFormValues }
-  | { type: 'eur'; values: BankRecipientFormValues }
-  | { type: 'crypto'; values: CryptoRecipientFormValues };
+  | { chain: SorbetChain; type: 'usd'; values: BankRecipientFormValues }
+  | { chain: SorbetChain; type: 'eur'; values: BankRecipientFormValues }
+  | { chain: 'base'; type: 'crypto_base'; values: CryptoRecipientFormValues }
+  | {
+      chain: 'stellar';
+      type: 'crypto_stellar';
+      values: CryptoRecipientFormValues;
+    };
 
 /** Recipients received from the API */
 type RecipientAPIBase = {
@@ -28,12 +35,12 @@ type RecipientAPIBase = {
 
 type RecipientAPIBank = RecipientAPIBase & {
   type: 'usd' | 'eur';
-  liquidationAddressId: string;
+  liquidationAddressIds?: Partial<Record<SorbetChain, string | null>>;
   externalAccountId: string;
 };
 
 type RecipientAPICrypto = RecipientAPIBase & {
-  type: 'crypto';
+  type: 'crypto_base' | 'crypto_stellar';
 };
 
 export type RecipientAPI = RecipientAPIBank | RecipientAPICrypto;

@@ -20,7 +20,7 @@ export const Header = forwardRef<
     <div
       ref={ref}
       className={cn(
-        'flex w-full items-center justify-center border-b px-6 pt-[1px] pb-4',
+        'flex w-full items-center justify-center border-b px-6 pb-4 pt-[1px]',
         'md:min-h-[72px]',
         className
       )}

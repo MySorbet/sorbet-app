@@ -277,50 +277,6 @@ const DefaultContent = () => {
   );
 };
 
-/**
- * Local component specializing the card content for the under review state.
- * Since KYB can have an account in the under review state with rejection reasons, we allow the rendering of rejection reasons.
- * If no rejection reasons are given, we assure the user that their account will be reviewed within 24 hours.
- */
-const UnderReviewContent = ({
-  rejectionReasons,
-}: {
-  rejectionReasons?: string[];
-}) => {
-  const reasons = rejectionReasons ? (
-    rejectionReasons?.length === 1 ? (
-      rejectionReasons[0]
-    ) : (
-      <ol className='list-inside list-decimal'>
-        {rejectionReasons.map((reason, index) => (
-          <li key={index}>{reason}</li>
-        ))}
-      </ol>
-    )
-  ) : undefined;
-  return (
-    <CardContent
-      title='Account under review'
-      description={
-        <span>
-          Your account is currently under review. We ran into some issues with
-          your details:{' '}
-          {reasons
-            ? reasons
-            : "It should be finalized within 24 hours. We'll notify you via email when it's ready. If you have any questions, please contact support at support@sorbet.com."}
-        </span>
-      }
-      icon={() => (
-        <img
-          src='/svg/orange-loader-icon.svg'
-          alt='Under Review'
-          className='mr-1.5 inline-block size-6 animate-spin'
-        />
-      )}
-    />
-  );
-};
-
 /** Local component specializing the card content for the incomplete state */
 const IncompleteContent = () => {
   return (

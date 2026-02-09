@@ -1,8 +1,9 @@
 import { Clock } from 'lucide-react';
 
+import type { RecipientType } from '@/api/recipients/types';
 import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 
-export const Timing = ({ type }: { type: 'usd' | 'eur' | 'crypto' }) => {
+export const Timing = ({ type }: { type: RecipientType | 'crypto' }) => {
   const time =
     type === 'usd' || type === 'eur'
       ? PAYMENT_TIMING_DESCRIPTIONS.bank

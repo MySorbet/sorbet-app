@@ -136,10 +136,11 @@ type VerifyTaskItemProps = Omit<TaskItemProps, 'Icon'> & {
 
 const VerifyStepItem = (props: VerifyTaskItemProps) => {
   const { isRejected, rejectionReason, type, ...taskItemProps } = props;
-  
+
   // Use AlertCircle icon for 'details' step when rejected, otherwise use normal icon
-  const icon = isRejected && type === 'details' ? AlertCircle : StepIconMap[type];
-  
+  const icon =
+    isRejected && type === 'details' ? AlertCircle : StepIconMap[type];
+
   const taskItem = (
     <div
       className={cn(
@@ -163,7 +164,10 @@ const VerifyStepItem = (props: VerifyTaskItemProps) => {
         <Tooltip>
           <TooltipTrigger asChild>{taskItem}</TooltipTrigger>
           <TooltipContent>
-            <p>Identity verification failed. Please try again</p>
+            <p>
+              {rejectionReason ??
+                'Identity verification failed. Please try again.'}
+            </p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

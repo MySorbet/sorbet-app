@@ -1,9 +1,9 @@
 'use client';
 
+import { DeleteAccountSection } from './delete-account-section';
 import { EmailSection } from './email-section';
 import { InvoicingSection } from './invoicing-section';
 import { WalletSection } from './wallet-section';
-import { DeleteAccountSection } from './delete-account-section';
 
 export const AccountTab = () => {
   return (
@@ -15,4 +15,3 @@ export const AccountTab = () => {
     </div>
   );
 };
-

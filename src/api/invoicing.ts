@@ -35,4 +35,3 @@ export const updateInvoicingDetails = async (
   );
   return response.data;
 };
-

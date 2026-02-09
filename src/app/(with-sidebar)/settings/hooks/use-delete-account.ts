@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import axios from 'axios';
 
-import { env } from '@/lib/env';
 import { withAuthHeader } from '@/api/with-auth-header';
 import { useAuth } from '@/hooks';
+import { env } from '@/lib/env';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
 
@@ -29,13 +30,16 @@ export const useDeleteAccount = () => {
       await logout();
       router.push('/');
     },
-    onError: (error: any) => {
-      // Show the actual error message from the backend
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to delete account';
-      toast.error(errorMessage);
+    onError: (error: unknown) => {
+      type ErrorShape = { message?: unknown };
+      const message =
+        error instanceof AxiosError
+          ? (error.response?.data as ErrorShape | undefined)?.message ??
+            error.message
+          : error instanceof Error
+          ? error.message
+          : 'Failed to delete account';
+      toast.error(String(message));
       console.error('Delete account error:', error);
     },
   });
@@ -45,4 +49,3 @@ export const useDeleteAccount = () => {
     isDeleting: deleteAccount.isPending,
   };
 };
-

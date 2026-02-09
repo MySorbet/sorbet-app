@@ -56,7 +56,7 @@ export const Default: Story = {
 export const InvoiceSales: Story = {
   args: {
     title: 'Invoice sales',
-    value: 25430.50,
+    value: 25430.5,
     description: 'Total income',
     buttonLabel: '+ Create',
     isLoading: false,

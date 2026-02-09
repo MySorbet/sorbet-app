@@ -105,13 +105,15 @@ export const RecipientsTableCore: React.FC<RecipientsTableCoreProps> = ({
               <tr
                 key={recipient.id}
                 onClick={() => onRowClick?.(recipient.id)}
-                className='animate-in fade-in cursor-pointer hover:bg-muted/50'
+                className='animate-in fade-in hover:bg-muted/50 cursor-pointer'
               >
                 <td className='whitespace-nowrap py-4'>
                   <div className='text-sm font-medium'>{recipient.label}</div>
                 </td>
                 <td className='whitespace-nowrap py-4'>
-                  <div className='text-sm'>{formatDate(recipient.createdAt)}</div>
+                  <div className='text-sm'>
+                    {formatDate(recipient.createdAt)}
+                  </div>
                 </td>
                 <td className='whitespace-nowrap py-4'>
                   <RecipientTypeCell type={recipient.type} />
@@ -153,7 +155,10 @@ export const RecipientsTableCore: React.FC<RecipientsTableCoreProps> = ({
                           e.stopPropagation();
                           onDelete?.(recipient.id);
                         }}
-                        disabled={recipient.type !== 'crypto'}
+                        disabled={
+                          recipient.type !== 'crypto_base' &&
+                          recipient.type !== 'crypto_stellar'
+                        }
                       >
                         <Trash className='size-4' />
                         Delete
@@ -185,7 +190,7 @@ const RecipientTypeCell = ({ type }: { type: RecipientType }) => {
 
 /** Displays account detail - wallet address or masked account number */
 const AccountDetail = ({ recipient }: { recipient: RecipientAPI }) => {
-  if (recipient.type === 'crypto') {
+  if (recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar') {
     return (
       <CopyButton
         className='h-fit flex-row-reverse p-1 px-0 text-sm font-normal'
@@ -198,14 +203,16 @@ const AccountDetail = ({ recipient }: { recipient: RecipientAPI }) => {
       </CopyButton>
     );
   }
-  return <span className='text-sm'>{formatAccountNumber(recipient.detail)}</span>;
+  return (
+    <span className='text-sm'>{formatAccountNumber(recipient.detail)}</span>
+  );
 };
 
 /** Empty state when no recipients exist */
 const EmptyState = ({ onAdd }: { onAdd?: () => void }) => {
   return (
     <div className='flex flex-col items-center justify-center gap-6 py-16'>
-      <Users className='size-10 stroke-[1.5] text-muted-foreground' />
+      <Users className='text-muted-foreground size-10 stroke-[1.5]' />
       <p className='text-muted-foreground text-sm'>
         Add recipients for faster and safer transfers
       </p>

@@ -556,11 +556,11 @@ const AccountTypeButton = ({
         'focus:outline-none',
         selected
           ? 'border-sorbet bg-sorbet/5 text-foreground'
-          : 'border-neutral-lighter bg-white text-foreground hover:bg-neutral-lightest focus:ring-2 focus:ring-sorbet focus:ring-offset-2'
+          : 'border-neutral-lighter text-foreground hover:bg-neutral-lightest focus:ring-sorbet bg-white focus:ring-2 focus:ring-offset-2'
       )}
     >
       {selected && (
-        <div className='flex size-5 items-center justify-center rounded-full bg-sorbet'>
+        <div className='bg-sorbet flex size-5 items-center justify-center rounded-full'>
           <Check className='size-3 text-white' />
         </div>
       )}

@@ -10,8 +10,8 @@ import { FormControl } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 
-import { emptyAddress } from '../../schema';
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
+import { emptyAddress } from '../../schema';
 
 /**
  * A fake client card that renders form fields for the client name and email.

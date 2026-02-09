@@ -28,7 +28,7 @@ import { UsersIcon } from '@/components/ui/users';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
 import { useFlags } from '@/hooks/use-flags';
-import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { useWalletBalances } from '@/hooks/web3/use-wallet-balances';
 import { cn } from '@/lib/utils';
 
 import { NavUser } from './nav-user';
@@ -163,7 +163,17 @@ export const AppSidebar = () => {
 
 /** Local dashboard menu item which displays the wallet balance */
 const DashboardMenuItem = () => {
-  const { data: usdcBalance, isPending: isLoading } = useWalletBalance();
+  const { baseUsdc, stellarUsdc, isLoading } = useWalletBalances();
+
+  const base = Number(baseUsdc ?? 0);
+  const stellar = Number(stellarUsdc ?? 0);
+  const total =
+    (Number.isFinite(base) ? base : 0) +
+    (Number.isFinite(stellar) ? stellar : 0);
+  const totalFormatted = total.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
 
   const item = {
     title: 'Dashboard',
@@ -179,9 +189,9 @@ const DashboardMenuItem = () => {
           {isLoading ? (
             <Skeleton className='h-4 w-16' variant='darker' />
           ) : (
-            usdcBalance && (
-              <span className='animate-in fade-in-0 font-mono font-medium text-xs'>${usdcBalance} USDC</span>
-            )
+            <span className='animate-in fade-in-0 font-mono text-xs font-medium'>
+              ${totalFormatted} USDC
+            </span>
           )}
         </SidebarMenuBadge>
       </SidebarMenuItem>

@@ -14,14 +14,15 @@ import { RecipientAPI } from '@/api/recipients/types';
 import { useRecipients } from '@/app/(with-sidebar)/recipients/hooks/use-recipients';
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { Form } from '@/components/ui/form';
-import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
+import { useMyChain } from '@/hooks/use-my-chain';
+import { useWalletBalances } from '@/hooks/web3/use-wallet-balances';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
 import { BANK_ACCOUNTS_MIN_AMOUNT } from '../utils';
 
 export type TransferResult =
-  | { status: 'success'; hash: string }
+  | { status: 'success'; chain: 'base' | 'stellar'; hash: string }
   | { status: 'fail'; error: string };
 
 type SendToContextType = {
@@ -30,6 +31,8 @@ type SendToContextType = {
   recipients?: RecipientAPI[];
   selectedRecipientId?: string;
   selectedRecipient?: RecipientAPI;
+  paymentChain: 'base' | 'stellar';
+  sendDisabledReason?: string;
   maxAmount?: number;
   transferResult?: TransferResult;
   clearTransferResult: () => void;
@@ -75,40 +78,75 @@ export const SendToFormContext = ({
     TransferResult | undefined
   >();
 
-  const { data: walletBalance } = useWalletBalance();
-  const maxAmount = walletBalance ? Number(walletBalance) : undefined;
+  const { data: myChainData } = useMyChain();
+  const currentChain = myChainData?.chain ?? 'base';
+  const { baseUsdc, stellarUsdc } = useWalletBalances();
 
   const { data: recipients } = useRecipients();
 
+  const resolverSchema = formSchema.superRefine((values, ctx) => {
+    const selectedRecipient: RecipientAPI | undefined = recipients?.find(
+      (r) => r.id === values.recipient
+    );
+
+    const paymentChain: 'base' | 'stellar' =
+      selectedRecipient?.type === 'crypto_stellar'
+        ? 'stellar'
+        : selectedRecipient?.type === 'crypto_base'
+        ? 'base'
+        : currentChain;
+
+    const maxAmount =
+      paymentChain === 'stellar'
+        ? stellarUsdc
+          ? Number(stellarUsdc)
+          : undefined
+        : baseUsdc
+        ? Number(baseUsdc)
+        : undefined;
+
+    if (
+      typeof maxAmount === 'number' &&
+      !Number.isNaN(maxAmount) &&
+      (values.amount > maxAmount || maxAmount === 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['amount'],
+        message: `You have ${formatCurrency(maxAmount ?? 0)} available`,
+      });
+    }
+
+    const minValueRequired: number =
+      selectedRecipient?.type === 'usd' || selectedRecipient?.type === 'eur'
+        ? BANK_ACCOUNTS_MIN_AMOUNT
+        : 0;
+    if (values.amount < minValueRequired) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['amount'],
+        message: `The minimum amount you can send to this recipient is ${formatCurrency(
+          minValueRequired
+        )}`,
+      });
+    }
+
+    if (
+      selectedRecipient &&
+      (selectedRecipient.type === 'usd' || selectedRecipient.type === 'eur') &&
+      paymentChain === 'stellar' &&
+      !selectedRecipient.liquidationAddressIds?.stellar
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['recipient'],
+        message: 'This bank recipient is not available on Stellar.',
+      });
+    }
+  });
+
   const form = useForm<SendToFormSchema>({
-    resolver: zodResolver(
-      formSchema.extend({
-        amount: z
-          .number()
-          .gt(0, { message: '' }) // Disable self explanatory 0 error message
-          .max(maxAmount ?? Infinity, {
-            message: `You have ${formatCurrency(maxAmount ?? 0)} available`,
-          })
-          // Here we require the amount to be greater than the minimum amount for bank recipients
-          .refine(
-            (value) => {
-              const selectedRecipient: RecipientAPI | undefined =
-                recipients?.find((r) => r.id === form.getValues().recipient);
-              const minValueRequired: number =
-                selectedRecipient?.type === 'usd' ||
-                selectedRecipient?.type === 'eur'
-                  ? BANK_ACCOUNTS_MIN_AMOUNT
-                  : 0;
-              return value >= minValueRequired;
-            },
-            {
-              message: `The minimum amount you can send to this recipient is ${formatCurrency(
-                BANK_ACCOUNTS_MIN_AMOUNT
-              )}`,
-            }
-          ),
-      })
-    ),
+    resolver: zodResolver(resolverSchema),
     values: {
       recipient: selectedRecipientId ?? '',
       amount: 0,
@@ -129,6 +167,30 @@ export const SendToFormContext = ({
   });
   const selectedRecipient = recipientMap.get(id);
 
+  const paymentChain: 'base' | 'stellar' =
+    selectedRecipient?.type === 'crypto_stellar'
+      ? 'stellar'
+      : selectedRecipient?.type === 'crypto_base'
+      ? 'base'
+      : currentChain;
+
+  const maxAmount =
+    paymentChain === 'stellar'
+      ? stellarUsdc
+        ? Number(stellarUsdc)
+        : undefined
+      : baseUsdc
+      ? Number(baseUsdc)
+      : undefined;
+
+  const sendDisabledReason =
+    selectedRecipient &&
+    (selectedRecipient.type === 'usd' || selectedRecipient.type === 'eur') &&
+    paymentChain === 'stellar' &&
+    !selectedRecipient.liquidationAddressIds?.stellar
+      ? 'This bank recipient is not available on Stellar.'
+      : undefined;
+
   const { sendUSDC: _sendUSDC } = useSendUSDC();
   const { mutateAsync: sendUSDC } = useMutation({
     mutationFn: async ({
@@ -138,9 +200,13 @@ export const SendToFormContext = ({
       amount: number;
       address: string;
     }) => {
+      if (sendDisabledReason) {
+        throw new Error(sendDisabledReason);
+      }
       const transferTransactionHash = await _sendUSDC(
         amount.toString(),
-        address
+        address,
+        paymentChain
       );
       return { amount, address, transferTransactionHash };
     },
@@ -151,10 +217,11 @@ export const SendToFormContext = ({
     }: {
       amount: number;
       address: string;
-      transferTransactionHash?: `0x${string}`;
+      transferTransactionHash?: string;
     }) => {
       setTransferResult({
         status: 'success',
+        chain: paymentChain,
         hash: transferTransactionHash ?? '',
       });
       toast.success(
@@ -188,6 +255,8 @@ export const SendToFormContext = ({
           recipients,
           selectedRecipientId,
           selectedRecipient,
+          paymentChain,
+          sendDisabledReason,
           maxAmount,
           transferResult,
           clearTransferResult: () => setTransferResult(undefined),

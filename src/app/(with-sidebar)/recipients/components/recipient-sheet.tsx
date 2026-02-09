@@ -53,7 +53,10 @@ export const RecipientSheet = ({
 
   // TODO: Add a loading and error state to EADetails to accompany this
   const { data: details } = useRecipientDetails(recipient?.id ?? '', {
-    enabled: recipient && recipient.type !== 'crypto',
+    enabled:
+      !!recipient &&
+      recipient.type !== 'crypto_base' &&
+      recipient.type !== 'crypto_stellar',
   });
 
   const { data: transfers, isLoading: transfersLoading } =
@@ -62,7 +65,8 @@ export const RecipientSheet = ({
     });
 
   if (!recipient) return null;
-  const isDeleteDisabled = recipient.type !== 'crypto';
+  const isDeleteDisabled =
+    recipient.type !== 'crypto_base' && recipient.type !== 'crypto_stellar';
 
   return (
     <VaulSheet
@@ -98,19 +102,20 @@ export const RecipientSheet = ({
                         'checking',
                       bankName: details?.externalAccount.bank_name ?? '',
                     }
-                  : recipient.type === 'crypto'
-                    ? {
-                        name: recipient.label,
-                        type: recipient.type,
-                        walletAddress: recipient.detail,
-                      }
-                    : {
-                        name: recipient.label,
-                        type: recipient.type,
-                        accountNumberLast4: recipient.detail,
-                        country: details?.externalAccount.iban?.country ?? '',
-                        bic: details?.externalAccount.iban?.bic ?? '',
-                      }
+                  : recipient.type === 'crypto_base' ||
+                    recipient.type === 'crypto_stellar'
+                  ? {
+                      name: recipient.label,
+                      type: 'crypto',
+                      walletAddress: recipient.detail,
+                    }
+                  : {
+                      name: recipient.label,
+                      type: recipient.type,
+                      accountNumberLast4: recipient.detail,
+                      country: details?.externalAccount.iban?.country ?? '',
+                      bic: details?.externalAccount.iban?.bic ?? '',
+                    }
               }
             />
             {/* Transfers table - desktop only */}

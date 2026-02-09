@@ -2,7 +2,7 @@ import { delay, http } from 'msw';
 import { HttpResponse } from 'msw';
 
 import { mockRecipients } from '@/api/recipients/mock';
-import { CreateRecipientDto } from '@/api/recipients/types';
+import { type RecipientAPI, CreateRecipientDto } from '@/api/recipients/types';
 import { env } from '@/lib/env';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
@@ -23,29 +23,31 @@ export const createRecipientHandler = http.post(
   async ({ request }) => {
     await delay();
     const data = (await request.json()) as CreateRecipientDto;
-    const mockRecipient =
-      data.type === 'usd'
-        ? mockRecipients[0]
-        : data.type === 'eur'
-        ? mockRecipients[1]
-        : mockRecipients[2];
-    const recipient = {
+
+    if (data.type === 'usd' || data.type === 'eur') {
+      const mockRecipient =
+        data.type === 'usd' ? mockRecipients[0] : mockRecipients[1];
+      const recipient: RecipientAPI = {
+        ...mockRecipient,
+        type: data.type,
+        label: data.values.account_owner_name,
+        detail:
+          data.type === 'usd'
+            ? data.values.account?.account_number ?? ''
+            : data.values.iban?.account_number ?? '',
+      } as RecipientAPI;
+      recipients.push(recipient);
+      return HttpResponse.json(recipient);
+    }
+
+    const mockRecipient = mockRecipients[2];
+    const recipient: RecipientAPI = {
       ...mockRecipient,
-      ...(data.type === 'crypto'
-        ? {
-            walletAddress: data.values.walletAddress,
-            label: data.values.label,
-            detail: data.values.walletAddress,
-          }
-        : {
-            ...mockRecipient,
-            label: data.values.account_owner_name,
-            detail:
-              data.type === 'usd'
-                ? data.values.account?.account_number ?? ''
-                : data.values.iban?.account_number ?? '',
-          }),
-    };
+      type: data.type,
+      walletAddress: data.values.walletAddress,
+      label: data.values.label,
+      detail: data.values.walletAddress,
+    } as RecipientAPI;
     recipients.push(recipient);
     return HttpResponse.json(recipient);
   }

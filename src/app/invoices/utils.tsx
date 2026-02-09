@@ -40,18 +40,26 @@ export const calculateSubtotalTaxAndTotal = (
   const subtotal = calculateTotalAmount(invoice.items ?? []);
   const taxAmount = invoice.tax ? subtotal * (invoice.tax / 100) : 0;
   const subtotalWithTax = subtotal + taxAmount;
-  
+
   // Calculate platform fee if USD or EUR payment methods are selected
   const includesBankFee = invoice.paymentMethods?.some((method) =>
     ['usd', 'eur'].includes(method)
   );
-  
+
   // Use provided platform fee percent, or default to 1% if not provided
   const feePercent = platformFeePercent ?? (includesBankFee ? 1 : 0);
-  const platformFee = includesBankFee ? subtotalWithTax * (feePercent / 100) : 0;
-  
+  const platformFee = includesBankFee
+    ? subtotalWithTax * (feePercent / 100)
+    : 0;
+
   const total = subtotalWithTax + platformFee;
-  return { subtotal, taxAmount, developerFee: platformFee, total, developerFeePercent: feePercent };
+  return {
+    subtotal,
+    taxAmount,
+    developerFee: platformFee,
+    total,
+    developerFeePercent: feePercent,
+  };
 };
 
 /**

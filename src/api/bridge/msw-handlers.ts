@@ -157,8 +157,10 @@ export const mockBridgeCustomerHandlerRejected = http.get(
               status: 'rejected',
               rejection_reasons: [
                 {
-                  developer_reason: 'Cannot validate ID -- please upload a clear photo of the full ID.',
-                  reason: 'Cannot validate ID -- please upload a clear photo of the full ID.',
+                  developer_reason:
+                    'Cannot validate ID -- please upload a clear photo of the full ID.',
+                  reason:
+                    'Cannot validate ID -- please upload a clear photo of the full ID.',
                   created_at: new Date().toISOString(),
                 },
               ],

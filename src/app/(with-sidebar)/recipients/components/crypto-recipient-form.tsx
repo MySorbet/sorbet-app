@@ -1,13 +1,22 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forwardRef } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import Image from 'next/image';
+import { forwardRef, useEffect, useState } from 'react';
 import { useForm, useFormContext, useFormState } from 'react-hook-form';
 import { z } from 'zod';
 
 import { BaseAlert } from '@/components/common/base-alert';
 import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Form,
   FormControl,
@@ -17,17 +26,38 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useMyChain } from '@/hooks/use-my-chain';
 import { cn } from '@/lib/utils';
+import BaseInProduct from '~/svg/base-in-product.svg';
+import StellarLogo from '~/svg/stellar_logo.svg';
 
-const formSchema = z.object({
-  /** A name to remember this wallet by */
-  label: z.string().min(1, 'Label is required'),
-  /** The wallet address that will receive the funds */
-  walletAddress: z
-    .string()
-    .min(1, 'Wallet address is required')
-    .regex(/^0x[a-fA-F0-9]{40}$/, 'Must be a valid Ethereum address'),
-});
+const isEvmAddress = (s: string) => /^0x[a-fA-F0-9]{40}$/.test(s.trim());
+const isStellarAddress = (s: string) => /^G[A-Z2-7]{55}$/.test(s.trim());
+
+const formSchema = z
+  .object({
+    chain: z.enum(['base', 'stellar']),
+    /** A name to remember this wallet by */
+    label: z.string().min(1, 'Label is required'),
+    /** The wallet address that will receive the funds */
+    walletAddress: z.string().min(1, 'Wallet address is required'),
+  })
+  .superRefine(({ chain, walletAddress }, ctx) => {
+    if (chain === 'base' && !isEvmAddress(walletAddress)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Must be a valid Base (EVM) address',
+        path: ['walletAddress'],
+      });
+    }
+    if (chain === 'stellar' && !isStellarAddress(walletAddress)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Must be a valid Stellar public key (G...)',
+        path: ['walletAddress'],
+      });
+    }
+  });
 
 export type CryptoRecipientFormValues = z.infer<typeof formSchema>;
 
@@ -38,14 +68,28 @@ export const CryptoRecipientFormContext = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { data: myChainData } = useMyChain();
   const form = useForm<CryptoRecipientFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      chain: 'base',
       label: '',
       walletAddress: '',
     },
     mode: 'onChange',
   });
+
+  // Default Network dropdown to user's current chain (once loaded),
+  // but don't override if the user has already changed the field.
+  useEffect(() => {
+    const next = myChainData?.chain;
+    if (!next) return;
+    const dirtyFields = form.formState.dirtyFields as Partial<
+      Record<keyof CryptoRecipientFormValues, boolean>
+    >;
+    const dirty = dirtyFields.chain;
+    if (!dirty) form.setValue('chain', next, { shouldValidate: true });
+  }, [myChainData?.chain, form]);
 
   return <Form {...form}>{children}</Form>;
 };
@@ -61,6 +105,13 @@ export const CryptoRecipientForm = ({
   onSubmit?: (values: CryptoRecipientFormValues) => Promise<void>;
 }) => {
   const form = useCryptoRecipientForm();
+  const chain = form.watch('chain');
+  const [isNetworkOpen, setIsNetworkOpen] = useState(false);
+
+  const networkMeta =
+    chain === 'stellar'
+      ? { label: 'Stellar', logoSrc: '/svg/stellar_logo.svg', alt: 'Stellar' }
+      : { label: 'Base', logoSrc: '/svg/base_logo.svg', alt: 'Base' };
 
   const handleSubmit = async (values: CryptoRecipientFormValues) => {
     await onSubmit?.(values);
@@ -74,8 +125,90 @@ export const CryptoRecipientForm = ({
       id={cryptoFormId}
     >
       <BaseAlert
-        title='Is this a Base network address?'
-        description='Make sure this address can accept USDC on Base. If not, you could lose your funds.'
+        title={`Is this a ${networkMeta.label} network address?`}
+        description={`Make sure this address can accept USDC on ${networkMeta.label}. If not, you could lose your funds.`}
+        icon={
+          chain === 'stellar' ? (
+            <StellarLogo className='size-5' />
+          ) : (
+            <BaseInProduct className='size-5' />
+          )
+        }
+      />
+
+      <FormField
+        control={form.control}
+        name='chain'
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Network</FormLabel>
+            <FormControl>
+              <DropdownMenu
+                open={isNetworkOpen}
+                onOpenChange={setIsNetworkOpen}
+              >
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    className='h-10 w-full justify-between px-3 font-normal'
+                    aria-label='Select a network'
+                  >
+                    <div className='flex items-center gap-2'>
+                      <Image
+                        src={networkMeta.logoSrc}
+                        alt={networkMeta.alt}
+                        width={16}
+                        height={16}
+                      />
+                      <span>{networkMeta.label}</span>
+                    </div>
+                    {isNetworkOpen ? (
+                      <ChevronUp className='text-muted-foreground size-4' />
+                    ) : (
+                      <ChevronDown className='text-muted-foreground size-4' />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align='start'
+                  className='w-[--radix-dropdown-menu-trigger-width]'
+                >
+                  <DropdownMenuRadioGroup
+                    value={field.value}
+                    onValueChange={(v) =>
+                      field.onChange(v as 'base' | 'stellar')
+                    }
+                  >
+                    <DropdownMenuRadioItem value='base'>
+                      <div className='flex items-center gap-2'>
+                        <Image
+                          src='/svg/base_logo.svg'
+                          alt='Base'
+                          width={16}
+                          height={16}
+                        />
+                        <span>Base</span>
+                      </div>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value='stellar'>
+                      <div className='flex items-center gap-2'>
+                        <Image
+                          src='/svg/stellar_logo.svg'
+                          alt='Stellar'
+                          width={16}
+                          height={16}
+                        />
+                        <span>Stellar</span>
+                      </div>
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
 
       <FormField
@@ -99,7 +232,11 @@ export const CryptoRecipientForm = ({
           <FormItem>
             <FormLabel>Wallet address</FormLabel>
             <FormControl>
-              <Input placeholder='0x...' {...field} className='text-ellipsis' />
+              <Input
+                placeholder={chain === 'stellar' ? 'G...' : '0x...'}
+                {...field}
+                className='text-ellipsis'
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

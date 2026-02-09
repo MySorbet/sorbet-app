@@ -3,7 +3,7 @@
 import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
-import { RecipientAPI, RecipientType } from '@/api/recipients/types';
+import { RecipientAPI } from '@/api/recipients/types';
 import { DocsButton } from '@/components/common/docs-button';
 import { Button } from '@/components/ui/button';
 import { useAfter } from '@/hooks/use-after';
@@ -73,9 +73,7 @@ export const RecipientsBrowser: React.FC = () => {
 
     // Type filter
     if (typeFilter !== 'all') {
-      filtered = filtered.filter(
-        (recipient) => recipient.type === typeFilter
-      );
+      filtered = filtered.filter((recipient) => recipient.type === typeFilter);
     }
 
     setFilteredRecipients(filtered);
@@ -107,7 +105,9 @@ export const RecipientsBrowser: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (recipient: Parameters<typeof createRecipient>[0]) => {
+  const handleSubmit = async (
+    recipient: Parameters<typeof createRecipient>[0]
+  ) => {
     await createRecipient(recipient);
     setAddSheetOpen(false);
   };

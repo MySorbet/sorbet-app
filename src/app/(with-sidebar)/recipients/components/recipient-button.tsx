@@ -63,7 +63,7 @@ export const RecipientButtonIcon = ({ type }: { type: 'bank' | 'wallet' }) => {
   return (
     <div
       className={cn(
-        'bg-neutral-lighter flex size-10 shrink-0 items-center justify-center rounded-full border border-neutral-lighter p-2 text-[#344054] transition-colors',
+        'bg-neutral-lighter border-neutral-lighter flex size-10 shrink-0 items-center justify-center rounded-full border p-2 text-[#344054] transition-colors',
         'group-hover:border-[#781EF6] group-hover:bg-[#781EF6] group-hover:text-white',
         'group-focus-visible:border-[#781EF6] group-focus-visible:bg-[#781EF6] group-focus-visible:text-white',
         'group-data-[selected=true]:border-[#781EF6] group-data-[selected=true]:bg-[#781EF6] group-data-[selected=true]:text-white'

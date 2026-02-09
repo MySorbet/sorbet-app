@@ -27,6 +27,9 @@ export const useFlags = () => {
   const handle = user?.handle ?? '';
   return {
     ...featureFlags(),
+    isDeveloper: isDeveloper(handle),
+    isPreviewUser: isPreviewUser(handle),
+    isLocal: isLocal(),
     settings: true,
     recipients: true,
     accounts: true,

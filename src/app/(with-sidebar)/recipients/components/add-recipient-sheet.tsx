@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useMyChain } from '@/hooks/use-my-chain';
 import { cn } from '@/lib/utils';
 
 import { useEndorsements } from '../hooks/use-endorsements';
@@ -54,12 +55,27 @@ export const AddRecipientSheet = ({
   setOpen?: (open: boolean) => void;
 }) => {
   const [step, setStep] = useState<'crypto' | 'bank' | undefined>();
+  const { data: myChainData } = useMyChain();
+  const currentChain = myChainData?.chain ?? 'base';
+
   const handleSubmit = async (
     values: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
-    return isCryptoFormValues(values)
-      ? await onSubmit?.({ type: 'crypto', values })
-      : await onSubmit?.({ type: values.currency, values });
+    if (isCryptoFormValues(values)) {
+      if (values.chain === 'base') {
+        return await onSubmit?.({ chain: 'base', type: 'crypto_base', values });
+      }
+      return await onSubmit?.({
+        chain: 'stellar',
+        type: 'crypto_stellar',
+        values,
+      });
+    }
+    return await onSubmit?.({
+      chain: currentChain,
+      type: values.currency,
+      values,
+    });
   };
 
   const isMobile = useIsMobile();

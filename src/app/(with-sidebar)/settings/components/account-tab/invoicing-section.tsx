@@ -1,9 +1,18 @@
 'use client';
 
+import { Check, ChevronsUpDown } from 'lucide-react';
 import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Check, ChevronsUpDown } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import {
   FormControl,
   FormField,
@@ -12,23 +21,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandGroup,
-  CommandItem,
-  CommandEmpty,
-} from '@/components/ui/command';
 
-import type { AccountFormData } from '../../schemas';
 import { SETTINGS_CONFIG } from '../../constants';
+import type { AccountFormData } from '../../schemas';
 import { SettingsSection } from '../settings-section';
 
 export const InvoicingSection = () => {
@@ -37,18 +37,18 @@ export const InvoicingSection = () => {
 
   return (
     <SettingsSection
-      label="Invoicing"
-      description="Details used on your invoices"
+      label='Invoicing'
+      description='Details used on your invoices'
     >
-      <div className="space-y-4">
+      <div className='space-y-4'>
         <FormField
-          name="businessName"
+          name='businessName'
           control={form.control}
           render={({ field }) => (
-            <FormItem className="w-full max-w-md">
+            <FormItem className='w-full max-w-md'>
               <FormLabel>Business name</FormLabel>
               <FormControl>
-                <Input placeholder="Sorbet" {...field} />
+                <Input placeholder='Sorbet' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,43 +56,43 @@ export const InvoicingSection = () => {
         />
 
         <FormField
-          name="taxId"
+          name='taxId'
           control={form.control}
           render={({ field }) => (
-            <FormItem className="w-full max-w-md">
+            <FormItem className='w-full max-w-md'>
               <FormLabel>Tax ID</FormLabel>
               <FormControl>
-                <Input placeholder="35346437" {...field} />
+                <Input placeholder='35346437' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="space-y-3">
-          <div className="text-sm font-medium">Address</div>
+        <div className='space-y-3'>
+          <div className='text-sm font-medium'>Address</div>
 
           <FormField
-            name="street"
+            name='street'
             control={form.control}
             render={({ field }) => (
-              <FormItem className="w-full max-w-md">
+              <FormItem className='w-full max-w-md'>
                 <FormControl>
-                  <Input placeholder="Street" {...field} />
+                  <Input placeholder='Street' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="grid max-w-md grid-cols-2 gap-3">
+          <div className='grid max-w-md grid-cols-2 gap-3'>
             <FormField
-              name="state"
+              name='state'
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="State" {...field} />
+                    <Input placeholder='State' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,12 +100,12 @@ export const InvoicingSection = () => {
             />
 
             <FormField
-              name="addressCity"
+              name='addressCity'
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="City" {...field} />
+                    <Input placeholder='City' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,7 +115,7 @@ export const InvoicingSection = () => {
 
           {/* Country — searchable combobox (Popover + Command) */}
           <FormField
-            name="country"
+            name='country'
             control={form.control}
             render={({ field }) => {
               const selected = countryOptions.find(
@@ -123,36 +123,36 @@ export const InvoicingSection = () => {
               );
 
               return (
-                <FormItem className="w-full max-w-md">
+                <FormItem className='w-full max-w-md'>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
-                          type="button"
-                          variant="outline"
-                          role="combobox"
+                          type='button'
+                          variant='outline'
+                          role='combobox'
                           aria-expanded={false}
-                          className="w-full justify-between"
+                          className='w-full justify-between'
                         >
                           {selected ? selected.label : 'Select country…'}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                         </Button>
                       </PopoverTrigger>
 
                       <PopoverContent
-                        side="bottom"
-                        align="start"
+                        side='bottom'
+                        align='start'
                         sideOffset={4}
                         collisionPadding={8}
-                        className="w-[--radix-popover-trigger-width] p-0"
+                        className='w-[--radix-popover-trigger-width] p-0'
                       >
                         <Command>
-                          <CommandInput placeholder="Search country…" />
+                          <CommandInput placeholder='Search country…' />
                           <CommandEmpty>No country found.</CommandEmpty>
 
                           {/* internal scroll so page never jumps */}
-                          <CommandList className="max-h-64 overflow-auto">
+                          <CommandList className='max-h-64 overflow-auto'>
                             <CommandGroup>
                               {countryOptions.map((c) => (
                                 <CommandItem
@@ -186,12 +186,12 @@ export const InvoicingSection = () => {
           />
 
           <FormField
-            name="postalCode"
+            name='postalCode'
             control={form.control}
             render={({ field }) => (
-              <FormItem className="w-full max-w-md">
+              <FormItem className='w-full max-w-md'>
                 <FormControl>
-                  <Input placeholder="Postal code" {...field} />
+                  <Input placeholder='Postal code' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

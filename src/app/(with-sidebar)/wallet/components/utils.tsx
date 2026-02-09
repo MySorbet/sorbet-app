@@ -189,10 +189,19 @@ export const mapUnifiedTransactions = (
 export const baseScanUrl = (hash?: string) =>
   hash ? `${env.NEXT_PUBLIC_BASE_EXPLORER}/tx/${hash}` : undefined;
 
+/** Returns the StellarExpert URL for a given Stellar tx hash. */
+export const stellarScanUrl = (hash?: string) => {
+  if (!hash) return undefined;
+  const network = env.NEXT_PUBLIC_TESTNET ? 'testnet' : 'public';
+  return `https://stellar.expert/explorer/${network}/tx/${hash}`;
+};
+
 /** Open a transaction hash in the appropriate explorer (basescan) */
 export const openTransactionInExplorer = (hash: string) => {
   try {
-    const url = baseScanUrl(hash);
+    const url = hash.startsWith('0x')
+      ? baseScanUrl(hash)
+      : stellarScanUrl(hash);
     const encodedUrl = url ? encodeURI(url) : undefined;
     const newWindow = window.open(encodedUrl, '_blank', 'noopener,noreferrer');
 
