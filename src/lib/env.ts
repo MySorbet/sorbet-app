@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   client: {
-    NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'test']),
+    NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'preview', 'staging', 'production']),
     NEXT_PUBLIC_SORBET_API_URL: z.string().url(),
     NEXT_PUBLIC_DUE_BASE_URL: z.string().url(),
     NEXT_PUBLIC_GOOGLE_MAP_KEY: z.string(),
