@@ -133,6 +133,7 @@ type RecipientAPIBank = RecipientAPIBase & {
   // Due-specific (new)
   dueRecipientId?: string;
   dueSchema?: DueSchema;
+  dueVirtualAccountId?: string;
   provider?: 'bridge' | 'due';
 };
 
