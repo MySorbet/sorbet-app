@@ -3,6 +3,7 @@ import { useSmartWallets } from '@privy-io/react-auth/smart-wallets';
 import {
   Asset,
   Horizon,
+  Memo,
   Networks,
   Operation,
   TransactionBuilder,
@@ -63,7 +64,8 @@ export const useSendUSDC = () => {
   const sendUSDC = async (
     amount: string,
     recipientWalletAddress: string,
-    chainType: 'base' | 'stellar' = 'base'
+    chainType: 'base' | 'stellar' = 'base',
+    stellarMemo?: string
   ) => {
     if (chainType === 'stellar') {
       if (!stellarAddress)
@@ -71,13 +73,19 @@ export const useSendUSDC = () => {
           'Unable to find Stellar address. Please log out and log back in.'
         );
 
+      if (stellarMemo && new TextEncoder().encode(stellarMemo).length > 28) {
+        throw new Error(
+          'Stellar memo must be 28 bytes or less. Please contact support.'
+        );
+      }
+
       const server = new Horizon.Server(horizonUrl);
       const account = await server.loadAccount(stellarAddress);
 
       // Stellar amounts allow up to 7 decimals; round down to be safe.
       const stellarAmount = Big(amount).round(7, Big.roundDown).toString();
 
-      const tx = new TransactionBuilder(account, {
+      let builder = new TransactionBuilder(account, {
         fee: String(await server.fetchBaseFee()),
         networkPassphrase,
       })
@@ -88,8 +96,13 @@ export const useSendUSDC = () => {
             amount: stellarAmount,
           })
         )
-        .setTimeout(180)
-        .build();
+        .setTimeout(180);
+
+      if (stellarMemo && stellarMemo.length > 0) {
+        builder = builder.addMemo(Memo.text(stellarMemo));
+      }
+
+      const tx = builder.build();
 
       const hashHex = `0x${bytesToHex(tx.hash())}` as `0x${string}`;
       const { signature } = await signRawHash({

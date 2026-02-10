@@ -36,6 +36,8 @@ type RecipientAPIBase = {
 type RecipientAPIBank = RecipientAPIBase & {
   type: 'usd' | 'eur';
   liquidationAddressIds?: Partial<Record<SorbetChain, string | null>>;
+  /** Per-chain blockchain memo for Stellar liquidation addresses (Bridge blockchain_memo) */
+  liquidationAddressMemos?: Partial<Record<SorbetChain, string | null>>;
   externalAccountId: string;
 };
 
@@ -100,6 +102,8 @@ type LiquidationAddress = {
     | 'usdt';
   return_address: string;
   state: 'active' | 'deactivated';
+  /** Memo to include in the transaction; for Stellar liquidation addresses only */
+  blockchain_memo?: string;
 
   [key: string]: unknown; // Incase there is anything else
 };
