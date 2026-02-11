@@ -203,10 +203,20 @@ export const SendToFormContext = ({
       if (sendDisabledReason) {
         throw new Error(sendDisabledReason);
       }
+      const stellarMemo =
+        paymentChain === 'stellar' &&
+        selectedRecipient &&
+        (selectedRecipient.type === 'usd' || selectedRecipient.type === 'eur') &&
+        typeof selectedRecipient.liquidationAddressMemos?.stellar === 'string' &&
+        selectedRecipient.liquidationAddressMemos.stellar.length > 0
+          ? selectedRecipient.liquidationAddressMemos.stellar
+          : undefined;
+
       const transferTransactionHash = await _sendUSDC(
         amount.toString(),
         address,
-        paymentChain
+        paymentChain,
+        stellarMemo
       );
       return { amount, address, transferTransactionHash };
     },
