@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import type {
     DueVirtualAccountAEDDetails,
     DueVirtualAccountEURDetails,
+    DueVirtualAccountSWIFTDetails,
     DueVirtualAccountUSDetails,
 } from '@/types/due';
 
@@ -60,13 +61,15 @@ const FEE_DATA = {
 };
 
 type USDTransferType = 'ach' | 'wire' | 'swift';
-type EURTransferType = 'sepa' | 'swift';
 
 /** USD Account Details with ACH/WIRE/SWIFT tabs */
 const USDAccountDetails = ({
     details,
+    swiftDetails,
 }: {
     details: DueVirtualAccountUSDetails | null | undefined;
+    /** SWIFT account details from separate bank_swift_usd virtual account */
+    swiftDetails?: DueVirtualAccountSWIFTDetails | null;
 }) => {
     const [transferType, setTransferType] = useState<USDTransferType>('ach');
     const fees = FEE_DATA.usd[transferType];
@@ -75,6 +78,10 @@ const USDAccountDetails = ({
     if (!details) {
         return <AccountDetailsError currency='USD' />;
     }
+
+    // Whether we're showing the dedicated SWIFT account
+    const isSwift = transferType === 'swift';
+    const hasSwiftAccount = !!swiftDetails;
 
     // Get the appropriate routing number based on transfer type
     const getRoutingNumber = () => {
@@ -88,17 +95,20 @@ const USDAccountDetails = ({
         }
     };
 
-    // Get beneficiary name
+    // Get beneficiary name (from SWIFT account or main account)
     const getBeneficiaryName = () => {
-        if (details.accountType === 'business' && details.companyName) {
-            return details.companyName;
+        const d = isSwift && hasSwiftAccount ? swiftDetails : details;
+        if (d.accountType === 'business' && d.companyName) {
+            return d.companyName;
         }
-        return [details.firstName, details.lastName].filter(Boolean).join(' ') || details.accountName || 'N/A';
+        return [d.firstName, d.lastName].filter(Boolean).join(' ') || ('accountName' in d ? d.accountName : undefined) || 'N/A';
     };
 
     // Get beneficiary address
     const getBeneficiaryAddress = () => {
-        const addr = details.beneficiaryAddress;
+        const addr = isSwift && hasSwiftAccount
+            ? swiftDetails.beneficiaryAddress
+            : details.beneficiaryAddress;
         if (!addr) return '';
         return [
             addr.street_line_1,
@@ -110,6 +120,27 @@ const USDAccountDetails = ({
         ]
             .filter(Boolean)
             .join(', ');
+    };
+
+    // Build copy-all data based on current tab
+    const getCopyData = (): Record<string, string> => {
+        if (isSwift && hasSwiftAccount) {
+            return {
+                Currency: 'USD',
+                'Account Number': swiftDetails.swiftAccountNumber,
+                'SWIFT / BIC Code': swiftDetails.swiftCode,
+                Beneficiary: getBeneficiaryName(),
+                Bank: swiftDetails.bankName,
+            };
+        }
+        return {
+            Currency: 'USD',
+            'Account Number': details.accountNumber,
+            'Routing Number': getRoutingNumber(),
+            'Account Type': 'Checking',
+            Beneficiary: getBeneficiaryName(),
+            Bank: details.bankName,
+        };
     };
 
     return (
@@ -129,76 +160,108 @@ const USDAccountDetails = ({
             {/* Account Details Header */}
             <div className='flex items-center justify-between'>
                 <h3 className='text-sm font-semibold'>Account Details</h3>
-                <CopyAllButton
-                    data={{
-                        Currency: 'USD',
-                        'Account Number': details.accountNumber,
-                        'Routing Number': getRoutingNumber(),
-                        'Account Type': 'Checking',
-                        Beneficiary: getBeneficiaryName(),
-                        Bank: details.bankName,
-                    }}
-                />
+                <CopyAllButton data={getCopyData()} />
             </div>
 
-            {/* Account Details */}
-            <div className='flex w-full flex-col gap-2'>
-                <EARow>
-                    <EARowLabel>Currency</EARowLabel>
-                    <EARowValue>
-                        <CircleFlag countryCode='us' className='size-5' />
-                        USD
-                    </EARowValue>
-                </EARow>
-                <EARow>
-                    <EARowLabel>Account Number</EARowLabel>
-                    <EARowValue>
-                        <CopyText text={details.accountNumber} />
-                    </EARowValue>
-                </EARow>
-                <EARow>
-                    <EARowLabel>
-                        {transferType === 'ach' ? 'ACH Routing Number' : transferType === 'wire' ? 'WIRE Routing Number' : 'Routing Number'}
-                    </EARowLabel>
-                    <EARowValue>
-                        <CopyText text={getRoutingNumber()} />
-                    </EARowValue>
-                </EARow>
-                {transferType === 'swift' && (
+            {/* Account Details — SWIFT uses dedicated account if available */}
+            {isSwift && !hasSwiftAccount ? (
+                <div className='flex w-full flex-col items-center justify-center gap-3 py-8'>
+                    <div className='text-muted-foreground flex items-center gap-2 text-sm'>
+                        <div className='size-2 animate-pulse rounded-full bg-primary' />
+                        <span>Setting up your SWIFT account...</span>
+                    </div>
+                    <p className='text-muted-foreground text-center text-xs'>
+                        This usually takes a few moments. Please refresh the page if it doesn&apos;t appear shortly.
+                    </p>
+                </div>
+            ) : isSwift && hasSwiftAccount ? (
+                <div className='flex w-full flex-col gap-2'>
+                    <EARow>
+                        <EARowLabel>Currency</EARowLabel>
+                        <EARowValue>
+                            <CircleFlag countryCode='us' className='size-5' />
+                            USD
+                        </EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>Account Number</EARowLabel>
+                        <EARowValue>
+                            <CopyText text={swiftDetails.swiftAccountNumber} />
+                        </EARowValue>
+                    </EARow>
                     <EARow>
                         <EARowLabel>SWIFT / BIC Code</EARowLabel>
                         <EARowValue>
-                            <CopyText text='CITIUS33' />
+                            <CopyText text={swiftDetails.swiftCode} />
                         </EARowValue>
                     </EARow>
-                )}
-                <EARow>
-                    <EARowLabel>Account Type</EARowLabel>
-                    <EARowValue>Checking</EARowValue>
-                </EARow>
-                <EARow>
-                    <EARowLabel>Beneficiary Name & Address</EARowLabel>
-                    <EARowValue className='flex-col items-start'>
-                        <span>{getBeneficiaryName()}</span>
-                        {getBeneficiaryAddress() && (
-                            <span className='text-muted-foreground text-xs'>
-                                {getBeneficiaryAddress()}
-                            </span>
-                        )}
-                    </EARowValue>
-                </EARow>
-                <EARow>
-                    <EARowLabel>Bank Name & Address</EARowLabel>
-                    <EARowValue className='flex-col items-start'>
-                        <span>{details.bankName}</span>
-                        {details.bankAddress && (
-                            <span className='text-muted-foreground text-xs'>
-                                {details.bankAddress}
-                            </span>
-                        )}
-                    </EARowValue>
-                </EARow>
-            </div>
+                    <EARow>
+                        <EARowLabel>Beneficiary Name & Address</EARowLabel>
+                        <EARowValue className='flex-col items-start'>
+                            <span>{getBeneficiaryName()}</span>
+                            {getBeneficiaryAddress() && (
+                                <span className='text-muted-foreground text-xs'>
+                                    {getBeneficiaryAddress()}
+                                </span>
+                            )}
+                        </EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>Bank Name</EARowLabel>
+                        <EARowValue>{swiftDetails.bankName}</EARowValue>
+                    </EARow>
+                </div>
+            ) : (
+                <div className='flex w-full flex-col gap-2'>
+                    <EARow>
+                        <EARowLabel>Currency</EARowLabel>
+                        <EARowValue>
+                            <CircleFlag countryCode='us' className='size-5' />
+                            USD
+                        </EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>Account Number</EARowLabel>
+                        <EARowValue>
+                            <CopyText text={details.accountNumber} />
+                        </EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>
+                            {transferType === 'ach' ? 'ACH Routing Number' : 'WIRE Routing Number'}
+                        </EARowLabel>
+                        <EARowValue>
+                            <CopyText text={getRoutingNumber()} />
+                        </EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>Account Type</EARowLabel>
+                        <EARowValue>Checking</EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>Beneficiary Name & Address</EARowLabel>
+                        <EARowValue className='flex-col items-start'>
+                            <span>{getBeneficiaryName()}</span>
+                            {getBeneficiaryAddress() && (
+                                <span className='text-muted-foreground text-xs'>
+                                    {getBeneficiaryAddress()}
+                                </span>
+                            )}
+                        </EARowValue>
+                    </EARow>
+                    <EARow>
+                        <EARowLabel>Bank Name & Address</EARowLabel>
+                        <EARowValue className='flex-col items-start'>
+                            <span>{details.bankName}</span>
+                            {details.bankAddress && (
+                                <span className='text-muted-foreground text-xs'>
+                                    {details.bankAddress}
+                                </span>
+                            )}
+                        </EARowValue>
+                    </EARow>
+                </div>
+            )}
 
             {/* Fee & Settlement Terms */}
             <FeeSection>
@@ -211,14 +274,13 @@ const USDAccountDetails = ({
     );
 };
 
-/** EUR Account Details with SEPA/SWIFT tabs */
+/** EUR Account Details (SEPA only — SWIFT not supported by Due) */
 const EURAccountDetails = ({
     details,
 }: {
     details: DueVirtualAccountEURDetails | null | undefined;
 }) => {
-    const [transferType, setTransferType] = useState<EURTransferType>('sepa');
-    const fees = FEE_DATA.eur[transferType];
+    const fees = FEE_DATA.eur.sepa;
 
     // Graceful handling of missing details
     if (!details) {
@@ -233,25 +295,8 @@ const EURAccountDetails = ({
         return [details.firstName, details.lastName].filter(Boolean).join(' ') || 'N/A';
     };
 
-    // Get beneficiary address (for display)
-    const getBeneficiaryAddress = () => {
-        // EUR accounts may have address info in the future
-        return '';
-    };
-
     return (
         <div className='flex w-full flex-col gap-4'>
-            {/* Transfer Type Tabs */}
-            <Tabs
-                value={transferType}
-                onValueChange={(v) => setTransferType(v as EURTransferType)}
-            >
-                <TabsList className='grid w-full grid-cols-2'>
-                    <TabsTrigger value='sepa'>SEPA</TabsTrigger>
-                    <TabsTrigger value='swift'>SWIFT</TabsTrigger>
-                </TabsList>
-            </Tabs>
-
             {/* Account Details Header */}
             <div className='flex items-center justify-between'>
                 <h3 className='text-sm font-semibold'>Account Details</h3>
@@ -266,7 +311,6 @@ const EURAccountDetails = ({
                 />
             </div>
 
-            {/* Account Details */}
             <div className='flex w-full flex-col gap-2'>
                 <EARow>
                     <EARowLabel>Currency</EARowLabel>
@@ -293,11 +337,6 @@ const EURAccountDetails = ({
                     <EARowLabel>Beneficiary Name & Address</EARowLabel>
                     <EARowValue className='flex-col items-start'>
                         <span>{getAccountHolderName()}</span>
-                        {getBeneficiaryAddress() && (
-                            <span className='text-muted-foreground text-xs'>
-                                {getBeneficiaryAddress()}
-                            </span>
-                        )}
                     </EARowValue>
                 </EARow>
                 {details.bankName && (
@@ -306,7 +345,6 @@ const EURAccountDetails = ({
                         <EARowValue>{details.bankName}</EARowValue>
                     </EARow>
                 )}
-
             </div>
 
             {/* Fee & Settlement Terms */}

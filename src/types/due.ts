@@ -39,12 +39,15 @@ export type DueVirtualAccount = {
 };
 
 // Supported virtual account schemas
+// bank_swift_usd is our internal schema for USD SWIFT 
+
 export type DueVirtualAccountSchema =
   | 'bank_us'
   | 'bank_sepa'
   | 'bank_mena'
   | 'bank_uk'
-  | 'bank_swift';
+  | 'bank_swift'
+  | 'bank_swift_usd';
 
 // Claimable schemas (can be created on-demand)
 export type DueClaimableSchema = 'bank_us' | 'bank_sepa' | 'bank_mena';
@@ -123,7 +126,7 @@ export interface DueVirtualAccountSWIFTDetails {
   companyName?: string;
   bankName: string;
   swiftCode: string;
-  accountNumber: string;
+  swiftAccountNumber: string;
   currency: string;
   country: string;
   beneficiaryAddress?: BeneficiaryAddress;

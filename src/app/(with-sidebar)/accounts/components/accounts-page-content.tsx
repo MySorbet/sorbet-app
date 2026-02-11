@@ -28,7 +28,7 @@ import type {
   DueVirtualAccountUSDetails,
   DueVirtualAccountEURDetails,
   DueVirtualAccountAEDDetails,
-  DueVirtualAccountData,
+  DueVirtualAccountSWIFTDetails,
 } from '@/types/due';
 
 import {
@@ -60,9 +60,16 @@ export const AccountsPageContent = () => {
   });
 
   // Due virtual accounts
+  // Poll every 2s when any account exists but details haven't been populated yet.
+  // Due creates the account record first, then populates details asynchronously.
   const { data: dueVirtualAccounts, isLoading: isDueAccountsLoading } =
     useDueVirtualAccounts({
       enabled: !!user?.id,
+      refetchInterval: (query) => {
+        const accounts = query.state.data;
+        const hasPending = accounts?.some((a) => a.account && !a.account.details);
+        return hasPending ? 2000 : false;
+      },
     });
 
   // Claim mutation
@@ -89,6 +96,7 @@ export const AccountsPageContent = () => {
   const usdAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_us');
   const eurAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_sepa');
   const aedAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_mena');
+  const usdSwiftAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_swift_usd');
 
   // Determine account states
   const getAccountState = (
@@ -191,17 +199,21 @@ export const AccountsPageContent = () => {
     }
 
     // Available state - show account details
-    // Components handle null gracefully, so we just pass the details (may be undefined)
+    // If account exists but details are null, show "Setting up..." (Due populates async)
     if (selectedAccount === 'usd' && usdAccount) {
       const details = usdAccount.account?.details as DueVirtualAccountUSDetails | undefined;
-      return <DueAccountDetails.USD details={details} />;
+      if (!details) return <SettingUpCard currency='USD' />;
+      const swiftDetails = usdSwiftAccount?.account?.details as DueVirtualAccountSWIFTDetails | undefined;
+      return <DueAccountDetails.USD details={details} swiftDetails={swiftDetails} />;
     }
     if (selectedAccount === 'eur' && eurAccount) {
       const details = eurAccount.account?.details as DueVirtualAccountEURDetails | undefined;
+      if (!details) return <SettingUpCard currency='EUR' />;
       return <DueAccountDetails.EUR details={details} />;
     }
     if (selectedAccount === 'aed' && aedAccount) {
       const details = aedAccount.account?.details as DueVirtualAccountAEDDetails | undefined;
+      if (!details) return <SettingUpCard currency='AED' />;
       return <DueAccountDetails.AED details={details} />;
     }
 
@@ -343,6 +355,23 @@ const ClaimableCard = ({
         {isClaiming && <Spinner className='mr-2 size-4' />}
         {isClaiming ? 'Creating...' : `Claim ${currency} Account`}
       </Button>
+    </div>
+  );
+};
+
+/**
+ * Card shown when account was created but details are still being populated by Due
+ */
+const SettingUpCard = ({ currency }: { currency: string }) => {
+  return (
+    <div className='flex w-full flex-col items-center justify-center gap-4 py-12'>
+      <div className='flex items-center gap-2'>
+        <Spinner className='size-5' />
+        <p className='text-sm font-medium'>Setting up your {currency} account...</p>
+      </div>
+      <p className='text-muted-foreground text-center text-xs'>
+        This usually takes a few moments.
+      </p>
     </div>
   );
 };
