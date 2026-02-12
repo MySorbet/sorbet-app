@@ -112,7 +112,7 @@ const mapUnifiedTypeToTableType = (
   walletAddress: string
 ): TableTransaction['type'] => {
   if (tx.type === 'onramp') {
-    return 'Deposit';
+    return 'Money In';
   }
   if (tx.type === 'offramp') {
     return 'Money Out';
@@ -166,10 +166,12 @@ export const mapUnifiedTransactions = (
       account = tx.source.label || tx.source.identifier;
     } else if (type === 'Money Out') {
       // Offramp or outgoing crypto: Show user's name (sender)
-      account = userName || tx.source.label || 'You';
+      account = tx.destination.label
+        || (tx.type == 'crypto_transfer' && 'Crypto wallet') 
+        || tx.destination.type;
     } else {
       // Money In (incoming crypto): Show sender wallet
-      account = tx.source.label || tx.source.identifier;
+      account = tx.source.label || tx.source.identifier || 'Crypto Wallet';
     }
 
     return {
