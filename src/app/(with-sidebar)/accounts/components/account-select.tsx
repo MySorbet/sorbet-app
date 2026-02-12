@@ -75,7 +75,7 @@ export const AccountSelect = ({
       <AccountSelectButton
         id='gbp'
         selected={false}
-        onSelect={() => { }}
+        onSelect={() => undefined}
         state='coming-soon'
       />
 
@@ -83,7 +83,7 @@ export const AccountSelect = ({
       <AccountSelectButton
         id='sar'
         selected={false}
-        onSelect={() => { }}
+        onSelect={() => undefined}
         state='coming-soon'
       />
     </div>

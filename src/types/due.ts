@@ -10,6 +10,7 @@ export type DueAccount = {
   kyc?: {
     status?: string;
     link?: string;
+    rejectionReasons?: string[];
   };
   tos?: {
     id?: string;

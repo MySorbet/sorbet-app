@@ -1,3 +1,4 @@
+import { fn } from '@storybook/test';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { AccountSelect } from './account-select';
@@ -25,8 +26,8 @@ type Story = StoryObj<typeof meta>;
 export const NoAccountsEnabled: Story = {
   args: {
     selected: 'usd',
-    onSelect: (id) => console.log('Selected:', id),
-    enabledAccounts: [],
+    onSelect: fn(),
+    accounts: [],
   },
 };
 
@@ -36,8 +37,8 @@ export const NoAccountsEnabled: Story = {
 export const USDEnabled: Story = {
   args: {
     selected: 'usd',
-    onSelect: (id) => console.log('Selected:', id),
-    enabledAccounts: ['usd'],
+    onSelect: fn(),
+    accounts: [{ id: 'usd', state: 'available' }],
   },
 };
 
@@ -47,8 +48,8 @@ export const USDEnabled: Story = {
 export const EUREnabled: Story = {
   args: {
     selected: 'eur',
-    onSelect: (id) => console.log('Selected:', id),
-    enabledAccounts: ['eur'],
+    onSelect: fn(),
+    accounts: [{ id: 'eur', state: 'available' }],
   },
 };
 
@@ -58,8 +59,11 @@ export const EUREnabled: Story = {
 export const BothEnabled: Story = {
   args: {
     selected: 'usd',
-    onSelect: (id) => console.log('Selected:', id),
-    enabledAccounts: ['usd', 'eur'],
+    onSelect: fn(),
+    accounts: [
+      { id: 'usd', state: 'available' },
+      { id: 'eur', state: 'available' },
+    ],
   },
 };
 
@@ -69,7 +73,10 @@ export const BothEnabled: Story = {
 export const EURSelected: Story = {
   args: {
     selected: 'eur',
-    onSelect: (id) => console.log('Selected:', id),
-    enabledAccounts: ['usd', 'eur'],
+    onSelect: fn(),
+    accounts: [
+      { id: 'usd', state: 'available' },
+      { id: 'eur', state: 'available' },
+    ],
   },
 };
