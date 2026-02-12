@@ -13,7 +13,8 @@ import { cn, sleep } from '@/lib/utils';
 
 import { useConfettiCannons } from '../hooks/use-confetti-cannons';
 import { VerifyCard } from './verify-card';
-import { AllSteps } from './verify-dashboard';
+
+export type AllSteps = 'begin' | 'terms' | 'details' | 'complete';
 
 /** Main card for the verification page with a call to action button */
 export const AccountVerificationCard = ({

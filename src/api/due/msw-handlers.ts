@@ -5,6 +5,7 @@ import type { DueCustomer } from '@/types/due';
 
 /** Mock Due customer - not started verification */
 export const mockDueCustomerNotStarted: DueCustomer = {
+  account_id: 'acct_mock123',
   account: {
     id: 'acct_mock123',
     type: 'individual',
@@ -34,6 +35,7 @@ export const mockDueCustomerNotStarted: DueCustomer = {
 
 /** Mock Due customer - TOS accepted, KYC pending */
 export const mockDueCustomerTosAccepted: DueCustomer = {
+  ...mockDueCustomerNotStarted,
   account: {
     ...mockDueCustomerNotStarted.account,
     tos: {
@@ -46,6 +48,7 @@ export const mockDueCustomerTosAccepted: DueCustomer = {
 
 /** Mock Due customer - KYC under review */
 export const mockDueCustomerUnderReview: DueCustomer = {
+  ...mockDueCustomerNotStarted,
   account: {
     ...mockDueCustomerNotStarted.account,
     kyc: {
@@ -62,6 +65,7 @@ export const mockDueCustomerUnderReview: DueCustomer = {
 
 /** Mock Due customer - KYC passed (verified) */
 export const mockDueCustomerVerified: DueCustomer = {
+  ...mockDueCustomerNotStarted,
   account: {
     ...mockDueCustomerNotStarted.account,
     kyc: {
@@ -78,6 +82,7 @@ export const mockDueCustomerVerified: DueCustomer = {
 
 /** Mock Due customer - KYC rejected */
 export const mockDueCustomerRejected: DueCustomer = {
+  ...mockDueCustomerNotStarted,
   account: {
     ...mockDueCustomerNotStarted.account,
     kyc: {
