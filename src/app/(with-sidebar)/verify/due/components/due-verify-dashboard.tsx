@@ -12,7 +12,7 @@ import { DueFAQ } from './due-faq';
 type DueVerifyStep = 'begin' | 'terms' | 'details' | 'complete';
 
 const kycCompleteStates = ['approved', 'failed', 'rejected'];
-const kycPendingStates = ['pending', 'under_review', 'in_review'];
+const kycPendingStates = ['pending', 'under_review', 'in_review', 'manual_review'];
 
 const buildDueUrl = (path?: string) => {
   if (!path) return undefined;
