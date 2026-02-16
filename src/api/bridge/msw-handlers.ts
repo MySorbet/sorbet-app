@@ -126,7 +126,8 @@ export const mockBridgeCustomerHandler404 = http.get(
     await delay(1000);
     return HttpResponse.json(
       {
-        error: 'Bridge customer not found',
+        code: 'NOT_FOUND',
+        message: 'Bridge customer not found',
       },
       {
         status: 404,

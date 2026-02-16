@@ -37,7 +37,7 @@ export const mockInvoiceNotFoundHandler = http.get(
   async () => {
     await delay();
     return HttpResponse.json(
-      { message: 'Invoice not found', statusCode: 404 },
+      { code: 'NOT_FOUND', message: 'Invoice not found' },
       { status: 404 }
     );
   }

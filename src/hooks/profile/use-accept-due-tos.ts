@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import { acceptDueTos } from '@/api/due/due';
 import type { DueCustomer } from '@/types/due';
+import { getApiErrorMessage } from '@/api/error-message';
 
 interface UseAcceptDueTosOptions {
   onSuccess?: (data: DueCustomer) => void;
@@ -18,8 +19,7 @@ export const useAcceptDueTos = (options?: UseAcceptDueTosOptions) => {
       options?.onSuccess?.(data);
     },
     onError: (error) => {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to accept TOS';
+      const errorMessage = getApiErrorMessage(error);
       toast.error(errorMessage);
       options?.onError?.(error instanceof Error ? error : new Error(errorMessage));
     },

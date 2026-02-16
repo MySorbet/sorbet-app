@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import { env } from '@/lib/env';
 import { withAuthHeader } from '@/api/with-auth-header';
+import { getApiErrorMessage } from '@/api/error-message';
 import { useAuth } from '@/hooks';
 
 const API_URL = env.NEXT_PUBLIC_SORBET_API_URL;
@@ -30,12 +31,7 @@ export const useDeleteAccount = () => {
       router.push('/');
     },
     onError: (error: any) => {
-      // Show the actual error message from the backend
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to delete account';
-      toast.error(errorMessage);
+      toast.error(getApiErrorMessage(error) || 'Failed to delete account');
       console.error('Delete account error:', error);
     },
   });

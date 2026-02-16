@@ -4,6 +4,8 @@ import {
     claimDueVirtualAccount,
     type ClaimableCurrency,
 } from '@/api/due/due';
+import { toast } from 'sonner';
+import { getApiErrorMessage } from '@/api/error-message';
 
 /**
  * Hook to claim a Due virtual account on-demand.
@@ -18,6 +20,11 @@ export const useClaimDueVirtualAccount = () => {
         onSuccess: () => {
             // Invalidate virtual accounts query to refetch the updated list
             queryClient.invalidateQueries({ queryKey: ['dueVirtualAccounts'] });
+        },
+        onError: (error) => {
+          toast.error('', {
+            description: getApiErrorMessage(error),
+          });
         },
     });
 };

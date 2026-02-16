@@ -83,7 +83,7 @@ export const createRecipientHandlerFailure = http.post(
   async () => {
     await delay();
     return HttpResponse.json(
-      { error: 'Failed to create recipient' },
+      { code: 'UNKNOWN_ERROR', message: 'An unknown error occurred. Please contact support.' },
       { status: 500 }
     );
   }
