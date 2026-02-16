@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Spinner } from '@/components/common/spinner';
+import { useAcceptDueTos } from '@/hooks/profile/use-accept-due-tos';
 import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
 import { env } from '@/lib/env';
 import { cn } from '@/lib/utils';
@@ -51,6 +53,7 @@ export const SetupCard = ({
     layout = 'horizontal',
     tosLink,
     kycLink,
+    tosDocumentLinks,
     showInlineVerification = false,
 }: {
     className?: string;
@@ -62,24 +65,22 @@ export const SetupCard = ({
     layout?: 'horizontal' | 'vertical';
     tosLink?: string;
     kycLink?: string;
+    tosDocumentLinks?: { tos?: string; privacyPolicy?: string };
     showInlineVerification?: boolean;
 }) => {
     const router = useRouter();
 
+    const { mutate: acceptDueTos, isPending: isAcceptingTos } = useAcceptDueTos();
+
     const { mutate: createDueCustomer, isPending: isCreatingDueCustomer } = useCreateDueCustomer({
         onSuccess: (dueCustomer) => {
-            // After creating the Due customer, immediately open the appropriate link
             const account = dueCustomer.account;
-            const tosStatus = account.tos?.status;
-            
-            // If TOS is not yet accepted, open TOS link first
-            if (tosStatus !== 'accepted') {
-                const newTosLink = buildDueUrl(account.tos?.link);
-                if (newTosLink) {
-                    window.open(newTosLink, '_blank', 'noopener,noreferrer');
-                }
+            const newTosStatus = account.tos?.status;
+            if (newTosStatus !== 'accepted') {
+                // Account created with TOS pending - accept TOS immediately
+                acceptDueTos();
             } else {
-                // TOS already accepted, open KYC link
+                // TOS already accepted (edge case) - open KYC
                 const newKycLink = buildDueUrl(account.kyc?.link);
                 if (newKycLink) {
                     window.open(newKycLink, '_blank', 'noopener,noreferrer');
@@ -87,7 +88,7 @@ export const SetupCard = ({
             }
         },
         onError: (error) => {
-            toast.error(error.message || 'Failed to start verification');
+            toast.error(error.message || 'Failed to create account');
         },
     });
 
@@ -100,14 +101,15 @@ export const SetupCard = ({
     };
 
     const handleStartVerification = () => {
+        if (!showInlineVerification) {
+            handleVerifyClick();
+            return;
+        }
         if (!kycStatus) {
-            // No account yet, create one (the onSuccess callback will open the link)
             createDueCustomer();
-        } else if (tosStatus !== 'accepted' && tosLink) {
-            // Account exists but TOS not accepted yet, open TOS link
-            window.open(tosLink, '_blank', 'noopener,noreferrer');
+        } else if (tosStatus !== 'accepted') {
+            acceptDueTos();
         } else if (kycLink) {
-            // TOS accepted, open KYC link
             window.open(kycLink, '_blank', 'noopener,noreferrer');
         } else {
             handleVerifyClick();
@@ -116,43 +118,52 @@ export const SetupCard = ({
 
     // Logic for step 2 badge and behavior
     let step2Badge = 'Start verification';
-    let step2BadgeColor = 'bg-[#5864FF]'; // Default blue
+    let step2BadgeColor = 'bg-[#5864FF]';
     let step2IndicatorColor = 'border-sorbet';
     let step2Clickable = true;
     let step2Completed = false;
     let step2Verifying = false;
 
-    // Show loading state while creating Due customer
-    if (isCreatingDueCustomer) {
-        step2Badge = 'Creating account...';
-        step2BadgeColor = 'bg-[#5864FF]';
-        step2Clickable = false;
-    } else if (kycStatus === 'under_review' || kycStatus === 'in_review') {
-        // Actually being reviewed
-        step2Badge = 'Verifying';
-        step2BadgeColor = 'bg-[#FF9933]';
-        step2IndicatorColor = 'border-[#FF9933]';
-        step2Clickable = true;
-        step2Verifying = true;
-    } else if (kycStatus === 'approved' || kycStatus === 'passed') {
-        // Approved
-        step2Badge = 'Account Verified';
-        step2BadgeColor = 'bg-gradient-to-r from-[#64AD5C] to-[#86E47C]';
-        step2IndicatorColor = 'border-sorbet';
-        step2Clickable = true;
-        step2Completed = true;
-    } else if (kycStatus === 'failed' || kycStatus === 'rejected') {
-        // Failed - allow retry
-        step2Badge = 'Verify now';
-        step2BadgeColor = 'bg-[#FF383C]';
-        step2IndicatorColor = 'border-sorbet';
-        step2Clickable = true;
-    } else if (kycStatus === 'pending') {
-        // Account created but KYC not started yet
-        step2Badge = 'Start verification';
-        step2BadgeColor = 'bg-[#5864FF]';
-        step2IndicatorColor = 'border-sorbet';
-        step2Clickable = true;
+    if (showInlineVerification) {
+        // Verify page: Accept TOS flow first, then Start verification
+        const needsTosAcceptance = tosStatus !== 'accepted';
+        if (isCreatingDueCustomer || isAcceptingTos) {
+            step2Badge = 'Accepting...';
+            step2Clickable = false;
+        } else if (kycStatus === 'under_review' || kycStatus === 'in_review') {
+            step2Badge = 'Verifying';
+            step2BadgeColor = 'bg-[#FF9933]';
+            step2IndicatorColor = 'border-[#FF9933]';
+            step2Verifying = true;
+        } else if (kycStatus === 'approved' || kycStatus === 'passed') {
+            step2Badge = 'Account Verified';
+            step2BadgeColor = 'bg-gradient-to-r from-[#64AD5C] to-[#86E47C]';
+            step2Completed = true;
+        } else if (kycStatus === 'failed' || kycStatus === 'rejected') {
+            step2Badge = 'Verify now';
+            step2BadgeColor = 'bg-[#FF383C]';
+        } else if (needsTosAcceptance) {
+            step2Badge = 'Accept TOS';
+        } else {
+            step2Badge = 'Start verification';
+        }
+    } else {
+        // Dashboard: original behavior - Start verification, navigate to /verify on click
+        if (kycStatus === 'under_review' || kycStatus === 'in_review') {
+            step2Badge = 'Verifying';
+            step2BadgeColor = 'bg-[#FF9933]';
+            step2IndicatorColor = 'border-[#FF9933]';
+            step2Verifying = true;
+        } else if (kycStatus === 'approved' || kycStatus === 'passed') {
+            step2Badge = 'Account Verified';
+            step2BadgeColor = 'bg-gradient-to-r from-[#64AD5C] to-[#86E47C]';
+            step2Completed = true;
+        } else if (kycStatus === 'failed' || kycStatus === 'rejected') {
+            step2Badge = 'Verify now';
+            step2BadgeColor = 'bg-[#FF383C]';
+        } else {
+            step2Badge = 'Start verification';
+        }
     }
 
     // Define the setup steps
@@ -382,13 +393,24 @@ export const SetupCard = ({
                                                     (kycStatus === 'failed' || kycStatus === 'rejected') && 'bg-[#FFE5E6] text-[#E20C0F] hover:!bg-[#FFE5E6] hover:!text-[#E20C0F]',
                                                     !isCompleted && !isVerifying && kycStatus !== 'failed' && kycStatus !== 'rejected' && 'bg-[#D9EFFF] text-[#00508A] hover:!bg-[#C5E7FF] hover:!text-[#00508A]'
                                                 )}
-                                                disabled={isCreatingDueCustomer || !step.clickable}
+                                                disabled={
+                                                    isCreatingDueCustomer ||
+                                                    isAcceptingTos ||
+                                                    !step.clickable
+                                                }
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleStepClick(step);
                                                 }}
                                             >
-                                                {step.badge}
+                                                {isAcceptingTos ? (
+                                                    <>
+                                                        <Spinner className='mr-2 size-4' />
+                                                        Accepting...
+                                                    </>
+                                                ) : (
+                                                    step.badge
+                                                )}
                                             </Button>
                                         )}
                                     </div>
@@ -405,12 +427,44 @@ export const SetupCard = ({
                                         </span>
                                     )}
 
-                                    <span className={cn(
-                                        'mt-0.5 text-xs text-gray-500',
-                                        layout === 'horizontal' ? 'lg:mt-1 lg:whitespace-nowrap' : ''
-                                    )}>
-                                        {step.description}
-                                    </span>
+                                    <div
+                                        className={cn(
+                                            'mt-0.5 flex flex-col gap-0.5 text-xs text-gray-500',
+                                            layout === 'horizontal' ? 'lg:mt-1' : ''
+                                        )}
+                                    >
+                                        {step.id === 'verify' && showInlineVerification && (
+                                            <span>
+                                                Accept{' '}
+                                                {tosDocumentLinks?.tos && tosDocumentLinks?.privacyPolicy ? (
+                                                    <>
+                                                        <a
+                                                            href={tosDocumentLinks.tos}
+                                                            target='_blank'
+                                                            rel='noopener noreferrer'
+                                                            className='underline hover:text-gray-700'
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            Terms of Service
+                                                        </a>
+                                                        {' and '}
+                                                        <a
+                                                            href={tosDocumentLinks.privacyPolicy}
+                                                            target='_blank'
+                                                            rel='noopener noreferrer'
+                                                            className='underline hover:text-gray-700'
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            Privacy Policy
+                                                        </a>
+                                                    </>
+                                                ) : (
+                                                    'Terms of Service and Privacy Policy'
+                                                )}
+                                            </span>
+                                        )}
+                                        <span>{step.description}</span>
+                                    </div>
                                 </div>
                             </div>
                         );

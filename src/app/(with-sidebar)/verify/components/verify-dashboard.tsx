@@ -97,6 +97,7 @@ export const VerifyDashboard = () => {
           layout='vertical'
           tosLink={tosLink}
           kycLink={kycLink}
+          tosDocumentLinks={account?.tos?.documentLinks}
           showInlineVerification={true}
         />
 

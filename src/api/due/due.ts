@@ -16,6 +16,16 @@ export const verifyDueUser = async () => {
   return response.data;
 };
 
+/** Accept Due Terms of Service (manual flow). Client IP is extracted server-side. */
+export const acceptDueTos = async () => {
+  const response = await axios.post<DueCustomer>(
+    `${API_URL}/users/due/tos/accept`,
+    {},
+    await withAuthHeader()
+  );
+  return response.data;
+};
+
 export const getDueCustomer = async () => {
   const response = await axios.get<DueCustomer>(
     `${API_URL}/users/due/customer`,
