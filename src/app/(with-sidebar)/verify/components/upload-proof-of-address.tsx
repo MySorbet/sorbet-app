@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { uploadPOA } from '@/api/bridge/bridge';
+import { getApiErrorMessage } from '@/api/error-message';
 import { InvisibleInput } from '@/app/[handle]/components/control-bar/invisible-input';
 import { Spinner } from '@/components/common/spinner';
 import { buttonVariants } from '@/components/ui/button';
@@ -28,9 +28,7 @@ export const UploadProofOfAddress = () => {
       toast.success('Proof of address uploaded');
     },
     onError: (error) => {
-      const message = isAxiosError(error)
-        ? error.response?.data.message
-        : error.message;
+      const message = getApiErrorMessage(error);
       console.error(message);
       toast.error('Error uploading file', {
         description: message,

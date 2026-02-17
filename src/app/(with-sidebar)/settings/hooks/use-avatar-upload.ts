@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import { uploadProfileImageAsync } from '@/api/images';
 import { useAuth, useUpdateUser } from '@/hooks';
+import { getApiErrorMessage } from '@/api/error-message';
 
 export const useAvatarUpload = () => {
   const { user } = useAuth();
@@ -53,7 +54,9 @@ export const useAvatarUpload = () => {
 
       toast.success('Avatar updated successfully');
     } catch (error) {
-      toast.error('Failed to upload avatar');
+      toast.error('Failed to upload avatar', {
+        description: getApiErrorMessage(error),
+      });
     } finally {
       setIsUploading(false);
     }

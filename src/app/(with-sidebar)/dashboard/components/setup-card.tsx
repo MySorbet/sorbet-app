@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 
 import { TaskStatuses } from './checklist-card';
 import { DashboardCard } from './dashboard-card';
+import { getApiErrorMessage } from '@/api/error-message';
 
 /** Build full Due URL from a relative path */
 const buildDueUrl = (path?: string) => {
@@ -88,7 +89,7 @@ export const SetupCard = ({
             }
         },
         onError: (error) => {
-            toast.error(error.message || 'Failed to create account');
+            toast.error(getApiErrorMessage(error) || 'Failed to create account');
         },
     });
 

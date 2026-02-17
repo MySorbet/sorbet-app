@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { withAuthHeader } from '@/api/with-auth-header';
+import { getApiErrorMessage } from '@/api/error-message';
 import { env } from '@/lib/env';
 import { User } from '@/types';
 
@@ -36,7 +37,9 @@ export const checkHandleIsAvailable = async (handle: string) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        `Axios error: failed to get check handle availability: ${error.response?.data.error}`
+        `Axios error: failed to get check handle availability: ${getApiErrorMessage(
+          error
+        )}`
       );
     }
     throw new Error(
