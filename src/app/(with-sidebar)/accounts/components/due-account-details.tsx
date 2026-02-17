@@ -5,6 +5,7 @@ import { PropsWithChildren, useState } from 'react';
 import { FC } from 'react';
 import { CircleFlag } from 'react-circle-flags';
 
+import type { DueFeeStructure } from '@/api/due/due';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
@@ -15,64 +16,67 @@ import type {
     DueVirtualAccountUSDetails,
 } from '@/types/due';
 
-// Fee & Settlement terms based on Due pricing
-// Data from Due documentation
-const FEE_DATA = {
-    usd: {
-        ach: {
-            settlementTime: '1-3 business days',
-            variableFee: '1%',
-            fixedFee: 'USD 1.00',
-            minimumTransaction: 'USD 1.00',
-        },
-        wire: {
-            settlementTime: 'Same business day',
-            variableFee: '1%',
-            fixedFee: 'USD 25.00',
-            minimumTransaction: 'USD 25.00',
-        },
-        swift: {
-            settlementTime: '1-3 business day',
-            variableFee: '1%',
-            fixedFee: 'USD 30.00',
-            minimumTransaction: 'USD 50',
-        },
-    },
-    eur: {
-        sepa: {
-            settlementTime: 'Same day / Next business day',
-            variableFee: '1%',
-            fixedFee: 'EUR 1.00',
-            minimumTransaction: 'EUR 1.00',
-        },
-        swift: {
-            settlementTime: 'Same day / Next business day',
-            variableFee: '1%',
-            fixedFee: 'EUR 20.00',
-            minimumTransaction: 'EUR 25',
-        },
-    },
-    aed: {
-        settlementTime: '1-2 business days',
-        variableFee: '1%',
-        fixedFee: 'AED 0.00',
-        minimumTransaction: 'AED 1.00',
-    },
+type USDTransferType = 'ach' | 'wire' | 'swift';
+
+const methodByUsdTransfer: Record<USDTransferType, DueFeeStructure['paymentMethod']> =
+    {
+        ach: 'usd_ach',
+        wire: 'usd_wire',
+        swift: 'usd_swift',
+    };
+
+const channelPriority: DueFeeStructure['channelType'][] = [
+    'static_deposit',
+    'deposit',
+    'withdrawal',
+];
+
+const getFeeRow = (
+    rows: DueFeeStructure[] | undefined,
+    paymentMethod: DueFeeStructure['paymentMethod']
+) => {
+    if (!rows?.length) return undefined;
+    const scoped = rows.filter((r) => r.paymentMethod === paymentMethod);
+    for (const type of channelPriority) {
+        const byType = scoped.find((r) => r.channelType === type);
+        if (byType) return byType;
+    }
+    return scoped[0];
 };
 
-type USDTransferType = 'ach' | 'wire' | 'swift';
+const getRailSpeed = (row: DueFeeStructure | undefined) => {
+    return row?.speed ?? 'N/A';
+};
+
+const getMinimumAmount = (row: DueFeeStructure | undefined) => {
+    const limitMin = row?.limitMin ?? 'N/A';
+    if (!row) return 'N/A';
+    return `${row.currencyCode} ${limitMin}`;
+};
+
+const formatFeePercent = (bps: number | undefined) => {
+    if (bps === undefined) return 'N/A';
+    return `${(bps / 100).toFixed(2)}%`;
+};
+
+const formatFixedFee = (row: DueFeeStructure | undefined) => {
+    if (!row) return 'N/A';
+    return `${row.currencyCode} ${row.totalFixedFee}`;
+};
 
 /** USD Account Details with ACH/WIRE/SWIFT tabs */
 const USDAccountDetails = ({
     details,
     swiftDetails,
+    feeStructures,
 }: {
     details: DueVirtualAccountUSDetails | null | undefined;
     /** SWIFT account details from separate bank_swift_usd virtual account */
     swiftDetails?: DueVirtualAccountSWIFTDetails | null;
+    feeStructures?: DueFeeStructure[];
 }) => {
     const [transferType, setTransferType] = useState<USDTransferType>('ach');
-    const fees = FEE_DATA.usd[transferType];
+    const feeRow = getFeeRow(feeStructures, methodByUsdTransfer[transferType]);
 
     // Graceful handling of missing details
     if (!details) {
@@ -265,10 +269,16 @@ const USDAccountDetails = ({
 
             {/* Fee & Settlement Terms */}
             <FeeSection>
-                <FeeRow label='Settlement Time' value={fees.settlementTime} />
-                <FeeRow label='Variable Fee' value={fees.variableFee} />
-                <FeeRow label='Fixed Fee' value={fees.fixedFee} />
-                <FeeRow label='Minimum Transaction' value={fees.minimumTransaction} />
+                <FeeRow label='Settlement Time' value={getRailSpeed(feeRow)} />
+                <FeeRow
+                    label='Variable Fee'
+                    value={formatFeePercent(feeRow?.totalFeeBps)}
+                />
+                <FeeRow label='Fixed Fee' value={formatFixedFee(feeRow)} />
+                <FeeRow
+                    label='Minimum Transaction'
+                    value={getMinimumAmount(feeRow)}
+                />
             </FeeSection>
         </div>
     );
@@ -277,10 +287,12 @@ const USDAccountDetails = ({
 /** EUR Account Details (SEPA only — SWIFT not supported by Due) */
 const EURAccountDetails = ({
     details,
+    feeStructures,
 }: {
     details: DueVirtualAccountEURDetails | null | undefined;
+    feeStructures?: DueFeeStructure[];
 }) => {
-    const fees = FEE_DATA.eur.sepa;
+    const feeRow = getFeeRow(feeStructures, 'eur_sepa');
 
     // Graceful handling of missing details
     if (!details) {
@@ -349,10 +361,16 @@ const EURAccountDetails = ({
 
             {/* Fee & Settlement Terms */}
             <FeeSection>
-                <FeeRow label='Settlement Time' value={fees.settlementTime} />
-                <FeeRow label='Variable Fee' value={fees.variableFee} />
-                <FeeRow label='Fixed Fee' value={fees.fixedFee} />
-                <FeeRow label='Minimum Transaction' value={fees.minimumTransaction} />
+                <FeeRow label='Settlement Time' value={getRailSpeed(feeRow)} />
+                <FeeRow
+                    label='Variable Fee'
+                    value={formatFeePercent(feeRow?.totalFeeBps)}
+                />
+                <FeeRow label='Fixed Fee' value={formatFixedFee(feeRow)} />
+                <FeeRow
+                    label='Minimum Transaction'
+                    value={getMinimumAmount(feeRow)}
+                />
             </FeeSection>
         </div>
     );
@@ -361,10 +379,12 @@ const EURAccountDetails = ({
 /** AED Account Details */
 const AEDAccountDetails = ({
     details,
+    feeStructures,
 }: {
     details: DueVirtualAccountAEDDetails | null | undefined;
+    feeStructures?: DueFeeStructure[];
 }) => {
-    const fees = FEE_DATA.aed;
+    const feeRow = getFeeRow(feeStructures, 'aed_local');
 
     // Graceful handling of missing details
     if (!details) {
@@ -455,10 +475,16 @@ const AEDAccountDetails = ({
 
             {/* Fee & Settlement Terms */}
             <FeeSection>
-                <FeeRow label='Settlement Time' value={fees.settlementTime} />
-                <FeeRow label='Variable Fee' value={fees.variableFee} />
-                <FeeRow label='Fixed Fee' value={fees.fixedFee} />
-                <FeeRow label='Minimum Transaction' value={fees.minimumTransaction} />
+                <FeeRow label='Settlement Time' value={getRailSpeed(feeRow)} />
+                <FeeRow
+                    label='Variable Fee'
+                    value={formatFeePercent(feeRow?.totalFeeBps)}
+                />
+                <FeeRow label='Fixed Fee' value={formatFixedFee(feeRow)} />
+                <FeeRow
+                    label='Minimum Transaction'
+                    value={getMinimumAmount(feeRow)}
+                />
             </FeeSection>
         </div>
     );
