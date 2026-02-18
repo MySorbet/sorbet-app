@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { env } from '@/lib/env';
+import { getApiErrorMessage } from '@/api/error-message';
 
 import { withAuthHeader } from './with-auth-header';
 
@@ -18,7 +19,7 @@ export const uploadProfileImageAsync = async (data: FormData) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        `Failed to upload profile image: ${error.response?.data.message}`
+        `Failed to upload profile image: ${getApiErrorMessage(error)}`
       );
     } else {
       throw new Error(`Failed to upload profile image: ${error}`);
@@ -47,7 +48,7 @@ export const uploadWidgetsImageAsync = async (
     }
     if (error instanceof AxiosError) {
       throw new Error(
-        `Failed to upload widget image: ${error.response?.data.message}`
+        `Failed to upload widget image: ${getApiErrorMessage(error)}`
       );
     } else {
       throw new Error(`Failed to upload widget image: ${error}`);

@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import { claimVirtualAccount } from '@/api/bridge/bridge';
+import { getApiErrorMessage } from '@/api/error-message';
 
 export const useClaimVirtualAccount = (
   type: 'usd' | 'eur',
@@ -15,7 +16,7 @@ export const useClaimVirtualAccount = (
       queryClient.invalidateQueries({ queryKey: ['bridgeCustomer'] });
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : 'An error occurred');
+      toast.error(getApiErrorMessage(error));
     },
     ...options,
   });

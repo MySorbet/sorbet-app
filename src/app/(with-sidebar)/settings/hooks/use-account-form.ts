@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks';
 import { getInvoicingDetails, updateInvoicingDetails } from '@/api/invoicing';
 
 import { accountSchema, type AccountFormData } from '../schemas';
+import { getApiErrorMessage } from '@/api/error-message';
 
 export const useAccountForm = () => {
   const { user } = useAuth();
@@ -66,8 +67,10 @@ export const useAccountForm = () => {
       });
       toast.success('Invoicing details updated');
     },
-    onError: () => {
-      toast.error('Failed to update invoicing details');
+    onError: (error: unknown) => {
+      toast.error('Failed to update invoicing details', {
+        description: getApiErrorMessage(error),
+      });
     },
   });
 

@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { recipientsApi } from '@/api/recipients/recipients';
 import { CreateRecipientDto, RecipientAPI } from '@/api/recipients/types';
+import { getApiErrorMessage } from '@/api/error-message';
 
 /** RQ wrapper for POST /recipients */
 export const useCreateRecipient = (
@@ -21,7 +22,7 @@ export const useCreateRecipient = (
     },
     onError: (error) => {
       toast.error('Failed to create recipient', {
-        description: error.message,
+        description: getApiErrorMessage(error),
       });
     },
     ...options,

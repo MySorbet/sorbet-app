@@ -7,6 +7,7 @@ import {
   UnifiedTransactionsResponse,
   UnifiedTransactionType,
 } from '@/types/transactions';
+import { getApiErrorMessage } from '@/api/error-message';
 
 import { withAuthHeader } from '../with-auth-header';
 
@@ -27,7 +28,7 @@ export const getOverview = async (last_days?: number) => {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        `Failed to get overview: ${error.response?.data.message}`
+        `Failed to get overview: ${getApiErrorMessage(error)}`
       );
     } else {
       throw new Error(`Failed to get overview: ${error}`);
@@ -63,7 +64,7 @@ export const getTransactions = async (
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        `Failed to get transactions: ${error.response?.data.message}`
+        `Failed to get transactions: ${getApiErrorMessage(error)}`
       );
     } else {
       throw new Error(`Failed to get transactions: ${error}`);
@@ -99,7 +100,7 @@ export const getUnifiedTransactions = async (options?: {
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        `Failed to get unified transactions: ${error.response?.data.message}`
+        `Failed to get unified transactions: ${getApiErrorMessage(error)}`
       );
     } else {
       throw new Error(`Failed to get unified transactions: ${error}`);

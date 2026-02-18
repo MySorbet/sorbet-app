@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { recipientsApi } from '@/api/recipients/recipients';
 import { MigrateRecipientDto, RecipientAPI } from '@/api/recipients/types';
+import { getApiErrorMessage } from '@/api/error-message';
 
 interface MigrateRecipientVariables {
   recipientId: string;
@@ -34,14 +35,12 @@ export const useMigrateRecipient = (
       toast.success('Recipient updated successfully');
     },
     onError: (error: any) => {
-      // Extract error message from axios error response
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        'An unexpected error occurred';
+      const errorMessage = getApiErrorMessage(error);
       
       toast.error('Failed to update recipient', {
-        description: errorMessage || 'Consider creating a new recipient if this continues to happen.',
+        description:
+          errorMessage ||
+          'Consider creating a new recipient if this continues to happen.',
       });
       console.error('Migration error:', error);
     },

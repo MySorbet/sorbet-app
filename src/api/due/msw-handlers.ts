@@ -114,7 +114,8 @@ export const mockDueCustomerHandler404 = http.get(
     await delay(1000);
     return HttpResponse.json(
       {
-        error: 'Due customer not found',
+        code: 'NOT_FOUND',
+        message: 'Due customer not found',
       },
       {
         status: 404,

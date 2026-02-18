@@ -3,11 +3,11 @@ import {
   UseMutationOptions,
   useQueryClient,
 } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import { recipientsApi } from '@/api/recipients/recipients';
 import { RecipientAPI } from '@/api/recipients/types';
+import { getApiErrorMessage } from '@/api/error-message';
 
 /** RQ wrapper for DELETE /recipients/:id */
 export const useDeleteRecipient = (
@@ -36,8 +36,5 @@ export const useDeleteRecipient = (
  * @returns A string message suitable for displaying to users
  */
 export const extractErrorMessage = (error: unknown): string => {
-  if (isAxiosError(error)) {
-    return error.response?.data.message ?? error.message;
-  }
-  return error instanceof Error ? error.message : String(error);
+  return getApiErrorMessage(error);
 };
