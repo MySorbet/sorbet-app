@@ -10,15 +10,16 @@ import {
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { recipientsApi } from '@/api/recipients/recipients';
 import { RecipientAPI } from '@/api/recipients/types';
 import { useRecipients } from '@/app/(with-sidebar)/recipients/hooks/use-recipients';
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { Form } from '@/components/ui/form';
+import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
-import { formatWalletAddress } from '@/lib/utils';
 
-import { BANK_ACCOUNTS_MIN_AMOUNT, needsMigration } from '../utils';
+import { BANK_ACCOUNTS_MIN_AMOUNT, isBankRecipient, needsMigration, usesTransfersApi } from '../utils';
 
 export type TransferResult =
   | { status: 'success'; hash: string }
@@ -34,7 +35,7 @@ type SendToContextType = {
   transferResult?: TransferResult;
   clearTransferResult: () => void;
   reset: () => void;
-  sendUSDC: (amount: number, address: string) => Promise<void>;
+  sendFunds: (amount: number, purposeCode?: string) => Promise<void>;
 };
 
 const SendToContext = createContext<SendToContextType | undefined>(undefined);
@@ -54,6 +55,7 @@ const formSchema = z.object({
     message: '', // Disable self explanatory empty recipient error message
   }),
   amount: z.number(),
+  purposeCode: z.string().optional(),
 });
 export type SendToFormSchema = z.infer<typeof formSchema>;
 
@@ -100,11 +102,9 @@ export const SendToFormContext = ({
             (value) => {
               const selectedRecipient: RecipientAPI | undefined =
                 recipients?.find((r) => r.id === form.getValues().recipient);
-              const minValueRequired: number =
-                selectedRecipient?.type === 'usd' ||
-                selectedRecipient?.type === 'eur'
-                  ? BANK_ACCOUNTS_MIN_AMOUNT
-                  : 0;
+              const minValueRequired: number = isBankRecipient(selectedRecipient)
+                ? BANK_ACCOUNTS_MIN_AMOUNT
+                : 0;
               return value >= minValueRequired;
             },
             {
@@ -113,15 +113,29 @@ export const SendToFormContext = ({
               )}`,
             }
           ),
+        purposeCode: z
+          .string()
+          .optional()
+          .refine(
+            (value) => {
+              const selectedRecipient: RecipientAPI | undefined =
+                recipients?.find((r) => r.id === form.getValues().recipient);
+              if (!selectedRecipient || !usesTransfersApi(selectedRecipient)) return true;
+              return !!value;
+            },
+            { message: 'Please select a purpose for this transfer' }
+          ),
       })
     ),
     values: {
       recipient: selectedRecipientId ?? '',
       amount: 0,
+      purposeCode: undefined,
     },
     defaultValues: {
       recipient: selectedRecipientId ?? '',
       amount: 0,
+      purposeCode: undefined,
     },
     mode: 'onChange',
   });
@@ -136,36 +150,78 @@ export const SendToFormContext = ({
   const selectedRecipient = recipientMap.get(id);
 
   const { sendUSDC: _sendUSDC } = useSendUSDC();
-  const { mutateAsync: sendUSDC } = useMutation({
-    mutationFn: async ({
-      amount,
-      address,
-    }: {
-      amount: number;
-      address: string;
-    }) => {
+  const { smartWalletAddress } = useSmartWalletAddress();
+
+  const { mutateAsync: sendFundsMutation } = useMutation({
+    mutationFn: async ({ amount, purposeCode }: { amount: number; purposeCode?: string }) => {
+      if (!selectedRecipient) {
+        throw new Error('No recipient selected');
+      }
+
+      if (usesTransfersApi(selectedRecipient)) {
+        // ACH/WIRE: get a disposable funding address from the backend, then send USDC to it
+        console.log(
+          `[sendFunds] ACH/WIRE recipient detected (type=${selectedRecipient.type}, id=${selectedRecipient.id}) — using Transfers API`
+        );
+        if (!smartWalletAddress) {
+          throw new Error('Smart wallet not available');
+        }
+        if (!purposeCode) {
+          throw new Error('Purpose code is required for ACH/WIRE transfers');
+        }
+        console.log(
+          `[sendFunds] Calling prepareTransfer — amount=${amount}, senderAddress=${smartWalletAddress}, purposeCode=${purposeCode}`
+        );
+        const { fundingAddress, sourceAmount, transferId, expiresAt } =
+          await recipientsApi.prepareTransfer(
+            selectedRecipient.id,
+            amount.toString(),
+            smartWalletAddress,
+            purposeCode
+          );
+        console.log(
+          `[sendFunds] prepareTransfer OK — transferId=${transferId}, fundingAddress=${fundingAddress}, sourceAmount=${sourceAmount}, expiresAt=${expiresAt}`
+        );
+        const transferTransactionHash = await _sendUSDC(
+          sourceAmount,
+          fundingAddress
+        );
+        console.log(
+          `[sendFunds] on-chain tx sent — txHash=${transferTransactionHash}`
+        );
+        return { amount, transferTransactionHash };
+      }
+
+      // All other recipients: send directly to the static wallet address
+      console.log(
+        `[sendFunds] Standard recipient (type=${selectedRecipient.type}) — sending directly to walletAddress`
+      );
+      const address = selectedRecipient.walletAddress;
+      if (!address) {
+        throw new Error('Recipient has no wallet address');
+      }
       const transferTransactionHash = await _sendUSDC(
         amount.toString(),
         address
       );
-      return { amount, address, transferTransactionHash };
+      console.log(
+        `[sendFunds] on-chain tx sent — txHash=${transferTransactionHash}`
+      );
+      return { amount, transferTransactionHash };
     },
     onSuccess: ({
       amount,
-      address,
       transferTransactionHash,
     }: {
       amount: number;
-      address: string;
       transferTransactionHash?: `0x${string}`;
     }) => {
       setTransferResult({
         status: 'success',
         hash: transferTransactionHash ?? '',
       });
-      toast.success(
-        `Sent ${formatCurrency(amount)} USDC to ${formatWalletAddress(address)}`
-      );
+      const recipientLabel = selectedRecipient?.label ?? 'recipient';
+      toast.success(`Sent ${formatCurrency(amount)} to ${recipientLabel}`);
     },
     onError: (error) => {
       setTransferResult({
@@ -198,8 +254,8 @@ export const SendToFormContext = ({
           transferResult,
           clearTransferResult: () => setTransferResult(undefined),
           reset,
-          sendUSDC: async (amount, address) => {
-            await sendUSDC({ amount, address });
+          sendFunds: async (amount, purposeCode) => {
+            await sendFundsMutation({ amount, purposeCode });
           },
         }}
       >

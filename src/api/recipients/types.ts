@@ -293,3 +293,12 @@ export type RecipientTransfer = {
   txHash?: string;
   type: RecipientTransferType;
 };
+
+/** Response from POST /recipients/:id/prepare-transfer */
+export type PrepareTransferResponse = {
+  fundingAddress: string;
+  transferId: string;
+  expiresAt: string;
+  sourceAmount: string;
+  sourceCurrency: string;
+};
