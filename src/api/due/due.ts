@@ -16,6 +16,16 @@ export const verifyDueUser = async () => {
   return response.data;
 };
 
+/** Accept Due Terms of Service (manual flow). Client IP is extracted server-side. */
+export const acceptDueTos = async () => {
+  const response = await axios.post<DueCustomer>(
+    `${API_URL}/users/due/tos/accept`,
+    {},
+    await withAuthHeader()
+  );
+  return response.data;
+};
+
 export const getDueCustomer = async () => {
   const response = await axios.get<DueCustomer>(
     `${API_URL}/users/due/customer`,
@@ -34,6 +44,32 @@ export const getDueVirtualAccounts = async () => {
 
 export type ClaimableCurrency = 'usd' | 'eur' | 'aed';
 
+export type DueFeeStructure = {
+  paymentMethod:
+    | 'usd_ach'
+    | 'usd_wire'
+    | 'usd_swift'
+    | 'eur_sepa'
+    | 'eur_swift'
+    | 'aed_local';
+  rail: string;
+  currencyCode: string;
+  channelType: 'deposit' | 'static_deposit' | 'withdrawal';
+  accountType: 'any' | 'individual' | 'business';
+  dueFeeBps: number;
+  dueFixedFee: string;
+  sorbetFeeBps: number;
+  sorbetFixedFee: string;
+  totalFeeBps: number;
+  totalFixedFee: string;
+  duePurposeRequired: boolean;
+  speed: string | null;
+  limitMin: string | null;
+  limitMax: string | null;
+  syncedAt: string;
+  updatedAt: string;
+};
+
 /**
  * Claim a Due virtual account on-demand.
  * @param currency - The currency to claim ('usd' | 'eur' | 'aed')
@@ -42,6 +78,14 @@ export const claimDueVirtualAccount = async (currency: ClaimableCurrency) => {
   const response = await axios.post<DueVirtualAccount>(
     `${API_URL}/users/due/claim/${currency}`,
     {},
+    await withAuthHeader()
+  );
+  return response.data;
+};
+
+export const getDueFeeStructures = async () => {
+  const response = await axios.get<DueFeeStructure[]>(
+    `${API_URL}/users/due/fee-structures`,
     await withAuthHeader()
   );
   return response.data;

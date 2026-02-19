@@ -1,36 +1,38 @@
 import { forwardRef } from 'react';
 
+import { useDueFeeStructures } from '@/hooks/profile/use-due-fee-structures';
 import { formatCurrency } from '@/lib/currency';
 import { cn } from '@/lib/utils';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 
 import { AcceptedPaymentMethod, Invoice, InvoiceForm } from '../schema';
 import { calculateSubtotalTaxAndTotal, formatDate } from '../utils';
 
-/**
- * Get the platform fee percentage from Bridge customer data
- * Checks both USD and EUR virtual accounts, prioritizing USD if both exist
- */
+/** Get the resolved platform fee percentage for selected bank rails. */
 const usePlatformFeePercent = (paymentMethods?: AcceptedPaymentMethod[]) => {
-  const { data: bridgeCustomer } = useBridgeCustomer();
-  
-  if (!paymentMethods || !bridgeCustomer) {
+  const { data: dueFeeStructures } = useDueFeeStructures();
+
+  if (!paymentMethods || !dueFeeStructures) {
     return undefined;
   }
-  
+
   const hasUsd = paymentMethods.includes('usd');
   const hasEur = paymentMethods.includes('eur');
-  
-  // If USD is selected, use USD virtual account fee
-  if (hasUsd && bridgeCustomer.virtual_account?.developer_fee_percent) {
-    return parseFloat(bridgeCustomer.virtual_account.developer_fee_percent);
+
+  const resolvePercent = (paymentMethod: 'usd_ach' | 'eur_sepa') => {
+    const row = dueFeeStructures.find((r) => r.paymentMethod === paymentMethod);
+    return row ? row.totalFeeBps / 100 : undefined;
+  };
+
+  // If USD is selected, use USD receiving fee
+  if (hasUsd) {
+    return resolvePercent('usd_ach');
   }
-  
-  // If EUR is selected, use EUR virtual account fee
-  if (hasEur && bridgeCustomer.virtual_account_eur?.developer_fee_percent) {
-    return parseFloat(bridgeCustomer.virtual_account_eur.developer_fee_percent);
+
+  // If EUR is selected, use EUR receiving fee
+  if (hasEur) {
+    return resolvePercent('eur_sepa');
   }
-  
+
   return undefined;
 };
 
@@ -50,12 +52,16 @@ export const InvoiceDocument = forwardRef<
   { invoice: InvoiceForm | Invoice; className?: string }
 >(({ invoice, className }, ref) => {
   const platformFeePercent = usePlatformFeePercent(invoice.paymentMethods);
-  const { taxAmount, developerFee, total, developerFeePercent: calculatedFeePercent } = 
-    calculateSubtotalTaxAndTotal(invoice, platformFeePercent);
-  
+  const {
+    taxAmount,
+    developerFee,
+    total,
+    developerFeePercent: calculatedFeePercent,
+  } = calculateSubtotalTaxAndTotal(invoice, platformFeePercent);
+
   // Use the calculated fee percent for display
   const displayFeePercent = calculatedFeePercent ?? 1;
-  
+
   // Total amount is dependent on which type of invoice we get
   // If this is full invoice from the server, the amount has been calculated already
   // If this is form data, we'll need to calculate it ourselves
@@ -234,8 +240,8 @@ export const InvoiceDocument = forwardRef<
 
       {includesBankFee && displayFeePercent > 0 && (
         <div className='mt-8 rounded-lg bg-muted p-4 text-xs text-muted-foreground'>
-          For EUR and USD payments, Sorbet applies a {displayFeePercent}% platform fee to cover
-          banking and compliance costs.
+          For EUR and USD payments, Sorbet applies a {displayFeePercent}%
+          platform fee to cover banking and compliance costs.
         </div>
       )}
     </div>

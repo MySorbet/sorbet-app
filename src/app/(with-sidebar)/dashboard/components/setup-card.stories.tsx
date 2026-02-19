@@ -114,11 +114,34 @@ export const VerticalNotStarted: Story = {
   },
 };
 
-/** Vertical layout (Verify page) - KYC pending */
+/** Vertical layout (Verify page) - TOS pending, shows Accept TOS button */
+export const VerticalTosPending: Story = {
+  args: {
+    layout: 'vertical',
+    kycStatus: 'pending',
+    tosStatus: 'pending',
+    completedTasks: {
+      verified: false,
+      invoice: false,
+      payment: false,
+    },
+    showInlineVerification: true,
+    kycLink: 'https://example.com/kyc',
+    tosDocumentLinks: {
+      tos: 'https://due-public.s3.eu-west-2.amazonaws.com/documents/tos/TOS_DUE_LTD_GB_20250808.pdf',
+      privacyPolicy:
+        'https://due-public.s3.eu-west-2.amazonaws.com/documents/privacy-policy/PP_DUE_LTD_GB_20250812.pdf',
+    },
+    onVerifyClick: fn(),
+  },
+};
+
+/** Vertical layout (Verify page) - KYC pending (TOS accepted) */
 export const VerticalPending: Story = {
   args: {
     layout: 'vertical',
     kycStatus: 'pending',
+    tosStatus: 'accepted',
     completedTasks: {
       verified: false,
       invoice: false,

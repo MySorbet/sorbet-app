@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { UploadIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { uploadPOA } from '@/api/bridge/bridge';
+import { getApiErrorMessage } from '@/api/error-message';
 import {
   ACCEPTED_FILE_TYPES_BY_MIME,
   checkFileValid,
@@ -37,9 +37,7 @@ export const PoaDropzone = ({ className }: { className?: string }) => {
 
   const handleError = (error: Error) => {
     console.error(error);
-    const message = isAxiosError(error)
-      ? error.response?.data.message
-      : error.message;
+    const message = getApiErrorMessage(error);
     toast.error('Error uploading file', {
       description: message,
     });

@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 
 import { env } from '@/lib/env';
 import { User, UserPublic } from '@/types';
+import { getApiErrorMessage } from '@/api/error-message';
 
 import { withAuthHeader } from '../with-auth-header';
 
@@ -37,7 +38,7 @@ export const getCurrentWalletAddressByUserId = async (userId: string) => {
     return res.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
-      throw new Error(`Failed to get Address: ${error.response?.data.message}`);
+      throw new Error(`Failed to get Address: ${getApiErrorMessage(error)}`);
     } else {
       throw new Error(`Failed to get Address: ${error}`);
     }
@@ -54,8 +55,7 @@ export const deleteProfileImageAsync = async (userId: string) => {
     return res.data;
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
-      const message =
-        error.response?.data?.message ?? error.message ?? 'Unknown error';
+      const message = getApiErrorMessage(error);
       throw new Error(`Failed to delete profile image: ${message}`);
     }
     throw new Error(`Failed to delete profile image: ${String(error)}`);
@@ -77,7 +77,7 @@ export const updateUser = async (
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       const serverMessage =
-        error.response?.data?.message ?? 'Failed to update user';
+        getApiErrorMessage(error) ?? 'Failed to update user';
       const apiError = new Error(serverMessage) as Error & {
         status?: number;
         data?: unknown;

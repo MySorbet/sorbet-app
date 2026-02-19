@@ -18,9 +18,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useDueFeeStructures } from '@/hooks/profile/use-due-fee-structures';
 import { formatWalletAddress } from '@/lib/utils';
 import { cn } from '@/lib/utils';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { type AcceptedPaymentMethod } from '../../schema';
@@ -46,15 +46,16 @@ export const PaymentTab = ({
   walletAddress?: string;
 }) => {
   const formattedAddress = walletAddress && formatWalletAddress(walletAddress);
-  const { data: bridgeCustomer } = useBridgeCustomer();
-  
-  // Get actual platform fee percentages
-  const usdFeePercent = bridgeCustomer?.virtual_account?.developer_fee_percent 
-    ? parseFloat(bridgeCustomer.virtual_account.developer_fee_percent) 
-    : 1; // Default to 1% if not available
-  const eurFeePercent = bridgeCustomer?.virtual_account_eur?.developer_fee_percent 
-    ? parseFloat(bridgeCustomer.virtual_account_eur.developer_fee_percent) 
-    : 1; // Default to 1% if not available
+  const { data: dueFeeStructures } = useDueFeeStructures();
+
+  const resolvePercent = (paymentMethod: 'usd_ach' | 'eur_sepa') => {
+    const row = dueFeeStructures?.find((r) => r.paymentMethod === paymentMethod);
+    if (!row) return 1;
+    return row.totalFeeBps / 100;
+  };
+
+  const usdFeePercent = resolvePercent('usd_ach');
+  const eurFeePercent = resolvePercent('eur_sepa');
 
   return (
     <Card className='h-fit'>

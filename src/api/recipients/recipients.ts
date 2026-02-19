@@ -6,6 +6,7 @@ import { withAuthHeader } from '../with-auth-header';
 import {
   CreateRecipientDto,
   MigrateRecipientDto,
+  PrepareTransferResponse,
   RecipientAPI,
   RecipientAPIBankDetailed,
   RecipientTransfer,
@@ -63,6 +64,41 @@ export const recipientsApi = {
       `${API_URL}/recipients/${recipientId}/migrate`,
       data,
       await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  /**
+   * For ACH/WIRE recipients: creates a Due transfer quote, transfer, and disposable
+   * funding address. Returns the address to send USDC to along with the exact amount.
+   */
+  prepareTransfer: async (
+    recipientId: string,
+    amount: string,
+    senderAddress: string,
+    purposeCode: string
+  ): Promise<PrepareTransferResponse> => {
+    const response = await axios.post<PrepareTransferResponse>(
+      `${API_URL}/recipients/${recipientId}/prepare-transfer`,
+      { amount, senderAddress, purposeCode },
+      await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  /**
+   * Returns allowed purpose codes for a given ACH/WIRE payment method.
+   * e.g. paymentMethod = 'usd_ach' | 'usd_wire'
+   */
+  getPurposeCodes: async (
+    paymentMethod: string
+  ): Promise<{ purposeCodes: string[]; required: boolean }> => {
+    const response = await axios.get<{ purposeCodes: string[]; required: boolean }>(
+      `${API_URL}/recipients/purpose-codes`,
+      {
+        params: { paymentMethod },
+        ...(await withAuthHeader()),
+      }
     );
     return response.data;
   },

@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { verifyDueUser } from '@/api/due/due';
+import { acceptDueTos } from '@/api/due/due';
 import type { DueCustomer } from '@/types/due';
 import { getApiErrorMessage } from '@/api/error-message';
 
-interface UseCreateDueCustomerOptions {
+interface UseAcceptDueTosOptions {
   onSuccess?: (data: DueCustomer) => void;
   onError?: (error: Error) => void;
 }
 
-export const useCreateDueCustomer = (options?: UseCreateDueCustomerOptions) => {
+export const useAcceptDueTos = (options?: UseAcceptDueTosOptions) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: verifyDueUser,
+    mutationFn: acceptDueTos,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['dueCustomer'] });
       options?.onSuccess?.(data);

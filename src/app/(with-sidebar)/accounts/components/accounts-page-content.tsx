@@ -17,18 +17,19 @@ import {
   DrawerContent,
   DrawerFooter,
 } from '@/components/ui/drawer';
-import { useDueCustomer } from '@/hooks/profile/use-due-customer';
-import { useDueVirtualAccounts } from '@/hooks/profile/use-due-virtual-accounts';
 import { useClaimDueVirtualAccount } from '@/hooks/profile/use-claim-due-virtual-account';
+import { useDueCustomer } from '@/hooks/profile/use-due-customer';
+import { useDueFeeStructures } from '@/hooks/profile/use-due-fee-structures';
+import { useDueVirtualAccounts } from '@/hooks/profile/use-due-virtual-accounts';
 import { useAuth } from '@/hooks/use-auth';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type {
   DueAccount,
   DueVirtualAccount,
-  DueVirtualAccountUSDetails,
-  DueVirtualAccountEURDetails,
   DueVirtualAccountAEDDetails,
+  DueVirtualAccountEURDetails,
   DueVirtualAccountSWIFTDetails,
+  DueVirtualAccountUSDetails,
 } from '@/types/due';
 
 import {
@@ -52,7 +53,6 @@ import { RestrictedAccountsDisplay } from './restricted-accounts-display';
 export const AccountsPageContent = () => {
   const router = useRouter();
   const { user } = useAuth();
-  const isMobile = useIsMobile();
 
   // Due customer for KYC status
   const { data: dueCustomer, isLoading: isDueCustomerLoading } = useDueCustomer({
@@ -71,6 +71,10 @@ export const AccountsPageContent = () => {
         return hasPending ? 2000 : false;
       },
     });
+
+  const { data: dueFeeStructures } = useDueFeeStructures({
+    enabled: !!user?.id,
+  });
 
   // Claim mutation
   const {
@@ -204,17 +208,33 @@ export const AccountsPageContent = () => {
       const details = usdAccount.account?.details as DueVirtualAccountUSDetails | undefined;
       if (!details) return <SettingUpCard currency='USD' />;
       const swiftDetails = usdSwiftAccount?.account?.details as DueVirtualAccountSWIFTDetails | undefined;
-      return <DueAccountDetails.USD details={details} swiftDetails={swiftDetails} />;
+      return (
+        <DueAccountDetails.USD
+          details={details}
+          swiftDetails={swiftDetails}
+          feeStructures={dueFeeStructures}
+        />
+      );
     }
     if (selectedAccount === 'eur' && eurAccount) {
       const details = eurAccount.account?.details as DueVirtualAccountEURDetails | undefined;
       if (!details) return <SettingUpCard currency='EUR' />;
-      return <DueAccountDetails.EUR details={details} />;
+      return (
+        <DueAccountDetails.EUR
+          details={details}
+          feeStructures={dueFeeStructures}
+        />
+      );
     }
     if (selectedAccount === 'aed' && aedAccount) {
       const details = aedAccount.account?.details as DueVirtualAccountAEDDetails | undefined;
       if (!details) return <SettingUpCard currency='AED' />;
-      return <DueAccountDetails.AED details={details} />;
+      return (
+        <DueAccountDetails.AED
+          details={details}
+          feeStructures={dueFeeStructures}
+        />
+      );
     }
 
     return null;
