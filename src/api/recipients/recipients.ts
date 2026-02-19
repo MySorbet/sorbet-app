@@ -75,12 +75,30 @@ export const recipientsApi = {
   prepareTransfer: async (
     recipientId: string,
     amount: string,
-    senderAddress: string
+    senderAddress: string,
+    purposeCode: string
   ): Promise<PrepareTransferResponse> => {
     const response = await axios.post<PrepareTransferResponse>(
       `${API_URL}/recipients/${recipientId}/prepare-transfer`,
-      { amount, senderAddress },
+      { amount, senderAddress, purposeCode },
       await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  /**
+   * Returns allowed purpose codes for a given ACH/WIRE payment method.
+   * e.g. paymentMethod = 'usd_ach' | 'usd_wire'
+   */
+  getPurposeCodes: async (
+    paymentMethod: string
+  ): Promise<{ purposeCodes: string[]; required: boolean }> => {
+    const response = await axios.get<{ purposeCodes: string[]; required: boolean }>(
+      `${API_URL}/recipients/purpose-codes`,
+      {
+        params: { paymentMethod },
+        ...(await withAuthHeader()),
+      }
     );
     return response.data;
   },

@@ -35,7 +35,7 @@ type SendToContextType = {
   transferResult?: TransferResult;
   clearTransferResult: () => void;
   reset: () => void;
-  sendFunds: (amount: number) => Promise<void>;
+  sendFunds: (amount: number, purposeCode?: string) => Promise<void>;
 };
 
 const SendToContext = createContext<SendToContextType | undefined>(undefined);
@@ -55,6 +55,7 @@ const formSchema = z.object({
     message: '', // Disable self explanatory empty recipient error message
   }),
   amount: z.number(),
+  purposeCode: z.string().optional(),
 });
 export type SendToFormSchema = z.infer<typeof formSchema>;
 
@@ -114,15 +115,29 @@ export const SendToFormContext = ({
               )}`,
             }
           ),
+        purposeCode: z
+          .string()
+          .optional()
+          .refine(
+            (value) => {
+              const selectedRecipient: RecipientAPI | undefined =
+                recipients?.find((r) => r.id === form.getValues().recipient);
+              if (!usesTransfersApi(selectedRecipient as RecipientAPI)) return true;
+              return !!value;
+            },
+            { message: 'Please select a purpose for this transfer' }
+          ),
       })
     ),
     values: {
       recipient: selectedRecipientId ?? '',
       amount: 0,
+      purposeCode: undefined,
     },
     defaultValues: {
       recipient: selectedRecipientId ?? '',
       amount: 0,
+      purposeCode: undefined,
     },
     mode: 'onChange',
   });
@@ -140,7 +155,7 @@ export const SendToFormContext = ({
   const { smartWalletAddress } = useSmartWalletAddress();
 
   const { mutateAsync: sendFundsMutation } = useMutation({
-    mutationFn: async ({ amount }: { amount: number }) => {
+    mutationFn: async ({ amount, purposeCode }: { amount: number; purposeCode?: string }) => {
       if (!selectedRecipient) {
         throw new Error('No recipient selected');
       }
@@ -153,14 +168,18 @@ export const SendToFormContext = ({
         if (!smartWalletAddress) {
           throw new Error('Smart wallet not available');
         }
+        if (!purposeCode) {
+          throw new Error('Purpose code is required for ACH/WIRE transfers');
+        }
         console.log(
-          `[sendFunds] Calling prepareTransfer — amount=${amount}, senderAddress=${smartWalletAddress}`
+          `[sendFunds] Calling prepareTransfer — amount=${amount}, senderAddress=${smartWalletAddress}, purposeCode=${purposeCode}`
         );
         const { fundingAddress, sourceAmount, transferId, expiresAt } =
           await recipientsApi.prepareTransfer(
             selectedRecipient.id,
             amount.toString(),
-            smartWalletAddress
+            smartWalletAddress,
+            purposeCode
           );
         console.log(
           `[sendFunds] prepareTransfer OK — transferId=${transferId}, fundingAddress=${fundingAddress}, sourceAmount=${sourceAmount}, expiresAt=${expiresAt}`
@@ -237,8 +256,8 @@ export const SendToFormContext = ({
           transferResult,
           clearTransferResult: () => setTransferResult(undefined),
           reset,
-          sendFunds: async (amount) => {
-            await sendFundsMutation({ amount });
+          sendFunds: async (amount, purposeCode) => {
+            await sendFundsMutation({ amount, purposeCode });
           },
         }}
       >

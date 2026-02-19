@@ -7,6 +7,8 @@ import {
   useSendToFormContext,
   useSendToFormState,
 } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
+import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
+import { usePurposeCodes } from '@/app/(with-sidebar)/recipients/hooks/use-purpose-codes';
 import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
@@ -29,11 +31,18 @@ import {
 } from '@/components/ui/select';
 import { formatCurrency } from '@/lib/currency';
 
+import { ExchangeRate } from './exchange-rate';
 import { Percentages } from './percentages';
 import { PreviewSend } from './preview-send';
 import { Processing } from './processing';
 import { Success } from './success';
-import { ExchangeRate } from './exchange-rate';
+
+/** Converts a purpose code like SALARY_PAYMENT to "Salary Payment" */
+const formatPurposeCode = (code: string): string =>
+  code
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -78,9 +87,14 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
 
   const { isSubmitting, errors } = useSendToFormState();
 
+  const showPurposeCode = !!selectedRecipient && usesTransfersApi(selectedRecipient);
+  const { data: purposeCodesData } = usePurposeCodes(
+    showPurposeCode ? selectedRecipient?.type : undefined
+  );
+
   const onSubmit = async (data: SendToFormSchema) => {
     if (!isPreview || !selectedRecipient) return;
-    await sendFunds(data.amount);
+    await sendFunds(data.amount, data.purposeCode);
   };
 
   if (isSubmitting) {
@@ -218,6 +232,42 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
               />
             )}
           </div>
+
+          {/* Purpose code — required for ACH/WIRE recipients */}
+          {showPurposeCode && (
+            <FormField
+              control={form.control}
+              name='purposeCode'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Purpose of Transfer</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value ?? ''}
+                      onValueChange={(value) =>
+                        form.setValue('purposeCode', value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder='Select a purpose' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(purposeCodesData?.purposeCodes ?? []).map((code) => (
+                          <SelectItem key={code} value={code}>
+                            {formatPurposeCode(code)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </>
       )}
     </form>
