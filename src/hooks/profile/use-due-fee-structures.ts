@@ -1,6 +1,6 @@
-import { type UseQueryOptions,useQuery } from '@tanstack/react-query';
+import { type UseQueryOptions, useQuery } from '@tanstack/react-query';
 
-import { type DueFeeStructure,getDueFeeStructures } from '@/api/due/due';
+import { type DueFeeStructure, getDueFeeStructures } from '@/api/due/due';
 
 export const useDueFeeStructures = <
   T extends Omit<UseQueryOptions<DueFeeStructure[]>, 'queryKey' | 'queryFn'>

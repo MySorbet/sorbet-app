@@ -85,7 +85,7 @@ export const PreviewSend = ({
           <p className='text-muted-foreground text-sm font-medium'>
             Purpose of Transfer
           </p>
-          <p className='text-sm font-semibold'>{purposeCode ? formatPurposeCode(purposeCode) : null}</p>
+          <p className='text-sm font-semibold'>{formatPurposeCode(purposeCode)}</p>
         </div>
       )}
     </div>

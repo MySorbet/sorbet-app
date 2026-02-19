@@ -78,3 +78,19 @@ export const needsMigration = (recipient: RecipientAPI): boolean => {
 export const usesTransfersApi = (recipient: RecipientAPI): boolean => {
   return recipient.type === 'usd_ach' || recipient.type === 'usd_wire';
 };
+
+/**
+ * Check if recipient is a bank account (any Due Network bank type).
+ * Used to enforce the minimum send amount for bank transfers.
+ */
+export const isBankRecipient = (recipient: RecipientAPI | undefined): boolean => {
+  if (!recipient) return false;
+  return (
+    recipient.type === 'usd_ach' ||
+    recipient.type === 'usd_wire' ||
+    recipient.type === 'usd_swift' ||
+    recipient.type === 'eur_sepa' ||
+    recipient.type === 'eur_swift' ||
+    recipient.type === 'aed_local'
+  );
+};

@@ -19,7 +19,7 @@ import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalance } from '@/hooks/web3/use-wallet-balance';
 import { formatCurrency } from '@/lib/currency';
 
-import { BANK_ACCOUNTS_MIN_AMOUNT, needsMigration, usesTransfersApi } from '../utils';
+import { BANK_ACCOUNTS_MIN_AMOUNT, isBankRecipient, needsMigration, usesTransfersApi } from '../utils';
 
 export type TransferResult =
   | { status: 'success'; hash: string }
@@ -102,11 +102,9 @@ export const SendToFormContext = ({
             (value) => {
               const selectedRecipient: RecipientAPI | undefined =
                 recipients?.find((r) => r.id === form.getValues().recipient);
-              const minValueRequired: number =
-                selectedRecipient?.type === 'usd' ||
-                selectedRecipient?.type === 'eur'
-                  ? BANK_ACCOUNTS_MIN_AMOUNT
-                  : 0;
+              const minValueRequired: number = isBankRecipient(selectedRecipient)
+                ? BANK_ACCOUNTS_MIN_AMOUNT
+                : 0;
               return value >= minValueRequired;
             },
             {
@@ -122,7 +120,7 @@ export const SendToFormContext = ({
             (value) => {
               const selectedRecipient: RecipientAPI | undefined =
                 recipients?.find((r) => r.id === form.getValues().recipient);
-              if (!usesTransfersApi(selectedRecipient as RecipientAPI)) return true;
+              if (!selectedRecipient || !usesTransfersApi(selectedRecipient)) return true;
               return !!value;
             },
             { message: 'Please select a purpose for this transfer' }
