@@ -70,3 +70,11 @@ export const formatTransferDate = (date: string) => {
 export const needsMigration = (recipient: RecipientAPI): boolean => {
   return recipient.type === 'usd' || recipient.type === 'eur';
 };
+
+/**
+ * Check if recipient uses the Due Transfers API (instead of a static virtual account address).
+ * ACH and WIRE require a purposeCode per-transaction, so they cannot use virtual accounts.
+ */
+export const usesTransfersApi = (recipient: RecipientAPI): boolean => {
+  return recipient.type === 'usd_ach' || recipient.type === 'usd_wire';
+};

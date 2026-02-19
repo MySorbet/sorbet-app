@@ -8,6 +8,7 @@ import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
+import { formatAccountNumber } from '../utils';
 import { ExchangeRate } from './exchange-rate';
 
 /** Renders a preview of a transaction, showing:
@@ -53,9 +54,15 @@ export const PreviewSend = ({
           <p className='text-muted-foreground flex items-center gap-2 text-sm font-medium'>
             <Wallet className='text-foreground size-4' /> To
           </p>
-          <CopyAddress address={recipient?.walletAddress ?? ''}>
-            {formatWalletAddress(recipient?.walletAddress ?? '')}
-          </CopyAddress>
+          {recipient.type === 'crypto' ? (
+            <CopyAddress address={recipient?.walletAddress ?? ''}>
+              {formatWalletAddress(recipient?.walletAddress ?? '')}
+            </CopyAddress>
+          ) : (
+            <p className='ml-5 text-sm'>
+              {recipient.label} · {formatAccountNumber(recipient.detail)}
+            </p>
+          )}
         </div>
       </div>
     </div>

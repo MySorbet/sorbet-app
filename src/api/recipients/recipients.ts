@@ -6,6 +6,7 @@ import { withAuthHeader } from '../with-auth-header';
 import {
   CreateRecipientDto,
   MigrateRecipientDto,
+  PrepareTransferResponse,
   RecipientAPI,
   RecipientAPIBankDetailed,
   RecipientTransfer,
@@ -62,6 +63,23 @@ export const recipientsApi = {
     const response = await axios.post<RecipientAPI>(
       `${API_URL}/recipients/${recipientId}/migrate`,
       data,
+      await withAuthHeader()
+    );
+    return response.data;
+  },
+
+  /**
+   * For ACH/WIRE recipients: creates a Due transfer quote, transfer, and disposable
+   * funding address. Returns the address to send USDC to along with the exact amount.
+   */
+  prepareTransfer: async (
+    recipientId: string,
+    amount: string,
+    senderAddress: string
+  ): Promise<PrepareTransferResponse> => {
+    const response = await axios.post<PrepareTransferResponse>(
+      `${API_URL}/recipients/${recipientId}/prepare-transfer`,
+      { amount, senderAddress },
       await withAuthHeader()
     );
     return response.data;

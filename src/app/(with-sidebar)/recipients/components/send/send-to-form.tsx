@@ -67,7 +67,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     recipients,
     maxAmount,
     transferResult,
-    sendUSDC,
+    sendFunds,
     selectedRecipient,
   } = useSendToContext();
 
@@ -79,12 +79,8 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
   const { isSubmitting, errors } = useSendToFormState();
 
   const onSubmit = async (data: SendToFormSchema) => {
-    if (!isPreview) return;
-
-    const address = selectedRecipient?.walletAddress;
-    if (address) {
-      await sendUSDC(data.amount, address);
-    }
+    if (!isPreview || !selectedRecipient) return;
+    await sendFunds(data.amount);
   };
 
   if (isSubmitting) {
