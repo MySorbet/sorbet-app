@@ -10,6 +10,7 @@ import { getUnifiedTransactions } from '@/api/transactions';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
 import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
+import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
 import { DepositDialog } from '../../dashboard/components/deposit-dialog';
@@ -26,6 +27,7 @@ const PAGE_SIZE = 10;
 export const TransactionsBrowser: React.FC = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { currentChain, currentAddress } = useWalletAddress();
   const { smartWalletAddress } = useSmartWalletAddress();
   const { data: bridgeCustomer } = useBridgeCustomer();
 
@@ -66,7 +68,11 @@ export const TransactionsBrowser: React.FC = () => {
       }
 
       // Prevent duplicate fetches for the same page
-      if (lastFetchedPageRef.current === currentPage && !after_date && !before_date) {
+      if (
+        lastFetchedPageRef.current === currentPage &&
+        !after_date &&
+        !before_date
+      ) {
         return;
       }
       lastFetchedPageRef.current = currentPage;
@@ -128,7 +134,7 @@ export const TransactionsBrowser: React.FC = () => {
         setIsLoading(false);
       }
     },
-    [smartWalletAddress, currentPage]
+    [currentPage, smartWalletAddress, user?.firstName, user?.lastName]
   );
 
   useEffect(() => {
@@ -198,7 +204,8 @@ export const TransactionsBrowser: React.FC = () => {
         <DepositDialog
           open={isDepositOpen}
           onOpenChange={setIsDepositOpen}
-          walletAddress={smartWalletAddress ?? undefined}
+          chain={currentChain}
+          walletAddress={currentAddress ?? undefined}
           bridgeCustomer={bridgeCustomer}
         />
 

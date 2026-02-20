@@ -31,7 +31,10 @@ const Content = forwardRef<
   return (
     <div
       ref={ref}
-      className={cn('container flex flex-1 justify-center pt-0 px-6 pb-6', className)}
+      className={cn(
+        'container flex flex-1 justify-center px-6 pb-6 pt-0',
+        className
+      )}
     >
       {children}
     </div>

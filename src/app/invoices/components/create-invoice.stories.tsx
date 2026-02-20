@@ -28,7 +28,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const samplePrefills: Required<Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'>> &
+const samplePrefills: Required<
+  Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'>
+> &
   Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'> = {
   toName: 'John Doe',
   toEmail: 'john.doe@example.com',

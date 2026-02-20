@@ -42,9 +42,9 @@ export const AccountLinking = () => {
   const { mutateAsync: updateUser } = useUpdateUser();
 
   const { updateEmail } = useUpdateAccount({
-    onSuccess: (linkedAccount) => {
+    onSuccess: ({ user }) => {
       // Here we update the sorbet db with the new user email. Knock will also be updated
-      const email = linkedAccount.email?.address;
+      const email = user.email?.address;
       if (email && sorbetUser?.id) {
         updateUser({
           id: sorbetUser.id,

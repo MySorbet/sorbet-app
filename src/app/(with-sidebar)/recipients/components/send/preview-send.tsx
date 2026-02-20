@@ -1,4 +1,5 @@
 import { Wallet } from 'lucide-react';
+import Image from 'next/image';
 
 import { RecipientAPI } from '@/api/recipients/types';
 import { useSendToFormContext } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
@@ -6,6 +7,8 @@ import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
 import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Separator } from '@/components/ui/separator';
+import { useMyChain } from '@/hooks/use-my-chain';
+import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
@@ -34,11 +37,25 @@ export const PreviewSend = ({
   amount: number;
   recipient: RecipientAPI;
 }) => {
+  const { data: myChainData } = useMyChain();
+  const currentChain = myChainData?.chain ?? 'base';
   const { smartWalletAddress } = useSmartWalletAddress();
+  const { stellarAddress } = useWalletAddress();
   const form = useSendToFormContext();
   const purposeCode = form.getValues('purposeCode');
-  const showConversion = recipient.type === 'eur';
+  const showConversion = recipient.type === 'eur' || recipient.type.startsWith('eur_');
   const showPurpose = usesTransfersApi(recipient) && !!purposeCode;
+  const paymentChain: 'base' | 'stellar' =
+    recipient.type === 'crypto_stellar'
+      ? 'stellar'
+      : recipient.type === 'crypto_base'
+      ? 'base'
+      : currentChain;
+
+  const fromAddress =
+    paymentChain === 'stellar'
+      ? stellarAddress ?? ''
+      : smartWalletAddress ?? '';
 
   return (
     <div className='animate-in fade-in-0 slide-in-from-right-2 space-y-10'>
@@ -58,8 +75,21 @@ export const PreviewSend = ({
           <p className='text-muted-foreground flex items-center gap-2 text-sm font-medium'>
             <Wallet className='text-foreground size-4' /> From
           </p>
-          <CopyAddress address={smartWalletAddress ?? ''}>
-            My Sorbet Wallet
+          <CopyAddress address={fromAddress}>
+            <span className='inline-flex items-center gap-2'>
+              <Image
+                src={
+                  paymentChain === 'stellar'
+                    ? '/svg/stellar_logo.svg'
+                    : '/svg/base_logo.svg'
+                }
+                alt={paymentChain === 'stellar' ? 'Stellar' : 'Base'}
+                width={14}
+                height={14}
+              />
+              My Sorbet Wallet (
+              {paymentChain === 'stellar' ? 'Stellar' : 'Base'})
+            </span>
           </CopyAddress>
         </div>
         <Separator orientation='vertical' className='mx-2 -mt-5 mb-2 h-8' />
@@ -67,7 +97,7 @@ export const PreviewSend = ({
           <p className='text-muted-foreground flex items-center gap-2 text-sm font-medium'>
             <Wallet className='text-foreground size-4' /> To
           </p>
-          {recipient.type === 'crypto' ? (
+          {recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar' ? (
             <CopyAddress address={recipient?.walletAddress ?? ''}>
               {formatWalletAddress(recipient?.walletAddress ?? '')}
             </CopyAddress>

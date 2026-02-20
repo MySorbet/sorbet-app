@@ -5,7 +5,7 @@ import { PAYMENT_TIMING_DESCRIPTIONS } from '@/app/invoices/utils';
 
 /** Maps RecipientType to timing category (bank vs crypto) */
 function getTimingCategory(type: RecipientType): 'usd' | 'eur' | 'crypto' {
-  if (type === 'crypto') return 'crypto';
+  if (type === 'crypto_base' || type === 'crypto_stellar') return 'crypto';
   if (type === 'usd' || type.startsWith('usd_')) return 'usd';
   return 'eur'; // eur, eur_sepa, eur_swift, aed_local
 }

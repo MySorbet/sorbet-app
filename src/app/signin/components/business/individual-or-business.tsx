@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
-import { OnboardingFormIndividual } from './onboarding-form-individual';
 import { OnboardingFormBusiness } from './onboarding-form-business';
+import { OnboardingFormIndividual } from './onboarding-form-individual';
 
 interface OnboardingFormData {
   customerType: 'individual' | 'business';

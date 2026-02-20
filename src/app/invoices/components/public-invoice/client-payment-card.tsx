@@ -179,11 +179,15 @@ const PaymentMethodUSDC = ({ address }: { address: string }) => {
         </div>
       </div>
       <Card className='flex items-center justify-center p-3'>
-        {isLoadingQRCode ? (
-          <Skeleton className='size-48' />
-        ) : (
-          <div ref={qrCodeRef} />
-        )}
+        <div className='relative size-48'>
+          <div
+            ref={qrCodeRef}
+            className={isLoadingQRCode ? 'opacity-0' : 'opacity-100'}
+          />
+          {isLoadingQRCode && (
+            <Skeleton className='absolute inset-0 size-48' />
+          )}
+        </div>
       </Card>
       <BaseAlert
         description='This address can only receive USDC on the Base Network. Funds may be lost if USDC is sent on another network.'

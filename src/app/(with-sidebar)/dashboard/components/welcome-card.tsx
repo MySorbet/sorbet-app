@@ -17,9 +17,9 @@ export const WelcomeCard = ({
 }) => {
   const title = name ? `Welcome, ${name}` : 'Welcome to Sorbet';
   return (
-    <div 
+    <div
       className={cn(
-        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 pt-[1px] pb-4',
+        'flex w-full flex-col items-start justify-between gap-4 border-b px-4 pb-4 pt-[1px]',
         'sm:flex-row sm:items-center sm:gap-6 sm:px-6',
         'md:min-h-[72px]',
         className
@@ -27,9 +27,7 @@ export const WelcomeCard = ({
     >
       {/* Mobile: Title + Buttons in one row */}
       <div className='flex w-full items-center justify-between sm:hidden'>
-        <h2 className='text-xl font-semibold'>
-          {title}
-        </h2>
+        <h2 className='text-xl font-semibold'>{title}</h2>
         <div className='flex shrink-0 gap-2'>
           <Button
             variant='outline'
@@ -52,9 +50,7 @@ export const WelcomeCard = ({
 
       {/* Desktop: Original layout */}
       <div className='hidden min-w-0 flex-1 space-y-0.5 sm:block'>
-        <h2 className='text-2xl font-semibold'>
-          {title}
-        </h2>
+        <h2 className='text-2xl font-semibold'>{title}</h2>
         <p className='text-muted-foreground text-sm'>
           Manage your account and monitor activity
         </p>

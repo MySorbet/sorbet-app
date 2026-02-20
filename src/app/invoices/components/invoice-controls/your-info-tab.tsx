@@ -1,6 +1,7 @@
 import { CircleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { type InvoicingDetails, getInvoicingDetails } from '@/api/invoicing';
 import {
   FormControl,
   FormField,
@@ -16,7 +17,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks';
-import { getInvoicingDetails, type InvoicingDetails } from '@/api/invoicing';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 
@@ -27,7 +27,8 @@ import { useInvoiceForm } from '../../hooks/use-invoice-form';
 export const YourInfoTab = () => {
   const form = useInvoiceForm();
   const { user } = useAuth();
-  const [invoicingDetails, setInvoicingDetails] = useState<InvoicingDetails | null>(null);
+  const [invoicingDetails, setInvoicingDetails] =
+    useState<InvoicingDetails | null>(null);
   const [useBusiness, setUseBusiness] = useState(false);
   const [useTaxId, setUseTaxId] = useState(false);
   const [useAddress, setUseAddress] = useState(false);
@@ -65,20 +66,14 @@ export const YourInfoTab = () => {
   const handleAddressToggle = (checked: boolean) => {
     setUseAddress(checked);
     if (checked && invoicingDetails) {
-      const hasAddress =
-        invoicingDetails.street &&
-        invoicingDetails.city &&
-        invoicingDetails.state &&
-        invoicingDetails.country &&
-        invoicingDetails.postalCode;
-
-      if (hasAddress) {
+      const { street, city, state, country, postalCode } = invoicingDetails;
+      if (street && city && state && country && postalCode) {
         form.setValue('address', {
-          street: invoicingDetails.street!,
-          city: invoicingDetails.city!,
-          state: invoicingDetails.state!,
-          country: invoicingDetails.country!,
-          zip: invoicingDetails.postalCode!,
+          street,
+          city,
+          state,
+          country,
+          zip: postalCode,
         });
       }
     } else {

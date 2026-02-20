@@ -160,7 +160,8 @@ export const RecipientsTableCore: React.FC<RecipientsTableCoreProps> = ({
                           onDelete?.(recipient.id);
                         }}
                         disabled={
-                          recipient.type !== 'crypto' &&
+                          recipient.type !== 'crypto_base' &&
+                          recipient.type !== 'crypto_stellar' &&
                           !isDuePaymentMethod(recipient.type)
                         }
                       >
@@ -222,7 +223,8 @@ const getRecipientLabel = (type: RecipientType): string => {
   
   if (type === 'usd') return 'USD';
   if (type === 'eur') return 'EUR';
-  if (type === 'crypto') return 'Crypto';
+  if (type === 'crypto_base') return 'Crypto (Base)';
+  if (type === 'crypto_stellar') return 'Crypto (Stellar)';
   
   return type;
 };
@@ -239,7 +241,7 @@ const RecipientTypeCell = ({ type }: { type: RecipientType }) => {
 
 /** Displays account detail - wallet address or masked account number */
 const AccountDetail = ({ recipient }: { recipient: RecipientAPI }) => {
-  if (recipient.type === 'crypto') {
+  if (recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar') {
     return (
       <CopyButton
         className='h-fit flex-row-reverse p-1 px-0 text-sm font-normal'

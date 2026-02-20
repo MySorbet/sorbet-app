@@ -72,7 +72,7 @@ const buildAccountData = (
   }
 
   // Handle crypto
-  if (recipient.type === 'crypto') {
+  if (recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar') {
     return {
       name: recipient.label,
       type: recipient.type,
@@ -121,7 +121,10 @@ export const RecipientSheet = ({
   const { data: details, refetch: refetchDetails } = useRecipientDetails(
     recipient?.id ?? '',
     {
-      enabled: recipient && recipient.type !== 'crypto',
+      enabled:
+        !!recipient &&
+        recipient.type !== 'crypto_base' &&
+        recipient.type !== 'crypto_stellar',
     }
   );
 
@@ -150,7 +153,9 @@ export const RecipientSheet = ({
   if (!recipient) return null;
   // Allow deletion for crypto and Due Network recipients
   const isDeleteDisabled =
-    recipient.type !== 'crypto' && !isDuePaymentMethod(recipient.type);
+    recipient.type !== 'crypto_base' &&
+    recipient.type !== 'crypto_stellar' &&
+    !isDuePaymentMethod(recipient.type);
 
   // Check if this is a Bridge recipient that needs migration
   const requiresMigration = needsMigration(recipient);
