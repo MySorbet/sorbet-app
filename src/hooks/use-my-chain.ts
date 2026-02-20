@@ -18,6 +18,9 @@ export const useSetMyChain = () => {
     mutationFn: async (chain: SorbetChain) => await setMyChain(chain),
     onSuccess: (data) => {
       queryClient.setQueryData(myChainQueryKey, data);
+      // Chain switch updates Bridge bank recipients' walletAddress server-side,
+      // so invalidate the recipients cache to get fresh data.
+      queryClient.invalidateQueries({ queryKey: ['recipients'] });
     },
   });
 };

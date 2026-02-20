@@ -102,6 +102,8 @@ export const SendToFormContext = ({
         ? 'stellar'
         : selectedRecipient?.type === 'crypto_base'
         ? 'base'
+        : isBankRecipient(selectedRecipient)
+        ? 'base' // Due bank recipients always pay through Base
         : currentChain;
 
     const maxAmount =
@@ -126,6 +128,7 @@ export const SendToFormContext = ({
     }
 
     const minValueRequired: number =
+      isBankRecipient(selectedRecipient) ||
       selectedRecipient?.type === 'usd' || selectedRecipient?.type === 'eur'
         ? BANK_ACCOUNTS_MIN_AMOUNT
         : 0;
@@ -191,6 +194,8 @@ export const SendToFormContext = ({
       ? 'stellar'
       : selectedRecipient?.type === 'crypto_base'
       ? 'base'
+      : isBankRecipient(selectedRecipient)
+      ? 'base' // Due bank recipients always pay through Base
       : currentChain;
 
   const maxAmount =

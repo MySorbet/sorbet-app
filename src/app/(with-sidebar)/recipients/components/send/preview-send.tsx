@@ -2,12 +2,11 @@ import { Wallet } from 'lucide-react';
 import Image from 'next/image';
 
 import { RecipientAPI } from '@/api/recipients/types';
-import { useSendToFormContext } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
+import { useSendToContext, useSendToFormContext } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
 import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
 import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Separator } from '@/components/ui/separator';
-import { useMyChain } from '@/hooks/use-my-chain';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { formatCurrency } from '@/lib/currency';
@@ -37,20 +36,13 @@ export const PreviewSend = ({
   amount: number;
   recipient: RecipientAPI;
 }) => {
-  const { data: myChainData } = useMyChain();
-  const currentChain = myChainData?.chain ?? 'base';
+  const { paymentChain } = useSendToContext();
   const { smartWalletAddress } = useSmartWalletAddress();
   const { stellarAddress } = useWalletAddress();
   const form = useSendToFormContext();
   const purposeCode = form.getValues('purposeCode');
   const showConversion = recipient.type === 'eur' || recipient.type.startsWith('eur_');
   const showPurpose = usesTransfersApi(recipient) && !!purposeCode;
-  const paymentChain: 'base' | 'stellar' =
-    recipient.type === 'crypto_stellar'
-      ? 'stellar'
-      : recipient.type === 'crypto_base'
-      ? 'base'
-      : currentChain;
 
   const fromAddress =
     paymentChain === 'stellar'
