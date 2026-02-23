@@ -16,5 +16,3 @@ export interface SettingsTabProps {
 }
 
 export type SettingsTab = 'account' | 'profile';
-
-

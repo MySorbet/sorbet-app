@@ -1,6 +1,8 @@
 import { BankRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/bank-recipient-form';
 import { CryptoRecipientFormValues } from '@/app/(with-sidebar)/recipients/components/crypto-recipient-form';
 
+export type SorbetChain = 'base' | 'stellar';
+
 // New Due Network payment method types
 export type DuePaymentMethod =
   | 'usd_ach'
@@ -14,7 +16,11 @@ export type DuePaymentMethod =
 export type LegacyRecipientType = 'usd' | 'eur';
 
 // All recipient types
-export type RecipientType = DuePaymentMethod | LegacyRecipientType | 'crypto';
+export type RecipientType =
+  | DuePaymentMethod
+  | LegacyRecipientType
+  | 'crypto_base'
+  | 'crypto_stellar';
 
 // Due schema mapping
 export type DueSchema = 'bank_us' | 'bank_sepa' | 'bank_swift' | 'bank_mena';
@@ -83,11 +89,12 @@ export const PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
 
 /** Data sent to the API to create a recipient */
 export type CreateRecipientDto =
-  | { type: DuePaymentMethod; values: BankRecipientFormValues }
-  | { type: 'crypto'; values: CryptoRecipientFormValues }
+  | { chain: SorbetChain; type: DuePaymentMethod; values: BankRecipientFormValues }
+  | { chain: 'base'; type: 'crypto_base'; values: CryptoRecipientFormValues }
+  | { chain: 'stellar'; type: 'crypto_stellar'; values: CryptoRecipientFormValues }
   // Legacy types for backward compatibility
-  | { type: 'usd'; values: BankRecipientFormValues }
-  | { type: 'eur'; values: BankRecipientFormValues };
+  | { chain: SorbetChain; type: 'usd'; values: BankRecipientFormValues }
+  | { chain: SorbetChain; type: 'eur'; values: BankRecipientFormValues };
 
 /** Data sent to the API to migrate a Bridge recipient to Due Network */
 export interface MigrateRecipientDto {
@@ -128,7 +135,9 @@ type RecipientAPIBase = {
 type RecipientAPIBank = RecipientAPIBase & {
   type: DuePaymentMethod | 'usd' | 'eur';
   // Bridge-specific (legacy)
-  liquidationAddressId?: string;
+  liquidationAddressIds?: Partial<Record<SorbetChain, string | null>>;
+  /** Per-chain blockchain memo for Stellar liquidation addresses (Bridge blockchain_memo) */
+  liquidationAddressMemos?: Partial<Record<SorbetChain, string | null>>;
   externalAccountId?: string;
   // Due-specific (new)
   dueRecipientId?: string;
@@ -138,7 +147,7 @@ type RecipientAPIBank = RecipientAPIBase & {
 };
 
 type RecipientAPICrypto = RecipientAPIBase & {
-  type: 'crypto';
+  type: 'crypto_base' | 'crypto_stellar';
 };
 
 export type RecipientAPI = RecipientAPIBank | RecipientAPICrypto;
@@ -238,6 +247,8 @@ type LiquidationAddress = {
     | 'usdt';
   return_address: string;
   state: 'active' | 'deactivated';
+  /** Memo to include in the transaction; for Stellar liquidation addresses only */
+  blockchain_memo?: string;
 
   [key: string]: unknown; // Incase there is anything else
 };
@@ -292,4 +303,13 @@ export type RecipientTransfer = {
   status: RecipientTransferStatus;
   txHash?: string;
   type: RecipientTransferType;
+};
+
+/** Response from POST /recipients/:id/prepare-transfer */
+export type PrepareTransferResponse = {
+  fundingAddress: string;
+  transferId: string;
+  expiresAt: string;
+  sourceAmount: string;
+  sourceCurrency: string;
 };

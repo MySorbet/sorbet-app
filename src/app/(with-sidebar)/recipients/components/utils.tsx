@@ -70,3 +70,27 @@ export const formatTransferDate = (date: string) => {
 export const needsMigration = (recipient: RecipientAPI): boolean => {
   return recipient.type === 'usd' || recipient.type === 'eur';
 };
+
+/**
+ * Check if recipient uses the Due Transfers API (instead of a static virtual account address).
+ * ACH and WIRE require a purposeCode per-transaction, so they cannot use virtual accounts.
+ */
+export const usesTransfersApi = (recipient: RecipientAPI): boolean => {
+  return recipient.type === 'usd_ach' || recipient.type === 'usd_wire';
+};
+
+/**
+ * Check if recipient is a bank account (any Due Network bank type).
+ * Used to enforce the minimum send amount for bank transfers.
+ */
+export const isBankRecipient = (recipient: RecipientAPI | undefined): boolean => {
+  if (!recipient) return false;
+  return (
+    recipient.type === 'usd_ach' ||
+    recipient.type === 'usd_wire' ||
+    recipient.type === 'usd_swift' ||
+    recipient.type === 'eur_sepa' ||
+    recipient.type === 'eur_swift' ||
+    recipient.type === 'aed_local'
+  );
+};

@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   client: {
-    NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'production', 'test']),
+    NEXT_PUBLIC_NODE_ENV: z.enum(['development', 'preview', 'staging', 'production']),
     NEXT_PUBLIC_SORBET_API_URL: z.string().url(),
     NEXT_PUBLIC_DUE_BASE_URL: z.string().url(),
     NEXT_PUBLIC_GOOGLE_MAP_KEY: z.string(),
@@ -15,6 +15,10 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_USDC_ADDRESS: z.string(),
     NEXT_PUBLIC_BASE_EXPLORER: z.string().url(),
     NEXT_PUBLIC_BASE_RPC_URL: z.string(),
+    NEXT_PUBLIC_STELLAR_HORIZON_URL_PUBLIC: z.string().url(),
+    NEXT_PUBLIC_STELLAR_HORIZON_URL_TESTNET: z.string().url(),
+    NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE: z.string(),
+    NEXT_PUBLIC_STELLAR_USDC_ISSUER: z.string(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().url(),
   },
@@ -34,6 +38,14 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_USDC_ADDRESS: process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS,
     NEXT_PUBLIC_BASE_EXPLORER: process.env.NEXT_PUBLIC_BASE_EXPLORER,
     NEXT_PUBLIC_BASE_RPC_URL: process.env.NEXT_PUBLIC_BASE_RPC_URL,
+    NEXT_PUBLIC_STELLAR_HORIZON_URL_PUBLIC:
+      process.env.NEXT_PUBLIC_STELLAR_HORIZON_URL_PUBLIC,
+    NEXT_PUBLIC_STELLAR_HORIZON_URL_TESTNET:
+      process.env.NEXT_PUBLIC_STELLAR_HORIZON_URL_TESTNET,
+    NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE:
+      process.env.NEXT_PUBLIC_STELLAR_USDC_ASSET_CODE,
+    NEXT_PUBLIC_STELLAR_USDC_ISSUER:
+      process.env.NEXT_PUBLIC_STELLAR_USDC_ISSUER,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },

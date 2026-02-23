@@ -139,8 +139,11 @@ export const LastPage: Story = {
 export const Interactive: Story = {
   render: (args) => {
     const [searchValue, setSearchValue] = useState('');
-    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
-    const [statusFilter, setStatusFilter] = useState<TransactionStatusFilter>('all');
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(
+      undefined
+    );
+    const [statusFilter, setStatusFilter] =
+      useState<TransactionStatusFilter>('all');
     const [typeFilter, setTypeFilter] = useState<TransactionTypeFilter>('all');
     const [currentPage, setCurrentPage] = useState(1);
 

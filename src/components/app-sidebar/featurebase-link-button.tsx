@@ -36,6 +36,7 @@ export const FeaturebaseLinkButton = ({
     });
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const iconRef = useRef<any>(null);
 
   const handleMouseEnter = () => {

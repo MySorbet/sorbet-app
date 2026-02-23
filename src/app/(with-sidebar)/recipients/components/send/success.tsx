@@ -16,10 +16,13 @@ export const Success = ({
   recipient: RecipientAPI;
 }) => {
   const label =
-    recipient.type === 'crypto'
+    recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar'
       ? formatWalletAddress(recipient.walletAddress)
       : `${recipient.label} ${formatAccountNumber(recipient.detail)}`;
-  const status = recipient.type === 'crypto' ? 'Completed' : 'Processing';
+  const status =
+    recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar'
+      ? 'Completed'
+      : 'Processing';
   return (
     <div className='animate-in fade-in-0 flex flex-col items-center justify-center gap-6'>
       <div className='space-y-2 text-center'>
@@ -28,7 +31,11 @@ export const Success = ({
         </p>
         <p className='text-xl font-semibold'>{formatCurrency(amount)}</p>
         <p className='text-muted-foreground flex items-center gap-1 text-xs leading-none'>
-          {recipient.type === 'crypto' && <Wallet className='size-3' />} {label}
+          {(recipient.type === 'crypto_base' ||
+            recipient.type === 'crypto_stellar') && (
+            <Wallet className='size-3' />
+          )}{' '}
+          {label}
         </p>
       </div>
       <div className='space-y-2 text-center'>

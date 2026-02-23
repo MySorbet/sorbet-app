@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react';
+import Image from 'next/image';
 import { useWatch } from 'react-hook-form';
 
 import {
@@ -7,7 +8,12 @@ import {
   useSendToFormContext,
   useSendToFormState,
 } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
-import { baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
+import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
+import { usePurposeCodes } from '@/app/(with-sidebar)/recipients/hooks/use-purpose-codes';
+import {
+  baseScanUrl,
+  stellarScanUrl,
+} from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
 import { TransactionStatusBadge } from '@/components/common/transaction-status-badge';
@@ -29,11 +35,18 @@ import {
 } from '@/components/ui/select';
 import { formatCurrency } from '@/lib/currency';
 
+import { ExchangeRate } from './exchange-rate';
 import { Percentages } from './percentages';
 import { PreviewSend } from './preview-send';
 import { Processing } from './processing';
 import { Success } from './success';
-import { ExchangeRate } from './exchange-rate';
+
+/** Converts a purpose code like SALARY_PAYMENT to "Salary Payment" */
+const formatPurposeCode = (code: string): string =>
+  code
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -67,8 +80,10 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     recipients,
     maxAmount,
     transferResult,
-    sendUSDC,
+    sendFunds,
     selectedRecipient,
+    paymentChain,
+    sendDisabledReason,
   } = useSendToContext();
 
   const form = useSendToFormContext();
@@ -78,13 +93,14 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
 
   const { isSubmitting, errors } = useSendToFormState();
 
-  const onSubmit = async (data: SendToFormSchema) => {
-    if (!isPreview) return;
+  const showPurposeCode = !!selectedRecipient && usesTransfersApi(selectedRecipient);
+  const { data: purposeCodesData } = usePurposeCodes(
+    showPurposeCode ? selectedRecipient?.type : undefined
+  );
 
-    const address = selectedRecipient?.walletAddress;
-    if (address) {
-      await sendUSDC(data.amount, address);
-    }
+  const onSubmit = async (data: SendToFormSchema) => {
+    if (!isPreview || !selectedRecipient) return;
+    await sendFunds(data.amount, data.purposeCode);
   };
 
   if (isSubmitting) {
@@ -175,7 +191,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
               control={form.control}
               name='amount'
               render={({ field }) => {
-                const showConversion = selectedRecipient?.type === 'eur';
+                const showConversion = selectedRecipient?.type === 'eur' || selectedRecipient?.type.startsWith('eur_');
 
                 return (
                   <FormItem>
@@ -199,6 +215,30 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
                         {formatCurrency(maxAmount ?? 0)} USDC Available
                       </p>
                     )}
+                    {selectedRecipient && (
+                      <div className='text-muted-foreground flex items-center gap-2 text-xs'>
+                        <Image
+                          src={
+                            paymentChain === 'stellar'
+                              ? '/svg/stellar_logo.svg'
+                              : '/svg/base_logo.svg'
+                          }
+                          alt={paymentChain === 'stellar' ? 'Stellar' : 'Base'}
+                          width={14}
+                          height={14}
+                        />
+                        <span>
+                          Paying from your{' '}
+                          {paymentChain === 'stellar' ? 'Stellar' : 'Base'}{' '}
+                          wallet
+                        </span>
+                      </div>
+                    )}
+                    {sendDisabledReason && (
+                      <p className='text-destructive text-xs'>
+                        {sendDisabledReason}
+                      </p>
+                    )}
                     <ExchangeRate
                       amount={field.value || 0}
                       variant='form'
@@ -212,7 +252,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
             {/* Percentage buttons */}
             {maxAmount !== undefined && (
               <Percentages
-                disabled={maxAmount === undefined}
+                disabled={maxAmount === undefined || !!sendDisabledReason}
                 onClick={(percentage) =>
                   form.setValue('amount', maxAmount * (percentage / 100), {
                     shouldValidate: true,
@@ -222,6 +262,42 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
               />
             )}
           </div>
+
+          {/* Purpose code — required for ACH/WIRE recipients */}
+          {showPurposeCode && (
+            <FormField
+              control={form.control}
+              name='purposeCode'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Purpose of Transfer</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value ?? ''}
+                      onValueChange={(value) =>
+                        form.setValue('purposeCode', value, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder='Select a purpose' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(purposeCodesData?.purposeCodes ?? []).map((code) => (
+                          <SelectItem key={code} value={code}>
+                            {formatPurposeCode(code)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </>
       )}
     </form>
@@ -229,9 +305,10 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
 };
 
 export const SendToFormSubmitButton = () => {
-  const { isPreview, setIsPreview, transferResult } = useSendToContext();
+  const { isPreview, setIsPreview, transferResult, sendDisabledReason } =
+    useSendToContext();
   const { isSubmitting, isValid } = useSendToFormState();
-  const disabled = !isValid;
+  const disabled = !isValid || !!sendDisabledReason;
 
   if (isSubmitting || transferResult) {
     return null;
@@ -294,7 +371,15 @@ export const SendToFormBackButton = ({ onClose }: { onClose?: () => void }) => {
         type='button'
         asChild
       >
-        <Nt href={baseScanUrl(transferResult.hash)}>View details</Nt>
+        <Nt
+          href={
+            transferResult.chain === 'stellar'
+              ? stellarScanUrl(transferResult.hash)
+              : baseScanUrl(transferResult.hash)
+          }
+        >
+          View details
+        </Nt>
       </Button>
     );
   }

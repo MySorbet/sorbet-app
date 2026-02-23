@@ -1,18 +1,23 @@
 'use client';
 
 import { InfoTooltip } from '@/components/common/info-tooltip/info-tooltip';
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/currency';
 
 import {
-  BalanceChart,
   type BalanceHistory,
+  BalanceChart,
 } from '../../wallet/components/balance-card/balance-chart';
 import {
+  displayDuration,
   Duration,
   SelectDuration,
-  displayDuration,
 } from '../../wallet/components/balance-card/select-duration';
 import { WalletSummaryCard } from '../../wallet/components/wallet-summary-card';
 

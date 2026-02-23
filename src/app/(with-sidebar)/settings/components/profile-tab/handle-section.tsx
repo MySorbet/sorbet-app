@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import type { ProfileFormData } from '../../schemas';
 import { SETTINGS_CONFIG } from '../../constants';
+import type { ProfileFormData } from '../../schemas';
 import { SettingsSection } from '../settings-section';
 
 export const HandleSection = () => {
@@ -31,7 +31,7 @@ export const HandleSection = () => {
             <FormLabel>Handle</FormLabel>
             <FormControl>
               <div className='flex items-center'>
-                <span className='text-muted-foreground inline-flex items-center rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm'>
+                <span className='text-muted-foreground border-input bg-muted inline-flex items-center rounded-l-md border border-r-0 px-3 text-sm'>
                   {SETTINGS_CONFIG.handle.baseUrl}
                 </span>
                 <Input
@@ -48,5 +48,3 @@ export const HandleSection = () => {
     </SettingsSection>
   );
 };
-
-

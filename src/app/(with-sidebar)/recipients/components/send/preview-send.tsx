@@ -1,20 +1,33 @@
 import { Wallet } from 'lucide-react';
+import Image from 'next/image';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { useSendToContext, useSendToFormContext } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
 import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
+import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Separator } from '@/components/ui/separator';
+import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
 
+import { formatAccountNumber } from '../utils';
 import { ExchangeRate } from './exchange-rate';
+
+/** Converts a purpose code like SALARY_PAYMENT to "Salary Payment" */
+const formatPurposeCode = (code: string): string =>
+  code
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
 
 /** Renders a preview of a transaction, showing:
  *  - amount
  *  - timing
  *  - optional conversion rate (only for EUR recipients)
  *  - from and to
+ *  - purpose of transfer (for ACH/WIRE)
  */
 export const PreviewSend = ({
   amount,
@@ -23,8 +36,18 @@ export const PreviewSend = ({
   amount: number;
   recipient: RecipientAPI;
 }) => {
+  const { paymentChain } = useSendToContext();
   const { smartWalletAddress } = useSmartWalletAddress();
-  const showConversion = recipient.type === 'eur';
+  const { stellarAddress } = useWalletAddress();
+  const form = useSendToFormContext();
+  const purposeCode = form.getValues('purposeCode');
+  const showConversion = recipient.type === 'eur' || recipient.type.startsWith('eur_');
+  const showPurpose = usesTransfersApi(recipient) && !!purposeCode;
+
+  const fromAddress =
+    paymentChain === 'stellar'
+      ? stellarAddress ?? ''
+      : smartWalletAddress ?? '';
 
   return (
     <div className='animate-in fade-in-0 slide-in-from-right-2 space-y-10'>
@@ -44,8 +67,21 @@ export const PreviewSend = ({
           <p className='text-muted-foreground flex items-center gap-2 text-sm font-medium'>
             <Wallet className='text-foreground size-4' /> From
           </p>
-          <CopyAddress address={smartWalletAddress ?? ''}>
-            My Sorbet Wallet
+          <CopyAddress address={fromAddress}>
+            <span className='inline-flex items-center gap-2'>
+              <Image
+                src={
+                  paymentChain === 'stellar'
+                    ? '/svg/stellar_logo.svg'
+                    : '/svg/base_logo.svg'
+                }
+                alt={paymentChain === 'stellar' ? 'Stellar' : 'Base'}
+                width={14}
+                height={14}
+              />
+              My Sorbet Wallet (
+              {paymentChain === 'stellar' ? 'Stellar' : 'Base'})
+            </span>
           </CopyAddress>
         </div>
         <Separator orientation='vertical' className='mx-2 -mt-5 mb-2 h-8' />
@@ -53,11 +89,27 @@ export const PreviewSend = ({
           <p className='text-muted-foreground flex items-center gap-2 text-sm font-medium'>
             <Wallet className='text-foreground size-4' /> To
           </p>
-          <CopyAddress address={recipient?.walletAddress ?? ''}>
-            {formatWalletAddress(recipient?.walletAddress ?? '')}
-          </CopyAddress>
+          {recipient.type === 'crypto_base' || recipient.type === 'crypto_stellar' ? (
+            <CopyAddress address={recipient?.walletAddress ?? ''}>
+              {formatWalletAddress(recipient?.walletAddress ?? '')}
+            </CopyAddress>
+          ) : (
+            <p className='ml-5 text-sm'>
+              {recipient.label} · {formatAccountNumber(recipient.detail)}
+            </p>
+          )}
         </div>
       </div>
+
+      {/* Purpose of transfer — shown for ACH/WIRE */}
+      {showPurpose && (
+        <div className='space-y-1'>
+          <p className='text-muted-foreground text-sm font-medium'>
+            Purpose of Transfer
+          </p>
+          <p className='text-sm font-semibold'>{formatPurposeCode(purposeCode)}</p>
+        </div>
+      )}
     </div>
   );
 };

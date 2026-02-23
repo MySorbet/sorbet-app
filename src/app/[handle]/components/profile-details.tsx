@@ -80,7 +80,7 @@ export const ProfileDetails = ({
 /** Buttons for public view of a profile */
 const PublicProfileButtons = ({
   userId,
-  onContactMe,
+  onContactMe: _onContactMe,
 }: {
   userId: string;
   onContactMe?: () => void;

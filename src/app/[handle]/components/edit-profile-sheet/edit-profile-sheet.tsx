@@ -137,9 +137,7 @@ export const EditProfileSheet: React.FC<EditProfileSheetProps> = ({
       onError: (error: unknown) => {
         const status = (error as { status?: number })?.status;
         const errorMessage =
-          error instanceof Error
-            ? error.message
-            : 'Failed to update profile.';
+          error instanceof Error ? error.message : 'Failed to update profile.';
         const normalizedMessage = errorMessage.toLowerCase();
 
         if (
