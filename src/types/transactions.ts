@@ -22,7 +22,6 @@ export interface TransactionsResponse {
   cursor: string;
 }
 
-
 // Unified Transaction Types (new API)
 
 export type UnifiedTransactionStatus =

@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 
 import { RecipientAPI } from '@/api/recipients/types';
+import { RecipientsTableCore } from '@/app/(with-sidebar)/recipients/components/recipients-table-core';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,10 +14,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { RecipientsTableCore } from '@/app/(with-sidebar)/recipients/components/recipients-table-core';
-
-// Simplified currency-based filters instead of individual payment methods
-export type RecipientTypeFilter = 'all' | 'usd' | 'eur' | 'aed' | 'crypto';
+// Simplified currency-based filters with separate crypto chain options
+export type RecipientTypeFilter = 'all' | 'usd' | 'eur' | 'aed' | 'crypto_base' | 'crypto_stellar';
 
 interface FilteredRecipientsTableProps {
   recipients: RecipientAPI[];
@@ -41,7 +40,9 @@ interface FilteredRecipientsTableProps {
 }
 
 /** Renders a recipients table in a card with filters and pagination controls */
-export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = ({
+export const FilteredRecipientsTable: React.FC<
+  FilteredRecipientsTableProps
+> = ({
   recipients,
   isLoading = false,
   searchValue = '',
@@ -94,7 +95,8 @@ export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = (
               <SelectItem value='usd'>USD</SelectItem>
               <SelectItem value='eur'>EUR</SelectItem>
               <SelectItem value='aed'>AED</SelectItem>
-              <SelectItem value='crypto'>Crypto</SelectItem>
+              <SelectItem value='crypto_base'>Crypto (Base)</SelectItem>
+              <SelectItem value='crypto_stellar'>Crypto (Stellar)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -124,7 +126,9 @@ export const FilteredRecipientsTable: React.FC<FilteredRecipientsTableProps> = (
         </Button>
 
         <span className='text-muted-foreground text-sm'>
-          {totalCount > 0 ? `${startItem}-${endItem} of ${totalCount}` : '0 of 0'}
+          {totalCount > 0
+            ? `${startItem}-${endItem} of ${totalCount}`
+            : '0 of 0'}
         </span>
 
         <Button

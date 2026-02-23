@@ -44,7 +44,7 @@ export const uploadWidgetImage = async (
 
 export const useUploadWidgetImage = () =>
   useMutation({
-    mutationFn: uploadWidgetImage,
+    mutationFn: (image: File) => uploadWidgetImage(image),
     onError: (error) => {
       if (!axios.isCancel(error)) {
         toast.error('Failed to upload widget image', {

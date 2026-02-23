@@ -23,7 +23,8 @@ export const EADetails = ({ account }: { account: Account }) => {
 
   // Handle legacy types
   switch (account.type) {
-    case 'crypto':
+    case 'crypto_base':
+    case 'crypto_stellar':
       return <CryptoAccountDetails account={account} />;
     case 'usd':
       return <USDAccountDetails account={account} />;
@@ -240,7 +241,7 @@ type USDAccount = BaseAccount & {
 };
 
 type CryptoAccount = BaseAccount & {
-  type: 'crypto';
+  type: 'crypto_base' | 'crypto_stellar';
   walletAddress: string;
 };
 

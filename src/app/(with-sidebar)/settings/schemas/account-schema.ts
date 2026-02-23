@@ -12,5 +12,3 @@ export const accountSchema = z.object({
 });
 
 export type AccountFormData = z.infer<typeof accountSchema>;
-
-

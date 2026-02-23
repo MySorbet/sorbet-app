@@ -17,7 +17,7 @@ interface LandmarkIconProps extends HTMLAttributes<HTMLDivElement> {
 
 const spring = {
   delay: 0.1,
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 200,
   damping: 13,
 };

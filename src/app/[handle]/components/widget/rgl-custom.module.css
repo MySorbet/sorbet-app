@@ -39,5 +39,5 @@
   z-index: 1;
 
   /* Style placeholder with a dashed appearance */
-  @apply border-2 border-dashed rounded-3xl bg-transparent opacity-100;
+  @apply rounded-3xl border-2 border-dashed bg-transparent opacity-100;
 }

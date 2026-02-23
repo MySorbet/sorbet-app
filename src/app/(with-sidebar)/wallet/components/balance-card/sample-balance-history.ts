@@ -73,15 +73,5 @@ export const balanceHistoryDecline: BalanceHistory = [
   { iso: new Date('2024-01-12').toISOString(), balance: 3400 },
 ];
 
-// This could be the data for "all time" month grouping
-const balanceHistoryAllTime = [
-  { month: 'January', balance: 186 },
-  { month: 'February', balance: 305 },
-  { month: 'March', balance: 237 },
-  { month: 'April', balance: 73 },
-  { month: 'May', balance: 209 },
-  { month: 'June', balance: 214 },
-];
-
 export const balanceHistoryFromSampleTransactions: BalanceHistory =
   mapTransactionsToBalanceHistory(sampleTransactions);

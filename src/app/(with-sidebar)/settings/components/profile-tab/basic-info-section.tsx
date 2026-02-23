@@ -10,10 +10,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import MapPinIcon from '~/svg/map-pin.svg';
 
 import type { ProfileFormData } from '../../schemas';
 import { SettingsSection } from '../settings-section';
-import MapPinIcon from '~/svg/map-pin.svg';
 
 export const BasicInfoSection = () => {
   const form = useFormContext<ProfileFormData>();
@@ -70,5 +70,3 @@ export const BasicInfoSection = () => {
     </SettingsSection>
   );
 };
-
-

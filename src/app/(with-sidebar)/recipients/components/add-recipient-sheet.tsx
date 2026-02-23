@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Network, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { forwardRef, useState } from 'react';
 
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDueVerified } from '@/hooks/profile/use-due-verified';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useMyChain } from '@/hooks/use-my-chain';
 import { cn } from '@/lib/utils';
 
 import {
@@ -53,14 +54,28 @@ export const AddRecipientSheet = ({
   setOpen?: (open: boolean) => void;
 }) => {
   const [step, setStep] = useState<'crypto' | 'bank' | undefined>();
+  const { data: myChainData } = useMyChain();
+  const currentChain = myChainData?.chain ?? 'base';
+
   const handleSubmit = async (
     values: BankRecipientFormValues | CryptoRecipientFormValues
   ) => {
     if (isCryptoFormValues(values)) {
-      return await onSubmit?.({ type: 'crypto', values });
+      if (values.chain === 'base') {
+        return await onSubmit?.({ chain: 'base', type: 'crypto_base', values });
+      }
+      return await onSubmit?.({
+        chain: 'stellar',
+        type: 'crypto_stellar',
+        values,
+      });
     }
     // Bank recipient - use the paymentMethod from form values
-    return await onSubmit?.({ type: values.paymentMethod, values });
+    return await onSubmit?.({
+      chain: currentChain,
+      type: values.paymentMethod,
+      values,
+    });
   };
 
   const isMobile = useIsMobile();
@@ -88,6 +103,7 @@ export const AddRecipientSheet = ({
         ) : (
           <BankOrCrypto
             setStep={setStep}
+            currentChain={currentChain}
             className='animate-in fade-in-0 slide-in-from-left-1 duration-300'
           />
         )}
@@ -99,22 +115,31 @@ export const AddRecipientSheet = ({
 const BankOrCrypto = ({
   className,
   setStep,
+  currentChain,
 }: {
   className?: string;
   setStep: (step: 'crypto' | 'bank') => void;
+  currentChain: 'base' | 'stellar';
 }) => {
   // Below, we set up a redirect to the verify page for unverified users
   // Eventually, we want to do an "inline verification" within the drawer or sheet
   const { isVerified } = useDueVerified();
   const router = useRouter();
+  const isStellar = currentChain === 'stellar';
   const handleBankClick = () => {
+    if (isStellar) return;
     if (isVerified) {
       setStep('bank');
     } else {
       router.push('/verify');
     }
   };
-  const bankDetail = isVerified ? (
+  const bankDetail = isStellar ? (
+    <div className='flex gap-1'>
+      <Network className='size-4' />
+      <span>Switch to Base network to add bank recipients</span>
+    </div>
+  ) : isVerified ? (
     PAYMENT_TIMING_DESCRIPTIONS.bank
   ) : (
     <div className='flex gap-1'>
@@ -138,6 +163,7 @@ const BankOrCrypto = ({
           <RecipientButton
             onClick={handleBankClick}
             aria-label='Bank recipient'
+            disabled={isStellar}
           >
             <RecipientButtonIcon type='bank' />
             <RecipientButtonContent>

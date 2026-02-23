@@ -3,7 +3,6 @@ import 'react-resizable/css/styles.css';
 
 import React, { useEffect, useState } from 'react';
 import { Responsive } from 'react-grid-layout';
-const RRGL = Responsive as unknown as React.ComponentType<any>;
 
 import { WidgetData } from '@/api/widgets-v2/types';
 import { useContainerQuery } from '@/hooks/use-container-query';
@@ -26,6 +25,13 @@ import { Widget } from './widget';
 import { Control, ImageControls } from './widget-controls/control-config';
 import { WidgetControls } from './widget-controls/widget-controls';
 import { WidgetDeleteButton } from './widget-controls/widget-delete-button';
+
+// `react-grid-layout`'s `Responsive` component is typed as a class component in a way
+// that doesn't satisfy `React.ComponentProps<typeof Responsive>` under our React types.
+// We keep a permissive prop type here since we pass the full RGL prop surface anyway.
+const RRGL = Responsive as unknown as React.ComponentType<
+  Record<string, unknown>
+>;
 
 /**
  * An RGL layout of widgets.
@@ -53,7 +59,10 @@ export const WidgetGrid = ({ immutable = false }: { immutable?: boolean }) => {
   // setting up a width listener on the grid and relying on that to trigger onBreakpointChange
   // Note: this should also line up with `wLg` from `grid-config.ts`
   const { ref, matches } = useContainerQuery<HTMLDivElement>('56rem');
-  useEffect(() => setBreakpoint(matches ? 'lg' : 'sm'), [matches]);
+  useEffect(
+    () => setBreakpoint(matches ? 'lg' : 'sm'),
+    [matches, setBreakpoint]
+  );
 
   return (
     <div className='@container w-full'>

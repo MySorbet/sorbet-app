@@ -29,17 +29,13 @@ const schema = z.object({
   zipCode: z.string().min(1, { message: 'Zip Code is required' }),
 });
 
+type CreditCardFormValues = z.infer<typeof schema>;
+
 interface CreditCardDialogProps {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: CreditCardFormValues) => void;
   isOpen: boolean;
   onClose: () => void;
-  initialState?: {
-    cardName?: string;
-    cardNumber?: string;
-    expiry?: string;
-    cvc?: string;
-    zipCode?: string;
-  };
+  initialState?: Partial<CreditCardFormValues>;
 }
 
 export const CreditCardDialog = ({
@@ -48,14 +44,22 @@ export const CreditCardDialog = ({
   onClose,
   initialState = {},
 }: CreditCardDialogProps) => {
+  const defaultValues: CreditCardFormValues = {
+    cardName: initialState.cardName ?? '',
+    cardNumber: initialState.cardNumber ?? '',
+    expiry: initialState.expiry ?? '',
+    cvc: initialState.cvc ?? '',
+    zipCode: initialState.zipCode ?? '',
+  };
+
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<CreditCardFormValues>({
     resolver: zodResolver(schema),
     mode: 'onChange',
-    defaultValues: initialState,
+    defaultValues,
   });
 
   const isEditMode =

@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 import QRCodeStyling, { Options } from 'qr-code-styling';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const color = '#000000';
 const size = 192; // w-48
@@ -32,7 +32,7 @@ const defaultOptions: Options = {
 
 /** Generates QR code as an SVG */
 export const useQRCode = (data: string, options?: Options) => {
-  const qrCodeRef = useRef<HTMLDivElement>(document.createElement('div'));
+  const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
   const [isLoadingQRCode, setIsLoadingQRCode] = useState(true);
 
   const optionsWithData: Options = {
@@ -45,12 +45,26 @@ export const useQRCode = (data: string, options?: Options) => {
   const qrCode = useMemo(() => new QRCodeStyling(qrOptions), [qrOptions]);
 
   useEffect(() => {
-    if (qrCodeRef.current && qrCode) {
-      qrCodeRef.current.innerHTML = '';
-      qrCode.append(qrCodeRef.current);
-      setIsLoadingQRCode(false);
+    // If the dialog/drawer content isn't mounted yet, we can't append.
+    // Keep showing the Skeleton until a real DOM element is available.
+    if (!containerEl) {
+      setIsLoadingQRCode(true);
+      return;
     }
-  }, [qrCode]);
+
+    containerEl.innerHTML = '';
+    qrCode.append(containerEl);
+    setIsLoadingQRCode(false);
+
+    // Best-effort cleanup to avoid leaving orphaned SVG nodes if the container unmounts.
+    return () => {
+      containerEl.innerHTML = '';
+    };
+  }, [containerEl, qrCode]);
+
+  const qrCodeRef = useCallback((node: HTMLDivElement | null) => {
+    setContainerEl(node);
+  }, []);
 
   return {
     qrCodeRef,

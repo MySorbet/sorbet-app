@@ -16,7 +16,7 @@ const lidVariants: Variants = {
 };
 
 const springTransition = {
-  type: 'spring',
+  type: 'spring' as const,
   stiffness: 500,
   damping: 30,
 };

@@ -89,7 +89,7 @@ export const HighVolume: Story = {
       { iso: '2024-05-01', balance: 69000 },
       { iso: '2024-06-01', balance: 81000 },
     ],
-    moneyIn: 125430.50,
+    moneyIn: 125430.5,
     moneyOut: 98765.25,
     balance: 81000,
     duration: 'all',

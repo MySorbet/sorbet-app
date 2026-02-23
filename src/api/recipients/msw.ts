@@ -38,9 +38,9 @@ function getBankDetail(values: BankRecipientFormValues): string {
 }
 
 function getMockRecipientForType(
-  type: DuePaymentMethod | 'usd' | 'eur' | 'crypto'
+  type: DuePaymentMethod | 'usd' | 'eur' | 'crypto_base' | 'crypto_stellar'
 ) {
-  if (type === 'crypto') return mockRecipients[2];
+  if (type === 'crypto_base' || type === 'crypto_stellar') return mockRecipients[2];
   if (type === 'usd' || type.startsWith('usd_')) return mockRecipients[0];
   return mockRecipients[1];
 }
@@ -61,7 +61,7 @@ export const createRecipientHandler = http.post(
     const mockRecipient = getMockRecipientForType(data.type);
     const recipient = {
       ...mockRecipient,
-      ...(data.type === 'crypto'
+      ...(data.type === 'crypto_base' || data.type === 'crypto_stellar'
         ? {
             walletAddress: data.values.walletAddress,
             label: data.values.label,

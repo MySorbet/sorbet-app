@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -17,6 +15,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import { useDeleteAccount } from '../../hooks/use-delete-account';
 import { SettingsSection } from '../settings-section';
@@ -41,65 +41,82 @@ export const DeleteAccountSection = () => {
 
   return (
     <SettingsSection
-      label="Delete account"
-      description="This will permanently delete your Sorbet account. Your profile will be permanently deleted by completing this action."
+      label='Delete account'
+      description='This will permanently delete your Sorbet account. Your profile will be permanently deleted by completing this action.'
     >
       <Button
-        variant="destructive"
-        size="sm"
+        variant='destructive'
+        size='sm'
         onClick={() => setShowConfirm(true)}
         disabled={isDeleting}
-        className="h-9 px-3 text-xs leading-none w-fit self-start"
-        aria-label="Delete account"
+        className='h-9 w-fit self-start px-3 text-xs leading-none'
+        aria-label='Delete account'
       >
         Delete account
       </Button>
 
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className='max-w-md'>
           <AlertDialogHeader>
-            <div className="flex items-center gap-3">
-              <div className="rounded-full bg-destructive/10 p-2">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
+            <div className='flex items-center gap-3'>
+              <div className='bg-destructive/10 rounded-full p-2'>
+                <AlertTriangle className='text-destructive h-5 w-5' />
               </div>
               <AlertDialogTitle>Delete Account?</AlertDialogTitle>
             </div>
-            <AlertDialogDescription className="space-y-4 pt-4">
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-                <p className="font-semibold text-amber-900">⚠️ Export Your Wallet First</p>
-                <p className="mt-2 text-sm text-amber-800">
+            <AlertDialogDescription className='space-y-4 pt-4'>
+              <div className='rounded-lg border border-amber-200 bg-amber-50 p-4'>
+                <p className='font-semibold text-amber-900'>
+                  ⚠️ Export Your Wallet First
+                </p>
+                <p className='mt-2 text-sm text-amber-800'>
                   Make sure you've exported your wallet private key from the{' '}
-                  <strong>Wallet section above</strong> before deleting your account. Your embedded wallet will be permanently deleted and you'll lose access to your funds without the private key.
+                  <strong>Wallet section above</strong> before deleting your
+                  account. Your embedded wallet will be permanently deleted and
+                  you'll lose access to your funds without the private key.
                 </p>
               </div>
 
-              <div className="space-y-2 text-sm">
-                <p className="font-medium">This action will permanently:</p>
-                <ul className="list-inside list-disc space-y-1 text-muted-foreground">
+              <div className='space-y-2 text-sm'>
+                <p className='font-medium'>This action will permanently:</p>
+                <ul className='text-muted-foreground list-inside list-disc space-y-1'>
                   <li>Delete your Sorbet account and all settings</li>
-                  <li>Delete your embedded wallet (funds are only accessible with private key)</li>
-                  <li>Delete all your invoices, recipients, and invoicing details</li>
+                  <li>
+                    Delete your embedded wallet (funds are only accessible with
+                    private key)
+                  </li>
+                  <li>
+                    Delete all your invoices, recipients, and invoicing details
+                  </li>
                   <li>Delete your Bridge customer account and KYC data</li>
                   <li>Remove all your data from our systems</li>
                   <li>Free up your handle and email for reuse</li>
                 </ul>
               </div>
 
-              <p className="text-sm font-semibold text-destructive">
-                This is permanent and cannot be undone. You can create a new account with the same email after deletion.
+              <p className='text-destructive text-sm font-semibold'>
+                This is permanent and cannot be undone. You can create a new
+                account with the same email after deletion.
               </p>
 
-              <div className="space-y-2 pt-2">
-                <Label htmlFor="delete-confirmation" className="text-sm font-medium">
-                  Type <span className="font-mono font-bold">{CONFIRMATION_TEXT}</span> to confirm:
+              <div className='space-y-2 pt-2'>
+                <Label
+                  htmlFor='delete-confirmation'
+                  className='text-sm font-medium'
+                >
+                  Type{' '}
+                  <span className='font-mono font-bold'>
+                    {CONFIRMATION_TEXT}
+                  </span>{' '}
+                  to confirm:
                 </Label>
                 <Input
-                  id="delete-confirmation"
+                  id='delete-confirmation'
                   value={confirmationInput}
                   onChange={(e) => setConfirmationInput(e.target.value)}
                   placeholder={CONFIRMATION_TEXT}
                   disabled={isDeleting}
-                  className="font-mono"
+                  className='font-mono'
                 />
               </div>
             </AlertDialogDescription>
@@ -112,14 +129,14 @@ export const DeleteAccountSection = () => {
                 setShowConfirm(false);
                 setConfirmationInput('');
               }}
-              className="h-7 px-3 text-xs leading-none"
+              className='h-7 px-3 text-xs leading-none'
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting || confirmationInput !== CONFIRMATION_TEXT}
-              className="h-7 px-3 text-xs leading-none bg-destructive hover:bg-destructive/90"
+              className='bg-destructive hover:bg-destructive/90 h-7 px-3 text-xs leading-none'
             >
               {isDeleting ? 'Deleting...' : 'Yes, delete my account'}
             </AlertDialogAction>

@@ -52,7 +52,7 @@ export const RecipientsBrowser: React.FC = () => {
   const { data: migrationRecipientDetails } = useRecipientDetails(
     migrationRecipientId ?? '',
     {
-      enabled: !!migrationRecipientId && migrationRecipient?.type !== 'crypto',
+      enabled: !!migrationRecipientId && migrationRecipient?.type !== 'crypto_base' && migrationRecipient?.type !== 'crypto_stellar',
     }
   );
 
@@ -87,13 +87,11 @@ export const RecipientsBrowser: React.FC = () => {
     // Type filter - group by currency
     if (typeFilter !== 'all') {
       filtered = filtered.filter((recipient) => {
-        // Match by currency prefix (usd matches usd, usd_ach, usd_wire, usd_swift)
-        // eur matches eur, eur_sepa, eur_swift
-        // aed matches aed_local
-        // crypto matches crypto exactly
-        if (typeFilter === 'crypto') {
-          return recipient.type === 'crypto';
+        // Crypto types: exact match
+        if (typeFilter === 'crypto_base' || typeFilter === 'crypto_stellar') {
+          return recipient.type === typeFilter;
         }
+        // Bank types: prefix match (usd matches usd, usd_ach, usd_wire, usd_swift)
         return recipient.type.startsWith(typeFilter);
       });
     }
@@ -127,7 +125,9 @@ export const RecipientsBrowser: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (recipient: Parameters<typeof createRecipient>[0]) => {
+  const handleSubmit = async (
+    recipient: Parameters<typeof createRecipient>[0]
+  ) => {
     await createRecipient(recipient);
     setAddSheetOpen(false);
   };
