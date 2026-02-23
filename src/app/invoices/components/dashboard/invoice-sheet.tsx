@@ -19,7 +19,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { formatCurrency } from '@/lib/currency';
-import { cn } from '@/lib/utils';
 
 import { Invoice } from '../../schema';
 import { checkOverdue, formatDate, InvoiceStatus } from '../../utils';
