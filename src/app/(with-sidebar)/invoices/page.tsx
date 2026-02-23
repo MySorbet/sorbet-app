@@ -8,7 +8,6 @@ import { Header } from '@/components/header';
 
 import { Authenticated } from '../../authenticated';
 import { InvoiceDashboard } from '../../invoices/components/dashboard/invoice-dashboard';
-import { InvoiceDashboardHeader } from '../../invoices/components/dashboard/invoice-dashboard-header';
 import { useInvoices } from '../../invoices/hooks/use-invoices';
 
 export default function InvoicesPage() {
@@ -25,7 +24,6 @@ export default function InvoicesPage() {
     <Authenticated>
       <Page.Main>
         <Header />
-        <InvoiceDashboardHeader onCreateNew={handleCreateNew} />
         <Page.Content>
           <InvoiceDashboard
             invoices={invoices ?? []}
