@@ -23,124 +23,22 @@ import { cn } from '@/lib/utils';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
 import { isInTheFuture } from '../../schema';
-import { ClientCardShim } from '../client-card/client-card-shim';
+import { ClientSelector } from './client-selector';
 import { ItemsCard } from './items-card';
 
-/**
- * The 1st tab of the invoice controls, "New invoice"
- * - Renders form fields allowing the user to fill out most of the invoice details
- * - Manipulates form data via `useInvoiceForm`
- */
-export const NewInvoiceTab = () => {
-  const form = useInvoiceForm();
-  const { issueDate, dueDate } = form.watch();
-
+/** Layout two form fields side by side */
+const DualFormFields = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
   return (
-    <div className='flex w-full flex-col gap-10'>
-      {/* // TODO: Use client card component and hooks instead */}
-      <ClientCardShim />
-      <ItemsCard
-        items={form.watch('items')}
-        onItemsChange={(items) => form.setValue('items', items)}
-      />
-      <DualFormFields>
-        <FormField
-          name='invoiceNumber'
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Invoice number</FormLabel>
-              <FormControl>
-                <Input placeholder='Enter Invoice number' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name='tax'
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <div className='flex h-5 items-center gap-1'>
-                <FormLabel>Sales tax</FormLabel>
-                <InfoTooltip>
-                  You are responsible for your own taxes. Sorbet does not
-                  collect or remit them.
-                </InfoTooltip>
-              </div>
-              <FormControl>
-                <div className='relative w-full'>
-                  <Input
-                    id='tax'
-                    type='number'
-                    placeholder='0'
-                    className='no-spin-buttons pr-7 text-right'
-                    {...field}
-                  />
-                  <span className='absolute right-3 top-1/2 -translate-y-1/2'>
-                    %
-                  </span>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </DualFormFields>
-      <DualFormFields>
-        <FormField
-          control={form.control}
-          name='issueDate'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Issue date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  selected={field.value}
-                  onSelect={field.onChange}
-                  disabled={(date) => !isInTheFuture(date) || date > dueDate}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='dueDate'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Due date</FormLabel>
-              <FormControl>
-                <DatePicker
-                  selected={field.value}
-                  onSelect={field.onChange}
-                  disabled={(date) => !isInTheFuture(date) || date < issueDate}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </DualFormFields>
-      <FormField
-        control={form.control}
-        name='memo'
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Memo (optional)</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder='Payment terms or additional info'
-                className='max-h-72 min-h-28 w-full resize-y'
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    <div
+      className={cn('flex w-full items-end justify-between gap-2', className)}
+    >
+      {children}
     </div>
   );
 };
@@ -182,19 +80,144 @@ const DatePicker = ({
   );
 };
 
-/** Layout two form fields side by side */
-const DualFormFields = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
+/**
+ * The 1st tab of the invoice controls, "New invoice"
+ * - Renders form fields allowing the user to fill out most of the invoice details
+ * - Manipulates form data via `useInvoiceForm`
+ */
+export const NewInvoiceTab = ({ onNext }: { onNext: () => void }) => {
+  const form = useInvoiceForm();
+  const { issueDate, dueDate } = form.watch();
+
+  const handleNextClick = async () => {
+    // Validate only these fields to proceed to next tab
+    const isValid = await form.trigger([
+      'toName',
+      'toEmail',
+      'items',
+      'invoiceNumber',
+      'tax',
+      'issueDate',
+      'dueDate',
+    ]);
+    if (isValid) {
+      onNext();
+    }
+  };
+
   return (
-    <div
-      className={cn('flex w-full items-end justify-between gap-2', className)}
-    >
-      {children}
+    <div className='flex w-full flex-col gap-10'>
+      <ClientSelector />
+      <ItemsCard
+        items={form.watch('items')}
+        onItemsChange={(items) => form.setValue('items', items)}
+      />
+      <DualFormFields>
+        <FormField
+          name='invoiceNumber'
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className='flex-1'>
+              <FormLabel>Invoice number</FormLabel>
+              <FormControl>
+                <Input placeholder='Enter Invoice number' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name='tax'
+          control={form.control}
+          render={({ field }) => (
+            <FormItem className='flex-1'>
+              <div className='flex h-5 items-center gap-1'>
+                <FormLabel>Sales tax</FormLabel>
+                <InfoTooltip>
+                  You are responsible for your own taxes. Sorbet does not
+                  collect or remit them.
+                </InfoTooltip>
+              </div>
+              <FormControl>
+                <div className='relative w-full'>
+                  <Input
+                    id='tax'
+                    type='number'
+                    placeholder='0'
+                    className='no-spin-buttons pr-7 text-right'
+                    {...field}
+                  />
+                  <span className='absolute right-3 top-1/2 -translate-y-1/2'>
+                    %
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </DualFormFields>
+      <DualFormFields>
+        <FormField
+          control={form.control}
+          name='issueDate'
+          render={({ field }) => (
+            <FormItem className='flex-1'>
+              <FormLabel>Issue date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  selected={field.value}
+                  onSelect={field.onChange}
+                  disabled={(date) => !isInTheFuture(date) || date > dueDate}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='dueDate'
+          render={({ field }) => (
+            <FormItem className='flex-1'>
+              <FormLabel>Due date</FormLabel>
+              <FormControl>
+                <DatePicker
+                  selected={field.value}
+                  onSelect={field.onChange}
+                  disabled={(date) => !isInTheFuture(date) || date < issueDate}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </DualFormFields>
+      <FormField
+        control={form.control}
+        name='memo'
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Memo (optional)</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder='Payment terms or additional info'
+                className='max-h-72 min-h-28 w-full resize-y'
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <Button
+        className='w-full p-6 text-base font-semibold bg-[#7c3aed] hover:bg-[#6d28d9]'
+        onClick={handleNextClick}
+        type='button'
+      >
+        Save & Next
+      </Button>
     </div>
   );
 };

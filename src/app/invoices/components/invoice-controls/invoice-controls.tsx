@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -17,8 +19,10 @@ export const InvoiceControls = ({
   onGetVerified?: (currency: 'usd' | 'eur') => void;
   walletAddress?: string;
 }) => {
+  const [activeTab, setActiveTab] = useState('invoice');
+
   return (
-    <Tabs defaultValue='invoice' className='flex h-full w-[27rem] flex-col'>
+    <Tabs value={activeTab} onValueChange={setActiveTab} className='flex h-full w-[27rem] flex-col'>
       <TabsList className='w-full justify-between'>
         <TabsTrigger value='invoice' className='w-1/3'>
           New invoice
@@ -35,7 +39,7 @@ export const InvoiceControls = ({
           value='invoice'
           className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
-          <NewInvoiceTab />
+          <NewInvoiceTab onNext={() => setActiveTab('your-info')} />
         </TabsContent>
         <TabsContent
           value='your-info'
