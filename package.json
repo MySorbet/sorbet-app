@@ -174,7 +174,7 @@
     "tailwindcss": "^3.3.3",
     "tailwindcss-bg-patterns": "^0.3.0",
     "typescript": "^5.5.4",
-    "webpack": "^5.96.1"
+    "webpack": "5.101.2"
   },
   "packageManager": "yarn@4.4.1",
   "msw": {
@@ -184,6 +184,7 @@
   },
   "resolutions": {
     "@radix-ui/react-focus-scope": "^1.0.4",
-    "@radix-ui/react-dismissable-layer": "1.1.4"
+    "@radix-ui/react-dismissable-layer": "1.1.4",
+    "webpack": "5.101.2"
   }
 }
