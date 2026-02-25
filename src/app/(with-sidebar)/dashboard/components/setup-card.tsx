@@ -4,9 +4,10 @@ import { Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage } from '@/api/error-message';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Spinner } from '@/components/common/spinner';
 import { useAcceptDueTos } from '@/hooks/profile/use-accept-due-tos';
 import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
 import { env } from '@/lib/env';
@@ -14,7 +15,6 @@ import { cn } from '@/lib/utils';
 
 import { TaskStatuses } from './checklist-card';
 import { DashboardCard } from './dashboard-card';
-import { getApiErrorMessage } from '@/api/error-message';
 
 /** Build full Due URL from a relative path */
 const buildDueUrl = (path?: string) => {
@@ -56,6 +56,7 @@ export const SetupCard = ({
     kycLink,
     tosDocumentLinks,
     showInlineVerification = false,
+    hasDueAccount = true,
 }: {
     className?: string;
     completedTasks?: TaskStatuses;
@@ -68,6 +69,8 @@ export const SetupCard = ({
     kycLink?: string;
     tosDocumentLinks?: { tos?: string; privacyPolicy?: string };
     showInlineVerification?: boolean;
+    /** Whether the user already has a Due account (used on /verify page) */
+    hasDueAccount?: boolean;
 }) => {
     const router = useRouter();
 
@@ -75,6 +78,10 @@ export const SetupCard = ({
 
     const { mutate: createDueCustomer, isPending: isCreatingDueCustomer } = useCreateDueCustomer({
         onSuccess: (dueCustomer) => {
+            if (showInlineVerification) {
+                // On the /verify page: account created — let the user click "Accept TOS" themselves
+                return;
+            }
             const account = dueCustomer.account;
             const newTosStatus = account.tos?.status;
             if (newTosStatus !== 'accepted') {
@@ -126,12 +133,14 @@ export const SetupCard = ({
     let step2Verifying = false;
 
     if (showInlineVerification) {
-        // Verify page: Accept TOS flow first, then Start verification
-        const needsTosAcceptance = tosStatus !== 'accepted';
-        if (isCreatingDueCustomer || isAcceptingTos) {
+        // Verify page: Get Started (no account) → Accept TOS → Start verification
+        if (isCreatingDueCustomer) {
+            step2Badge = 'Starting...';
+            step2Clickable = false;
+        } else if (isAcceptingTos) {
             step2Badge = 'Accepting...';
             step2Clickable = false;
-        } else if (kycStatus === 'under_review' || kycStatus === 'in_review') {
+        } else if (kycStatus === 'under_review' || kycStatus === 'in_review' || kycStatus === 'manual_review') {
             step2Badge = 'Verifying';
             step2BadgeColor = 'bg-[#FF9933]';
             step2IndicatorColor = 'border-[#FF9933]';
@@ -143,14 +152,17 @@ export const SetupCard = ({
         } else if (kycStatus === 'failed' || kycStatus === 'rejected') {
             step2Badge = 'Verify now';
             step2BadgeColor = 'bg-[#FF383C]';
-        } else if (needsTosAcceptance) {
+        } else if (!hasDueAccount) {
+            // No Due account yet 
+            step2Badge = 'Get Started';
+        } else if (tosStatus !== 'accepted') {
             step2Badge = 'Accept TOS';
         } else {
             step2Badge = 'Start verification';
         }
     } else {
         // Dashboard: original behavior - Start verification, navigate to /verify on click
-        if (kycStatus === 'under_review' || kycStatus === 'in_review') {
+        if (kycStatus === 'under_review' || kycStatus === 'in_review' || kycStatus === 'manual_review') {
             step2Badge = 'Verifying';
             step2BadgeColor = 'bg-[#FF9933]';
             step2IndicatorColor = 'border-[#FF9933]';
@@ -404,10 +416,10 @@ export const SetupCard = ({
                                                     handleStepClick(step);
                                                 }}
                                             >
-                                                {isAcceptingTos ? (
+                                                {(isCreatingDueCustomer || isAcceptingTos) ? (
                                                     <>
                                                         <Spinner className='mr-2 size-4' />
-                                                        Accepting...
+                                                        {step.badge}
                                                     </>
                                                 ) : (
                                                     step.badge

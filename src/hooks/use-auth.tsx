@@ -66,6 +66,21 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     }
   }, [ready, authenticated, setUser]);
 
+  // Silently re-fetch user data on every app load when authenticated.
+  // This ensures already-logged-in users always have fresh data from the DB,
+  // which is critical for guards that check profile completeness.
+  useEffect(() => {
+    if (ready && authenticated) {
+      getMe()
+        .then((freshUser) => {
+          if (freshUser) setUser(freshUser);
+        })
+        .catch(() => {
+          // Silent fail — existing localStorage data remains usable
+        });
+    }
+  }, [ready, authenticated, setUser]);
+
   /**
    * Local helper to find a user by privy id in the sorbet db,
    * storing the user in local storage if successful.
