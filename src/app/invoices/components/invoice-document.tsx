@@ -83,9 +83,20 @@ export const InvoiceDocument = forwardRef<
       )}
       ref={ref}
     >
-      <h1 className='text-5xl font-semibold'>Invoice</h1>
-      <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
-      {projectName && <p className='pt-1 text-xs'>{projectName}</p>}
+      <div className='flex items-start justify-between'>
+        <div>
+          <h1 className='text-5xl font-semibold'>Invoice</h1>
+          <p className='pt-1 text-xs'>{invoice.invoiceNumber}</p>
+          {projectName && <p className='pt-1 text-xs'>{projectName}</p>}
+        </div>
+        {invoice.logoUrl && (
+          <img
+            src={invoice.logoUrl}
+            alt='Invoice logo'
+            className='h-20 w-20 object-contain'
+          />
+        )}
+      </div>
 
       <table className='mb-20 mt-16 w-full'>
         <thead>

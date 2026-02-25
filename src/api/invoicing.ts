@@ -14,6 +14,7 @@ export interface InvoicingDetails {
   city?: string;
   country?: string;
   postalCode?: string;
+  logoUrl?: string;
 }
 
 export const getInvoicingDetails = async (userId: string) => {

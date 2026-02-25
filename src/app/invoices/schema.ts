@@ -78,7 +78,7 @@ const paymentMethodsSchema = z.object({
 export const invoiceFormSchema = z
   .object({
     // TODO: left as toName and toEmail for backwards compatibility. replace with client
-    toName: invoiceFormStringValidator('Name'),
+    toName: z.string().min(1, { message: 'Please select a client' }).max(50),
     toEmail: invoiceFormStringValidator('Email').email({
       message: 'Must be a valid email address',
     }),
@@ -109,6 +109,7 @@ export const invoiceFormSchema = z
       .string()
       .max(800, 'Memo must be less than 800 characters')
       .optional(),
+    logoUrl: z.string().url().optional(),
   })
   .extend(yourInfoSchema.shape)
   .extend(paymentMethodsSchema.shape);
@@ -155,6 +156,7 @@ export const defaultInvoiceValues: Required<
   paymentMethods: ['usdc'],
   taxId: undefined,
   address: undefined,
+  logoUrl: undefined,
 };
 
 // ! Remember to update the knock JSON validation schema if you change this. Otherwise notifications will fail.

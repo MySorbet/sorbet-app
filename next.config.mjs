@@ -7,6 +7,15 @@ jiti('./src/lib/env');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+      },
+    ],
+  },
   eslint: {
     dirs: ['src'],
   },
