@@ -99,6 +99,7 @@ export const VerifyDashboard = () => {
           kycLink={kycLink}
           tosDocumentLinks={account?.tos?.documentLinks}
           showInlineVerification={true}
+          hasDueAccount={!!dueCustomer}
         />
 
         {/* FAQ */}
