@@ -36,20 +36,23 @@ export const InvoiceControls = ({
       </TabsList>
       <ScrollArea className='flex-1'>
         <TabsContent
+          forceMount
           value='invoice'
-          className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
+          className='data-[state=inactive]:hidden animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
           <NewInvoiceTab onNext={() => setActiveTab('your-info')} />
         </TabsContent>
         <TabsContent
+          forceMount
           value='your-info'
-          className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
+          className='data-[state=inactive]:hidden animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
-          <YourInfoTab />
+          <YourInfoTab onNext={() => setActiveTab('payment')} />
         </TabsContent>
         <TabsContent
+          forceMount
           value='payment'
-          className='animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
+          className='data-[state=inactive]:hidden animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
           <PaymentTab
             isBaseEndorsed={isBaseEndorsed}

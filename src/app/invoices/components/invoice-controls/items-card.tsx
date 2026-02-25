@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react';
 
 import { CompactDeleteButton } from '@/components/common/compact-delete-button';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
@@ -37,13 +38,14 @@ export const ItemsCard = ({
   };
 
   return (
-    <div className='flex h-fit flex-col gap-4'>
-      <div className='flex flex-col gap-4'>
+    <Card className='bg-primary-foreground flex h-fit flex-col gap-4 p-2'>
+      <div className='flex flex-col gap-1.5'>
         {items.map((item, index) => (
           <InvoiceItem
             index={index}
             item={item}
-            hideDelete={index === 0 && items.length === 1} // Can't delete if it's the only item
+            hideDelete={index === 0} // Can't delete the first item
+            hideLabel={index !== 0} // Only show label on the first item
             className={cn(
               index !== 0 && 'animate-in slide-in-from-top-3 fade-in-0' // animate in all items except the first one
             )}
@@ -53,11 +55,11 @@ export const ItemsCard = ({
           />
         ))}
       </div>
-      <Button variant='outline' onClick={handleAddItem} className='w-full border-dashed text-primary font-medium bg-background hover:bg-muted/50'>
-        <Plus className='mr-2 h-4 w-4' />
-        Add new item
+      <Button variant='ghost' onClick={handleAddItem} className='w-fit'>
+        <Plus />
+        Add item
       </Button>
-    </div>
+    </Card>
   );
 };
 
@@ -66,23 +68,27 @@ const InvoiceItem = ({
   hideDelete,
   onDelete,
   onChange,
+  hideLabel,
   index,
   className,
 }: {
   item: InvoiceItem;
   hideDelete?: boolean;
+  hideLabel?: boolean;
   onDelete?: () => void;
   onChange?: (item: InvoiceItem) => void;
   index: number;
   className?: string;
 }) => {
   return (
-    <div className={cn(className, 'flex flex-col gap-4 rounded-lg border p-4 bg-background shadow-sm')}>
-      <div className='flex justify-between items-start gap-4'>
-        <div className='flex-2 grid w-full flex-1 items-center gap-1.5'>
-          <Label htmlFor={`item-name-${index}`} className='text-sm font-medium'>
-            Item name
-          </Label>
+    <div className={cn(className, 'flex flex-col gap-2')}>
+      <div className='flex justify-between gap-2'>
+        <div className='flex-2 grid w-full max-w-sm items-center gap-1.5'>
+          {!hideLabel && (
+            <Label htmlFor={`item-name-${index}`} className='flex-1 text-sm font-medium'>
+              Item name
+            </Label>
+          )}
           <Input
             id={`item-name-${index}`}
             placeholder='Enter name'
@@ -94,10 +100,12 @@ const InvoiceItem = ({
             autoFocus={index !== 0}
           />
         </div>
-        <div className='grid w-full max-w-[100px] items-center gap-1.5'>
-          <Label htmlFor={`quantity-${index}`} className='text-sm font-medium'>
-            Qty
-          </Label>
+        <div className='grid w-full min-w-12 max-w-32 flex-1 items-center gap-1.5'>
+          {!hideLabel && (
+            <Label htmlFor={`quantity-${index}`} className='text-sm font-medium'>
+              Qty
+            </Label>
+          )}
           <Input
             id={`quantity-${index}`}
             placeholder='quantity'
@@ -109,10 +117,12 @@ const InvoiceItem = ({
             className='no-spin-buttons'
           />
         </div>
-        <div className='flex-2 grid w-full max-w-[140px] items-center gap-1.5'>
-          <Label htmlFor={`amount-${index}`} className='text-sm font-medium'>
-            Price (USD)
-          </Label>
+        <div className='flex-2 grid w-full max-w-56 items-center gap-1.5'>
+          {!hideLabel && (
+            <Label htmlFor={`amount-${index}`} className='text-sm font-medium'>
+              Price (USD)
+            </Label>
+          )}
           <Input
             id={`amount-${index}`}
             type='number'
@@ -129,13 +139,14 @@ const InvoiceItem = ({
             className='no-spin-buttons'
           />
         </div>
-        {!hideDelete && (
-          <div className='flex items-center pt-6'>
-            <CompactDeleteButton
-              onDelete={onDelete}
-              className='text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-            />
-          </div>
+        {hideDelete ? (
+          // Take up the same amount of space as the delete button below
+          <div className='w-6 shrink-0' />
+        ) : (
+          <CompactDeleteButton
+            onDelete={onDelete}
+            className='-ml-1 self-center'
+          />
         )}
       </div>
       {/* TODO: Revisit FormMessage errors for these items. Currently, they just say "undefined" */}

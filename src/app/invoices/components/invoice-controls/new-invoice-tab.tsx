@@ -36,7 +36,7 @@ const DualFormFields = ({
 }) => {
   return (
     <div
-      className={cn('flex w-full items-end justify-between gap-2', className)}
+      className={cn('flex w-full items-start justify-between gap-2', className)}
     >
       {children}
     </div>
