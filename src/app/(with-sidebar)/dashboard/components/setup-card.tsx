@@ -4,9 +4,10 @@ import { Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage } from '@/api/error-message';
+import { Spinner } from '@/components/common/spinner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Spinner } from '@/components/common/spinner';
 import { useAcceptDueTos } from '@/hooks/profile/use-accept-due-tos';
 import { useCreateDueCustomer } from '@/hooks/profile/use-create-due-customer';
 import { env } from '@/lib/env';
@@ -14,7 +15,6 @@ import { cn } from '@/lib/utils';
 
 import { TaskStatuses } from './checklist-card';
 import { DashboardCard } from './dashboard-card';
-import { getApiErrorMessage } from '@/api/error-message';
 
 /** Build full Due URL from a relative path */
 const buildDueUrl = (path?: string) => {
