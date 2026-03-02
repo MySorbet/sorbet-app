@@ -18,11 +18,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 
 import { useInvoiceForm } from '../../hooks/use-invoice-form';
-import { isInTheFuture } from '../../schema';
+import { INVOICE_CURRENCIES, isInTheFuture } from '../../schema';
 import { ClientSelector } from './client-selector';
 import { ItemsCard } from './items-card';
 
@@ -105,13 +112,42 @@ export const NewInvoiceTab = ({ onNext }: { onNext: () => void }) => {
     }
   };
 
+  const currency = form.watch('currency');
+
   return (
     <div className='flex w-full flex-col gap-10'>
       <ClientSelector />
-      <ItemsCard
-        items={form.watch('items')}
-        onItemsChange={(items) => form.setValue('items', items)}
-      />
+      <div className='flex flex-col gap-3'>
+        <FormField
+          control={form.control}
+          name='currency'
+          render={({ field }) => (
+            <FormItem className='w-40'>
+              <FormLabel>Currency</FormLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {INVOICE_CURRENCIES.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <ItemsCard
+          items={form.watch('items')}
+          currency={currency}
+          onItemsChange={(items) => form.setValue('items', items)}
+        />
+      </div>
       <DualFormFields>
         <FormField
           name='invoiceNumber'

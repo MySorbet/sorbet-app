@@ -67,8 +67,12 @@ const yourInfoSchema = z.object({
 });
 
 /** The payment methods that a client can accept */
-export const ACCEPTED_PAYMENT_METHODS = ['usdc', 'usd', 'eur'] as const;
+export const ACCEPTED_PAYMENT_METHODS = ['usdc', 'usd', 'eur', 'aed'] as const;
 export type AcceptedPaymentMethod = (typeof ACCEPTED_PAYMENT_METHODS)[number];
+
+/** Currencies supported on invoices */
+export const INVOICE_CURRENCIES = ['USD', 'EUR', 'AED'] as const;
+export type InvoiceCurrency = (typeof INVOICE_CURRENCIES)[number];
 
 const paymentMethodsSchema = z.object({
   paymentMethods: z.array(z.enum(ACCEPTED_PAYMENT_METHODS)).min(1),
@@ -110,6 +114,9 @@ export const invoiceFormSchema = z
       .max(800, 'Memo must be less than 800 characters')
       .optional(),
     logoUrl: z.string().url().optional(),
+    currency: z.enum(INVOICE_CURRENCIES).default('USD'),
+    /** The specific virtual rail selected by the invoice sender (e.g. 'usd_ach', 'eur_sepa', 'aed_local'). Used for accurate fee lookup. */
+    virtualPaymentRail: z.string().optional(),
   })
   .extend(yourInfoSchema.shape)
   .extend(paymentMethodsSchema.shape);
@@ -157,6 +164,8 @@ export const defaultInvoiceValues: Required<
   taxId: undefined,
   address: undefined,
   logoUrl: undefined,
+  currency: 'USD',
+  virtualPaymentRail: undefined,
 };
 
 // ! Remember to update the knock JSON validation schema if you change this. Otherwise notifications will fail.

@@ -91,3 +91,18 @@ export const getDueFeeStructures = async () => {
   return response.data;
 };
 
+/** Get the live mid-rate for a currency pair (e.g. EUR → USD) from Due . */
+export const getFxRate = async (
+  from: string,
+  to: string
+): Promise<{ rate: number }> => {
+  const response = await axios.get<{ rate: number }>(
+    `${API_URL}/users/due/fx-rate`,
+    {
+      params: { from, to },
+      ...(await withAuthHeader()),
+    }
+  );
+  return response.data;
+};
+

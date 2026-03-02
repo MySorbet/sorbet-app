@@ -27,38 +27,33 @@ export const calculateTotalAmount = (items: InvoiceItem[]) => {
 };
 
 /**
- * Calculates the subtotal, tax amount, platform fee, and total amount for an invoice.
+ * Calculates the subtotal, tax amount, transaction fee, and total amount for an invoice.
  *
- * @param invoice - The invoice to calculate the subtotal, tax amount, and total amount for. Only the `items`, `tax`, and `paymentMethods` properties are required.
- * @param platformFeePercent - Optional platform fee percentage (0-100). If not provided, defaults to 1% for USD/EUR payments.
- * @returns An object containing the subtotal, tax amount, platform fee, and total amount.
+ * @param invoice - The invoice to calculate values for. Only `items` and `tax` are required.
+ * @param feeStructure - Optional fee structure `{ feeBps, fixedFee }` from the Due fee table.
+ *   `feeBps` is in basis points (e.g. 20 = 0.20%). `fixedFee` is a flat amount in the invoice currency.
+ *   If omitted, no transaction fee is applied.
+ * @returns An object containing the subtotal, tax amount, transaction fee, and total amount.
  */
 export const calculateSubtotalTaxAndTotal = (
-  invoice: Pick<InvoiceForm, 'items' | 'tax' | 'paymentMethods'>,
-  platformFeePercent?: number
+  invoice: Pick<InvoiceForm, 'items' | 'tax'>,
+  feeStructure?: { feeBps: number; fixedFee: number }
 ) => {
   const subtotal = calculateTotalAmount(invoice.items ?? []);
   const taxAmount = invoice.tax ? subtotal * (invoice.tax / 100) : 0;
   const subtotalWithTax = subtotal + taxAmount;
 
-  // Calculate platform fee if USD or EUR payment methods are selected
-  const includesBankFee = invoice.paymentMethods?.some((method) =>
-    ['usd', 'eur'].includes(method)
-  );
-
-  // Use provided platform fee percent, or default to 1% if not provided
-  const feePercent = platformFeePercent ?? (includesBankFee ? 1 : 0);
-  const platformFee = includesBankFee
-    ? subtotalWithTax * (feePercent / 100)
+  // transactionFee = (subtotalWithTax × feeBps / 10000) + fixedFee
+  const transactionFee = feeStructure
+    ? (subtotalWithTax * feeStructure.feeBps) / 10000 + feeStructure.fixedFee
     : 0;
 
-  const total = subtotalWithTax + platformFee;
+  const total = subtotalWithTax + transactionFee;
   return {
     subtotal,
     taxAmount,
-    developerFee: platformFee,
+    transactionFee,
     total,
-    developerFeePercent: feePercent,
   };
 };
 
