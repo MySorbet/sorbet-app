@@ -23,8 +23,10 @@ export const CreateInvoice = ({
   isCreating,
   isBaseEndorsed,
   isEurEndorsed,
+  isAedEndorsed,
   onGetVerified,
   walletAddress,
+  stellarWalletAddress,
 }: {
   prefills?: Partial<InvoiceForm>;
   onClose?: () => void;
@@ -32,8 +34,12 @@ export const CreateInvoice = ({
   isCreating?: boolean;
   isBaseEndorsed?: boolean;
   isEurEndorsed?: boolean;
-  onGetVerified?: (currency: 'usd' | 'eur') => void;
+  /** Whether the user is endorsed for AED payments. `undefined` means still loading. */
+  isAedEndorsed?: boolean;
+  onGetVerified?: (currency: 'usd' | 'eur' | 'aed') => void;
   walletAddress?: string;
+  /** The user's Stellar wallet address for the USDC Stellar network option. */
+  stellarWalletAddress?: string;
 }) => {
   // RHF will let undefined values overwrite the default values, so we filter them out
   const filteredPrefills = omitBy(prefills, (value) => value === undefined);
@@ -95,8 +101,10 @@ export const CreateInvoice = ({
           <InvoiceControls
             isBaseEndorsed={isBaseEndorsed}
             isEurEndorsed={isEurEndorsed}
+            isAedEndorsed={isAedEndorsed}
             onGetVerified={onGetVerified}
             walletAddress={walletAddress}
+            stellarWalletAddress={stellarWalletAddress}
           />
         </form>
       </div>

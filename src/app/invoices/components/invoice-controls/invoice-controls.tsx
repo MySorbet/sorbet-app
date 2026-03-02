@@ -11,13 +11,18 @@ import { YourInfoTab } from './your-info-tab';
 export const InvoiceControls = ({
   isBaseEndorsed,
   isEurEndorsed,
+  isAedEndorsed,
   onGetVerified,
   walletAddress,
+  stellarWalletAddress,
 }: {
   isBaseEndorsed?: boolean;
   isEurEndorsed?: boolean;
-  onGetVerified?: (currency: 'usd' | 'eur') => void;
+  /** Whether the user is endorsed for AED payments. `undefined` means still loading. */
+  isAedEndorsed?: boolean;
+  onGetVerified?: (currency: 'usd' | 'eur' | 'aed') => void;
   walletAddress?: string;
+  stellarWalletAddress?: string;
 }) => {
   const [activeTab, setActiveTab] = useState('invoice');
 
@@ -57,8 +62,10 @@ export const InvoiceControls = ({
           <PaymentTab
             isBaseEndorsed={isBaseEndorsed}
             isEurEndorsed={isEurEndorsed}
+            isAedEndorsed={isAedEndorsed}
             onGetVerified={onGetVerified}
             walletAddress={walletAddress}
+            stellarWalletAddress={stellarWalletAddress}
           />
         </TabsContent>
       </ScrollArea>
