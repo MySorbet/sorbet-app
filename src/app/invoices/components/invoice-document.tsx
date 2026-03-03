@@ -22,14 +22,18 @@ const DEFAULT_RAIL: Record<string, VirtualRail> = {
  * Filters to `channelType === 'static_deposit'`, preferring `accountType = 'any'` then
  * falling back to `'individual'` and finally any available static_deposit row.
  * Uses `virtualPaymentRail` if provided; otherwise falls back to the default rail for the currency.
+ *
+ * Pass `skip: true` when the caller already has the stored fee amount — this prevents
+ * the authenticated fee-structures API call from firing on unauthenticated public pages.
  */
 const useTransactionFeeStructure = (
   paymentMethods?: AcceptedPaymentMethod[],
-  virtualPaymentRail?: string
+  virtualPaymentRail?: string,
+  skip?: boolean
 ): { feeBps: number; fixedFee: number } | undefined => {
-  const { data: dueFeeStructures } = useDueFeeStructures();
+  const { data: dueFeeStructures } = useDueFeeStructures({ enabled: !skip });
 
-  if (!paymentMethods || !dueFeeStructures) return undefined;
+  if (skip || !paymentMethods || !dueFeeStructures) return undefined;
 
   // Determine which rail to look up
   let rail: VirtualRail | undefined = virtualPaymentRail as VirtualRail | undefined;
@@ -71,18 +75,28 @@ export const InvoiceDocument = forwardRef<
   HTMLDivElement,
   { invoice: InvoiceForm | Invoice; className?: string }
 >(({ invoice, className }, ref) => {
-  // Only apply the Due fee structure for new invoices that carry a virtualPaymentRail.
-  // Old invoices already have the legacy 1% platform fee baked into their stored
-  // totalAmount, so we must not re-calculate or display a fee row for them.
+  // For a saved Invoice (fetched from DB), use the fee amount that was snapshotted at
+  // creation time.  This avoids an authenticated API call on public/unauthenticated pages
+  // and guarantees the displayed fee matches what was agreed when the invoice was sent.
+  // For a live InvoiceForm preview (creator is authenticated), calculate the fee in real-time.
+  const storedFeeAmount =
+    'transactionFeeAmount' in invoice
+      ? Number(invoice.transactionFeeAmount ?? 0)
+      : undefined;
+
+  // Skip the fee-structures API call when we already have the stored value.
   const isNewFeeFlow = !!invoice.virtualPaymentRail;
   const feeStructure = useTransactionFeeStructure(
     isNewFeeFlow ? invoice.paymentMethods : undefined,
-    invoice.virtualPaymentRail
+    invoice.virtualPaymentRail,
+    storedFeeAmount !== undefined // skip API for saved invoices
   );
-  const { taxAmount, transactionFee, total } = calculateSubtotalTaxAndTotal(
+  const { taxAmount, transactionFee: calculatedFee, total } = calculateSubtotalTaxAndTotal(
     invoice,
     feeStructure
   );
+  // Prefer the stored value (immutable, no auth needed); fall back to live calculation
+  const transactionFee = storedFeeAmount ?? calculatedFee;
 
   // Total amount is dependent on which type of invoice we get
   // If this is full invoice from the server, the amount has been calculated already

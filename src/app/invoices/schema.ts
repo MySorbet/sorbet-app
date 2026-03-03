@@ -172,6 +172,8 @@ export const defaultInvoiceValues: Required<
 export type Invoice = InvoiceForm & {
   status: InvoiceStatus;
   totalAmount: number;
+  /** Snapshotted at creation time for new Due invoices. Null/0 for legacy Bridge invoices. */
+  transactionFeeAmount?: number | null;
   id: string;
   userId: string;
   projectName?: string; // backwards compatibility
