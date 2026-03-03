@@ -64,7 +64,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
     if (ready && !authenticated) {
       setUser(null);
     }
-  }, [ready, authenticated, setUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, authenticated]);
 
   // Silently re-fetch user data on every app load when authenticated.
   // This ensures already-logged-in users always have fresh data from the DB,
@@ -79,7 +80,8 @@ export const AuthProvider = ({ children, value }: AuthProviderProps) => {
           // Silent fail — existing localStorage data remains usable
         });
     }
-  }, [ready, authenticated, setUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, authenticated]);
 
   /**
    * Local helper to find a user by privy id in the sorbet db,

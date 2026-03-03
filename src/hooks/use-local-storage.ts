@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useLocalStorage = <T = unknown>(
   keyName: string,
@@ -19,14 +19,18 @@ export const useLocalStorage = <T = unknown>(
     }
   });
 
-  const setValue = (newValue: T) => {
-    try {
-      window.localStorage.setItem(keyName, JSON.stringify(newValue));
-      setStoredValue(newValue);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+
+  const setValue = useCallback(
+    (newValue: T) => {
+      try {
+        window.localStorage.setItem(keyName, JSON.stringify(newValue));
+        setStoredValue(newValue);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [keyName]
+  );
 
   return [storedValue, setValue] as const;
 };
