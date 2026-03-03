@@ -46,13 +46,15 @@ const VIRTUAL_METHODS: {
   flag: string;
   /** The currency this rail belongs to — maps to the AcceptedPaymentMethod sent to the backend */
   legacyMethod: VirtualCurrency;
+  /** Which endorsement flag must be true for this rail to be selectable */
+  endorsedBy: 'base' | 'eur' | 'aed';
 }[] = [
-  { value: 'usd_ach', label: 'USD (ACH)', flag: '🇺🇸', legacyMethod: 'usd' },
-  { value: 'usd_wire', label: 'USD (WIRE)', flag: '🇺🇸', legacyMethod: 'usd' },
-  { value: 'usd_swift', label: 'USD (SWIFT)', flag: '🇺🇸', legacyMethod: 'usd' },
-  { value: 'eur_sepa', label: 'EUR (SEPA)', flag: '🇪🇺', legacyMethod: 'eur' },
-  { value: 'eur_swift', label: 'EUR (SWIFT)', flag: '🇪🇺', legacyMethod: 'eur' },
-  { value: 'aed_local', label: 'AED (Local Transfer)', flag: '🇦🇪', legacyMethod: 'aed' },
+  { value: 'usd_ach', label: 'USD (ACH)', flag: '🇺🇸', legacyMethod: 'usd', endorsedBy: 'base' },
+  { value: 'usd_wire', label: 'USD (WIRE)', flag: '🇺🇸', legacyMethod: 'usd', endorsedBy: 'base' },
+  { value: 'usd_swift', label: 'USD (SWIFT)', flag: '🇺🇸', legacyMethod: 'usd', endorsedBy: 'base' },
+  { value: 'eur_sepa', label: 'EUR (SEPA)', flag: '🇪🇺', legacyMethod: 'eur', endorsedBy: 'eur' },
+  { value: 'eur_swift', label: 'EUR (SWIFT)', flag: '🇪🇺', legacyMethod: 'eur', endorsedBy: 'eur' },
+  { value: 'aed_local', label: 'AED (Local Transfer)', flag: '🇦🇪', legacyMethod: 'aed', endorsedBy: 'aed' },
 ];
 
 /** Which virtual rails are available for each invoice currency */
@@ -92,15 +94,24 @@ export const PaymentTab = ({
   const { data: dueFeeStructures } = useDueFeeStructures();
 
   const invoiceCurrency = form.watch('currency') ?? 'USD';
-  const availableVirtualMethods = useMemo(
-    () =>
-      VIRTUAL_METHODS.filter((m) =>
-        (CURRENCY_TO_RAILS[invoiceCurrency] ?? CURRENCY_TO_RAILS.USD).includes(
-          m.value
-        )
-      ),
-    [invoiceCurrency]
-  );
+  const availableVirtualMethods = useMemo(() => {
+    const currencyRails = CURRENCY_TO_RAILS[invoiceCurrency] ?? CURRENCY_TO_RAILS.USD;
+    const currencyMethods = VIRTUAL_METHODS.filter((m) => currencyRails.includes(m.value));
+
+    // While endorsements are still loading, show all currency-appropriate methods
+    // (the checkbox itself will be in skeleton state, so the dropdown won't be used)
+    if (isBaseEndorsed === undefined && isEurEndorsed === undefined && isAedEndorsed === undefined) {
+      return currencyMethods;
+    }
+
+    // Filter down to only the rails the user actually has a Due account for
+    return currencyMethods.filter((m) => {
+      if (m.endorsedBy === 'base') return isBaseEndorsed === true;
+      if (m.endorsedBy === 'eur') return isEurEndorsed === true;
+      if (m.endorsedBy === 'aed') return isAedEndorsed === true;
+      return false;
+    });
+  }, [invoiceCurrency, isBaseEndorsed, isEurEndorsed, isAedEndorsed]);
 
   // Initialise selected virtual method from form state so existing prefills are respected,
   // and seed virtualPaymentRail immediately so the invoice document can look up the fee row.
@@ -160,7 +171,8 @@ export const PaymentTab = ({
     isAedEndorsed === undefined;
   const isVirtualEndorsed =
     isBaseEndorsed === true || isEurEndorsed === true || isAedEndorsed === true;
-  const isVirtualLocked = !isLoading && !isVirtualEndorsed;
+  // Lock if not verified at all, OR if verified but no Due account exists for this invoice's currency
+  const isVirtualLocked = !isLoading && (!isVirtualEndorsed || availableVirtualMethods.length === 0);
 
   const selectedMethodMeta =
     VIRTUAL_METHODS.find((m) => m.value === selectedVirtualMethod) ??
@@ -293,7 +305,7 @@ export const PaymentTab = ({
                 Your virtual bank account to receive ACH / WIRE / SWIFT / SEPA
                 payments
               </InfoTooltip>
-              {!isLoading && isVirtualEndorsed && (
+              {!isLoading && availableVirtualMethods.length > 0 && (
                 <span className='text-sorbet-blue ml-auto text-right text-xs'>
                   {PAYMENT_TIMING_DESCRIPTIONS.bank}
                 </span>

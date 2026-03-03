@@ -25,6 +25,10 @@ export const InvoiceControls = ({
   stellarWalletAddress?: string;
 }) => {
   const [activeTab, setActiveTab] = useState('invoice');
+  // Each flag unlocks the next tab once the user passes through via "Save & Next".
+  // After unlocking, all tabs remain freely navigable.
+  const [hasCompletedTab1, setHasCompletedTab1] = useState(false);
+  const [hasCompletedTab2, setHasCompletedTab2] = useState(false);
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className='flex h-full w-[27rem] flex-col'>
@@ -32,10 +36,10 @@ export const InvoiceControls = ({
         <TabsTrigger value='invoice' className='w-1/3'>
           New invoice
         </TabsTrigger>
-        <TabsTrigger value='your-info' className='w-1/3'>
+        <TabsTrigger value='your-info' className='w-1/3' disabled={!hasCompletedTab1}>
           Your info
         </TabsTrigger>
-        <TabsTrigger value='payment' className='w-1/3'>
+        <TabsTrigger value='payment' className='w-1/3' disabled={!hasCompletedTab2}>
           Payment
         </TabsTrigger>
       </TabsList>
@@ -45,14 +49,24 @@ export const InvoiceControls = ({
           value='invoice'
           className='data-[state=inactive]:hidden animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
-          <NewInvoiceTab onNext={() => setActiveTab('your-info')} />
+          <NewInvoiceTab
+            onNext={() => {
+              setHasCompletedTab1(true);
+              setActiveTab('your-info');
+            }}
+          />
         </TabsContent>
         <TabsContent
           forceMount
           value='your-info'
           className='data-[state=inactive]:hidden animate-in fade-in-0 slide-in-from-right-5 p-1 pt-5'
         >
-          <YourInfoTab onNext={() => setActiveTab('payment')} />
+          <YourInfoTab
+            onNext={() => {
+              setHasCompletedTab2(true);
+              setActiveTab('payment');
+            }}
+          />
         </TabsContent>
         <TabsContent
           forceMount
