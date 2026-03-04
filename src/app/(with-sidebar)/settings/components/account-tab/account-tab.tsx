@@ -1,6 +1,5 @@
 'use client';
 
-import { DeleteAccountSection } from './delete-account-section';
 import { EmailSection } from './email-section';
 import { InvoicingSection } from './invoicing-section';
 import { WalletSection } from './wallet-section';
@@ -11,7 +10,6 @@ export const AccountTab = () => {
       <EmailSection />
       <WalletSection />
       <InvoicingSection />
-      <DeleteAccountSection />
     </div>
   );
 };
