@@ -91,3 +91,33 @@ export const getDueFeeStructures = async () => {
   return response.data;
 };
 
+/**
+ * Fetch Due virtual account bank details for a specific schema by userId.
+ * No auth required — called from public invoice pages.
+ */
+export const getDueBankDetails = async (
+  userId: string,
+  schema: string
+): Promise<unknown> => {
+  const response = await axios.get(
+    `${API_URL}/users/${userId}/due/bank-details`,
+    { params: { schema } }
+  );
+  return response.data;
+};
+
+/** Get the live mid-rate for a currency pair (e.g. EUR → USD) from Due . */
+export const getFxRate = async (
+  from: string,
+  to: string
+): Promise<{ rate: number }> => {
+  const response = await axios.get<{ rate: number }>(
+    `${API_URL}/users/due/fx-rate`,
+    {
+      params: { from, to },
+      ...(await withAuthHeader()),
+    }
+  );
+  return response.data;
+};
+

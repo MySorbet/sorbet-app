@@ -46,30 +46,30 @@ export const InvoiceSheetCancelDrawer = ({
   return (
     <div
       className={cn(
-        'bg-muted flex h-40 flex-col items-center justify-between rounded-t-xl p-3',
-        'animate-in slide-in-from-bottom',
-        !open && 'animate-out slide-out-to-bottom', // initiate slide out as soon as open is false
-        !isVisible ? 'hidden' : 'absolute bottom-0 left-0 right-0', // Only hide after animation is complete
+        'bg-background flex flex-col items-center justify-between rounded-xl p-6 border shadow-lg m-4',
+        'animate-in slide-in-from-bottom fade-in-0 duration-200',
+        !open && 'animate-out slide-out-to-bottom fade-out-0 duration-200', // initiate slide out as soon as open is false
+        !isVisible ? 'hidden' : 'absolute bottom-0 left-0 right-0 z-50', // Only hide after animation is complete
         !open && 'pointer-events-none' // Prevent interactions during animation
       )}
     >
-      <div className='flex flex-col gap-1 pt-3 text-center'>
-        <span className='text-sm font-semibold'>Are you sure?</span>
-        <span className='text-xs'>
+      <div className='flex flex-col gap-2 pb-6 text-center'>
+        <span className='text-base font-semibold'>Are you sure?</span>
+        <span className='text-muted-foreground text-sm'>
           This will permanently cancel your invoice
         </span>
       </div>
-      <div className='flex w-full gap-2'>
-        <Button variant='outline' className='w-full' onClick={handleBack}>
-          Go back
-        </Button>
+      <div className='flex w-full flex-col gap-3'>
         <Button
           variant='destructive'
           className='w-full'
           onClick={onCancel}
           disabled={isLoading}
         >
-          {isLoading ? 'Cancelling...' : 'Cancel invoice'}
+          {isLoading ? 'Cancelling...' : 'Yes, cancel my invoice'}
+        </Button>
+        <Button variant='outline' className='w-full' onClick={handleBack}>
+          Go back
         </Button>
       </div>
     </div>

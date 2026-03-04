@@ -14,9 +14,12 @@ import { type InvoiceItem, emptyInvoiceItem } from '../../schema';
 /** Card allowing a list of items (making up an invoice) to be added, edited, and deleted */
 export const ItemsCard = ({
   items,
+  currency = 'USD',
   onItemsChange,
 }: {
   items: InvoiceItem[];
+  /** The invoice currency, used to label the price column */
+  currency?: string;
   onItemsChange: (items: InvoiceItem[]) => void;
 }) => {
   // TODO: These handlers used to be integrated with the parent form. Either do this again, or use this as another layer
@@ -44,6 +47,7 @@ export const ItemsCard = ({
           <InvoiceItem
             index={index}
             item={item}
+            currency={currency}
             hideDelete={index === 0} // Can't delete the first item
             hideLabel={index !== 0} // Only show label on the first item
             className={cn(
@@ -65,6 +69,7 @@ export const ItemsCard = ({
 
 const InvoiceItem = ({
   item,
+  currency = 'USD',
   hideDelete,
   onDelete,
   onChange,
@@ -73,6 +78,7 @@ const InvoiceItem = ({
   className,
 }: {
   item: InvoiceItem;
+  currency?: string;
   hideDelete?: boolean;
   hideLabel?: boolean;
   onDelete?: () => void;
@@ -85,12 +91,12 @@ const InvoiceItem = ({
       <div className='flex justify-between gap-2'>
         <div className='flex-2 grid w-full max-w-sm items-center gap-1.5'>
           {!hideLabel && (
-            <Label htmlFor='item-name' className='flex-1 text-sm font-medium'>
+            <Label htmlFor={`item-name-${index}`} className='flex-1 text-sm font-medium'>
               Item name
             </Label>
           )}
           <Input
-            id='item-name'
+            id={`item-name-${index}`}
             placeholder='Enter name'
             type='text'
             value={item.name}
@@ -102,12 +108,12 @@ const InvoiceItem = ({
         </div>
         <div className='grid w-full min-w-12 max-w-32 flex-1 items-center gap-1.5'>
           {!hideLabel && (
-            <Label htmlFor='quantity' className='text-sm font-medium'>
+            <Label htmlFor={`quantity-${index}`} className='text-sm font-medium'>
               Qty
             </Label>
           )}
           <Input
-            id='quantity'
+            id={`quantity-${index}`}
             placeholder='quantity'
             type='number'
             value={item.quantity}
@@ -119,12 +125,12 @@ const InvoiceItem = ({
         </div>
         <div className='flex-2 grid w-full max-w-56 items-center gap-1.5'>
           {!hideLabel && (
-            <Label htmlFor='amount' className='text-sm font-medium'>
-              Price (USD)
+            <Label htmlFor={`amount-${index}`} className='text-sm font-medium'>
+              Price ({currency})
             </Label>
           )}
           <Input
-            id='amount'
+            id={`amount-${index}`}
             type='number'
             placeholder='amount'
             value={item.amount === 0 ? '' : item.amount}

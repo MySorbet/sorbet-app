@@ -1,8 +1,12 @@
 /**
- * Use this to format currency anywhere within invoices
- * - Accepts strings for backwards compatibility, but just convert them to numbers before formatting
+ * Use this to format currency anywhere within invoices.
+ * - Accepts strings for backwards compatibility
+ * - Defaults to USD when no currency code is provided
  */
-export const formatCurrency = (amount?: number | string) => {
+export const formatCurrency = (
+  amount?: number | string,
+  currency = 'USD'
+) => {
   if (amount === undefined) return '';
 
   if (typeof amount === 'string') {
@@ -10,6 +14,6 @@ export const formatCurrency = (amount?: number | string) => {
   }
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency,
   }).format(amount);
 };

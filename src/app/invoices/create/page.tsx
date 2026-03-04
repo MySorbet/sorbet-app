@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 
-import { useEndorsements } from '@/app/(with-sidebar)/recipients/hooks/use-endorsements';
 import { Authenticated } from '@/app/authenticated';
 import { usePaymentMethods } from '@/app/invoices/hooks/use-payment-methods';
 import Page from '@/components/common/page';
+import { useDueVerified } from '@/hooks/profile/use-due-verified';
+import { useDueVirtualAccounts } from '@/hooks/profile/use-due-virtual-accounts';
 import { useAuth } from '@/hooks/use-auth';
-import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+import { useWalletAddress } from '@/hooks/use-wallet-address';
 
 import { CreateInvoice } from '../components/create-invoice';
 import { useCreateInvoice } from '../hooks/use-create-invoice';
@@ -17,15 +18,35 @@ import { InvoiceForm } from '../schema';
 export default function CreateInvoicePage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { isEurApproved, hasEurAccount, isBaseApproved, hasUsdAccount } =
-    useEndorsements();
+
+  const { isVerified, isPending: isVerifiedPending } = useDueVerified();
+  const { data: virtualAccounts, isPending: isAccountsPending } =
+    useDueVirtualAccounts();
+
+  const isEndorsementLoading = isVerifiedPending || isAccountsPending;
+  const hasUsdAccount =
+    virtualAccounts?.some((va) => va.schema === 'bank_us') ?? false;
+  const hasEurAccount =
+    virtualAccounts?.some((va) => va.schema === 'bank_sepa') ?? false;
+  const hasAedAccount =
+    virtualAccounts?.some((va) => va.schema === 'bank_mena') ?? false;
+
+  // Pass undefined while loading so the payment tab shows a skeleton instead of "Get verified"
+  const isBaseEndorsed = isEndorsementLoading
+    ? undefined
+    : isVerified && hasUsdAccount;
+  const isEurEndorsed = isEndorsementLoading
+    ? undefined
+    : isVerified && hasEurAccount;
+  const isAedEndorsed = isEndorsementLoading
+    ? undefined
+    : isVerified && hasAedAccount;
 
   const invoiceNumber = useInvoiceNumber();
 
-  const { smartWalletAddress } = useSmartWalletAddress();
+  const { baseAddress, stellarAddress } = useWalletAddress();
 
-  // TODO: Is there a better option for this action? QP?
-  const onGetVerified = (_: 'usd' | 'eur') => router.push('/verify');
+  const onGetVerified = (_: 'usd' | 'eur' | 'aed') => router.push('/verify');
 
   const handleClose = () => router.push('/invoices');
 
@@ -44,10 +65,12 @@ export default function CreateInvoicePage() {
           onClose={handleClose}
           onCreate={handleCreate}
           isCreating={isPending}
-          isBaseEndorsed={isBaseApproved && hasUsdAccount}
-          isEurEndorsed={isEurApproved && hasEurAccount}
+          isBaseEndorsed={isBaseEndorsed}
+          isEurEndorsed={isEurEndorsed}
+          isAedEndorsed={isAedEndorsed}
           onGetVerified={onGetVerified}
-          walletAddress={smartWalletAddress ?? undefined}
+          walletAddress={baseAddress ?? undefined}
+          stellarWalletAddress={stellarAddress ?? undefined}
           prefills={{
             fromName: user?.firstName,
             fromEmail: user?.email,

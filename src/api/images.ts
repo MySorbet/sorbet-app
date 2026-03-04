@@ -27,6 +27,43 @@ export const uploadProfileImageAsync = async (data: FormData) => {
   }
 };
 
+export const uploadInvoiceLogoAsync = async (data: FormData) => {
+  try {
+    const response = await axios.post<{ fileUrl: string }>(
+      `${API_URL}/images/invoice-logo`,
+      data,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to upload invoice logo: ${getApiErrorMessage(error)}`
+      );
+    } else {
+      throw new Error(`Failed to upload invoice logo: ${error}`);
+    }
+  }
+};
+
+export const deleteInvoiceLogoAsync = async (userId: string) => {
+  try {
+    const response = await axios.delete(
+      `${API_URL}/images/invoice-logo/${userId}`,
+      await withAuthHeader()
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        `Failed to delete invoice logo: ${getApiErrorMessage(error)}`
+      );
+    } else {
+      throw new Error(`Failed to delete invoice logo: ${error}`);
+    }
+  }
+};
+
 export const uploadWidgetsImageAsync = async (
   data: FormData,
   options?: {

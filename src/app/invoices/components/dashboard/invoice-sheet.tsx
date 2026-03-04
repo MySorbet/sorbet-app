@@ -19,7 +19,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { formatCurrency } from '@/lib/currency';
-import { cn } from '@/lib/utils';
 
 import { Invoice } from '../../schema';
 import { checkOverdue, formatDate, InvoiceStatus } from '../../utils';
@@ -102,9 +101,9 @@ export default function InvoiceSheet({
         setOpen(open);
       }}
     >
-      <SheetContent className='flex h-full w-full flex-col justify-between gap-12 p-5'>
-        <SheetHeader className='gap-2 sm:gap-0'>
-          <SheetTitle className='text-sm font-medium'>
+      <SheetContent className='flex h-full w-full flex-col gap-0 p-6'>
+        <SheetHeader className='text-left space-y-0 pb-3'>
+          <SheetTitle className='text-xl font-bold'>
             {invoice.toName}
           </SheetTitle>
           <VisuallyHidden asChild>
@@ -114,22 +113,22 @@ export default function InvoiceSheet({
           </VisuallyHidden>
         </SheetHeader>
 
-        <ScrollArea className='h-full w-full'>
-          <div className='flex flex-1 flex-col gap-12 p-1'>
+        <ScrollArea className='h-full w-full pr-3'>
+          <div className='flex flex-1 flex-col gap-8'>
             {/* Invoice status and total amount */}
-            <div>
+            <div className='flex flex-col items-start gap-5'>
               <InvoiceStatusBadge
                 variant={checkOverdue(invoice.dueDate, invoice.status)}
                 interactive
                 onValueChange={handleStatusBadgeChange}
               />
               <div
-                className={cn(
-                  'mt-3 text-2xl font-semibold',
-                  invoice.status === 'Cancelled' && 'line-through'
-                )}
+                className='text-[32px] font-bold relative w-fit tracking-tight'
               >
                 {formatCurrency(invoice.totalAmount)}
+                {invoice.status === 'Cancelled' && (
+                  <div className='absolute left-0 right-0 top-1/2 h-[2.5px] -translate-y-1/2 bg-foreground rounded-full' />
+                )}
               </div>
             </div>
 
@@ -188,12 +187,12 @@ export default function InvoiceSheet({
         </ScrollArea>
 
         {/* Invoice actions */}
-        <SheetFooter className='items-end gap-2 sm:gap-0'>
+        {invoice.status !== 'Cancelled' && (
+          <SheetFooter className='items-end gap-2 sm:gap-0'>
           <Button
             variant='outline'
             className='w-full'
             onClick={() => setCancelDrawerOpen(true)}
-            disabled={invoice.status === 'Cancelled'}
           >
             Cancel Invoice
           </Button>
@@ -201,12 +200,12 @@ export default function InvoiceSheet({
             variant='outline'
             className='w-full'
             onClick={onEdit}
-            // disabled={invoice.status === 'Cancelled'}
             disabled={true} // TODO: Implement edit invoice
           >
             Edit Invoice
           </Button>
         </SheetFooter>
+        )}
 
         {/* Confirmation drawer for cancelling an invoice */}
         <InvoiceSheetCancelDrawer

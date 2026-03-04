@@ -1,10 +1,13 @@
 'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useIsInvoiceSheetOpen } from '@/app/invoices/hooks/use-is-invoice-sheet-open';
+import { DocsButton } from '@/components/common/docs-button';
+import { Button } from '@/components/ui/button';
 
 import { useCancelInvoice } from '../../hooks/use-cancel-invoice';
 import { useInvoicePrinter } from '../../hooks/use-invoice-printer';
@@ -12,8 +15,8 @@ import { useOpenInvoice } from '../../hooks/use-open-invoice';
 import { usePayInvoice } from '../../hooks/use-pay-invoice';
 import { Invoice } from '../../schema';
 import { checkOverdue, InvoiceStatus } from '../../utils';
+import { FilteredInvoiceTable } from './filtered-invoice-table';
 import InvoiceSheet from './invoice-sheet';
-import { InvoiceTable } from './invoice-table';
 import SummaryCard from './summary-card';
 
 type InvoiceDashboardProps = {
@@ -32,8 +35,6 @@ export const InvoiceDashboard = ({
   isLoading,
 }: InvoiceDashboardProps) => {
   const openInvoices = invoices.filter((invoice) => invoice.status === 'Open');
-  // To find overdue invoices, we need to map with checkOverdue since Overdue is not
-  // stored in the db. Rather, we decide to display this status on the frontend based on the date.
   const overdueInvoices = invoices
     .map((invoice) => ({
       ...invoice,
@@ -50,18 +51,12 @@ export const InvoiceDashboard = ({
     setForceOpenCancelDrawer,
   } = useIsInvoiceSheetOpen();
 
-  // Manage the open state of the invoice sheet
-  // When closing, wait for the animation to complete
-  // before clearing the selected invoice
   const handleInvoiceSheetOpen = (open: boolean) => {
     setIsInvoiceSheetOpen(open, undefined, () => {
       setSelectedInvoice(undefined);
     });
   };
 
-  // Cancel an invoice using the mutation hook. When complete, set the selected
-  // invoice to the cancelled invoice and invalidate the invoices query
-  // TODO: handle error
   const { cancelInvoiceMutation, isPending } = useCancelInvoice();
   const queryClient = useQueryClient();
   const handleCancelInvoice = async () => {
@@ -69,31 +64,19 @@ export const InvoiceDashboard = ({
     const cancelledInvoice = await cancelInvoiceMutation(selectedInvoice.id);
     setSelectedInvoice(cancelledInvoice);
     setForceOpenCancelDrawer(false);
-    // Force the parent to re-fetch invoices
-    queryClient.invalidateQueries({
-      queryKey: ['invoices'],
-    });
+    queryClient.invalidateQueries({ queryKey: ['invoices'] });
   };
 
-  // Cancel the invoice using the mutation hook. When complete, invalidate the invoices query
-  // TODO: handle error
-  // TODO: Loading states
-  // TODO: This could merge with cancel
   const { payInvoiceMutation } = usePayInvoice();
   const { openInvoiceMutation } = useOpenInvoice();
-  const handleInvoiceStatusChange = async (
-    invoice: Invoice,
-    status: InvoiceStatus
-  ) => {
+  const handleInvoiceStatusChange = async (invoice: Invoice, status: InvoiceStatus) => {
     if (status === 'Cancelled') {
       setSelectedInvoice({ ...invoice });
-      setIsInvoiceSheetOpen(true, true); // Set the invoice sheet open and force the cancel drawer open
+      setIsInvoiceSheetOpen(true, true);
     } else if (status === 'Paid') {
-      // Optimistically update the status
       setSelectedInvoice({ ...invoice, status });
       await payInvoiceMutation(invoice.id);
     } else if (status === 'Open') {
-      // Optimistically update the status
       setSelectedInvoice({ ...invoice, status });
       await openInvoiceMutation(invoice.id);
     } else {
@@ -101,20 +84,14 @@ export const InvoiceDashboard = ({
       return;
     }
 
-    // Force the parent to re-fetch invoices
-    queryClient.invalidateQueries({
-      queryKey: ['invoices'],
-    });
+    queryClient.invalidateQueries({ queryKey: ['invoices'] });
   };
 
   const { HiddenInvoiceDocument, print } = useInvoicePrinter(selectedInvoice);
 
   return (
     <>
-      {/* Hidden invoice document for download */}
       <HiddenInvoiceDocument />
-
-      {/* Invoice sheet displaying details when there is a selected invoice */}
       <InvoiceSheet
         open={isInvoiceSheetOpen}
         setOpen={handleInvoiceSheetOpen}
@@ -129,9 +106,50 @@ export const InvoiceDashboard = ({
         }}
       />
 
-      <div className='@container flex w-full min-w-fit max-w-7xl flex-col gap-10'>
+      <div className='@container size-full w-full max-w-7xl space-y-4 px-[1px] sm:space-y-6 sm:px-0'>
+        {/* Header Section */}
+        <div className='flex w-full flex-col items-start justify-between gap-4 border-b px-4 pb-4 pt-[1px] sm:flex-row sm:items-center sm:gap-6 sm:px-6 md:min-h-[72px]'>
+          {/* Mobile: Title + Buttons in one row */}
+          <div className='flex w-full items-center justify-between sm:hidden'>
+            <h2 className='text-xl font-semibold'>Invoices</h2>
+            <div className='flex shrink-0 gap-2'>
+              <DocsButton />
+              <Button
+                variant='sorbet'
+                onClick={onCreateNew}
+                size='icon'
+                className='size-9'
+                aria-label='Create Invoice'
+              >
+                <Plus className='size-4' />
+              </Button>
+            </div>
+          </div>
+
+          {/* Desktop: Original layout */}
+          <div className='hidden min-w-0 flex-1 sm:block'>
+            <h2 className='text-2xl font-semibold'>Invoices</h2>
+            <p className='text-muted-foreground text-sm'>
+              Manage your billing and track payments
+            </p>
+          </div>
+
+          <div className='hidden shrink-0 gap-3 sm:flex'>
+            <DocsButton />
+            <Button
+              variant='sorbet'
+              onClick={onCreateNew}
+              className='gap-2'
+              size='sm'
+            >
+              <Plus className='size-4' />
+              <span>Create new</span>
+            </Button>
+          </div>
+        </div>
+
         {/* Summary cards */}
-        <div className='@md:flex-row flex flex-col items-center justify-between gap-4'>
+        <div className='@md:flex-row flex flex-col items-center justify-between gap-4 px-4 sm:px-6'>
           <SummaryCard
             label='Total Open'
             value={calculateTotal(openInvoices)}
@@ -153,16 +171,18 @@ export const InvoiceDashboard = ({
         </div>
 
         {/* Invoice table */}
-        <InvoiceTable
-          invoices={invoices}
-          onInvoiceClick={(invoice) => {
-            setSelectedInvoice(invoice);
-            setIsInvoiceSheetOpen(true);
-          }}
-          isLoading={isLoading}
-          onInvoiceStatusChange={handleInvoiceStatusChange}
-          onCreateInvoice={onCreateNew}
-        />
+        <div className='px-4 sm:px-6'>
+          <FilteredInvoiceTable
+            invoices={invoices}
+            onInvoiceClick={(invoice) => {
+              setSelectedInvoice(invoice);
+              setIsInvoiceSheetOpen(true);
+            }}
+            isLoading={isLoading}
+            onInvoiceStatusChange={handleInvoiceStatusChange}
+            onCreateInvoice={onCreateNew}
+          />
+        </div>
       </div>
     </>
   );
