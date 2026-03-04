@@ -127,13 +127,14 @@ const USDAccountDetails = ({
     };
 
     // Build copy-all data based on current tab
-    const getCopyData = (): Record<string, string> => {
+    const getCopyData = (): Record<string, string | undefined> => {
         if (isSwift && hasSwiftAccount) {
             return {
                 Currency: 'USD',
                 'Account Number': swiftDetails.swiftAccountNumber,
                 'SWIFT / BIC Code': swiftDetails.swiftCode,
                 Beneficiary: getBeneficiaryName(),
+                Address: getBeneficiaryAddress() || undefined,
                 Bank: swiftDetails.bankName,
             };
         }
@@ -143,7 +144,9 @@ const USDAccountDetails = ({
             'Routing Number': getRoutingNumber(),
             'Account Type': 'Checking',
             Beneficiary: getBeneficiaryName(),
+            Address: getBeneficiaryAddress() || undefined,
             Bank: details.bankName,
+            'Bank Address': details.bankAddress || undefined,
         };
     };
 
@@ -316,9 +319,9 @@ const EURAccountDetails = ({
                     data={{
                         Currency: 'EUR',
                         IBAN: details.IBAN,
-                        'SWIFT / BIC Code': details.swiftCode || 'N/A',
+                        'SWIFT / BIC Code': details.swiftCode || undefined,
                         'Account Holder': getAccountHolderName(),
-                        Bank: details.bankName || 'N/A',
+                        Bank: details.bankName || undefined,
                     }}
                 />
             </div>
@@ -424,9 +427,10 @@ const AEDAccountDetails = ({
                     data={{
                         Currency: 'AED',
                         IBAN: details.IBAN,
-                        'SWIFT Code': details.swiftCode || 'N/A',
+                        'SWIFT Code': details.swiftCode || undefined,
                         'Account Holder': getAccountHolderName(),
-                        Bank: details.bankName || 'N/A',
+                        Address: getBeneficiaryAddress() || undefined,
+                        Bank: details.bankName || undefined,
                     }}
                 />
             </div>
@@ -558,8 +562,9 @@ const CopyText = ({ text }: { text: string }) => {
 };
 
 /** Copy all button for header */
-const CopyAllButton = ({ data }: { data: Record<string, string> }) => {
+const CopyAllButton = ({ data }: { data: Record<string, string | undefined> }) => {
     const allText = Object.entries(data)
+        .filter(([, value]) => value != null && value !== '')
         .map(([key, value]) => `${key}: ${value}`)
         .join('\n');
 
