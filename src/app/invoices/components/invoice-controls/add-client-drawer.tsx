@@ -295,7 +295,7 @@ export function AddClientDrawer({
             </ScrollArea>
             <div className='pt-4 pb-2'>
               <Button type='submit' className='w-full p-6 text-base font-semibold' disabled={isPending}>
-                {isPending ? 'Saving...' : 'Save new'}
+                {isPending ? 'Saving...' : client ? 'Save changes' : 'Save new'}
               </Button>
             </div>
           </form>

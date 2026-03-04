@@ -134,7 +134,8 @@ export const YourInfoTab = ({ onNext }: { onNext: () => void }) => {
         zip: invoicingDetails?.postalCode ?? '',
       };
       setAddressValues(prefilled);
-      form.setValue('address', prefilled);
+      const hasAnyValue = Object.values(prefilled).some(Boolean);
+      form.setValue('address', hasAnyValue ? prefilled : undefined);
     } else {
       form.setValue('address', undefined);
     }
