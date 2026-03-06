@@ -1,10 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
-import {
-  mapToACHWireDetails,
-  mapToEURWireDetails,
-} from '@/app/invoices/hooks/use-ach-wire-details';
+import type { DueBankDetailsForRail } from '@/app/invoices/hooks/use-due-bank-details';
 
 import { ClientPaymentCard } from './client-payment-card';
 
@@ -26,22 +22,35 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const account = mockBridgeCustomer.virtual_account
-  ? mapToACHWireDetails(
-      mockBridgeCustomer.virtual_account.source_deposit_instructions
-    )
-  : undefined;
+const achBankDetails: DueBankDetailsForRail = {
+  rail: 'usd_ach',
+  data: {
+    accountType: 'individual',
+    accountName: 'Sorbet Inc.',
+    accountNumber: '123456789',
+    routingNumber: '021000021',
+    routingNumberACH: '021000021',
+    bankName: 'Chase Bank',
+    bankAddress: '270 Park Ave, New York, NY 10017',
+  },
+};
 
-const eurAccount = mockBridgeCustomer.virtual_account_eur
-  ? mapToEURWireDetails(
-      mockBridgeCustomer.virtual_account_eur.source_deposit_instructions
-    )
-  : undefined;
+const sepaBankDetails: DueBankDetailsForRail = {
+  rail: 'eur_sepa',
+  data: {
+    accountType: 'individual',
+    firstName: 'Sorbet',
+    lastName: 'Inc.',
+    IBAN: 'DE89370400440532013000',
+    bankName: 'Deutsche Bank',
+    swiftCode: 'DEUTDEDB',
+  },
+};
 
 export const Default: Story = {
   args: {
     address: '0x1234567890123456789012345678901234567890',
-    account: account,
+    bankDetails: achBankDetails,
     dueDate: new Date('2024-04-15'),
   },
 };
@@ -49,7 +58,7 @@ export const Default: Story = {
 export const WithSepa: Story = {
   args: {
     ...Default.args,
-    eurAccount,
+    bankDetails: sepaBankDetails,
   },
 };
 
@@ -77,6 +86,6 @@ export const USDOnly: Story = {
 export const USDCOnly: Story = {
   args: {
     ...Default.args,
-    account: undefined,
+    bankDetails: undefined,
   },
 };

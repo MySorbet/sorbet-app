@@ -145,9 +145,9 @@ export type Client = z.infer<typeof clientSchema>;
 
 /** Default values for an invoice form if no prefills are provided */
 export const defaultInvoiceValues: Required<
-  Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'>
+  Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress' | 'logoUrl' | 'virtualPaymentRail'>
 > &
-  Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'> = {
+  Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress' | 'logoUrl' | 'virtualPaymentRail'> = {
   issueDate: new Date(),
   dueDate: addDays(new Date(), 7),
   memo: '',

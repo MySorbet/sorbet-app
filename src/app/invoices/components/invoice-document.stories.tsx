@@ -63,6 +63,7 @@ export const WithFormData: Story = {
           amount: 500,
         },
       ],
+      currency: 'USD',
       tax: 10,
       paymentMethods: ['usdc', 'usd'],
     } satisfies InvoiceForm,

@@ -31,6 +31,7 @@ export const sampleInvoices: Invoice[] = [
       country: 'USA',
       zip: '94107',
     },
+    currency: 'USD',
     items: [
       {
         name: 'Data Analysis Report',
@@ -79,6 +80,7 @@ export const sampleInvoices: Invoice[] = [
         amount: 50.0,
       },
     ],
+    currency: 'USD',
     tax: 10,
     paymentMethods: ['usdc', 'usd'],
   },
@@ -95,6 +97,7 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'TechStart LLC',
     toEmail: 'finance@techstart.com',
+    currency: 'USD',
     projectName: 'Mobile App Development',
     items: [
       {
@@ -123,6 +126,7 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Global Innovations Inc.',
     toEmail: 'payments@globalinnovations.com',
+    currency: 'USD',
     projectName: 'AI Research Project',
     items: [
       {
@@ -151,6 +155,7 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Smith Consulting',
     toEmail: 'accounting@smithconsulting.com',
+    currency: 'USD',
     items: [
       {
         name: 'Marketing Strategy Session',
@@ -173,6 +178,7 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Acme Corp',
     toEmail: 'accounts@acmecorp.com',
+    currency: 'USD',
     projectName: 'Website Redesign',
     items: [
       {
@@ -201,6 +207,7 @@ export const sampleInvoices: Invoice[] = [
     fromEmail: 'billing@yourcompany.com',
     toName: 'Bright Future Solutions',
     toEmail: 'ap@brightfuture.com',
+    currency: 'USD',
     projectName: 'AI Research Project',
     items: [
       {

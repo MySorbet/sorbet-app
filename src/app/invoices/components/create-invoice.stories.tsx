@@ -29,9 +29,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const samplePrefills: Required<
-  Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'>
+  Omit<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress' | 'logoUrl' | 'virtualPaymentRail'>
 > &
-  Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress'> = {
+  Pick<InvoiceForm, 'taxId' | 'address' | 'toBusinessName' | 'toAddress' | 'logoUrl' | 'virtualPaymentRail'> = {
   toName: 'John Doe',
   toEmail: 'john.doe@example.com',
   fromName: 'Jane Smith',
@@ -47,8 +47,11 @@ const samplePrefills: Required<
     },
   ],
   invoiceNumber: 'INV-010',
+  currency: 'USD',
   tax: 10,
   paymentMethods: ['usdc'],
+  logoUrl: undefined,
+  virtualPaymentRail: undefined,
   taxId: undefined,
   address: undefined,
   toBusinessName: undefined,
