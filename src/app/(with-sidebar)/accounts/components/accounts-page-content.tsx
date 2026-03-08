@@ -72,7 +72,7 @@ export const AccountsPageContent = () => {
       },
     });
 
-  const { data: dueFeeStructures } = useDueFeeStructures({
+  const { data: dueFeeStructures } = useDueFeeStructures(undefined, {
     enabled: !!user?.id,
   });
 

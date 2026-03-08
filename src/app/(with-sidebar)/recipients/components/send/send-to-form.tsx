@@ -1,52 +1,24 @@
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import {
-  SendToFormSchema,
-  useSendToContext,
-  useSendToFormContext,
-  useSendToFormState,
-} from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
-import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
+import { Percentages } from '@/app/(with-sidebar)/recipients/components/send/percentages';
+import { PreviewSend } from '@/app/(with-sidebar)/recipients/components/send/preview-send';
+import { Processing } from '@/app/(with-sidebar)/recipients/components/send/processing';
+import { SendToFormSchema, useSendToContext, useSendToFormContext, useSendToFormState } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
+import { Success } from '@/app/(with-sidebar)/recipients/components/send/success';
+import { isBankRecipient, usesTransfersApi, formatPurposeCode } from '@/app/(with-sidebar)/recipients/components/utils';
 import { usePurposeCodes } from '@/app/(with-sidebar)/recipients/hooks/use-purpose-codes';
-import {
-  baseScanUrl,
-  stellarScanUrl,
-} from '@/app/(with-sidebar)/wallet/components/utils';
+import { stellarScanUrl, baseScanUrl } from '@/app/(with-sidebar)/wallet/components/utils';
 import { Nt } from '@/components/common/nt';
 import { Spinner } from '@/components/common/spinner';
 import { TransactionStatusBadge } from '@/components/common/transaction-status-badge';
 import { Button } from '@/components/ui/button';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency } from '@/lib/currency';
-
-import { ExchangeRate } from './exchange-rate';
-import { Percentages } from './percentages';
-import { PreviewSend } from './preview-send';
-import { Processing } from './processing';
-import { Success } from './success';
-
-/** Converts a purpose code like SALARY_PAYMENT to "Salary Payment" */
-const formatPurposeCode = (code: string): string =>
-  code
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(' ');
 
 /** ID of the send to form. You can use with the the `form` attribute of a button to submit the form. */
 const sendToFormId = 'send-to-form';
@@ -84,6 +56,11 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     selectedRecipient,
     paymentChain,
     sendDisabledReason,
+    feeBreakdown,
+    recipientMinAmount,
+    recipientMaxAmount,
+    isFeeEstimatePending,
+    isFeeEstimateUnavailable,
   } = useSendToContext();
 
   const form = useSendToFormContext();
@@ -190,29 +167,62 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
             <FormField
               control={form.control}
               name='amount'
-              render={({ field }) => {
-                const showConversion = selectedRecipient?.type === 'eur' || selectedRecipient?.type.startsWith('eur_');
+            render={({ field }) => {
+                const [displayValue, setDisplayValue] = useState(
+                  field.value ? String(field.value) : ''
+                );
+
+                // Sync displayValue when field.value changes externally (e.g. percentage buttons)
+                useEffect(() => {
+                  const fieldStr = field.value ? String(field.value) : '';
+                  // Only sync if the numeric value actually changed (avoid overwriting during typing)
+                  if (parseFloat(displayValue) !== field.value && !isNaN(field.value)) {
+                    setDisplayValue(fieldStr);
+                  }
+                  // eslint-disable-next-line react-hooks/exhaustive-deps
+                }, [field.value]);
 
                 return (
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
                       <Input
-                        {...field}
-                        value={String(field.value)}
-                        onChange={(e) =>
-                          form.setValue('amount', Number(e.target.value), {
-                            shouldValidate: true,
-                            shouldDirty: true,
-                          })
-                        }
-                        type='number'
+                        value={displayValue}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          setDisplayValue(raw);
+                          const num = parseFloat(raw);
+                          if (!isNaN(num)) {
+                            form.setValue('amount', num, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
+                          } else if (raw === '' || raw === '.') {
+                            form.setValue('amount', 0, {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
+                          }
+                        }}
+                        type='text'
+                        inputMode='decimal'
+                        min={recipientMinAmount}
+                        max={recipientMaxAmount ?? undefined}
+                        step='any'
                         className='no-spin-buttons text-md'
                       />
                     </FormControl>
                     {maxAmount !== undefined && !errors.amount && (
                       <p className='text-sm text-[#71717A]'>
                         {formatCurrency(maxAmount ?? 0)} USDC Available
+                      </p>
+                    )}
+                    {isBankRecipient(selectedRecipient) && recipientMinAmount !== undefined && (
+                      <p className='text-muted-foreground text-xs'>
+                        Limits: minimum {formatCurrency(recipientMinAmount)} USDC
+                        {recipientMaxAmount !== null && recipientMaxAmount !== undefined
+                          ? ` · maximum ${formatCurrency(recipientMaxAmount)} USDC`
+                          : ' · no upper limit'}
                       </p>
                     )}
                     {selectedRecipient && (
@@ -234,16 +244,31 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
                         </span>
                       </div>
                     )}
-                    {sendDisabledReason && (
-                      <p className='text-destructive text-xs'>
-                        {sendDisabledReason}
-                      </p>
-                    )}
-                    <ExchangeRate
-                      amount={field.value || 0}
-                      variant='form'
-                      showConversion={showConversion}
-                    />
+                    {isBankRecipient(selectedRecipient) &&
+                      field.value > 0 &&
+                      isFeeEstimatePending && (
+                        <p className='text-muted-foreground text-xs'>
+                          Fetching exchange rate...
+                        </p>
+                      )}
+                    {isBankRecipient(selectedRecipient) &&
+                      field.value > 0 &&
+                      isFeeEstimateUnavailable && (
+                        <p className='text-muted-foreground text-xs'>
+                          Exchange rate temporarily unavailable.
+                        </p>
+                      )}
+                    {isBankRecipient(selectedRecipient) &&
+                      feeBreakdown &&
+                      feeBreakdown.totalFee < feeBreakdown.sendAmount &&
+                      field.value > 0 && (
+                        <p className='text-muted-foreground text-xs'>
+                          {feeBreakdown.fxRate
+                            ? `${feeBreakdown.sendAmount.toFixed(2)} USDC − ${feeBreakdown.totalFee.toFixed(2)} fee = ${feeBreakdown.amountAfterFee.toFixed(2)} USDC × ${feeBreakdown.fxRate.toFixed(4)} ≈ ${feeBreakdown.receiveAmount.toFixed(2)} ${feeBreakdown.destinationCurrency}`
+                            : `${feeBreakdown.sendAmount.toFixed(2)} USDC − ${feeBreakdown.totalFee.toFixed(2)} fee ≈ ${feeBreakdown.receiveAmount.toFixed(2)} ${feeBreakdown.destinationCurrency} received`
+                          }
+                        </p>
+                      )}
                     <FormMessage />
                   </FormItem>
                 );

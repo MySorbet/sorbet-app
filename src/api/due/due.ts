@@ -83,10 +83,15 @@ export const claimDueVirtualAccount = async (currency: ClaimableCurrency) => {
   return response.data;
 };
 
-export const getDueFeeStructures = async () => {
+export const getDueFeeStructures = async (
+  direction?: 'on_ramp' | 'off_ramp'
+) => {
   const response = await axios.get<DueFeeStructure[]>(
     `${API_URL}/users/due/fee-structures`,
-    await withAuthHeader()
+    {
+      params: direction ? { direction } : undefined,
+      ...(await withAuthHeader()),
+    }
   );
   return response.data;
 };

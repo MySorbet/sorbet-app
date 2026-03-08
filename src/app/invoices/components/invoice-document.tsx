@@ -31,7 +31,7 @@ const useTransactionFeeStructure = (
   virtualPaymentRail?: string,
   skip?: boolean
 ): { feeBps: number; fixedFee: number } | undefined => {
-  const { data: dueFeeStructures } = useDueFeeStructures({ enabled: !skip });
+  const { data: dueFeeStructures } = useDueFeeStructures(undefined, { enabled: !skip });
 
   if (skip || !paymentMethods || !dueFeeStructures) return undefined;
 

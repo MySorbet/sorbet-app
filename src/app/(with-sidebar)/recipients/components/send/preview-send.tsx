@@ -4,28 +4,18 @@ import Image from 'next/image';
 import { RecipientAPI } from '@/api/recipients/types';
 import { useSendToContext, useSendToFormContext } from '@/app/(with-sidebar)/recipients/components/send/send-to-context';
 import { Timing } from '@/app/(with-sidebar)/recipients/components/send/timing';
-import { usesTransfersApi } from '@/app/(with-sidebar)/recipients/components/utils';
+import { formatAccountNumber, isBankRecipient, usesTransfersApi, formatPurposeCode } from '@/app/(with-sidebar)/recipients/components/utils';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Separator } from '@/components/ui/separator';
-import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
+import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { formatCurrency } from '@/lib/currency';
 import { formatWalletAddress } from '@/lib/utils';
-
-import { formatAccountNumber } from '../utils';
-import { ExchangeRate } from './exchange-rate';
-
-/** Converts a purpose code like SALARY_PAYMENT to "Salary Payment" */
-const formatPurposeCode = (code: string): string =>
-  code
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(' ');
 
 /** Renders a preview of a transaction, showing:
  *  - amount
  *  - timing
- *  - optional conversion rate (only for EUR recipients)
+ *  - fee breakdown with optional FX conversion (for non-USD recipients)
  *  - from and to
  *  - purpose of transfer (for ACH/WIRE)
  */
@@ -36,12 +26,11 @@ export const PreviewSend = ({
   amount: number;
   recipient: RecipientAPI;
 }) => {
-  const { paymentChain } = useSendToContext();
+  const { paymentChain, feeBreakdown, recipientFeeStructure, isFeeEstimatePending, isFeeEstimateUnavailable } = useSendToContext();
   const { smartWalletAddress } = useSmartWalletAddress();
   const { stellarAddress } = useWalletAddress();
   const form = useSendToFormContext();
   const purposeCode = form.getValues('purposeCode');
-  const showConversion = recipient.type === 'eur' || recipient.type.startsWith('eur_');
   const showPurpose = usesTransfersApi(recipient) && !!purposeCode;
 
   const fromAddress =
@@ -51,15 +40,60 @@ export const PreviewSend = ({
 
   return (
     <div className='animate-in fade-in-0 slide-in-from-right-2 space-y-10'>
-      {/* Amount, timing, and optional conversion rate */}
+      {/* Amount and timing */}
       <div className='space-y-2'>
         <p className='text-muted-foreground text-sm font-medium leading-none'>
           Amount
         </p>
         <p className='text-xl font-semibold'>{formatCurrency(amount)}</p>
-        <Timing type={recipient.type} />
-        {showConversion && <ExchangeRate amount={amount} />}
+        <Timing type={recipient.type} speed={recipientFeeStructure?.speed} />
       </div>
+
+      {/* Fee breakdown — running-total equation (for bank recipients only) */}
+      {isBankRecipient(recipient) && isFeeEstimatePending && (
+        <p className='text-muted-foreground text-sm'>Fetching exchange rate...</p>
+      )}
+      {isBankRecipient(recipient) && isFeeEstimateUnavailable && (
+        <p className='text-muted-foreground text-sm'>Exchange rate temporarily unavailable.</p>
+      )}
+      {isBankRecipient(recipient) && feeBreakdown && feeBreakdown.totalFee < feeBreakdown.sendAmount && (
+        <div className='space-y-2'>
+          <p className='text-muted-foreground text-sm font-medium'>
+            ≈ Approximate Breakdown
+          </p>
+          <div className='flex justify-between text-sm'>
+            <span>You send</span>
+            <span>{feeBreakdown.sendAmount.toFixed(2)} USDC</span>
+          </div>
+          <div className='flex justify-between text-sm'>
+            <span>Fee</span>
+            <span>−{feeBreakdown.totalFee.toFixed(2)} USDC</span>
+          </div>
+          <Separator />
+          <div className='flex justify-between text-sm'>
+            <span>After fees</span>
+            <span>{feeBreakdown.amountAfterFee.toFixed(2)} USDC</span>
+          </div>
+          {feeBreakdown.fxRate && (
+            <>
+              <div className='flex justify-between text-sm'>
+                <span>Exchange rate</span>
+                <span>
+                  × {feeBreakdown.fxRate.toFixed(4)} {feeBreakdown.destinationCurrency}/USDC
+                </span>
+              </div>
+              <Separator />
+            </>
+          )}
+          <div className='flex justify-between text-sm font-medium'>
+            <span>Recipient receives</span>
+            <span>
+              ≈ {feeBreakdown.receiveAmount.toFixed(2)}{' '}
+              {feeBreakdown.destinationCurrency}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* From and to */}
       <div>

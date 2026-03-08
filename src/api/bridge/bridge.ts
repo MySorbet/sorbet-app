@@ -56,16 +56,6 @@ export const uploadPOA = async (file: File) => {
   return response.data;
 };
 
-/** Get the exchange rate for USD to EUR */
-export const getExchangeRate = async () => {
-  const response = await axios.get<{
-    midmarket_rate: string;
-    buy_rate: string;
-    sell_rate: string;
-  }>(`${API_URL}/recipients/exchange-rate`, await withAuthHeader());
-  return response.data;
-};
-
 export const claimVirtualAccount = async (type: 'usd' | 'eur') => {
   const response = await axios.post(
     `${API_URL}/users/bridge/claim/${type}`,

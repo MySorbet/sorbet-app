@@ -127,6 +127,9 @@ type RecipientAPIBase = {
    */
   detail: string;
 
+  /** Whether this recipient uses the Due Transfers API (instead of a static virtual account). */
+  usesTransfersApi: boolean;
+
   userId: string;
   createdAt: Date;
   updatedAt: Date;

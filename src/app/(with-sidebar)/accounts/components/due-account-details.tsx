@@ -8,6 +8,7 @@ import { CircleFlag } from 'react-circle-flags';
 import type { DueFeeStructure } from '@/api/due/due';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { parsePositiveDueLimit } from '@/lib/due-fee-limits';
 import { cn } from '@/lib/utils';
 import type {
     DueVirtualAccountAEDDetails,
@@ -54,6 +55,12 @@ const getMinimumAmount = (row: DueFeeStructure | undefined) => {
     return `${row.currencyCode} ${limitMin}`;
 };
 
+const getMaximumAmount = (row: DueFeeStructure | undefined) => {
+    if (!row) return null;
+    const limitMax = parsePositiveDueLimit(row.limitMax);
+    return limitMax === null ? null : `${row.currencyCode} ${row.limitMax}`;
+};
+
 const formatFeePercent = (bps: number | undefined) => {
     if (bps === undefined) return 'N/A';
     return `${(bps / 100).toFixed(2)}%`;
@@ -77,6 +84,7 @@ const USDAccountDetails = ({
 }) => {
     const [transferType, setTransferType] = useState<USDTransferType>('ach');
     const feeRow = getFeeRow(feeStructures, methodByUsdTransfer[transferType]);
+    const maxAmount = getMaximumAmount(feeRow);
 
     // Graceful handling of missing details
     if (!details) {
@@ -282,6 +290,12 @@ const USDAccountDetails = ({
                     label='Minimum Transaction'
                     value={getMinimumAmount(feeRow)}
                 />
+                {maxAmount && (
+                    <FeeRow
+                        label='Maximum Transaction'
+                        value={maxAmount}
+                    />
+                )}
             </FeeSection>
         </div>
     );
@@ -296,6 +310,7 @@ const EURAccountDetails = ({
     feeStructures?: DueFeeStructure[];
 }) => {
     const feeRow = getFeeRow(feeStructures, 'eur_sepa');
+    const maxAmount = getMaximumAmount(feeRow);
 
     // Graceful handling of missing details
     if (!details) {
@@ -374,6 +389,12 @@ const EURAccountDetails = ({
                     label='Minimum Transaction'
                     value={getMinimumAmount(feeRow)}
                 />
+                {maxAmount && (
+                    <FeeRow
+                        label='Maximum Transaction'
+                        value={maxAmount}
+                    />
+                )}
             </FeeSection>
         </div>
     );
@@ -388,6 +409,7 @@ const AEDAccountDetails = ({
     feeStructures?: DueFeeStructure[];
 }) => {
     const feeRow = getFeeRow(feeStructures, 'aed_local');
+    const maxAmount = getMaximumAmount(feeRow);
 
     // Graceful handling of missing details
     if (!details) {
@@ -489,6 +511,12 @@ const AEDAccountDetails = ({
                     label='Minimum Transaction'
                     value={getMinimumAmount(feeRow)}
                 />
+                {maxAmount && (
+                    <FeeRow
+                        label='Maximum Transaction'
+                        value={maxAmount}
+                    />
+                )}
             </FeeSection>
         </div>
     );

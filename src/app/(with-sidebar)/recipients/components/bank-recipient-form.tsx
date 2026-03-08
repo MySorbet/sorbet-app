@@ -100,6 +100,9 @@ const formSchema = z
     lastName: z.string().optional(),
     companyName: z.string().optional(),
 
+    // Optional display nickname
+    nickname: z.string().max(100).optional().or(z.literal('')),
+
     // US Bank fields (ACH/Wire)
     usBank: usBankSchema.optional(),
 
@@ -300,6 +303,7 @@ const defaultValues: BankRecipientFormValuesInternal = {
   firstName: '',
   lastName: '',
   companyName: '',
+  nickname: '',
   usBank: {
     accountNumber: '',
     routingNumber: '',
@@ -489,7 +493,13 @@ export const NakedBankRecipientForm = ({
               name='firstName'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel className='flex items-center gap-1'>
+                    First Name
+                    <InfoTooltip>
+                      The name must match the actual bank account holder&apos;s
+                      name for the transfer to succeed.
+                    </InfoTooltip>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder='John' {...field} />
                   </FormControl>
@@ -502,7 +512,13 @@ export const NakedBankRecipientForm = ({
               name='lastName'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel className='flex items-center gap-1'>
+                    Last Name
+                    <InfoTooltip>
+                      The name must match the actual bank account holder&apos;s
+                      name for the transfer to succeed.
+                    </InfoTooltip>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder='Doe' {...field} />
                   </FormControl>
@@ -517,7 +533,13 @@ export const NakedBankRecipientForm = ({
             name='companyName'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Name</FormLabel>
+                <FormLabel className='flex items-center gap-1'>
+                  Company Name
+                  <InfoTooltip>
+                    The name must match the actual bank account holder&apos;s
+                    name for the transfer to succeed.
+                  </InfoTooltip>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder='Acme Inc.' {...field} />
                 </FormControl>
@@ -526,6 +548,25 @@ export const NakedBankRecipientForm = ({
             )}
           />
         )}
+        <FormField
+          control={form.control}
+          name='nickname'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className='flex items-center gap-1'>
+                Nickname (Optional)
+                <InfoTooltip>
+                  A display name for this recipient. If left empty, the
+                  recipient name will be used.
+                </InfoTooltip>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="e.g., Mom's Account" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
 
       {/* US Bank Fields (ACH/Wire) */}

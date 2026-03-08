@@ -73,10 +73,15 @@ export const needsMigration = (recipient: RecipientAPI): boolean => {
 
 /**
  * Check if recipient uses the Due Transfers API (instead of a static virtual account address).
- * ACH and WIRE require a purposeCode per-transaction, so they cannot use virtual accounts.
+ * Reads the flag from the backend response — the backend is the single source of truth.
+ * Falls back to a type check for backward compatibility with any cached/stale data.
  */
 export const usesTransfersApi = (recipient: RecipientAPI): boolean => {
-  return recipient.type === 'usd_ach' || recipient.type === 'usd_wire';
+  if (typeof recipient.usesTransfersApi === 'boolean') {
+    return recipient.usesTransfersApi;
+  }
+  // Fallback for backward compatibility (should not happen after backend deploys)
+  return recipient.type === 'usd_ach' || recipient.type === 'usd_wire' || recipient.type === 'usd_swift';
 };
 
 /**
@@ -94,3 +99,10 @@ export const isBankRecipient = (recipient: RecipientAPI | undefined): boolean =>
     recipient.type === 'aed_local'
   );
 };
+
+/** Converts a purpose code like SALARY_PAYMENT to "Salary Payment" */
+export const formatPurposeCode = (code: string): string =>
+  code
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');

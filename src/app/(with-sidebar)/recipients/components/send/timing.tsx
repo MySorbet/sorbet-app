@@ -10,12 +10,13 @@ function getTimingCategory(type: RecipientType): 'usd' | 'eur' | 'crypto' {
   return 'eur'; // eur, eur_sepa, eur_swift, aed_local
 }
 
-export const Timing = ({ type }: { type: RecipientType }) => {
+export const Timing = ({ type, speed }: { type: RecipientType; speed?: string | null }) => {
   const category = getTimingCategory(type);
-  const time =
+  const fallback =
     category === 'usd' || category === 'eur'
       ? PAYMENT_TIMING_DESCRIPTIONS.bank
       : PAYMENT_TIMING_DESCRIPTIONS.crypto;
+  const time = speed ? `Arrives in ${speed}` : fallback;
   return (
     <p className='text-muted-foreground flex items-center gap-1 text-xs leading-none'>
       <Clock className='size-3' /> {time}

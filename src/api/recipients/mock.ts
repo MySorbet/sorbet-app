@@ -20,6 +20,7 @@ export const mockRecipients: RecipientAPI[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',
+    usesTransfersApi: false,
   },
   {
     id: uuidv4(),
@@ -32,6 +33,7 @@ export const mockRecipients: RecipientAPI[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',
+    usesTransfersApi: false,
   },
   {
     id: uuidv4(),
@@ -42,6 +44,7 @@ export const mockRecipients: RecipientAPI[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',
+    usesTransfersApi: false,
   },
   {
     id: uuidv4(),
@@ -54,6 +57,7 @@ export const mockRecipients: RecipientAPI[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',
+    usesTransfersApi: false,
   },
   {
     id: uuidv4(),
@@ -64,5 +68,6 @@ export const mockRecipients: RecipientAPI[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
     userId: '1',
+    usesTransfersApi: false,
   },
 ];

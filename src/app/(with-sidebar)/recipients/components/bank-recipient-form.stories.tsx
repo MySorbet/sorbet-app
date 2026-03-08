@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { fn, userEvent, within } from '@storybook/test';
 
 import {
   BankRecipientFormContext,
@@ -43,5 +43,22 @@ export const EURLocked: Story = {
 export const FillForm: Story = {
   play: async ({ canvasElement }) => {
     await FillOutBankRecipientForm({ canvasElement });
+  },
+};
+
+/** Fills the form and adds an optional nickname */
+export const WithNickname: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await FillOutBankRecipientForm({ canvasElement });
+    await userEvent.type(canvas.getByLabelText(/Nickname/i), 'Payroll EUR');
+  },
+};
+
+/** Switches to Business account type tab */
+export const BusinessAccount: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('tab', { name: /Business/i }));
   },
 };

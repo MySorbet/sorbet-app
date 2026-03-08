@@ -10,17 +10,22 @@ import {
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { DueFeeStructure } from '@/api/due/due';
 import { recipientsApi } from '@/api/recipients/recipients';
 import { RecipientAPI } from '@/api/recipients/types';
 import { useRecipients } from '@/app/(with-sidebar)/recipients/hooks/use-recipients';
 import { useSendUSDC } from '@/app/(with-sidebar)/wallet/hooks/use-send-usdc';
 import { Form } from '@/components/ui/form';
 import { useMyChain } from '@/hooks/use-my-chain';
+import { useFxRate } from '@/hooks/use-fx-rate';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 import { useWalletBalances } from '@/hooks/web3/use-wallet-balances';
+import { useDueFeeStructures } from '@/hooks/profile/use-due-fee-structures';
 import { formatCurrency } from '@/lib/currency';
+import { parsePositiveDueLimit } from '@/lib/due-fee-limits';
 
 import { BANK_ACCOUNTS_MIN_AMOUNT, isBankRecipient, needsMigration, usesTransfersApi } from '../utils';
+import { calculateFeeBreakdown, FeeBreakdown } from './fee-calculator';
 
 export type TransferResult =
   | { status: 'success'; chain: 'base' | 'stellar'; hash: string }
@@ -39,6 +44,13 @@ type SendToContextType = {
   clearTransferResult: () => void;
   reset: () => void;
   sendFunds: (amount: number, purposeCode?: string) => Promise<void>;
+  feeBreakdown?: FeeBreakdown;
+  recipientFeeStructure?: DueFeeStructure;
+  recipientMinAmount?: number;
+  /** `undefined` = not a bank recipient, `null` = bank recipient with no max limit, `number` = has a max */
+  recipientMaxAmount?: number | null;
+  isFeeEstimatePending: boolean;
+  isFeeEstimateUnavailable: boolean;
 };
 
 const SendToContext = createContext<SendToContextType | undefined>(undefined);
@@ -86,6 +98,9 @@ export const SendToFormContext = ({
 
   const { data: allRecipients } = useRecipients();
 
+  // Fetch off-ramp fee structures for limit enforcement
+  const { data: offRampFees } = useDueFeeStructures('off_ramp');
+
   // Filter out recipients that need migration to Due Network
   // These recipients must go through the migration flow before they can receive funds
   const recipients = useMemo(() => {
@@ -127,17 +142,34 @@ export const SendToFormContext = ({
       });
     }
 
-    const minValueRequired: number =
-      isBankRecipient(selectedRecipient) ||
-      selectedRecipient?.type === 'usd' || selectedRecipient?.type === 'eur'
-        ? BANK_ACCOUNTS_MIN_AMOUNT
-        : 0;
+    // Enforce min/max limits from off-ramp fee structures for bank recipients
+    const recipientFee = isBankRecipient(selectedRecipient)
+      ? offRampFees?.find(
+          (f) => f.paymentMethod === selectedRecipient?.type
+        )
+      : undefined;
+
+    const minValueRequired: number = isBankRecipient(selectedRecipient)
+      ? parsePositiveDueLimit(recipientFee?.limitMin) ?? BANK_ACCOUNTS_MIN_AMOUNT
+      : 0;
+
     if (values.amount < minValueRequired) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['amount'],
         message: `The minimum amount you can send to this recipient is ${formatCurrency(
           minValueRequired
+        )}`,
+      });
+    }
+
+    const limitMax = parsePositiveDueLimit(recipientFee?.limitMax);
+    if (limitMax !== null && values.amount > limitMax) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['amount'],
+        message: `The maximum amount you can send to this recipient is ${formatCurrency(
+          limitMax
         )}`,
       });
     }
@@ -207,13 +239,67 @@ export const SendToFormContext = ({
       ? Number(baseUsdc)
       : undefined;
 
-  const sendDisabledReason =
-    selectedRecipient &&
-    (selectedRecipient.type === 'usd' || selectedRecipient.type === 'eur') &&
-    paymentChain === 'stellar' &&
-    !selectedRecipient.liquidationAddressIds?.stellar
-      ? 'This bank recipient is not available on Stellar.'
-      : undefined;
+  // Find the matching fee structure for the selected recipient
+  const recipientFeeStructure = useMemo(() => {
+    if (!selectedRecipient || !offRampFees) return undefined;
+    return offRampFees.find(
+      (f) => f.paymentMethod === selectedRecipient.type
+    );
+  }, [selectedRecipient, offRampFees]);
+
+  // Determine if FX rate is needed (non-USD destination currency)
+  const destinationCurrency = recipientFeeStructure?.currencyCode ?? 'USD';
+  const needsFxRate = destinationCurrency !== 'USD';
+  // useFxRate already has `enabled: from !== to` built in, so it won't fire for USD->USD
+  const { data: fxData, isPending: isFxRatePending, isError: isFxRateError } = useFxRate('USD', destinationCurrency);
+
+  // Watch amount for live fee breakdown
+  const watchedAmount = useWatch({ control: form.control, name: 'amount' });
+
+  // Compute fee breakdown
+  const feeBreakdown = useMemo(() => {
+    if (!recipientFeeStructure || !watchedAmount || watchedAmount <= 0) {
+      return undefined;
+    }
+
+    // Gate non-USD breakdowns on a real FX rate
+    if (needsFxRate && fxData?.rate == null) {
+      return undefined;
+    }
+
+    return calculateFeeBreakdown(
+      watchedAmount,
+      recipientFeeStructure,
+      needsFxRate ? fxData?.rate ?? null : null
+    );
+  }, [watchedAmount, recipientFeeStructure, needsFxRate, fxData]);
+
+  // Expose parsed min/max limits for the selected recipient's fee structure
+  const recipientMinAmount = useMemo(() => {
+    if (!selectedRecipient || !isBankRecipient(selectedRecipient)) return undefined;
+    return parsePositiveDueLimit(recipientFeeStructure?.limitMin) ?? BANK_ACCOUNTS_MIN_AMOUNT;
+  }, [selectedRecipient, recipientFeeStructure]);
+
+  const recipientMaxAmount = useMemo(() => {
+    if (!selectedRecipient || !isBankRecipient(selectedRecipient)) return undefined;
+    return parsePositiveDueLimit(recipientFeeStructure?.limitMax);
+  }, [selectedRecipient, recipientFeeStructure]);
+
+  // FX loading/error states for fee estimate UI
+  const isFeeEstimatePending = !!recipientFeeStructure && !!watchedAmount && watchedAmount > 0 && needsFxRate && isFxRatePending;
+  const isFeeEstimateUnavailable = !!recipientFeeStructure && !!watchedAmount && watchedAmount > 0 && needsFxRate && isFxRateError;
+
+  const sendDisabledReason = useMemo(() => {
+    if (
+      selectedRecipient &&
+      (selectedRecipient.type === 'usd' || selectedRecipient.type === 'eur') &&
+      paymentChain === 'stellar' &&
+      !selectedRecipient.liquidationAddressIds?.stellar
+    ) {
+      return 'This bank recipient is not available on Stellar.';
+    }
+    return undefined;
+  }, [selectedRecipient, paymentChain]);
 
   const { sendUSDC: _sendUSDC } = useSendUSDC();
   const { smartWalletAddress } = useSmartWalletAddress();
@@ -324,6 +410,12 @@ export const SendToFormContext = ({
           sendFunds: async (amount, purposeCode) => {
             await sendFundsMutation({ amount, purposeCode });
           },
+          feeBreakdown,
+          recipientFeeStructure,
+          recipientMinAmount,
+          recipientMaxAmount,
+          isFeeEstimatePending,
+          isFeeEstimateUnavailable,
         }}
       >
         {children}
