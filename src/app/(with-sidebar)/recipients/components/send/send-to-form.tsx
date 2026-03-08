@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { useWatch } from 'react-hook-form';
+import { ControllerRenderProps, useWatch } from 'react-hook-form';
 
 import { Percentages } from '@/app/(with-sidebar)/recipients/components/send/percentages';
 import { PreviewSend } from '@/app/(with-sidebar)/recipients/components/send/preview-send';
@@ -54,13 +54,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     transferResult,
     sendFunds,
     selectedRecipient,
-    paymentChain,
     sendDisabledReason,
-    feeBreakdown,
-    recipientMinAmount,
-    recipientMaxAmount,
-    isFeeEstimatePending,
-    isFeeEstimateUnavailable,
   } = useSendToContext();
 
   const form = useSendToFormContext();
@@ -68,7 +62,7 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
     control: form.control,
   });
 
-  const { isSubmitting, errors } = useSendToFormState();
+  const { isSubmitting } = useSendToFormState();
 
   const showPurposeCode = !!selectedRecipient && usesTransfersApi(selectedRecipient);
   const { data: purposeCodesData } = usePurposeCodes(
@@ -167,112 +161,9 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
             <FormField
               control={form.control}
               name='amount'
-            render={({ field }) => {
-                const [displayValue, setDisplayValue] = useState(
-                  field.value ? String(field.value) : ''
-                );
-
-                // Sync displayValue when field.value changes externally (e.g. percentage buttons)
-                useEffect(() => {
-                  const fieldStr = field.value ? String(field.value) : '';
-                  // Only sync if the numeric value actually changed (avoid overwriting during typing)
-                  if (parseFloat(displayValue) !== field.value && !isNaN(field.value)) {
-                    setDisplayValue(fieldStr);
-                  }
-                  // eslint-disable-next-line react-hooks/exhaustive-deps
-                }, [field.value]);
-
-                return (
-                  <FormItem>
-                    <FormLabel>Amount</FormLabel>
-                    <FormControl>
-                      <Input
-                        value={displayValue}
-                        onChange={(e) => {
-                          const raw = e.target.value;
-                          setDisplayValue(raw);
-                          const num = parseFloat(raw);
-                          if (!isNaN(num)) {
-                            form.setValue('amount', num, {
-                              shouldValidate: true,
-                              shouldDirty: true,
-                            });
-                          } else if (raw === '' || raw === '.') {
-                            form.setValue('amount', 0, {
-                              shouldValidate: true,
-                              shouldDirty: true,
-                            });
-                          }
-                        }}
-                        type='text'
-                        inputMode='decimal'
-                        min={recipientMinAmount}
-                        max={recipientMaxAmount ?? undefined}
-                        step='any'
-                        className='no-spin-buttons text-md'
-                      />
-                    </FormControl>
-                    {maxAmount !== undefined && !errors.amount && (
-                      <p className='text-sm text-[#71717A]'>
-                        {formatCurrency(maxAmount ?? 0)} USDC Available
-                      </p>
-                    )}
-                    {isBankRecipient(selectedRecipient) && recipientMinAmount !== undefined && (
-                      <p className='text-muted-foreground text-xs'>
-                        Limits: minimum {formatCurrency(recipientMinAmount)} USDC
-                        {recipientMaxAmount !== null && recipientMaxAmount !== undefined
-                          ? ` · maximum ${formatCurrency(recipientMaxAmount)} USDC`
-                          : ' · no upper limit'}
-                      </p>
-                    )}
-                    {selectedRecipient && (
-                      <div className='text-muted-foreground flex items-center gap-2 text-xs'>
-                        <Image
-                          src={
-                            paymentChain === 'stellar'
-                              ? '/svg/stellar_logo.svg'
-                              : '/svg/base_logo.svg'
-                          }
-                          alt={paymentChain === 'stellar' ? 'Stellar' : 'Base'}
-                          width={14}
-                          height={14}
-                        />
-                        <span>
-                          Paying from your{' '}
-                          {paymentChain === 'stellar' ? 'Stellar' : 'Base'}{' '}
-                          wallet
-                        </span>
-                      </div>
-                    )}
-                    {isBankRecipient(selectedRecipient) &&
-                      field.value > 0 &&
-                      isFeeEstimatePending && (
-                        <p className='text-muted-foreground text-xs'>
-                          Fetching exchange rate...
-                        </p>
-                      )}
-                    {isBankRecipient(selectedRecipient) &&
-                      field.value > 0 &&
-                      isFeeEstimateUnavailable && (
-                        <p className='text-muted-foreground text-xs'>
-                          Exchange rate temporarily unavailable.
-                        </p>
-                      )}
-                    {isBankRecipient(selectedRecipient) &&
-                      feeBreakdown &&
-                      feeBreakdown.totalFee < feeBreakdown.sendAmount &&
-                      field.value > 0 && (
-                        <p className='text-muted-foreground text-xs'>
-                          {feeBreakdown.fxRate
-                            ? `${feeBreakdown.sendAmount.toFixed(2)} USDC − ${feeBreakdown.totalFee.toFixed(2)} fee = ${feeBreakdown.amountAfterFee.toFixed(2)} USDC × ${feeBreakdown.fxRate.toFixed(4)} ≈ ${feeBreakdown.receiveAmount.toFixed(2)} ${feeBreakdown.destinationCurrency}`
-                            : `${feeBreakdown.sendAmount.toFixed(2)} USDC − ${feeBreakdown.totalFee.toFixed(2)} fee ≈ ${feeBreakdown.receiveAmount.toFixed(2)} ${feeBreakdown.destinationCurrency} received`
-                          }
-                        </p>
-                      )}
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+              render={({ field }) => (
+                <AmountInput field={field} />
+              )}
             />
             {/* Percentage buttons */}
             {maxAmount !== undefined && (
@@ -326,6 +217,132 @@ export const SendToForm = ({ onAdd }: { onAdd?: () => void }) => {
         </>
       )}
     </form>
+  );
+};
+
+/** Extracted component so hooks (useState, useEffect) live at the component top level. */
+const AmountInput = ({
+  field,
+}: {
+  field: ControllerRenderProps<SendToFormSchema, 'amount'>;
+}) => {
+  const {
+    maxAmount,
+    selectedRecipient,
+    paymentChain,
+    feeBreakdown,
+    recipientMinAmount,
+    recipientMaxAmount,
+    isFeeEstimatePending,
+    isFeeEstimateUnavailable,
+  } = useSendToContext();
+
+  const form = useSendToFormContext();
+  const { errors } = useSendToFormState();
+
+  const [displayValue, setDisplayValue] = useState(
+    field.value ? String(field.value) : ''
+  );
+
+  // Sync displayValue when field.value changes externally (e.g. percentage buttons)
+  useEffect(() => {
+    const fieldStr = field.value ? String(field.value) : '';
+    // Only sync if the numeric value actually changed (avoid overwriting during typing)
+    if (parseFloat(displayValue) !== field.value && !isNaN(field.value)) {
+      setDisplayValue(fieldStr);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field.value]);
+
+  return (
+    <FormItem>
+      <FormLabel>Amount</FormLabel>
+      <FormControl>
+        <Input
+          value={displayValue}
+          onChange={(e) => {
+            const raw = e.target.value;
+            setDisplayValue(raw);
+            const num = parseFloat(raw);
+            if (!isNaN(num)) {
+              form.setValue('amount', num, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            } else if (raw === '' || raw === '.') {
+              form.setValue('amount', 0, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }
+          }}
+          type='text'
+          inputMode='decimal'
+          min={recipientMinAmount}
+          max={recipientMaxAmount ?? undefined}
+          step='any'
+          className='no-spin-buttons text-md'
+        />
+      </FormControl>
+      {maxAmount !== undefined && !errors.amount && (
+        <p className='text-sm text-[#71717A]'>
+          {formatCurrency(maxAmount ?? 0)} USDC Available
+        </p>
+      )}
+      {isBankRecipient(selectedRecipient) && recipientMinAmount !== undefined && (
+        <p className='text-muted-foreground text-xs'>
+          Limits: minimum {formatCurrency(recipientMinAmount)} USDC
+          {recipientMaxAmount !== null && recipientMaxAmount !== undefined
+            ? ` · maximum ${formatCurrency(recipientMaxAmount)} USDC`
+            : ' · no upper limit'}
+        </p>
+      )}
+      {selectedRecipient && (
+        <div className='text-muted-foreground flex items-center gap-2 text-xs'>
+          <Image
+            src={
+              paymentChain === 'stellar'
+                ? '/svg/stellar_logo.svg'
+                : '/svg/base_logo.svg'
+            }
+            alt={paymentChain === 'stellar' ? 'Stellar' : 'Base'}
+            width={14}
+            height={14}
+          />
+          <span>
+            Paying from your{' '}
+            {paymentChain === 'stellar' ? 'Stellar' : 'Base'}{' '}
+            wallet
+          </span>
+        </div>
+      )}
+      {isBankRecipient(selectedRecipient) &&
+        field.value > 0 &&
+        isFeeEstimatePending && (
+          <p className='text-muted-foreground text-xs'>
+            Fetching exchange rate...
+          </p>
+        )}
+      {isBankRecipient(selectedRecipient) &&
+        field.value > 0 &&
+        isFeeEstimateUnavailable && (
+          <p className='text-muted-foreground text-xs'>
+            Exchange rate temporarily unavailable.
+          </p>
+        )}
+      {isBankRecipient(selectedRecipient) &&
+        feeBreakdown &&
+        feeBreakdown.totalFee < feeBreakdown.sendAmount &&
+        field.value > 0 && (
+          <p className='text-muted-foreground text-xs'>
+            {feeBreakdown.fxRate
+              ? `${feeBreakdown.sendAmount.toFixed(2)} USDC − ${feeBreakdown.totalFee.toFixed(2)} fee = ${feeBreakdown.amountAfterFee.toFixed(2)} USDC × ${feeBreakdown.fxRate.toFixed(4)} ≈ ${feeBreakdown.receiveAmount.toFixed(2)} ${feeBreakdown.destinationCurrency}`
+              : `${feeBreakdown.sendAmount.toFixed(2)} USDC − ${feeBreakdown.totalFee.toFixed(2)} fee ≈ ${feeBreakdown.receiveAmount.toFixed(2)} ${feeBreakdown.destinationCurrency} received`
+            }
+          </p>
+        )}
+      <FormMessage />
+    </FormItem>
   );
 };
 
