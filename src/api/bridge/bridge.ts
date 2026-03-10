@@ -64,3 +64,33 @@ export const claimVirtualAccount = async (type: 'usd' | 'eur') => {
   );
   return response.data;
 };
+
+export type BankExportAccount =
+  | { type: 'USD'; details: SourceDepositInstructions }
+  | { type: 'EUR'; details: SourceDepositInstructionsEUR };
+
+export type DueBankExportAccount = {
+  schema: string;
+  currencyIn: string;
+  details: Record<string, unknown>;
+};
+
+export type BankExportData = {
+  bridge: {
+    kycApproved: boolean;
+    accounts: BankExportAccount[];
+  };
+  due: {
+    kycApproved: boolean;
+    accounts: DueBankExportAccount[];
+  };
+};
+
+/** Fetch aggregated bank account export data for the authenticated user. */
+export const getBankExport = async (): Promise<BankExportData> => {
+  const response = await axios.get<BankExportData>(
+    `${API_URL}/users/bank-export`,
+    await withAuthHeader()
+  );
+  return response.data;
+};
