@@ -3,10 +3,10 @@
 import {
   Document,
   Page,
+  pdf,
   StyleSheet,
   Text,
   View,
-  pdf,
 } from '@react-pdf/renderer';
 import { createElement } from 'react';
 
@@ -428,7 +428,7 @@ function BankDetailsPdfDocument({
       createElement(Divider as React.ComponentType<Record<string, never>>, {}),
 
       // Active Accounts
-      createElement(SectionLabel as React.ComponentType<{ children: string }>, {}, 'Active Bank Accounts'),
+      createElement(SectionLabel as React.ComponentType<{ children?: string }>, {}, 'Active Bank Accounts'),
       activeAccounts.length > 0
         ? createElement(View, {}, ...activeAccounts)
         : createElement(Text, { style: styles.emptyText }, 'No active bank accounts'),
@@ -436,7 +436,7 @@ function BankDetailsPdfDocument({
       createElement(Divider as React.ComponentType<Record<string, never>>, {}),
 
       // Inactive Accounts
-      createElement(SectionLabel as React.ComponentType<{ children: string }>, {}, 'Inactive Bank Accounts'),
+      createElement(SectionLabel as React.ComponentType<{ children?: string }>, {}, 'Inactive Bank Accounts'),
       inactiveAccounts.length > 0
         ? createElement(View, {}, ...inactiveAccounts)
         : createElement(Text, { style: styles.emptyText }, 'No inactive bank accounts'),
