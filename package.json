@@ -58,6 +58,7 @@
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@react-google-maps/api": "^2.19.2",
+    "@react-pdf/renderer": "^4.3.2",
     "@solana/web3.js": "^1.95.4",
     "@stellar/stellar-sdk": "^14.5.0",
     "@t3-oss/env-nextjs": "^0.11.1",
