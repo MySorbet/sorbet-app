@@ -47,6 +47,7 @@ export default function CreateInvoicePage() {
   const { baseAddress, stellarAddress } = useWalletAddress();
 
   const onGetVerified = (_: 'usd' | 'eur' | 'aed') => router.push('/verify');
+  const onClaimAccount = (_: 'usd' | 'eur' | 'aed') => router.push('/accounts');
 
   const handleClose = () => router.push('/invoices');
 
@@ -68,7 +69,9 @@ export default function CreateInvoicePage() {
           isBaseEndorsed={isBaseEndorsed}
           isEurEndorsed={isEurEndorsed}
           isAedEndorsed={isAedEndorsed}
+          isDueVerified={isEndorsementLoading ? undefined : isVerified}
           onGetVerified={onGetVerified}
+          onClaimAccount={onClaimAccount}
           walletAddress={baseAddress ?? undefined}
           stellarWalletAddress={stellarAddress ?? undefined}
           prefills={{

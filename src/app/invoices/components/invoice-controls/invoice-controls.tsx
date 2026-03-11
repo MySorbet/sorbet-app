@@ -12,7 +12,9 @@ export const InvoiceControls = ({
   isBaseEndorsed,
   isEurEndorsed,
   isAedEndorsed,
+  isDueVerified,
   onGetVerified,
+  onClaimAccount,
   walletAddress,
   stellarWalletAddress,
 }: {
@@ -20,7 +22,11 @@ export const InvoiceControls = ({
   isEurEndorsed?: boolean;
   /** Whether the user is endorsed for AED payments. `undefined` means still loading. */
   isAedEndorsed?: boolean;
+  /** Whether the user has passed Due KYC. Distinct from per-currency endorsements. */
+  isDueVerified?: boolean;
   onGetVerified?: (currency: 'usd' | 'eur' | 'aed') => void;
+  /** Callback indicating the user wants to claim an account for a specific currency */
+  onClaimAccount?: (currency: 'usd' | 'eur' | 'aed') => void;
   walletAddress?: string;
   stellarWalletAddress?: string;
 }) => {
@@ -77,7 +83,9 @@ export const InvoiceControls = ({
             isBaseEndorsed={isBaseEndorsed}
             isEurEndorsed={isEurEndorsed}
             isAedEndorsed={isAedEndorsed}
+            isDueVerified={isDueVerified}
             onGetVerified={onGetVerified}
+            onClaimAccount={onClaimAccount}
             walletAddress={walletAddress}
             stellarWalletAddress={stellarWalletAddress}
           />
