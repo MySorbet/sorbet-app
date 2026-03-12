@@ -73,7 +73,9 @@ export const PaymentTab = ({
   isBaseEndorsed,
   isEurEndorsed,
   isAedEndorsed,
+  isDueVerified,
   onGetVerified,
+  onClaimAccount,
   walletAddress,
   stellarWalletAddress,
 }: {
@@ -83,8 +85,12 @@ export const PaymentTab = ({
   isEurEndorsed?: boolean;
   /** Whether the user is endorsed for AED payments. `undefined` means still loading. */
   isAedEndorsed?: boolean;
+  /** Whether the user has passed Due KYC. Distinct from per-currency endorsements. */
+  isDueVerified?: boolean;
   /** Callback indicating the user wants to get verified */
   onGetVerified?: (currency: 'usd' | 'eur' | 'aed') => void;
+  /** Callback indicating the user wants to claim an account for a specific currency */
+  onClaimAccount?: (currency: 'usd' | 'eur' | 'aed') => void;
   /** The user's Base wallet address for the USDC payment method. */
   walletAddress?: string;
   /** The user's Stellar wallet address for the USDC Stellar network option. */
@@ -325,6 +331,7 @@ export const PaymentTab = ({
               <Skeleton className='h-9 w-full' />
             ) : isVirtualLocked ? (
               <Button
+                type='button'
                 variant='outline'
                 className='w-full'
                 onClick={() => {
@@ -334,10 +341,16 @@ export const PaymentTab = ({
                       : invoiceCurrency === 'AED'
                         ? 'aed'
                         : 'usd';
-                  onGetVerified?.(currency);
+                  if (isDueVerified) {
+                    onClaimAccount?.(currency);
+                  } else {
+                    onGetVerified?.(currency);
+                  }
                 }}
               >
-                Get verified in minutes
+                {isDueVerified
+                  ? `Claim your ${invoiceCurrency} account`
+                  : 'Get verified in minutes'}
               </Button>
             ) : (
               <div className='space-y-1.5'>
