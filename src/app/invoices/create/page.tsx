@@ -52,8 +52,8 @@ export default function CreateInvoicePage() {
   const handleClose = () => router.push('/invoices');
 
   const { mutateAsync: createInvoice, isPending } = useCreateInvoice();
-  const handleCreate = async (invoice: InvoiceForm) => {
-    const newInvoice = await createInvoice(invoice);
+  const handleCreate = async (invoice: InvoiceForm, pdfBase64?: string) => {
+    const newInvoice = await createInvoice({ invoice, pdfBase64 });
     router.push(`/invoices/${newInvoice.id}`);
   };
 

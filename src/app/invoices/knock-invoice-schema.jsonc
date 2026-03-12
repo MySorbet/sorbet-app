@@ -5,7 +5,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "properties": {
     "invoice": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "dueDate": {
           "format": "date-time",
@@ -30,25 +30,43 @@
           "type": "string"
         },
         "memo": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "paymentMethods": {
-          "type": "array",
           "items": {
-            "type": "string",
-            "enum": ["usdc", "usd", "eur"]
+            "enum": [
+              "usdc",
+              "usd",
+              "eur",
+              "aed"
+            ],
+            "type": "string"
           },
-          "minItems": 1
+          "minItems": 1,
+          "type": "array"
         },
         "projectName": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "status": {
-          "enum": ["Open", "Paid", "Cancelled"],
+          "enum": [
+            "Open",
+            "Paid",
+            "Cancelled"
+          ],
           "type": "string"
         },
         "tax": {
-          "type": ["number", "null"]
+          "type": [
+            "number",
+            "null"
+          ]
         },
         "toEmail": {
           "format": "email",
@@ -56,29 +74,6 @@
         },
         "toName": {
           "type": "string"
-        },
-        "toBusinessName": {
-          "type": ["string", "null"]
-        },
-        "toAddress": {
-          "type": ["object", "null"],
-          "properties": {
-            "street": {
-              "type": "string"
-            },
-            "city": {
-              "type": "string"
-            },
-            "state": {
-              "type": "string"
-            },
-            "country": {
-              "type": "string"
-            },
-            "zip": {
-              "type": "string"
-            }
-          }
         },
         "totalAmount": {
           "exclusiveMinimum": 0,
@@ -107,8 +102,18 @@
     },
     "isVerified": {
       "type": "boolean"
+    },
+    "invoicePdfUrl": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri",
+      "description": "Publicly accessible GCS URL for the generated invoice PDF. Passed to the invoice-created (client) workflow for email attachment."
     }
   },
-  "required": ["invoice"],
+  "required": [
+    "invoice"
+  ],
   "type": "object"
 }

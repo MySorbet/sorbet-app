@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { omitBy } from 'lodash';
+import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { Form } from '@/components/ui/form';
+import { generateInvoicePdfBase64 } from '@/lib/pdf/generate-invoice-pdf';
 
 import {
   defaultInvoiceValues,
@@ -32,7 +34,7 @@ export const CreateInvoice = ({
 }: {
   prefills?: Partial<InvoiceForm>;
   onClose?: () => void;
-  onCreate?: (invoice: InvoiceForm) => void;
+  onCreate?: (invoice: InvoiceForm, pdfBase64?: string) => Promise<void> | void;
   isCreating?: boolean;
   isBaseEndorsed?: boolean;
   isEurEndorsed?: boolean;
@@ -49,6 +51,8 @@ export const CreateInvoice = ({
 }) => {
   // RHF will let undefined values overwrite the default values, so we filter them out
   const filteredPrefills = omitBy(prefills, (value) => value === undefined);
+
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   // Form lives at the top level. Controls access this form via context
   const form = useForm<InvoiceForm>({
@@ -69,17 +73,22 @@ export const CreateInvoice = ({
   const { isValid } = form.formState;
 
   // Curry our callback with RHF's handleSubmit
-  const onSubmit = form.handleSubmit((data) => {
-    // Transform tax value of 0 to undefined before submitting
-    // We do this because we currently don't support tax of 0
-    // Instead, we used undefined to indicate that there is no tax
-    // Accordingly, the backend will not accept 0, so we transform it to undefined here
+  const onSubmit = form.handleSubmit(async (data) => {
     const transformedData = {
       ...data,
       tax: data.tax === 0 ? undefined : data.tax,
     };
 
-    onCreate?.(transformedData);
+    let pdfBase64: string | undefined;
+    if (invoiceRef.current) {
+      try {
+        pdfBase64 = await generateInvoicePdfBase64(invoiceRef.current);
+      } catch {
+        // Non-blocking — proceed without attachment if generation fails
+      }
+    }
+
+    await onCreate?.(transformedData, pdfBase64);
   });
 
   // Call the submit handler by executing the returned function
@@ -101,7 +110,7 @@ export const CreateInvoice = ({
         <form onSubmit={onSubmit} className='flex min-h-0 flex-1 gap-6 p-6'>
           <InvoiceWindow>
             <InvoiceDocumentShell>
-              <InvoiceDocument invoice={form.watch()} />
+              <InvoiceDocument invoice={form.watch()} ref={invoiceRef} />
             </InvoiceDocumentShell>
           </InvoiceWindow>
           <InvoiceControls

@@ -9,8 +9,14 @@ import { InvoiceForm } from '../schema';
 export const useCreateInvoice = () => {
   return useMutation({
     mutationKey: ['createInvoice'],
-    mutationFn: (invoice: InvoiceForm) => {
-      return createInvoice(invoice);
+    mutationFn: ({
+      invoice,
+      pdfBase64,
+    }: {
+      invoice: InvoiceForm;
+      pdfBase64?: string;
+    }) => {
+      return createInvoice(invoice, pdfBase64);
     },
     onError: (error: unknown) => {
       toast.error(getApiErrorMessage(error));

@@ -9,12 +9,13 @@ import { withAuthHeader } from '../with-auth-header';
  * Creates a new invoice.
  *
  * @param invoice - The invoice form data to create with
+ * @param pdfBase64 - Optional base64-encoded PDF generated from the invoice preview
  * @returns The created invoice
  */
-export const createInvoice = async (invoice: InvoiceForm) => {
+export const createInvoice = async (invoice: InvoiceForm, pdfBase64?: string) => {
   const res = await axios.post<Invoice>(
     `${env.NEXT_PUBLIC_SORBET_API_URL}/invoices`,
-    invoice,
+    { ...invoice, pdfBase64 },
     await withAuthHeader()
   );
   return res.data;
