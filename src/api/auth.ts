@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { withAuthHeader } from '@/api/with-auth-header';
 import { getApiErrorMessage } from '@/api/error-message';
+import { withAuthHeader } from '@/api/with-auth-header';
 import { env } from '@/lib/env';
 import { User } from '@/types';
 
@@ -64,6 +64,16 @@ export const checkAccess = async (email: string) => {
     { email }
   );
   return res.data;
+};
+
+/** Generate and assign a handle on the fly for a legacy user who doesn't have one */
+export const generateHandle = async () => {
+  const res = await axios.post<{ handle: string }>(
+    `${env.NEXT_PUBLIC_SORBET_API_URL}/users/handle/generate`,
+    {},
+    await withAuthHeader()
+  );
+  return res.data.handle;
 };
 
 /** Fetch access config (whether signup is restricted to existing users) */

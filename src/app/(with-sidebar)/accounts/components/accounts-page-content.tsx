@@ -38,6 +38,7 @@ import {
 import { type AccountId, type AccountState } from './account-select-button';
 import { DueAccountDetails } from './due-account-details';
 import { RestrictedAccountsDisplay } from './restricted-accounts-display';
+import { ShareAccountsButton } from './share-accounts-dialog';
 
 /**
  * Compose account components into a page with state
@@ -152,7 +153,10 @@ export const AccountsPageContent = () => {
         <div className='flex w-full flex-col items-start justify-between gap-4 border-b px-4 pb-4 pt-[1px] sm:flex-row sm:items-center sm:gap-6 sm:px-6 md:min-h-[72px]'>
           <div className='flex w-full items-center justify-between sm:hidden'>
             <h2 className='text-xl font-semibold'>Accounts</h2>
-            <DocsButton />
+            <div className='flex gap-2'>
+              <ShareAccountsButton />
+              <DocsButton />
+            </div>
           </div>
           <div className='hidden min-w-0 flex-1 sm:block'>
             <h2 className='text-2xl font-semibold'>Accounts</h2>
@@ -161,6 +165,7 @@ export const AccountsPageContent = () => {
             </p>
           </div>
           <div className='hidden shrink-0 gap-3 sm:flex'>
+            <ShareAccountsButton />
             <DocsButton />
           </div>
         </div>
@@ -247,7 +252,10 @@ export const AccountsPageContent = () => {
         {/* Mobile: Title + Button in one row */}
         <div className='flex w-full items-center justify-between sm:hidden'>
           <h2 className='text-xl font-semibold'>Accounts</h2>
-          <DocsButton />
+          <div className='flex gap-2'>
+            <ShareAccountsButton />
+            <DocsButton />
+          </div>
         </div>
 
         {/* Desktop: Original layout */}
@@ -259,6 +267,7 @@ export const AccountsPageContent = () => {
         </div>
 
         <div className='hidden shrink-0 gap-3 sm:flex'>
+          <ShareAccountsButton />
           <DocsButton />
         </div>
       </div>
