@@ -172,7 +172,6 @@ export const Dashboard = () => {
         onOpenChange={setIsDepositOpen}
         chain={currentChain}
         walletAddress={currentWalletAddress ?? undefined}
-        bridgeCustomer={undefined}
       />
 
       {/* Conditionally rendered profile edit modal */}

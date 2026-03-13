@@ -11,14 +11,21 @@ import {
   CredenzaDescription,
   CredenzaTitle,
 } from '@/components/common/credenza/credenza';
-import type { BridgeCustomer } from '@/types';
+import { useDueVirtualAccounts } from '@/hooks/profile/use-due-virtual-accounts';
+import { useAuth } from '@/hooks/use-auth';
+import type {
+  DueVirtualAccountAEDDetails,
+  DueVirtualAccountEURDetails,
+  DueVirtualAccountUSDetails,
+} from '@/types/due';
 
+import { AEDAccountDetails } from './aed-account-details';
 import { DepositOptionsList } from './deposit-options-list';
 import { EURAccountDetails } from './eur-account-details';
 import { USDAccountDetails } from './usd-account-details';
 import { USDCWalletDetails } from './usdc-wallet-details';
 
-export type DepositOption = 'select' | 'usdc' | 'usd' | 'eur';
+export type DepositOption = 'select' | 'usdc' | 'usd' | 'eur' | 'aed';
 
 interface DepositDialogProps {
   open: boolean;
@@ -27,31 +34,49 @@ interface DepositDialogProps {
   walletAddress?: string;
   /** Selected chain (Base or Stellar) */
   chain?: SorbetChain;
-  /** Bridge customer data containing virtual accounts */
-  bridgeCustomer?: BridgeCustomer;
 }
 
 /**
- * Deposit dialog that shows three deposit options:
+ * Deposit dialog that shows deposit options:
  * - USDC Wallet (QR code + wallet address)
- * - USD Account (ACH/Wire bank details)
- * - EUR Account (SEPA bank details)
+ * - USD Account (ACH/Wire bank details via Due)
+ * - EUR Account (SEPA bank details via Due)
+ * - AED Account (MENA bank details via Due)
  *
+ * USD/EUR/AED are enabled when the user has KYC passed and a Due virtual account.
  * Uses Credenza for responsive behavior (Dialog on desktop, Drawer on mobile)
- *
  */
 export const DepositDialog = ({
   open,
   onOpenChange,
   walletAddress,
   chain = 'base',
-  bridgeCustomer,
 }: DepositDialogProps) => {
   const [selectedOption, setSelectedOption] = useState<DepositOption>('select');
+  const { user } = useAuth();
 
-  // Check account availability
-  const hasUSDAccount = !!bridgeCustomer?.virtual_account;
-  const hasEURAccount = !!bridgeCustomer?.virtual_account_eur;
+  const { data: dueVirtualAccounts } = useDueVirtualAccounts({
+    enabled: !!user?.id,
+  });
+
+  const usdAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_us');
+  const eurAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_sepa');
+  const aedAccount = dueVirtualAccounts?.find((a) => a.schema === 'bank_mena');
+
+
+  const hasUSDAccount = !!usdAccount;
+  const hasEURAccount = !!eurAccount;
+  const hasAEDAccount = !!aedAccount;
+
+  const usdDetails = usdAccount?.account?.details as
+    | DueVirtualAccountUSDetails
+    | undefined;
+  const eurDetails = eurAccount?.account?.details as
+    | DueVirtualAccountEURDetails
+    | undefined;
+  const aedDetails = aedAccount?.account?.details as
+    | DueVirtualAccountAEDDetails
+    | undefined;
 
   const handleOptionSelect = (option: DepositOption) => {
     setSelectedOption(option);
@@ -87,6 +112,7 @@ export const DepositDialog = ({
                 onClose={handleClose}
                 hasUSDAccount={hasUSDAccount}
                 hasEURAccount={hasEURAccount}
+                hasAEDAccount={hasAEDAccount}
               />
             </FadeIn>
           )}
@@ -105,9 +131,7 @@ export const DepositDialog = ({
           {selectedOption === 'usd' && (
             <FadeIn key='usd'>
               <USDAccountDetails
-                account={
-                  bridgeCustomer?.virtual_account?.source_deposit_instructions
-                }
+                details={usdDetails}
                 onBack={handleBack}
                 onClose={handleClose}
               />
@@ -117,10 +141,17 @@ export const DepositDialog = ({
           {selectedOption === 'eur' && (
             <FadeIn key='eur'>
               <EURAccountDetails
-                account={
-                  bridgeCustomer?.virtual_account_eur
-                    ?.source_deposit_instructions
-                }
+                details={eurDetails}
+                onBack={handleBack}
+                onClose={handleClose}
+              />
+            </FadeIn>
+          )}
+
+          {selectedOption === 'aed' && (
+            <FadeIn key='aed'>
+              <AEDAccountDetails
+                details={aedDetails}
                 onBack={handleBack}
                 onClose={handleClose}
               />

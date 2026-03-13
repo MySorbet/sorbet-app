@@ -1,7 +1,13 @@
 import { delay, http, HttpResponse } from 'msw';
 
 import { env } from '@/lib/env';
-import type { DueCustomer } from '@/types/due';
+import type {
+  DueCustomer,
+  DueVirtualAccount,
+  DueVirtualAccountAEDDetails,
+  DueVirtualAccountEURDetails,
+  DueVirtualAccountUSDetails,
+} from '@/types/due';
 
 /** Mock Due customer - not started verification */
 export const mockDueCustomerNotStarted: DueCustomer = {
@@ -166,5 +172,102 @@ export const mockVerifyDueHandler = http.post(
   async () => {
     await delay(1000);
     return HttpResponse.json<DueCustomer>(mockDueCustomerNotStarted);
+  }
+);
+
+/** Mock USD virtual account details */
+const mockUSDetails: DueVirtualAccountUSDetails = {
+  accountType: 'individual',
+  bankName: 'Silicon Valley Bank',
+  accountNumber: '1234567890',
+  routingNumber: '121140399',
+};
+
+/** Mock EUR virtual account details */
+const mockEURDetails: DueVirtualAccountEURDetails = {
+  accountType: 'individual',
+  IBAN: 'IE33MODR99035508481234',
+  bankName: 'Modulr Finance, Ireland Branch',
+  swiftCode: 'MODRIE22YYY',
+};
+
+/** Mock AED virtual account details */
+const mockAEDDetails: DueVirtualAccountAEDDetails = {
+  accountType: 'individual',
+  bankName: 'Emirates NBD',
+  IBAN: 'AE070331234567890123456',
+  swiftCode: 'EBILAEAD',
+};
+
+/** Mock virtual accounts - all (USD, EUR, AED) */
+export const mockDueVirtualAccountsAll: DueVirtualAccount[] = [
+  {
+    id: 'va-us-1',
+    schema: 'bank_us',
+    account: { details: mockUSDetails },
+  },
+  {
+    id: 'va-eur-1',
+    schema: 'bank_sepa',
+    account: { details: mockEURDetails },
+  },
+  {
+    id: 'va-aed-1',
+    schema: 'bank_mena',
+    account: { details: mockAEDDetails },
+  },
+];
+
+/** Mock virtual accounts - only USD */
+export const mockDueVirtualAccountsUSDOnly: DueVirtualAccount[] = [
+  {
+    id: 'va-us-1',
+    schema: 'bank_us',
+    account: { details: mockUSDetails },
+  },
+];
+
+/** Mock virtual accounts - only EUR */
+export const mockDueVirtualAccountsEUROnly: DueVirtualAccount[] = [
+  {
+    id: 'va-eur-1',
+    schema: 'bank_sepa',
+    account: { details: mockEURDetails },
+  },
+];
+
+/** MSW Handler - Due virtual accounts (all) */
+export const mockDueVirtualAccountsHandlerAll = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/due/virtual-accounts`,
+  async () => {
+    await delay(300);
+    return HttpResponse.json<DueVirtualAccount[]>(mockDueVirtualAccountsAll);
+  }
+);
+
+/** MSW Handler - Due virtual accounts (empty - USDC only) */
+export const mockDueVirtualAccountsHandlerEmpty = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/due/virtual-accounts`,
+  async () => {
+    await delay(300);
+    return HttpResponse.json<DueVirtualAccount[]>([]);
+  }
+);
+
+/** MSW Handler - Due virtual accounts (USD only) */
+export const mockDueVirtualAccountsHandlerUSDOnly = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/due/virtual-accounts`,
+  async () => {
+    await delay(300);
+    return HttpResponse.json<DueVirtualAccount[]>(mockDueVirtualAccountsUSDOnly);
+  }
+);
+
+/** MSW Handler - Due virtual accounts (EUR only) */
+export const mockDueVirtualAccountsHandlerEUROnly = http.get(
+  `${env.NEXT_PUBLIC_SORBET_API_URL}/users/due/virtual-accounts`,
+  async () => {
+    await delay(300);
+    return HttpResponse.json<DueVirtualAccount[]>(mockDueVirtualAccountsEUROnly);
   }
 );

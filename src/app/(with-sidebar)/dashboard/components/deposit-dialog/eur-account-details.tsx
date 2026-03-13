@@ -1,26 +1,25 @@
 'use client';
 
-import { mapToEURWireDetails } from '@/app/invoices/hooks/use-ach-wire-details';
 import { BackButton } from '@/components/common/back-button';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
-import type { SourceDepositInstructionsEUR } from '@/types';
+import type { DueVirtualAccountEURDetails } from '@/types/due';
 
 interface EURAccountDetailsProps {
-  account: SourceDepositInstructionsEUR | undefined;
+  details: DueVirtualAccountEURDetails | undefined;
   onBack: () => void;
   onClose: () => void;
 }
 
 /**
- * EUR Account details screen with SEPA bank details
+ * EUR Account details screen with SEPA bank details (via Due)
  */
 export const EURAccountDetails = ({
-  account,
+  details,
   onBack,
   onClose,
 }: EURAccountDetailsProps) => {
-  if (!account) {
+  if (!details) {
     return (
       <div className='flex flex-col gap-4 p-6'>
         <h2 className='text-xl font-semibold text-[#101828]'>
@@ -36,7 +35,11 @@ export const EURAccountDetails = ({
     );
   }
 
-  const details = mapToEURWireDetails(account);
+  const beneficiaryName =
+    details.accountType === 'business' && details.companyName
+      ? details.companyName
+      : [details.firstName, details.lastName].filter(Boolean).join(' ') ||
+        'N/A';
 
   return (
     <div className='flex flex-col gap-4 p-6'>
@@ -48,20 +51,14 @@ export const EURAccountDetails = ({
       {/* Details container */}
       <div className='flex flex-col gap-3 rounded-xl border border-[#E4E4E7] bg-[#FAFAFA] p-4'>
         <DetailRow label='Currency' value='EUR' />
-        <DetailRow label='Account' value={details.iban} copyable />
-        <DetailRow label='Routing' value={details.bic} copyable />
-        <DetailRow label='Type' value='Checking' />
-        <DetailRow label='Beneficiary' value={details.accountHolderName} />
-        <DetailRow
-          label='Bank'
-          value={
-            <>
-              {details.bank.name}
-              <br />
-              <span className='text-[#667085]'>{details.bank.address}</span>
-            </>
-          }
-        />
+        <DetailRow label='IBAN' value={details.IBAN} copyable />
+        {details.swiftCode && (
+          <DetailRow label='BIC / SWIFT' value={details.swiftCode} copyable />
+        )}
+        <DetailRow label='Beneficiary' value={beneficiaryName} />
+        {details.bankName && (
+          <DetailRow label='Bank' value={details.bankName} />
+        )}
       </div>
 
       {/* Buttons */}
