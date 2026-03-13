@@ -25,6 +25,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { SquareGanttChartIcon } from '@/components/ui/square-gantt-chart';
 import { UsersIcon } from '@/components/ui/users';
+import { useIsCountryRestricted } from '@/hooks/profile/use-is-country-restricted';
 import { useIsVerified } from '@/hooks/profile/use-is-verified';
 import { useAuth } from '@/hooks/use-auth';
 import { useFlags } from '@/hooks/use-flags';
@@ -202,8 +203,12 @@ const DashboardMenuItem = () => {
 /** Local verified menu item which has a dynamic title and icon depending on verification status */
 const VerifiedMenuItem = () => {
   const isVerified = useIsVerified();
+  const isCountryRestricted = useIsCountryRestricted();
   const { user } = useAuth();
   const isBusiness = user?.customerType === 'business';
+
+  if (isCountryRestricted) return null;
+
   const item = {
     title: isVerified
       ? 'Account verified'
