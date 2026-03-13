@@ -9,7 +9,6 @@ import { DateRange } from 'react-day-picker';
 import { getUnifiedTransactions } from '@/api/transactions';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks';
-import { useBridgeCustomer } from '@/hooks/profile/use-bridge-customer';
 import { useWalletAddress } from '@/hooks/use-wallet-address';
 import { useSmartWalletAddress } from '@/hooks/web3/use-smart-wallet-address';
 
@@ -29,7 +28,6 @@ export const TransactionsBrowser: React.FC = () => {
   const { user } = useAuth();
   const { currentChain, currentAddress } = useWalletAddress();
   const { smartWalletAddress } = useSmartWalletAddress();
-  const { data: bridgeCustomer } = useBridgeCustomer();
 
   // Filter states
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
@@ -206,7 +204,6 @@ export const TransactionsBrowser: React.FC = () => {
           onOpenChange={setIsDepositOpen}
           chain={currentChain}
           walletAddress={currentAddress ?? undefined}
-          bridgeCustomer={bridgeCustomer}
         />
 
         {/* Header Section -  */}

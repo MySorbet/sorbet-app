@@ -2,7 +2,12 @@ import { useArgs } from '@storybook/preview-api';
 import { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 
-import { mockBridgeCustomer } from '@/api/bridge/mock-bridge-customer';
+import {
+  mockDueVirtualAccountsHandlerAll,
+  mockDueVirtualAccountsHandlerEmpty,
+  mockDueVirtualAccountsHandlerEUROnly,
+  mockDueVirtualAccountsHandlerUSDOnly,
+} from '@/api/due/msw-handlers';
 import { Button } from '@/components/ui/button';
 
 import { DepositDialog } from './deposit-dialog';
@@ -14,13 +19,15 @@ const meta = {
   component: DepositDialog,
   parameters: {
     layout: 'centered',
+    msw: {
+      handlers: [mockDueVirtualAccountsHandlerAll],
+    },
   },
   args: {
     open: true,
     onOpenChange: fn(),
     chain: 'base',
     walletAddress: mockWalletAddress,
-    bridgeCustomer: mockBridgeCustomer,
   },
 } satisfies Meta<typeof DepositDialog>;
 
@@ -47,35 +54,12 @@ export const Default: Story = {
 };
 
 /**
- * With only USDC available (no USD/EUR accounts)
+ * With only USDC available (no USD/EUR/AED accounts)
  */
 export const OnlyUSDC: Story = {
-  args: {
-    bridgeCustomer: undefined,
-  },
-  render: (args) => {
-    const [{ open }, updateArgs] = useArgs();
-    const handleOpenChange = (open: boolean) => {
-      updateArgs({ open });
-    };
-
-    return (
-      <>
-        <Button onClick={() => handleOpenChange(true)}>Open Deposit</Button>
-        <DepositDialog {...args} open={open} onOpenChange={handleOpenChange} />
-      </>
-    );
-  },
-};
-
-/**
- * With only USD account (no EUR)
- */
-export const OnlyUSD: Story = {
-  args: {
-    bridgeCustomer: {
-      ...mockBridgeCustomer,
-      virtual_account_eur: undefined,
+  parameters: {
+    msw: {
+      handlers: [mockDueVirtualAccountsHandlerEmpty],
     },
   },
   render: (args) => {
@@ -94,13 +78,36 @@ export const OnlyUSD: Story = {
 };
 
 /**
- * With only EUR account (no USD)
+ * With only USD account (no EUR/AED)
+ */
+export const OnlyUSD: Story = {
+  parameters: {
+    msw: {
+      handlers: [mockDueVirtualAccountsHandlerUSDOnly],
+    },
+  },
+  render: (args) => {
+    const [{ open }, updateArgs] = useArgs();
+    const handleOpenChange = (open: boolean) => {
+      updateArgs({ open });
+    };
+
+    return (
+      <>
+        <Button onClick={() => handleOpenChange(true)}>Open Deposit</Button>
+        <DepositDialog {...args} open={open} onOpenChange={handleOpenChange} />
+      </>
+    );
+  },
+};
+
+/**
+ * With only EUR account (no USD/AED)
  */
 export const OnlyEUR: Story = {
-  args: {
-    bridgeCustomer: {
-      ...mockBridgeCustomer,
-      virtual_account: undefined,
+  parameters: {
+    msw: {
+      handlers: [mockDueVirtualAccountsHandlerEUROnly],
     },
   },
   render: (args) => {
@@ -125,7 +132,11 @@ export const Stellar: Story = {
   args: {
     chain: 'stellar',
     walletAddress: 'GB3JDWCQMPM3SSE6X6CEGJ3V3UT2JTX7KZ2R5Y3G3QZQJ2T4K6Q3W3GQ',
-    bridgeCustomer: undefined,
+  },
+  parameters: {
+    msw: {
+      handlers: [mockDueVirtualAccountsHandlerEmpty],
+    },
   },
   render: (args) => {
     const [{ open }, updateArgs] = useArgs();
