@@ -3,30 +3,30 @@
 import { BackButton } from '@/components/common/back-button';
 import { CopyButton } from '@/components/common/copy-button/copy-button';
 import { Button } from '@/components/ui/button';
-import type { DueVirtualAccountUSDetails } from '@/types/due';
+import type { DueVirtualAccountAEDDetails } from '@/types/due';
 
-interface USDAccountDetailsProps {
-  details: DueVirtualAccountUSDetails | undefined;
+interface AEDAccountDetailsProps {
+  details: DueVirtualAccountAEDDetails | undefined;
   onBack: () => void;
   onClose: () => void;
 }
 
 /**
- * USD Account details screen with ACH bank details (via Due)
+ * AED Account details screen with MENA bank details (via Due)
  */
-export const USDAccountDetails = ({
+export const AEDAccountDetails = ({
   details,
   onBack,
   onClose,
-}: USDAccountDetailsProps) => {
+}: AEDAccountDetailsProps) => {
   if (!details) {
     return (
       <div className='flex flex-col gap-4 p-6'>
         <h2 className='text-xl font-semibold text-[#101828]'>
-          USD Account Details
+          AED Account Details
         </h2>
         <p className='text-sm text-[#667085]'>
-          USD account is not available. Please complete verification first.
+          AED account is not available. Please complete verification first.
         </p>
         <Button variant='outline' onClick={onClose} className='w-full'>
           Close
@@ -39,41 +39,25 @@ export const USDAccountDetails = ({
     details.accountType === 'business' && details.companyName
       ? details.companyName
       : [details.firstName, details.lastName].filter(Boolean).join(' ') ||
-        details.accountName ||
         'N/A';
-
-  const routingNumber =
-    details.routingNumberACH ?? details.routingNumber;
 
   return (
     <div className='flex flex-col gap-4 p-6'>
       {/* Header */}
       <h2 className='text-xl font-semibold text-[#101828]'>
-        USD Account Details
+        AED Account Details
       </h2>
 
       {/* Details container */}
       <div className='flex flex-col gap-3 rounded-xl border border-[#E4E4E7] bg-[#FAFAFA] p-4'>
-        <DetailRow label='Currency' value='USD' />
-        <DetailRow label='Account' value={details.accountNumber} copyable />
-        <DetailRow label='Routing' value={routingNumber} copyable />
-        <DetailRow label='Type' value='Checking' />
+        <DetailRow label='Currency' value='AED' />
+        <DetailRow label='IBAN' value={details.IBAN} copyable />
+        {details.swiftCode && (
+          <DetailRow label='SWIFT Code' value={details.swiftCode} copyable />
+        )}
         <DetailRow label='Beneficiary' value={beneficiaryName} />
         {details.bankName && (
-          <DetailRow
-            label='Bank'
-            value={
-              details.bankAddress ? (
-                <>
-                  {details.bankName}
-                  <br />
-                  <span className='text-[#667085]'>{details.bankAddress}</span>
-                </>
-              ) : (
-                details.bankName
-              )
-            }
-          />
+          <DetailRow label='Bank' value={details.bankName} />
         )}
       </div>
 
