@@ -208,7 +208,8 @@ export const Dashboard = () => {
             )}
 
             {/* Setup Card: Show if not fully verified or if verified but no invoice created yet */}
-            {!(isKycVerified && hasCreatedInvoice) && (
+            {/* Hide if Bridge-approved and Due KYC specifically failed */}
+            {!(isKycVerified && hasCreatedInvoice) && !(isKycRejected && needsMigration) && (
               <SetupCard
                 completedTasks={completedTasks}
                 onVerifyClick={() => router.push('/verify')}
