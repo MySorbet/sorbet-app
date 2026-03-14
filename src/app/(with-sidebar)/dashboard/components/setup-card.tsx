@@ -113,6 +113,14 @@ export const SetupCard = ({
             handleVerifyClick();
             return;
         }
+        if (kycStatus === 'approved' || kycStatus === 'passed') {
+            window.open('/kyc-status?status=success', '_blank', 'noopener,noreferrer');
+            return;
+        }
+        if (kycStatus === 'failed' || kycStatus === 'rejected') {
+            window.open('/kyc-status?status=failed', '_blank', 'noopener,noreferrer');
+            return;
+        }
         if (!kycStatus) {
             createDueCustomer();
         } else if (tosStatus !== 'accepted') {
